@@ -1,3 +1,4 @@
 import androidx.compose.ui.window.ComposeUIViewController
+import screens.SplashScreen
 
-fun MainViewController() = ComposeUIViewController { App() }
+fun MainViewController() = ComposeUIViewController { SplashScreen() }
