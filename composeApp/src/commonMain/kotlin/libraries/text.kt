@@ -1,0 +1,4 @@
+package libraries
+
+class text {
+}
