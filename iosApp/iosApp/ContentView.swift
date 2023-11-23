@@ -4,18 +4,22 @@ import ComposeApp
 
 struct ComposeView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
-        MainViewControllerKt.MainViewController()
+        var viewController: UIViewController  = MainViewControllerKt.MainViewController()
+        return viewController
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+    
 }
 
 struct ContentView: View {
     var body: some View {
         ComposeView()
-                .ignoresSafeArea(.keyboard) // Compose has own keyboard handler
+            .ignoresSafeArea(.all, edges: [.bottom, .top]) // Compose has own keyboard handler
     }
+    
 }
+
 
 
 

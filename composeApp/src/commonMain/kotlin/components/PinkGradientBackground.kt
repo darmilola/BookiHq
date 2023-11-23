@@ -18,10 +18,9 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalResourceApi::class)
-public class PinkGradientBackground {
-    @Composable
-   public fun ShowPinkGradientBackground() {
-        val bgStyle = Modifier
+@Composable
+fun PinkGradientBackground() {
+   val bgStyle = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
 
@@ -39,12 +38,11 @@ public class PinkGradientBackground {
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            Color(color = 0xFFFA4375),
-                            Color(color = 0xFFFE8467)
+                            Color(color = 0xFFF43569),
+                            Color(color = 0xFFF43569)
                         )
                     )
                 )
         ) {
         }
     }
-}
