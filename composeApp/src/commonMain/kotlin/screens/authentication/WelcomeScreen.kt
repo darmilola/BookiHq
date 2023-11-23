@@ -2,6 +2,8 @@ package screens.authentication
 
 import AppTheme.AppColors
 import AppTheme.AppTypography
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -23,6 +25,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +34,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import components.ButtonComponent
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import widgets.WelcomeScreenPagerContent
 
@@ -59,8 +64,10 @@ fun WelcomeScreenCompose() {
 
 
     val pagerState = rememberPagerState(pageCount = {
-        4
+        3
     })
+
+
 
     val  boxModifier =
         Modifier
@@ -73,10 +80,13 @@ fun WelcomeScreenCompose() {
              state = pagerState,
              modifier = Modifier.fillMaxSize()
          ) { page ->
-             // Our page content
+                 WelcomeScreenPagerContent("$page.jpg")
+             }
 
-             WelcomeScreenPagerContent()
-         }
+             // Our page content
+                // WelcomeScreenPagerContent("0.jpg")
+              //   WelcomeScreenPagerContent("1.jpg")
+
          Row(
              Modifier
                  .wrapContentHeight()
@@ -96,6 +106,7 @@ fun WelcomeScreenCompose() {
              }
          }
      }
+
  }
 
 @Composable

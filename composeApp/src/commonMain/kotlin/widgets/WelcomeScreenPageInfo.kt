@@ -58,7 +58,7 @@ fun welcomeScreenTextContent(textStyle: TextStyle) {
 }
 
 @Composable
-fun WelcomeScreenImageTextWidget() {
+fun WelcomeScreenImageTextWidget(imageRes: String) {
     val  imageModifier =
         Modifier
             .fillMaxHeight()
@@ -72,14 +72,14 @@ fun WelcomeScreenImageTextWidget() {
     MaterialTheme(colors = AppColors(), typography = AppTypography()) {
         // AnimationEffect
         Box(contentAlignment = Alignment.BottomCenter, modifier = boxModifier) {
-            ImageComponent(imageModifier = imageModifier, imageRes = "afro_woman.jpg")
+            ImageComponent(imageModifier = imageModifier, imageRes = imageRes)
             WelcomeScreenTextWidget()
         }
     }
 }
 
 @Composable
-fun WelcomeScreenPagerContent() {
+fun WelcomeScreenPagerContent(imageRes: String) {
     val  imageTextModifier =
         Modifier
             .fillMaxWidth()
@@ -97,7 +97,7 @@ fun WelcomeScreenPagerContent() {
                 .fillMaxWidth()
                 .height(270.dp)
 
-            WelcomeScreenImageTextWidget()
+            WelcomeScreenImageTextWidget(imageRes)
             TextComponent(
                 textModifier = modifier, text = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.", fontSize = 18, textStyle = MaterialTheme.typography.h4, textColor = Color(0xFF4D4C4C), textAlign = TextAlign.Left,
                 fontWeight = FontWeight.SemiBold)

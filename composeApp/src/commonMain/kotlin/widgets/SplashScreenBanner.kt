@@ -34,7 +34,7 @@ fun SplashScreenWidget(textStyle: TextStyle) {
 fun attachCompanyLogo() {
     val modifier = Modifier
         .size(250.dp)
-    ImageComponent(imageModifier = modifier, imageRes = "logo_ca.png")
+    ImageComponent(imageModifier = modifier, imageRes = "0.png")
 }
 
 @Composable
