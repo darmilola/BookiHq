@@ -1,7 +1,9 @@
 package widgets
 
 import AppTheme.AppColors
-import AppTheme.AppTypography
+import AppTheme.AppBoldTypography
+import AppTheme.AppSemiBoldTypography
+import GGSansBold
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,18 +35,18 @@ fun WelcomeScreenTextWidget() {
             .height(140.dp)
             .fillMaxWidth()
 
-    MaterialTheme(colors = AppColors(), typography = AppTypography()) {
+    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         // AnimationEffect
         Box(modifier = modifier, contentAlignment = Alignment.CenterStart) {
             welcomeGradientBlock()
-            welcomeScreenTextContent(textStyle = MaterialTheme.typography.h3)
+            welcomeScreenTextContent(textStyle = MaterialTheme.typography.h6, fontFamily = GGSansBold)
 
         }
     }
 }
 
 @Composable
-fun welcomeScreenTextContent(textStyle: TextStyle) {
+fun welcomeScreenTextContent(textStyle: TextStyle, fontFamily: FontFamily? = null) {
     val columnModifier = Modifier
         .padding(start = 30.dp)
         .fillMaxWidth()
@@ -51,8 +54,8 @@ fun welcomeScreenTextContent(textStyle: TextStyle) {
         val modifier = Modifier
             .fillMaxWidth()
         TextComponent(
-            textModifier = modifier, text = "Unlock a world of\nbeauty and relaxation\nwith our business", fontSize = 25, textStyle = textStyle, textColor = Color.White, textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Black)
+            textModifier = modifier, text = "Lorem ipsum dolor sit\namet consectetuer adipiscing\nAenean commodo ligula", fontSize = 23, fontFamily = fontFamily, textStyle = textStyle, textColor = Color.White, textAlign = TextAlign.Left,
+            fontWeight = FontWeight.ExtraBold, lineHeight = 30)
         welcomeLineGradientBlock()
     }
 }
@@ -69,7 +72,7 @@ fun WelcomeScreenImageTextWidget(imageRes: String) {
             .fillMaxHeight(0.80f)
             .fillMaxWidth()
 
-    MaterialTheme(colors = AppColors(), typography = AppTypography()) {
+    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         // AnimationEffect
         Box(contentAlignment = Alignment.BottomCenter, modifier = boxModifier) {
             ImageComponent(imageModifier = imageModifier, imageRes = imageRes)
@@ -89,18 +92,18 @@ fun WelcomeScreenPagerContent(imageRes: String) {
             .fillMaxHeight()
             .fillMaxWidth()
 
-    MaterialTheme(colors = AppColors(), typography = AppTypography()) {
+    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
         // AnimationEffect
         Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start) {
             val modifier = Modifier
-                .padding(start = 30.dp, top = 20.dp, end = 20.dp, bottom = 20.dp)
+                .padding(start = 30.dp, top = 20.dp, end = 10.dp, bottom = 20.dp)
                 .fillMaxWidth()
                 .height(270.dp)
 
             WelcomeScreenImageTextWidget(imageRes)
             TextComponent(
-                textModifier = modifier, text = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.", fontSize = 18, textStyle = MaterialTheme.typography.h4, textColor = Color(0xFF4D4C4C), textAlign = TextAlign.Left,
-                fontWeight = FontWeight.SemiBold)
+                textModifier = modifier, text = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.  consectetuer adipiscing", fontSize = 16, textStyle = MaterialTheme.typography.subtitle2, textColor = Color(0xFF4D4C4C), textAlign = TextAlign.Left,
+                fontWeight = FontWeight.Normal, lineHeight = 25)
         }
     }
 }

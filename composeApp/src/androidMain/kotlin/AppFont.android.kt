@@ -3,8 +3,14 @@ import androidx.compose.ui.text.font.FontFamily
 import com.application.zazzy.R
 
 
-actual val GGSansFontFamily: FontFamily = FontFamily(
-    Font(R.font.ggsans),
-    Font(R.font.ggsans_bold),
+actual val GGSansBold: FontFamily =  FontFamily(
+    Font(R.font.ggsans_bold)
+)
+
+actual val GGSansRegular: FontFamily =  FontFamily(
+    Font(R.font.ggsans_regular)
+)
+
+actual val GGSansSemiBold: FontFamily =  FontFamily(
     Font(R.font.ggsans_semibold)
 )

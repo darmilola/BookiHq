@@ -1,9 +1,8 @@
 package screens.authentication
 
 import AppTheme.AppColors
-import AppTheme.AppTypography
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
+import AppTheme.AppBoldTypography
+import AppTheme.AppSemiBoldTypography
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -25,7 +24,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,8 +32,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import components.ButtonComponent
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import widgets.WelcomeScreenPagerContent
 
@@ -45,7 +41,7 @@ fun WelcomeScreenCompose() {
     val bgStyle = Modifier
         .fillMaxWidth()
         .fillMaxHeight()
-    MaterialTheme(colors = AppColors(), typography = AppTypography()) {
+    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
         Column(
             modifier = bgStyle
         ) {
@@ -71,7 +67,7 @@ fun WelcomeScreenCompose() {
 
     val  boxModifier =
         Modifier
-            .fillMaxHeight(0.80f)
+            .fillMaxHeight(0.75f)
             .fillMaxWidth()
 
      // AnimationEffect
@@ -82,10 +78,6 @@ fun WelcomeScreenCompose() {
          ) { page ->
                  WelcomeScreenPagerContent("$page.jpg")
              }
-
-             // Our page content
-                // WelcomeScreenPagerContent("0.jpg")
-              //   WelcomeScreenPagerContent("1.jpg")
 
          Row(
              Modifier
@@ -113,17 +105,18 @@ fun WelcomeScreenCompose() {
 fun attachActionButtons(style: TextStyle){
 
     val bgStyle = Modifier
+        .padding(bottom = 40.dp)
         .fillMaxWidth()
         .fillMaxHeight()
 
     val buttonStyle = Modifier
         .padding(bottom = 10.dp)
-        .fillMaxWidth(0.85f)
-        .height(56.dp)
+        .fillMaxWidth(0.90f)
+        .height(50.dp)
 
     Column(modifier = bgStyle, verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-        ButtonComponent(modifier = buttonStyle, buttonText = "Continue", borderStroke = null, colors = ButtonDefaults.buttonColors(backgroundColor = Color.DarkGray), fontSize = 18, shape = RoundedCornerShape(28.dp), textColor = Color.White, style = style)
-        ButtonComponent(modifier = buttonStyle, buttonText = "Login to Your Account", borderStroke = BorderStroke(1.dp, Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface), fontSize = 18, shape = RoundedCornerShape(28.dp), textColor = Color.DarkGray, style = style)
+        ButtonComponent(modifier = buttonStyle, buttonText = "Continue", borderStroke = null, colors = ButtonDefaults.buttonColors(backgroundColor = Color.DarkGray), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color.White, style = style)
+        ButtonComponent(modifier = buttonStyle, buttonText = "Login to Your Account", borderStroke = BorderStroke(1.dp, Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color.DarkGray, style = style)
     }
 
 }

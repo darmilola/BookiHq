@@ -14,13 +14,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import AppTheme.AppTypography
+import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App() {
-    MaterialTheme(typography = AppTypography(), colors = AppColors()) {
+    MaterialTheme(typography = AppBoldTypography(), colors = AppColors()) {
         var greetingText by remember { mutableStateOf("Hello World!") }
         var showImage by remember { mutableStateOf(false) }
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {

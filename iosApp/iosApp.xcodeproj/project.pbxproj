@@ -10,9 +10,6 @@
 		058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557BA273AAA24004C7B11 /* Assets.xcassets */; };
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
-		5943A9CE2B0E0EF400608A68 /* ggsans.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5943A9CB2B0E0EF400608A68 /* ggsans.ttf */; };
-		5943A9CF2B0E0EF400608A68 /* ggsans_semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5943A9CC2B0E0EF400608A68 /* ggsans_semibold.ttf */; };
-		5943A9D02B0E0EF400608A68 /* ggsans_bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5943A9CD2B0E0EF400608A68 /* ggsans_bold.ttf */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
 /* End PBXBuildFile section */
 
@@ -20,9 +17,9 @@
 		058557BA273AAA24004C7B11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
-		5943A9CB2B0E0EF400608A68 /* ggsans.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = ggsans.ttf; path = ../../composeApp/src/main/res/font/ggsans.ttf; sourceTree = "<group>"; };
-		5943A9CC2B0E0EF400608A68 /* ggsans_semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = ggsans_semibold.ttf; path = ../../composeApp/src/main/res/font/ggsans_semibold.ttf; sourceTree = "<group>"; };
-		5943A9CD2B0E0EF400608A68 /* ggsans_bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = ggsans_bold.ttf; path = ../../composeApp/src/main/res/font/ggsans_bold.ttf; sourceTree = "<group>"; };
+		59E3DBD92B10856400FDD23C /* ggsans_bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ggsans_bold.ttf; sourceTree = "<group>"; };
+		59E3DBDA2B10856400FDD23C /* ggsans_regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ggsans_regular.ttf; sourceTree = "<group>"; };
+		59E3DBDB2B10856400FDD23C /* ggsans_semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ggsans_semibold.ttf; sourceTree = "<group>"; };
 		7555FF7B242A565900829871 /* .app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = .app; path = Zazzy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7555FF82242A565900829871 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -73,10 +70,10 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
+				59E3DBD92B10856400FDD23C /* ggsans_bold.ttf */,
+				59E3DBDA2B10856400FDD23C /* ggsans_regular.ttf */,
+				59E3DBDB2B10856400FDD23C /* ggsans_semibold.ttf */,
 				5969EB792B0E58370076CFE6 /* Colors */,
-				5943A9CD2B0E0EF400608A68 /* ggsans_bold.ttf */,
-				5943A9CB2B0E0EF400608A68 /* ggsans.ttf */,
-				5943A9CC2B0E0EF400608A68 /* ggsans_semibold.ttf */,
 				058557BA273AAA24004C7B11 /* Assets.xcassets */,
 				7555FF82242A565900829871 /* ContentView.swift */,
 				7555FF8C242A565B00829871 /* Info.plist */,
@@ -152,11 +149,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5943A9CF2B0E0EF400608A68 /* ggsans_semibold.ttf in Resources */,
 				058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */,
-				5943A9CE2B0E0EF400608A68 /* ggsans.ttf in Resources */,
 				058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */,
-				5943A9D02B0E0EF400608A68 /* ggsans_bold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

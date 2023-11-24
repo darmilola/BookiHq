@@ -70,7 +70,7 @@ fun welcomeLineGradientBlock() {
                 brush = Brush.horizontalGradient(
                     colors = listOf(
                         Color(color = 0xFFF43569),
-                        Color(color = 0xFFFF5722)
+                        Color(color = 0xFFFF823E)
                     )
                 )
             )
