@@ -2,6 +2,7 @@ package screens
 
 import AppTheme.AppColors
 import AppTheme.AppBoldTypography
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -25,6 +27,7 @@ fun SplashScreenCompose() {
    val  modifier =
         Modifier.fillMaxWidth()
             .fillMaxHeight()
+            .background(color = Color(color = 0xFFF43569))
     val navigator = LocalNavigator.currentOrThrow
     MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         // AnimationEffect

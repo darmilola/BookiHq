@@ -32,12 +32,12 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 fun WelcomeScreenTextWidget() {
     val  modifier =
         Modifier
-            .height(140.dp)
+            .fillMaxHeight()
             .fillMaxWidth()
 
     MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         // AnimationEffect
-        Box(modifier = modifier, contentAlignment = Alignment.CenterStart) {
+        Box(modifier = modifier, contentAlignment = Alignment.BottomStart) {
             welcomeGradientBlock()
             welcomeScreenTextContent(textStyle = MaterialTheme.typography.h6, fontFamily = GGSansBold)
 
@@ -48,7 +48,7 @@ fun WelcomeScreenTextWidget() {
 @Composable
 fun welcomeScreenTextContent(textStyle: TextStyle, fontFamily: FontFamily? = null) {
     val columnModifier = Modifier
-        .padding(start = 30.dp)
+        .padding(start = 30.dp, bottom = 30.dp)
         .fillMaxWidth()
     Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
         val modifier = Modifier

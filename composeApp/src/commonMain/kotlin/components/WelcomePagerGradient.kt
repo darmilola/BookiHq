@@ -25,6 +25,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun WelcomePagerGradient() {
     val bgStyle = Modifier
+        .padding(bottom = 200.dp)
         .fillMaxWidth()
         .height(200.dp)
 
@@ -40,17 +41,12 @@ fun welcomeGradientBlock() {
             .fillMaxWidth()
             .fillMaxHeight()
             .background(
-                brush = Brush.horizontalGradient(
+                brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(color = 0xff000000),
-                        Color(color = 0x8C000000),
-                        Color(color = 0x66000000),
                         Color(color = 0x4D000000),
-                        Color(color = 0x40000000),
-                        Color(color = 0x33000000),
-                        Color(color = 0x26000000),
-                        Color(color = 0x00000000),
-                        Color(color = 0x00000000)
+                        Color(color = 0x66000000),
+                        Color(color = 0x8C000000),
+                        Color(color = 0xff000000)
                     )
                 )
             )
@@ -65,7 +61,7 @@ fun welcomeLineGradientBlock() {
         modifier = Modifier
             .padding(top = 7.dp)
             .width(200.dp)
-            .height(5.dp)
+            .height(3.dp)
             .background(
                 brush = Brush.horizontalGradient(
                     colors = listOf(
