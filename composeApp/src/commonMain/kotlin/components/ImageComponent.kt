@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -19,11 +20,12 @@ import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-public fun ImageComponent(imageModifier: Modifier, imageRes: String) {
+public fun ImageComponent(imageModifier: Modifier, imageRes: String, colorFilter: ColorFilter? = null) {
     Image(
         painter = painterResource(imageRes),
         contentDescription = "An Image Component",
         contentScale = ContentScale.FillHeight,
-        modifier = imageModifier
+        modifier = imageModifier,
+        colorFilter = colorFilter
     )
 }

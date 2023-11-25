@@ -24,7 +24,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        super.onResume()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
           //  window.statusBarColor = ContextCompat.getColor(this, R.color.light_background_color)
            // window.navigationBarColor = ContextCompat.getColor(this, R.color.light_background_color)
