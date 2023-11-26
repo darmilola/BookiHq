@@ -5,7 +5,10 @@ import AppTheme.AppColors
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.animation.with
@@ -49,7 +52,15 @@ fun AuthenticationScreenCompose(currentPosition: Int = 0) {
                             animationSpec = tween(500),
                             targetOffsetX = { fullWidth -> -fullWidth }
                         )
-            } else {
+            }
+            if(state == 2){
+                (fadeIn()).togetherWith(
+                    fadeOut(
+                        animationSpec = tween(800)
+                    )
+                )
+            }
+            else {
                 // Going back to the previous question in the set, we do the same
                 // transition as above, but with different offsets - the inverse of
                 // above, negative fullWidth to enter, and fullWidth to exit.
@@ -77,6 +88,11 @@ fun AuthenticationScreenCompose(currentPosition: Int = 0) {
                 SignUpLoginCompose(0)
 
                 }
+            2 -> {
+
+                 ContinueWithPhoneCompose()
+
+            }
 
             else -> {
 

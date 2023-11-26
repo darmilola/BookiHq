@@ -84,7 +84,7 @@ public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStr
             ) {
 
                 val iconModifier = Modifier
-                    .padding(top = 2.dp)
+                    .padding(top = 5.dp)
                 .size(28.dp)
 
                 val iconBoxModifier = Modifier
@@ -92,7 +92,7 @@ public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStr
                     .fillMaxWidth(0.10f)
 
                 val textModifier = Modifier
-                    .padding(top = 5.dp, end = 5.dp)
+                    .padding(top = 7.dp, end = 5.dp)
                     .fillMaxHeight()
                     .fillMaxWidth(0.90f)
                 Row(

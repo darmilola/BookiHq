@@ -54,7 +54,7 @@ fun SignUpLoginCompose(currentScreen: Int = 0) {
     MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         val topLayoutModifier =
             Modifier.fillMaxWidth()
-                .fillMaxHeight(0.90f)
+                .fillMaxHeight(0.87f)
                 .background(color = Color(color = 0xFFFBFBFB))
 
 
@@ -137,7 +137,7 @@ fun attachAuthenticationButton() {
     val buttonStyle = Modifier
         .padding(bottom = 15.dp)
         .fillMaxWidth(0.95f)
-        .height(50.dp)
+        .height(56.dp)
 
     MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         Column(verticalArrangement = Arrangement.Center,
@@ -147,7 +147,13 @@ fun attachAuthenticationButton() {
             IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Facebook", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "facebook_icon.png"){
                 navigator.replace(AuthenticationScreen(0))
             }
-            IconButtonComponent(modifier = buttonStyle, buttonText = "Use Phone Number", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "cell_phone.png")
+
+
+            IconButtonComponent(modifier = buttonStyle, buttonText = "Use Phone Number", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "cell_phone.png"){
+                navigator.push(AuthenticationScreen(2))
+            }
+
+
             IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Twitter", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "twitter_icon.png")
             IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Google", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "google_icon.png")
             IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Instagram", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "instagram_icon.png")
@@ -207,7 +213,8 @@ fun authenticationTypeChangeText(currentScreen: Int = 0) {
 fun attachAuthenticationTypeChangeView(currentScreen: Int = 0) {
     val navigator = LocalNavigator.currentOrThrow
     val rowModifier = Modifier
-        .background(color = Color(color = 0x70EBEBEB))
+        .padding(bottom = 40.dp)
+        .background(color = Color(color = 0xFFFBFBFB))
         .fillMaxHeight()
         .fillMaxWidth()
         .clickable {

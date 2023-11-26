@@ -145,14 +145,15 @@ fun attachActionButtons(style: TextStyle){
     val buttonStyle = Modifier
         .padding(bottom = 10.dp)
         .fillMaxWidth(0.90f)
-        .height(50.dp)
+        .height(56.dp)
 
     val gradientButtonStyle = Modifier
+        .padding(bottom = 5.dp)
         .fillMaxWidth()
-        .height(50.dp)
+        .height(56.dp)
 
     Column(modifier = bgStyle, verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-        GradientButton(modifier = gradientButtonStyle, buttonText = "Continue", borderStroke = null, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color.White, style = style, gradient =  Brush.horizontalGradient(
+        GradientButton(modifier = gradientButtonStyle, buttonText = "Continue", borderStroke = null, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(28.dp), textColor = Color.White, style = style, gradient =  Brush.horizontalGradient(
             colors = listOf(
                 Color(color = 0xFFF43569),
                 Color(color = 0xFFFF823E)
@@ -161,7 +162,7 @@ fun attachActionButtons(style: TextStyle){
             bottomSheetNavigator.show(AuthenticationScreen(currentScreen = 1))
         }
 
-        ButtonComponent(modifier = buttonStyle, buttonText = "Login to Your Account", borderStroke = BorderStroke(1.dp, Color(color = 0xFFF43569)), colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color(color = 0xFFF43569), style = style){
+        ButtonComponent(modifier = buttonStyle, buttonText = "Login to Your Account", borderStroke = BorderStroke(1.dp, Color(color = 0xFFF43569)), colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface), fontSize = 18, shape = RoundedCornerShape(28.dp), textColor = Color(color = 0xFFF43569), style = style){
             bottomSheetNavigator.show(AuthenticationScreen(currentScreen = 0))
         }
     }
