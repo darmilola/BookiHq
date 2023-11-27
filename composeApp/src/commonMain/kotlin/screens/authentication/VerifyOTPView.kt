@@ -61,6 +61,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import components.ButtonComponent
+import screens.main.MainScreen
 import widgets.OtpTextField
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterialApi::class)
@@ -79,6 +80,8 @@ fun VerifyOTPCompose() {
         .padding(top = 20.dp, start = 50.dp, end = 50.dp)
         .fillMaxWidth()
         .height(50.dp)
+
+    val navigator = LocalNavigator.currentOrThrow
 
 
     MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
@@ -119,7 +122,7 @@ fun VerifyOTPCompose() {
                 resendVerificationCode()
 
                 ButtonComponent(modifier = buttonStyle, buttonText = "Verify", borderStroke = BorderStroke(1.dp, Color(color = 0xFFF43569)), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFF43569)), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4 ){
-                    // bottomSheetNavigator.show(AuthenticationScreen(currentScreen = 0))
+                    navigator.push(MainScreen)
                 }
 
 
