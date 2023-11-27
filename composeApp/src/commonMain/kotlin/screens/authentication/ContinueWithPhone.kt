@@ -66,6 +66,8 @@ fun ContinueWithPhoneCompose() {
     val viewModel: AuthenticationViewModel = AuthenticationViewModel()
     val authenticationScreenData = viewModel.authenticationScreenData ?: return
 
+    val navigator = LocalNavigator.currentOrThrow
+
 
     val  rootModifier =
         Modifier.fillMaxWidth()
@@ -110,7 +112,7 @@ fun ContinueWithPhoneCompose() {
                 }
 
                 ButtonComponent(modifier = buttonStyle, buttonText = "Continue", borderStroke = BorderStroke(1.dp, Color(color = 0xFFF43569)), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFF43569)), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4 ){
-                   // bottomSheetNavigator.show(AuthenticationScreen(currentScreen = 0))
+                    navigator.replace(AuthenticationScreen(currentScreen = 3))
                 }
 
 
@@ -182,7 +184,7 @@ fun enterPhoneNumber(){
         ) {
             val modifier = Modifier.padding(start = 5.dp)
             TextComponent(
-                text = "Enter your Phone number",
+                text = "Enter Your Phone number",
                 fontSize = 23,
                 fontFamily = GGSansBold,
                 textStyle = MaterialTheme.typography.h6,
