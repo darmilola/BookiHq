@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import screens.SplashScreenCompose
 
-object ShopTab : Tab {
+class ShopTab(private val mainViewModel: MainViewModel) : Tab {
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -45,9 +45,9 @@ object ShopTab : Tab {
 
     @Composable
     override fun Content() {
-
+        mainViewModel.setTitle("Marketplace")
         val columnModifier = Modifier
-            .padding(top = 30.dp)
+            .padding(top = 5.dp)
             .fillMaxHeight()
             .fillMaxWidth()
 
@@ -57,32 +57,18 @@ object ShopTab : Tab {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = columnModifier
             ) {
-
-                Row(
-                    Modifier
-                        .fillMaxHeight(0.10f)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-
-                    HomeTab.attachCompanyLogo()
-
-
-                }
-
                 Row(
                     Modifier
                         .padding(bottom = 85.dp)
                         .fillMaxHeight()
                         .fillMaxWidth()
-                        .background(color = Color.Magenta),
+                        .background(color = Color(0xFBFBFB)),
                     horizontalArrangement = Arrangement.Center
                 ) {}
 
             }
         }
+
     }
 
 }

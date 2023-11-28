@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import screens.SplashScreenCompose
 
-object ConsultTab : Tab {
+class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -46,8 +46,9 @@ object ConsultTab : Tab {
     @Composable
     override fun Content() {
 
+        mainViewModel.setTitle("Consultation")
         val columnModifier = Modifier
-            .padding(top = 30.dp)
+            .padding(top = 5.dp)
             .fillMaxHeight()
             .fillMaxWidth()
 
@@ -57,31 +58,17 @@ object ConsultTab : Tab {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = columnModifier
             ) {
-
-                Row(
-                    Modifier
-                        .fillMaxHeight(0.10f)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-
-                    HomeTab.attachCompanyLogo()
-
-
-                }
-
                 Row(
                     Modifier
                         .padding(bottom = 85.dp)
                         .fillMaxHeight()
                         .fillMaxWidth()
-                        .background(color = Color.Red),
+                        .background(color = Color(0xFBFBFB)),
                     horizontalArrangement = Arrangement.Center
                 ) {}
 
             }
         }
+
     }
 }

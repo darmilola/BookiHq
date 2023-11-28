@@ -2,7 +2,6 @@ package screens.authentication
 
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
-import AppTheme.AppSemiBoldTypography
 import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
@@ -30,7 +29,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import components.ButtonComponent
 import components.IconButtonComponent
 import components.ImageComponent
 import components.TextComponent
@@ -53,36 +51,25 @@ fun SignUpLoginCompose(currentScreen: Int = 0) {
 
     MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         val topLayoutModifier =
-            Modifier.fillMaxWidth()
+            Modifier
+                .padding(top = 40.dp)
+                .fillMaxWidth()
                 .fillMaxHeight(0.87f)
                 .background(color = Color(color = 0xFFFBFBFB))
 
 
         Column(modifier = rootModifier) {
             Column(modifier = topLayoutModifier) {
-                attachCancelIcon()
+                attachBackIcon(-1)
                 welcomeToBeaMo()
                 attachAuthenticationText(currentScreen)
                 attachAuthenticationButton()
             }
             attachAuthenticationTypeChangeView(currentScreen)
-
-
         }
     }
 }
 
-@Composable
-fun attachCancelIcon() {
-    val navigator = LocalNavigator.currentOrThrow
-    val modifier = Modifier
-        .padding(15.dp)
-        .clickable {
-            navigator.replace(AuthenticationScreen(-1))
-        }
-        .size(22.dp)
-    ImageComponent(imageModifier = modifier, imageRes = "cancel_icon.png", colorFilter = ColorFilter.tint(color = Color.DarkGray))
-}
 
 @Composable
 fun attachWaveIcon() {
@@ -145,16 +132,19 @@ fun attachAuthenticationButton() {
             modifier = columnModifier
         ) {
             IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Facebook", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "facebook_icon.png"){
-                navigator.replace(AuthenticationScreen(0))
+                navigator.replace(AuthenticationComposeScreen(0))
             }
 
 
             IconButtonComponent(modifier = buttonStyle, buttonText = "Use Phone Number", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "cell_phone.png"){
-                navigator.push(AuthenticationScreen(2))
+                navigator.push(AuthenticationComposeScreen(2))
             }
 
 
-            IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Twitter", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "twitter_icon.png")
+            IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Twitter", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "twitter_icon.png"){
+                navigator.push(AuthenticationComposeScreen(1))
+            }
+
             IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Google", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "google_icon.png")
             IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Instagram", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "instagram_icon.png")
         }
@@ -218,7 +208,7 @@ fun attachAuthenticationTypeChangeView(currentScreen: Int = 0) {
         .fillMaxHeight()
         .fillMaxWidth()
         .clickable {
-            navigator.replace(AuthenticationScreen(currentScreen))
+            navigator.replace(AuthenticationComposeScreen(currentScreen))
         }
 
     MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {

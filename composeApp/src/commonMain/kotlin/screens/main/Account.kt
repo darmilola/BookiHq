@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import screens.SplashScreenCompose
 
-object AccountTab : Tab {
+class AccountTab(private val mainViewModel: MainViewModel) : Tab {
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -34,20 +34,22 @@ object AccountTab : Tab {
             val title = "Account"
             val icon = painterResource("account.png")
 
+
+
             return remember {
                 TabOptions(
                     index = 0u,
                     title = title,
                     icon = icon
-
                 )
             }
         }
 
     @Composable
     override fun Content() {
+        mainViewModel.setTitle(options.title.toString())
         val columnModifier = Modifier
-            .padding(top = 30.dp)
+            .padding(top = 5.dp)
             .fillMaxHeight()
             .fillMaxWidth()
 
@@ -57,27 +59,12 @@ object AccountTab : Tab {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = columnModifier
             ) {
-
-                Row(
-                    Modifier
-                        .fillMaxHeight(0.10f)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-
-                    HomeTab.attachCompanyLogo()
-
-
-                }
-
                 Row(
                     Modifier
                         .padding(bottom = 85.dp)
                         .fillMaxHeight()
                         .fillMaxWidth()
-                        .background(color = Color.Blue),
+                        .background(color = Color(0xFBFBFB)),
                     horizontalArrangement = Arrangement.Center
                 ) {}
 

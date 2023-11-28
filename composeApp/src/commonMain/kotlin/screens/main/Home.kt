@@ -34,9 +34,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import components.IconButtonComponent
 import components.ImageComponent
 import screens.SplashScreenCompose
-import screens.authentication.AuthenticationScreen
 
-object HomeTab : Tab {
+class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -44,6 +43,8 @@ object HomeTab : Tab {
         get() {
             val title = "Home"
             val icon = painterResource("home.png")
+
+
 
             return remember {
                 TabOptions(
@@ -55,19 +56,12 @@ object HomeTab : Tab {
         }
 
     @Composable
-    fun attachCompanyLogo() {
-        val modifier = Modifier
-            .padding(top = 15.dp)
-            .width(300.dp)
-            .height(300.dp)
-        ImageComponent(imageModifier = modifier, imageRes = "wave_hands.png")
-    }
-
-    @Composable
     override fun Content() {
 
+
+        mainViewModel.setTitle(options.title.toString())
         val columnModifier = Modifier
-            .padding(top = 30.dp)
+            .padding(top = 5.dp)
             .fillMaxHeight()
             .fillMaxWidth()
 
@@ -77,27 +71,12 @@ object HomeTab : Tab {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = columnModifier
             ) {
-
-                Row(
-                    Modifier
-                        .fillMaxHeight(0.10f)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-
-                    attachCompanyLogo()
-
-
-                }
-
                 Row(
                     Modifier
                         .padding(bottom = 85.dp)
                         .fillMaxHeight()
                         .fillMaxWidth()
-                        .background(color = Color.Gray),
+                        .background(color = Color(0xFBFBFB)),
                     horizontalArrangement = Arrangement.Center
                 ) {}
 

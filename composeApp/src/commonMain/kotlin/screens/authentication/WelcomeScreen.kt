@@ -33,9 +33,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
-import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import components.ButtonComponent
 import components.GradientButton
 import components.ImageComponent
@@ -133,7 +133,7 @@ fun attachCompanyLogo() {
 @Composable
 fun attachActionButtons(style: TextStyle){
 
-    val bottomSheetNavigator = LocalBottomSheetNavigator.current
+    val navigator = LocalNavigator.currentOrThrow
 
     val bgStyle = Modifier
         .padding(bottom = 40.dp)
@@ -159,36 +159,22 @@ fun attachActionButtons(style: TextStyle){
                 Color(color = 0xFFFF823E)
             )
         )){
-            bottomSheetNavigator.show(AuthenticationScreen(currentScreen = 1))
+            navigator.replace(AuthenticationComposeScreen(currentScreen = 1))
         }
 
         ButtonComponent(modifier = buttonStyle, buttonText = "Login to Your Account", borderStroke = BorderStroke(1.dp, Color(color = 0xFFF43569)), colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface), fontSize = 18, shape = RoundedCornerShape(28.dp), textColor = Color(color = 0xFFF43569), style = style){
-            bottomSheetNavigator.show(AuthenticationScreen(currentScreen = 0))
+            navigator.replace(AuthenticationComposeScreen(currentScreen = 0))
         }
     }
 
 }
-
-
-
 
 
 object WelcomeScreen : Screen {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
-        BottomSheetNavigator(sheetShape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp)
-        ) {
-            Navigator(WelcomeScreenLanding)
-        }
-    }
-}
-
-object WelcomeScreenLanding : Screen {
-    @OptIn(ExperimentalMaterialApi::class)
-    @Composable
-    override fun Content() {
         WelcomeScreenCompose()
+
     }
 }
-

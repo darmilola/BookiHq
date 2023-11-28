@@ -47,7 +47,7 @@ fun SplashScreenCompose() {
         LaunchedEffect(key1 = true) {
             delay(3000L)
 
-            navigator.push(WelcomeScreen)
+            navigator.replaceAll(WelcomeScreen)
         }
     }
 

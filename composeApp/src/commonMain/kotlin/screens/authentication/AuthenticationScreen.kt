@@ -16,14 +16,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
+import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
@@ -109,12 +115,13 @@ fun AuthenticationScreenCompose(currentPosition: Int = 0) {
 
 }
 
-
-class AuthenticationScreen(currentScreen: Int = 0) : Screen {
+class AuthenticationComposeScreen(currentScreen: Int = 0) : Screen {
 
     private val sc = currentScreen
+    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
         AuthenticationScreenCompose(currentPosition = sc)
     }
 }
+

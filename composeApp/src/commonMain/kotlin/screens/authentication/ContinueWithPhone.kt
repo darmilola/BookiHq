@@ -6,7 +6,6 @@ import GGSansBold
 import GGSansRegular
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,7 +27,6 @@ import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
 import androidx.compose.material.ExposedDropdownMenuDefaults
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -39,7 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -52,7 +49,6 @@ import components.ImageComponent
 import components.TextComponent
 import components.TextFieldComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.TextStyle
@@ -82,7 +78,9 @@ fun ContinueWithPhoneCompose() {
 
     MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         val topLayoutModifier =
-            Modifier.fillMaxWidth()
+            Modifier
+                .padding(top = 40.dp)
+                .fillMaxWidth()
                 .fillMaxHeight(0.87f)
                 .background(color = Color(color = 0xFFFBFBFB))
 
@@ -95,7 +93,7 @@ fun ContinueWithPhoneCompose() {
                 Row(modifier = Modifier
                     .fillMaxWidth()
                     .height(95.dp)
-                    .padding(start = 30.dp, end = 30.dp, top = 30.dp)
+                    .padding(start = 10.dp, end = 10.dp, top = 30.dp)
                 ) {
                     attachDropDownWidget()
                     attachPhoneInput()
@@ -105,14 +103,14 @@ fun ContinueWithPhoneCompose() {
                Row(modifier = Modifier
                     .fillMaxWidth()
                     .height(3.dp)
-                    .padding(start = 30.dp, end = 30.dp)
+                    .padding(start = 20.dp, end = 20.dp)
                 ) {
                     Divider(color = Color.LightGray, thickness = 1.dp, modifier = Modifier.fillMaxWidth(0.20f).padding(end = 5.dp, top = 1.dp))
                     Divider(color = Color.DarkGray, thickness = 2.dp, modifier = Modifier.fillMaxWidth().padding(start = 15.dp))
                 }
 
                 ButtonComponent(modifier = buttonStyle, buttonText = "Continue", borderStroke = BorderStroke(1.dp, Color(color = 0xFFF43569)), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFF43569)), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4 ){
-                    navigator.replace(AuthenticationScreen(currentScreen = 3))
+                    navigator.replace(AuthenticationComposeScreen(currentScreen = 3))
                 }
 
 
@@ -159,12 +157,17 @@ fun attachDropDownWidget(){
 }
 
 @Composable
-fun attachBackIcon() {
+fun attachBackIcon(goToScreen: Int = 0) {
     val navigator = LocalNavigator.currentOrThrow
     val modifier = Modifier
-        .padding(15.dp)
+        .padding(30.dp)
         .clickable {
-            navigator.replace(AuthenticationScreen(0))
+            if(goToScreen == -1){
+                navigator.replaceAll(WelcomeScreen)
+            }
+            else {
+                navigator.replace(AuthenticationComposeScreen(goToScreen))
+            }
         }
         .size(22.dp)
     ImageComponent(imageModifier = modifier, imageRes = "back_arrow.png", colorFilter = ColorFilter.tint(color = Color.DarkGray))
