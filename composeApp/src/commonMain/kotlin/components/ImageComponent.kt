@@ -29,3 +29,16 @@ public fun ImageComponent(imageModifier: Modifier, imageRes: String, colorFilter
         colorFilter = colorFilter
     )
 }
+
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+public fun ProfileImageComponent(imageModifier: Modifier, imageRes: String, colorFilter: ColorFilter? = null) {
+    Image(
+        painter = painterResource(imageRes),
+        contentDescription = "An Image Component",
+        contentScale = ContentScale.FillHeight,
+        modifier = imageModifier,
+        colorFilter = colorFilter
+    )
+}

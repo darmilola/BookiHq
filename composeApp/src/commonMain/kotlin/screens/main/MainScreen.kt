@@ -57,8 +57,6 @@ object MainScreen : Screen {
     @Composable
     override fun Content() {
 
-        println("Content is here")
-
         val mainViewModel: MainViewModel = MainViewModel()
         var screenTitle: State<String> =  mainViewModel.screenTitle.observeAsState()
 
