@@ -55,10 +55,9 @@ public fun ButtonComponent(modifier: Modifier, buttonText: String, borderStroke:
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, onClick: (() -> Unit)? = null) {
+public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, iconSize: Int = 28, onClick: (() -> Unit)? = null) {
     val rowModifier = Modifier
         .fillMaxWidth()
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
 
 
         Button(
@@ -85,7 +84,7 @@ public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStr
 
                 val iconModifier = Modifier
                     .padding(top = 5.dp)
-                .size(28.dp)
+                .size(iconSize.dp)
 
                 val iconBoxModifier = Modifier
                     .fillMaxHeight()
@@ -109,11 +108,9 @@ public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStr
                 textColor = textColor,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
-                fontFamily = GGSansBold,
                 textModifier = textModifier
             )
         }
-    }
     }
 }
 
