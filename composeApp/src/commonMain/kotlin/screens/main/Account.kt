@@ -68,7 +68,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
     override val options: TabOptions
         @Composable
         get() {
-            val title = "Account"
+            val title = "Profile"
             val icon = painterResource("account.png")
 
 

@@ -9,6 +9,7 @@ import GGSansSemiBold
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -33,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
@@ -84,7 +86,7 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
                         .padding(bottom = 85.dp)
                         .fillMaxHeight()
                         .fillMaxWidth()
-                        .background(color = Color.Transparent)
+                        .background(color = Color(color = 0xFFF3F3F3))
                 ) {
 
                     GeneralNotificationItemCard()
@@ -382,6 +384,20 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
             .padding(top = 5.dp)
             .fillMaxWidth()
 
+        val indicatorModifier = Modifier
+            .padding(top = 5.dp)
+            .background(color = Color.Transparent)
+            .size(9.dp)
+            .background(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(
+                        Color(color = 0xFFFA2D65),
+                        Color(color = 0xFFFA2D65)
+                    )
+                ),
+                shape = RoundedCornerShape(5.dp)
+            )
+
         val textColor: Color = if (isUnseen) Color.DarkGray else Color(0xFFB4B4B4)
 
         MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
@@ -394,7 +410,17 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.70f),
+                        .fillMaxHeight(0.15f),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(modifier = indicatorModifier, contentAlignment = Alignment.TopEnd) {}
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.65f),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {

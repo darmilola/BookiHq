@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ExperimentalMaterialApi
@@ -68,11 +70,11 @@ object MainScreen : Screen {
                 content = {
                      CurrentTab()
                 },
-                backgroundColor = Color(0xFFFBFBF),
+                backgroundColor = Color(0xFFF3F3F3),
                 bottomBar = {
                     BottomNavigation(modifier = Modifier
-                        .padding(bottom = 16.dp)
-                        .height(70.dp), backgroundColor = Color.Transparent,
+                        .padding(bottom = 30.dp)
+                        .height(100.dp), backgroundColor = Color.Transparent,
                         elevation = 0.dp
                     )
                     {
@@ -106,18 +108,18 @@ private fun RowScope.TabNavigationItem(tab: Tab) {
                     tabNavigator.current = tab
                   },
         selectedContentColor = Color(color = 0xFFFA2D65),
-        unselectedContentColor = Color.Gray,
+        unselectedContentColor = Color.DarkGray,
         label = {
             MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
                 TextComponent(
                     text = tab.options.title,
-                    fontSize = 15,
+                    fontSize = 14,
                     fontFamily = GGSansRegular,
                     textStyle = TextStyle(fontFamily = GGSansSemiBold),
                     textColor = LocalContentColor.current,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.SemiBold,
-                    textModifier = Modifier.padding(top = 15.dp)
+                    textModifier = Modifier.padding(top = 15.dp).wrapContentWidth()
                 )
             }
 
@@ -130,12 +132,7 @@ object MainScreenLanding : Screen {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
-        println("Landing is here")
-        Row(modifier = Modifier.background(color = Color.Yellow).fillMaxSize()) {
-
-        }
-       // val navigator = LocalNavigator.currentOrThrow
-       // navigator.replaceAll(MainScreen)
+        Row(modifier = Modifier.fillMaxSize()) {}
     }
 }
 

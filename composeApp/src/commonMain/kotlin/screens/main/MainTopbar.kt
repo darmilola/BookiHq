@@ -87,15 +87,15 @@ fun rightTopBarItem(mainViewModel: MainViewModel) {
     val indicatorModifier = Modifier
         .padding(start = 8.dp, bottom = 25.dp)
         .background(color = Color.Transparent)
-        .size(14.dp)
+        .size(12.dp)
         .background(
             brush = Brush.horizontalGradient(
                 colors = listOf(
-                    Color(color = 0xFFF43569),
-                    Color(color = 0xFFF43569)
+                    Color(color = 0xFFFA2D65),
+                    Color(color = 0xFFFA2D65)
                 )
             ),
-            shape = RoundedCornerShape(7.dp)
+            shape = RoundedCornerShape(6.dp)
         )
 
     Box(modifier = modifier,

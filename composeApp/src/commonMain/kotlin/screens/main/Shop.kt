@@ -62,7 +62,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
                         .padding(bottom = 85.dp)
                         .fillMaxHeight()
                         .fillMaxWidth()
-                        .background(color = Color(0xFBFBFB)),
+                        .background(color = Color(0xFFF3F3F3)),
                     horizontalArrangement = Arrangement.Center
                 ) {}
 
