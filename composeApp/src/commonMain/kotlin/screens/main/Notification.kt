@@ -116,13 +116,13 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
             ) {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(0.25f)
+                        .fillMaxWidth(0.20f)
                         .fillMaxHeight()
                 ) {
                     Row(
                         modifier = Modifier
                             .background(color = Color(color = 0xFF68EA8C))
-                            .fillMaxWidth(0.13f)
+                            .fillMaxWidth(0.10f)
                             .fillMaxHeight()
                     ) {}
                     Row(
@@ -133,7 +133,7 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        ImageComponent(imageModifier = Modifier.size(35.dp), imageRes = "schedule_icon.png", colorFilter = ColorFilter.tint(color = Color(color = 0xFF68EA8C)))
+                        ImageComponent(imageModifier = Modifier.size(30.dp), imageRes = "schedule_icon.png", colorFilter = ColorFilter.tint(color = Color(color = 0xFF68EA8C)))
                     }
                 }
                 Row(
@@ -169,13 +169,13 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
             ) {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(0.25f)
+                        .fillMaxWidth(0.20f)
                         .fillMaxHeight()
                 ) {
                     Row(
                         modifier = Modifier
                             .background(color = Color(color = 0xFF65B8FA))
-                            .fillMaxWidth(0.13f)
+                            .fillMaxWidth(0.10f)
                             .fillMaxHeight()
                     ) {}
                     Row(
@@ -186,7 +186,7 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        ImageComponent(imageModifier = Modifier.size(35.dp), imageRes = "task_icon.png", colorFilter = ColorFilter.tint(color = Color(color = 0xFF65B8FA)))
+                        ImageComponent(imageModifier = Modifier.size(30.dp), imageRes = "task_icon.png", colorFilter = ColorFilter.tint(color = Color(color = 0xFF65B8FA)))
                     }
                 }
                 Row(
@@ -223,13 +223,13 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
             ) {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(0.25f)
+                        .fillMaxWidth(0.20f)
                         .fillMaxHeight()
                 ) {
                     Row(
                         modifier = Modifier
                             .background(color = Color(color = 0xFFF8CF69))
-                            .fillMaxWidth(0.13f)
+                            .fillMaxWidth(0.10f)
                             .fillMaxHeight()
                     ) {}
                     Row(
@@ -240,7 +240,7 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        ImageComponent(imageModifier = Modifier.size(35.dp), imageRes = "video_icon.png", colorFilter = ColorFilter.tint(color = Color(color = 0xFFF8CF69)))
+                        ImageComponent(imageModifier = Modifier.size(30.dp), imageRes = "video_icon.png", colorFilter = ColorFilter.tint(color = Color(color = 0xFFF8CF69)))
                     }
                 }
                 Row(
@@ -276,13 +276,13 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
             ) {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(0.25f)
+                        .fillMaxWidth(0.20f)
                         .fillMaxHeight()
                 ) {
                     Row(
                         modifier = Modifier
                             .background(color = Color(color = 0xFFDD6EEA))
-                            .fillMaxWidth(0.13f)
+                            .fillMaxWidth(0.10f)
                             .fillMaxHeight()
                     ) {}
                     Row(
@@ -293,7 +293,7 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        ImageComponent(imageModifier = Modifier.size(35.dp), imageRes = "purchase_icon.png", colorFilter = ColorFilter.tint(color = Color(color = 0xFFDD6EEA)))
+                        ImageComponent(imageModifier = Modifier.size(30.dp), imageRes = "purchase_icon.png", colorFilter = ColorFilter.tint(color = Color(color = 0xFFDD6EEA)))
                     }
                 }
                 Row(
@@ -330,13 +330,13 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
             ) {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(0.25f)
+                        .fillMaxWidth(0.20f)
                         .fillMaxHeight()
                 ) {
                     Row(
                         modifier = Modifier
                             .background(color = Color(color = 0xFFFF799D))
-                            .fillMaxWidth(0.13f)
+                            .fillMaxWidth(0.10f)
                             .fillMaxHeight()
                     ) {}
                     Row(
@@ -347,7 +347,7 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        ImageComponent(imageModifier = Modifier.size(35.dp), imageRes = "app_logo_minimal.png", colorFilter = ColorFilter.tint(color = Color(color = 0xFFFF799D)))
+                        ImageComponent(imageModifier = Modifier.size(30.dp), imageRes = "app_logo_minimal.png", colorFilter = ColorFilter.tint(color = Color(color = 0xFFFF799D)))
                     }
                 }
                 Row(
@@ -400,7 +400,7 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
                 ) {
                     TextComponent(
                         text = "Lorem ipsum dolor sit amet, consect adipiscing elit.",
-                        fontSize = 18,
+                        fontSize = 17,
                         fontFamily = GGSansRegular,
                         textStyle = MaterialTheme.typography.h6,
                         textColor = textColor,
@@ -420,7 +420,7 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
 
                     TextComponent(
                         text = "07:45 AM",
-                        fontSize = 14,
+                        fontSize = 13,
                         fontFamily = GGSansRegular,
                         textStyle = MaterialTheme.typography.h6,
                         textColor = textColor,
