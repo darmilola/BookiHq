@@ -31,7 +31,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
         @Composable
         get() {
             val title = "Shop"
-            val icon = painterResource("shop.png")
+            val icon = painterResource("shop_icon.png")
 
             return remember {
                 TabOptions(

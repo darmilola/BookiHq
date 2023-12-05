@@ -69,7 +69,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
         @Composable
         get() {
             val title = "Profile"
-            val icon = painterResource("account.png")
+            val icon = painterResource("profile_icon.png")
 
 
 

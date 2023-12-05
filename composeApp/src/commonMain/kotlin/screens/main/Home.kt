@@ -42,7 +42,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
         @Composable
         get() {
             val title = "Home"
-            val icon = painterResource("home.png")
+            val icon = painterResource("home_icon.png")
 
 
 

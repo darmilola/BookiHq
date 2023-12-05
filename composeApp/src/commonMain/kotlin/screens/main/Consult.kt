@@ -31,7 +31,7 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
         @Composable
         get() {
             val title = "Consult"
-            val icon = painterResource("consult.png")
+            val icon = painterResource("video_icon.png")
 
             return remember {
                 TabOptions(

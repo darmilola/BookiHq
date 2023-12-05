@@ -2,6 +2,7 @@ package screens.main
 
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
+import AppTheme.AppSemiBoldTypography
 import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
@@ -73,8 +74,8 @@ object MainScreen : Screen {
                 backgroundColor = Color(0xFFF3F3F3),
                 bottomBar = {
                     BottomNavigation(modifier = Modifier
-                        .padding(bottom = 30.dp)
-                        .height(100.dp), backgroundColor = Color.Transparent,
+                        .padding(bottom = 10.dp)
+                        .height(80.dp), backgroundColor = Color.Transparent,
                         elevation = 0.dp
                     )
                     {
@@ -108,13 +109,13 @@ private fun RowScope.TabNavigationItem(tab: Tab) {
                     tabNavigator.current = tab
                   },
         selectedContentColor = Color(color = 0xFFFA2D65),
-        unselectedContentColor = Color.DarkGray,
+        unselectedContentColor = Color.Gray,
         label = {
-            MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
+            MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
                 TextComponent(
                     text = tab.options.title,
                     fontSize = 14,
-                    fontFamily = GGSansRegular,
+                    fontFamily = GGSansSemiBold,
                     textStyle = TextStyle(fontFamily = GGSansSemiBold),
                     textColor = LocalContentColor.current,
                     textAlign = TextAlign.Center,

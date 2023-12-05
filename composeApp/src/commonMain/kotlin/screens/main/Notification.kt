@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
@@ -89,11 +91,25 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
                         .background(color = Color(color = 0xFFF3F3F3))
                 ) {
 
-                    GeneralNotificationItemCard()
-                    TaskNotificationItemCard()
-                    BookingNotificationItemCard()
-                    ConsultNotificationItemCard()
-                    OrdersNotificationItemCard()
+                    val listOfInt = ArrayList<Int>()
+                    listOfInt.add(0)
+                    listOfInt.add(2)
+                    listOfInt.add(0)
+                    listOfInt.add(0)
+                    listOfInt.add(1)
+                    listOfInt.add(2)
+                    listOfInt.add(2)
+                    listOfInt.add(0)
+                    listOfInt.add(0)
+                    listOfInt.add(3)
+                    listOfInt.add(0)
+                    listOfInt.add(2)
+                    listOfInt.add(4)
+                    listOfInt.add(2)
+                    listOfInt.add(2)
+                    listOfInt.add(3)
+
+                    populateNotificationItemList(listOfInt)
                 }
 
             }
@@ -101,7 +117,49 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
     }
 
     @Composable
-      fun BookingNotificationItemCard() {
+    private fun populateNotificationItemList(notificationItems: List<Int>){
+        LazyColumn {
+            items(notificationItems) {item ->
+                GeneralNotificationItemCard(viewType = item)
+            }
+        }
+    }
+
+
+
+    @Composable
+    fun GeneralNotificationItemCard(viewType: Int = 0) {
+        var itemColor: Long = 0L
+        var imageRes: String = ""
+
+        when (viewType) {
+            0 -> {
+                itemColor = 0xFFFF799D
+                imageRes = "app_logo_minimal.png"
+            }
+            1 -> {
+                itemColor = 0xFF65B8FA
+                imageRes = "task_icon.png"
+            }
+            2 -> {
+                itemColor =  0xFF68EA8C
+                imageRes = "schedule_icon.png"
+            }
+            3 -> {
+                itemColor = 0xFFF8CF69
+                imageRes = "video_icon.png"
+            }
+            4 -> {
+                itemColor = 0xFFDD6EEA
+                imageRes = "purchase_icon.png"
+            }
+            else -> {
+                itemColor = 0xFFFF799D
+                imageRes = "app_logo_minimal.png"
+            }
+        }
+
+
         Card(
             modifier = Modifier
                 .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
@@ -123,7 +181,7 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
                 ) {
                     Row(
                         modifier = Modifier
-                            .background(color = Color(color = 0xFF68EA8C))
+                            .background(color = Color(color = itemColor))
                             .fillMaxWidth(0.10f)
                             .fillMaxHeight()
                     ) {}
@@ -135,221 +193,7 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        ImageComponent(imageModifier = Modifier.size(30.dp), imageRes = "schedule_icon.png", colorFilter = ColorFilter.tint(color = Color(color = 0xFF68EA8C)))
-                    }
-                }
-                Row(
-                    modifier = Modifier
-                        .background(color = Color.White)
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                ) {
-
-                      attachNotificationText(isUnseen = true)
-
-
-                }
-            }
-        }
-    }
-
-    @Composable
-    fun TaskNotificationItemCard() {
-        Card(
-            modifier = Modifier
-                .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
-                .background(color = Color.Transparent)
-                .height(100.dp)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp),
-            border = null
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(0.20f)
-                        .fillMaxHeight()
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .background(color = Color(color = 0xFF65B8FA))
-                            .fillMaxWidth(0.10f)
-                            .fillMaxHeight()
-                    ) {}
-                    Row(
-                        modifier = Modifier
-                            .background(color = Color.White)
-                            .fillMaxWidth()
-                            .fillMaxHeight(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        ImageComponent(imageModifier = Modifier.size(30.dp), imageRes = "task_icon.png", colorFilter = ColorFilter.tint(color = Color(color = 0xFF65B8FA)))
-                    }
-                }
-                Row(
-                    modifier = Modifier
-                        .background(color = Color.White)
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                ) {
-
-                    attachNotificationText()
-
-                }
-            }
-        }
-    }
-
-
-
-    @Composable
-    fun ConsultNotificationItemCard() {
-        Card(
-            modifier = Modifier
-                .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
-                .background(color = Color.Transparent)
-                .height(100.dp)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp),
-            border = null
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(0.20f)
-                        .fillMaxHeight()
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .background(color = Color(color = 0xFFF8CF69))
-                            .fillMaxWidth(0.10f)
-                            .fillMaxHeight()
-                    ) {}
-                    Row(
-                        modifier = Modifier
-                            .background(color = Color.White)
-                            .fillMaxWidth()
-                            .fillMaxHeight(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        ImageComponent(imageModifier = Modifier.size(30.dp), imageRes = "video_icon.png", colorFilter = ColorFilter.tint(color = Color(color = 0xFFF8CF69)))
-                    }
-                }
-                Row(
-                    modifier = Modifier
-                        .background(color = Color.White)
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                ) {
-
-                    attachNotificationText()
-
-                }
-            }
-        }
-    }
-
-
-    @Composable
-    fun OrdersNotificationItemCard() {
-        Card(
-            modifier = Modifier
-                .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
-                .background(color = Color.Transparent)
-                .height(100.dp)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp),
-            border = null
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(0.20f)
-                        .fillMaxHeight()
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .background(color = Color(color = 0xFFDD6EEA))
-                            .fillMaxWidth(0.10f)
-                            .fillMaxHeight()
-                    ) {}
-                    Row(
-                        modifier = Modifier
-                            .background(color = Color.White)
-                            .fillMaxWidth()
-                            .fillMaxHeight(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        ImageComponent(imageModifier = Modifier.size(30.dp), imageRes = "purchase_icon.png", colorFilter = ColorFilter.tint(color = Color(color = 0xFFDD6EEA)))
-                    }
-                }
-                Row(
-                    modifier = Modifier
-                        .background(color = Color.White)
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                ) {
-
-                    attachNotificationText(isUnseen = true)
-
-                }
-            }
-        }
-    }
-
-
-
-    @Composable
-    fun GeneralNotificationItemCard() {
-        Card(
-            modifier = Modifier
-                .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
-                .background(color = Color.Transparent)
-                .height(100.dp)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp),
-            border = null
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(0.20f)
-                        .fillMaxHeight()
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .background(color = Color(color = 0xFFFF799D))
-                            .fillMaxWidth(0.10f)
-                            .fillMaxHeight()
-                    ) {}
-                    Row(
-                        modifier = Modifier
-                            .background(color = Color.White)
-                            .fillMaxWidth()
-                            .fillMaxHeight(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        ImageComponent(imageModifier = Modifier.size(30.dp), imageRes = "app_logo_minimal.png", colorFilter = ColorFilter.tint(color = Color(color = 0xFFFF799D)))
+                        ImageComponent(imageModifier = Modifier.size(30.dp), imageRes = imageRes, colorFilter = ColorFilter.tint(color = Color(color = itemColor)))
                     }
                 }
                 Row(
