@@ -18,12 +18,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
@@ -37,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -48,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import components.IconTextFieldComponent
 import components.ImageComponent
 import components.TextComponent
+import components.welcomeGradientBlock
 import widgets.ServicesWidget
 
 class HomeTab(private val mainViewModel: MainViewModel) : Tab {
@@ -95,6 +99,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                     attachUserAddress()
                     attachSearchBar()
                     ServiceGridScreen()
+                    ProductPromoCard()
                 }
             }
         }
@@ -104,7 +109,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     fun ServiceGridScreen() {
         LazyVerticalGrid(
             columns = GridCells.Fixed(4),
-            modifier = Modifier.fillMaxSize().padding(top = 10.dp),
+            modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(top = 10.dp),
             contentPadding = PaddingValues(6.dp),
             verticalArrangement = Arrangement.spacedBy(5.dp),
             horizontalArrangement = Arrangement.spacedBy(5.dp)
@@ -240,6 +245,77 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
             }
         }
     }
+
+
+
+
+
+    @Composable
+    fun ProductPromoCard() {
+        val  imageModifier =
+            Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+
+        Card(
+            modifier = Modifier
+                .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
+                .background(color = Color.White)
+                .height(300.dp)
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(10.dp),
+            border = null
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(),
+                contentAlignment = Alignment.BottomStart
+            ) {
+                ImageComponent(imageModifier = imageModifier, imageRes = "oil.jpg", contentScale = ContentScale.Crop)
+                welcomeGradientBlock()
+                DealText()
+            }
+        }
+    }
+
+
+    @Composable
+    fun DealText(){
+        val rowModifier = Modifier
+            .padding(start = 25.dp, top = 5.dp, bottom = 25.dp)
+            .fillMaxWidth()
+        MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
+            Column(
+                modifier = rowModifier
+            ) {
+                val modifier = Modifier.padding(start = 5.dp)
+                TextComponent(
+                    text = "Exclusive Deal",
+                    fontSize = 25,
+                    fontFamily = GGSansSemiBold,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Color.White,
+                    textAlign = TextAlign.Left,
+                    fontWeight = FontWeight.ExtraBold,
+                    lineHeight = 30
+                )
+
+                TextComponent(
+                    text = "Flat 60% off on Curology",
+                    fontSize = 16,
+                    fontFamily = GGSansSemiBold,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Color.White,
+                    textAlign = TextAlign.Left,
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 30
+                )
+
+            }
+        }
+    }
+
 
 
     @Composable
