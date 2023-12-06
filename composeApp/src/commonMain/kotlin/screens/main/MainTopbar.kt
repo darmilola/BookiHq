@@ -2,6 +2,7 @@ package screens.main
 
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
+import AppTheme.AppSemiBoldTypography
 import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
@@ -77,7 +78,7 @@ fun welcomeToProfile(){
     val rowModifier = Modifier
         .padding(start = 20.dp, top = 5.dp)
         .fillMaxWidth()
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
+    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
@@ -87,7 +88,7 @@ fun welcomeToProfile(){
             TextComponent(
                 text = "Hi ",
                 fontSize = 25,
-                fontFamily = GGSansBold,
+                fontFamily = GGSansSemiBold,
                 textStyle = MaterialTheme.typography.h6,
                 textColor = Color.DarkGray,
                 textAlign = TextAlign.Left,
@@ -97,7 +98,7 @@ fun welcomeToProfile(){
             TextComponent(
                 text = "Jackson",
                 fontSize = 25,
-                fontFamily = GGSansBold,
+                fontFamily = GGSansSemiBold,
                 textStyle = MaterialTheme.typography.h6,
                 textColor = Color(color = 0xFFFA2D65),
                 textAlign = TextAlign.Left,
@@ -107,7 +108,7 @@ fun welcomeToProfile(){
             TextComponent(
                 text = ",",
                 fontSize = 25,
-                fontFamily = GGSansBold,
+                fontFamily = GGSansSemiBold,
                 textStyle = MaterialTheme.typography.h6,
                 textColor = Color.DarkGray,
                 textAlign = TextAlign.Left,
