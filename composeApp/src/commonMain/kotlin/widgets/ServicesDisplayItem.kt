@@ -78,3 +78,48 @@ fun attachServiceImage(iconRes: String) {
     }
 
 }
+
+
+@Composable
+fun AppointmentsWidget(iconRes: String, serviceTitle: String, appointmentTime: String){
+    val columnModifier = Modifier
+        .padding(start = 10.dp, end = 20.dp, top = 5.dp, bottom = 10.dp)
+        .height(100.dp)
+    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
+        Row(
+            modifier = columnModifier
+        ) {
+            val modifier = Modifier
+                .fillMaxWidth()
+            attachServiceImage(iconRes)
+            Column(
+                modifier = columnModifier,
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment  = Alignment.Start,
+            ) {
+                TextComponent(
+                    text = serviceTitle,
+                    fontSize = 17,
+                    fontFamily = GGSansSemiBold,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Color.DarkGray,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    textModifier = modifier
+                )
+
+                TextComponent(
+                    text = appointmentTime,
+                    fontSize = 14,
+                    fontFamily = GGSansSemiBold,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Color.Gray,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    textModifier = modifier
+                )
+            }
+
+        }
+    }
+}
