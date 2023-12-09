@@ -24,8 +24,8 @@ class CalendarDataSource {
     private fun getDatesBetween(startDate: LocalDate, endDate: LocalDate): List<LocalDate> {
         val dateList = mutableListOf<LocalDate>()
         val range = DateRange(startDate, endDate, 1)
-            for (cc in range) {
-                dateList.add(cc)
+            for (dates in range) {
+                dateList.add(dates)
             }
         return dateList
     }

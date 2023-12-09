@@ -6,8 +6,10 @@ import AppTheme.AppSemiBoldTypography
 import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
+import Models.AvailableSlotsUIModel
 import Models.CalendarDataSource
 import Models.CalendarUiModel
+import Models.WorkingHoursDataSource
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -44,13 +46,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -87,12 +85,10 @@ import components.StraightLine
 import components.TextComponent
 import components.welcomeGradientBlock
 import kotlinx.coroutines.launch
-import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.minus
-import kotlinx.datetime.plus
 import widgets.AppointmentsWidget
 import widgets.AttachTherapistWidget
+import widgets.ReviewsWidget
 import widgets.attachServiceImage
 
 class HomeTab(private val mainViewModel: MainViewModel) : Tab {
@@ -461,6 +457,8 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 AttachServiceTypeToggle()
                 BookingCalendar()
                 TherapistContent()
+                AvailableSlotsContent()
+                AttachServiceReviews()
 
             }
         }
@@ -520,10 +518,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
         }
 
     }
-
-
-
-
 
     @Composable
     fun ProductPromoCard() {
@@ -944,10 +938,184 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     }
 
 
+    @Composable
+    fun AvailableSlotsGrid() {
+
+        val dataSource = WorkingHoursDataSource()
+        // get CalendarUiModel from CalendarDataSource, and the lastSelectedDate is Today.
+        val timePair = Pair(Pair("7:00","12:00"), false)
+        var workingHours = dataSource.getWorkingHours(lastSelectedSlot = timePair)
+
+        var selectedWorkHourUIModel by remember { mutableStateOf(workingHours) }
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier.fillMaxWidth().padding(top = 5.dp).height(300.dp),
+            contentPadding = PaddingValues(6.dp),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            items(selectedWorkHourUIModel.visibleSlots.size) { i ->
+                AvailableSlotsItem(selectedWorkHourUIModel.visibleSlots[i], onWorkHourClickListener = {
+                        it -> selectedWorkHourUIModel = selectedWorkHourUIModel.copy(
+                    selectedSlot = it,
+                    visibleSlots = selectedWorkHourUIModel.visibleSlots.map { it2 ->
+                        it2.copy(
+                            isSelected = it2.timeSlot == it.timeSlot
+                        )
+                    }
+                )})
+            }
+        }
+    }
+
+    @OptIn(ExperimentalResourceApi::class, ExperimentalFoundationApi::class)
+    @Composable
+    fun AttachServiceReviews(){
+
+        TextComponent(
+            text = "Latest Reviews",
+            fontSize = 20,
+            fontFamily = GGSansSemiBold,
+            textStyle = MaterialTheme.typography.h6,
+            textColor = Color.DarkGray,
+            textAlign = TextAlign.Left,
+            fontWeight = FontWeight.Black,
+            lineHeight = 30,
+            textModifier = Modifier
+                .padding(bottom = 15.dp, start = 15.dp)
+                .fillMaxWidth()
+        )
+
+        val pagerState = rememberPagerState(pageCount = {
+            5
+        })
+
+        val boxModifier =
+            Modifier
+                .padding(bottom = 20.dp, top = 20.dp, start = 15.dp)
+                .fillMaxHeight()
+                .fillMaxWidth()
+
+        val boxBgModifier =
+            Modifier
+                .padding(bottom = 10.dp, top = 10.dp, start = 15.dp)
+                .fillMaxHeight()
+                .fillMaxWidth()
+                .border(border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(topStart = 7.dp, bottomStart = 7.dp))
+
+
+        Box(modifier = boxBgModifier) {
+
+            Box(contentAlignment = Alignment.BottomCenter, modifier = boxModifier) {
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxSize()
+                ) { page ->
+                    ReviewsWidget()
+                }
+                Row(
+                    Modifier
+                        .wrapContentHeight()
+                        .fillMaxWidth()
+                        .padding(bottom = 4.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    repeat(pagerState.pageCount) { iteration ->
+                        var color = Color.LightGray
+                        var width = 0
+                        if (pagerState.currentPage == iteration) {
+                            color = Color(color = 0xFFF43569)
+                            width = 20
+                        } else {
+                            color = Color.LightGray
+                            width = 20
+                        }
+                        Box(
+                            modifier = Modifier
+                                .padding(2.dp)
+                                .clip(CircleShape)
+                                .background(color)
+                                .height(5.dp)
+                                .width(width.dp)
+                        )
+                    }
+
+                }
+            }
+        }
+
+    }
 
 
 
-    @OptIn(ExperimentalResourceApi::class)
+
+    @Composable
+    fun AvailableSlotsContent() {
+        Column(
+            modifier = Modifier
+                .padding(start = 20.dp, end = 10.dp, top = 15.dp, bottom = 10.dp)
+                .wrapContentHeight(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment  = Alignment.CenterHorizontally,
+        ) {
+
+            TextComponent(
+                text = "Available Slots",
+                fontSize = 18,
+                fontFamily = GGSansRegular,
+                textStyle = MaterialTheme.typography.h6,
+                textColor = Color.DarkGray,
+                textAlign = TextAlign.Left,
+                fontWeight = FontWeight.Black,
+                lineHeight = 30,
+                textModifier = Modifier.fillMaxWidth()
+            )
+
+            AvailableSlotsGrid()
+        }
+    }
+
+
+
+    @Composable
+    fun AvailableSlotsItem(availableSlot: AvailableSlotsUIModel.AvailableSlot, onWorkHourClickListener: (AvailableSlotsUIModel.AvailableSlot) -> Unit) {
+        val timeStampObject = availableSlot.timeSlot
+        val timeRange = timeStampObject.first
+        val meridianVal: String = if(timeStampObject.second) "AM" else "PM"
+        val color: Color = if(availableSlot.isSelected) Color(color = 0xFFFA2D65) else Color.Gray
+
+        Column(
+            modifier = Modifier
+                .padding(start = 5.dp, end = 5.dp, top = 15.dp)
+                .fillMaxWidth()
+                .clickable {
+                    onWorkHourClickListener(availableSlot)
+                }
+                .border(border = BorderStroke((1.5).dp, color), shape = RoundedCornerShape(3.dp))
+                .height(50.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            TextComponent(
+                text = timeRange.first+" - "+timeRange.second+ " "+meridianVal,
+                fontSize = 18,
+                fontFamily = GGSansSemiBold,
+                textStyle = MaterialTheme.typography.h6,
+                textColor = color,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Normal,
+                lineHeight = 30,
+                textModifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+
+
+
+
+
+        @OptIn(ExperimentalResourceApi::class)
     @Composable
     fun DropDownWidget(menuItems: List<String>,
                        menuExpandedState: Boolean,
