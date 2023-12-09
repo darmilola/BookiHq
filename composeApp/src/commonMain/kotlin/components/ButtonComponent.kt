@@ -2,22 +2,30 @@ package components
 
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
-import GGSansBold
+import GGSansRegular
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.IconToggleButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -139,5 +147,86 @@ fun GradientButton(
                 text = buttonText, fontSize = fontSize, textStyle = style, textColor = textColor, textAlign = TextAlign.Center,
                 fontWeight = FontWeight.SemiBold)
         }
+    }
+}
+
+
+@Composable
+fun LocationToggleButton(borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors,fontSize: Int, style: TextStyle) {
+
+    var isParlorChecked by remember { mutableStateOf(true) }
+
+    val parlorTint  = if(isParlorChecked) Color(0xFFFA2D65) else Color.Transparent
+    val homeTint  =  if(!isParlorChecked) Color(0xFFFA2D65) else Color.Transparent
+
+    val parlorTextColor = if (isParlorChecked) Color.White else Color(0xFFFA2D65)
+
+    val homeTextColor = if (isParlorChecked) Color(0xFFFA2D65) else Color.White
+
+
+
+    val rowModifier = Modifier
+        .padding(top = 15.dp)
+        .fillMaxWidth()
+    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.Top,
+            modifier = rowModifier
+        ) {
+
+            IconToggleButton(
+                checked = isParlorChecked,
+                onCheckedChange = { isParlorChecked = it }
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.50f)
+                        .height(50.dp)
+                        .padding(start = 5.dp, end = 5.dp)
+                        .border(border = BorderStroke(1.dp, Color(color = 0xFFF43569)),shape = shape)
+                        .background(parlorTint, shape = shape),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    TextComponent(
+                        text = "Parlor",
+                        fontSize = fontSize,
+                        textStyle = style,
+                        fontFamily = GGSansRegular,
+                        textColor = parlorTextColor,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Black
+                    )
+                }
+            }
+
+        IconToggleButton(
+                checked = !isParlorChecked,
+                onCheckedChange = {
+                    isParlorChecked = !it
+                }
+            ) {
+                Box(
+                    modifier = Modifier
+                        .padding(start = 5.dp, end = 5.dp)
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .border(border = BorderStroke(1.dp, Color(color = 0xFFF43569)), shape = shape)
+                        .background(homeTint, shape = shape),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    TextComponent(
+                        text = "Home",
+                        fontSize = fontSize,
+                        textStyle = style,
+                        fontFamily = GGSansRegular,
+                        textColor = homeTextColor,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                }
+            }
+        }
+
     }
 }
