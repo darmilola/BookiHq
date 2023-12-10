@@ -7,8 +7,10 @@ import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
 import Models.AvailableSlotsUIModel
+import Models.AvailableTherapistUIModel
 import Models.CalendarDataSource
 import Models.CalendarUiModel
+import Models.TherapistDataSource
 import Models.WorkingHoursDataSource
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
@@ -906,6 +908,12 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
     @Composable
     fun TherapistContent() {
+        val dataSource = TherapistDataSource()
+        // get CalendarUiModel from CalendarDataSource, and the lastSelectedDate is Today.
+        val selectedTherapist = AvailableTherapistUIModel.AvailableTherapist(0, true, true)
+        val availableTherapist = dataSource.getAvailableTherapist(lastSelectedTherapist = selectedTherapist)
+
+        var selectedTherapistUIModel by remember { mutableStateOf(availableTherapist) }
         Column(
             modifier = Modifier
                 .padding(start = 20.dp, end = 10.dp, top = 25.dp)
@@ -930,9 +938,19 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(160.dp),
                 contentPadding = PaddingValues(6.dp)
             ) {
-                items(5) {
-                    AttachTherapistWidget()
+                items(selectedTherapistUIModel.visibleTherapist.size) { i ->
+                    AttachTherapistWidget(selectedTherapistUIModel.visibleTherapist[i], onTherapistSelectedListener = {
+                            it -> selectedTherapistUIModel = selectedTherapistUIModel.copy(
+                        selectedTherapist = it,
+                        visibleTherapist = selectedTherapistUIModel.visibleTherapist.map { it2 ->
+                            it2.copy(
+                                isSelected = it2.therapistId == it.therapistId
+                            )
+                        }
+                    )})
                 }
+
+
             }
         }
     }
@@ -944,7 +962,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
         val dataSource = WorkingHoursDataSource()
         // get CalendarUiModel from CalendarDataSource, and the lastSelectedDate is Today.
         val timePair = Pair(Pair("7:00","12:00"), false)
-        var workingHours = dataSource.getWorkingHours(lastSelectedSlot = timePair)
+        val workingHours = dataSource.getWorkingHours(lastSelectedSlot = timePair)
 
         var selectedWorkHourUIModel by remember { mutableStateOf(workingHours) }
 
