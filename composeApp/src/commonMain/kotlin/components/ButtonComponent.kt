@@ -3,6 +3,7 @@ package components
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import GGSansRegular
+import GGSansSemiBold
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -192,7 +193,7 @@ fun LocationToggleButton(borderStroke: BorderStroke?, shape: Shape, colors: Butt
                         text = "Parlor",
                         fontSize = fontSize,
                         textStyle = style,
-                        fontFamily = GGSansRegular,
+                        fontFamily = GGSansSemiBold,
                         textColor = parlorTextColor,
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Black
@@ -219,7 +220,7 @@ fun LocationToggleButton(borderStroke: BorderStroke?, shape: Shape, colors: Butt
                         text = "Home",
                         fontSize = fontSize,
                         textStyle = style,
-                        fontFamily = GGSansRegular,
+                        fontFamily = GGSansSemiBold,
                         textColor = homeTextColor,
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.ExtraBold

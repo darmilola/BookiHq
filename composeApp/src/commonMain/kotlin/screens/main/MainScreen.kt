@@ -51,6 +51,7 @@ import cafe.adriel.voyager.navigator.tab.TabNavigator
 import components.TextComponent
 import dev.icerock.moko.mvvm.livedata.compose.observeAsState
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
+import screens.Bookings.BookingScreen
 import screens.SplashScreenCompose
 import screens.authentication.WelcomeScreenCompose
 import screens.authentication.attachWaveIcon
@@ -62,6 +63,13 @@ object MainScreen : Screen {
 
         val mainViewModel: MainViewModel = MainViewModel()
         var screenTitle: State<String> =  mainViewModel.screenTitle.observeAsState()
+        val screenId: State<Int> =  mainViewModel.screenId.observeAsState()
+        println(screenId.value)
+
+        if (screenId.value == 1){
+            val navigator = LocalNavigator.currentOrThrow
+            navigator.push(BookingScreen(mainViewModel))
+        }
 
         TabNavigator(showDefaultTab(mainViewModel)) {
             Scaffold(
@@ -87,6 +95,10 @@ object MainScreen : Screen {
                     }
                 }
             )
+            if(screenId.value == 0){
+                val tabNavigator = LocalTabNavigator.current
+                tabNavigator.current =  HomeTab(mainViewModel)
+            }
         }
     }
 }
