@@ -139,7 +139,6 @@ fun GradientButton(
     )) {
         Box(
             modifier = modifier
-                .padding(start = 5.dp, end = 5.dp)
                 .clip(shape)
                 .background(gradient),
                 contentAlignment = Alignment.Center,

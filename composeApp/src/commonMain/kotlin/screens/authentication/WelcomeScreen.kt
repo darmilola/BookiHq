@@ -153,7 +153,7 @@ fun attachActionButtons(style: TextStyle){
         .height(56.dp)
 
     val gradientButtonStyle = Modifier
-        .padding(bottom = 5.dp)
+        .padding(bottom = 5.dp, start = 5.dp, end = 5.dp)
         .fillMaxWidth()
         .height(56.dp)
 

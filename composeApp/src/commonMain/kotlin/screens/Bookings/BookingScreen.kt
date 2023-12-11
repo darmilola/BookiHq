@@ -173,7 +173,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Screen {
         Row (modifier = bgStyle,
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,) {
-            ButtonComponent(modifier = buttonStyle, buttonText = "Add More Services", borderStroke = BorderStroke(1.dp, Color(color = 0xFFF43569)), colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Color(color = 0xFFF43569), style = MaterialTheme.typography.h4 ){
+            ButtonComponent(modifier = buttonStyle, buttonText = "Add More Services", borderStroke = BorderStroke(1.dp, Color(color = 0xFFF43569)), colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFF3F3F3)), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Color(color = 0xFFF43569), style = MaterialTheme.typography.h4 ){
                 navigator.pop()
             }
 
@@ -187,9 +187,6 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Screen {
                     }
                 }
             }
-
-
-
         }
 
     }
