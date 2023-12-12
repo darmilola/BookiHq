@@ -55,6 +55,7 @@ import screens.Bookings.BookingScreen
 import screens.SplashScreenCompose
 import screens.authentication.WelcomeScreenCompose
 import screens.authentication.attachWaveIcon
+import screens.consultation.ConsultationScreen
 
 object MainScreen : Screen {
 
@@ -70,6 +71,13 @@ object MainScreen : Screen {
             val navigator = LocalNavigator.currentOrThrow
             navigator.push(BookingScreen(mainViewModel))
         }
+
+        if (screenId.value == 2){
+            val navigator = LocalNavigator.currentOrThrow
+            navigator.push(ConsultationScreen(mainViewModel))
+        }
+
+        println(screenId.value)
 
         TabNavigator(showDefaultTab(mainViewModel)) {
             Scaffold(

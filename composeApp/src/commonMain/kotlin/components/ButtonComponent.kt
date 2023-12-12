@@ -22,6 +22,8 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconToggleButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.RadioButton
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -228,5 +230,19 @@ fun LocationToggleButton(borderStroke: BorderStroke?, shape: Shape, colors: Butt
             }
         }
 
+    }
+}
+
+
+@Composable
+fun RadioButtonWithLabel() {
+    val selectedOption = remember { mutableStateOf("Option1") }
+
+    Row {
+        RadioButton(
+            selected = selectedOption.value == "Option1",
+            onClick = { selectedOption.value = "Option1" }
+        )
+        Text("Label for Option 1")
     }
 }

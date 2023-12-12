@@ -8,6 +8,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.TransformableState
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Arrangement
@@ -103,7 +104,7 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
 
         mainViewModel.setTitle("Consultation")
         val columnModifier = Modifier
-            .padding(start = 30.dp, end = 30.dp, bottom = 70.dp)
+            .padding(start = 20.dp, end = 20.dp, bottom = 70.dp)
             .fillMaxHeight()
             .fillMaxWidth()
 
@@ -126,14 +127,14 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(end = 20.dp, top = 10.dp, start = 20.dp)
+                .padding(top = 10.dp)
                 .wrapContentHeight(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
             TextComponent(
-                text = "Make Online And Live Consultation Easily with Top",
+                text = "Make Online And Live Consultation Easily with",
                 fontSize = 35,
                 fontFamily = GGSansSemiBold,
                 textStyle = MaterialTheme.typography.h6,
@@ -170,7 +171,7 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
             ) {
 
                 TextComponent(
-                    text = "Therapist",
+                    text = "Top Therapist",
                     fontSize = 35,
                     fontFamily = GGSansSemiBold,
                     textStyle = MaterialTheme.typography.h6,
@@ -192,7 +193,7 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
     fun GradientLock() {
         Box(
             modifier = Modifier
-                .width(150.dp)
+                .width(210.dp)
                 .height(3.dp)
                 .background(
                     brush = Brush.horizontalGradient(
@@ -232,7 +233,9 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
                 shape = RoundedCornerShape(10.dp),
                 textColor = Color(color = 0xFFF43569),
                 style = MaterialTheme.typography.h4
-            ) {}
+            ) {
+                mainViewModel.setId(2)
+            }
 
             GradientButton(
                 modifier = gradientButtonStyle,
