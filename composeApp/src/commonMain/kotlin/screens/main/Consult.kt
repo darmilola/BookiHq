@@ -211,8 +211,6 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
     @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
     @Composable
     fun AttachActionButtons() {
-
-
         val buttonStyle2 = Modifier
             .padding(bottom = 10.dp, start = 15.dp, end = 15.dp)
             .fillMaxWidth()

@@ -177,7 +177,9 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Screen {
                 navigator.pop()
             }
 
-            ButtonComponent(modifier = buttonStyle2, buttonText = "Continue", colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFF43569)), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4, borderStroke = null){
+            val bookingNavText = if(currentPage == 1) "Payments" else "Continue"
+
+            ButtonComponent(modifier = buttonStyle2, buttonText = bookingNavText, colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFF43569)), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4, borderStroke = null){
                 coroutineScope.launch {
                     if(currentPage == 0){
                         pagerState.animateScrollToPage(1)

@@ -30,7 +30,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
     override val options: TabOptions
         @Composable
         get() {
-            val title = "Shop"
+            val title = "Products"
             val icon = painterResource("shop_icon.png")
 
             return remember {
@@ -45,7 +45,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
 
     @Composable
     override fun Content() {
-        mainViewModel.setTitle("Marketplace")
+        mainViewModel.setTitle("Products")
         val columnModifier = Modifier
             .padding(top = 5.dp)
             .fillMaxHeight()

@@ -96,9 +96,8 @@ object MainScreen : Screen {
                     )
                     {
                         TabNavigationItem(HomeTab(mainViewModel))
-                        TabNavigationItem(ConsultTab(mainViewModel))
                         TabNavigationItem(ShopTab(mainViewModel))
-                        TabNavigationItem(DiaryTab(mainViewModel))
+                        TabNavigationItem(ConsultTab(mainViewModel))
                         TabNavigationItem(AccountTab(mainViewModel))
                     }
                 }
