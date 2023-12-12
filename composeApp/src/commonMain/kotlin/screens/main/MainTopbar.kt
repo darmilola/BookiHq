@@ -2,6 +2,7 @@ package screens.main
 
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
+import AppTheme.AppSemiBoldTypography
 import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
@@ -41,19 +43,17 @@ import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import components.ImageComponent
 import components.TextComponent
 import dev.icerock.moko.mvvm.livedata.compose.observeAsState
+import screens.authentication.attachWaveIcon
 
 @Composable
 fun MainTopBar(mainViewModel: MainViewModel) {
 
     val rowModifier = Modifier
         .padding(top = 55.dp, end = 0.dp)
-        .height(50.dp)
+        .height(45.dp)
         .background(color = Color.Transparent)
 
-        Row(modifier = rowModifier,
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment= Alignment.CenterVertically) {
-            leftTopBarItem()
+        Box(modifier = rowModifier) {
             centerTopBarItem(mainViewModel)
             rightTopBarItem(mainViewModel)
         }
@@ -64,12 +64,58 @@ fun MainTopBar(mainViewModel: MainViewModel) {
 fun leftTopBarItem(currentScreen: Int = 0) {
     val rowModifier = Modifier
         .background(color = Color.Transparent)
-        .width(70.dp)
+        .fillMaxWidth()
         .fillMaxHeight()
 
     Box(modifier = rowModifier
     ) {
+       welcomeToProfile()
+    }
+}
 
+@Composable
+fun welcomeToProfile(){
+    val rowModifier = Modifier
+        .padding(start = 20.dp, top = 5.dp)
+        .fillMaxWidth()
+    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = rowModifier
+        ) {
+            val modifier = Modifier.padding(start = 5.dp)
+            TextComponent(
+                text = "Hi ",
+                fontSize = 25,
+                fontFamily = GGSansSemiBold,
+                textStyle = MaterialTheme.typography.h6,
+                textColor = Color.DarkGray,
+                textAlign = TextAlign.Left,
+                fontWeight = FontWeight.ExtraBold,
+                lineHeight = 30
+            )
+            TextComponent(
+                text = "Jackson",
+                fontSize = 25,
+                fontFamily = GGSansSemiBold,
+                textStyle = MaterialTheme.typography.h6,
+                textColor = Color(color = 0xFFFA2D65),
+                textAlign = TextAlign.Left,
+                fontWeight = FontWeight.ExtraBold,
+                lineHeight = 30
+            )
+            TextComponent(
+                text = ",",
+                fontSize = 25,
+                fontFamily = GGSansSemiBold,
+                textStyle = MaterialTheme.typography.h6,
+                textColor = Color.DarkGray,
+                textAlign = TextAlign.Left,
+                fontWeight = FontWeight.ExtraBold,
+                lineHeight = 30
+            )
+        }
     }
 }
 
@@ -77,31 +123,31 @@ fun leftTopBarItem(currentScreen: Int = 0) {
 fun rightTopBarItem(mainViewModel: MainViewModel) {
     val tabNavigator = LocalTabNavigator.current
     val modifier = Modifier
+        .padding(end = 10.dp)
         .background(color = Color.Transparent)
-        .width(70.dp)
-        .clickable {
-            tabNavigator.current = NotificationTab(mainViewModel)
-        }
+        .fillMaxWidth()
         .fillMaxHeight()
 
     val indicatorModifier = Modifier
-        .padding(start = 8.dp, bottom = 25.dp)
+        .padding(start = 8.dp, bottom = 25.dp, end = 4.dp)
         .background(color = Color.Transparent)
         .size(14.dp)
         .background(
             brush = Brush.horizontalGradient(
                 colors = listOf(
-                    Color(color = 0xFFF43569),
-                    Color(color = 0xFFF43569)
+                    Color(color = 0xFFFA2D65),
+                    Color(color = 0xFFFA2D65)
                 )
             ),
             shape = RoundedCornerShape(7.dp)
         )
 
     Box(modifier = modifier,
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.CenterEnd
         ) {
-            ImageComponent(imageModifier = Modifier.size(35.dp), imageRes = "notification.png", colorFilter = ColorFilter.tint(color = Color.DarkGray))
+            ImageComponent(imageModifier = Modifier.size(35.dp).clickable {
+                tabNavigator.current = NotificationTab(mainViewModel)
+            }, imageRes = "notification.png", colorFilter = ColorFilter.tint(color = Color.DarkGray))
         Box(modifier = indicatorModifier){}
         }
     }
@@ -110,7 +156,7 @@ fun rightTopBarItem(mainViewModel: MainViewModel) {
 fun centerTopBarItem(mainViewModel: MainViewModel) {
     val rowModifier = Modifier
         .background(color = Color.Transparent)
-        .fillMaxWidth(0.80f)
+        .fillMaxWidth()
         .fillMaxHeight()
 
     val screenTitle: State<String> =  mainViewModel.screenTitle.observeAsState()
@@ -149,10 +195,7 @@ fun centerTopBarItem(mainViewModel: MainViewModel) {
                     this.durationMillis = 0
                 })
             ) {
-                val modifier = Modifier
-                    .fillMaxWidth()
-                    .size(100.dp)
-                ImageComponent(imageModifier = modifier, imageRes = "app_logo_minimal.png")
+                   leftTopBarItem()
             }
         }
     }

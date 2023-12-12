@@ -1,7 +1,9 @@
 package screens.authentication
 
+import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import AppTheme.AppSemiBoldTypography
+import GGSansBold
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -31,6 +33,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -39,6 +43,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import components.ButtonComponent
 import components.GradientButton
 import components.ImageComponent
+import components.TextComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import widgets.WelcomeScreenPagerContent
 
@@ -148,7 +153,7 @@ fun attachActionButtons(style: TextStyle){
         .height(56.dp)
 
     val gradientButtonStyle = Modifier
-        .padding(bottom = 5.dp)
+        .padding(bottom = 5.dp, start = 5.dp, end = 5.dp)
         .fillMaxWidth()
         .height(56.dp)
 

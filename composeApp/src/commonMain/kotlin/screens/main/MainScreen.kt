@@ -2,6 +2,7 @@ package screens.main
 
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
+import AppTheme.AppSemiBoldTypography
 import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ExperimentalMaterialApi
@@ -48,9 +51,11 @@ import cafe.adriel.voyager.navigator.tab.TabNavigator
 import components.TextComponent
 import dev.icerock.moko.mvvm.livedata.compose.observeAsState
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
+import screens.Bookings.BookingScreen
 import screens.SplashScreenCompose
 import screens.authentication.WelcomeScreenCompose
 import screens.authentication.attachWaveIcon
+import screens.consultation.ConsultationScreen
 
 object MainScreen : Screen {
 
@@ -59,6 +64,20 @@ object MainScreen : Screen {
 
         val mainViewModel: MainViewModel = MainViewModel()
         var screenTitle: State<String> =  mainViewModel.screenTitle.observeAsState()
+        val screenId: State<Int> =  mainViewModel.screenId.observeAsState()
+        println(screenId.value)
+
+        if (screenId.value == 1){
+            val navigator = LocalNavigator.currentOrThrow
+            navigator.push(BookingScreen(mainViewModel))
+        }
+
+        if (screenId.value == 2){
+            val navigator = LocalNavigator.currentOrThrow
+            navigator.push(ConsultationScreen(mainViewModel))
+        }
+
+        println(screenId.value)
 
         TabNavigator(showDefaultTab(mainViewModel)) {
             Scaffold(
@@ -68,22 +87,25 @@ object MainScreen : Screen {
                 content = {
                      CurrentTab()
                 },
-                backgroundColor = Color(0xFFFBFBF),
+                backgroundColor = Color(0xFFF3F3F3),
                 bottomBar = {
                     BottomNavigation(modifier = Modifier
-                        .padding(bottom = 16.dp)
-                        .height(70.dp), backgroundColor = Color.Transparent,
+                        .padding(bottom = 10.dp)
+                        .height(80.dp), backgroundColor = Color.Transparent,
                         elevation = 0.dp
                     )
                     {
                         TabNavigationItem(HomeTab(mainViewModel))
-                        TabNavigationItem(ConsultTab(mainViewModel))
                         TabNavigationItem(ShopTab(mainViewModel))
-                        TabNavigationItem(DiaryTab(mainViewModel))
+                        TabNavigationItem(ConsultTab(mainViewModel))
                         TabNavigationItem(AccountTab(mainViewModel))
                     }
                 }
             )
+            if(screenId.value == 0){
+                val tabNavigator = LocalTabNavigator.current
+                tabNavigator.current =  HomeTab(mainViewModel)
+            }
         }
     }
 }
@@ -108,16 +130,16 @@ private fun RowScope.TabNavigationItem(tab: Tab) {
         selectedContentColor = Color(color = 0xFFFA2D65),
         unselectedContentColor = Color.Gray,
         label = {
-            MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
+            MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
                 TextComponent(
                     text = tab.options.title,
-                    fontSize = 15,
-                    fontFamily = GGSansRegular,
+                    fontSize = 14,
+                    fontFamily = GGSansSemiBold,
                     textStyle = TextStyle(fontFamily = GGSansSemiBold),
                     textColor = LocalContentColor.current,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.SemiBold,
-                    textModifier = Modifier.padding(top = 15.dp)
+                    textModifier = Modifier.padding(top = 15.dp).wrapContentWidth()
                 )
             }
 
@@ -130,12 +152,7 @@ object MainScreenLanding : Screen {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
-        println("Landing is here")
-        Row(modifier = Modifier.background(color = Color.Yellow).fillMaxSize()) {
-
-        }
-       // val navigator = LocalNavigator.currentOrThrow
-       // navigator.replaceAll(MainScreen)
+        Row(modifier = Modifier.fillMaxSize()) {}
     }
 }
 

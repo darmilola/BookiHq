@@ -73,3 +73,14 @@ fun welcomeLineGradientBlock() {
     ) {
     }
 }
+
+@Composable
+fun StraightLine() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(color = Color.LightGray)
+    ) {
+    }
+}

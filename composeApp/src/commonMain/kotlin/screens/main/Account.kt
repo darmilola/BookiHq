@@ -29,6 +29,8 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
@@ -66,8 +68,8 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
     override val options: TabOptions
         @Composable
         get() {
-            val title = "Account"
-            val icon = painterResource("account.png")
+            val title = "Profile"
+            val icon = painterResource("profile_icon.png")
 
 
 
@@ -96,7 +98,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
             ) {
                     attachUserProfileImage()
                     UserFullNameComp()
-                    EditProfileComp(MaterialTheme.typography.button)
+                    EditProfileComp(TextStyle(fontFamily = GGSansSemiBold, fontWeight = FontWeight.SemiBold))
 
                 Divider(color = Color(color = 0x90C8C8C8), thickness = 2.dp, modifier = Modifier.fillMaxWidth(0.90f).padding(top = 30.dp))
 
@@ -135,7 +137,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
             ) {
                 val modifier = Modifier.padding(start = 5.dp)
                 TextComponent(
-                    text = "My Name is here",
+                    text = "Margaret C. Barbosa",
                     fontSize = 23,
                     fontFamily = GGSansBold,
                     textStyle = MaterialTheme.typography.h6,
@@ -155,10 +157,11 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
 
         val buttonStyle = Modifier
             .padding(top = 15.dp)
-            .fillMaxWidth(0.55f)
-            .height(55.dp)
+            .fillMaxWidth(0.40f)
+            .background(color = Color.Transparent)
+            .height(50.dp)
 
-        ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = null, colors = ButtonDefaults.buttonColors(backgroundColor = Color.DarkGray), fontSize = 20, shape = RoundedCornerShape(12.dp), textColor = Color.White, style = style){}
+        ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke((1.5).dp, color = Color(color = 0x90C8C8C8)), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor =  Color.DarkGray, style = style){}
 
     }
 

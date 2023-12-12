@@ -20,11 +20,11 @@ import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-public fun ImageComponent(imageModifier: Modifier, imageRes: String, colorFilter: ColorFilter? = null) {
+public fun ImageComponent(imageModifier: Modifier, imageRes: String, colorFilter: ColorFilter? = null, contentScale: ContentScale = ContentScale.FillHeight) {
     Image(
         painter = painterResource(imageRes),
         contentDescription = "An Image Component",
-        contentScale = ContentScale.FillHeight,
+        contentScale = contentScale,
         modifier = imageModifier,
         colorFilter = colorFilter
     )
