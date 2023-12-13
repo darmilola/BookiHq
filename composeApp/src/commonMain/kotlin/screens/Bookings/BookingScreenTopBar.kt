@@ -207,5 +207,32 @@ fun BookingTitle(){
 
 @Composable
 fun rightTopBarItem() {
+    val modifier = Modifier
+        .padding(end = 10.dp)
+        .background(color = Color.Transparent)
+        .fillMaxWidth()
+        .fillMaxHeight()
 
+    val indicatorModifier = Modifier
+        .padding(start = 10.dp, bottom = 25.dp, end = 4.dp)
+        .background(color = Color.Transparent)
+        .size(14.dp)
+        .background(
+            brush = Brush.horizontalGradient(
+                colors = listOf(
+                    Color(color = 0xFFFA2D65),
+                    Color(color = 0xFFFA2D65)
+                )
+            ),
+            shape = RoundedCornerShape(7.dp)
+        )
+
+    Box(modifier = modifier,
+        contentAlignment = Alignment.CenterEnd
+    ) {
+        ImageComponent(imageModifier = Modifier.size(35.dp).clickable {
+        }, imageRes = "clipboard_icon.png", colorFilter = ColorFilter.tint(color = Color.DarkGray))
+        Box(modifier = indicatorModifier){}
+    }
 }
+

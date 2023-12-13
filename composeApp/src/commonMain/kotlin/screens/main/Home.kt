@@ -6,17 +6,7 @@ import AppTheme.AppSemiBoldTypography
 import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
-import Models.AvailableSlotsUIModel
-import Models.AvailableTherapistUIModel
-import Models.CalendarDataSource
-import Models.CalendarUiModel
-import Models.TherapistDataSource
-import Models.WorkingHoursDataSource
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,74 +19,39 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.contentColorFor
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
-import components.IconTextFieldComponent
 import components.ImageComponent
-import components.LocationToggleButton
 import components.StraightLine
 import components.TextComponent
 import components.welcomeGradientBlock
-import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDate
-import screens.Bookings.BookingScreen
 import widgets.AppointmentsWidget
-import widgets.AttachTherapistWidget
-import widgets.ReviewsWidget
 import widgets.attachServiceImage
 
 class HomeTab(private val mainViewModel: MainViewModel) : Tab {
@@ -148,9 +103,8 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                         Modifier
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())) {
-                        attachUserAddress()
-                        attachSearchBar()
-                        attachTopServices()
+                        attachBusinessName()
+                        attachOurServices()
                         ServiceGridScreen()
                         ProductPromoCard()
                         attachAppointments()
@@ -303,7 +257,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
 
 @Composable
-    fun attachTopServices(){
+    fun attachOurServices(){
         val rowModifier = Modifier
             .padding(start = 20.dp, top = 20.dp)
             .fillMaxWidth()
@@ -314,7 +268,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 modifier = rowModifier
             ) {
                 TextComponent(
-                    text = "Top Services",
+                    text = "Our Services",
                     fontSize = 18,
                     fontFamily = GGSansSemiBold,
                     textStyle = MaterialTheme.typography.h6,
@@ -359,43 +313,9 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     }
 
 
-    @Composable
-    fun attachSearchBar(){
-        var text by remember { mutableStateOf(TextFieldValue("")) }
-
-
-        MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
-            val textStyle: TextStyle = TextStyle(
-                fontSize = TextUnit(20f, TextUnitType.Sp),
-                fontFamily = GGSansSemiBold,
-                textAlign = TextAlign.Start,
-                fontWeight = FontWeight.Normal
-            )
-
-            val modifier  = Modifier
-                .padding(start = 10.dp, end = 10.dp, top = 15.dp)
-                .wrapContentWidth()
-                .height(55.dp)
-                .border(width = 1.dp, color = Color.Gray, shape =  RoundedCornerShape(30.dp))
-
-
-            Box(modifier = modifier) {
-                IconTextFieldComponent(
-                    text = text,
-                    readOnly = false,
-                    textStyle = textStyle,
-                    modifier = Modifier,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    onValueChange = { it ->
-                        text = it
-                    }, isSingleLine = true, iconRes = "search_icon.png"
-                )
-            }
-        }
-    }
 
     @Composable
-    fun attachUserAddress(){
+    fun attachBusinessName(){
         val rowModifier = Modifier
             .padding(start = 20.dp)
             .fillMaxWidth()
@@ -408,8 +328,8 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 val modifier = Modifier.padding(start = 3.dp)
                 attachLocationIcon()
                 TextComponent(
-                    text = "301 Dorthy Walks, Chicago, Illinois",
-                    fontSize = 16,
+                    text = "JonJo, Beauty and Spa Services",
+                    fontSize = 18,
                     fontFamily = GGSansBold,
                     textStyle = MaterialTheme.typography.h6,
                     textColor = Color.DarkGray,

@@ -86,7 +86,7 @@ fun welcomeToProfile(){
         ) {
             val modifier = Modifier.padding(start = 5.dp)
             TextComponent(
-                text = "Hi ",
+                text = "Welcome ",
                 fontSize = 25,
                 fontFamily = GGSansSemiBold,
                 textStyle = MaterialTheme.typography.h6,

@@ -54,8 +54,8 @@ import androidx.compose.ui.unit.max
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-public fun TextComponent(textModifier: Modifier, text: String, fontSize: Int, textStyle: TextStyle, textColor: Color, textAlign: TextAlign, fontWeight: FontWeight?, fontFamily: FontFamily? = null, lineHeight: Int = 10, overflow: TextOverflow = TextOverflow.Clip) {
-    Text(text, fontSize = fontSize.sp, fontFamily = fontFamily, modifier = textModifier, style = textStyle, color = textColor, textAlign = textAlign,fontWeight = fontWeight, lineHeight = lineHeight.sp, overflow = overflow)
+public fun TextComponent(textModifier: Modifier, text: String, fontSize: Int, textStyle: TextStyle, textColor: Color, textAlign: TextAlign, fontWeight: FontWeight?, fontFamily: FontFamily? = null, lineHeight: Int = 10,maxLines: Int = 10, overflow: TextOverflow = TextOverflow.Clip) {
+    Text(text, fontSize = fontSize.sp, fontFamily = fontFamily, modifier = textModifier, style = textStyle, color = textColor, textAlign = textAlign,fontWeight = fontWeight, lineHeight = lineHeight.sp, overflow = overflow, maxLines = maxLines)
 }
 
 @OptIn(ExperimentalResourceApi::class)

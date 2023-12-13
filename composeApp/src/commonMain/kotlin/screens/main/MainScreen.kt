@@ -77,8 +77,6 @@ object MainScreen : Screen {
             navigator.push(ConsultationScreen(mainViewModel))
         }
 
-        println(screenId.value)
-
         TabNavigator(showDefaultTab(mainViewModel)) {
             Scaffold(
                 topBar = {
