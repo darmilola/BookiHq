@@ -6,7 +6,10 @@ import AppTheme.AppSemiBoldTypography
 import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,23 +22,35 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
@@ -51,7 +66,11 @@ import components.ImageComponent
 import components.StraightLine
 import components.TextComponent
 import components.welcomeGradientBlock
+import screens.Products.BottomSheet
+import screens.Products.NewProductItem
+import screens.Products.ProductItem
 import widgets.AppointmentsWidget
+import widgets.ReviewsWidget
 import widgets.attachServiceImage
 
 class HomeTab(private val mainViewModel: MainViewModel) : Tab {
@@ -104,9 +123,11 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())) {
                         attachBusinessName()
+                        ProductPromoCard()
                         attachOurServices()
                         ServiceGridScreen()
-                        ProductPromoCard()
+                        NewProducts()
+                        NewProductScreen()
                         attachAppointments()
                         Appointments()
                     }
@@ -285,6 +306,66 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     }
 
     @Composable
+    fun NewProducts(){
+        val rowModifier = Modifier
+            .padding(start = 20.dp, top = 10.dp)
+            .fillMaxWidth()
+        MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = rowModifier
+            ) {
+                TextComponent(
+                    text = "New Products",
+                    fontSize = 18,
+                    fontFamily = GGSansSemiBold,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Color.DarkGray,
+                    textAlign = TextAlign.Left,
+                    fontWeight = FontWeight.ExtraBold,
+                    lineHeight = 30,
+                    textModifier = Modifier.fillMaxWidth(0.32f)
+                )
+                StraightLine()
+            }
+
+        }
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Composable
+    fun NewProductScreen() {
+
+        val coroutineScope = rememberCoroutineScope()
+
+        Column {
+
+            var showSheet by remember { mutableStateOf(false) }
+
+            if (showSheet) {
+                BottomSheet() {
+                    showSheet = false
+                }
+            }
+
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(480.dp),
+                contentPadding = PaddingValues(6.dp),
+                verticalArrangement = Arrangement.spacedBy(5.dp),
+                userScrollEnabled = false
+            ) {
+                items(2) {
+                    NewProductItem(onProductClickListener = {
+                        showSheet = true
+                    })
+                }
+            }
+        }
+    }
+
+
+    @Composable
     fun attachAppointments(){
         val rowModifier = Modifier
             .padding(start = 20.dp, top = 20.dp)
@@ -342,9 +423,8 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
         }
     }
 
-
     @Composable
-    fun ProductPromoCard() {
+    fun ProductPromoItem(imageRes: String) {
         val imageModifier =
             Modifier
                 .fillMaxHeight()
@@ -352,9 +432,9 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
         Card(
             modifier = Modifier
-                .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
+                .padding(start = 10.dp, end = 10.dp, top = 20.dp, bottom = 5.dp)
                 .background(color = Color.White)
-                .height(300.dp)
+                .height(250.dp)
                 .fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
             border = null
@@ -365,11 +445,71 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                     .fillMaxHeight(),
                 contentAlignment = Alignment.BottomStart
             ) {
-                ImageComponent(imageModifier = imageModifier, imageRes = "oil.jpg", contentScale = ContentScale.Crop)
-                welcomeGradientBlock()
-                DealText()
+                ImageComponent(imageModifier = imageModifier, imageRes = imageRes, contentScale = ContentScale.Crop)
             }
         }
+    }
+
+    @OptIn(ExperimentalFoundationApi::class)
+    @Composable
+    fun ProductPromoCard() {
+        val pagerState = rememberPagerState(pageCount = {
+            3
+        })
+
+        val boxModifier =
+            Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+
+        val boxBgModifier =
+            Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+
+
+        Box(modifier = boxBgModifier) {
+
+            Box(contentAlignment = Alignment.BottomCenter, modifier = boxModifier) {
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxSize()
+                ) { page ->
+                    ProductPromoItem("woman$page.jpg")
+                }
+                Row(
+                    Modifier
+                        .wrapContentHeight()
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    repeat(pagerState.pageCount) { iteration ->
+                        var color = Color.LightGray
+                        var width = 0
+                        if (pagerState.currentPage == iteration) {
+                            color = Color(color = 0xFFF43569)
+                            width = 20
+                        } else {
+                            color = Color.LightGray
+                            width = 20
+                        }
+                        Box(
+                            modifier = Modifier
+                                .padding(2.dp)
+                                .clip(CircleShape)
+                                .background(color)
+                                .height(3.dp)
+                                .width(width.dp)
+                        )
+                    }
+
+                }
+            }
+        }
+
+
+
     }
 
 
