@@ -29,6 +29,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -66,6 +67,8 @@ import components.ImageComponent
 import components.StraightLine
 import components.TextComponent
 import components.welcomeGradientBlock
+import screens.Bookings.AppointmentItemCard
+import screens.Bookings.BookingItemCard
 import screens.Products.BottomSheet
 import screens.Products.NewProductItem
 import screens.Products.ProductItem
@@ -104,6 +107,12 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
             .padding(top = 5.dp)
             .fillMaxSize()
 
+        val listOfInt = ArrayList<Pair<Int, Int>>()
+        listOfInt.add(Pair(0,1))
+        listOfInt.add(Pair(1,2))
+        listOfInt.add(Pair(2,3))
+
+
 
         MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
             Column(
@@ -126,10 +135,10 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                         ProductPromoCard()
                         attachOurServices()
                         ServiceGridScreen()
+                        AttachAppointments()
+                        AppointmentScreen(bookingItems = listOfInt)
                         NewProducts()
                         NewProductScreen()
-                        attachAppointments()
-                        Appointments()
                     }
 
                 }
@@ -305,6 +314,35 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
         }
     }
 
+
+    @Composable
+    fun AttachAppointments(){
+        val rowModifier = Modifier
+            .padding(start = 20.dp, top = 20.dp)
+            .fillMaxWidth()
+        MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = rowModifier
+            ) {
+                TextComponent(
+                    text = "Your Appointment",
+                    fontSize = 18,
+                    fontFamily = GGSansSemiBold,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Color.DarkGray,
+                    textAlign = TextAlign.Left,
+                    fontWeight = FontWeight.ExtraBold,
+                    lineHeight = 30,
+                    textModifier = Modifier.fillMaxWidth(0.40f)
+                )
+                StraightLine()
+            }
+
+        }
+    }
+
     @Composable
     fun NewProducts(){
         val rowModifier = Modifier
@@ -332,6 +370,8 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
         }
     }
+
+
 
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
@@ -362,6 +402,12 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 }
             }
         }
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Composable
+    fun AppointmentScreen(bookingItems: List<Pair<Int,Int>>) {
+        AppointmentItemCard(viewType = bookingItems.get(2).first, contentSize = ((bookingItems.get(2).second*135)), itemCount = bookingItems.get(2).second)
     }
 
 

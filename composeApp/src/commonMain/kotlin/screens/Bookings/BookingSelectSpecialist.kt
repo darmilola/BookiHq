@@ -190,7 +190,7 @@ fun TherapistContent() {
             textModifier = Modifier.fillMaxWidth()
         )
         LazyRow(
-            modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(160.dp),
+            modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(230.dp),
             contentPadding = PaddingValues(6.dp)
         ) {
             items(selectedTherapistUIModel.visibleTherapist.size) { i ->

@@ -80,6 +80,7 @@ import screens.main.AccountTab
 import screens.main.ConsultTab
 import screens.main.HomeTab
 import screens.main.ShopTab
+import widgets.IncrementDecrementWidget
 
 @Composable
 fun ProductDetailContent() {
@@ -140,6 +141,7 @@ fun SheetContent() {
         ProductNameInfoContent()
         Divider(color = Color(color = 0x90C8C8C8), thickness = 2.dp, modifier = Modifier.fillMaxWidth(0.90f).padding(top = 20.dp))
 
+        IncrementDecrementWidget()
         ProductDescription()
     }
 }

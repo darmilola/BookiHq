@@ -3,6 +3,7 @@ package widgets
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import GGSansBold
+import GGSansRegular
 import GGSansSemiBold
 import Models.AvailableSlotsUIModel
 import Models.AvailableTherapistUIModel
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -44,22 +46,26 @@ fun attachUserProfileImage(availableTherapist: AvailableTherapistUIModel.Availab
     Box(
         Modifier
             .padding(start = 20.dp, bottom = 10.dp)
-            .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(15.dp))
-            .size(100.dp)
+            .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(10.dp))
+            .width(140.dp)
+            .height(160.dp)
             .background(color = Color(0xFBFBFB)),
         contentAlignment = Alignment.TopEnd
     ) {
         val modifier = Modifier
             .padding(4.dp)
-                .clip(shape = RoundedCornerShape(12.dp))
-            .size(100.dp)
+                .clip(shape = RoundedCornerShape(7.dp))
+            .width(140.dp)
+            .height(160.dp)
+
         ImageComponent(imageModifier = modifier, imageRes = "1.jpg")
         Box(
            modifier =  Modifier
                 .padding(4.dp)
                 .alpha(selectedVisibilityAlpha)
-                .clip(shape = RoundedCornerShape(12.dp))
-                .size(100.dp)
+                .clip(shape = RoundedCornerShape(7.dp))
+               .width(140.dp)
+               .height(160.dp)
                 .background(color = Color(0x60FA2D65)),
             contentAlignment = Alignment.Center
         ) {
@@ -68,6 +74,25 @@ fun attachUserProfileImage(availableTherapist: AvailableTherapistUIModel.Availab
                 .size(24.dp), imageRes = "check_mark_icon.png", colorFilter = ColorFilter.tint(color = Color.White))
 
         }
+        Row (horizontalArrangement = Arrangement.Center,
+            verticalAlignment  = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(4.dp)
+                .clip(shape = RoundedCornerShape(topEnd = 7.dp))
+                .width(50.dp)
+                .background(color = Color(color = 0xfffa2d65))
+                .height(24.dp)) {
+            ImageComponent(imageModifier = Modifier.size(12.dp), imageRes = "star_icon.png", colorFilter = ColorFilter.tint(color = Color.White))
+            TextComponent(
+                text = "4.85",
+                fontSize = 12,
+                fontFamily = GGSansRegular,
+                textStyle = MaterialTheme.typography.h6,
+                textColor = Color.White,
+                textAlign = TextAlign.Left,
+                fontWeight = FontWeight.Black,
+                textModifier = Modifier.padding(start = 3.dp))
+        }
     }
 
 }
@@ -75,7 +100,8 @@ fun attachUserProfileImage(availableTherapist: AvailableTherapistUIModel.Availab
 @Composable
 fun AttachTherapistWidget(availableTherapist: AvailableTherapistUIModel.AvailableTherapist, onTherapistSelectedListener: (AvailableTherapistUIModel.AvailableTherapist) -> Unit){
     val rowModifier = Modifier
-        .width(130.dp)
+        .width(160.dp)
+        .height(200.dp)
         .clickable {
             onTherapistSelectedListener(availableTherapist)
         }
@@ -90,8 +116,8 @@ fun AttachTherapistWidget(availableTherapist: AvailableTherapistUIModel.Availabl
 @Composable
 fun UserFullNameComp(){
     val rowModifier = Modifier
-        .padding(start = 10.dp)
-        .width(130.dp)
+        .padding(start = 20.dp)
+        .width(140.dp)
 
     MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         Row(
@@ -101,7 +127,7 @@ fun UserFullNameComp(){
         ) {
             val modifier = Modifier.padding(start = 5.dp)
             TextComponent(
-                text = "Margaret C.",
+                text = "Jenny Wilson",
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
                 textStyle = MaterialTheme.typography.h6,
