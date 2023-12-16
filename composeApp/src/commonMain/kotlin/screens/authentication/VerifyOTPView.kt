@@ -102,7 +102,7 @@ fun VerifyOTPCompose() {
                 resendVerificationCode()
 
                 ButtonComponent(modifier = buttonStyle, buttonText = "Verify", borderStroke = BorderStroke(1.dp, Color(color = 0xFFF43569)), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFF43569)), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4) {
-                    navigator.replaceAll(MainScreen)
+                    navigator.replace(AuthenticationComposeScreen(currentScreen = 4))
                 }
             }
         }

@@ -193,5 +193,20 @@ public fun IconTextFieldComponent(text: TextFieldValue, readOnly: Boolean = fals
 
 }
 
+@Composable
+public fun TextFieldComponent(text: TextFieldValue, readOnly: Boolean = false, modifier: Modifier, textStyle: TextStyle = LocalTextStyle.current,onValueChange: (TextFieldValue) -> Unit, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), color: TextFieldColors = TextFieldDefaults.textFieldColors(
+    disabledTextColor = Color.Transparent,
+    focusedIndicatorColor = Color.Transparent,
+    unfocusedIndicatorColor = Color.Transparent,
+    disabledIndicatorColor = Color.Transparent
+), isSingleLine: Boolean = false, trailingIcon: @Composable (() -> Unit)? = null, isReadOnly: Boolean = false, placeholderTile: String) {
+
+    var mText by remember { mutableStateOf(TextFieldValue(text.text)) }
+
+
+    OutlinedTextField(value = mText, modifier = modifier, textStyle = textStyle, onValueChange = { newValue -> mText = newValue }, keyboardOptions = keyboardOptions, colors = color, singleLine = isSingleLine, readOnly = isReadOnly, placeholder = {
+            PlaceholderTextComponent(placeholderTile, textColor = Color.Gray)})
+}
+
 
 

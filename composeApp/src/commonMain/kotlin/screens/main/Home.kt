@@ -73,6 +73,7 @@ import screens.Products.BottomSheet
 import screens.Products.NewProductItem
 import screens.Products.ProductItem
 import widgets.AppointmentsWidget
+import widgets.PopularServiceItem
 import widgets.ReviewsWidget
 import widgets.attachServiceImage
 
@@ -135,6 +136,8 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                         ProductPromoCard()
                         attachOurServices()
                         ServiceGridScreen()
+                        PopularTitle()
+                        PopularAppointmentScreen()
                         AttachAppointments()
                         AppointmentScreen(bookingItems = listOfInt)
                         NewProducts()
@@ -314,6 +317,34 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
         }
     }
 
+    @Composable
+    fun PopularTitle(){
+        val rowModifier = Modifier
+            .padding(start = 20.dp, top = 20.dp)
+            .fillMaxWidth()
+        MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = rowModifier
+            ) {
+                TextComponent(
+                    text = "Popular",
+                    fontSize = 18,
+                    fontFamily = GGSansSemiBold,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Color.DarkGray,
+                    textAlign = TextAlign.Left,
+                    fontWeight = FontWeight.ExtraBold,
+                    lineHeight = 30,
+                    textModifier = Modifier.fillMaxWidth(0.20f)
+                )
+                StraightLine()
+            }
+
+        }
+    }
+
 
     @Composable
     fun AttachAppointments(){
@@ -404,6 +435,76 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
         }
     }
 
+    @OptIn(ExperimentalFoundationApi::class)
+    @Composable
+    fun PopularAppointmentScreen() {
+        val pagerState = rememberPagerState(pageCount = {
+            3
+        })
+
+        var showSheet by remember { mutableStateOf(false) }
+
+        if (showSheet) {
+            BottomSheet() {
+                showSheet = false
+            }
+        }
+
+        val coroutineScope = rememberCoroutineScope()
+
+        val boxModifier =
+            Modifier
+                .height(470.dp)
+                .fillMaxWidth()
+
+        val boxBgModifier =
+            Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+
+
+        Box(modifier = boxBgModifier) {
+
+            Box(contentAlignment = Alignment.BottomCenter, modifier = boxModifier) {
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxSize()
+                ) { page ->
+                    PopularServiceItem (onProductClickListener = {
+                        showSheet = true
+                    })
+                }
+                Row(
+                    Modifier
+                        .wrapContentHeight()
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    repeat(pagerState.pageCount) { iteration ->
+                        var color = Color.LightGray
+                        var width = 0
+                        if (pagerState.currentPage == iteration) {
+                            color = Color(color = 0xFFF43569)
+                            width = 20
+                        } else {
+                            color = Color.LightGray
+                            width = 20
+                        }
+                        Box(
+                            modifier = Modifier
+                                .padding(2.dp)
+                                .clip(CircleShape)
+                                .background(color)
+                                .height(3.dp)
+                                .width(width.dp)
+                        )
+                    }
+
+                }
+            }
+        }
+
+    }
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun AppointmentScreen(bookingItems: List<Pair<Int,Int>>) {
@@ -553,8 +654,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 }
             }
         }
-
-
 
     }
 

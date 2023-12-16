@@ -96,12 +96,18 @@ fun AuthenticationScreenCompose(currentPosition: Int = 0) {
                 }
             2 -> {
 
-                 ContinueWithPhoneCompose()
+                ContinueWithPhoneCompose()
 
             }
             3 -> {
                 VerifyOTPCompose()
             }
+
+            4 -> {
+                CompleteProfileCompose()
+
+            }
+
 
             else -> {
 
