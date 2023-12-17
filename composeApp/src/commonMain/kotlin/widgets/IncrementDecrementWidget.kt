@@ -38,48 +38,76 @@ import components.TextComponent
 
 @Composable
 fun IncrementDecrementWidget(){
+    var counter by remember { mutableStateOf(1) }
 
     Row(
+        horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth().height(60.dp)
+
     ) {
-        var counter by remember { mutableStateOf(10) }
-        TextComponent(
-            text = "+6",
-            fontSize = 25,
-            fontFamily = GGSansRegular,
-            textStyle = TextStyle(fontFamily = GGSansRegular),
-            textColor = Color.White,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Normal,
-            textModifier = Modifier
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
                 .height(50.dp)
                 .width(50.dp)
-                .clickable { counter -= 1 }
-        )
+                .background(color = Color(color = 0xfffa2d65), shape = RoundedCornerShape(10.dp))
+        ) {
+            TextComponent(
+                text = "-",
+                fontSize = 30,
+                fontFamily = GGSansRegular,
+                textStyle = MaterialTheme.typography.h4,
+                textColor = Color.White,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Black,
+                textModifier = Modifier
+                    .clickable { if(counter > 1)counter -= 1 }
+            )
+        }
 
-        TextComponent(
-            text = counter.toString(),
-            fontSize = 16,
-            fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color.DarkGray,
-            textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Black,
-            textModifier = Modifier.padding(start = 10.dp, end = 10.dp))
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .height(50.dp)
+                .width(50.dp)
+        ) {
 
-        TextComponent(
-            text = "+",
-            fontSize = 22,
-            fontFamily = GGSansRegular,
-            textStyle = TextStyle(fontFamily = GGSansSemiBold, letterSpacing = TextUnit(0.5F, TextUnitType.Sp)),
-            textColor = Color.DarkGray,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.SemiBold,
-            textModifier = Modifier.height(40.dp).width(40.dp).clickable {
-                counter += 1
-            }
-        )
+            TextComponent(
+                text = counter.toString(),
+                fontSize = 27,
+                fontFamily = GGSansRegular,
+                textStyle = MaterialTheme.typography.h4,
+                textColor = Color.DarkGray,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Black,
+                textModifier = Modifier.padding(start = 10.dp, end = 10.dp)
+            )
+        }
+
+
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .height(50.dp)
+                .width(50.dp)
+                .background(color = Color(color = 0xfffa2d65), shape = RoundedCornerShape(10.dp))
+        ) {
+            TextComponent(
+                text = "+",
+                fontSize = 30,
+                fontFamily = GGSansRegular,
+                textStyle = MaterialTheme.typography.h4,
+                textColor = Color.White,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Black,
+                textModifier = Modifier
+                    .clickable { counter += 1 }
+            )
+        }
 
     }
 
