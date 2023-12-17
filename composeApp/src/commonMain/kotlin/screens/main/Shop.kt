@@ -4,6 +4,7 @@ import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import GGSansRegular
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,8 +42,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import components.ImageComponent
 import components.TextComponent
+import screens.Products.CartScreen
 import screens.Products.ProductSearchBar
 import screens.Products.CategoryScreen
 
@@ -86,6 +91,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
     @Composable
     fun AttachShoppingCartImage(iconRes: String) {
 
+
         val indicatorModifier = Modifier
             .padding(end = 15.dp, bottom = 20.dp)
             .background(color = Color.Transparent)
@@ -98,6 +104,9 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
                 .padding(bottom = 70.dp)
                 .clip(CircleShape)
                 .size(70.dp)
+                .clickable {
+                   mainViewModel.setId(3)
+                }
                 .background(color = Color.DarkGray),
             contentAlignment = Alignment.Center
         ) {

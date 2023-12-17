@@ -55,6 +55,7 @@ import components.ButtonComponent
 import components.ImageComponent
 import components.TextComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import widgets.CartIncrementDecrementWidget
 import widgets.IncrementDecrementWidget
 
 @Composable
@@ -89,7 +90,7 @@ fun ProductDetailContent() {
                     Row(modifier = Modifier.fillMaxWidth(0.50f),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically) {
-                        IncrementDecrementWidget()
+                        CartIncrementDecrementWidget()
                     }
                     ButtonComponent(modifier = buttonStyle2, buttonText = "Add to Cart", colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFF43569)), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4, borderStroke = null){}
                 }
