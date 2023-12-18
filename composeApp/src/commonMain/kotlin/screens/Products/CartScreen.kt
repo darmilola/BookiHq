@@ -1,12 +1,9 @@
 package screens.Products
 
-import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import AppTheme.AppSemiBoldTypography
 import GGSansSemiBold
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,21 +17,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,26 +33,13 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import components.ButtonComponent
 import components.ImageComponent
 import components.StraightLine
 import components.TextComponent
-import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import screens.Bookings.BookingPayment
-import screens.Bookings.BookingScreenTopBar
-import screens.Bookings.BookingSelectServices
-import screens.Bookings.BookingSelectSpecialist
-import screens.consultation.BookingTitle
-import screens.consultation.leftTopBarItem
-import screens.consultation.rightTopBarItem
-import screens.consultation.stepItemTitle
 import screens.main.MainViewModel
-import widgets.AttachUserReviewsContent
+import widgets.CheckOutSummaryWidget
 import widgets.DeliveryAddressWidget
 import widgets.PaymentMethodWidget
-import widgets.StepsProgressBar
-import widgets.attachReviewHeader
 
 
 class CartScreen(private val mainViewModel: MainViewModel) : Screen {
@@ -133,6 +108,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Screen {
                 StraightLine()
                 PaymentMethodWidget()
                 StraightLine()
+                CheckOutSummaryWidget()
 
             }
 

@@ -1,4 +1,0 @@
-package widgets
-
-class CheckOutBreakdownWidget {
-}

@@ -50,7 +50,7 @@ fun DeliveryAddressWidget() {
             textModifier = Modifier.padding(start = 10.dp, top = 10.dp)
         )
 
-        Row(modifier = Modifier.fillMaxWidth(0.7f)) {
+        Row(modifier = Modifier.fillMaxWidth()) {
             ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = MaterialTheme.typography.h4, onLeftClicked = {
 
             }, onRightClicked = {

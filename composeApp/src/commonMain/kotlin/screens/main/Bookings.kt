@@ -48,6 +48,7 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import components.ButtonComponent
 import components.ImageComponent
 import components.TextComponent
+import components.ToggleButton
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import screens.Bookings.BookingItemCard
@@ -93,7 +94,13 @@ class BookingsTab(private val mainViewModel: MainViewModel) : Tab {
                         .fillMaxWidth()
                         .background(color = Color(color = 0xFFF3F3F3))
                 ) {
-                    BookingToggleButton(borderStroke = BorderStroke(1.dp, Color(color = 0xFFF43569)), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = MaterialTheme.typography.h4)
+
+                    ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = MaterialTheme.typography.h4, onLeftClicked = {
+
+                    }, onRightClicked = {
+
+                    }, leftText = "Upcoming", rightText = "Past")
+
                     val listOfInt = ArrayList<Pair<Int, Int>>()
                     listOfInt.add(Pair(0,1))
                     listOfInt.add(Pair(1,2))
@@ -105,86 +112,6 @@ class BookingsTab(private val mainViewModel: MainViewModel) : Tab {
             }
         }
     }
-
-
-    @Composable
-    fun BookingToggleButton(borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, fontSize: Int, style: TextStyle) {
-
-        var isUpcomingChecked by remember { mutableStateOf(true) }
-
-        val virtualTint  = if(isUpcomingChecked) Color(0xFFFA2D65) else Color.Transparent
-        val inPersonTint  =  if(!isUpcomingChecked) Color(0xFFFA2D65) else Color.Transparent
-
-        val virtualTextColor = if (isUpcomingChecked) Color.White else Color(0xFFFA2D65)
-
-        val inPersonTextColor = if (isUpcomingChecked) Color(0xFFFA2D65) else Color.White
-
-
-
-        val rowModifier = Modifier
-            .padding(top = 15.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
-            .fillMaxWidth()
-            .background(color = Color(0x45C4C4C4), shape = RoundedCornerShape(10.dp))
-        MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.Top,
-                modifier = rowModifier
-            ) {
-
-                IconToggleButton(
-                    checked = isUpcomingChecked,
-                    onCheckedChange = { isUpcomingChecked = it }
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth(0.50f)
-                            .height(50.dp)
-                            .background(virtualTint, shape = shape),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        TextComponent(
-                            text = "Upcoming",
-                            fontSize = fontSize,
-                            textStyle = style,
-                            fontFamily = GGSansSemiBold,
-                            textColor = virtualTextColor,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Black
-                        )
-                    }
-                }
-
-                IconToggleButton(
-                    checked = !isUpcomingChecked,
-                    onCheckedChange = {
-                        isUpcomingChecked = !it
-                    }
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp)
-                            .background(inPersonTint, shape = shape),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        TextComponent(
-                            text = "Past",
-                            fontSize = fontSize,
-                            textStyle = style,
-                            fontFamily = GGSansSemiBold,
-                            textColor = inPersonTextColor,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.ExtraBold
-                        )
-                    }
-                }
-            }
-
-        }
-    }
-
-
 
     @Composable
     private fun populateBookingItemList(bookingItems: List<Pair<Int,Int>>){
