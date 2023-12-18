@@ -1,14 +1,11 @@
 package screens.Products
 
-import AppTheme.AppBoldTypography
-import AppTheme.AppColors
 import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,10 +25,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomNavigation
-import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
-import androidx.compose.material.IconToggleButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -44,7 +39,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -54,9 +48,9 @@ import androidx.compose.ui.unit.dp
 import components.ButtonComponent
 import components.ImageComponent
 import components.TextComponent
+import components.ToggleButton
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import widgets.CartIncrementDecrementWidget
-import widgets.IncrementDecrementWidget
 
 @Composable
 fun ProductDetailContent() {
@@ -126,11 +120,11 @@ fun SheetContent() {
         ProductNameInfoContent()
         Divider(color = Color(color = 0x90C8C8C8), thickness = 2.dp, modifier = Modifier.fillMaxWidth(0.90f).padding(top = 20.dp))
 
-        ToggleButton(borderStroke = BorderStroke(1.dp, Color(color = 0xFFF43569)), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = MaterialTheme.typography.h4, onDescriptionClicked = {
+        ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = MaterialTheme.typography.h4, onLeftClicked = {
           currentTabScreen = 0
-        }, onReviewsClicked = {
+        }, onRightClicked = {
             currentTabScreen = 1
-        })
+        }, leftText = "Description", rightText = "Reviews(20)")
         ProductTabScreenCompose(currentTabScreen)
     }
 }
@@ -389,87 +383,4 @@ fun attachShareIcon() {
         ImageComponent(imageModifier = modifier, imageRes = "export_icon.png", colorFilter = ColorFilter.tint(color = Color.DarkGray))
     }
 
-}
-
-
-
-@Composable
-fun ToggleButton(borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, fontSize: Int, style: TextStyle, onDescriptionClicked: () ->  Unit, onReviewsClicked: () ->  Unit) {
-
-    var isDescriptionChecked by remember { mutableStateOf(true) }
-
-    val virtualTint  = if(isDescriptionChecked) Color(0xffFA2D65) else Color.Transparent
-    val inPersonTint  =  if(!isDescriptionChecked) Color(0xffFA2D65) else Color.Transparent
-
-    val virtualTextColor = if (isDescriptionChecked) Color.White else Color(0xffFA2D65)
-
-    val inPersonTextColor = if (isDescriptionChecked) Color(0xffFA2D65) else Color.White
-
-
-
-    val rowModifier = Modifier
-        .padding(top = 15.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
-        .fillMaxWidth()
-        .background(color = Color(0x45C4C4C4), shape = RoundedCornerShape(10.dp))
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.Top,
-            modifier = rowModifier
-        ) {
-
-            IconToggleButton(
-                checked = isDescriptionChecked,
-                onCheckedChange = {
-                    onDescriptionClicked()
-                    isDescriptionChecked = it
-                }
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.50f)
-                        .height(50.dp)
-                        .background(virtualTint, shape = shape),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    TextComponent(
-                        text = "Description",
-                        fontSize = fontSize,
-                        textStyle = style,
-                        fontFamily = GGSansSemiBold,
-                        textColor = virtualTextColor,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-
-            IconToggleButton(
-                checked = !isDescriptionChecked,
-                onCheckedChange = {
-                    onReviewsClicked()
-                    isDescriptionChecked = !it
-                }
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
-                        .background(inPersonTint, shape = shape),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    TextComponent(
-                        text = "Reviews(20)",
-                        fontSize = fontSize,
-                        textStyle = style,
-                        fontFamily = GGSansSemiBold,
-                        textColor = inPersonTextColor,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-        }
-
-    }
 }

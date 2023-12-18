@@ -153,19 +153,18 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Screen {
         }
 
         val bgStyle = Modifier
-            .padding(bottom = 10.dp)
+            .padding(bottom = 10.dp,start = 10.dp, end = 10.dp)
             .fillMaxWidth()
             .fillMaxHeight()
 
         val coroutineScope = rememberCoroutineScope()
 
         val buttonStyle = Modifier
-            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
             .fillMaxWidth(btnFraction)
             .height(50.dp)
 
         val buttonStyle2 = Modifier
-            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
+            .padding(start = 5.dp, end = 5.dp)
             .fillMaxWidth()
             .height(50.dp)
 

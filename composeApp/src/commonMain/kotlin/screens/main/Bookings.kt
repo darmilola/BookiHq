@@ -51,7 +51,6 @@ import components.TextComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import screens.Bookings.BookingItemCard
-import screens.consultation.VirtualLocationToggleButton
 
 class BookingsTab(private val mainViewModel: MainViewModel) : Tab {
 

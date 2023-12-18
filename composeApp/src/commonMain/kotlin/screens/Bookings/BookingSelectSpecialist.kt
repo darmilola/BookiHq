@@ -215,7 +215,7 @@ fun TherapistContent() {
 fun AttachServiceReviews(){
 
     TextComponent(
-        text = "Specialist Reviews",
+        text = "Jenny's Reviews",
         fontSize = 16,
         fontFamily = GGSansSemiBold,
         textStyle = MaterialTheme.typography.h6,

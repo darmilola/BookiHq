@@ -53,7 +53,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import components.RadioToggleButton
 import components.TextComponent
+import components.ToggleButton
 
 
 @Composable
@@ -69,9 +71,14 @@ fun BookConsultation() {
             .verticalScroll(rememberScrollState())
     ) {
 
+        val toggleLabelList: ArrayList<String> = arrayListOf()
+        toggleLabelList.add("Zoom")
+        toggleLabelList.add("Meet")
+        toggleLabelList.add("FaceTime")
+
         WelcomeUser()
         ConsultLocationToggle()
-        VirtualLocationToggleButton(borderStroke = BorderStroke(1.dp, Color(color = 0xFFF43569)), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(27.dp), style = MaterialTheme.typography.h4)
+        RadioToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(27.dp), style = MaterialTheme.typography.h4, actionLabel = toggleLabelList, title = "What medium do you prefer?")
         AttachAdditionalTextField()
     }
 }
@@ -123,25 +130,6 @@ fun BookConsultation() {
         }
     }
 
-
-@Composable
-fun VirtualLocationsToggle(){
-    val options = listOf("Option1", "Option2", "Option3")
-    val selectedOption = remember { mutableStateOf(options[0]) }
-
-    Column {
-        options.forEach { option ->
-            Row {
-                RadioButton(
-                    selected = selectedOption.value == option,
-                    onClick = { selectedOption.value = option }
-                )
-                Text(option)
-            }
-        }
-    }
-}
-
 @Composable
 fun ConsultLocationToggle(){
     val checked by remember { mutableStateOf(false) }
@@ -171,88 +159,11 @@ fun ConsultLocationToggle(){
                 .fillMaxWidth()
         )
 
-        ConsultLocationToggleButton(borderStroke = BorderStroke(1.dp, Color(color = 0xFFF43569)), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(27.dp), style = MaterialTheme.typography.h4)
+        ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = MaterialTheme.typography.h4, leftText = "Virtual", rightText = "In Person", onLeftClicked = {}, onRightClicked = {})
 
     }
 
 }
-@Composable
-fun ConsultLocationToggleButton(borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, fontSize: Int, style: TextStyle) {
-
-    var isVirtualChecked by remember { mutableStateOf(true) }
-
-    val virtualTint  = if(isVirtualChecked) Color(0xFFFA2D65) else Color.Transparent
-    val inPersonTint  =  if(!isVirtualChecked) Color(0xFFFA2D65) else Color.Transparent
-
-    val virtualTextColor = if (isVirtualChecked) Color.White else Color(0xFFFA2D65)
-
-    val inPersonTextColor = if (isVirtualChecked) Color(0xFFFA2D65) else Color.White
-
-
-
-    val rowModifier = Modifier
-        .padding(top = 15.dp)
-        .fillMaxWidth()
-        .background(color = Color(0x45C4C4C4), shape = RoundedCornerShape(27.dp))
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.Top,
-            modifier = rowModifier
-        ) {
-
-            IconToggleButton(
-                checked = isVirtualChecked,
-                onCheckedChange = { isVirtualChecked = it }
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.50f)
-                        .height(54.dp)
-                        .background(virtualTint, shape = shape),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    TextComponent(
-                        text = "Virtual",
-                        fontSize = fontSize,
-                        textStyle = style,
-                        fontFamily = GGSansSemiBold,
-                        textColor = virtualTextColor,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Black
-                    )
-                }
-            }
-
-            IconToggleButton(
-                checked = !isVirtualChecked,
-                onCheckedChange = {
-                    isVirtualChecked = !it
-                }
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(54.dp)
-                        .background(inPersonTint, shape = shape),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    TextComponent(
-                        text = "In Person",
-                        fontSize = fontSize,
-                        textStyle = style,
-                        fontFamily = GGSansSemiBold,
-                        textColor = inPersonTextColor,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.ExtraBold
-                    )
-                }
-            }
-        }
-
-    }
-}
-
 
 @Composable
 fun AdditionalTextField() {
@@ -322,203 +233,4 @@ fun AttachAdditionalTextField() {
     }
 
 }
-
-
-
-
-@Composable
-fun VirtualLocationToggleButton(borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, fontSize: Int, style: TextStyle) {
-
-    var isZoomChecked by remember { mutableStateOf(true) }
-    var isMeetChecked by remember { mutableStateOf(false) }
-    var isFaceTime by remember { mutableStateOf(false) }
-
-    val zoomTint  = if(isZoomChecked && !isMeetChecked && !isFaceTime) Color(0xFFFA2D65) else Color(0x45C4C4C4)
-    val meetTint  =  if(isMeetChecked && !isZoomChecked && !isFaceTime) Color(0xFFFA2D65) else Color(0x45C4C4C4)
-    val faceTimeTint  =  if(isFaceTime && !isZoomChecked && !isMeetChecked) Color(0xFFFA2D65) else Color(0x45C4C4C4)
-
-    val zoomTextColor = if (isZoomChecked) Color.White else Color(0xFFFA2D65)
-
-    val meetTextColor = if (isMeetChecked)Color.White else Color(0xFFFA2D65)
-
-    val faceTimeTextColor = if (isFaceTime)Color.White else Color(0xFFFA2D65)
-
-
-    Column(
-        modifier = Modifier
-            .padding(start = 10.dp, end = 10.dp, top = 30.dp)
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment  = Alignment.CenterHorizontally,
-    ) {
-
-        TextComponent(
-            text = "What medium do you prefer?",
-            fontSize = 16,
-            fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color.DarkGray,
-            textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Black,
-            lineHeight = 30,
-            textModifier = Modifier
-                .fillMaxWidth()
-        )
-
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier.fillMaxWidth().height(150.dp),
-            verticalArrangement = Arrangement.spacedBy(5.dp),
-            horizontalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
-            items(3) { it ->
-                when (it) {
-                    0 -> {
-                        IconToggleButton(
-                            checked = isZoomChecked,
-                            onCheckedChange = { it2 ->
-                                if(it2 == isZoomChecked || it2 != isFaceTime || it2 != isMeetChecked){
-                                    isZoomChecked = it2
-                                    isFaceTime = !it2
-                                    isMeetChecked = !it2
-                                }
-                            }
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .padding(top = 10.dp)
-                                    .fillMaxWidth()
-                                    .height(54.dp)
-                                    .background(zoomTint, shape = shape),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                RadioButton(
-                                    selected = isZoomChecked,
-                                    onClick = {
-
-                                    },
-                                    colors = RadioButtonDefaults.colors(
-                                        selectedColor = Color.White,
-                                        unselectedColor = Color.LightGray
-                                    )
-
-                                )
-                                TextComponent(
-                                    text = "Zoom",
-                                    fontSize = fontSize,
-                                    textStyle = style,
-                                    fontFamily = GGSansSemiBold,
-                                    textColor = zoomTextColor,
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.ExtraBold
-                                )
-                            }
-                        }
-                    }
-
-                    1 -> {
-                        IconToggleButton(
-                            checked = isMeetChecked,
-                            onCheckedChange = { it ->
-                              if(it == isMeetChecked || it != isFaceTime || it != isZoomChecked) {
-                                  isMeetChecked = it
-                                  isZoomChecked = !it
-                                  isFaceTime = !it
-                              }
-                            }
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .padding(top = 10.dp)
-                                    .fillMaxWidth()
-                                    .height(54.dp)
-                                    .background(meetTint, shape = shape),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                RadioButton(
-                                    selected = isMeetChecked,
-                                    onClick = {
-
-                                    },
-                                    colors = RadioButtonDefaults.colors(
-                                        selectedColor = Color.White,
-                                        unselectedColor = Color.LightGray
-                                    )
-
-                                )
-                                TextComponent(
-                                    text = "Meet",
-                                    fontSize = fontSize,
-                                    textStyle = style,
-                                    fontFamily = GGSansSemiBold,
-                                    textColor = meetTextColor,
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.ExtraBold
-                                )
-                            }
-                        }
-
-                    }
-
-                    2 -> {
-                        IconToggleButton(
-                            checked = isFaceTime,
-                            onCheckedChange = { it ->
-                                if(it == isFaceTime || it != isZoomChecked || it != isMeetChecked) {
-                                    isFaceTime = it
-                                    isZoomChecked = !it
-                                    isMeetChecked = !it
-                                }
-                                else{
-
-                                }
-                            }
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .padding(start = 5.dp, end = 5.dp, top = 10.dp)
-                                    .fillMaxWidth()
-                                    .height(54.dp)
-                                    .background(faceTimeTint, shape = shape),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                RadioButton(
-                                    selected = isFaceTime,
-                                    onClick = {
-
-                                    },
-                                    colors = RadioButtonDefaults.colors(
-                                        selectedColor = Color.White,
-                                        unselectedColor = Color.LightGray
-                                    )
-
-                                )
-                                TextComponent(
-                                    text = "FaceTime",
-                                    fontSize = fontSize,
-                                    textStyle = style,
-                                    fontFamily = GGSansSemiBold,
-                                    textColor = faceTimeTextColor,
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.ExtraBold
-                                )
-                            }
-                        }
-
-                    }
-                }
-            }
-
-        }
-    }
- }
-}
-
-
-
 

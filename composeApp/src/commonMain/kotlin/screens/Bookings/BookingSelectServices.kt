@@ -66,6 +66,7 @@ import androidx.compose.ui.unit.dp
 import components.ImageComponent
 import components.LocationToggleButton
 import components.TextComponent
+import components.ToggleButton
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -486,7 +487,11 @@ fun ServiceLocationToggle(){
                 .fillMaxWidth()
         )
 
-        LocationToggleButton(borderStroke = BorderStroke(1.dp, Color(color = 0xFFF43569)), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = MaterialTheme.typography.h4)
+        ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = MaterialTheme.typography.h4, onLeftClicked = {
+
+        }, onRightClicked = {
+
+        }, leftText = "Parlor", rightText = "Home")
 
     }
 

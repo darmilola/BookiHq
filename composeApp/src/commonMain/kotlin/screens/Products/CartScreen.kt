@@ -23,7 +23,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
@@ -58,7 +60,11 @@ import screens.consultation.leftTopBarItem
 import screens.consultation.rightTopBarItem
 import screens.consultation.stepItemTitle
 import screens.main.MainViewModel
+import widgets.AttachUserReviewsContent
+import widgets.DeliveryAddressWidget
+import widgets.PaymentMethodWidget
 import widgets.StepsProgressBar
+import widgets.attachReviewHeader
 
 
 class CartScreen(private val mainViewModel: MainViewModel) : Screen {
@@ -73,8 +79,8 @@ class CartScreen(private val mainViewModel: MainViewModel) : Screen {
 
         val colModifier = Modifier
             .padding(top = 40.dp, end = 0.dp)
-            .fillMaxWidth()
-            .fillMaxHeight()
+            .fillMaxSize()
+
 
         Column(modifier = colModifier,
             verticalArrangement = Arrangement.Top,
@@ -107,22 +113,36 @@ class CartScreen(private val mainViewModel: MainViewModel) : Screen {
 
             }
 
-              val carList: ArrayList<Int> = arrayListOf()
+           val carList: ArrayList<Int> = arrayListOf()
 
             carList.add(1)
             carList.add(1)
             carList.add(1)
+            carList.add(1)
 
-            PopulateCartItemList(carList)
+
+            Column(modifier = Modifier
+                .padding(top = 10.dp, end = 0.dp)
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState())
+                .weight(1f, false)) {
+
+                PopulateCartItemList(carList)
+                DeliveryAddressWidget()
+                StraightLine()
+                PaymentMethodWidget()
+                StraightLine()
+
+            }
 
         }
 
     }
 
-
     @Composable
     private fun PopulateCartItemList(cartItems: List<Int>){
-        LazyColumn {
+        LazyColumn(modifier = Modifier.height((180 * cartItems.size).dp)) {
             items(cartItems) {item ->
                 CartItem(onProductClickListener = {
                 })
