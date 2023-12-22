@@ -54,6 +54,8 @@ import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import screens.Bookings.BookingScreen
 import screens.Products.CartScreen
 import screens.SplashScreenCompose
+import screens.UserProfile.UserOrders
+import screens.authentication.AuthenticationComposeScreen
 import screens.authentication.WelcomeScreenCompose
 import screens.authentication.attachWaveIcon
 import screens.consultation.ConsultationScreen
@@ -72,7 +74,6 @@ object MainScreen : Screen {
             val navigator = LocalNavigator.currentOrThrow
             navigator.push(BookingScreen(mainViewModel))
         }
-
         if (screenId.value == 2){
             val navigator = LocalNavigator.currentOrThrow
             navigator.push(ConsultationScreen(mainViewModel))
@@ -81,6 +82,14 @@ object MainScreen : Screen {
         if (screenId.value == 3){
             val navigator = LocalNavigator.currentOrThrow
             navigator.push(CartScreen(mainViewModel))
+        }
+        if (screenId.value == 4){
+            val navigator = LocalNavigator.currentOrThrow
+            navigator.replace(AuthenticationComposeScreen(currentScreen = 4))
+        }
+        if (screenId.value == 5){
+            val navigator = LocalNavigator.currentOrThrow
+            navigator.push(UserOrders(mainViewModel))
         }
 
         TabNavigator(showDefaultTab(mainViewModel)) {

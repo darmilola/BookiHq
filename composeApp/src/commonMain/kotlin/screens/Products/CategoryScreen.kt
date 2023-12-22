@@ -43,6 +43,8 @@ fun CategoryScreen() {
             }
         }
 
+
+
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier.fillMaxWidth().padding(top = 10.dp).fillMaxHeight(),

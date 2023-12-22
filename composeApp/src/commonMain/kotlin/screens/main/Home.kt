@@ -251,7 +251,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     @OptIn(InternalVoyagerApi::class)
     @Composable
     fun ServicesWidget(iconRes: String, serviceTitle: String){
-        val tabNavigator = LocalNavigator.current
 
         val columnModifier = Modifier
             .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 10.dp)

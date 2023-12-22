@@ -34,6 +34,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -61,8 +62,11 @@ import components.GradientButton
 import components.IconButtonComponent
 import components.ImageComponent
 import components.TextComponent
+import dev.icerock.moko.mvvm.livedata.compose.observeAsState
+import screens.Bookings.BookingScreen
 import screens.SplashScreenCompose
 import screens.authentication.AuthenticationComposeScreen
+import screens.authentication.AuthenticationViewModel
 import screens.authentication.attachAuthenticationButton
 import screens.authentication.attachWaveIcon
 import widgets.ActionItemComponent
@@ -158,14 +162,17 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun EditProfileComp(style: TextStyle){
-
         val buttonStyle = Modifier
             .padding(top = 15.dp)
             .fillMaxWidth(0.40f)
             .background(color = Color.Transparent)
             .height(50.dp)
 
-        ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke((1.5).dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 19, shape = RoundedCornerShape(25.dp), textColor =  Color.DarkGray, style = style){}
+        val navigator = LocalNavigator.currentOrThrow
+
+        ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke((1.5).dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 19, shape = RoundedCornerShape(25.dp), textColor =  Color.DarkGray, style = style){
+            mainViewModel.setId(4)
+        }
 
     }
 
@@ -197,7 +204,9 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                     textColor = Color(color = 0xFF3d3d4e),
                     style = MaterialTheme.typography.button,
                     iconRes = "drawable/order_icon.png",
-                    isDestructiveAction = false)
+                    isDestructiveAction = false, onClick = {
+                        mainViewModel.setId(5)
+                    })
 
 
                 ActionItemComponent(

@@ -18,8 +18,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ButtonDefaults
@@ -41,15 +43,22 @@ import components.TextComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import components.ButtonComponent
 import components.IconTextFieldComponent
+import components.ImageComponent
 import components.TextFieldComponent
 import screens.main.MainScreen
+import screens.main.MainViewModel
+import screens.main.NotificationTab
 import widgets.OtpTextField
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterialApi::class)
@@ -83,9 +92,9 @@ fun CompleteProfileCompose() {
 
         Column(modifier = rootModifier) {
             Column(modifier = topLayoutModifier) {
-                attachBackIcon(0)
+                AttachBackIcon(0)
                 CompleteProfile()
-
+                ProfileImageUpdate()
                 Row(modifier = Modifier.fillMaxWidth().height(80.dp).padding(start = 10.dp, end = 10.dp, top = 20.dp)) {
                    FirstnameInput()
                    LastnameInput()
@@ -98,6 +107,31 @@ fun CompleteProfileCompose() {
             }
         }
     }
+}
+
+
+@Composable
+fun ProfileImageUpdate() {
+    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        Box(
+            Modifier
+                .padding(top = 20.dp, bottom = 5.dp)
+                .size(150.dp)
+                .background(color = Color.Transparent)
+        ) {
+            val modifier = Modifier
+                .padding(4.dp)
+                .clip(CircleShape)
+                .border(
+                    width = 4.dp,
+                    color = Color(0xffF4F4F4),
+                    shape = RoundedCornerShape(75.dp))
+                .size(150.dp)
+            ImageComponent(imageModifier = modifier, imageRes = "1.jpg")
+            EditProfilePictureButton()
+        }
+    }
+
 }
 
 @Composable
@@ -215,13 +249,48 @@ fun ConnectHandleInput() {
 
 }
 
+@Composable
+fun EditProfilePictureButton() {
+    Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.BottomEnd) {
+        val modifier = Modifier
+            .padding(end = 10.dp)
+            .background(color = Color.Blue, shape = CircleShape)
+            .border(
+                width = 2.dp,
+                color = Color(0xffF4F4F4),
+                shape = CircleShape
+            )
+            .size(width = 50.dp, height = 50.dp)
+
+        Box(modifier = modifier,
+            contentAlignment = Alignment.Center
+        ) {
+            ImageComponent(imageModifier = Modifier.size(25.dp).clickable {
+            }, imageRes = "drawable/edit_icon.png", colorFilter = ColorFilter.tint(color = Color(0xffF4F4F4)))
+        }
+    }
+}
+
+@Composable
+fun AttachBackIcon(goToScreen: Int = 0) {
+    val navigator = LocalNavigator.currentOrThrow
+    val modifier = Modifier
+        .padding(30.dp)
+        .clickable {
+            navigator.popUntilRoot()
+        }
+        .size(22.dp)
+    ImageComponent(imageModifier = modifier, imageRes = "back_arrow.png", colorFilter = ColorFilter.tint(color = Color.DarkGray))
+}
+
+
 
 
 
 @Composable
 fun CompleteProfile(){
     val rowModifier = Modifier
-        .padding(top = 30.dp, start = 10.dp)
+        .padding(top = 30.dp, start = 10.dp, bottom = 20.dp)
         .fillMaxWidth()
         .wrapContentHeight()
     MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
@@ -232,7 +301,7 @@ fun CompleteProfile(){
         ) {
             TextComponent(
                 text = "Complete Your Profile",
-                fontSize = 20,
+                fontSize = 25,
                 fontFamily = GGSansBold,
                 textStyle = MaterialTheme.typography.h6,
                 textColor = Color.DarkGray,
