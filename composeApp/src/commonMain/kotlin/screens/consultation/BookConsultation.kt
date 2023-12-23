@@ -61,10 +61,6 @@ import components.ToggleButton
 @Composable
 fun BookConsultation() {
 
-    val boxModifier =
-        Modifier
-            .height(350.dp)
-            .fillMaxWidth()
     Column(
         Modifier
             .fillMaxSize()
