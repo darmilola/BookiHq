@@ -101,13 +101,11 @@ class ConsultationScreen(private val mainViewModel: MainViewModel) : Screen {
         var btnFraction by remember { mutableStateOf(0f) }
 
         val currentPage = pagerState.currentPage
-        val navigator = LocalNavigator.currentOrThrow
 
-        if (pagerState.currentPage == 1){
-            btnFraction = 0.5f
-        }
-        else {
-            btnFraction = 0f
+        btnFraction = if (pagerState.currentPage == 1){
+            0.5f
+        } else {
+            0f
         }
 
         val bgStyle = Modifier
@@ -116,11 +114,6 @@ class ConsultationScreen(private val mainViewModel: MainViewModel) : Screen {
             .fillMaxHeight()
 
         val coroutineScope = rememberCoroutineScope()
-
-        val buttonStyle = Modifier
-            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
-            .fillMaxWidth(btnFraction)
-            .height(50.dp)
 
         val buttonStyle2 = Modifier
             .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)

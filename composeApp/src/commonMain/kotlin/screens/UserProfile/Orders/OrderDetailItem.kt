@@ -198,71 +198,12 @@ fun OrderDetailItemDetail(onProductClickListener: () -> Unit){
 }
 
 @Composable
-fun OrderDetailsStatusView(){
-    val columnModifier = Modifier
-        .padding(start = 10.dp, end = 10.dp)
-        .wrapContentHeight()
-    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
-        Column(
-            modifier = columnModifier,
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment  = Alignment.Start,
-        ) {
-
-            val modifier = Modifier
-                .padding(top = 5.dp)
-                .fillMaxWidth()
-                .wrapContentHeight()
-
-            ImageComponent(imageModifier = Modifier.size(150.dp).clickable {
-            }, imageRes = "drawable/celebrate_icon.png", colorFilter = ColorFilter.tint(color = Color.DarkGray))
-
-
-            TextComponent(
-                text = "SATURDAY DEC 23, 2023 05:11 AM",
-                fontSize = 15,
-                fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
-                textColor = Color.LightGray,
-                textAlign = TextAlign.Right,
-                fontWeight = FontWeight.Medium,
-                lineHeight = 30,
-                textModifier = Modifier
-                    .wrapContentSize())
-
-            TextComponent(
-                text = "Congratulations, \nYour Order Has Arrived",
-                fontSize = 23,
-                fontFamily = GGSansRegular,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
-                textAlign = TextAlign.Left,
-                fontWeight = FontWeight.Black,
-                lineHeight = 35,
-                textModifier = modifier
-            )
-
-            TextComponent(
-                text = "Track My Order",
-                fontSize = 18,
-                fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
-                textColor = Color.Blue,
-                textAlign = TextAlign.Right,
-                fontWeight = FontWeight.Black,
-                lineHeight = 30,
-                textModifier = Modifier
-                    .wrapContentSize().padding(top = 10.dp))
-        }
-    }
-}
-
-@Composable
 fun OrderDetailItemPriceInfoContent() {
     Row(
         modifier = Modifier
             .height(40.dp)
-            .fillMaxHeight(),
+            .fillMaxHeight()
+            .padding(top = 5.dp),
     ) {
 
         TextComponent(
@@ -285,7 +226,7 @@ fun OrderDetailItemPriceInfoContent() {
             textStyle = MaterialTheme.typography.h6,
             textColor = Color(color = 0xfffa2d65),
             textAlign = TextAlign.Right,
-            fontWeight = FontWeight.Black,
+            fontWeight = FontWeight.Medium,
             lineHeight = 30,
             textModifier = Modifier
                 .wrapContentSize())
