@@ -70,10 +70,8 @@ fun SheetContent() {
         )
 
         Row(modifier = Modifier.fillMaxHeight().fillMaxWidth().padding(top = 20.dp)) {
-            TrackOrderProgress(modifier = Modifier.fillMaxWidth().fillMaxHeight(), numberOfSteps = 4, currentProgress = 2)
+            TrackOrderProgress(modifier = Modifier.fillMaxWidth().fillMaxHeight(), numberOfSteps = 3, currentOrderProgress = 1)
         }
-
-
     }
 }
 

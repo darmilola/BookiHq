@@ -1,5 +1,7 @@
 package widgets
 
+import GGSansRegular
+import GGSansSemiBold
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,13 +15,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import components.TextComponent
 
 @Composable
 fun StepsProgressBar(modifier: Modifier = Modifier, numberOfSteps: Int, currentStep: Int) {
@@ -47,20 +54,20 @@ fun StepsProgressBar(modifier: Modifier = Modifier, numberOfSteps: Int, currentS
 }
 
 @Composable
-fun TrackOrderProgress(modifier: Modifier = Modifier, numberOfSteps: Int, currentProgress: Int) {
+fun TrackOrderProgress(modifier: Modifier = Modifier, numberOfSteps: Int, currentOrderProgress: Int) {
     Column (
         modifier = modifier,
     ) {
         for (currentStep in 0..numberOfSteps) {
             when (currentStep) {
                 0 -> {
-                    TrackOrderStepView(viewHeightMultiplier = 4, currentStep = currentStep, progress = currentProgress, bgColor = Color.Blue)
+                    TrackOrderStepView(viewHeightMultiplier = 4, currentStep = currentStep, currentOrderProgress = currentOrderProgress, isLastStep = true)
                 }
                 numberOfSteps -> {
-                    TrackOrderStepView(viewHeightMultiplier = 2, currentStep = currentStep, progress = currentProgress, bgColor = Color.Yellow, isLastStep = true)
+                    TrackOrderStepView(viewHeightMultiplier = 2, currentStep = currentStep, currentOrderProgress = currentOrderProgress, isInitialStep = true)
                 }
                 else -> {
-                    TrackOrderStepView(viewHeightMultiplier = 2, currentStep = currentStep, progress = currentProgress, bgColor = Color.Cyan)
+                    TrackOrderStepView(viewHeightMultiplier = 2, currentStep = currentStep, currentOrderProgress = currentOrderProgress)
                 }
             }
         }
@@ -68,17 +75,85 @@ fun TrackOrderProgress(modifier: Modifier = Modifier, numberOfSteps: Int, curren
 }
 
 @Composable
-fun TrackOrderStepView(viewHeightMultiplier: Int = 0, currentStep: Int, progress: Int, bgColor: Color, isLastStep: Boolean = false){
-     Row(modifier = Modifier.height((viewHeightMultiplier * 50).dp).fillMaxWidth()) {
+fun OrderStatusTextView(){
+
+    Column(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
+        OrderStatusDate()
+        OrderStatusText()
+
+    }
+}
+
+
+@Composable
+fun OrderStatusText(){
+    Column (modifier = Modifier.wrapContentSize()) {
+
+        TextComponent(
+            text = "Your payment is successful",
+            fontSize = 23,
+            fontFamily = GGSansSemiBold,
+            textStyle = TextStyle(),
+            textColor = Color.DarkGray,
+            textAlign = TextAlign.Left,
+            fontWeight = FontWeight.Normal,
+            lineHeight = 25,
+            textModifier = Modifier.wrapContentSize().padding(top = 5.dp))
+
+        TextComponent(
+            text = "We just confirmed your Order.",
+            fontSize = 20,
+            fontFamily = GGSansRegular,
+            textStyle = TextStyle(),
+            textColor = Color.Gray,
+            textAlign = TextAlign.Left,
+            fontWeight = FontWeight.Black,
+            lineHeight = 25,
+            textModifier = Modifier.wrapContentSize().padding(top = 5.dp))
+    }
+}
+
+@Composable
+fun OrderStatusDate(){
+    Row(modifier = Modifier.wrapContentSize()) {
+        TextComponent(
+            text = "SATURDAY DEC 23, 2023",
+            fontSize = 18,
+            fontFamily = GGSansRegular,
+            textStyle = TextStyle(),
+            textColor = Color.Gray,
+            textAlign = TextAlign.Left,
+            fontWeight = FontWeight.Black,
+            lineHeight = 30,
+            textModifier = Modifier.wrapContentSize().padding(top = 5.dp))
+
+        Box(modifier = Modifier.size(5.dp).padding(start = 5.dp, end = 5.dp).background(color = Color.DarkGray, shape = CircleShape))
+
+        TextComponent(
+            text = "3:11 PM",
+            fontSize = 18,
+            fontFamily = GGSansRegular,
+            textStyle = TextStyle(),
+            textColor = Color.Gray,
+            textAlign = TextAlign.Left,
+            fontWeight = FontWeight.Black,
+            lineHeight = 30,
+            textModifier = Modifier.wrapContentSize().padding(top = 5.dp))
+    }
+}
+
+@Composable
+fun TrackOrderStepView(viewHeightMultiplier: Int = 0, currentStep: Int, currentOrderProgress: Int, isInitialStep: Boolean = false,  isLastStep: Boolean = false){
+     Row(modifier = Modifier.height((viewHeightMultiplier * 65).dp).fillMaxWidth()) {
          EnhancedStep(
              modifier = Modifier.width(80.dp),
-             isCompete = currentStep < progress,
-             isCurrent = currentStep == progress,
+             isCompete = currentStep > currentOrderProgress,
+             isCurrent = currentStep == currentOrderProgress,
              dividerMultiplier = viewHeightMultiplier,
-             isLastStep = isLastStep
+             isLastStep = isInitialStep
          )
-         Row(modifier = Modifier.fillMaxWidth().fillMaxHeight().background(color = bgColor)) {
-
+         Row(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
+            if(isInitialStep || !isLastStep) OrderStatusTextView()
          }
 
     }
@@ -140,8 +215,8 @@ fun Step(modifier: Modifier = Modifier, isCompete: Boolean, isCurrent: Boolean, 
 
 @Composable
 fun EnhancedStep(modifier: Modifier = Modifier, isCompete: Boolean = false, isCurrent: Boolean = false, dividerMultiplier: Int = 1, isLastStep: Boolean = false) {
-    val dividerColor = if (isCompete) Color.DarkGray else Color.LightGray
-    val dividerHeight = dividerMultiplier * 50
+    val dividerColor = if (isCurrent || isCompete) Color.DarkGray else Color.LightGray
+    val dividerHeight = dividerMultiplier * 65
 
 
      Column (modifier = modifier.background(color = Color.Transparent),
