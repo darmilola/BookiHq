@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -49,21 +52,33 @@ fun OrderItemList() {
         Column(modifier = columnModifier,
             verticalArrangement = Arrangement.Top
         ) {
-            Column(modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp),
+            Column(modifier = Modifier.fillMaxWidth().padding(start = 15.dp, end = 15.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                TextComponent(
-                    text = "Friday, 26 Dec, 2023",
-                    fontSize = 18,
-                    fontFamily = GGSansRegular,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color(color = 0xFFFF6B94),
-                    textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Black,
-                    textModifier = Modifier.padding(top = 25.dp, bottom = 10.dp)
-                        .height(30.dp).fillMaxWidth()
-                )
+
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.height(50.dp).fillMaxWidth()
+                ) {
+                    TextComponent(
+                        text = "Friday, 26 Dec, 2023",
+                        fontSize = 18,
+                        fontFamily = GGSansRegular,
+                        textStyle = MaterialTheme.typography.h6,
+                        textColor = Color(color = 0xFFFF6B94),
+                        textAlign = TextAlign.Left,
+                        fontWeight = FontWeight.Black,
+                        textModifier = Modifier.wrapContentHeight().fillMaxWidth(0.50f))
+
+                    Box(modifier = Modifier.fillMaxWidth().clickable {
+                             navigator.push(OrderDetails())
+                        },
+                        contentAlignment = Alignment.CenterEnd) {
+                        ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = Color(color = 0xfffa2d65)))
+                    }
+                }
 
                 StraightLine()
             }
@@ -81,7 +96,7 @@ fun OrderItemList() {
             Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(top = 5.dp, start = 20.dp, end = 20.dp).height(50.dp).fillMaxWidth()
+                modifier = Modifier.padding(top = 5.dp, start = 15.dp, end = 15.dp).height(50.dp).fillMaxWidth()
             ) {
                 TextComponent(
                     text = "Total",

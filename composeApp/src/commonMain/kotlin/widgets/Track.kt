@@ -5,6 +5,7 @@ import GGSansSemiBold
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,10 +23,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import components.ImageComponent
 import components.TextComponent
 
 @Composable
@@ -75,33 +78,68 @@ fun TrackOrderProgress(modifier: Modifier = Modifier, numberOfSteps: Int, curren
 }
 
 @Composable
-fun OrderStatusTextView(){
+fun OrderStatusTextView(currentStep: Int, currentOrderProgress: Int){
+    var orderStatusTitle = ""
+    var orderStatusDescription = ""
+    val isCurrentStage: Boolean = currentStep == currentOrderProgress
+
+    when (currentStep) {
+        3 -> {
+            orderStatusTitle = "Your Payment is Successful"
+            orderStatusDescription = "We Just Confirmed your Order"
+        }
+        2 -> {
+            orderStatusTitle = "Your Order is been prepared"
+            orderStatusDescription = "We are packing your Order."
+        }
+        1 -> {
+            orderStatusTitle = "Your Order is on the way"
+            orderStatusDescription = "All set! we shipped your Order"
+        }
+    }
 
     Column(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
         OrderStatusDate()
-        OrderStatusText()
+        OrderStatusText(orderStatusTitle = orderStatusTitle, orderStatusDescription = orderStatusDescription, isCurrentStage = isCurrentStage)
+    }
+}
+
+
+@Composable
+fun OrderArrivedView(currentStep: Int, currentOrderProgress: Int){
+
+    val isCurrentStage: Boolean = currentStep == currentOrderProgress
+
+    Column(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
+
+        ImageComponent(imageModifier = Modifier.size(100.dp).clickable {
+        }, imageRes = "drawable/celebrate_icon.png", colorFilter = ColorFilter.tint(color = Color.DarkGray))
+
+        OrderStatusDate()
+        OrderStatusText(orderStatusTitle = "Your Order has arrived", orderStatusDescription = "Thank you for shopping with us. We hope you like the products!", isCurrentStage = isCurrentStage)
 
     }
 }
 
 
 @Composable
-fun OrderStatusText(){
+fun OrderStatusText(orderStatusTitle: String, orderStatusDescription: String, isCurrentStage: Boolean = false){
+    val titleColor: Color = if (isCurrentStage) Color.DarkGray else Color.Gray
     Column (modifier = Modifier.wrapContentSize()) {
 
         TextComponent(
-            text = "Your payment is successful",
+            text = orderStatusTitle,
             fontSize = 23,
             fontFamily = GGSansSemiBold,
             textStyle = TextStyle(),
-            textColor = Color.DarkGray,
+            textColor = titleColor,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Normal,
             lineHeight = 25,
             textModifier = Modifier.wrapContentSize().padding(top = 5.dp))
 
         TextComponent(
-            text = "We just confirmed your Order.",
+            text = orderStatusDescription,
             fontSize = 20,
             fontFamily = GGSansRegular,
             textStyle = TextStyle(),
@@ -153,7 +191,12 @@ fun TrackOrderStepView(viewHeightMultiplier: Int = 0, currentStep: Int, currentO
              isLastStep = isInitialStep
          )
          Row(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
-            if(isInitialStep || !isLastStep) OrderStatusTextView()
+            if (currentOrderProgress <= currentStep) {
+                if (isInitialStep || !isLastStep) OrderStatusTextView(
+                    currentStep,
+                    currentOrderProgress
+                ) else OrderArrivedView(currentStep, currentOrderProgress)
+            }
          }
 
     }
@@ -223,7 +266,6 @@ fun EnhancedStep(modifier: Modifier = Modifier, isCompete: Boolean = false, isCu
              verticalArrangement = Arrangement.Center,
              horizontalAlignment = Alignment.CenterHorizontally) {
        if (isCurrent) CurrentDotIndicator(isCompete, isCurrent) else DotIndicator(isCompete, isCurrent)
-        //Line
      if(!isLastStep) {
          Divider(
              modifier = Modifier.height(dividerHeight.dp).width(2.dp),
