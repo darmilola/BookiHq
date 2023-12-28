@@ -6,10 +6,10 @@ import AppTheme.AppSemiBoldTypography
 import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
-import androidx.compose.foundation.BorderStroke
+import Models.AppointmentItem
+import Models.AppointmentItemListModel
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -62,19 +62,17 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
-import cafe.adriel.voyager.navigator.LocalNavigator
 import components.ImageComponent
 import components.StraightLine
 import components.TextComponent
-import components.welcomeGradientBlock
+import kotlinx.datetime.LocalDate
 import screens.Bookings.AppointmentItemCard
 import screens.Bookings.BookingItemCard
 import screens.Products.BottomSheet
 import screens.Products.NewProductItem
-import screens.Products.ProductItem
+import utils.getAppointmentViewHeight
 import widgets.AppointmentsWidget
 import widgets.PopularServiceItem
-import widgets.ReviewsWidget
 import widgets.attachServiceImage
 
 class HomeTab(private val mainViewModel: MainViewModel) : Tab {
@@ -108,10 +106,22 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
             .padding(top = 5.dp)
             .fillMaxSize()
 
-        val listOfInt = ArrayList<Pair<Int, Int>>()
-        listOfInt.add(Pair(0,1))
-        listOfInt.add(Pair(1,2))
-        listOfInt.add(Pair(2,3))
+        val appointmentList = ArrayList<AppointmentItemListModel>()
+        val appointmentItems = ArrayList<AppointmentItem>()
+
+        val appointmentItem1 = AppointmentItem(appointmentType = 1)
+        val appointmentItem2 = AppointmentItem(appointmentType = 2)
+        val appointmentItem3 = AppointmentItem(appointmentType = 1)
+
+        appointmentItems.add(appointmentItem1)
+        appointmentItems.add(appointmentItem2)
+        appointmentItems.add(appointmentItem3)
+
+
+        val datedAppointmentSchedule1 = AppointmentItemListModel(appointmentItems = appointmentItems, appointmentType = 3, appointmentDate = LocalDate(year = 2023, monthNumber = 12, dayOfMonth = 27))
+        val datedAppointmentSchedule2 = AppointmentItemListModel(appointmentItems = appointmentItems, appointmentType = 5, appointmentDate = LocalDate(year = 2023, monthNumber = 12, dayOfMonth = 27))
+        appointmentList.add(datedAppointmentSchedule1)
+        appointmentList.add(datedAppointmentSchedule2)
 
 
 
@@ -132,14 +142,13 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                         Modifier
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())) {
-                        attachBusinessName()
+                        AttachBusinessName()
                         ProductPromoCard()
                         attachOurServices()
                         ServiceGridScreen()
-                        PopularTitle()
-                        PopularAppointmentScreen()
+                        RecommendedSessions()
                         AttachAppointments()
-                        AppointmentScreen(bookingItems = listOfInt)
+                        PopulateAppointmentScreen(datedAppointmentScheduleList = appointmentList)
                         NewProducts()
                         NewProductScreen()
                     }
@@ -317,7 +326,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     }
 
     @Composable
-    fun PopularTitle(){
+    fun RecommendedSessions(){
         val rowModifier = Modifier
             .padding(start = 20.dp, top = 20.dp)
             .fillMaxWidth()
@@ -328,7 +337,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 modifier = rowModifier
             ) {
                 TextComponent(
-                    text = "Popular",
+                    text = "Recommended",
                     fontSize = 18,
                     fontFamily = GGSansSemiBold,
                     textStyle = MaterialTheme.typography.h6,
@@ -336,10 +345,12 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                     textAlign = TextAlign.Left,
                     fontWeight = FontWeight.ExtraBold,
                     lineHeight = 30,
-                    textModifier = Modifier.fillMaxWidth(0.20f)
+                    textModifier = Modifier.fillMaxWidth(0.34f)
                 )
                 StraightLine()
             }
+
+            PopularAppointmentList()
 
         }
     }
@@ -436,20 +447,10 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun PopularAppointmentScreen() {
+    fun PopularAppointmentList() {
         val pagerState = rememberPagerState(pageCount = {
             3
         })
-
-        var showSheet by remember { mutableStateOf(false) }
-
-        if (showSheet) {
-            BottomSheet() {
-                showSheet = false
-            }
-        }
-
-        val coroutineScope = rememberCoroutineScope()
 
         val boxModifier =
             Modifier
@@ -469,8 +470,8 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                     state = pagerState,
                     modifier = Modifier.fillMaxSize()
                 ) { page ->
-                    PopularServiceItem (onProductClickListener = {
-                        showSheet = true
+                    PopularServiceItem (onSessionClickListener = {
+                        mainViewModel.setId(1)
                     })
                 }
                 Row(
@@ -506,43 +507,16 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     }
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
-    fun AppointmentScreen(bookingItems: List<Pair<Int,Int>>) {
-        AppointmentItemCard(viewType = bookingItems.get(2).first, contentSize = ((bookingItems.get(2).second*135)), itemCount = bookingItems.get(2).second)
-    }
-
-
-    @Composable
-    fun attachAppointments(){
-        val rowModifier = Modifier
-            .padding(start = 20.dp, top = 20.dp)
-            .fillMaxWidth()
-        MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = rowModifier
-            ) {
-                TextComponent(
-                    text = "My Appointments",
-                    fontSize = 18,
-                    fontFamily = GGSansSemiBold,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.DarkGray,
-                    textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.ExtraBold,
-                    lineHeight = 30,
-                    textModifier = Modifier.fillMaxWidth(0.40f)
-                )
-                StraightLine()
+    fun PopulateAppointmentScreen(datedAppointmentScheduleList: List<AppointmentItemListModel>) {
+        LazyColumn(modifier = Modifier.fillMaxWidth().height(getAppointmentViewHeight(datedAppointmentScheduleList).dp), userScrollEnabled = false) {
+            items(datedAppointmentScheduleList) {item ->
+                AppointmentItemCard(viewType = item.appointmentType, contentSize = ((item.appointmentItems.size*145)), itemCount = item.appointmentItems.size, bookingItems = item)
             }
-
         }
     }
 
-
-
     @Composable
-    fun attachBusinessName(){
+    fun AttachBusinessName(){
         val rowModifier = Modifier
             .padding(start = 20.dp)
             .fillMaxWidth()
@@ -656,42 +630,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
     }
 
-
-    @Composable
-    fun DealText(){
-        val rowModifier = Modifier
-            .padding(start = 25.dp, top = 5.dp, bottom = 25.dp)
-            .fillMaxWidth()
-        MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
-            Column(
-                modifier = rowModifier
-            ) {
-                val modifier = Modifier.padding(start = 5.dp)
-                TextComponent(
-                    text = "Exclusive Deal",
-                    fontSize = 25,
-                    fontFamily = GGSansSemiBold,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.White,
-                    textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.ExtraBold,
-                    lineHeight = 30
-                )
-
-                TextComponent(
-                    text = "Flat 60% off on Curology",
-                    fontSize = 16,
-                    fontFamily = GGSansSemiBold,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.White,
-                    textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Bold,
-                    lineHeight = 30
-                )
-
-            }
-        }
-    }
 
 
 

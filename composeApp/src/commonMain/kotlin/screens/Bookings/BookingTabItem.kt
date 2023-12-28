@@ -5,12 +5,14 @@ import AppTheme.AppColors
 import AppTheme.AppSemiBoldTypography
 import GGSansRegular
 import GGSansSemiBold
+import Models.AppointmentItemListModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -40,7 +42,7 @@ import components.TextComponent
 fun BookingItemCard(viewType: Int = 0, contentSize: Int = 0, itemCount: Int = 0) {
     var itemColor: Long = 0L
     var imageRes: String = ""
-    var headerFooterHeight: Int = 140
+    var headerFooterHeight: Int = 180
 
 
 
@@ -110,8 +112,10 @@ fun BookingItemCard(viewType: Int = 0, contentSize: Int = 0, itemCount: Int = 0)
                     textColor = Color(color = 0xFFFF6B94),
                     textAlign = TextAlign.Left,
                     fontWeight = FontWeight.Black,
-                    textModifier = Modifier.padding(top = 10.dp, bottom = 10.dp).height(30.dp).fillMaxWidth()
+                    textModifier = Modifier.padding(top = 10.dp).height(30.dp).fillMaxWidth()
                 )
+
+                AttachBusinessName()
 
                 StraightLine()
 
@@ -158,13 +162,50 @@ fun BookingItemCard(viewType: Int = 0, contentSize: Int = 0, itemCount: Int = 0)
     }
 }
 
+@Composable
+fun AttachBusinessName(){
+    val rowModifier = Modifier
+        .padding(top = 10.dp, bottom = 10.dp)
+        .fillMaxWidth()
+    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.Top,
+            modifier = rowModifier
+        ) {
+            attachLocationIcon()
+            TextComponent(
+                text = "JonJo, Beauty and Spa Services",
+                fontSize = 17,
+                fontFamily = GGSansSemiBold,
+                textStyle = MaterialTheme.typography.h6,
+                textColor = Color.Gray,
+                textAlign = TextAlign.Left,
+                fontWeight = FontWeight.Medium,
+                textModifier = Modifier.wrapContentSize().padding(start = 3.dp),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
+@Composable
+fun attachLocationIcon() {
+    val modifier = Modifier
+        .padding(top = 2.dp)
+        .size(17.dp)
+    ImageComponent(imageModifier = modifier, imageRes = "location_icon_filled.png", colorFilter = ColorFilter.tint(color = Color.LightGray))
+}
+
+
 
 
 @Composable
-fun AppointmentItemCard(viewType: Int = 0, contentSize: Int = 0, itemCount: Int = 0) {
+fun AppointmentItemCard(viewType: Int = 0, contentSize: Int = 0, itemCount: Int = 0, bookingItems: AppointmentItemListModel) {
     var itemColor: Long = 0L
     var imageRes: String = ""
-    var headerFooterHeight: Int = 80
+    val headerFooterHeight: Int = 80
 
 
 
@@ -234,21 +275,107 @@ fun AppointmentItemCard(viewType: Int = 0, contentSize: Int = 0, itemCount: Int 
                     textColor = Color(color = 0xFFFF6B94),
                     textAlign = TextAlign.Left,
                     fontWeight = FontWeight.Black,
-                    textModifier = Modifier.padding(top = 10.dp, bottom = 10.dp).height(30.dp).fillMaxWidth()
+                    textModifier = Modifier.padding(top = 10.dp).height(30.dp).fillMaxWidth()
                 )
 
+                AttachBusinessName()
                 StraightLine()
 
                 LazyColumn(modifier = Modifier
                     .padding(bottom = 10.dp, top = 10.dp)
                     .fillMaxWidth()
-                    .height(contentSize.dp)) {
-                    items(itemCount) {item ->
-                        BookingItem()
+                    .height(contentSize.dp), userScrollEnabled = false) {
+                    items(bookingItems.appointmentItems) {item ->
+                        AppointmentItem(item.appointmentType)
                     }
                 }
 
             }
+        }
+    }
+}
+
+
+@Composable
+fun AppointmentItem(appointmentType: Int) {
+    val rowModifier = Modifier
+        .padding(top = 10.dp)
+        .fillMaxWidth()
+
+    val indicatorModifier = Modifier
+        .padding(start = 10.dp, end = 10.dp, top = 5.dp)
+        .background(color = Color.Transparent)
+        .size(4.dp)
+        .background(
+            color = Color.Gray,
+            shape = RoundedCornerShape(4.dp)
+        )
+
+    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
+        Column(
+            modifier = rowModifier
+        ) {
+            TextComponent(
+                text = if (appointmentType == 1) "Visions of Beauty" else "Consultation",
+                fontSize = 22,
+                fontFamily = GGSansSemiBold,
+                textStyle = MaterialTheme.typography.h6,
+                textColor = Color.DarkGray,
+                textAlign = TextAlign.Left,
+                fontWeight = FontWeight.Medium,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                lineHeight = 25
+            )
+            Row (horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically){
+                TextComponent(
+                    text = if (appointmentType == 1) "Anna McCain" else "Virtual",
+                    fontSize = 20,
+                    fontFamily = GGSansRegular,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Color.Gray,
+                    textAlign = TextAlign.Left,
+                    fontWeight = FontWeight.Black,
+                    textModifier = Modifier.padding(top = 5.dp).wrapContentSize(),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Box(modifier = indicatorModifier)
+
+                TextComponent(
+                    text = "5:30 - 8:00am",
+                    fontSize = 18,
+                    fontFamily = GGSansRegular,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Color.DarkGray,
+                    textAlign = TextAlign.Right,
+                    fontWeight = FontWeight.Black,
+                    textModifier = Modifier.padding(top = 5.dp).wrapContentSize(),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp, top = 10.dp)
+            ) {
+                TextComponent(
+                    text = if (appointmentType == 1) "View Info" else "Join Session",
+                    fontSize = 17,
+                    fontFamily = GGSansSemiBold,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Color(color = 0xfffa2d65),
+                    textAlign = TextAlign.Left,
+                    fontWeight = FontWeight.Normal,
+                    textModifier = Modifier.wrapContentSize().padding(end = 7.dp))
+
+                ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = Color(color = 0xfffa2d65)))
+            }
+
+            StraightLine()
         }
     }
 }
