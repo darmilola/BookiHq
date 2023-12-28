@@ -40,7 +40,7 @@ import screens.Products.ViewNewProduct
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun PopularServiceItem(onSessionClickListener: () -> Unit) {
+fun RecommendedServiceItem(onSessionClickListener: () -> Unit) {
     val columnModifier = Modifier
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .clickable {
@@ -58,16 +58,16 @@ fun PopularServiceItem(onSessionClickListener: () -> Unit) {
             Column(
                 modifier = columnModifier
             ) {
-                PopularServicesImage()
-                PopularAppointmentDescription()
-                PopularServicePriceAndAction()
+                RecommendedServicesImage()
+                RecommendedServiceDescription()
+                RecommendedServicePriceAndAction()
             }
         }
     }
 }
 
 @Composable
-fun PopularServicePriceAndAction() {
+fun RecommendedServicePriceAndAction() {
     Row(modifier = Modifier.height(50.dp).padding(start = 10.dp, end = 10.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically) {
@@ -145,7 +145,7 @@ fun PopularServicePriceContent() {
     }
 
 @Composable
-fun PopularAppointmentDescription() {
+fun RecommendedServiceDescription() {
     Column(
         modifier = Modifier
             .padding(top = 10.dp, start = 10.dp, end = 10.dp)
@@ -183,7 +183,7 @@ fun PopularAppointmentDescription() {
 }
 
 @Composable
-fun PopularServicesImage() {
+fun RecommendedServicesImage() {
     val imageModifier =
         Modifier
             .height(200.dp)

@@ -212,7 +212,7 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
     @Composable
     fun AttachActionButtons() {
         val buttonStyle2 = Modifier
-            .padding(bottom = 10.dp, start = 15.dp, end = 15.dp)
+            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
             .fillMaxWidth()
             .height(50.dp)
 
@@ -233,24 +233,6 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
                 style = MaterialTheme.typography.h4
             ) {
                 mainViewModel.setId(2)
-            }
-
-            GradientButton(
-                modifier = gradientButtonStyle,
-                buttonText = "Go to Appointment",
-                borderStroke = null,
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                fontSize = 18,
-                shape = RoundedCornerShape(10.dp),
-                textColor = Color.White,
-                style = MaterialTheme.typography.h4,
-                gradient = Brush.horizontalGradient(
-                    colors = listOf(
-                        Color(color = 0xFFF43569),
-                        Color(color = 0xFFFF823E)
-                    )
-                )
-            ) {
             }
         }
 

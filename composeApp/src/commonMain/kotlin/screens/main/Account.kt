@@ -217,7 +217,9 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                     textColor = Color(color = 0xFF3d3d4e),
                     style = MaterialTheme.typography.button,
                     iconRes = "drawable/switch_icon.png",
-                    isDestructiveAction = false)
+                    isDestructiveAction = false, onClick = {
+                        mainViewModel.setId(6)
+                    })
 
 
                 ActionItemComponent(

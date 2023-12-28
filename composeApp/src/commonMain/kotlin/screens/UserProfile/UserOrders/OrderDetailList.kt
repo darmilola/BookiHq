@@ -1,4 +1,4 @@
-package screens.UserProfile.Orders
+package screens.UserProfile.UserOrders
 
 import AppTheme.AppColors
 import AppTheme.AppSemiBoldTypography
@@ -17,9 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,8 +39,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import components.ImageComponent
 import components.TextComponent
-import screens.Bookings.StraightLine
-import screens.Products.BottomSheet
+import screens.UserProfile.UserOrders.OrderItemDetail
+import screens.UserProfile.UserOrders.TrackMyOrderBottomSheet
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

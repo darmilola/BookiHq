@@ -36,7 +36,8 @@ import components.TextComponent
 import dev.icerock.moko.mvvm.livedata.compose.observeAsState
 import screens.Bookings.BookingScreen
 import screens.Products.CartScreen
-import screens.UserProfile.Orders.UserOrders
+import screens.UserProfile.ConnectBusiness.ConnectPage
+import screens.UserProfile.UserOrders.UserOrders
 import screens.authentication.AuthenticationComposeScreen
 import screens.consultation.ConsultationScreen
 
@@ -70,6 +71,10 @@ object MainScreen : Screen {
         if (screenId.value == 5){
             val navigator = LocalNavigator.currentOrThrow
             navigator.push(UserOrders(mainViewModel))
+        }
+        if (screenId.value == 6){
+            val navigator = LocalNavigator.currentOrThrow
+            navigator.push(ConnectPage)
         }
 
         TabNavigator(showDefaultTab(mainViewModel)) {

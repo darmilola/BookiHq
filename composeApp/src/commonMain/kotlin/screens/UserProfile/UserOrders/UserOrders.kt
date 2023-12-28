@@ -1,4 +1,4 @@
-package screens.UserProfile.Orders
+package screens.UserProfile.UserOrders
 
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
@@ -37,7 +37,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import components.ImageComponent
 import components.TextComponent
 import components.ToggleButton
-import screens.UserProfile.Orders.OrderItemList
 import screens.consultation.rightTopBarItem
 import screens.main.MainViewModel
 

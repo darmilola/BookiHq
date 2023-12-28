@@ -1,4 +1,4 @@
-package screens.UserProfile.Orders
+package screens.UserProfile.UserOrders
 
 import AppTheme.AppColors
 import AppTheme.AppSemiBoldTypography
@@ -36,6 +36,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import components.ImageComponent
 import components.TextComponent
 import screens.Bookings.StraightLine
+import screens.UserProfile.UserOrders.OrderDetails
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

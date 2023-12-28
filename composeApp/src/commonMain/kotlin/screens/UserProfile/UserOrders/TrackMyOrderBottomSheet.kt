@@ -1,4 +1,4 @@
-package screens.UserProfile.Orders
+package screens.UserProfile.UserOrders
 
 import GGSansRegular
 import androidx.compose.foundation.background

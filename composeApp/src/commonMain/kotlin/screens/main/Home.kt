@@ -67,12 +67,11 @@ import components.StraightLine
 import components.TextComponent
 import kotlinx.datetime.LocalDate
 import screens.Bookings.AppointmentItemCard
-import screens.Bookings.BookingItemCard
 import screens.Products.BottomSheet
 import screens.Products.NewProductItem
 import utils.getAppointmentViewHeight
 import widgets.AppointmentsWidget
-import widgets.PopularServiceItem
+import widgets.RecommendedServiceItem
 import widgets.attachServiceImage
 
 class HomeTab(private val mainViewModel: MainViewModel) : Tab {
@@ -470,7 +469,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                     state = pagerState,
                     modifier = Modifier.fillMaxSize()
                 ) { page ->
-                    PopularServiceItem (onSessionClickListener = {
+                    RecommendedServiceItem (onSessionClickListener = {
                         mainViewModel.setId(1)
                     })
                 }
