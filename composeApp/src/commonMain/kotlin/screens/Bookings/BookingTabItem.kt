@@ -204,7 +204,6 @@ fun attachLocationIcon() {
 @Composable
 fun AppointmentItemCard(viewType: Int = 0, contentSize: Int = 0, itemCount: Int = 0, bookingItems: AppointmentItemListModel) {
     var itemColor: Long = 0L
-    var imageRes: String = ""
     val headerFooterHeight: Int = 80
 
 
@@ -212,27 +211,21 @@ fun AppointmentItemCard(viewType: Int = 0, contentSize: Int = 0, itemCount: Int 
     when (viewType) {
         0 -> {
             itemColor = 0xFFFF799D
-            imageRes = "app_logo_minimal.png"
         }
         1 -> {
             itemColor = 0xFF65B8FA
-            imageRes = "task_icon.png"
         }
         2 -> {
             itemColor =  0xFF68EA8C
-            imageRes = "schedule_icon.png"
         }
         3 -> {
             itemColor = 0xFFF8CF69
-            imageRes = "video_icon.png"
         }
         4 -> {
             itemColor = 0xFFDD6EEA
-            imageRes = "purchase_icon.png"
         }
         else -> {
             itemColor = 0xFFFF799D
-            imageRes = "app_logo_minimal.png"
         }
     }
 

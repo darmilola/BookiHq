@@ -349,7 +349,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 StraightLine()
             }
 
-            PopularAppointmentList()
+            RecommendedAppointmentList()
 
         }
     }
@@ -446,7 +446,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun PopularAppointmentList() {
+    fun RecommendedAppointmentList() {
         val pagerState = rememberPagerState(pageCount = {
             3
         })
@@ -464,13 +464,27 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
         Box(modifier = boxBgModifier) {
 
+            var showSheet by remember { mutableStateOf(false) }
+            if (showSheet) {
+                BottomSheet() {
+                    showSheet = false
+                }
+            }
             Box(contentAlignment = Alignment.BottomCenter, modifier = boxModifier) {
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier.fillMaxSize()
                 ) { page ->
-                    RecommendedServiceItem (onSessionClickListener = {
-                        mainViewModel.setId(1)
+                    RecommendedServiceItem (viewType = page, onSessionClickListener = {
+                        when (page) {
+                            0 -> mainViewModel.setId(1)
+                            1 -> {
+                                 mainViewModel.setId(2)
+                            }
+                            else -> {
+                                showSheet = true
+                            }
+                        }
                     })
                 }
                 Row(

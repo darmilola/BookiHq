@@ -40,7 +40,22 @@ import screens.Products.ViewNewProduct
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun RecommendedServiceItem(onSessionClickListener: () -> Unit) {
+fun RecommendedServiceItem(viewType: Int = 0, onSessionClickListener: () -> Unit) {
+    var itemColor: Long = 0L
+
+    when (viewType) {
+        0 -> {
+            itemColor = 0xFFFF799D
+        }
+        1 -> {
+            itemColor = 0xFF65B8FA
+        }
+        2 -> {
+            itemColor =  0xFF68EA8C
+        }
+    }
+
+
     val columnModifier = Modifier
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .clickable {
@@ -55,19 +70,45 @@ fun RecommendedServiceItem(onSessionClickListener: () -> Unit) {
                 .height(410.dp)
                 .wrapContentWidth()
         ) {
-            Column(
-                modifier = columnModifier
+            Row(
+                modifier = Modifier
+                    .background(color = Color.White)
+                    .fillMaxWidth()
+                    .fillMaxHeight()
             ) {
-                RecommendedServicesImage()
-                RecommendedServiceDescription()
-                RecommendedServicePriceAndAction()
+                Row(
+                    modifier = Modifier
+                        .background(color = Color(color = itemColor))
+                        .fillMaxWidth(0.015f)
+                        .fillMaxHeight()
+                ) {}
+                Column(
+                    modifier = columnModifier
+                ) {
+                    RecommendedServicesImage(viewType = viewType)
+                    RecommendedServiceDescription()
+                    RecommendedServicePriceAndAction(viewType = viewType)
+                }
             }
         }
     }
 }
 
 @Composable
-fun RecommendedServicePriceAndAction() {
+fun RecommendedServicePriceAndAction(viewType: Int = 0) {
+    var textColor = Color(color = 0xfffa265)
+
+    when (viewType) {
+        0 -> {
+            textColor =  Color(color = 0xFFFF799D)
+        }
+        1 -> {
+            textColor =  Color(color = 0xFF65B8FA)
+        }
+        2 -> {
+            textColor =   Color(color = 0xFF68EA8C)
+        }
+    }
     Row(modifier = Modifier.height(50.dp).padding(start = 10.dp, end = 10.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically) {
@@ -75,7 +116,7 @@ fun RecommendedServicePriceAndAction() {
         Row(modifier = Modifier.fillMaxWidth(0.4f),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically) {
-            PopularServicePriceContent()
+            PopularServicePriceContent(textColor = textColor)
         }
 
         Row(horizontalArrangement = Arrangement.End,
@@ -86,55 +127,30 @@ fun RecommendedServicePriceAndAction() {
                 modifier = Modifier.fillMaxSize()
             ) {
                 TextComponent(
-                    text = "Book Now",
+                    text = if(viewType == 0) "Book Now" else if (viewType == 1) "Let's Talk" else "Buy Now",
                     fontSize = 18,
                     fontFamily = GGSansSemiBold,
                     textStyle = MaterialTheme.typography.h6,
-                    textColor = Color(color = 0xfffa2d65),
+                    textColor = textColor,
                     textAlign = TextAlign.Left,
                     fontWeight = FontWeight.Normal,
                     textModifier = Modifier.wrapContentSize().padding(end = 7.dp))
 
-                    ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = Color(color = 0xfffa2d65)))
+                    ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = textColor))
             }
 
         }
     }
 
 }
-
-
 @Composable
-fun PopularServiceFav() {
-    Row {
-        ImageComponent(imageModifier = Modifier.size(24.dp).padding(top = 2.dp), imageRes = "fav_icon.png", colorFilter = ColorFilter.tint(color = Color(0xfffa2d65)))
-        TextComponent(
-            text = "500",
-            fontSize = 20,
-            fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color.DarkGray,
-            textAlign = TextAlign.Left,
-            fontWeight = FontWeight.SemiBold,
-            lineHeight = 30,
-            textModifier = Modifier
-                .padding(start = 5.dp)
-                .fillMaxWidth()
-                .wrapContentHeight()
-        )
-    }
-}
-
-
-
-@Composable
-fun PopularServicePriceContent() {
+fun PopularServicePriceContent(textColor: Color) {
      TextComponent(
             text = "$670,000",
             fontSize = 20,
             fontFamily = GGSansRegular,
             textStyle = MaterialTheme.typography.h6,
-            textColor = Color(color = 0xfffa2d65),
+            textColor = textColor,
             textAlign = TextAlign.Right,
             fontWeight = FontWeight.Black,
             lineHeight = 30,
@@ -183,7 +199,7 @@ fun RecommendedServiceDescription() {
 }
 
 @Composable
-fun RecommendedServicesImage() {
+fun RecommendedServicesImage(viewType: Int = 0) {
     val imageModifier =
         Modifier
             .height(200.dp)
@@ -194,7 +210,7 @@ fun RecommendedServicesImage() {
         ) {
             ImageComponent(
                 imageModifier = imageModifier,
-                imageRes = "popular.jpg",
+                imageRes = if(viewType == 0) "drawable/fingernails.jpg" else if(viewType == 1) "drawable/doctor.jpg" else "drawable/olive_oil.jpg",
                 contentScale = ContentScale.Crop
             )
         }
