@@ -147,7 +147,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                         ServiceGridScreen()
                         RecommendedSessions()
                         AttachAppointments()
-                        PopulateAppointmentScreen(datedAppointmentScheduleList = appointmentList)
+                        PopulateAppointmentScreen(datedAppointmentScheduleList = appointmentList, mainViewModel = mainViewModel)
                         NewProducts()
                         NewProductScreen()
                     }
@@ -520,10 +520,10 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     }
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
-    fun PopulateAppointmentScreen(datedAppointmentScheduleList: List<AppointmentItemListModel>) {
+    fun PopulateAppointmentScreen(datedAppointmentScheduleList: List<AppointmentItemListModel>, mainViewModel: MainViewModel) {
         LazyColumn(modifier = Modifier.fillMaxWidth().height(getAppointmentViewHeight(datedAppointmentScheduleList).dp), userScrollEnabled = false) {
             items(datedAppointmentScheduleList) {item ->
-                AppointmentItemCard(viewType = item.appointmentType, contentSize = ((item.appointmentItems.size*145)), itemCount = item.appointmentItems.size, bookingItems = item)
+                AppointmentItemCard(viewType = item.appointmentType, contentSize = ((item.appointmentItems.size*145)), bookingItems = item, mainViewModel = mainViewModel)
             }
         }
     }

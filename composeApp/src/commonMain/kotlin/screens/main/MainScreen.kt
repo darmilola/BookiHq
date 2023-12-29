@@ -35,6 +35,7 @@ import cafe.adriel.voyager.navigator.tab.TabNavigator
 import components.TextComponent
 import dev.icerock.moko.mvvm.livedata.compose.observeAsState
 import screens.Bookings.BookingScreen
+import screens.Bookings.ServiceInformationPage
 import screens.Products.CartScreen
 import screens.UserProfile.ConnectBusiness.ConnectPage
 import screens.UserProfile.UserOrders.UserOrders
@@ -75,6 +76,10 @@ object MainScreen : Screen {
         if (screenId.value == 6){
             val navigator = LocalNavigator.currentOrThrow
             navigator.push(ConnectPage)
+        }
+        if (screenId.value == 7){
+            val navigator = LocalNavigator.currentOrThrow
+            navigator.push(ServiceInformationPage)
         }
 
         TabNavigator(showDefaultTab(mainViewModel)) {

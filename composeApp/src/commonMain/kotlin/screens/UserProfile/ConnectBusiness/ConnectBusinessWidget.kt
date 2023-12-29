@@ -250,9 +250,6 @@ fun BusinessInfoContent(onSessionClickListener: () -> Unit) {
     val columnModifier = Modifier
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .padding(start = 10.dp, end = 10.dp)
-        .clickable {
-            onSessionClickListener()
-        }
         .fillMaxHeight()
         .fillMaxWidth()
     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {

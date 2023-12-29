@@ -83,7 +83,7 @@ import screens.UserProfile.UserOrders.OrderDetailItemPriceInfoContent
             ) {
                 ImageComponent(
                     imageModifier = imageModifier,
-                    imageRes = "woman2.jpg",
+                    imageRes = "drawable/logos_icon.png",
                     contentScale = ContentScale.Crop
                 )
             }

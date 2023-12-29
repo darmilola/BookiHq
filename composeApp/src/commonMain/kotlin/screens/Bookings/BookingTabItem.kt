@@ -7,6 +7,7 @@ import GGSansRegular
 import GGSansSemiBold
 import Models.AppointmentItemListModel
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -37,6 +42,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import components.ImageComponent
 import components.TextComponent
+import features.consultations.WaitingRoomBottomSheet
+import screens.Products.BottomSheet
+import screens.main.MainViewModel
 
 @Composable
 fun BookingItemCard(viewType: Int = 0, contentSize: Int = 0, itemCount: Int = 0) {
@@ -202,8 +210,8 @@ fun attachLocationIcon() {
 
 
 @Composable
-fun AppointmentItemCard(viewType: Int = 0, contentSize: Int = 0, itemCount: Int = 0, bookingItems: AppointmentItemListModel) {
-    var itemColor: Long = 0L
+fun AppointmentItemCard(viewType: Int = 0, contentSize: Int = 0, bookingItems: AppointmentItemListModel, mainViewModel: MainViewModel) {
+    var itemColor = 0L
     val headerFooterHeight: Int = 80
 
 
@@ -279,7 +287,7 @@ fun AppointmentItemCard(viewType: Int = 0, contentSize: Int = 0, itemCount: Int 
                     .fillMaxWidth()
                     .height(contentSize.dp), userScrollEnabled = false) {
                     items(bookingItems.appointmentItems) {item ->
-                        AppointmentItem(item.appointmentType)
+                        AppointmentItem(item.appointmentType, mainViewModel = mainViewModel)
                     }
                 }
 
@@ -290,10 +298,16 @@ fun AppointmentItemCard(viewType: Int = 0, contentSize: Int = 0, itemCount: Int 
 
 
 @Composable
-fun AppointmentItem(appointmentType: Int) {
+fun AppointmentItem(appointmentType: Int, mainViewModel: MainViewModel) {
     val rowModifier = Modifier
         .padding(top = 10.dp)
         .fillMaxWidth()
+    var showSheet by remember { mutableStateOf(false) }
+    if (showSheet) {
+        WaitingRoomBottomSheet {
+            showSheet = false
+        }
+    }
 
     val indicatorModifier = Modifier
         .padding(start = 10.dp, end = 10.dp, top = 5.dp)
@@ -353,7 +367,14 @@ fun AppointmentItem(appointmentType: Int) {
             Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp, top = 10.dp)
+                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp, top = 10.dp).clickable {
+                   if (appointmentType == 1) {
+                       mainViewModel.setId(7)
+                   }
+                    else{
+                        showSheet = true
+                    }
+                }
             ) {
                 TextComponent(
                     text = if (appointmentType == 1) "View Info" else "Join Session",
