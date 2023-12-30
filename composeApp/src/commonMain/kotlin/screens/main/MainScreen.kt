@@ -41,6 +41,7 @@ import screens.UserProfile.ConnectBusiness.ConnectPage
 import screens.UserProfile.UserOrders.UserOrders
 import screens.authentication.AuthenticationComposeScreen
 import screens.consultation.ConsultationScreen
+import screens.consultation.VirtualConsultationRoom
 
 object MainScreen : Screen {
 
@@ -80,6 +81,10 @@ object MainScreen : Screen {
         if (screenId.value == 7){
             val navigator = LocalNavigator.currentOrThrow
             navigator.push(ServiceInformationPage)
+        }
+        if (screenId.value == 8){
+            val navigator = LocalNavigator.currentOrThrow
+            navigator.push(VirtualConsultationRoom)
         }
 
         TabNavigator(showDefaultTab(mainViewModel)) {

@@ -50,12 +50,13 @@ import components.GradientButton
 import components.TextComponent
 import screens.UserProfile.ConnectBusiness.BusinessLogo
 import screens.authentication.AuthenticationComposeScreen
+import screens.main.MainViewModel
 import widgets.CartIncrementDecrementWidget
 import widgets.TrackOrderProgress
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WaitingRoomBottomSheet(onDismiss: () -> Unit) {
+fun WaitingRoomBottomSheet(mainViewModel: MainViewModel, onDismiss: () -> Unit) {
     val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ModalBottomSheet(
         modifier = Modifier.padding(top = 20.dp),
@@ -65,13 +66,13 @@ fun WaitingRoomBottomSheet(onDismiss: () -> Unit) {
         containerColor = Color(0xFFF3F3F3),
         dragHandle = { },
     ) {
-        SheetContent()
+        SheetContent(mainViewModel)
     }
 }
 
 
 @Composable
-fun SheetContent() {
+fun SheetContent(mainViewModel: MainViewModel) {
     Column(
         Modifier
             .padding(bottom = 10.dp, start = 20.dp, end = 20.dp)
@@ -120,7 +121,7 @@ fun SheetContent() {
                 textStyle = MaterialTheme.typography.h6, textColor = Color.Gray, textAlign = TextAlign.Center,
                 fontWeight = FontWeight.ExtraBold, lineHeight = 30, overflow = TextOverflow.Ellipsis)
 
-            AttachActionButtons()
+            AttachActionButtons(mainViewModel = mainViewModel)
         }
     }
 
@@ -163,7 +164,7 @@ fun WaitingRoomSheetContentHeader() {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun AttachActionButtons(){
+fun AttachActionButtons(mainViewModel: MainViewModel){
 
     val navigator = LocalNavigator.currentOrThrow
 
@@ -192,7 +193,7 @@ fun AttachActionButtons(){
                 Color(color = 0xFFFF823E)
             )
         )){
-
+            mainViewModel.setId(8)
         }
 
     }

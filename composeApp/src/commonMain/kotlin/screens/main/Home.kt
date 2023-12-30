@@ -31,6 +31,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -40,6 +41,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.navigator.tab.Tab
@@ -49,6 +51,7 @@ import org.jetbrains.compose.resources.painterResource
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -65,6 +68,8 @@ import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import components.ImageComponent
 import components.StraightLine
 import components.TextComponent
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import screens.Bookings.AppointmentItemCard
 import screens.Products.BottomSheet
@@ -142,7 +147,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())) {
                         AttachBusinessName()
-                        ProductPromoCard()
+                        BusinessStatusDisplay()
                         attachOurServices()
                         ServiceGridScreen()
                         RecommendedSessions()
@@ -256,7 +261,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
         }
 
 
-    @OptIn(InternalVoyagerApi::class)
     @Composable
     fun ServicesWidget(iconRes: String, serviceTitle: String){
 
@@ -565,11 +569,11 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
         Card(
             modifier = Modifier
-                .padding(start = 10.dp, end = 10.dp, top = 20.dp, bottom = 5.dp)
+                .padding(top = 10.dp)
                 .background(color = Color.White)
                 .height(250.dp)
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(8.dp),
             border = null
         ) {
             Box(
@@ -585,7 +589,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun ProductPromoCard() {
+    fun BusinessStatusDisplay() {
         val pagerState = rememberPagerState(pageCount = {
             3
         })
@@ -597,9 +601,47 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
         val boxBgModifier =
             Modifier
+                .padding(start = 12.dp, end = 12.dp)
                 .fillMaxHeight()
                 .fillMaxWidth()
 
+
+        val color = Color(color = 0xFFF43569)
+        var isPaused by remember { mutableStateOf(false) }
+        var isRestart by remember { mutableStateOf(false) }
+        var pageProgress by remember { mutableStateOf(0f) }
+        var savedCurrentPage by remember { mutableStateOf(pagerState.currentPage) }
+
+
+        var key by remember { mutableStateOf(false) }
+
+
+        animateBusinessStatus(isPaused = false, currentPage = savedCurrentPage, totalPage = pagerState.pageCount - 1, onNextPage = {
+            savedCurrentPage = it
+            pageProgress = 0f
+            isRestart = true
+            },
+            onProgress = {
+                pageProgress = it
+            })
+
+        LaunchedEffect(key1 = isRestart) {
+            launch {
+                delay(200)
+                with(pagerState) {
+                    animateScrollToPage(page = savedCurrentPage)
+                    isRestart = false
+                }
+            }
+        }
+
+        LaunchedEffect(pagerState) {
+            snapshotFlow { pagerState.currentPage }.collect { page ->
+                savedCurrentPage = page
+                println("currentPage is$savedCurrentPage")
+                pageProgress = 0f
+            }
+        }
 
         Box(modifier = boxBgModifier) {
 
@@ -612,35 +654,66 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 }
                 Row(
                     Modifier
-                        .wrapContentHeight()
+                        .height(8.dp)
+                        .padding(bottom = 5.dp, start = 10.dp, end = 10.dp)
                         .fillMaxWidth()
-                        .padding(bottom = 8.dp),
-                    horizontalArrangement = Arrangement.Center
+                        .background(color = Color.LightGray, shape = CircleShape),
+                    horizontalArrangement = Arrangement.Start
                 ) {
+
                     repeat(pagerState.pageCount) { iteration ->
-                        var color = Color.LightGray
-                        var width = 0
-                        if (pagerState.currentPage == iteration) {
-                            color = Color(color = 0xFFF43569)
-                            width = 20
-                        } else {
-                            color = Color.LightGray
-                            width = 20
-                        }
                         Box(
                             modifier = Modifier
-                                .padding(2.dp)
-                                .clip(CircleShape)
-                                .background(color)
-                                .height(3.dp)
-                                .width(width.dp)
+                                .fillMaxHeight()
+                                .background(color = color, shape = CircleShape)
+                                .fillMaxWidth(pageProgress)
                         )
-                    }
 
+                    }
                 }
             }
         }
+    }
 
+   @Composable
+    private fun animateBusinessStatus(isPaused: Boolean = false, currentPage: Int, totalPage: Int, onNextPage: (page: Int) -> Unit, onProgress: (progress: Float) -> Unit){
+       var currentTime by remember { mutableStateOf(0f) }
+       var savedCurrentPage by remember { mutableStateOf(0) }
+       var progress: Float = 0f
+       val totalTime: Float = 5000f
+       println("My Page is$currentPage")
+
+       if (savedCurrentPage != currentPage){
+           // User Swipes the View Manually
+           currentTime = 0f
+           savedCurrentPage = currentPage
+       }
+
+        LaunchedEffect(key1 = currentTime, key2 = isPaused) {
+            while (currentTime < totalTime && !isPaused) {
+                delay(10L)
+                currentTime += 10
+                println(currentTime)
+                println(totalTime)
+                progress = ((currentTime/totalTime))
+                onProgress(progress)
+            }
+            if(currentPage < totalPage) {
+                currentTime = 0f
+                progress = 0f
+                onProgress(progress)
+                savedCurrentPage = currentPage + 1
+                onNextPage(currentPage + 1)
+            }
+            else{
+                currentTime = 0f
+                progress = 0f
+                onProgress(progress)
+                savedCurrentPage = 0
+                onNextPage(0)
+            }
+
+        }
     }
 
 

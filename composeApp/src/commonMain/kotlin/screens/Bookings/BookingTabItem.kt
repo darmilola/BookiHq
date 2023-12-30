@@ -304,7 +304,7 @@ fun AppointmentItem(appointmentType: Int, mainViewModel: MainViewModel) {
         .fillMaxWidth()
     var showSheet by remember { mutableStateOf(false) }
     if (showSheet) {
-        WaitingRoomBottomSheet {
+        WaitingRoomBottomSheet(mainViewModel = mainViewModel) {
             showSheet = false
         }
     }
