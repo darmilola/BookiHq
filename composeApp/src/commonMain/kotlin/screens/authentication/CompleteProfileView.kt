@@ -3,8 +3,6 @@ package screens.authentication
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import GGSansBold
-import GGSansRegular
-import GGSansSemiBold
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,13 +12,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -36,7 +32,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import components.TextComponent
@@ -44,22 +39,16 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import components.ButtonComponent
-import components.IconTextFieldComponent
 import components.ImageComponent
 import components.TextFieldComponent
 import screens.main.MainScreen
-import screens.main.MainViewModel
-import screens.main.NotificationTab
-import widgets.OtpTextField
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterialApi::class)
 @Composable
@@ -84,9 +73,9 @@ fun CompleteProfileCompose() {
     MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         val topLayoutModifier =
             Modifier
-                .padding(top = 40.dp)
+                .padding(top = 10.dp)
                 .fillMaxWidth()
-                .fillMaxHeight(0.87f)
+                .fillMaxHeight(0.95f)
                 .background(color = Color(color = 0xFFFBFBFB))
 
 
@@ -100,7 +89,10 @@ fun CompleteProfileCompose() {
                    LastnameInput()
                 }
                 EmailInput()
-                ConnectHandleInput()
+                PasswordInput()
+                CountryInput()
+                DOBInput()
+                //GenderInput()
                 ButtonComponent(modifier = buttonStyle, buttonText = "Continue", borderStroke = BorderStroke(1.dp, Color(color = 0xFFF43569)), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFF43569)), fontSize = 18, shape = RoundedCornerShape(30.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4) {
                     navigator.replaceAll(MainScreen)
                 }
@@ -220,7 +212,7 @@ fun EmailInput() {
 }
 
 @Composable
-fun ConnectHandleInput() {
+fun PasswordInput() {
 
     var text by remember { mutableStateOf(TextFieldValue("")) }
     MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
@@ -242,11 +234,96 @@ fun ConnectHandleInput() {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 onValueChange = { it ->
                     text = it
-                }, isSingleLine = true, placeholderTile = "@handle"
+                }, isSingleLine = true, placeholderTile = "Password"
             )
         }
     }
 
+}
+
+
+@Composable
+fun CountryInput() {
+
+    var text by remember { mutableStateOf(TextFieldValue("")) }
+    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
+
+        val modifier  = Modifier
+            .padding(end = 10.dp, start = 10.dp, top = 10.dp, bottom = 10.dp)
+            .fillMaxWidth()
+            .height(60.dp)
+            .border(width = 1.dp, color = Color.Gray, shape =  RoundedCornerShape(30.dp))
+
+
+        Box(modifier = modifier,
+            contentAlignment = Alignment.CenterStart) {
+            TextFieldComponent(
+                text = text,
+                readOnly = false,
+                textStyle = TextStyle(fontSize = TextUnit(20f, TextUnitType.Sp)),
+                modifier = Modifier.fillMaxHeight(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                onValueChange = { it ->
+                    text = it
+                }, isSingleLine = true, placeholderTile = "Country"
+            )
+        }
+    }
+}
+
+@Composable
+fun DOBInput() {
+
+    var text by remember { mutableStateOf(TextFieldValue("")) }
+    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
+
+        val modifier  = Modifier
+            .padding(end = 10.dp, start = 10.dp, top = 10.dp, bottom = 10.dp)
+            .fillMaxWidth()
+            .height(60.dp)
+            .border(width = 1.dp, color = Color.Gray, shape =  RoundedCornerShape(30.dp))
+
+
+        Box(modifier = modifier,
+            contentAlignment = Alignment.CenterStart) {
+            TextFieldComponent(
+                text = text,
+                readOnly = false,
+                textStyle = TextStyle(fontSize = TextUnit(20f, TextUnitType.Sp)),
+                modifier = Modifier.fillMaxHeight(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                onValueChange = { it ->
+                    text = it
+                }, isSingleLine = true, placeholderTile = "Date of Birth"
+            )
+        }
+    }
+}
+
+@Composable
+fun GenderInput() {
+    var text by remember { mutableStateOf(TextFieldValue("")) }
+    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
+        val modifier  = Modifier
+            .padding(end = 10.dp, start = 10.dp, top = 10.dp, bottom = 10.dp)
+            .fillMaxWidth()
+            .height(60.dp)
+            .border(width = 1.dp, color = Color.Gray, shape =  RoundedCornerShape(30.dp))
+
+        Box(modifier = modifier,
+            contentAlignment = Alignment.CenterStart) {
+            TextFieldComponent(
+                text = text,
+                readOnly = false,
+                textStyle = TextStyle(fontSize = TextUnit(20f, TextUnitType.Sp)),
+                modifier = Modifier.fillMaxHeight(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                onValueChange = { it ->
+                    text = it
+                }, isSingleLine = true, placeholderTile = "Gender"
+            )
+        }
+    }
 }
 
 @Composable
@@ -290,7 +367,7 @@ fun AttachBackIcon(goToScreen: Int = 0) {
 @Composable
 fun CompleteProfile(){
     val rowModifier = Modifier
-        .padding(top = 30.dp, start = 10.dp, bottom = 20.dp)
+        .padding(start = 10.dp, bottom = 10.dp)
         .fillMaxWidth()
         .wrapContentHeight()
     MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {

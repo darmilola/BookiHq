@@ -84,7 +84,7 @@ fun attachAuthenticationText(currentScreen: Int = 0) {
         "Login to Your Account"
     }
     else{
-        "Sign Up for Beamo"
+        "Sign Up"
     }
     val rowModifier = Modifier
         .padding(top = 30.dp, start = 10.dp)
