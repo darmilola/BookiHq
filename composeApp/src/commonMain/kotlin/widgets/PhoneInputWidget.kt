@@ -1,6 +1,7 @@
 package widgets
 
 import GGSansSemiBold
+import Models.PhoneExtensionModel
 import Styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -35,7 +36,7 @@ import components.TextFieldComponent
 
 @Composable
 fun PhoneInputWidget() {
-    val extensions = listOf("+ 234","+ 27")
+    val countryCodeList = listOf<PhoneExtensionModel>(PhoneExtensionModel(countryCode = "+ 234", countryFlagRes = "drawable/nigeria_flag_icon.png"), PhoneExtensionModel(countryCode = "+ 27", countryFlagRes = "drawable/south_africa_flag.png"))
     var text by remember { mutableStateOf("") }
     var borderStroke by remember { mutableStateOf(BorderStroke(2.dp, color  = Color.Transparent)) }
 
@@ -51,17 +52,17 @@ fun PhoneInputWidget() {
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
-        Box(modifier = Modifier.fillMaxWidth(0.25f).fillMaxHeight(), contentAlignment = Alignment.Center) {
-            TextDropDownWidget(menuItems = extensions)
-
+        Box(modifier = Modifier.fillMaxWidth(0.30f).fillMaxHeight().padding(start = 20.dp), contentAlignment = Alignment.Center) {
+            CountryCodeDropDownWidget(menuItems = countryCodeList)
         }
+
         Box(modifier = Modifier.fillMaxWidth(0.10f).fillMaxHeight(), contentAlignment = Alignment.Center) {
             Box(modifier = Modifier.width(2.dp).fillMaxHeight(0.40f).background(color = Color.DarkGray)) }
 
         TextFieldComponent(
             text = text,
             readOnly = false,
-            textStyle = TextStyle(fontSize = TextUnit(23f, TextUnitType.Sp), fontFamily = GGSansSemiBold, fontWeight = FontWeight.Normal, textAlign = TextAlign.Start, color = Color.Gray),
+            textStyle = TextStyle(fontSize = TextUnit(23f, TextUnitType.Sp), fontFamily = GGSansSemiBold, fontWeight = FontWeight.Normal, textAlign = TextAlign.Start, color = Color.DarkGray),
             modifier = Modifier.wrapContentSize(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             onValueChange = {

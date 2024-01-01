@@ -1,6 +1,7 @@
 package widgets
 
 import GGSansRegular
+import Models.PhoneExtensionModel
 import Styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -17,6 +18,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -171,18 +174,19 @@ fun DropDownWidget(menuItems: List<String>) {
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun TextDropDownWidget(menuItems: List<String>) {
+fun CountryCodeDropDownWidget(menuItems: List<PhoneExtensionModel>) {
 
     val expandedMenuItem = remember { mutableStateOf(false) }
 
-    val selectedMenuIndex = remember { mutableStateOf(-1) }
+    val selectedMenuIndex = remember { mutableStateOf(0) }
 
     Column (
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start,
+        modifier = Modifier.wrapContentSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
 
         ) {
-        TextDownWidgetView(
+        TextDropDownWidgetView(
             menuItems = menuItems,
             menuExpandedState = expandedMenuItem.value,
             selectedIndex = selectedMenuIndex.value,
@@ -203,15 +207,15 @@ fun TextDropDownWidget(menuItems: List<String>) {
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun TextDownWidgetView(menuItems: List<String>,
-                       menuExpandedState: Boolean,
-                       selectedIndex : Int,
-                       updateMenuExpandStatus : () -> Unit,
-                       onDismissMenuView : () -> Unit,
-                       onMenuItemClick : (Int) -> Unit) {
+fun TextDropDownWidgetView(menuItems: List<PhoneExtensionModel>,
+                           menuExpandedState: Boolean,
+                           selectedIndex : Int,
+                           updateMenuExpandStatus : () -> Unit,
+                           onDismissMenuView : () -> Unit,
+                           onMenuItemClick : (Int) -> Unit) {
     Box(
         modifier = Modifier
-            .fillMaxWidth()
+            .wrapContentWidth()
             .wrapContentHeight()
             .clickable(
                 onClick = {
@@ -219,40 +223,11 @@ fun TextDownWidgetView(menuItems: List<String>,
                 },
             ),
     ) {
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().fillMaxHeight()
-        ) {
-            val textStyle: TextStyle = TextStyle(
-                fontSize = TextUnit(23f, TextUnitType.Sp),
-                fontFamily = GGSansRegular,
-                fontWeight = FontWeight.SemiBold
-            )
 
-            Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.8f), contentAlignment = Alignment.Center){
-
-                TextComponent(
-                    text =  if(selectedIndex != -1) menuItems.get(selectedIndex) else "+ 345",
-                    fontSize = 23,
-                    fontFamily = GGSansRegular,
-                    textStyle = textStyle,
-                    textColor = Color.Gray,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Black,
-                    textModifier = Modifier.wrapContentHeight().fillMaxWidth().padding(end = 5.dp))
+            Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(), contentAlignment = Alignment.Center){
+                CountryCodeView(countryCode = menuItems[selectedIndex].countryCode, countryFlagRes = menuItems[selectedIndex].countryFlagRes)
             }
         }
-    }
-
-
-    val textStyle: TextStyle = TextStyle(
-        fontSize = TextUnit(18f, TextUnitType.Sp),
-        fontFamily = GGSansRegular,
-        textAlign = TextAlign.Start,
-        fontWeight = FontWeight.Black,
-    )
-
     DropdownMenu(
         expanded = menuExpandedState,
         onDismissRequest = { onDismissMenuView() },
@@ -263,11 +238,9 @@ fun TextDownWidgetView(menuItems: List<String>,
         menuItems.forEachIndexed { index, title ->
             DropdownMenuItem(
                 onClick = {
-                    if (index != 0) {
                         onMenuItemClick(index)
-                    }
                 }) {
-                SubtitleTextWidget(text = title, fontSize = 20)
+                CountryCodeView(countryCode = menuItems[index].countryCode, countryFlagRes =  menuItems[index].countryFlagRes)
             }
         }
     }
