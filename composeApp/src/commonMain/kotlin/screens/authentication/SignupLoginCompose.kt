@@ -5,6 +5,7 @@ import AppTheme.AppColors
 import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -102,7 +104,7 @@ fun attachAuthenticationText(currentScreen: Int = 0) {
                 fontSize = 20,
                 fontFamily = GGSansRegular,
                 textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
+                textColor = Colors.primaryColor,
                 textAlign = TextAlign.Left,
                 fontWeight = FontWeight.ExtraBold,
                 lineHeight = 30
@@ -131,18 +133,18 @@ fun attachAuthenticationButton() {
             modifier = columnModifier
         ) {
 
-            IconButtonComponent(modifier = buttonStyle, buttonText = "Use Phone Number", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "drawable/phone_light_icon.png", iconSize = 45){
+            IconButtonComponent(modifier = buttonStyle, buttonText = "Use Phone Number", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/phone_light_icon.png", iconSize = 45, colorFilter = ColorFilter.tint(color = Color.Gray)){
                 navigator.push(AuthenticationComposeScreen(2))
             }
-            IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Email", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "drawable/email_icon.png"){
+            IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Email", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/email_icon.png",  colorFilter = ColorFilter.tint(color = Color.Gray)){
                 navigator.replace(AuthenticationComposeScreen(0))
             }
-            IconButtonComponent(modifier = buttonStyle, buttonText = "Connect with Google", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "google_icon.png")
+            IconButtonComponent(modifier = buttonStyle, buttonText = "Connect with Google", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "google_icon.png")
 
-            IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with X", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "drawable/x_logo.png"){
+            IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with X", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/x_logo.png",  colorFilter = ColorFilter.tint(color = Color.Gray)){
                 navigator.push(AuthenticationComposeScreen(1))
             }
-            IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Instagram", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "instagram_icon.png")
+            IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Instagram", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "instagram_icon.png")
         }
     }
 }
@@ -185,7 +187,7 @@ fun authenticationTypeChangeText(currentScreen: Int = 0) {
                 fontSize = 15,
                 fontFamily = GGSansSemiBold,
                 textStyle = MaterialTheme.typography.h6,
-                textColor = Color(color = 0xFFFA2D65),
+                textColor = Colors.primaryColor,
                 textAlign = TextAlign.Left,
                 fontWeight = FontWeight.Normal,
                 lineHeight = 30
@@ -236,7 +238,7 @@ fun welcomeToSavanna(){
                 fontSize = 23,
                 fontFamily = GGSansBold,
                 textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
+                textColor = Colors.primaryColor,
                 textAlign = TextAlign.Left,
                 fontWeight = FontWeight.ExtraBold,
                 lineHeight = 30

@@ -3,6 +3,7 @@ package components
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -38,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -70,7 +72,7 @@ public fun ButtonComponent(modifier: Modifier, buttonText: String, borderStroke:
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, iconSize: Int = 28, onClick: (() -> Unit)? = null) {
+public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, iconSize: Int = 28, colorFilter: ColorFilter? = null, onClick: (() -> Unit)? = null) {
     val rowModifier = Modifier
         .fillMaxWidth()
 
@@ -114,7 +116,7 @@ public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStr
                     verticalAlignment = Alignment.Top,
                     modifier = iconBoxModifier
                 ) {
-                    ImageComponent(imageModifier = iconModifier, imageRes = iconRes)
+                    ImageComponent(imageModifier = iconModifier, imageRes = iconRes, colorFilter = colorFilter)
                 }
               TextComponent(
                 text = buttonText,
@@ -244,27 +246,26 @@ fun ToggleButton(shape: Shape, colors: ButtonColors, fontSize: Int, style: TextS
 
     var isLeftChecked by remember { mutableStateOf(true) }
 
-    val leftTint  = if(isLeftChecked) Color(0xffFA2D65) else Color.Transparent
-    val rightTint  =  if(!isLeftChecked) Color(0xffFA2D65) else Color.Transparent
+    val leftTint  = if(isLeftChecked) Colors.primaryColor else Color.Transparent
+    val rightTint  =  if(!isLeftChecked) Colors.primaryColor else Color.Transparent
 
-    val leftTextColor = if (isLeftChecked) Color.White else Color(0xffFA2D65)
+    val leftTextColor = if (isLeftChecked) Color.White else Colors.primaryColor
 
-    val rightTextColor = if (isLeftChecked) Color(0xffFA2D65) else Color.White
-
-
+    val rightTextColor = if (isLeftChecked) Colors.primaryColor else Color.White
 
     val rowModifier = Modifier
         .padding(top = 15.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
         .fillMaxWidth()
-        .background(color = Color(0x45C4C4C4), shape = RoundedCornerShape(10.dp))
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
+        .height(60.dp)
+        .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(20.dp))
         Row(
             horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.Top,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = rowModifier
         ) {
 
             IconToggleButton(
+                modifier = Modifier.padding(start = 10.dp, top = 7.dp, bottom = 7.dp),
                 checked = isLeftChecked,
                 onCheckedChange = {
                     onLeftClicked()
@@ -291,6 +292,7 @@ fun ToggleButton(shape: Shape, colors: ButtonColors, fontSize: Int, style: TextS
             }
 
             IconToggleButton(
+                modifier = Modifier.padding(end = 10.dp, top = 7.dp, bottom = 7.dp),
                 checked = !isLeftChecked,
                 onCheckedChange = {
                     onRightClicked()
@@ -316,8 +318,6 @@ fun ToggleButton(shape: Shape, colors: ButtonColors, fontSize: Int, style: TextS
                 }
             }
         }
-
-    }
 }
 
 
