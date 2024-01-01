@@ -61,7 +61,7 @@ fun SignUpLoginCompose(currentScreen: Int = 0) {
 
         Column(modifier = rootModifier) {
             Column(modifier = topLayoutModifier) {
-                attachBackIcon(-1)
+                AttachBackIcon(-1)
                 welcomeToSavanna()
                 attachAuthenticationText(currentScreen)
                 attachAuthenticationButton()

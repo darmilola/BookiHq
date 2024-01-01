@@ -70,7 +70,6 @@ import components.ToggleButton
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import screens.authentication.DropDownWidget
 import widgets.WelcomeScreenImageTextWidget
 
 @Composable
@@ -308,49 +307,12 @@ fun AttachServiceTypeToggle(){
                 .padding(bottom = 15.dp)
                 .fillMaxWidth()
         )
-
-        attachDropDownWidget()
-
-
     }
 
 }
 
-@Composable
-fun attachDropDownWidget(){
-    val serviceTypes = listOf("Service Type Number One is Here", "Service Type Number One is Here",)
 
-    var serviceTypesExpanded = remember { mutableStateOf(false) }
 
-    var selectedIndex = remember { mutableStateOf(0) }
-
-    Column (
-        modifier = Modifier
-            .height(55.dp)
-            .border(border = BorderStroke(1.dp, Color.Gray), shape = RoundedCornerShape(8.dp))
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start,
-
-        ) {
-        ServiceDropDownWidget(
-            menuItems = serviceTypes,
-            menuExpandedState = serviceTypesExpanded.value,
-            selectedIndex = selectedIndex.value,
-            updateMenuExpandStatus = {
-                serviceTypesExpanded.value = true
-            },
-            onDismissMenuView = {
-                serviceTypesExpanded.value = false
-            },
-            onMenuItemclick = { index->
-                selectedIndex.value = index
-                serviceTypesExpanded.value = false
-            }
-        )
-    }
-
-}
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable

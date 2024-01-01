@@ -39,7 +39,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import components.ButtonComponent
-import screens.main.MainScreen
 import widgets.OtpTextField
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterialApi::class)
@@ -73,7 +72,7 @@ fun VerifyOTPCompose() {
 
         Column(modifier = rootModifier) {
             Column(modifier = topLayoutModifier) {
-                attachBackIcon(0)
+                AttachBackIcon(0)
                 enterVerificationCode()
                 attachVerificationCodeText()
 

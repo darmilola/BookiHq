@@ -1,7 +1,6 @@
 package widgets
 
 import GGSansRegular
-import GGSansSemiBold
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import components.TextComponent
 
 @Composable
-fun PageSubtitleTextWidget(subtitle: String) {
+fun SubtitleTextWidget(text: String, fontSize: Int = 18, textAlign: TextAlign = TextAlign.Left) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -31,8 +30,8 @@ fun PageSubtitleTextWidget(subtitle: String) {
         val modifier = Modifier
             .fillMaxWidth()
         TextComponent(
-            textModifier = Modifier.fillMaxWidth(), text = subtitle, fontSize = 18, fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6, textColor = Color.Gray, textAlign = TextAlign.Left,
+            textModifier = Modifier.fillMaxWidth(), text = text, fontSize = fontSize, fontFamily = GGSansRegular,
+            textStyle = MaterialTheme.typography.h6, textColor = Color.Gray, textAlign = textAlign,
             fontWeight = FontWeight.Bold, lineHeight = 23, maxLines = 3,  overflow = TextOverflow.Ellipsis)
     }
 

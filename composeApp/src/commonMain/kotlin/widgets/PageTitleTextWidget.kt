@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import components.TextComponent
 
 @Composable
-fun TitleWidget(title: String, textColor: Color, ){
+fun TitleWidget(title: String, textColor: Color){
         TextComponent(
             text = title,
             fontSize = 25,

@@ -23,7 +23,7 @@ import components.ImageComponent
 @Composable
 fun PageBackNavWidget(onBackPressed: (() -> Unit)) {
     val boxModifier = Modifier
-            .border(border = BorderStroke(1.dp, Colors.lightPrimaryColor), shape = RoundedCornerShape(15.dp))
+            .border(border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(15.dp))
             .background(color = Color.Transparent)
             .size(50.dp)
     Box(modifier = boxModifier,

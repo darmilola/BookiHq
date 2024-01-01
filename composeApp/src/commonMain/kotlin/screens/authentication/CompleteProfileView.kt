@@ -51,8 +51,9 @@ import components.ImageComponent
 import components.TextFieldComponent
 import components.ToggleButton
 import screens.main.MainScreen
+import widgets.DropDownWidget
 import widgets.PageBackNavWidget
-import widgets.PageSubtitleTextWidget
+import widgets.SubtitleTextWidget
 import widgets.TitleWidget
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterialApi::class)
@@ -88,12 +89,12 @@ fun CompleteProfileCompose() {
             Column(modifier = topLayoutModifier) {
                 AttachBackIcon()
                 PageTitle()
-                PageSubtitleTextWidget(subtitle = "Lorem ipsum is placeholder text commonly used in Printing")
+                SubtitleTextWidget(text = "Lorem ipsum is placeholder text commonly used in Printing")
                 ProfileImageUpdate()
                 InputWidget(iconRes = "drawable/card_icon.png", placeholderText = "Preferred Name", iconSize = 40)
                 InputWidget(iconRes = "drawable/email_icon.png", placeholderText = "Email", iconSize = 24)
-                InputWidget(iconRes = "drawable/security_icon.png", placeholderText = "Password", iconSize = 24, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password), isPasswordField = true)
-
+                //InputWidget(iconRes = "drawable/security_icon.png", placeholderText = "Password", iconSize = 24, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password), isPasswordField = true)
+                AttachDropDownWidget()
                 ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(15.dp), style = MaterialTheme.typography.h4, onLeftClicked = {
 
                 }, onRightClicked = {
@@ -144,10 +145,18 @@ fun ProfileImageUpdate() {
 }
 
 @Composable
+fun AttachDropDownWidget(){
+    val serviceTypes = listOf("SouthAfrica", "Nigeria","SouthAfrica", "Nigeria","SouthAfrica", "Nigeria","SouthAfrica",
+        "Nigeria","SouthAfrica", "Nigeria","SouthAfrica", "Nigeria","SouthAfrica", "Nigeria","SouthAfrica", "Nigeria","SouthAfrica",
+        "Nigeria","SouthAfrica", "Nigeria","SouthAfrica", "Nigeria","SouthAfrica", "Nigeria",)
+
+        DropDownWidget(menuItems = serviceTypes)
+}
+
+@Composable
 fun InputWidget(iconRes: String, placeholderText: String, iconSize: Int, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), isPasswordField: Boolean = false) {
          var text by remember { mutableStateOf("") }
          var borderStroke by remember { mutableStateOf(BorderStroke(2.dp, color  = Color.Transparent)) }
-         MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
 
             val modifier  = Modifier
                 .padding(end = 10.dp, start = 10.dp, top = 20.dp)
@@ -183,8 +192,7 @@ fun InputWidget(iconRes: String, placeholderText: String, iconSize: Int, keyboar
                     isPasswordField = isPasswordField
                 )
             }
-        }
-}
+       }
 
 
 @Composable

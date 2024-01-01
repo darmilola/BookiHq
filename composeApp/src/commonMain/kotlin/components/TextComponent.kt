@@ -118,12 +118,12 @@ public fun TextFieldComponent(text: TextFieldValue, readOnly: Boolean = false, m
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-public fun PlaceholderTextComponent(placeholderTile: String, textColor: Color = Color.LightGray) {
+public fun PlaceholderTextComponent(placeholderTile: String, textColor: Color = Color.LightGray, textSize: Float = 18f) {
 
     MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
 
         val textStyle: TextStyle = TextStyle(
-            fontSize = TextUnit(18f, TextUnitType.Sp),
+            fontSize = TextUnit(textSize, TextUnitType.Sp),
             fontFamily = GGSansRegular,
             textAlign = TextAlign.Start,
             fontWeight = FontWeight.Normal
@@ -132,7 +132,7 @@ public fun PlaceholderTextComponent(placeholderTile: String, textColor: Color = 
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
             TextComponent(
                 text = placeholderTile,
-                fontSize = 18,
+                fontSize = textSize.toInt(),
                 fontFamily = GGSansRegular,
                 textStyle = textStyle,
                 textColor = textColor,
@@ -224,7 +224,7 @@ public fun TextFieldComponent(text: String, readOnly: Boolean = false, modifier:
     focusedIndicatorColor = Color.Transparent,
     unfocusedIndicatorColor = Color.Transparent,
     disabledIndicatorColor = Color.Transparent
-), isSingleLine: Boolean = false, isPasswordField: Boolean = false, isReadOnly: Boolean = false, placeholderText: String, onFocusChange: (Boolean) -> Unit) {
+), isSingleLine: Boolean = false, isPasswordField: Boolean = false, isReadOnly: Boolean = false, placeholderText: String, onFocusChange: (Boolean) -> Unit, placeholderTextSize: Float = 18f) {
 
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -234,7 +234,7 @@ public fun TextFieldComponent(text: String, readOnly: Boolean = false, modifier:
     BasicTextField(value = text, modifier = modifier, textStyle = textStyle, readOnly = isReadOnly, singleLine = isSingleLine, keyboardOptions = keyboardOptions, visualTransformation = visualTransformation, onValueChange = onValueChange, interactionSource = interactionSource, decorationBox = { innerTextField ->
         Row(modifier = Modifier.fillMaxWidth()) {
             if (text.isEmpty()) {
-                PlaceholderTextComponent(placeholderText, textColor = Color.Gray)
+                PlaceholderTextComponent(placeholderText, textColor = Color.Gray, textSize = placeholderTextSize)
             }
         }
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
