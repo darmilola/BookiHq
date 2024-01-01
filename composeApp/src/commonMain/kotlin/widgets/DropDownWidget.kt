@@ -232,7 +232,7 @@ fun TextDropDownWidgetView(menuItems: List<PhoneExtensionModel>,
         expanded = menuExpandedState,
         onDismissRequest = { onDismissMenuView() },
         modifier = Modifier
-            .fillMaxWidth(0.90f)
+            .fillMaxWidth()
             .background(Color.White)
     ) {
         menuItems.forEachIndexed { index, title ->

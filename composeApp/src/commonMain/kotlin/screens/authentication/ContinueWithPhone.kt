@@ -116,7 +116,7 @@ fun AttachBackIcon(goToScreen: Int = 0) {
 @Composable
 fun EnterPhoneNumberTitle(){
     val rowModifier = Modifier
-        .padding(start = 10.dp, bottom = 10.dp, top = 30.dp)
+        .padding(bottom = 10.dp, top = 30.dp)
         .fillMaxWidth()
         .wrapContentHeight()
     Row(

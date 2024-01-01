@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import components.TextComponent
 
 @Composable
-fun SubtitleTextWidget(text: String, fontSize: Int = 18, textAlign: TextAlign = TextAlign.Left) {
+fun SubtitleTextWidget(text: String, fontSize: Int = 18, textAlign: TextAlign = TextAlign.Left, textColor: Color = Color.Gray) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -27,12 +27,10 @@ fun SubtitleTextWidget(text: String, fontSize: Int = 18, textAlign: TextAlign = 
         verticalArrangement = Arrangement.Top,
         horizontalAlignment  = Alignment.Start,
     ) {
-        val modifier = Modifier
-            .fillMaxWidth()
         TextComponent(
-            textModifier = Modifier.fillMaxWidth(), text = text, fontSize = fontSize, fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6, textColor = Color.Gray, textAlign = textAlign,
-            fontWeight = FontWeight.Bold, lineHeight = 23, maxLines = 3,  overflow = TextOverflow.Ellipsis)
+            textModifier = Modifier.fillMaxWidth().wrapContentHeight(), text = text, fontSize = fontSize, fontFamily = GGSansRegular,
+            textStyle = MaterialTheme.typography.h6, textColor = textColor, textAlign = textAlign,
+            fontWeight = FontWeight.Bold, lineHeight = 30, maxLines = 3,  overflow = TextOverflow.Ellipsis)
     }
 
 }
