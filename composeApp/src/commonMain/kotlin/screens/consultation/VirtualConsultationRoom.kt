@@ -46,7 +46,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import components.ImageComponent
 import components.TextComponent
-import screens.Bookings.BookingScreen
 
 
 object VirtualConsultationRoom : Screen {
@@ -69,7 +68,7 @@ object VirtualConsultationRoom : Screen {
 
                 },
                 floatingActionButton  = {
-                    MinimizedCallAttendeeView(imageRes = "drawable/man.jpg", userWantsMinimizedView = userWantsMinimizedView, attendanceCount = attendanceCount){
+                    MinimizedCallAttendeeView(imageRes = "drawable/sale3.jpg", userWantsMinimizedView = userWantsMinimizedView, attendanceCount = attendanceCount){
                         userWantsMinimizedView = false
                     }
                 },
@@ -123,7 +122,7 @@ object VirtualConsultationRoom : Screen {
                 }
 
                Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
-                VideoCallAttendeeView(imageRes = "drawable/man.jpg", isUserView = true){
+                VideoCallAttendeeView(imageRes = "drawable/sale3.jpg", isUserView = true){
                          onMinimizeClicked()
                 }
               }

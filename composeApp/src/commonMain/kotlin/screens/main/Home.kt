@@ -8,6 +8,9 @@ import GGSansRegular
 import GGSansSemiBold
 import Models.AppointmentItem
 import Models.AppointmentItemListModel
+import Models.BusinessStatusAdsPage
+import Models.BusinessStatusAdsProgress
+import Styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,15 +34,12 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -51,31 +51,30 @@ import org.jetbrains.compose.resources.painterResource
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import components.ImageComponent
 import components.StraightLine
 import components.TextComponent
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import screens.Bookings.AppointmentItemCard
 import screens.Products.BottomSheet
 import screens.Products.NewProductItem
 import utils.getAppointmentViewHeight
 import widgets.AppointmentsWidget
+import widgets.BusinessStatusImageWidget
+import widgets.BusinessStatusProgressWidget
+import widgets.BusinessStatusWidget
 import widgets.RecommendedServiceItem
 import widgets.attachServiceImage
 
@@ -127,9 +126,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
         appointmentList.add(datedAppointmentSchedule1)
         appointmentList.add(datedAppointmentSchedule2)
 
-
-
-        MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -139,7 +135,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                     Modifier
                         .padding(bottom = 85.dp)
                         .fillMaxSize()
-                        .background(color = Color(0xFFF3F3F3))
+                        .background(color = Color.White)
 
                 ) {
                     Column(
@@ -159,8 +155,8 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
                 }
             }
-        }
     }
+
 
     @Composable
     fun ServiceGridScreen() {
@@ -537,14 +533,13 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
         val rowModifier = Modifier
             .padding(start = 20.dp)
             .fillMaxWidth()
-        MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
             Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.Top,
                 modifier = rowModifier
             ) {
                 val modifier = Modifier.padding(start = 3.dp)
-                attachLocationIcon()
+                AttachLocationIcon()
                 TextComponent(
                     text = "JonJo, Beauty and Spa Services",
                     fontSize = 18,
@@ -558,62 +553,54 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 )
             }
         }
+
+    @Composable
+    fun GetBusinessPageList() : List<BusinessStatusAdsPage> {
+         val adsList: ArrayList<BusinessStatusAdsPage> = arrayListOf()
+         val imageWidget = BusinessStatusImageWidget()
+         val statusAdsPage = BusinessStatusAdsPage(statusImage = imageWidget)
+         adsList.add(statusAdsPage)
+         adsList.add(statusAdsPage)
+         adsList.add(statusAdsPage)
+        adsList.add(statusAdsPage)
+        adsList.add(statusAdsPage)
+        return adsList
     }
 
     @Composable
-    fun ProductPromoItem(imageRes: String) {
-        val imageModifier =
-            Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-
-        Card(
-            modifier = Modifier
-                .padding(top = 10.dp)
-                .background(color = Color.White)
-                .height(250.dp)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(8.dp),
-            border = null
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
-                contentAlignment = Alignment.BottomStart
-            ) {
-                ImageComponent(imageModifier = imageModifier, imageRes = imageRes, contentScale = ContentScale.Crop)
-            }
+    fun GetBusinessPageProgressList(pageCount: Int) : List<BusinessStatusAdsProgress> {
+        val progressList: ArrayList<BusinessStatusAdsProgress> = arrayListOf()
+        val progressWidget = BusinessStatusProgressWidget()
+        for(i in 0..< pageCount){
+            val adsProgress = BusinessStatusAdsProgress(adsProgress = progressWidget, pageId = i)
+            progressList.add(adsProgress)
         }
+        return progressList
     }
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun BusinessStatusDisplay() {
-        val pagerState = rememberPagerState(pageCount = {
-            3
-        })
-
-        val boxModifier =
-            Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-
         val boxBgModifier =
             Modifier
                 .padding(start = 12.dp, end = 12.dp)
                 .fillMaxHeight()
                 .fillMaxWidth()
 
+        Box(modifier = boxBgModifier) {
+            val businessPageList = GetBusinessPageList()
+            BusinessStatusWidget(businessPageList, GetBusinessPageProgressList(businessPageList.size))
+        }
 
-        val color = Color(color = 0xFFF43569)
+
+        /* val color = Colors.primaryColor
         var isPaused by remember { mutableStateOf(false) }
         var isRestart by remember { mutableStateOf(false) }
-        var pageProgress by remember { mutableStateOf(0f) }
-        var savedCurrentPage by remember { mutableStateOf(pagerState.currentPage) }
+        var pageProgress by remember { mutableStateOf(0f) }*/
+        //var savedCurrentPage by remember { mutableStateOf(pagerState.currentPage) }
 
 
-        var key by remember { mutableStateOf(false) }
+        /*var key by remember { mutableStateOf(false) }
 
 
         animateBusinessStatus(isPaused = false, currentPage = savedCurrentPage, totalPage = pagerState.pageCount - 1, onNextPage = {
@@ -626,7 +613,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
             })
 
         LaunchedEffect(key1 = isRestart) {
-            launch {
+            launch { //scrolls to page
                 delay(200)
                 with(pagerState) {
                     animateScrollToPage(page = savedCurrentPage)
@@ -637,42 +624,11 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
         LaunchedEffect(pagerState) {
             snapshotFlow { pagerState.currentPage }.collect { page ->
-                savedCurrentPage = page
-                println("currentPage is$savedCurrentPage")
+                savedCurrentPage = page // reset progress
                 pageProgress = 0f
             }
-        }
+        }*/
 
-        Box(modifier = boxBgModifier) {
-
-            Box(contentAlignment = Alignment.BottomCenter, modifier = boxModifier) {
-                HorizontalPager(
-                    state = pagerState,
-                    modifier = Modifier.fillMaxSize()
-                ) { page ->
-                    ProductPromoItem("woman$page.jpg")
-                }
-                Row(
-                    Modifier
-                        .height(8.dp)
-                        .padding(bottom = 5.dp, start = 10.dp, end = 10.dp)
-                        .fillMaxWidth()
-                        .background(color = Color.LightGray, shape = CircleShape),
-                    horizontalArrangement = Arrangement.Start
-                ) {
-
-                    repeat(pagerState.pageCount) { iteration ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .background(color = color, shape = CircleShape)
-                                .fillMaxWidth(pageProgress)
-                        )
-
-                    }
-                }
-            }
-        }
     }
 
    @Composable
@@ -681,7 +637,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
        var savedCurrentPage by remember { mutableStateOf(0) }
        var progress: Float = 0f
        val totalTime: Float = 5000f
-       println("My Page is$currentPage")
 
        if (savedCurrentPage != currentPage){
            // User Swipes the View Manually
@@ -690,7 +645,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
        }
 
         LaunchedEffect(key1 = currentTime, key2 = isPaused) {
-            while (currentTime < totalTime && !isPaused) {
+            while (currentTime < totalTime && !isPaused) { // time to view
                 delay(10L)
                 currentTime += 10
                 println(currentTime)
@@ -698,14 +653,14 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 progress = ((currentTime/totalTime))
                 onProgress(progress)
             }
-            if(currentPage < totalPage) {
+            if(currentPage < totalPage) { //is done next page
                 currentTime = 0f
                 progress = 0f
                 onProgress(progress)
                 savedCurrentPage = currentPage + 1
                 onNextPage(currentPage + 1)
             }
-            else{
+            else{ // no next go to 0
                 currentTime = 0f
                 progress = 0f
                 onProgress(progress)
@@ -780,10 +735,10 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
 
     @Composable
-    fun attachLocationIcon() {
+    fun AttachLocationIcon() {
         val modifier = Modifier
             .padding(top = 2.dp)
-            .size(18.dp)
-        ImageComponent(imageModifier = modifier, imageRes = "location_icon_filled.png", colorFilter = ColorFilter.tint(color = Color.LightGray))
+            .size(20.dp)
+        ImageComponent(imageModifier = modifier, imageRes = "location_icon_filled.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
     }
 }

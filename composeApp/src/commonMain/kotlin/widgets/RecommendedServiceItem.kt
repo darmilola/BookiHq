@@ -210,7 +210,7 @@ fun RecommendedServicesImage(viewType: Int = 0) {
         ) {
             ImageComponent(
                 imageModifier = imageModifier,
-                imageRes = if(viewType == 0) "drawable/fingernails.jpg" else if(viewType == 1) "drawable/doctor.jpg" else "drawable/olive_oil.jpg",
+                imageRes = if(viewType == 0) "drawable/fingernails.jpg" else if(viewType == 1) "drawable/sale4.jpg" else "drawable/olive_oil.jpg",
                 contentScale = ContentScale.Crop
             )
         }

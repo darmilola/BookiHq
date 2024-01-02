@@ -6,6 +6,7 @@ import AppTheme.AppSemiBoldTypography
 import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.fadeIn
@@ -44,6 +45,7 @@ import components.ImageComponent
 import components.TextComponent
 import dev.icerock.moko.mvvm.livedata.compose.observeAsState
 import screens.authentication.attachWaveIcon
+import widgets.TitleWidget
 
 @Composable
 fun MainTopBar(mainViewModel: MainViewModel) {
@@ -85,36 +87,9 @@ fun welcomeToProfile(){
             modifier = rowModifier
         ) {
             val modifier = Modifier.padding(start = 5.dp)
-            TextComponent(
-                text = "Welcome ",
-                fontSize = 25,
-                fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
-                textAlign = TextAlign.Left,
-                fontWeight = FontWeight.ExtraBold,
-                lineHeight = 30
-            )
-            TextComponent(
-                text = "Jackson",
-                fontSize = 25,
-                fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color(color = 0xFFFA2D65),
-                textAlign = TextAlign.Left,
-                fontWeight = FontWeight.ExtraBold,
-                lineHeight = 30
-            )
-            TextComponent(
-                text = ",",
-                fontSize = 25,
-                fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
-                textAlign = TextAlign.Left,
-                fontWeight = FontWeight.ExtraBold,
-                lineHeight = 30
-            )
+            TitleWidget(textColor = Color.DarkGray, title = "Welcome ")
+            TitleWidget(textColor = Colors.primaryColor, title = "Damilola")
+            TitleWidget(textColor = Color.DarkGray, title = ",")
         }
     }
 }

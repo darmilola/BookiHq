@@ -30,24 +30,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import components.ImageComponent
 import components.TextComponent
-import screens.Products.CartScreen
 import screens.Products.ProductSearchBar
 import screens.Products.CategoryScreen
 
@@ -59,7 +52,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
         @Composable
         get() {
             val title = "Products"
-            val icon = painterResource("shop_icon.png")
+            val icon = painterResource("drawable/shop_icon.png")
 
             return remember {
                 TabOptions(

@@ -3,6 +3,7 @@ package screens.UserProfile.ConnectBusiness
 import AppTheme.AppColors
 import AppTheme.AppSemiBoldTypography
 import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -64,26 +65,22 @@ import screens.UserProfile.UserOrders.OrderDetailItemPriceInfoContent
     fun BusinessLogo(size: Int = 70, borderStroke: BorderStroke? = null) {
         val imageModifier =
             Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-        Card(
+                .size(size.dp)
+        Column(
             modifier = Modifier
                 .padding(start = 5.dp, end = 5.dp)
-                .background(color = Color.Transparent)
+                .background(color = Colors.lighterPrimaryColor, shape = CircleShape)
                 .size(size = size.dp),
-            shape = CircleShape,
-            border = borderStroke
         ) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
+                    .size(150.dp)
                     .background(color = Color.Transparent, shape = CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 ImageComponent(
                     imageModifier = imageModifier,
-                    imageRes = "drawable/logos_icon.png",
+                    imageRes = "drawable/slack_logo.png",
                     contentScale = ContentScale.Crop
                 )
             }

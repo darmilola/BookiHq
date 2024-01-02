@@ -1,29 +1,25 @@
 package screens.main
 
-import AppTheme.AppColors
-import AppTheme.AppSemiBoldTypography
-import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -32,7 +28,7 @@ import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
-import components.TextComponent
+import components.ImageComponent
 import dev.icerock.moko.mvvm.livedata.compose.observeAsState
 import screens.Bookings.BookingScreen
 import screens.Bookings.ServiceInformationPage
@@ -95,7 +91,7 @@ object MainScreen : Screen {
                 content = {
                      CurrentTab()
                 },
-                backgroundColor = Color(0xFFF3F3F3),
+                backgroundColor = Color.White,
                 bottomBar = {
                     BottomNavigation(modifier = Modifier
                         .padding(bottom = 10.dp)
@@ -103,18 +99,14 @@ object MainScreen : Screen {
                         elevation = 0.dp
                     )
                     {
-                        TabNavigationItem(HomeTab(mainViewModel))
-                        TabNavigationItem(ShopTab(mainViewModel))
-                        TabNavigationItem(ConsultTab(mainViewModel))
-                        TabNavigationItem(BookingsTab(mainViewModel))
-                        TabNavigationItem(AccountTab(mainViewModel))
+                        TabNavigationItem(HomeTab(mainViewModel), selectedImage = "drawable/home_icon.png", unselectedImage = "drawable/home_outline_v2.png", imageSize = 30, isHomeTabSelected = true, tabNavigator = it)
+                        TabNavigationItem(ShopTab(mainViewModel), selectedImage = "drawable/shopping_basket.png", unselectedImage = "drawable/shopping_basket_outline.png", imageSize = 30, tabNavigator = it)
+                        TabNavigationItem(ConsultTab(mainViewModel), selectedImage = "drawable/video_chat.png", unselectedImage = "drawable/video_chat_outline.png", imageSize = 34, tabNavigator = it)
+                        TabNavigationItem(BookingsTab(mainViewModel), selectedImage = "drawable/appointment_icon.png", unselectedImage = "drawable/appointment_outline.png", imageSize = 32, tabNavigator = it)
+                        TabNavigationItem(AccountTab(mainViewModel), selectedImage = "drawable/user.png", unselectedImage = "drawable/user_outline.png", imageSize = 32, tabNavigator = it)
                     }
                 }
             )
-            if(screenId.value == 0){
-                val tabNavigator = LocalTabNavigator.current
-                tabNavigator.current =  HomeTab(mainViewModel)
-            }
         }
     }
 }
@@ -128,32 +120,38 @@ private fun showDefaultTab(mainViewModel: MainViewModel): HomeTab {
 
 
 @Composable
-private fun RowScope.TabNavigationItem(tab: Tab) {
-    val tabNavigator = LocalTabNavigator.current
+private fun RowScope.TabNavigationItem(tab: Tab, selectedImage: String, unselectedImage: String, imageSize: Int = 30, isHomeTabSelected: Boolean = false, tabNavigator: TabNavigator) {
+    var imageStr by remember { mutableStateOf(unselectedImage) }
+    var imageTint by remember { mutableStateOf(Color.Gray) }
+
+
+    if(tabNavigator.current == tab){
+         imageStr  = selectedImage
+         imageTint = Colors.primaryColor
+    }
+    else if (tabNavigator.current is HomeTab && isHomeTabSelected){
+         imageStr  = selectedImage
+         imageTint = Colors.primaryColor
+    }
+    else{
+         imageTint = Color.Gray
+         imageStr =   unselectedImage
+    }
 
     BottomNavigationItem(
         selected = tabNavigator.current == tab,
-        onClick = {
-                    tabNavigator.current = tab
-                  },
-        selectedContentColor = Color(color = 0xFFFA2D65),
-        unselectedContentColor = Color.Gray,
-        label = {
-            MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
-                TextComponent(
-                    text = tab.options.title,
-                    fontSize = 14,
-                    fontFamily = GGSansSemiBold,
-                    textStyle = TextStyle(fontFamily = GGSansSemiBold),
-                    textColor = LocalContentColor.current,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.SemiBold,
-                    textModifier = Modifier.padding(top = 15.dp).wrapContentWidth()
-                )
-            }
 
-        },
-        icon = { tab.options.icon?.let { Icon(painter = it, contentDescription = tab.options.title, modifier = Modifier.size(28.dp).padding(bottom = 5.dp)) } }
+        onClick = {
+                   tabNavigator.current = tab
+                  },
+
+        selectedContentColor = Colors.primaryColor,
+
+        unselectedContentColor = Color.Gray,
+
+        icon = {
+            ImageComponent(imageModifier = Modifier.size(imageSize.dp), imageRes = imageStr, colorFilter = ColorFilter.tint(imageTint))
+        }
     )
 }
 

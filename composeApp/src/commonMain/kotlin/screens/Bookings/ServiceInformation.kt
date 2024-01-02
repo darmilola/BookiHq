@@ -2,6 +2,7 @@ package screens.Bookings
 
 import GGSansRegular
 import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -51,6 +52,10 @@ import screens.UserProfile.ConnectBusiness.AttachLocationInfoIcon
 import screens.UserProfile.ConnectBusiness.BusinessInfoContent
 import screens.UserProfile.ConnectBusiness.BusinessInfoTitle
 import screens.UserProfile.ConnectBusiness.BusinessLogo
+import screens.authentication.AuthenticationComposeScreen
+import widgets.DescriptionTextWidget
+import widgets.PageBackNavWidget
+import widgets.TitleWidget
 
 object ServiceInformationPage : Screen {
     @Composable
@@ -63,7 +68,7 @@ object ServiceInformationPage : Screen {
                 ServiceInfoContent()
 
              },
-            backgroundColor = Color(0xFFF3F3F3),
+            backgroundColor = Color.White,
         )
     }
 }
@@ -72,12 +77,12 @@ object ServiceInformationPage : Screen {
 fun ServiceInfoTitle(){
     val rowModifier = Modifier
         .fillMaxWidth()
-        .height(40.dp)
+        .fillMaxHeight()
 
     val colModifier = Modifier
-        .padding(top = 55.dp, end = 0.dp)
+        .padding(top = 40.dp, end = 10.dp, start = 10.dp)
         .fillMaxWidth()
-        .height(40.dp)
+        .height(70.dp)
 
     Column(modifier = colModifier,
         verticalArrangement = Arrangement.Center,
@@ -97,15 +102,7 @@ fun ServiceInfoTitle(){
                 .fillMaxWidth()
                 .fillMaxHeight(),
                 contentAlignment = Alignment.Center) {
-                TextComponent(
-                    text = "Service Details",
-                    fontSize = 30,
-                    fontFamily = GGSansSemiBold,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.DarkGray,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Normal,
-                )
+                TitleWidget(title = "Service Details", textColor = Colors.primaryColor)
             }
 
             Box(modifier =  Modifier.weight(1.0f)
@@ -120,23 +117,29 @@ fun ServiceInfoTitle(){
 @Composable
 fun leftTopBarItem() {
     val navigator = LocalNavigator.currentOrThrow
-    val modifier = Modifier
-        .padding(start = 15.dp, top = 3.dp)
-        .clickable {
-            navigator.pop()
-        }
-        .size(20.dp)
-    ImageComponent(imageModifier = modifier, imageRes = "drawable/solid_back_icon.png", colorFilter = ColorFilter.tint(color = Color.DarkGray))
+    PageBackNavWidget() {
+        navigator.popUntilRoot()
+    }
 }
 
 
-@OptIn(ExperimentalMaterialApi::class)
+
+
+
 @Composable
 fun ServiceInfoContent() {
     val columnModifier = Modifier
-        .padding(start = 15.dp, end = 15.dp, top = 50.dp)
+        .padding(start = 15.dp, end = 15.dp, top = 10.dp)
         .fillMaxHeight()
         .fillMaxWidth()
+
+    val buttonStyle = Modifier
+        .padding(top = 20.dp, start = 30.dp, end = 30.dp)
+        .fillMaxWidth()
+        .height(50.dp)
+
+    val navigator = LocalNavigator.currentOrThrow
+
     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
          Column(
                 modifier = columnModifier,
@@ -146,7 +149,7 @@ fun ServiceInfoContent() {
 
              TextComponent(
                  text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean",
-                 fontSize = 30,
+                 fontSize = 25,
                  fontFamily = GGSansRegular,
                  textStyle = MaterialTheme.typography.h6,
                  textColor = Color.DarkGray,
@@ -161,24 +164,20 @@ fun ServiceInfoContent() {
                     verticalAlignment = Alignment.CenterVertically) {
                     BusinessLogo(size = 45)
 
-                    TextComponent(
-                        text = "This is the Business name",
-                        fontSize = 23,
-                        fontFamily = GGSansRegular,
-                        textStyle = MaterialTheme.typography.h6,
-                        textColor = Color.DarkGray,
-                        textAlign = TextAlign.Left,
-                        fontWeight = FontWeight.Black,
-                        lineHeight = 25,
-                        textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 10.dp),
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis)
+                    Box(modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp, top = 10.dp)) {
+                        DescriptionTextWidget(fontSize = 20, textColor = Color.DarkGray, text = "This is the Business name")
+                    }
                 }
 
-                TextComponent(
-                    textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp), text = "A product description is a form of marketing copy used to describe and explain the benefits of your product. In other words, it provides all the information and details of your product on your ecommerce site. These product details can be one sentence, a short paragraph or bulleted. They can be serious, funny or quirk", fontSize = 20, fontFamily = GGSansRegular,
-                    textStyle = MaterialTheme.typography.h6, textColor = Color.Gray, textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.ExtraBold, lineHeight = 30, overflow = TextOverflow.Ellipsis)
+               Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(color = Color.LightGray).padding(start = 20.dp, end = 20.dp))
+
+              Box(modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 15.dp)) {
+                  DescriptionTextWidget(fontSize = 20, textColor = Color.DarkGray, text = "A product description is a form of marketing copy used to describe and explain the benefits of your product. In other words, it provides all the information and details of your product on your ecommerce site. These product details can be one sentence, a short paragraph or bulleted. They can be serious, funny or quirk")
+              }
+
+             ButtonComponent(modifier = buttonStyle, buttonText = "Continue", borderStroke = null, colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4 ){
+                 navigator.pop()
+             }
             }
         }
 }
