@@ -75,8 +75,8 @@ import widgets.AppointmentsWidget
 import widgets.BusinessStatusImageWidget
 import widgets.BusinessStatusProgressWidget
 import widgets.BusinessStatusWidget
+import widgets.HomeServicesWidget
 import widgets.RecommendedServiceItem
-import widgets.attachServiceImage
 
 class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
@@ -144,7 +144,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                             .verticalScroll(rememberScrollState())) {
                         AttachBusinessName()
                         BusinessStatusDisplay()
-                        attachOurServices()
+                        AttachOurServices()
                         ServiceGridScreen()
                         RecommendedSessions()
                         AttachAppointments()
@@ -162,47 +162,47 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     fun ServiceGridScreen() {
         LazyVerticalGrid(
             columns = GridCells.Fixed(4),
-            modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(250.dp),
-            contentPadding = PaddingValues(6.dp),
-            verticalArrangement = Arrangement.spacedBy(5.dp),
-            horizontalArrangement = Arrangement.spacedBy(5.dp)
+            modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp).height(320.dp),
+            contentPadding = PaddingValues(5.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.Center
         ) {
             items(8) {
                 when (it) {
                     0 -> {
-                        ServicesWidget(iconRes = "scissors_icon.png", serviceTitle = "Haircut")
+                        HomeServicesWidget(iconRes = "drawable/hair_cut.png", serviceTitle = "Haircut", mainViewModel)
                     }
 
                     1 -> {
-                        ServicesWidget(iconRes = "facials_icon.png", serviceTitle = "Facials")
+                        HomeServicesWidget(iconRes = "drawable/beauty_treatment.png", serviceTitle = "Facials", mainViewModel, iconSize = 50)
                     }
 
                     2 -> {
-                        ServicesWidget(iconRes = "paste_icon.png", serviceTitle = "Tooth Wash")
+                        HomeServicesWidget(iconRes = "drawable/nail.png", serviceTitle = "Nails", mainViewModel, iconSize = 45)
                     }
 
                     3 -> {
-                        ServicesWidget(iconRes = "massage_icon.png", serviceTitle = "Massage")
+                        HomeServicesWidget(iconRes = "drawable/hair_dye.png", serviceTitle = "Coloring", mainViewModel, iconSize = 45)
                     }
 
                     4 -> {
-                        ServicesWidget(iconRes = "paste_icon.png", serviceTitle = "Tooth Wash")
+                        HomeServicesWidget(iconRes = "drawable/spa.png", serviceTitle = "Spa", mainViewModel, iconSize = 45)
                     }
 
                     5 -> {
-                        ServicesWidget(iconRes = "massage_icon.png", serviceTitle = "Massage")
+                        HomeServicesWidget(iconRes = "drawable/waxing.png", serviceTitle = "Waxing", mainViewModel)
                     }
 
                     6 -> {
-                        ServicesWidget(iconRes = "facials_icon.png", serviceTitle = "Facials")
+                        HomeServicesWidget(iconRes = "drawable/lipstick.png", serviceTitle = "Makeup", mainViewModel)
                     }
 
                     7 -> {
-                        ServicesWidget(iconRes = "scissors_icon.png", serviceTitle = "Haircut")
+                        HomeServicesWidget(iconRes = "drawable/massage.png", serviceTitle = "Massage", mainViewModel)
                     }
 
                     else -> {
-                        ServicesWidget(iconRes = "facials_icon.png", serviceTitle = "Facials")
+                        HomeServicesWidget(iconRes = "drawable/spa.png", serviceTitle = "Facials", mainViewModel)
                     }
 
                 }
@@ -257,47 +257,12 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
         }
 
 
-    @Composable
-    fun ServicesWidget(iconRes: String, serviceTitle: String){
-
-        val columnModifier = Modifier
-            .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 10.dp)
-            .clickable {
-                mainViewModel.setId(1)
-
-            }
-            .height(100.dp)
-        MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
-            Column(
-                modifier = columnModifier,
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment  = Alignment.CenterHorizontally,
-            ) {
-                val modifier = Modifier
-                    .padding(top = 5.dp)
-                    .fillMaxWidth()
-                attachServiceImage(iconRes)
-                TextComponent(
-                    text = serviceTitle,
-                    fontSize = 15,
-                    fontFamily = GGSansSemiBold,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.DarkGray,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    lineHeight = 30,
-                    textModifier = modifier
-                )
-            }
-        }
-    }
-
 
 
 
 
 @Composable
-    fun attachOurServices(){
+    fun AttachOurServices(){
         val rowModifier = Modifier
             .padding(start = 20.dp, top = 20.dp)
             .fillMaxWidth()
@@ -309,12 +274,12 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
             ) {
                 TextComponent(
                     text = "Our Services",
-                    fontSize = 18,
+                    fontSize = 20,
                     fontFamily = GGSansSemiBold,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.DarkGray,
+                    textStyle = TextStyle(),
+                    textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.ExtraBold,
+                    fontWeight = FontWeight.Bold,
                     lineHeight = 30,
                     textModifier = Modifier.fillMaxWidth(0.30f)
                 )

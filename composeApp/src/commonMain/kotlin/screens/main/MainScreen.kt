@@ -94,16 +94,16 @@ object MainScreen : Screen {
                 backgroundColor = Color.White,
                 bottomBar = {
                     BottomNavigation(modifier = Modifier
-                        .padding(bottom = 10.dp)
-                        .height(80.dp), backgroundColor = Color.Transparent,
+                        .padding(bottom = 25.dp)
+                        .height(50.dp), backgroundColor = Color.Transparent,
                         elevation = 0.dp
                     )
                     {
-                        TabNavigationItem(HomeTab(mainViewModel), selectedImage = "drawable/home_icon.png", unselectedImage = "drawable/home_outline_v2.png", imageSize = 30, isHomeTabSelected = true, tabNavigator = it)
-                        TabNavigationItem(ShopTab(mainViewModel), selectedImage = "drawable/shopping_basket.png", unselectedImage = "drawable/shopping_basket_outline.png", imageSize = 30, tabNavigator = it)
-                        TabNavigationItem(ConsultTab(mainViewModel), selectedImage = "drawable/video_chat.png", unselectedImage = "drawable/video_chat_outline.png", imageSize = 34, tabNavigator = it)
-                        TabNavigationItem(BookingsTab(mainViewModel), selectedImage = "drawable/appointment_icon.png", unselectedImage = "drawable/appointment_outline.png", imageSize = 32, tabNavigator = it)
-                        TabNavigationItem(AccountTab(mainViewModel), selectedImage = "drawable/user.png", unselectedImage = "drawable/user_outline.png", imageSize = 32, tabNavigator = it)
+                        TabNavigationItem(HomeTab(mainViewModel), selectedImage = "drawable/home_icon.png", unselectedImage = "drawable/home_outline_v2.png", imageSize = 28, isHomeTabSelected = true, tabNavigator = it)
+                        TabNavigationItem(ShopTab(mainViewModel), selectedImage = "drawable/shopping_basket.png", unselectedImage = "drawable/shopping_basket_outline.png", imageSize = 28, tabNavigator = it)
+                        TabNavigationItem(ConsultTab(mainViewModel), selectedImage = "drawable/video_chat.png", unselectedImage = "drawable/video_chat_outline.png", imageSize = 32, tabNavigator = it)
+                        TabNavigationItem(BookingsTab(mainViewModel), selectedImage = "drawable/appointment_icon.png", unselectedImage = "drawable/appointment_outline.png", imageSize = 30, tabNavigator = it)
+                        TabNavigationItem(AccountTab(mainViewModel), selectedImage = "drawable/user.png", unselectedImage = "drawable/user_outline.png", imageSize = 30, tabNavigator = it)
                     }
                 }
             )
@@ -134,7 +134,7 @@ private fun RowScope.TabNavigationItem(tab: Tab, selectedImage: String, unselect
          imageTint = Colors.primaryColor
     }
     else{
-         imageTint = Color.Gray
+         imageTint = Color.DarkGray
          imageStr =   unselectedImage
     }
 
@@ -147,7 +147,7 @@ private fun RowScope.TabNavigationItem(tab: Tab, selectedImage: String, unselect
 
         selectedContentColor = Colors.primaryColor,
 
-        unselectedContentColor = Color.Gray,
+        unselectedContentColor = Color.DarkGray,
 
         icon = {
             ImageComponent(imageModifier = Modifier.size(imageSize.dp), imageRes = imageStr, colorFilter = ColorFilter.tint(imageTint))

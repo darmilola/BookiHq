@@ -1,5 +1,6 @@
 package components
 
+import Styles.Colors
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -80,7 +81,7 @@ fun StraightLine() {
         modifier = Modifier
             .fillMaxWidth()
             .height(1.dp)
-            .background(color = Color.LightGray)
+            .background(color = Colors.lighterPrimaryColor)
     ) {
     }
 }
