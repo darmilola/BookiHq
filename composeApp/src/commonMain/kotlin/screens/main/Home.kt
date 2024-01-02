@@ -562,8 +562,8 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
          adsList.add(statusAdsPage)
          adsList.add(statusAdsPage)
          adsList.add(statusAdsPage)
-        adsList.add(statusAdsPage)
-        adsList.add(statusAdsPage)
+         adsList.add(statusAdsPage)
+         adsList.add(statusAdsPage)
         return adsList
     }
 
