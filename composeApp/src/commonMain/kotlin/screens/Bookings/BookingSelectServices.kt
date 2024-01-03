@@ -2,16 +2,14 @@ package screens.Bookings
 
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
-import AppTheme.AppSemiBoldTypography
 import GGSansRegular
 import GGSansSemiBold
 import Models.CalendarDataSource
 import Models.CalendarUiModel
+import Styles.Colors
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,7 +23,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -64,13 +61,12 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import components.ImageComponent
-import components.LocationToggleButton
 import components.TextComponent
 import components.ToggleButton
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import widgets.WelcomeScreenImageTextWidget
+import widgets.DropDownWidget
 
 @Composable
 fun BookingSelectServices() {
@@ -87,7 +83,7 @@ fun BookingSelectServices() {
 
         // AnimationEffect
         Box(contentAlignment = Alignment.TopStart, modifier = boxModifier) {
-            attachServiceImages()
+            AttachServiceImages()
         }
         ServiceTitle()
         ServiceLocationToggle()
@@ -105,7 +101,7 @@ fun BookingCalendar(modifier: Modifier = Modifier) {
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
-    Column(modifier = modifier.fillMaxSize().padding(start = 15.dp, end = 15.dp, top = 40.dp)) {
+    Column(modifier = modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 40.dp)) {
         val dataSource = CalendarDataSource()
         // get CalendarUiModel from CalendarDataSource, and the lastSelectedDate is Today.
         var calendarUiModel = dataSource.getData(lastSelectedDate = dataSource.today)
@@ -143,7 +139,7 @@ fun BookingCalendar(modifier: Modifier = Modifier) {
     @Composable
     fun CalenderContent(calendarUiModel: CalendarUiModel, onDateClickListener: (CalendarUiModel.Date) -> Unit, listState: LazyListState) {
 
-        LazyRow(modifier = Modifier.padding(start = 10.dp, top = 10.dp).fillMaxWidth(), state = listState) {
+        LazyRow(modifier = Modifier.padding( top = 10.dp).fillMaxWidth(), state = listState) {
             // pass the visibleDates to the UI
             items(items = calendarUiModel.visibleDates) { date ->
                 ContentItem(date, onDateClickListener)
@@ -160,14 +156,14 @@ fun ContentItem(date: CalendarUiModel.Date, onClickListener: (CalendarUiModel.Da
         Color.White
     }
     else{
-        Color.DarkGray
+        Colors.darkPrimary
     }
 
     val bgColor: Color = if(date.isSelected){
-        Color(color = 0xFFFA2D65)
+        Colors.primaryColor
     }
     else{
-        Color.White
+        Colors.lighterPrimaryColor
     }
 
 
@@ -229,7 +225,7 @@ fun CalenderHeader(calendarUiModel: CalendarUiModel, onPrevClickListener: (Local
             ImageComponent(
                 imageModifier = imageModifier.rotate(180f),
                 imageRes = "left_arrow.png",
-                colorFilter = ColorFilter.tint(color = Color.DarkGray)
+                colorFilter = ColorFilter.tint(color = Colors.darkPrimary)
             )
         }
 
@@ -244,12 +240,12 @@ fun CalenderHeader(calendarUiModel: CalendarUiModel, onPrevClickListener: (Local
                 },
                 textModifier = Modifier
                     .align(Alignment.CenterVertically),
-                fontSize = 18,
+                fontSize = 20,
                 fontFamily = GGSansSemiBold,
-                fontWeight = FontWeight.Black,
-                textColor = Color.DarkGray,
+                fontWeight = FontWeight.Bold,
+                textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Center,
-                textStyle = MaterialTheme.typography.h4
+                textStyle = TextStyle()
             )
         }
 
@@ -263,7 +259,7 @@ fun CalenderHeader(calendarUiModel: CalendarUiModel, onPrevClickListener: (Local
             ImageComponent(
                 imageModifier = imageModifier,
                 imageRes = "left_arrow.png",
-                colorFilter = ColorFilter.tint(color = Color.Gray)
+                colorFilter = ColorFilter.tint(color = Colors.darkPrimary)
             )
         }
 
@@ -273,21 +269,9 @@ fun CalenderHeader(calendarUiModel: CalendarUiModel, onPrevClickListener: (Local
 
 @Composable
 fun AttachServiceTypeToggle(){
-    var checked by remember { mutableStateOf(false) }
-
-    val tint by animateColorAsState(if (checked) Color.Cyan else Color.Black)
-    val textColor = if (checked) Color.White else Color.Cyan
-
-    val background = Brush.horizontalGradient(
-        colors = listOf(
-            Color(color = 0xFFF43569),
-            Color(color = 0xFFFF823E)
-        ))
-
-
     Column(
         modifier = Modifier
-            .padding(start = 20.dp, end = 10.dp, top = 35.dp)
+            .padding(start = 10.dp, end = 10.dp, top = 35.dp)
             .fillMaxWidth()
             .wrapContentHeight(),
         verticalArrangement = Arrangement.Center,
@@ -296,140 +280,36 @@ fun AttachServiceTypeToggle(){
 
         TextComponent(
             text = "What type of Service do you want?",
-            fontSize = 16,
+            fontSize = 18,
             fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color.DarkGray,
+            textStyle = TextStyle(),
+            textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Black,
             lineHeight = 30,
             textModifier = Modifier
-                .padding(bottom = 15.dp)
+                .padding(bottom = 5.dp)
                 .fillMaxWidth()
         )
+
+        AttachDropDownWidget()
+
+
     }
 
 }
 
-
-
-
-@OptIn(ExperimentalResourceApi::class)
 @Composable
-fun ServiceDropDownWidget(menuItems: List<String>,
-                   menuExpandedState: Boolean,
-                   selectedIndex : Int,
-                   updateMenuExpandStatus : () -> Unit,
-                   onDismissMenuView : () -> Unit,
-                   onMenuItemclick : (Int) -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .clickable(
-                onClick = {
-                    updateMenuExpandStatus()
-                },
-            ),
-    ) {
-
-        MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().fillMaxHeight()
-            ) {
-                val textStyle: TextStyle = TextStyle(
-                    fontSize = TextUnit(20f, TextUnitType.Sp),
-                    fontFamily = GGSansRegular,
-                    textAlign = TextAlign.Start,
-                    fontWeight = FontWeight.SemiBold
-                )
-
-                TextComponent(
-                    text = "What type of service is this?",
-                    fontSize = 18,
-                    fontFamily = GGSansRegular,
-                    textStyle = textStyle,
-                    textColor = Color.DarkGray,
-                    textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Black,
-                    textModifier = Modifier.weight(5f).padding(start = 15.dp, end = 5.dp)
-                )
-
-                val imageModifier = Modifier
-                    .size(25.dp)
-                    .weight(1f)
-                    .padding(start = 10.dp, top = 3.dp)
-                ImageComponent(
-                    imageModifier = imageModifier,
-                    imageRes = "chevron_down_icon.png",
-                    colorFilter = ColorFilter.tint(color = Color.Gray)
-                )
-
-            }
-        }
-    }
-
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
-
-        val textStyle: TextStyle = TextStyle(
-            fontSize = TextUnit(18f, TextUnitType.Sp),
-            fontFamily = GGSansRegular,
-            textAlign = TextAlign.Start,
-            fontWeight = FontWeight.Black,
-        )
-
-        DropdownMenu(
-            expanded = menuExpandedState,
-            onDismissRequest = { onDismissMenuView() },
-            modifier = Modifier
-                .fillMaxWidth(0.90f)
-                .background(MaterialTheme.colors.surface)
-        ) {
-            menuItems.forEachIndexed { index, title ->
-                DropdownMenuItem(
-                    onClick = {
-                        if (index != 0) {
-                            onMenuItemclick(index)
-                        }
-                    }) {
-                    TextComponent(
-                        text = title,
-                        fontSize = 18,
-                        fontFamily = GGSansRegular,
-                        textStyle = textStyle,
-                        textColor = Color.DarkGray,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Black
-                    )
-                }
-            }
-        }
-    }
+fun AttachDropDownWidget(){
+    val serviceList = listOf("Service A ", "Service B ", "Service C ", "Service D ", "Service E ")
+    DropDownWidget(menuItems = serviceList,iconRes = "drawable/spa_service.png", placeHolderText = "Select Service Type", iconSize = 40)
 }
-
-
-
-
 
 @Composable
 fun ServiceLocationToggle(){
-    val checked by remember { mutableStateOf(false) }
-
-    val tint by animateColorAsState(if (checked) Color.Cyan else Color.Black)
-    val textColor = if (checked) Color.White else Color.Cyan
-
-    val background = Brush.horizontalGradient(
-        colors = listOf(
-            Color(color = 0xFFF43569),
-            Color(color = 0xFFFF823E)
-        ))
-
-
     Column(
         modifier = Modifier
-            .padding(start = 10.dp, end = 10.dp, top = 25.dp)
+            .padding(top = 25.dp)
             .fillMaxWidth()
             .wrapContentHeight(),
         verticalArrangement = Arrangement.Center,
@@ -438,18 +318,18 @@ fun ServiceLocationToggle(){
 
         TextComponent(
             text = "Where do you want your Service?",
-            fontSize = 16,
+            fontSize = 18,
             fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color.DarkGray,
+            textStyle = TextStyle(),
+            textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Black,
             lineHeight = 30,
             textModifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth().padding(start = 10.dp)
         )
 
-        ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = MaterialTheme.typography.h4, onLeftClicked = {
+        ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = TextStyle(), onLeftClicked = {
 
         }, onRightClicked = {
 
@@ -473,11 +353,11 @@ fun ServiceTitle(){
     ) {
 
         TextComponent(
-            text = "Body Massage",
+            text = "Manicure",
             fontSize = 25,
             fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color.DarkGray,
+            textStyle = TextStyle(),
+            textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Light,
             lineHeight = 30,
@@ -488,9 +368,9 @@ fun ServiceTitle(){
 
 }
 
-@OptIn(ExperimentalResourceApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun attachServiceImages(){
+fun AttachServiceImages(){
 
     val pagerState = rememberPagerState(pageCount = {
         3
@@ -518,21 +398,21 @@ fun attachServiceImages(){
             horizontalArrangement = Arrangement.Center
         ) {
             repeat(pagerState.pageCount) { iteration ->
-                var color = Color.White
-                var width = 0
+                val color: Color
+                val width: Int
                 if (pagerState.currentPage == iteration){
-                    color =  Color(color = 0xFFF43569)
-                    width = 20
+                    color =  Colors.primaryColor
+                    width = 25
                 } else{
-                    color =  Color(0xFFF3F3F3)
-                    width = 20
+                    color =  Colors.lightPrimaryColor
+                    width = 25
                 }
                 Box(
                     modifier = Modifier
                         .padding(2.dp)
                         .clip(CircleShape)
                         .background(color)
-                        .height(5.dp)
+                        .height(3.dp)
                         .width(width.dp)
                 )
             }

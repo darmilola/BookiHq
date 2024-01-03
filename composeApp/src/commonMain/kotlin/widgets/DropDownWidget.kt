@@ -1,6 +1,7 @@
 package widgets
 
 import GGSansRegular
+import GGSansSemiBold
 import Models.PhoneExtensionModel
 import Styles.Colors
 import androidx.compose.foundation.BorderStroke
@@ -41,9 +42,11 @@ import components.TextComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun DropDownWidgetView(menuItems: List<String>,
+                   iconRes: String = "drawable/country_icon.png",
+                   iconSize: Int = 30,
+                   placeHolderText: String,
                    menuExpandedState: Boolean,
                    selectedIndex : Int,
                    updateMenuExpandStatus : () -> Unit,
@@ -64,33 +67,28 @@ fun DropDownWidgetView(menuItems: List<String>,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth().fillMaxHeight()
             ) {
-                val textStyle: TextStyle = TextStyle(
-                    fontSize = TextUnit(20f, TextUnitType.Sp),
-                    fontFamily = GGSansRegular,
-                    fontWeight = FontWeight.SemiBold
-                )
 
                 Box(modifier = Modifier.fillMaxHeight().width(50.dp), contentAlignment = Alignment.Center){
                     ImageComponent(imageModifier = Modifier
-                        .size(24.dp), imageRes = "drawable/country_icon.png", colorFilter = ColorFilter.tint(color = Color.Gray))
+                        .size(24.dp), imageRes = iconRes, colorFilter = ColorFilter.tint(color = Color.Gray))
                 }
 
                 Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.8f), contentAlignment = Alignment.Center){
 
                     TextComponent(
-                        text =  if(selectedIndex != -1) menuItems.get(selectedIndex) else "Country of Residence",
+                        text =  if(selectedIndex != -1) menuItems[selectedIndex] else placeHolderText,
                         fontSize = 18,
-                        fontFamily = GGSansRegular,
-                        textStyle = textStyle,
-                        textColor = Color.Gray,
+                        fontFamily = if(selectedIndex != -1) GGSansSemiBold else  GGSansRegular,
+                        textStyle = TextStyle(),
+                        textColor = if(selectedIndex != -1) Colors.darkPrimary else  Color.Gray,
                         textAlign = TextAlign.Start,
-                        fontWeight = FontWeight.Black,
+                        fontWeight = FontWeight.Bold,
                         textModifier = Modifier.wrapContentHeight().fillMaxWidth().padding(end = 5.dp))
                 }
 
                 Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(), contentAlignment = Alignment.Center){
                     val imageModifier = Modifier
-                        .size(30.dp)
+                        .size(iconSize.dp)
                         .padding(start = 10.dp, top = 3.dp)
                     ImageComponent(
                         imageModifier = imageModifier,
@@ -103,14 +101,6 @@ fun DropDownWidgetView(menuItems: List<String>,
 
             }
         }
-
-
-        val textStyle: TextStyle = TextStyle(
-            fontSize = TextUnit(18f, TextUnitType.Sp),
-            fontFamily = GGSansRegular,
-            textAlign = TextAlign.Start,
-            fontWeight = FontWeight.Black,
-        )
 
         DropdownMenu(
             expanded = menuExpandedState,
@@ -132,9 +122,8 @@ fun DropDownWidgetView(menuItems: List<String>,
         }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
-fun DropDownWidget(menuItems: List<String>) {
+fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_icon.png", placeHolderText: String, iconSize: Int = 30) {
 
     val expandedMenuItem = remember { mutableStateOf(false) }
 
@@ -155,6 +144,9 @@ fun DropDownWidget(menuItems: List<String>) {
         ) {
         DropDownWidgetView(
             menuItems = menuItems,
+            iconRes = iconRes,
+            iconSize = iconSize,
+            placeHolderText = placeHolderText,
             menuExpandedState = expandedMenuItem.value,
             selectedIndex = selectedMenuIndex.value,
             updateMenuExpandStatus = {
@@ -172,7 +164,6 @@ fun DropDownWidget(menuItems: List<String>) {
 }
 
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun CountryCodeDropDownWidget(menuItems: List<PhoneExtensionModel>) {
 

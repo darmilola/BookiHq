@@ -3,6 +3,7 @@ package screens.consultation
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import AppTheme.AppSemiBoldTypography
+import Styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -31,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -47,7 +49,7 @@ import screens.main.MainViewModel
 
 class ConsultationScreen(private val mainViewModel: MainViewModel) : Screen {
 
-    @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
 
@@ -55,8 +57,6 @@ class ConsultationScreen(private val mainViewModel: MainViewModel) : Screen {
             3
         })
 
-
-        MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
             val topLayoutModifier =
                 Modifier
                     .fillMaxWidth()
@@ -70,7 +70,6 @@ class ConsultationScreen(private val mainViewModel: MainViewModel) : Screen {
                     .fillMaxWidth()
                     .background(color = Color(0xFFF3F3F3))
                     .fillMaxHeight()
-                MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
 
                     Box(contentAlignment = Alignment.TopCenter, modifier = Modifier
                         .fillMaxHeight()
@@ -88,13 +87,10 @@ class ConsultationScreen(private val mainViewModel: MainViewModel) : Screen {
 
                 }
 
-            }
-        }
-
 
     }
 
-    @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun AttachActionButtons(pagerState: PagerState){
 
@@ -124,7 +120,7 @@ class ConsultationScreen(private val mainViewModel: MainViewModel) : Screen {
         Row (modifier = bgStyle,
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,) {
-            ButtonComponent(modifier = buttonStyle2, buttonText = "Continue", colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFF43569)), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4, borderStroke = null){
+            ButtonComponent(modifier = buttonStyle2, buttonText = "Continue", colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Color(color = 0xFFFFFFFF), style = TextStyle(), borderStroke = null){
                 coroutineScope.launch {
                     if(currentPage == 0){
                         pagerState.animateScrollToPage(1)
@@ -139,13 +135,13 @@ class ConsultationScreen(private val mainViewModel: MainViewModel) : Screen {
     }
 
 
-    @OptIn(ExperimentalResourceApi::class, ExperimentalFoundationApi::class)
+    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun AttachBookingPages(pagerState: PagerState){
 
         val  boxModifier =
             Modifier
-                .padding(top = 15.dp)
+                .padding(top = 5.dp)
                 .background(color = Color(0xFFF3F3F3))
                 .fillMaxHeight(0.85f)
                 .fillMaxWidth()

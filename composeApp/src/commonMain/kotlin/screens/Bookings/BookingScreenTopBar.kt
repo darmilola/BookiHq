@@ -3,8 +3,10 @@ package screens.Bookings
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import AppTheme.AppSemiBoldTypography
+import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.fadeIn
@@ -53,6 +55,7 @@ import screens.authentication.AuthenticationComposeScreen
 import screens.authentication.WelcomeScreen
 import screens.main.MainViewModel
 import screens.main.NotificationTab
+import widgets.PageBackNavWidget
 import widgets.StepsProgressBar
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -61,12 +64,17 @@ fun BookingScreenTopBar(mainViewModel: MainViewModel, pagerState: PagerState) {
 
     val rowModifier = Modifier
         .fillMaxWidth()
-        .height(40.dp)
+        .height(60.dp)
+
+    val stepList = arrayListOf<String>()
+    stepList.add("Service")
+    stepList.add("Therapist")
+    stepList.add("Payment")
 
     val colModifier = Modifier
         .padding(top = 40.dp, end = 0.dp)
         .fillMaxWidth()
-        .height(120.dp)
+        .height(140.dp)
 
     Column(modifier = colModifier,
         verticalArrangement = Arrangement.Center,
@@ -78,9 +86,10 @@ fun BookingScreenTopBar(mainViewModel: MainViewModel, pagerState: PagerState) {
 
             Box(modifier =  Modifier.weight(1.0f)
                 .fillMaxWidth()
-                .fillMaxHeight(),
+                .fillMaxHeight()
+                .padding(start = 10.dp),
                 contentAlignment = Alignment.CenterStart) {
-                leftTopBarItem(mainViewModel, pagerState)
+                leftTopBarItem(pagerState)
             }
 
             Box(modifier =  Modifier.weight(3.0f)
@@ -98,13 +107,11 @@ fun BookingScreenTopBar(mainViewModel: MainViewModel, pagerState: PagerState) {
             }
 
         }
-        Row(modifier = rowModifier,
+        Row(modifier = Modifier.fillMaxWidth().height(80.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically) {
-            val currentStep = remember { mutableStateOf(2) }
-            StepsProgressBar(modifier = Modifier.fillMaxWidth().padding(start = 35.dp, end = 35.dp), numberOfSteps = 2, currentStep = currentStep.value)
+            StepsProgressBar(modifier = Modifier.fillMaxWidth().padding(start = 10.dp), numberOfSteps = 2, currentStep = pagerState.currentPage, stepItems = stepList)
         }
-        stepItemTitle(pagerState)
 
     }
 
@@ -113,97 +120,41 @@ fun BookingScreenTopBar(mainViewModel: MainViewModel, pagerState: PagerState) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun stepItemTitle(pagerState: PagerState) {
-    val rowModifier = Modifier
-        .fillMaxWidth()
-        .height(20.dp)
-    Row(modifier = rowModifier,
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically) {
-
-        TextComponent(
-            text = "Select Service",
-            fontSize = 16,
-            fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color.DarkGray,
-            textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Black,
-            textModifier = Modifier
-                .alpha(if (pagerState.currentPage == 0) 1F else 0F)
-                .weight(1f)
-                .padding(start = 10.dp)
-        )
-
-        TextComponent(
-            text = "Select Specialist",
-            fontSize = 16,
-            fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color.DarkGray,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Black,
-            textModifier = Modifier.weight(1f).alpha(if (pagerState.currentPage == 1) 1F else 0F)
-        )
-
-        TextComponent(
-            text = "Payment",
-            fontSize = 16,
-            fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color.DarkGray,
-            textAlign = TextAlign.Right,
-            fontWeight = FontWeight.Black,
-            textModifier = Modifier.weight(1f).padding(end = 10.dp).alpha(if (pagerState.currentPage == 2) 1F else 0F)
-        )
-
-
-    }
-
-}
-
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun leftTopBarItem(mainViewModel: MainViewModel, pagerState: PagerState) {
+fun leftTopBarItem(pagerState: PagerState) {
     val coroutineScope = rememberCoroutineScope()
     val navigator = LocalNavigator.currentOrThrow
     val currentPage = pagerState.currentPage
-    val modifier = Modifier
-        .padding(start = 15.dp)
-        .clickable {
-                coroutineScope.launch {
-                    when (currentPage) {
-                        2 -> {
-                            pagerState.animateScrollToPage(1)
-                        }
-                        1 -> {
-                            pagerState.animateScrollToPage(0)
-                        }
-                        else -> {
-                            navigator.pop()
-                        }
-                    }
+    PageBackNavWidget(){
+        coroutineScope.launch {
+            when (currentPage) {
+                2 -> {
+                    pagerState.animateScrollToPage(1)
                 }
+                1 -> {
+                    pagerState.animateScrollToPage(0)
+                }
+                else -> {
+                    navigator.pop()
+                }
+            }
         }
-        .size(22.dp)
-    ImageComponent(imageModifier = modifier, imageRes = "back_arrow.png", colorFilter = ColorFilter.tint(color = Color.DarkGray))
+
+    }
 }
+
 
 @Composable
 fun BookingTitle(){
-    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
         TextComponent(
                 text = "Book Appointment",
                 fontSize = 20,
                 fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
+                textStyle = TextStyle(),
+                textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Normal,
+                fontWeight = FontWeight.Bold,
             )
     }
-}
 
 @Composable
 fun rightTopBarItem() {

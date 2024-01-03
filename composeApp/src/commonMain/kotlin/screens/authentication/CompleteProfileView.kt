@@ -1,7 +1,5 @@
 package screens.authentication
 
-import AppTheme.AppBoldTypography
-import AppTheme.AppColors
 import GGSansSemiBold
 import Styles.Colors
 import androidx.compose.foundation.BorderStroke
@@ -146,11 +144,8 @@ fun ProfileImageUpdate() {
 
 @Composable
 fun AttachDropDownWidget(){
-    val serviceTypes = listOf("SouthAfrica", "Nigeria","SouthAfrica", "Nigeria","SouthAfrica", "Nigeria","SouthAfrica",
-        "Nigeria","SouthAfrica", "Nigeria","SouthAfrica", "Nigeria","SouthAfrica", "Nigeria","SouthAfrica", "Nigeria","SouthAfrica",
-        "Nigeria","SouthAfrica", "Nigeria","SouthAfrica", "Nigeria","SouthAfrica", "Nigeria",)
-
-        DropDownWidget(menuItems = serviceTypes)
+    val countryList = listOf("South Africa", "Nigeria")
+    DropDownWidget(menuItems = countryList, placeHolderText = "Country of Residence",)
 }
 
 @Composable

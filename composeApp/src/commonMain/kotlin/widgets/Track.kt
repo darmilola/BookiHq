@@ -1,10 +1,10 @@
 package widgets
 
+import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
-import androidx.compose.foundation.Canvas
+import Styles.Colors
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,12 +16,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
@@ -32,7 +34,7 @@ import components.ImageComponent
 import components.TextComponent
 
 @Composable
-fun StepsProgressBar(modifier: Modifier = Modifier, numberOfSteps: Int, currentStep: Int) {
+fun StepsProgressBar(modifier: Modifier = Modifier, numberOfSteps: Int, currentStep: Int, stepItems: ArrayList<String> = arrayListOf()) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
@@ -40,16 +42,19 @@ fun StepsProgressBar(modifier: Modifier = Modifier, numberOfSteps: Int, currentS
         for (step in 0..numberOfSteps) {
             if(step == numberOfSteps){
                 Step(
+                    modifier = Modifier.weight(1F),
                     isCompete = step < currentStep,
-                    isCurrent = step == currentStep,
-                    isLastStep = true
+                    isCurrentStep = step == currentStep,
+                    isLastStep = true,
+                    itemTitle = stepItems[step]
                 )
             }
             else {
                 Step(
-                    modifier = Modifier.weight(1F),
+                    modifier = Modifier.weight(2.3F),
                     isCompete = step < currentStep,
-                    isCurrent = step == currentStep
+                    isCurrentStep = step == currentStep,
+                    itemTitle = stepItems[step]
                 )
             }
         }
@@ -203,57 +208,51 @@ fun TrackOrderStepView(viewHeightMultiplier: Int = 0, currentStep: Int, currentO
 }
 
 @Composable
-fun Step(modifier: Modifier = Modifier, isCompete: Boolean, isCurrent: Boolean) {
-    val color = if (isCompete || isCurrent) Color(color = 0xFFFA2D65) else Color.LightGray
-    val innerCircleColor = if (isCompete) Color.Red else Color.LightGray
+fun Step(modifier: Modifier = Modifier, isCompete: Boolean, isCurrentStep: Boolean, isLastStep: Boolean = false, itemTitle: String = "") {
+    val color = if (isCompete) Colors.primaryColor else Color.LightGray
+    val imageRes: String = if (isCompete) "drawable/check.png" else "drawable/close.png"
 
+    Column(verticalArrangement = Arrangement.Top,
+           horizontalAlignment= Alignment.Start,
+           modifier = modifier.wrapContentHeight()) {
+        Row(
+            modifier = Modifier.height(50.dp),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            //Line
 
-    Box(modifier = modifier) {
-
-        //Line
-        Divider(
-            modifier = Modifier.align(Alignment.CenterStart).padding(start = 20.dp, end = 10.dp),
-            color = color,
-            thickness = 2.dp
-        )
-
-        //Circle
-        Canvas(modifier = Modifier
-            .size(10.dp)
-            .align(Alignment.CenterStart)
-            .border(
-                shape = CircleShape,
-                width = 1.dp,
-                color = color
-            ),
-            onDraw = {
-                drawCircle(color = innerCircleColor)
+            Box(
+                modifier = Modifier.size(40.dp).background(color = color, shape = CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                ImageComponent(
+                    imageModifier = Modifier.size(14.dp),
+                    imageRes = imageRes,
+                    colorFilter = ColorFilter.tint(color = Color.White)
+                )
             }
+
+            if (!isLastStep) Divider(
+                modifier = Modifier.padding(start = 5.dp, end = 5.dp),
+                color = color,
+                thickness = 3.dp
+            )
+        }
+        TextComponent(
+            text = itemTitle,
+            fontSize = 16,
+            fontFamily = GGSansBold,
+            textStyle = TextStyle(),
+            textColor = Colors.darkPrimary,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+            textModifier = Modifier.padding(bottom = 5.dp)
+                .alpha(if (isCurrentStep) 1F else 0F)
         )
     }
 }
 
-@Composable
-fun Step(modifier: Modifier = Modifier, isCompete: Boolean, isCurrent: Boolean, isLastStep: Boolean) {
-    val color = if (isCompete || isCurrent) Color(color = 0xFFFA2D65) else Color.LightGray
-    val innerCircleColor = if (isCompete) Color.Red else Color.LightGray
-
-    Box(modifier = modifier) {
-        //Circle
-        Canvas(modifier = Modifier
-            .size(10.dp)
-            .align(Alignment.CenterStart)
-            .border(
-                shape = CircleShape,
-                width = 1.dp,
-                color = color
-            ),
-            onDraw = {
-                drawCircle(color = innerCircleColor)
-            }
-        )
-    }
-}
 
 
 @Composable
