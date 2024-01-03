@@ -3,6 +3,8 @@ package screens.main
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import GGSansRegular
+import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +39,7 @@ import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import components.ImageComponent
@@ -74,7 +77,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
             content = {
                 content()
             },
-         backgroundColor = Color(0xFFF3F3F3),
+         backgroundColor = Color.White,
          floatingActionButton = {
              AttachShoppingCartImage("shopping_cart.png")
          }
@@ -100,7 +103,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
                 .clickable {
                    mainViewModel.setId(3)
                 }
-                .background(color = Color.DarkGray),
+                .background(color = Colors.darkPrimary),
             contentAlignment = Alignment.Center
         ) {
             val modifier = Modifier
@@ -130,7 +133,6 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
             .padding(top = 5.dp)
             .fillMaxHeight()
             .fillMaxWidth()
-        MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -141,7 +143,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
                         .padding(bottom = 85.dp)
                         .fillMaxHeight()
                         .fillMaxWidth()
-                        .background(color = Color(0xFFF3F3F3)),
+                        .background(color = Color.White),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     TabScreen()
@@ -149,9 +151,8 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
 
             }
         }
-    }
 
-    @OptIn(ExperimentalMaterialApi::class)
+
     @Composable
     fun TabScreen() {
 
@@ -169,8 +170,8 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
                             .tabIndicatorOffset(tabPositions[tabIndex])
                             .height(4.dp)
                             .padding(start = 30.dp, end = 30.dp)
-                            .clip(RoundedCornerShape(4.dp)) // clip modifier not working
-                            .background(color = Color(color = 0xfffa2d65))
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(color = Colors.primaryColor)
                     )
 
                 },
@@ -180,14 +181,13 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
                     {
                         TextComponent(
                             text = title,
-                            fontSize = 18,
-                            fontFamily = GGSansRegular,
-                            textStyle = MaterialTheme.typography.h6,
-                            textColor = Color.DarkGray,
-                            textAlign = TextAlign.Left,
-                            fontWeight = FontWeight.ExtraBold,
-                            lineHeight = 30
-                        )
+                            fontSize = 20,
+                            fontFamily = GGSansSemiBold,
+                            textStyle = TextStyle(),
+                            textColor = Colors.darkPrimary,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold,
+                            lineHeight = 30)
                     },
                         selected = tabIndex == index,
                         onClick = { tabIndex = index }

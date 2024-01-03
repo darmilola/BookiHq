@@ -150,16 +150,7 @@ fun centerTopBarItem(mainViewModel: MainViewModel) {
                     this.durationMillis = 0
                 })
             ) {
-                TextComponent(
-                    text = screenTitle.value.toString(),
-                    fontSize = 22,
-                    fontFamily = GGSansRegular,
-                    textStyle = TextStyle(fontFamily = GGSansSemiBold, letterSpacing = TextUnit(0.5F, TextUnitType.Sp)),
-                    textColor = Color.DarkGray,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.SemiBold,
-                    textModifier = Modifier.padding(top = 15.dp)
-                )
+                TitleWidget(textColor = Colors.primaryColor, title = screenTitle.value)
             }
             AnimatedVisibility(
                 visible = shouldDisplay,

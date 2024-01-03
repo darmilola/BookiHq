@@ -3,7 +3,7 @@ package screens.Products
 import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
-import androidx.compose.foundation.BorderStroke
+import Styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +44,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import components.ButtonComponent
 import components.ImageComponent
@@ -58,7 +59,7 @@ fun ProductDetailContent() {
         content = {
             SheetContent()
         },
-        backgroundColor = Color(0xFFF3F3F3),
+        backgroundColor = Color.White,
         bottomBar = {
             BottomNavigation(modifier = Modifier
                 .padding(top = 10.dp)
@@ -86,7 +87,7 @@ fun ProductDetailContent() {
                         verticalAlignment = Alignment.CenterVertically) {
                         CartIncrementDecrementWidget()
                     }
-                    ButtonComponent(modifier = buttonStyle2, buttonText = "Add to Cart", colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFF43569)), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4, borderStroke = null){}
+                    ButtonComponent(modifier = buttonStyle2, buttonText = "Add to Cart", colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Color(color = 0xFFFFFFFF), style = TextStyle(), borderStroke = null){}
                 }
 
             }
@@ -125,7 +126,7 @@ fun SheetContent() {
         }, onRightClicked = {
             currentTabScreen = 1
         }, leftText = "Description", rightText = "Reviews(20)")
-        ProductTabScreenCompose(currentTabScreen)
+        ProductTabScreen(currentTabScreen)
     }
 }
 
@@ -147,8 +148,8 @@ fun ProductDescription() {
             text = "Description",
             fontSize = 23,
             fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color.DarkGray,
+            textStyle = TextStyle(),
+            textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Bold,
             lineHeight = 30,
@@ -156,10 +157,11 @@ fun ProductDescription() {
                 .fillMaxWidth()
         )
 
+
    TextComponent(
-            textModifier = Modifier.fillMaxWidth().padding(top = 10.dp), text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula\n \n adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula  ", fontSize = 18, fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6, textColor = Color(color = 0xFF5F5E5E), textAlign = TextAlign.Left,
-            fontWeight = FontWeight.ExtraBold, lineHeight = 25)
+            textModifier = Modifier.fillMaxWidth().padding(top = 5.dp, bottom = 20.dp), text = "Alternative theories suggest that the word SPA is an acronym of the Latin phrase Salus/Sanum per aquam or Sanitas per aquam, which translates as “health through water”. Many historians argue that it was originally coined in the Roman Empire and that it has been found inscribed on the walls of ancient Roman baths", fontSize = 18, fontFamily = GGSansSemiBold,
+            textStyle = TextStyle(), textColor = Color.Gray, textAlign = TextAlign.Left,
+            fontWeight = FontWeight.Bold, lineHeight = 25)
     }
 
 }
@@ -197,7 +199,7 @@ fun ProductPriceInfoContent() {
             textStyle = TextStyle(textDecoration = TextDecoration.LineThrough),
             textColor = Color.LightGray,
             textAlign = TextAlign.Right,
-            fontWeight = FontWeight.Medium,
+            fontWeight = FontWeight.Bold,
             lineHeight = 30,
             textModifier = Modifier
                 .padding(top = 5.dp)
@@ -209,11 +211,12 @@ fun ProductPriceInfoContent() {
             text = "$670,000",
             fontSize = 23,
             fontFamily = GGSansBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color(color = 0xfffa2d65),
+            textStyle = TextStyle(),
+            textColor = Colors.primaryColor,
             textAlign = TextAlign.Right,
-            fontWeight = FontWeight.Black,
+            fontWeight = FontWeight.Bold,
             lineHeight = 30,
+            maxLines = 1,
             textModifier = Modifier
                 .padding(top = 5.dp)
                 .fillMaxWidth()
@@ -228,15 +231,15 @@ fun ProductPriceInfoContent() {
 @Composable
 fun ProductFavInfoContent() {
    Row {
-       ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "fav_icon.png", colorFilter = ColorFilter.tint(color = Color(0xfffa2d65)))
+       ImageComponent(imageModifier = Modifier.size(24.dp).padding(top = 3.dp), imageRes = "fav_icon.png", colorFilter = ColorFilter.tint(color = Color(0xfffa2d65)))
        TextComponent(
            text = "500",
-           fontSize = 20,
+           fontSize = 22,
            fontFamily = GGSansSemiBold,
-           textStyle = MaterialTheme.typography.h6,
-           textColor = Color.DarkGray,
+           textStyle = TextStyle(),
+           textColor = Colors.darkPrimary,
            textAlign = TextAlign.Left,
-           fontWeight = FontWeight.SemiBold,
+           fontWeight = FontWeight.Bold,
            lineHeight = 30,
            textModifier = Modifier
                .padding(start = 5.dp)
@@ -287,14 +290,16 @@ fun ProductTitle(){
         TextComponent(
             text = "Bloom Rose Oil And Argan Oil",
             fontSize = 23,
-            fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color.DarkGray,
+            fontFamily = GGSansBold,
+            textStyle = TextStyle(),
+            textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Black,
+            fontWeight = FontWeight.Bold,
             lineHeight = 30,
+            maxLines = 2,
             textModifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            overflow = TextOverflow.Ellipsis
         )
     }
 }
@@ -332,10 +337,10 @@ fun attachServiceImages(){
                 var color = Color.White
                 var width = 0
                 if (pagerState.currentPage == iteration){
-                    color =  Color(color = 0xFFF43569)
+                    color =  Colors.primaryColor
                     width = 20
                 } else{
-                    color =  Color(0xFFF3F3F3)
+                    color =  Color.LightGray
                     width = 20
                 }
                 Box(
@@ -343,7 +348,7 @@ fun attachServiceImages(){
                         .padding(2.dp)
                         .clip(CircleShape)
                         .background(color)
-                        .height(5.dp)
+                        .height(3.dp)
                         .width(width.dp)
                 )
             }
@@ -364,7 +369,7 @@ fun attachCancelIcon() {
     ) {
         val modifier = Modifier
             .size(25.dp)
-        ImageComponent(imageModifier = modifier, imageRes = "cancel_icon.png", colorFilter = ColorFilter.tint(color = Color.DarkGray))
+        ImageComponent(imageModifier = modifier, imageRes = "cancel_icon.png", colorFilter = ColorFilter.tint(color = Colors.darkPrimary))
     }
 
 }
@@ -380,7 +385,7 @@ fun attachShareIcon() {
     ) {
         val modifier = Modifier
             .size(25.dp)
-        ImageComponent(imageModifier = modifier, imageRes = "export_icon.png", colorFilter = ColorFilter.tint(color = Color.DarkGray))
+        ImageComponent(imageModifier = modifier, imageRes = "export_icon.png", colorFilter = ColorFilter.tint(color = Colors.darkPrimary))
     }
 
 }

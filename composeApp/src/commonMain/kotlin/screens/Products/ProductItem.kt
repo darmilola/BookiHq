@@ -44,19 +44,12 @@ import components.TextComponent
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProductItem(onProductClickListener: () -> Unit) {
-    val modalSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded },
-        skipHalfExpanded = false
-    )
-    val coroutineScope = rememberCoroutineScope()
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
         .clickable {
             onProductClickListener()
         }
         .height(280.dp)
-    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
         Column(modifier = columnModifier,
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -64,8 +57,8 @@ fun ProductItem(onProductClickListener: () -> Unit) {
                 ProductImage()
                 ProductNameAndPrice()
             }
-    }
 }
+
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -249,15 +242,16 @@ fun ProductNameAndPrice(){
 
             TextComponent(
                 text = "Bloom Rose Oil And Argan Oil",
-                fontSize = 17,
-                fontFamily = GGSansRegular,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
+                fontSize = 18,
+                fontFamily = GGSansSemiBold,
+                textStyle = TextStyle(),
+                textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
-                fontWeight = FontWeight.SemiBold,
-                textModifier = modifier,
+                fontWeight = FontWeight.Bold,
+                overflow = TextOverflow.Ellipsis,
                 lineHeight = 20,
-                maxLines = 2
+                maxLines = 2,
+                textModifier = modifier
             )
 
             TextComponent(
@@ -265,7 +259,7 @@ fun ProductNameAndPrice(){
                 fontSize = 16,
                 fontFamily = GGSansBold,
                 textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
+                textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
                 fontWeight = FontWeight.Black,
                 lineHeight = 30,
@@ -288,7 +282,7 @@ fun DiscountText() {
         .background(color = Color.Transparent)
         .width(50.dp)
         .height(25.dp)
-        .background(color =  Color.DarkGray)
+        .background(color =  Colors.darkPrimary)
 
         Box(modifier = indicatorModifier,
             contentAlignment = Alignment.Center){

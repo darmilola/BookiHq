@@ -1,5 +1,6 @@
 package screens.Products
 
+import Styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -66,10 +67,10 @@ fun AttachProductReviews(){
                 horizontalArrangement = Arrangement.Center
             ) {
                 repeat(pagerState.pageCount) { iteration ->
-                    var color = Color.LightGray
+                    val color: Color
                     var width = 0
                     if (pagerState.currentPage == iteration) {
-                        color = Color(color = 0xFFF43569)
+                        color = Colors.primaryColor
                         width = 20
                     } else {
                         color = Color.LightGray
@@ -80,7 +81,7 @@ fun AttachProductReviews(){
                             .padding(2.dp)
                             .clip(CircleShape)
                             .background(color)
-                            .height(5.dp)
+                            .height(3.dp)
                             .width(width.dp)
                     )
                 }

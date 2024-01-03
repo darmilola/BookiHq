@@ -1,6 +1,7 @@
 package widgets
 import GGSansRegular
 import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -123,10 +124,10 @@ fun IncrementDecrementWidget(){
 fun CartIncrementDecrementWidget(){
     var counter by remember { mutableStateOf(1) }
 
-    val decrementBorderColor: Color = if(counter == 1) Color(0x80CCCCCC) else Color(color = 0xfffa2d65)
-    val decrementBg: Color = if(counter == 1) Color(0x20CCCCCC) else Color(color = 0x20fa2d65)
+    val decrementBorderColor: Color = if(counter == 1) Color(0x80CCCCCC) else Colors.primaryColor
+    val decrementBg: Color = if(counter == 1) Color(0x20CCCCCC) else Colors.lightPrimaryColor
     val decrementImgRes: String = if(counter == 1) "drawable/remove_icon.png" else "drawable/minus_icon.png"
-    val decrementImgTint: Color = if(counter == 1) Color(0x80CCCCCC) else Color(color = 0xfffa2d65)
+    val decrementImgTint: Color = if(counter == 1) Color(0x80CCCCCC) else Colors.primaryColor
     val decrementBorderWidth: Int = if(counter == 1) 1 else 2
 
     Row(
@@ -163,7 +164,7 @@ fun CartIncrementDecrementWidget(){
                 fontSize = 27,
                 fontFamily = GGSansRegular,
                 textStyle = MaterialTheme.typography.h4,
-                textColor = Color.DarkGray,
+                textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Black,
                 textModifier = Modifier.padding(start = 5.dp, end = 5.dp)
@@ -176,12 +177,12 @@ fun CartIncrementDecrementWidget(){
             modifier = Modifier
                 .height(45.dp)
                 .width(45.dp)
-                .border(border = BorderStroke(2.dp, Color(color = 0xfffa2d65)), shape = RoundedCornerShape(15.dp))
-                .background(shape = RoundedCornerShape(15.dp), color = Color(color = 0x20fa2d65))
+                .border(border = BorderStroke(2.dp, Colors.primaryColor), shape = RoundedCornerShape(15.dp))
+                .background(shape = RoundedCornerShape(15.dp), color = Colors.lightPrimaryColor)
         ) {
 
             ImageComponent(imageModifier = Modifier.padding(12.dp).fillMaxSize()
-                .clickable { counter += 1 }, imageRes = "drawable/add_icon.png", colorFilter = ColorFilter.tint(color = Color(color = 0xfffa2d65)))
+                .clickable { counter += 1 }, imageRes = "drawable/add_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
         }
 
     }

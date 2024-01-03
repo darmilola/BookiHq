@@ -4,7 +4,7 @@ import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import GGSansRegular
 import GGSansSemiBold
-import androidx.compose.foundation.background
+import Styles.Colors
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -23,24 +22,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import components.ImageComponent
 import components.TextComponent
-import components.welcomeLineGradientBlock
 
 @Composable
 fun ReviewsWidget() {
 
     val columnModifier = Modifier
-        .padding(start = 10.dp, bottom = 10.dp)
+        .padding(start = 5.dp, bottom = 10.dp)
         .fillMaxWidth()
     Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
         val modifier = Modifier
             .fillMaxWidth()
-        attachReviewHeader()
+        AttachReviewHeader()
         AttachUserReviewsContent()
     }
 
@@ -48,12 +46,11 @@ fun ReviewsWidget() {
 
 
 @Composable
-fun attachUserImage() {
+fun AttachUserImage() {
     Box(
         Modifier
-            .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(35.dp))
+            .border(width = 1.dp, color = Colors.primaryColor, shape = RoundedCornerShape(35.dp))
             .size(70.dp)
-            .background(color = Color(0xFBFBFB))
     ) {
         val modifier = Modifier
             .padding(3.dp)
@@ -65,7 +62,7 @@ fun attachUserImage() {
 }
 
 @Composable
-fun attachReviewHeader() {
+fun AttachReviewHeader() {
     val rowModifier = Modifier
         .fillMaxWidth()
 
@@ -76,16 +73,16 @@ fun attachReviewHeader() {
             modifier = rowModifier
         ) {
 
-            attachUserImage()
+            AttachUserImage()
 
             val columnModifier = Modifier
-                .padding(start = 5.dp)
+                .padding(start = 3.dp)
                 .fillMaxWidth()
             Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
                 val modifier = Modifier
                     .fillMaxWidth()
-                attachUserName()
-                attachReviewDate()
+                AttachUserName()
+                AttachReviewDate()
             }
 
         }
@@ -93,7 +90,7 @@ fun attachReviewHeader() {
 }
 
 @Composable
-fun attachUserName(){
+fun AttachUserName(){
     val rowModifier = Modifier
         .padding(start = 5.dp)
         .wrapContentWidth()
@@ -109,22 +106,23 @@ fun attachUserName(){
                 text = "Margaret C.",
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
+                textStyle = TextStyle(),
                 textColor = Color.DarkGray,
                 textAlign = TextAlign.Start,
-                fontWeight = FontWeight.Black
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
 }
 
 @Composable
-fun attachReviewDate(){
+fun AttachReviewDate(){
     val rowModifier = Modifier
         .padding(start = 5.dp)
         .wrapContentWidth()
 
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Top,
@@ -132,16 +130,15 @@ fun attachReviewDate(){
         ) {
             TextComponent(
                 text = "09 December 2024",
-                fontSize = 15,
-                fontFamily = GGSansRegular,
-                textStyle = MaterialTheme.typography.h6,
+                fontSize = 16,
+                fontFamily = GGSansSemiBold,
+                textStyle = TextStyle(),
                 textColor = Color.Gray,
                 textAlign = TextAlign.Start,
-                fontWeight = FontWeight.ExtraBold
+                fontWeight = FontWeight.Bold
             )
         }
     }
-}
 
 @Composable
 fun AttachUserReviewsContent() {
@@ -152,8 +149,8 @@ fun AttachUserReviewsContent() {
         val modifier = Modifier
             .fillMaxWidth()
         TextComponent(
-            textModifier = modifier, text = " \"Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula\" ", fontSize = 18, fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6, textColor = Color.DarkGray, textAlign = TextAlign.Left,
-            fontWeight = FontWeight.ExtraBold, lineHeight = 25)
+            textModifier = modifier, text = " \"Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula\" ", fontSize = 18, fontFamily = GGSansSemiBold,
+            textStyle = TextStyle(), textColor = Color.Gray, textAlign = TextAlign.Left,
+            fontWeight = FontWeight.Bold, lineHeight = 25)
     }
 }
