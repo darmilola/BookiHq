@@ -2,8 +2,10 @@ package widgets
 
 import AppTheme.AppColors
 import AppTheme.AppSemiBoldTypography
+import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,35 +25,39 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import components.ImageComponent
 import components.TextComponent
 import screens.Products.NewProductDescriptionText
-import screens.Products.ViewNewProduct
+import screens.Products.ViewPopularProduct
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RecommendedServiceItem(viewType: Int = 0, onSessionClickListener: () -> Unit) {
-    var itemColor: Long = 0L
+    var itemColor: Color = Colors.primaryColor
 
     when (viewType) {
         0 -> {
-            itemColor = 0xFFFF799D
+            itemColor = Color(color =  0xFFFF799D)
         }
         1 -> {
-            itemColor = 0xFF65B8FA
+            itemColor = Colors.primaryColor
         }
         2 -> {
-            itemColor =  0xFF68EA8C
+            itemColor = Color(color = 0xFFF98600)
         }
     }
 
@@ -68,7 +74,10 @@ fun RecommendedServiceItem(viewType: Int = 0, onSessionClickListener: () -> Unit
             modifier = Modifier
                 .padding(start = 10.dp, end = 10.dp, top = 10.dp)
                 .height(410.dp)
-                .wrapContentWidth()
+                .wrapContentWidth(),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 2.dp
+            )
         ) {
             Row(
                 modifier = Modifier
@@ -78,8 +87,8 @@ fun RecommendedServiceItem(viewType: Int = 0, onSessionClickListener: () -> Unit
             ) {
                 Row(
                     modifier = Modifier
-                        .background(color = Color(color = itemColor))
-                        .fillMaxWidth(0.015f)
+                        .background(color = itemColor)
+                        .fillMaxWidth(0.010f)
                         .fillMaxHeight()
                 ) {}
                 Column(
@@ -103,10 +112,10 @@ fun RecommendedServicePriceAndAction(viewType: Int = 0) {
             textColor =  Color(color = 0xFFFF799D)
         }
         1 -> {
-            textColor =  Color(color = 0xFF65B8FA)
+            textColor =  Colors.primaryColor
         }
         2 -> {
-            textColor =   Color(color = 0xFF68EA8C)
+            textColor =   Color(color = 0xFFF98600)
         }
     }
     Row(modifier = Modifier.height(50.dp).padding(start = 10.dp, end = 10.dp),
@@ -126,14 +135,19 @@ fun RecommendedServicePriceAndAction(viewType: Int = 0) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxSize()
             ) {
+                val textStyle: TextStyle = TextStyle(
+                    fontSize = TextUnit(20f, TextUnitType.Sp),
+                    fontFamily = GGSansRegular,
+                    fontWeight = FontWeight.Black
+                )
                 TextComponent(
-                    text = if(viewType == 0) "Book Now" else if (viewType == 1) "Let's Talk" else "Buy Now",
-                    fontSize = 18,
-                    fontFamily = GGSansSemiBold,
-                    textStyle = MaterialTheme.typography.h6,
+                    text = if(viewType == 0) "Book Now" else if (viewType == 1) "Let's Discuss" else "Buy Now",
+                    fontSize = 20,
+                    fontFamily = GGSansRegular,
+                    textStyle = textStyle,
                     textColor = textColor,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Normal,
+                    fontWeight = FontWeight.Black,
                     textModifier = Modifier.wrapContentSize().padding(end = 7.dp))
 
                     ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = textColor))
@@ -145,11 +159,16 @@ fun RecommendedServicePriceAndAction(viewType: Int = 0) {
 }
 @Composable
 fun PopularServicePriceContent(textColor: Color) {
+    val textStyle: TextStyle = TextStyle(
+        fontSize = TextUnit(20f, TextUnitType.Sp),
+        fontFamily = GGSansRegular,
+        fontWeight = FontWeight.Black
+    )
      TextComponent(
             text = "$670,000",
             fontSize = 20,
             fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6,
+            textStyle = textStyle,
             textColor = textColor,
             textAlign = TextAlign.Right,
             fontWeight = FontWeight.Black,
@@ -174,25 +193,35 @@ fun RecommendedServiceDescription() {
             .fillMaxWidth()
 
         TextComponent(
-            text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean",
+            text = "Medium Length Layer Cut with cute Salon stuff",
             fontSize = 20,
-            fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
+            fontFamily = GGSansBold,
+            textStyle = TextStyle(),
             textColor = Color.DarkGray,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.ExtraBold,
+            fontWeight = FontWeight.Bold,
             lineHeight = 25,
             textModifier = Modifier.fillMaxWidth().padding(bottom = 5.dp),
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
 
-        TextComponent(
-            textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp), text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aene ligula", fontSize = 18, fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6, textColor = Color.Gray, textAlign = TextAlign.Left,
-            fontWeight = FontWeight.ExtraBold, lineHeight = 23, maxLines = 3,  overflow = TextOverflow.Ellipsis)
+        val textStyle: TextStyle = TextStyle(
+            fontSize = TextUnit(18f, TextUnitType.Sp),
+            fontFamily = GGSansRegular,
+            fontWeight = FontWeight.Black
+        )
 
-        StraightLine()
+        TextComponent(
+            textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
+            text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aene ligula",
+            fontSize = 20, fontFamily = GGSansRegular,
+            textStyle = MaterialTheme.typography.h6, textColor = Color.Gray, textAlign = TextAlign.Left,
+            fontWeight = FontWeight.Black,
+            lineHeight = 23, maxLines = 3,
+            overflow = TextOverflow.Ellipsis)
+
+         StraightLine()
 
     }
 
@@ -246,7 +275,7 @@ fun PopularServiceDescription(onProductClickListener: () -> Unit){
                 textModifier = modifier
             )
             NewProductDescriptionText()
-            ViewNewProduct(onProductClickListener)
+            ViewPopularProduct(onProductClickListener)
         }
     }
 }

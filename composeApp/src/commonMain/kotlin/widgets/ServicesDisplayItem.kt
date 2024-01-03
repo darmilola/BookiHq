@@ -49,7 +49,7 @@ fun HomeServicesWidget(iconRes: String, serviceTitle: String, mainViewModel: Mai
             val modifier = Modifier
                 .padding(top = 5.dp)
                 .fillMaxWidth()
-            AttachServiceImage(iconRes, iconSize = iconSize)
+            AttachServiceImage(iconRes)
             TextComponent(
                 text = serviceTitle,
                 fontSize = 18,

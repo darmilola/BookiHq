@@ -56,7 +56,6 @@ import components.GradientButton
 import components.IconTextFieldComponent
 import components.ImageComponent
 import components.TextComponent
-import screens.Bookings.attachLocationIcon
 import widgets.RecommendedServiceDescription
 import widgets.RecommendedServicePriceAndAction
 import widgets.RecommendedServicesImage
@@ -66,8 +65,6 @@ import widgets.StraightLine
 fun ConnectBusinessSearchBar(){
     var text by remember { mutableStateOf(TextFieldValue("")) }
 
-
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         val textStyle: TextStyle = TextStyle(
             fontSize = TextUnit(20f, TextUnitType.Sp),
             fontFamily = GGSansSemiBold,
@@ -94,8 +91,8 @@ fun ConnectBusinessSearchBar(){
                 }, isSingleLine = true, iconRes = "search_icon.png"
             )
         }
-    }
 }
+
 
 @Composable
 fun ConnectBusinessHeader(){

@@ -76,7 +76,7 @@ fun CompleteProfileCompose() {
     val navigator = LocalNavigator.currentOrThrow
 
 
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
+
         val topLayoutModifier =
             Modifier
                 .padding(top = 40.dp, start = 5.dp, end = 5.dp)
@@ -111,7 +111,7 @@ fun CompleteProfileCompose() {
             }
         }
     }
-}
+
 
 
 @Composable

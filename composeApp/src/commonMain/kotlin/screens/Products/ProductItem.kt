@@ -5,6 +5,7 @@ import AppTheme.AppSemiBoldTypography
 import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import components.ButtonComponent
 import components.ImageComponent
 import components.TextComponent
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -71,12 +71,6 @@ fun ProductItem(onProductClickListener: () -> Unit) {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun NewProductItem(onProductClickListener: () -> Unit) {
-    val modalSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded },
-        skipHalfExpanded = false
-    )
-    val coroutineScope = rememberCoroutineScope()
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
         .clickable {
@@ -184,24 +178,22 @@ fun NewProductDescription(onProductClickListener: () -> Unit){
                 textAlign = TextAlign.Left,
                 fontWeight = FontWeight.ExtraBold,
                 lineHeight = 25,
-                textModifier = modifier
-            )
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 2)
             NewProductDescriptionText()
-            ViewNewProduct(onProductClickListener)
+            ViewPopularProduct(onProductClickListener)
         }
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ViewNewProduct(onProductClickListener: () -> Unit){
+fun ViewPopularProduct(onProductClickListener: () -> Unit){
     val buttonStyle = Modifier
         .padding(top = 10.dp)
         .fillMaxWidth()
         .background(color = Color.Transparent)
         .height(45.dp)
-
-    ButtonComponent(modifier = buttonStyle, buttonText = "View Product", borderStroke = BorderStroke((1).dp, color = Color(color = 0xfffa2d65)), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = RoundedCornerShape(10.dp), textColor =  Color(color = 0xfffa2d65), style = TextStyle(fontFamily = GGSansRegular)){
+    ButtonComponent(modifier = buttonStyle, buttonText = "View Product", borderStroke = BorderStroke((1).dp, color = Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = RoundedCornerShape(10.dp), textColor =  Colors.primaryColor, style = TextStyle(fontFamily = GGSansRegular)){
         onProductClickListener()
     }
 }
@@ -221,9 +213,18 @@ fun NewProductDescriptionText() {
         val modifier = Modifier
             .fillMaxWidth()
         TextComponent(
-            textModifier = modifier, text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula", fontSize = 17, fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6, textColor = Color.DarkGray, textAlign = TextAlign.Left,
-            fontWeight = FontWeight.ExtraBold, lineHeight = 25, maxLines = 4,  overflow = TextOverflow.Ellipsis)
+            text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula",
+            fontSize = 17,
+            fontFamily = GGSansSemiBold,
+            textStyle = TextStyle(),
+            textColor = Color.Gray,
+            textAlign = TextAlign.Left,
+            fontWeight = FontWeight.Bold,
+            lineHeight = 25,
+            textModifier = modifier,
+            maxLines = 4,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 
 }

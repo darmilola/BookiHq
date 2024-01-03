@@ -81,7 +81,7 @@ fun StraightLine() {
         modifier = Modifier
             .fillMaxWidth()
             .height(1.dp)
-            .background(color = Colors.lighterPrimaryColor)
+            .background(color = Color(0x50CCCCCC))
     ) {
     }
 }
