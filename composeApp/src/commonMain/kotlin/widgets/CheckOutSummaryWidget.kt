@@ -2,6 +2,7 @@ package widgets
 
 import GGSansBold
 import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,7 +32,7 @@ fun CheckOutSummaryWidget() {
         .fillMaxWidth()
 
     val buttonStyle = Modifier
-        .padding(bottom = 10.dp)
+        .padding(bottom = 10.dp, top = 10.dp)
         .fillMaxWidth()
         .height(50.dp)
 
@@ -41,7 +42,7 @@ fun CheckOutSummaryWidget() {
                  text = "Sub-total",
                  fontSize = 18,
                  fontFamily = GGSansSemiBold,
-                 textStyle = MaterialTheme.typography.h6,
+                 textStyle = TextStyle(),
                  textColor = Color.Gray,
                  textAlign = TextAlign.Right,
                  fontWeight = FontWeight.Bold,
@@ -51,7 +52,7 @@ fun CheckOutSummaryWidget() {
                  text = "$150,000",
                  fontSize = 18,
                  fontFamily = GGSansSemiBold,
-                 textStyle = MaterialTheme.typography.h6,
+                 textStyle = TextStyle(),
                  textColor = Color.Gray,
                  textAlign = TextAlign.Right,
                  fontWeight = FontWeight.Bold,
@@ -62,10 +63,10 @@ fun CheckOutSummaryWidget() {
 
         Row(modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)) {
             TextComponent(
-                text = "Delivery",
+                text = "Delivery Fee",
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
+                textStyle = TextStyle(),
                 textColor = Color.Gray,
                 textAlign = TextAlign.Right,
                 fontWeight = FontWeight.Bold,
@@ -75,7 +76,7 @@ fun CheckOutSummaryWidget() {
                 text = "Free",
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
+                textStyle = TextStyle(),
                 textColor = Color.Gray,
                 textAlign = TextAlign.Right,
                 fontWeight = FontWeight.Bold,
@@ -88,8 +89,8 @@ fun CheckOutSummaryWidget() {
                 text = "Total",
                 fontSize = 20,
                 fontFamily = GGSansBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
+                textStyle = TextStyle(),
+                textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Right,
                 fontWeight = FontWeight.Bold,
                 textModifier = Modifier.fillMaxWidth(0.50f)
@@ -98,15 +99,15 @@ fun CheckOutSummaryWidget() {
                 text = "$185,900",
                 fontSize = 20,
                 fontFamily = GGSansBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
+                textStyle = TextStyle(),
+                textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Right,
                 fontWeight = FontWeight.Bold,
                 textModifier = Modifier.fillMaxWidth()
             )
         }
 
-        ButtonComponent(modifier = buttonStyle, buttonText = "Proceed To CheckOut", borderStroke = BorderStroke(1.dp, Color(color = 0xFFF43569)), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color(color = 0xFFF43569), style = TextStyle()){}
+        ButtonComponent(modifier = buttonStyle, buttonText = "Proceed To CheckOut", borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Colors.primaryColor, style = TextStyle()){}
 
     }
 

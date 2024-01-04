@@ -3,6 +3,7 @@ package screens.main
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -135,10 +136,10 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
 
             TextComponent(
                 text = "Make Online And Live Consultation Easily with",
-                fontSize = 35,
+                fontSize = 32,
                 fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
+                textStyle = TextStyle(),
+                textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
                 fontWeight = FontWeight.Bold,
                 lineHeight = 45,
@@ -172,10 +173,10 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
 
                 TextComponent(
                     text = "Top Therapist",
-                    fontSize = 35,
+                    fontSize = 32,
                     fontFamily = GGSansSemiBold,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.DarkGray,
+                    textStyle = TextStyle(),
+                    textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
                     fontWeight = FontWeight.Bold,
                     lineHeight = 40
@@ -193,13 +194,15 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
     fun GradientLock() {
         Box(
             modifier = Modifier
-                .width(210.dp)
+                .width(200.dp)
+                .padding(top = 10.dp)
                 .height(3.dp)
                 .background(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
-                            Color(color = 0xFFF43569),
-                            Color(color = 0xFFFF823E)
+                            Colors.darkPrimary,
+                            Colors.primaryColor,
+                            Colors.lightPrimaryColor
                         )
                     )
                 )
@@ -208,29 +211,21 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
     }
 
 
-    @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
     @Composable
     fun AttachActionButtons() {
         val buttonStyle2 = Modifier
-            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
             .fillMaxWidth()
-            .height(50.dp)
-
-        val gradientButtonStyle = Modifier
-            .fillMaxWidth()
-            .height(50.dp)
-
+            .height(55.dp)
         Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-
             ButtonComponent(
                 modifier = buttonStyle2,
                 buttonText = "Get Started",
-                borderStroke = BorderStroke(1.dp, Color(color = 0xFFF43569)),
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFF3F3F3)),
+                borderStroke = BorderStroke(1.dp, Colors.primaryColor),
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
                 fontSize = 18,
-                shape = RoundedCornerShape(10.dp),
-                textColor = Color(color = 0xFFF43569),
-                style = MaterialTheme.typography.h4
+                shape = CircleShape,
+                textColor = Colors.primaryColor,
+                style = TextStyle()
             ) {
                 mainViewModel.setId(2)
             }
@@ -246,7 +241,7 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
            modifier =  Modifier
                 .fillMaxWidth()
                 .height(350.dp)
-                .background(color = Color(0xFBFBFB), shape = RoundedCornerShape(12.dp)),
+                .background(color = Color.White, shape = RoundedCornerShape(12.dp)),
             contentAlignment = Alignment.Center
         ){
             Box(
@@ -320,7 +315,7 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
         ) {
             Box(
                 Modifier
-                    .border(width = (0.5).dp, color = Color(color = 0xFFFA2D65), shape = RoundedCornerShape(50))
+                    .border(width = (0.5).dp, color = Colors.primaryColor, shape = RoundedCornerShape(50))
                     .height(210.dp)
                     .padding(start = 40.dp, end = 40.dp)
                     .fillMaxWidth()) {}

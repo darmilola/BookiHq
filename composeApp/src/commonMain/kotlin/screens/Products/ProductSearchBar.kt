@@ -3,10 +3,13 @@ package screens.Products
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import GGSansSemiBold
+import Styles.Colors
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -26,39 +29,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import components.IconTextFieldComponent
+import widgets.InputWidget
+import widgets.SearchBarWidget
 
 @Composable
 fun ProductSearchBar(){
-    var text by remember { mutableStateOf(TextFieldValue("")) }
 
+   SearchBarWidget(iconRes = "drawable/search_icon.png", placeholderText = "Search Products", iconSize = 26)
 
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
-        val textStyle: TextStyle = TextStyle(
-            fontSize = TextUnit(20f, TextUnitType.Sp),
-            fontFamily = GGSansSemiBold,
-            textAlign = TextAlign.Start,
-            fontWeight = FontWeight.Normal
-        )
-
-        val modifier  = Modifier
-            .padding(start = 10.dp, end = 10.dp, top = 15.dp)
-            .wrapContentWidth()
-            .height(55.dp)
-            .border(width = 1.dp, color = Color.Gray, shape =  RoundedCornerShape(30.dp))
-
-
-        Box(modifier = modifier) {
-            IconTextFieldComponent(
-                text = text,
-                readOnly = false,
-                textStyle = textStyle,
-                modifier = Modifier,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                onValueChange = { it ->
-                    text = it
-                }, isSingleLine = true, iconRes = "search_icon.png"
-            )
-        }
-    }
 }
+

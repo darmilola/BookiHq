@@ -6,6 +6,7 @@ import Models.AvailableTherapistUIModel
 import Models.CalendarDataSource
 import Models.TherapistDataSource
 import Models.WorkingHoursDataSource
+import Styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -44,144 +45,72 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import components.TextComponent
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import screens.Bookings.CalenderContent
-import screens.Bookings.CalenderHeader
 import widgets.AttachTherapistWidget
+import widgets.Calendar
 import widgets.ReviewsWidget
+import widgets.TimeGrid
 
 @Composable
 fun ConsultationDate() {
 
-    val boxModifier =
-        Modifier
-            .fillMaxHeight()
-            .fillMaxWidth()
     Column(
         Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        BookingCalendar()
-        AvailableSlotsContent()
+        Calendar(modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 20.dp))
+        AvailableTimeContent()
         AttachServiceReviews()
     }
-
-
 }
 
+
 @Composable
-fun AvailableSlotsContent() {
+fun AvailableTimeContent() {
     Column(
         modifier = Modifier
-            .padding(start = 20.dp, end = 10.dp, top = 15.dp, bottom = 10.dp)
+            .padding(start = 20.dp, end = 10.dp, top = 35.dp, bottom = 10.dp)
             .wrapContentHeight(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment  = Alignment.CenterHorizontally,
     ) {
 
         TextComponent(
-            text = "Available Slots",
-            fontSize = 16,
+            text = "Available Time",
+            fontSize = 18,
             fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color.DarkGray,
+            textStyle = TextStyle(),
+            textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Black,
             textModifier = Modifier.fillMaxWidth()
         )
-
-        AvailableSlotsGrid()
-    }
-}
-
-@Composable
-fun AvailableSlotsGrid() {
-
-    val dataSource = WorkingHoursDataSource()
-    // get CalendarUiModel from CalendarDataSource, and the lastSelectedDate is Today.
-    val timePair = Pair(Pair("7:00","12:00"), false)
-    val workingHours = dataSource.getWorkingHours(lastSelectedSlot = timePair)
-
-    var selectedWorkHourUIModel by remember { mutableStateOf(workingHours) }
-
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = Modifier.fillMaxWidth().height(220.dp),
-        contentPadding = PaddingValues(6.dp),
-        verticalArrangement = Arrangement.spacedBy(5.dp),
-        horizontalArrangement = Arrangement.spacedBy(5.dp)
-    ) {
-        items(selectedWorkHourUIModel.visibleSlots.size) { i ->
-            AvailableSlotsItem(selectedWorkHourUIModel.visibleSlots[i], onWorkHourClickListener = {
-                    it -> selectedWorkHourUIModel = selectedWorkHourUIModel.copy(
-                selectedSlot = it,
-                visibleSlots = selectedWorkHourUIModel.visibleSlots.map { it2 ->
-                    it2.copy(
-                        isSelected = it2.timeSlot == it.timeSlot
-                    )
-                }
-            )})
-        }
+        TimeGrid()
     }
 }
 
 
-@Composable
-fun AvailableSlotsItem(availableSlot: AvailableSlotsUIModel.AvailableSlot, onWorkHourClickListener: (AvailableSlotsUIModel.AvailableSlot) -> Unit) {
-    val timeStampObject = availableSlot.timeSlot
-    val timeRange = timeStampObject.first
-    val meridianVal: String = if(timeStampObject.second) "AM" else "PM"
-    val color: Color = if(availableSlot.isSelected) Color(color = 0xFFFA2D65) else Color.Gray
 
-    Column(
-        modifier = Modifier
-            .padding(start = 5.dp, end = 5.dp, top = 15.dp)
-            .fillMaxWidth()
-            .clickable {
-                onWorkHourClickListener(availableSlot)
-            }
-            .border(border = BorderStroke((1.5).dp, color), shape = RoundedCornerShape(3.dp))
-            .height(50.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        TextComponent(
-            text = timeRange.first+" - "+timeRange.second+ " "+meridianVal,
-            fontSize = 18,
-            fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = color,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Normal,
-            lineHeight = 30,
-            textModifier = Modifier.fillMaxWidth()
-        )
-    }
-}
-
-@OptIn(ExperimentalResourceApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AttachServiceReviews(){
+fun AttachServiceReviews() {
 
     TextComponent(
         text = "Reviews",
-        fontSize = 16,
+        fontSize = 18,
         fontFamily = GGSansSemiBold,
-        textStyle = MaterialTheme.typography.h6,
-        textColor = Color.DarkGray,
+        textStyle = TextStyle(),
+        textColor = Colors.darkPrimary,
         textAlign = TextAlign.Left,
         fontWeight = FontWeight.Black,
-        lineHeight = 30,
-        textModifier = Modifier
-            .padding(bottom = 5.dp, start = 15.dp, top = 20.dp)
-            .fillMaxWidth()
-    )
+        textModifier = Modifier.fillMaxWidth().padding(start = 20.dp))
 
     val pagerState = rememberPagerState(pageCount = {
         5
@@ -189,7 +118,7 @@ fun AttachServiceReviews(){
 
     val boxModifier =
         Modifier
-            .padding(bottom = 20.dp, top = 20.dp, start = 15.dp)
+            .padding(bottom = 20.dp, top = 20.dp, start = 20.dp)
             .fillMaxHeight()
             .fillMaxWidth()
 
@@ -198,7 +127,10 @@ fun AttachServiceReviews(){
             .padding(bottom = 10.dp, top = 10.dp, start = 15.dp)
             .fillMaxHeight()
             .fillMaxWidth()
-            .border(border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(topStart = 7.dp, bottomStart = 7.dp))
+            .border(
+                border = BorderStroke(1.dp, Color.LightGray),
+                shape = RoundedCornerShape(topStart = 7.dp, bottomStart = 7.dp)
+            )
 
 
     Box(modifier = boxBgModifier) {
@@ -221,7 +153,7 @@ fun AttachServiceReviews(){
                     var color = Color.LightGray
                     var width = 0
                     if (pagerState.currentPage == iteration) {
-                        color = Color(color = 0xFFF43569)
+                        color = Colors.primaryColor
                         width = 20
                     } else {
                         color = Color.LightGray
@@ -232,54 +164,13 @@ fun AttachServiceReviews(){
                             .padding(2.dp)
                             .clip(CircleShape)
                             .background(color)
-                            .height(5.dp)
+                            .height(3.dp)
                             .width(width.dp)
                     )
                 }
 
             }
         }
-    }
-}
-
-@Composable
-fun BookingCalendar(modifier: Modifier = Modifier) {
-
-    val coroutineScope = rememberCoroutineScope()
-    val listState = rememberLazyListState()
-
-    Column(modifier = modifier.fillMaxSize().padding(start = 15.dp, end = 15.dp)) {
-        val dataSource = CalendarDataSource()
-        // get CalendarUiModel from CalendarDataSource, and the lastSelectedDate is Today.
-        var calendarUiModel = dataSource.getData(lastSelectedDate = dataSource.today)
-
-        var selectedUIModel by remember { mutableStateOf(calendarUiModel) }
-
-        var initialVisibleDates by remember { mutableStateOf(5) }
-
-
-        CalenderHeader(selectedUIModel, onPrevClickListener = { startDate ->
-            coroutineScope.launch {
-                if (initialVisibleDates > 0) initialVisibleDates--
-                listState.animateScrollToItem(index = initialVisibleDates)
-            }
-        },
-            onNextClickListener = { endDate ->
-                coroutineScope.launch {
-                    if (initialVisibleDates < listState.layoutInfo.totalItemsCount - 5) initialVisibleDates++
-                    listState.animateScrollToItem(index = initialVisibleDates)
-                }
-            })
-        CalenderContent(selectedUIModel, onDateClickListener = { it ->
-            selectedUIModel = selectedUIModel.copy(
-                selectedDate = it,
-                visibleDates = selectedUIModel.visibleDates.map { it2 ->
-                    it2.copy(
-                        isSelected = it2.date == it.date
-                    )
-                }
-            )
-        }, listState = listState)
     }
 }
 

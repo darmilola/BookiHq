@@ -21,7 +21,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import components.IconTextComponent
 import components.RadioToggleButton
 import components.TextComponent
 import components.ToggleButton
@@ -33,8 +32,7 @@ fun PaymentMethodWidget() {
     val toggleLabelList: ArrayList<String> = arrayListOf()
     toggleLabelList.add("Credit/Debit Card")
     toggleLabelList.add("Cash On Delivery")
-    toggleLabelList.add("Any Other Payment Method Available")
 
-    RadioToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(27.dp), style = MaterialTheme.typography.h4, actionLabel = toggleLabelList, title = "Payment Method", gridCount = 1)
+    RadioToggleButton(fontSize = 18, shape = RoundedCornerShape(27.dp), style = TextStyle(), actionLabel = toggleLabelList, title = "Payment Method", gridCount = 1)
 
 }

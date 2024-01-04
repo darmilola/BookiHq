@@ -45,7 +45,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 @Composable
 fun DropDownWidgetView(menuItems: List<String>,
                    iconRes: String = "drawable/country_icon.png",
-                   iconSize: Int = 30,
+                   iconSize: Int = 25,
                    placeHolderText: String,
                    menuExpandedState: Boolean,
                    selectedIndex : Int,
@@ -70,14 +70,14 @@ fun DropDownWidgetView(menuItems: List<String>,
 
                 Box(modifier = Modifier.fillMaxHeight().width(50.dp), contentAlignment = Alignment.Center){
                     ImageComponent(imageModifier = Modifier
-                        .size(24.dp), imageRes = iconRes, colorFilter = ColorFilter.tint(color = Color.Gray))
+                        .size(iconSize.dp), imageRes = iconRes, colorFilter = ColorFilter.tint(color = Colors.primaryColor))
                 }
 
                 Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.8f), contentAlignment = Alignment.Center){
 
                     TextComponent(
                         text =  if(selectedIndex != -1) menuItems[selectedIndex] else placeHolderText,
-                        fontSize = 18,
+                        fontSize = if(selectedIndex != -1) 20 else 18,
                         fontFamily = if(selectedIndex != -1) GGSansSemiBold else  GGSansRegular,
                         textStyle = TextStyle(),
                         textColor = if(selectedIndex != -1) Colors.darkPrimary else  Color.Gray,
@@ -88,7 +88,7 @@ fun DropDownWidgetView(menuItems: List<String>,
 
                 Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(), contentAlignment = Alignment.Center){
                     val imageModifier = Modifier
-                        .size(iconSize.dp)
+                        .size(30.dp)
                         .padding(start = 10.dp, top = 3.dp)
                     ImageComponent(
                         imageModifier = imageModifier,
@@ -96,8 +96,6 @@ fun DropDownWidgetView(menuItems: List<String>,
                         colorFilter = ColorFilter.tint(color = Colors.primaryColor)
                     )
                 }
-
-
 
             }
         }
@@ -123,7 +121,7 @@ fun DropDownWidgetView(menuItems: List<String>,
 }
 
 @Composable
-fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_icon.png", placeHolderText: String, iconSize: Int = 30) {
+fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_icon.png", placeHolderText: String, iconSize: Int = 25) {
 
     val expandedMenuItem = remember { mutableStateOf(false) }
 
@@ -196,7 +194,6 @@ fun CountryCodeDropDownWidget(menuItems: List<PhoneExtensionModel>) {
 }
 
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun TextDropDownWidgetView(menuItems: List<PhoneExtensionModel>,
                            menuExpandedState: Boolean,

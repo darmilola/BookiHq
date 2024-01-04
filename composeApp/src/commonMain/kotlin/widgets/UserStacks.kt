@@ -1,5 +1,6 @@
 package widgets
 
+import Styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -28,14 +29,14 @@ fun attachImage() {
 fun AttachImageStacks() {
     Box(modifier = Modifier.padding(top = 15.dp)){
         val modifier = Modifier
-            .border(width = 3.dp, color = Color(color = 0xFFF3F3F3), shape = RoundedCornerShape(22.dp))
-            .size(44.dp)
+            .border(width = 3.dp, color = Colors.lightPrimaryColor, shape = CircleShape)
+            .size(50.dp)
             .clip(CircleShape)
         ImageComponent(imageModifier = modifier, imageRes = "therap1.jpg")
         val modifier2 = Modifier
             .padding(start = 30.dp)
-            .border(width = 3.dp, color = Color(color = 0xFFF3F3F3), shape = RoundedCornerShape(22.dp))
-            .size(44.dp)
+            .border(width = 3.dp, color = Colors.lightPrimaryColor, shape = CircleShape)
+            .size(50.dp)
             .clip(CircleShape)
         ImageComponent(imageModifier = modifier2, imageRes = "doctor.jpg")
     }

@@ -325,34 +325,34 @@ fun ToggleButton(shape: Shape, colors: ButtonColors, fontSize: Int, style: TextS
 
 
 @Composable
-fun RadioToggleButton(shape: Shape, colors: ButtonColors, fontSize: Int, style: TextStyle, title: String, actionLabel: ArrayList<String>, gridCount: Int = 2) {
+fun RadioToggleButton(shape: Shape, fontSize: Int, style: TextStyle, title: String, actionLabel: ArrayList<String>, gridCount: Int = 2) {
 
     var checkedId by remember { mutableStateOf(0) }
 
     Column(
         modifier = Modifier
-            .padding(start = 10.dp, end = 10.dp, top = 30.dp, bottom = 10.dp)
+            .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
             .fillMaxWidth()
-            .height(250.dp),
+            .height(200.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment  = Alignment.CenterHorizontally,
     ) {
 
         TextComponent(
             text = title,
-            fontSize = 16,
+            fontSize = 20,
             fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color.DarkGray,
+            textStyle = TextStyle(),
+            textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Black,
             lineHeight = 30,
             textModifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth().padding(bottom = 10.dp)
         )
 
-        MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
-            LazyVerticalGrid(
+
+        LazyVerticalGrid(
                 columns = GridCells.Fixed(gridCount),
                 modifier = Modifier.fillMaxWidth().wrapContentHeight(),
                 verticalArrangement = Arrangement.spacedBy(5.dp),
@@ -372,9 +372,7 @@ fun RadioToggleButton(shape: Shape, colors: ButtonColors, fontSize: Int, style: 
                                 .fillMaxWidth()
                                 .height(54.dp)
                                 .background(
-                                    if (checkedId == it) Color(0xFFFA2D65) else Color(
-                                        0x45C4C4C4
-                                    ), shape = shape
+                                    if (checkedId == it) Colors.primaryColor else Colors.lightPrimaryColor, shape = shape
                                 ),
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
@@ -395,9 +393,9 @@ fun RadioToggleButton(shape: Shape, colors: ButtonColors, fontSize: Int, style: 
                                 fontSize = fontSize,
                                 textStyle = style,
                                 fontFamily = GGSansSemiBold,
-                                textColor = if (checkedId == it) Color.White else Color(0xFFFA2D65),
+                                textColor = if (checkedId == it) Color.White else Colors.primaryColor,
                                 textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.ExtraBold
+                                fontWeight = FontWeight.Bold
                             )
                         }
                     }
@@ -405,5 +403,4 @@ fun RadioToggleButton(shape: Shape, colors: ButtonColors, fontSize: Int, style: 
 
             }
         }
-    }
 }

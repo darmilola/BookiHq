@@ -1,8 +1,5 @@
 package screens.Bookings
 
-import AppTheme.AppBoldTypography
-import AppTheme.AppColors
-import AppTheme.AppSemiBoldTypography
 import Styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -21,8 +18,6 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,7 +34,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import components.ButtonComponent
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import screens.main.MainViewModel
 
 
@@ -53,14 +47,14 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Screen {
             3
         })
 
-        val topLayoutModifier =
+        val layoutModifier =
                 Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
                     .background(color = Color.White)
-                    Column(modifier = topLayoutModifier) {
+                    Column(modifier = layoutModifier) {
 
-                        BookingScreenTopBar(mainViewModel, pagerState)
+                        BookingScreenTopBar(pagerState)
 
                         val bgStyle = Modifier
                             .fillMaxWidth()
@@ -140,7 +134,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Screen {
     }
 
 
-    @OptIn(ExperimentalResourceApi::class, ExperimentalFoundationApi::class)
+    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun AttachBookingPages(pagerState: PagerState){
 

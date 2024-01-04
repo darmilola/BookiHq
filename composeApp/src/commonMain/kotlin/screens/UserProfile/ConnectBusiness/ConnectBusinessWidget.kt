@@ -1,9 +1,7 @@
 package screens.UserProfile.ConnectBusiness
 
-import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import AppTheme.AppSemiBoldTypography
-import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
 import androidx.compose.foundation.BorderStroke
@@ -51,46 +49,16 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import components.ButtonComponent
 import components.GradientButton
-import components.IconTextFieldComponent
 import components.ImageComponent
 import components.TextComponent
-import widgets.RecommendedServiceDescription
-import widgets.RecommendedServicePriceAndAction
-import widgets.RecommendedServicesImage
-import widgets.StraightLine
+import widgets.InputWidget
 
 @Composable
 fun ConnectBusinessSearchBar(){
-    var text by remember { mutableStateOf(TextFieldValue("")) }
 
-        val textStyle: TextStyle = TextStyle(
-            fontSize = TextUnit(20f, TextUnitType.Sp),
-            fontFamily = GGSansSemiBold,
-            textAlign = TextAlign.Start,
-            fontWeight = FontWeight.Normal
-        )
+    InputWidget(iconRes = "drawable/search_icon.png", placeholderText = "Search...", iconSize = 24)
 
-        val modifier  = Modifier
-            .padding(start = 10.dp, end = 10.dp, top = 15.dp)
-            .wrapContentWidth()
-            .height(55.dp)
-            .border(width = 1.dp, color = Color.Gray, shape =  RoundedCornerShape(30.dp))
-
-
-        Box(modifier = modifier) {
-            IconTextFieldComponent(
-                text = text,
-                readOnly = false,
-                textStyle = textStyle,
-                modifier = Modifier,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                onValueChange = { it ->
-                    text = it
-                }, isSingleLine = true, iconRes = "search_icon.png"
-            )
-        }
 }
 
 
@@ -241,7 +209,6 @@ fun ConnectTitle(){
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BusinessInfoContent(onSessionClickListener: () -> Unit) {
     val columnModifier = Modifier
@@ -296,7 +263,6 @@ fun BusinessInfoContent(onSessionClickListener: () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun AttachActionButtons() {
     val gradientButtonStyle = Modifier

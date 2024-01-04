@@ -51,7 +51,7 @@ fun StepsProgressBar(modifier: Modifier = Modifier, numberOfSteps: Int, currentS
             }
             else {
                 Step(
-                    modifier = Modifier.weight(2.3F),
+                    modifier = Modifier.weight(2.4F),
                     isCompete = step < currentStep,
                     isCurrentStep = step == currentStep,
                     itemTitle = stepItems[step]
@@ -216,7 +216,7 @@ fun Step(modifier: Modifier = Modifier, isCompete: Boolean, isCurrentStep: Boole
            horizontalAlignment= Alignment.Start,
            modifier = modifier.wrapContentHeight()) {
         Row(
-            modifier = Modifier.height(50.dp),
+            modifier = Modifier.height(50.dp).padding(start = 10.dp),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -234,7 +234,7 @@ fun Step(modifier: Modifier = Modifier, isCompete: Boolean, isCurrentStep: Boole
             }
 
             if (!isLastStep) Divider(
-                modifier = Modifier.padding(start = 5.dp, end = 5.dp),
+                modifier = Modifier.padding(start = 15.dp, end = 5.dp),
                 color = color,
                 thickness = 3.dp
             )
@@ -245,9 +245,9 @@ fun Step(modifier: Modifier = Modifier, isCompete: Boolean, isCurrentStep: Boole
             fontFamily = GGSansBold,
             textStyle = TextStyle(),
             textColor = Colors.darkPrimary,
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Left,
             fontWeight = FontWeight.Bold,
-            textModifier = Modifier.padding(bottom = 5.dp)
+            textModifier = Modifier.padding(bottom = 5.dp).fillMaxWidth().fillMaxHeight()
                 .alpha(if (isCurrentStep) 1F else 0F)
         )
     }

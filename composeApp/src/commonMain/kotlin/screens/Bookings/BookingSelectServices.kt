@@ -66,7 +66,11 @@ import components.ToggleButton
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import widgets.Calendar
 import widgets.DropDownWidget
+import widgets.HomeDeliveryWidget
+import widgets.ParlorDeliveryWidget
+import widgets.ServiceLocationToggle
 
 @Composable
 fun BookingSelectServices() {
@@ -88,184 +92,12 @@ fun BookingSelectServices() {
         ServiceTitle()
         ServiceLocationToggle()
         AttachServiceTypeToggle()
-        BookingCalendar()
+        Calendar()
 
     }
 
 
 }
-
-@Composable
-fun BookingCalendar(modifier: Modifier = Modifier) {
-
-    val coroutineScope = rememberCoroutineScope()
-    val listState = rememberLazyListState()
-
-    Column(modifier = modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 40.dp)) {
-        val dataSource = CalendarDataSource()
-        // get CalendarUiModel from CalendarDataSource, and the lastSelectedDate is Today.
-        var calendarUiModel = dataSource.getData(lastSelectedDate = dataSource.today)
-
-        var selectedUIModel by remember { mutableStateOf(calendarUiModel) }
-
-        var initialVisibleDates by remember { mutableStateOf(5) }
-
-
-        CalenderHeader(selectedUIModel, onPrevClickListener = { startDate ->
-            coroutineScope.launch {
-                if (initialVisibleDates > 0) initialVisibleDates--
-                listState.animateScrollToItem(index = initialVisibleDates)
-            }
-        },
-            onNextClickListener = { endDate ->
-                coroutineScope.launch {
-                    if (initialVisibleDates < listState.layoutInfo.totalItemsCount - 5) initialVisibleDates++
-                    listState.animateScrollToItem(index = initialVisibleDates)
-                }
-            })
-        CalenderContent(selectedUIModel, onDateClickListener = { it ->
-            selectedUIModel = selectedUIModel.copy(
-                selectedDate = it,
-                visibleDates = selectedUIModel.visibleDates.map { it2 ->
-                    it2.copy(
-                        isSelected = it2.date == it.date
-                    )
-                }
-            )
-        }, listState = listState)
-    }
-}
-
-    @Composable
-    fun CalenderContent(calendarUiModel: CalendarUiModel, onDateClickListener: (CalendarUiModel.Date) -> Unit, listState: LazyListState) {
-
-        LazyRow(modifier = Modifier.padding( top = 10.dp).fillMaxWidth(), state = listState) {
-            // pass the visibleDates to the UI
-            items(items = calendarUiModel.visibleDates) { date ->
-                ContentItem(date, onDateClickListener)
-            }
-        }
-    }
-
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ContentItem(date: CalendarUiModel.Date, onClickListener: (CalendarUiModel.Date) -> Unit) {
-    val textColor: Color = if(date.isSelected){
-        Color.White
-    }
-    else{
-        Colors.darkPrimary
-    }
-
-    val bgColor: Color = if(date.isSelected){
-        Colors.primaryColor
-    }
-    else{
-        Colors.lighterPrimaryColor
-    }
-
-
-    Card(colors = CardDefaults.cardColors(
-        containerColor = bgColor
-    ),
-        modifier = Modifier
-            .padding(vertical = 4.dp, horizontal = 4.dp),
-        shape = RoundedCornerShape(5.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .width(70.dp)
-                .height(80.dp)
-                .clickable {
-                    onClickListener(date)
-                }
-                .padding(4.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            TextComponent(
-                text = date.date.dayOfMonth.toString(),
-                textModifier = Modifier.align(Alignment.CenterHorizontally),
-                fontSize = 25,
-                fontFamily = GGSansSemiBold,
-                fontWeight = FontWeight.ExtraBold,
-                textColor = textColor,
-                textAlign = TextAlign.Center,
-                textStyle = MaterialTheme.typography.h4
-            )
-            TextComponent(
-                text = date.date.dayOfWeek.toString().substring(0,3),
-                textModifier = Modifier.align(Alignment.CenterHorizontally),
-                fontSize = 16,
-                fontFamily = GGSansSemiBold,
-                fontWeight = FontWeight.Light,
-                textColor = textColor,
-                textAlign = TextAlign.Center,
-                textStyle = MaterialTheme.typography.h4)
-        }
-    }
-}
-
-
-
-@Composable
-fun CalenderHeader(calendarUiModel: CalendarUiModel, onPrevClickListener: (LocalDate) -> Unit,
-                   onNextClickListener: (LocalDate) -> Unit,) {
-    val imageModifier = Modifier
-        .size(20.dp)
-
-    Row {
-        Row(modifier = Modifier
-            .weight(1f)
-            .clickable {
-                onPrevClickListener(calendarUiModel.startDate.date)
-            }) {
-            ImageComponent(
-                imageModifier = imageModifier.rotate(180f),
-                imageRes = "left_arrow.png",
-                colorFilter = ColorFilter.tint(color = Colors.darkPrimary)
-            )
-        }
-
-        Row(modifier = Modifier.weight(2f),horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.Top) {
-            TextComponent(
-                text = if (calendarUiModel.selectedDate.isToday) {
-                    "Today"
-                } else {
-                    calendarUiModel.selectedDate.date.month.toString()
-                        .lowercase() + ", " + calendarUiModel.selectedDate.date.year.toString()
-                },
-                textModifier = Modifier
-                    .align(Alignment.CenterVertically),
-                fontSize = 20,
-                fontFamily = GGSansSemiBold,
-                fontWeight = FontWeight.Bold,
-                textColor = Colors.darkPrimary,
-                textAlign = TextAlign.Center,
-                textStyle = TextStyle()
-            )
-        }
-
-        Row(modifier = Modifier
-            .weight(1f)
-            .clickable {
-                onNextClickListener(calendarUiModel.endDate.date)
-            },
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.Top) {
-            ImageComponent(
-                imageModifier = imageModifier,
-                imageRes = "left_arrow.png",
-                colorFilter = ColorFilter.tint(color = Colors.darkPrimary)
-            )
-        }
-
-    }
-}
-
 
 @Composable
 fun AttachServiceTypeToggle(){
@@ -302,42 +134,9 @@ fun AttachServiceTypeToggle(){
 @Composable
 fun AttachDropDownWidget(){
     val serviceList = listOf("Service A ", "Service B ", "Service C ", "Service D ", "Service E ")
-    DropDownWidget(menuItems = serviceList,iconRes = "drawable/spa_service.png", placeHolderText = "Select Service Type", iconSize = 40)
+    DropDownWidget(menuItems = serviceList,iconRes = "drawable/spa_treatment_leaves.png", placeHolderText = "Select Service Type", iconSize = 30)
 }
 
-@Composable
-fun ServiceLocationToggle(){
-    Column(
-        modifier = Modifier
-            .padding(top = 25.dp)
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment  = Alignment.CenterHorizontally,
-    ) {
-
-        TextComponent(
-            text = "Where do you want your Service?",
-            fontSize = 18,
-            fontFamily = GGSansSemiBold,
-            textStyle = TextStyle(),
-            textColor = Colors.darkPrimary,
-            textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Black,
-            lineHeight = 30,
-            textModifier = Modifier
-                .fillMaxWidth().padding(start = 10.dp)
-        )
-
-        ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = TextStyle(), onLeftClicked = {
-
-        }, onRightClicked = {
-
-        }, leftText = "Parlor", rightText = "Home")
-
-    }
-
-}
 
 
 

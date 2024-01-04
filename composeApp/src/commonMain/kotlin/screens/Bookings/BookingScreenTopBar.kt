@@ -60,7 +60,7 @@ import widgets.StepsProgressBar
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun BookingScreenTopBar(mainViewModel: MainViewModel, pagerState: PagerState) {
+fun BookingScreenTopBar(pagerState: PagerState) {
 
     val rowModifier = Modifier
         .fillMaxWidth()
@@ -82,7 +82,6 @@ fun BookingScreenTopBar(mainViewModel: MainViewModel, pagerState: PagerState) {
         Row(modifier = rowModifier,
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically) {
-
 
             Box(modifier =  Modifier.weight(1.0f)
                 .fillMaxWidth()

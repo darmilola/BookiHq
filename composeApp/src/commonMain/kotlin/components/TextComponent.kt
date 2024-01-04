@@ -3,6 +3,8 @@ package components
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import GGSansRegular
+import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -61,68 +63,28 @@ public fun TextComponent(textModifier: Modifier, text: String, fontSize: Int, te
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-public fun TextComponent(text: String, fontSize: Int, textStyle: TextStyle, textColor: Color, textAlign: TextAlign, fontWeight: FontWeight, fontFamily: FontFamily? = null,lineHeight: Int = 10, maxLines: Int = 10, overflow: TextOverflow = TextOverflow.Clip,letterSpacing: TextUnit = TextUnit.Unspecified) {
+fun TextComponent(text: String, fontSize: Int, textStyle: TextStyle, textColor: Color, textAlign: TextAlign, fontWeight: FontWeight, fontFamily: FontFamily? = null,lineHeight: Int = 10, maxLines: Int = 10, overflow: TextOverflow = TextOverflow.Clip,letterSpacing: TextUnit = TextUnit.Unspecified) {
     Text(text, fontSize = fontSize.sp, fontFamily = fontFamily, style = textStyle, color = textColor, textAlign = textAlign,fontWeight = fontWeight, lineHeight = lineHeight.sp, maxLines = maxLines, overflow = overflow, letterSpacing = letterSpacing)
 }
 
-
-@OptIn(ExperimentalResourceApi::class)
 @Composable
-public fun IconTextComponent(text: String, fontSize: Int, textStyle: TextStyle, textColor: Color, textAlign: TextAlign, fontWeight: FontWeight, fontFamily: FontFamily? = null,maxLines: Int = 1,imageModifier: Modifier, imageRes: String, colorFilter: ColorFilter? = null, contentScale: ContentScale = ContentScale.Crop) {
-
-    Row(modifier = Modifier.fillMaxWidth().height(50.dp),
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically) {
-
-        Image(
-            painter = painterResource(imageRes),
-            contentDescription = "An Image Component",
-            contentScale = contentScale,
-            modifier = imageModifier,
-            colorFilter = colorFilter
-        )
-
-        Text(text, fontSize = fontSize.sp, fontFamily = fontFamily, style = textStyle, color = textColor, textAlign = textAlign,fontWeight = fontWeight, maxLines = maxLines, modifier = Modifier.padding(start = 10.dp))
-    }
-}
-
-
-
-@Composable
-public fun TextFieldComponent(text: TextFieldValue, readOnly: Boolean = false, modifier: Modifier, textStyle: TextStyle = LocalTextStyle.current,onValueChange: (TextFieldValue) -> Unit, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), color: TextFieldColors = TextFieldDefaults.textFieldColors(
+fun TextFieldComponent(text: TextFieldValue, readOnly: Boolean = false, modifier: Modifier, textStyle: TextStyle = LocalTextStyle.current,onValueChange: (TextFieldValue) -> Unit, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), color: TextFieldColors = TextFieldDefaults.textFieldColors(
     disabledTextColor = Color.Transparent,
     focusedIndicatorColor = Color.Transparent,
     unfocusedIndicatorColor = Color.Transparent,
     disabledIndicatorColor = Color.Transparent
 ), isSingleLine: Boolean = false, trailingIcon: @Composable (() -> Unit)? = null, isReadOnly: Boolean = false) {
 
-    // for preview add same text to all the fields
-
-    // Normal Text Input field with floating label
-    // placeholder is same as hint in xml of edit text
     var mText by remember { mutableStateOf(TextFieldValue(text.text)) }
-  /*  TextField(
-        value = mText,
-        onValueChange = { newValue -> mText = newValue },
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth(),
-        label = { Text("label") },
-        placeholder = { Text("placeholder") },
-    )*/
 
     TextField(value = mText, modifier = modifier, textStyle = textStyle, onValueChange = { newValue -> mText = newValue }, keyboardOptions = keyboardOptions, colors = color, singleLine = isSingleLine, readOnly = isReadOnly, placeholder = {
         PlaceholderTextComponent("Input Phone Number")
     })
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
-public fun PlaceholderTextComponent(placeholderTile: String, textColor: Color = Color.LightGray, textSize: Float = 18f) {
-
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
-
-        val textStyle: TextStyle = TextStyle(
+fun PlaceholderTextComponent(placeholderTile: String, textColor: Color = Color.LightGray, textSize: Float = 18f) {
+    val textStyle = TextStyle(
             fontSize = TextUnit(textSize, TextUnitType.Sp),
             fontFamily = GGSansRegular,
             textAlign = TextAlign.Start,
@@ -133,93 +95,18 @@ public fun PlaceholderTextComponent(placeholderTile: String, textColor: Color = 
             TextComponent(
                 text = placeholderTile,
                 fontSize = textSize.toInt(),
-                fontFamily = GGSansRegular,
+                fontFamily = GGSansSemiBold,
                 textStyle = textStyle,
                 textColor = textColor,
                 textAlign = TextAlign.Start,
-                fontWeight = FontWeight.ExtraBold,
+                fontWeight = FontWeight.Bold,
                 textModifier = Modifier.wrapContentSize()
             )
         }
-
-    }
-}
-
+ }
 
 @Composable
-public fun IconTextFieldComponent(text: TextFieldValue, readOnly: Boolean = false, modifier: Modifier, textStyle: TextStyle = LocalTextStyle.current,onValueChange: (TextFieldValue) -> Unit, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), color: TextFieldColors = TextFieldDefaults.textFieldColors(
-    disabledTextColor = Color.Transparent,
-    focusedIndicatorColor = Color.Transparent,
-    unfocusedIndicatorColor = Color.Transparent,
-    disabledIndicatorColor = Color.Transparent
-), isSingleLine: Boolean = false, trailingIcon: @Composable (() -> Unit)? = null, isReadOnly: Boolean = false, iconSize: Int = 28, iconRes: String) {
-
-    // for preview add same text to all the fields
-
-    // Normal Text Input field with floating label
-    // placeholder is same as hint in xml of edit text
-    var mText by remember { mutableStateOf(TextFieldValue(text.text)) }
-    /*  TextField(
-          value = mText,
-          onValueChange = { newValue -> mText = newValue },
-          modifier = Modifier
-              .padding(8.dp)
-              .fillMaxWidth(),
-          label = { Text("label") },
-          placeholder = { Text("placeholder") },
-      )*/
-
-    val rowModifier = Modifier
-        .padding(bottom = 0.dp)
-        .background(color = Color.Transparent)
-        .height(55.dp)
-        .fillMaxWidth()
-
-    val iconModifier = Modifier
-        .padding(top = 5.dp)
-        .size(iconSize.dp)
-
-    val iconBoxModifier = Modifier
-        .fillMaxHeight()
-        .fillMaxWidth(0.10f)
-
-    val textModifier = Modifier
-        .fillMaxHeight()
-        .background(color = Color.Transparent)
-        .fillMaxWidth()
-
-    Row(
-        verticalAlignment = Alignment.Top,
-        modifier = rowModifier
-    ) {
-
-        val iconModifier = Modifier
-            .size(iconSize.dp)
-
-        val iconBoxModifier = Modifier
-            .padding(start = 7.dp)
-            .fillMaxHeight()
-            .fillMaxWidth(0.10f)
-
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = iconBoxModifier
-        ) {
-            ImageComponent(imageModifier = iconModifier, imageRes = iconRes, colorFilter = ColorFilter.tint(color = Color.Gray))
-        }
-
-
-        OutlinedTextField(value = mText, modifier = textModifier, textStyle = textStyle, onValueChange = { newValue -> mText = newValue }, keyboardOptions = keyboardOptions, colors = color, singleLine = isSingleLine, readOnly = isReadOnly, placeholder = {
-                PlaceholderTextComponent("Search...", textColor = Color.Gray)
-            })
-
-    }
-
-}
-
-@Composable
-public fun TextFieldComponent(text: String, readOnly: Boolean = false, modifier: Modifier, textStyle: TextStyle = LocalTextStyle.current, onValueChange: (String) -> Unit, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), color: TextFieldColors = TextFieldDefaults.textFieldColors(
+fun TextFieldComponent(text: String, readOnly: Boolean = false, modifier: Modifier, textStyle: TextStyle = LocalTextStyle.current, onValueChange: (String) -> Unit, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), color: TextFieldColors = TextFieldDefaults.textFieldColors(
     disabledTextColor = Color.Transparent,
     focusedIndicatorColor = Color.Transparent,
     unfocusedIndicatorColor = Color.Transparent,

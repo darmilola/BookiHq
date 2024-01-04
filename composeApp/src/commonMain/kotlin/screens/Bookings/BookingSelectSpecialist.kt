@@ -1,11 +1,11 @@
 package screens.Bookings
 
-import GGSansRegular
 import GGSansSemiBold
 import Models.AvailableSlotsUIModel
 import Models.AvailableTherapistUIModel
 import Models.TherapistDataSource
 import Models.WorkingHoursDataSource
+import Styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -32,7 +32,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,13 +41,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import components.TextComponent
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import widgets.AttachTherapistWidget
 import widgets.ReviewsWidget
+import widgets.TimeGrid
 
 @Composable
 fun BookingSelectSpecialist() {
@@ -63,7 +63,7 @@ fun BookingSelectSpecialist() {
             .verticalScroll(rememberScrollState())
     ) {
         TherapistContent()
-        AvailableSlotsContent()
+        AvailableTimeContent()
         AttachServiceReviews()
     }
 
@@ -71,7 +71,7 @@ fun BookingSelectSpecialist() {
 }
 
 @Composable
-fun AvailableSlotsContent() {
+fun AvailableTimeContent() {
     Column(
         modifier = Modifier
             .padding(start = 20.dp, end = 10.dp, top = 15.dp, bottom = 10.dp)
@@ -81,86 +81,19 @@ fun AvailableSlotsContent() {
     ) {
 
         TextComponent(
-            text = "Available Slots",
-            fontSize = 16,
+            text = "Available Time",
+            fontSize = 18,
             fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color.DarkGray,
+            textStyle = TextStyle(),
+            textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Black,
             textModifier = Modifier.fillMaxWidth()
         )
 
-        AvailableSlotsGrid()
+        TimeGrid()
     }
 }
-
-@Composable
-fun AvailableSlotsGrid() {
-
-    val dataSource = WorkingHoursDataSource()
-    // get CalendarUiModel from CalendarDataSource, and the lastSelectedDate is Today.
-    val timePair = Pair(Pair("7:00","12:00"), false)
-    val workingHours = dataSource.getWorkingHours(lastSelectedSlot = timePair)
-
-    var selectedWorkHourUIModel by remember { mutableStateOf(workingHours) }
-
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = Modifier.fillMaxWidth().height(220.dp),
-        contentPadding = PaddingValues(6.dp),
-        verticalArrangement = Arrangement.spacedBy(5.dp),
-        horizontalArrangement = Arrangement.spacedBy(5.dp)
-    ) {
-        items(selectedWorkHourUIModel.visibleSlots.size) { i ->
-            AvailableSlotsItem(selectedWorkHourUIModel.visibleSlots[i], onWorkHourClickListener = {
-                    it -> selectedWorkHourUIModel = selectedWorkHourUIModel.copy(
-                selectedSlot = it,
-                visibleSlots = selectedWorkHourUIModel.visibleSlots.map { it2 ->
-                    it2.copy(
-                        isSelected = it2.timeSlot == it.timeSlot
-                    )
-                }
-            )})
-        }
-    }
-}
-
-
-@Composable
-fun AvailableSlotsItem(availableSlot: AvailableSlotsUIModel.AvailableSlot, onWorkHourClickListener: (AvailableSlotsUIModel.AvailableSlot) -> Unit) {
-    val timeStampObject = availableSlot.timeSlot
-    val timeRange = timeStampObject.first
-    val meridianVal: String = if(timeStampObject.second) "AM" else "PM"
-    val color: Color = if(availableSlot.isSelected) Color(color = 0xFFFA2D65) else Color.Gray
-
-    Column(
-        modifier = Modifier
-            .padding(start = 5.dp, end = 5.dp, top = 15.dp)
-            .fillMaxWidth()
-            .clickable {
-                onWorkHourClickListener(availableSlot)
-            }
-            .border(border = BorderStroke((1.5).dp, color), shape = RoundedCornerShape(3.dp))
-            .height(50.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        TextComponent(
-            text = timeRange.first+" - "+timeRange.second+ " "+meridianVal,
-            fontSize = 18,
-            fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = color,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Normal,
-            lineHeight = 30,
-            textModifier = Modifier.fillMaxWidth()
-        )
-    }
-}
-
-
 
 @Composable
 fun TherapistContent() {
@@ -181,14 +114,14 @@ fun TherapistContent() {
 
         TextComponent(
             text = "Choose Specialist",
-            fontSize = 16,
+            fontSize = 18,
             fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color.DarkGray,
+            textStyle = TextStyle(),
+            textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Black,
-            textModifier = Modifier.fillMaxWidth()
-        )
+            textModifier = Modifier.fillMaxWidth())
+
         LazyRow(
             modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(230.dp),
             contentPadding = PaddingValues(6.dp)
@@ -210,16 +143,16 @@ fun TherapistContent() {
     }
 }
 
-@OptIn(ExperimentalResourceApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AttachServiceReviews(){
 
     TextComponent(
         text = "Jenny's Reviews",
-        fontSize = 16,
+        fontSize = 18,
         fontFamily = GGSansSemiBold,
-        textStyle = MaterialTheme.typography.h6,
-        textColor = Color.DarkGray,
+        textStyle = TextStyle(),
+        textColor = Colors.darkPrimary,
         textAlign = TextAlign.Left,
         fontWeight = FontWeight.Black,
         lineHeight = 30,
@@ -266,7 +199,7 @@ fun AttachServiceReviews(){
                     var color = Color.LightGray
                     var width = 0
                     if (pagerState.currentPage == iteration) {
-                        color = Color(color = 0xFFF43569)
+                        color = Colors.primaryColor
                         width = 20
                     } else {
                         color = Color.LightGray
@@ -277,7 +210,7 @@ fun AttachServiceReviews(){
                             .padding(2.dp)
                             .clip(CircleShape)
                             .background(color)
-                            .height(5.dp)
+                            .height(3.dp)
                             .width(width.dp)
                     )
                 }

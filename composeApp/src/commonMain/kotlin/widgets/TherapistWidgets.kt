@@ -2,12 +2,10 @@ package widgets
 
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
-import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
-import Models.AvailableSlotsUIModel
 import Models.AvailableTherapistUIModel
-import Models.TriangleShape
+import Styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,13 +13,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -29,11 +24,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -41,17 +34,18 @@ import components.ImageComponent
 import components.TextComponent
 
 @Composable
-fun attachUserProfileImage(availableTherapist: AvailableTherapistUIModel.AvailableTherapist) {
-    var selectedVisibilityAlpha: Float = if (availableTherapist.isSelected) 1f else 0f
+fun AttachUserProfileImage(availableTherapist: AvailableTherapistUIModel.AvailableTherapist) {
+    val selectedVisibilityAlpha: Float = if (availableTherapist.isSelected) 1f else 0f
     Box(
         Modifier
             .padding(start = 20.dp, bottom = 10.dp)
-            .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(10.dp))
+            .border(width = 1.dp, color = Colors.primaryColor, shape = RoundedCornerShape(10.dp))
             .width(140.dp)
             .height(160.dp)
-            .background(color = Color(0xFBFBFB)),
+            .background(color = Color.White),
         contentAlignment = Alignment.TopEnd
     ) {
+
         val modifier = Modifier
             .padding(4.dp)
                 .clip(shape = RoundedCornerShape(7.dp))
@@ -64,9 +58,9 @@ fun attachUserProfileImage(availableTherapist: AvailableTherapistUIModel.Availab
                 .padding(4.dp)
                 .alpha(selectedVisibilityAlpha)
                 .clip(shape = RoundedCornerShape(7.dp))
-               .width(140.dp)
-               .height(160.dp)
-                .background(color = Color(0x60FA2D65)),
+                .width(140.dp)
+                .height(160.dp)
+                .background(color = Colors.transparentPrimaryColor),
             contentAlignment = Alignment.Center
         ) {
             ImageComponent(imageModifier = Modifier
@@ -80,7 +74,7 @@ fun attachUserProfileImage(availableTherapist: AvailableTherapistUIModel.Availab
                 .padding(4.dp)
                 .clip(shape = RoundedCornerShape(topEnd = 7.dp))
                 .width(50.dp)
-                .background(color = Color(color = 0xfffa2d65))
+                .background(color = Colors.primaryColor)
                 .height(24.dp)) {
             ImageComponent(imageModifier = Modifier.size(12.dp), imageRes = "star_icon.png", colorFilter = ColorFilter.tint(color = Color.White))
             TextComponent(
@@ -108,13 +102,13 @@ fun AttachTherapistWidget(availableTherapist: AvailableTherapistUIModel.Availabl
     Column(
         modifier = rowModifier
     ) {
-        attachUserProfileImage(availableTherapist)
-        UserFullNameComp()
+        AttachUserProfileImage(availableTherapist)
+        TherapistName()
     }
 }
 
 @Composable
-fun UserFullNameComp(){
+fun TherapistName(){
     val rowModifier = Modifier
         .padding(start = 20.dp)
         .width(140.dp)
@@ -130,8 +124,8 @@ fun UserFullNameComp(){
                 text = "Jenny Wilson",
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
+                textStyle = TextStyle(),
+                textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Black
             )

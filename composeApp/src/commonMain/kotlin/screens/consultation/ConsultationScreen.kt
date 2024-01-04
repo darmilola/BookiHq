@@ -1,10 +1,6 @@
 package screens.consultation
 
-import AppTheme.AppBoldTypography
-import AppTheme.AppColors
-import AppTheme.AppSemiBoldTypography
 import Styles.Colors
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,8 +17,6 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,15 +29,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import components.ButtonComponent
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import screens.Bookings.BookingPayment
-import screens.Bookings.BookingScreenTopBar
-import screens.Bookings.BookingSelectServices
-import screens.Bookings.BookingSelectSpecialist
 import screens.main.MainViewModel
 
 
@@ -57,18 +44,18 @@ class ConsultationScreen(private val mainViewModel: MainViewModel) : Screen {
             3
         })
 
-            val topLayoutModifier =
+            val layoutModifier =
                 Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
-                    .background(color = Color(0xFFF3F3F3))
-            Column(modifier = topLayoutModifier) {
+                    .background(color = Color.White)
+            Column(modifier = layoutModifier) {
 
-                ConsultationScreenTopBar(mainViewModel, pagerState)
+                ConsultationScreenTopBar(pagerState)
 
                 val bgStyle = Modifier
                     .fillMaxWidth()
-                    .background(color = Color(0xFFF3F3F3))
+                    .background(color = Color.White)
                     .fillMaxHeight()
 
                     Box(contentAlignment = Alignment.TopCenter, modifier = Modifier
@@ -141,8 +128,7 @@ class ConsultationScreen(private val mainViewModel: MainViewModel) : Screen {
 
         val  boxModifier =
             Modifier
-                .padding(top = 5.dp)
-                .background(color = Color(0xFFF3F3F3))
+                .background(color = Color.White)
                 .fillMaxHeight(0.85f)
                 .fillMaxWidth()
 

@@ -206,12 +206,6 @@ fun RecommendedServiceDescription() {
             overflow = TextOverflow.Ellipsis
         )
 
-        val textStyle: TextStyle = TextStyle(
-            fontSize = TextUnit(18f, TextUnitType.Sp),
-            fontFamily = GGSansRegular,
-            fontWeight = FontWeight.Black
-        )
-
         TextComponent(
             textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
             text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aene ligula",

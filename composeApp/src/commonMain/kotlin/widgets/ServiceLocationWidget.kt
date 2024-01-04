@@ -4,13 +4,11 @@ import GGSansSemiBold
 import Styles.Colors
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,39 +25,43 @@ import components.TextComponent
 import components.ToggleButton
 
 @Composable
-fun ProductDeliveryAddressWidget() {
+fun ServiceLocationToggle(){
     var deliveryType by remember { mutableStateOf(0) }
-    val columnModifier = Modifier
-        .padding(start = 10.dp, bottom = 10.dp, top = 15.dp, end = 10.dp)
-        .wrapContentHeight()
-        .fillMaxWidth()
-    Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
+    Column(
+        modifier = Modifier
+            .padding(top = 25.dp)
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment  = Alignment.CenterHorizontally,
+    ) {
+
         TextComponent(
-            text = "Delivery Location",
-            fontSize = 20,
+            text = "Where do you want your Service?",
+            fontSize = 18,
             fontFamily = GGSansSemiBold,
             textStyle = TextStyle(),
             textColor = Colors.darkPrimary,
-            textAlign = TextAlign.Start,
+            textAlign = TextAlign.Left,
             fontWeight = FontWeight.Black,
-            textModifier = Modifier.padding(start = 10.dp, top = 10.dp)
+            lineHeight = 30,
+            textModifier = Modifier
+                .fillMaxWidth().padding(start = 10.dp)
         )
 
-        Row(modifier = Modifier.fillMaxWidth()) {
-            ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = MaterialTheme.typography.h4, onLeftClicked = {
-                deliveryType = 0
-            }, onRightClicked = {
-                deliveryType = 1
-            }, leftText = "Home", rightText = "Pick Up")
-        }
+        ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = TextStyle(), onLeftClicked = {
+            deliveryType = 0
+        }, onRightClicked = {
+            deliveryType = 1
+        }, leftText = "Parlor", rightText = "Home")
 
-       if(deliveryType == 0) {
-            HomeDeliveryWidget()
-       }
-        else{
+
+        if(deliveryType == 0) {
             ParlorDeliveryWidget()
         }
-
+        else{
+            HomeDeliveryWidget()
+        }
 
     }
 

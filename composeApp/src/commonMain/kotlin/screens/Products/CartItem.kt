@@ -4,6 +4,7 @@ import AppTheme.AppColors
 import AppTheme.AppSemiBoldTypography
 import GGSansBold
 import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,21 +34,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import components.ImageComponent
 import components.TextComponent
 import widgets.CartIncrementDecrementWidget
 import widgets.IncrementDecrementWidget
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CartItem(onProductClickListener: () -> Unit) {
-    val modalSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded },
-        skipHalfExpanded = false
-    )
-    val coroutineScope = rememberCoroutineScope()
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 10.dp, bottom = 10.dp)
         .clickable {
@@ -119,12 +114,14 @@ fun CartItemDetail(onProductClickListener: () -> Unit){
                 text = "Bloom Rose Oil And Argan Oil is For Sale",
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
+                textStyle = TextStyle(),
+                textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
-                fontWeight = FontWeight.ExtraBold,
+                fontWeight = FontWeight.Black,
                 lineHeight = 25,
-                textModifier = modifier
+                textModifier = modifier,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
             CartProductPriceInfoContent()
             CartIncrementDecrementWidget()
@@ -143,8 +140,8 @@ fun CartProductPriceInfoContent() {
             text = "$670,000",
             fontSize = 20,
             fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color(color = 0xfffa2d65),
+            textStyle = TextStyle(),
+            textColor = Colors.primaryColor,
             textAlign = TextAlign.Right,
             fontWeight = FontWeight.Black,
             lineHeight = 30,

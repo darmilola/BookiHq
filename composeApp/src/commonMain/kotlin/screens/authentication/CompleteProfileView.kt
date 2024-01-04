@@ -50,6 +50,7 @@ import components.TextFieldComponent
 import components.ToggleButton
 import screens.main.MainScreen
 import widgets.DropDownWidget
+import widgets.InputWidget
 import widgets.PageBackNavWidget
 import widgets.SubtitleTextWidget
 import widgets.TitleWidget
@@ -147,48 +148,6 @@ fun AttachDropDownWidget(){
     val countryList = listOf("South Africa", "Nigeria")
     DropDownWidget(menuItems = countryList, placeHolderText = "Country of Residence",)
 }
-
-@Composable
-fun InputWidget(iconRes: String, placeholderText: String, iconSize: Int, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), isPasswordField: Boolean = false) {
-         var text by remember { mutableStateOf("") }
-         var borderStroke by remember { mutableStateOf(BorderStroke(2.dp, color  = Color.Transparent)) }
-
-            val modifier  = Modifier
-                .padding(end = 10.dp, start = 10.dp, top = 20.dp)
-                .fillMaxWidth()
-                .height(70.dp)
-                .border(border = borderStroke, shape = RoundedCornerShape(15.dp))
-                .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(15.dp))
-
-             Row(modifier = modifier,
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically) {
-
-                Box(modifier = Modifier.fillMaxHeight().width(50.dp), contentAlignment = Alignment.Center){
-                    ImageComponent(imageModifier = Modifier
-                        .size(iconSize.dp), imageRes = iconRes, colorFilter = ColorFilter.tint(color = Color.Gray))
-                }
-                TextFieldComponent(
-                    text = text,
-                    readOnly = false,
-                    textStyle = TextStyle(fontSize = TextUnit(20f, TextUnitType.Sp), fontFamily = GGSansSemiBold, fontWeight = FontWeight.Normal, textAlign = TextAlign.Start, color = Color.Gray),
-                    modifier = Modifier.fillMaxHeight().fillMaxWidth().padding(end = 10.dp),
-                    keyboardOptions = keyboardOptions,
-                    onValueChange = {
-                        text = it
-                    } , isSingleLine = true, placeholderText = placeholderText, onFocusChange = {
-                        it ->
-                        borderStroke = if (it){
-                            BorderStroke(2.dp, color  = Colors.primaryColor)
-                        } else{
-                            BorderStroke(2.dp, color  = Color.Transparent)
-                        }
-                    },
-                    isPasswordField = isPasswordField
-                )
-            }
-       }
-
 
 @Composable
 fun EditProfilePictureButton() {
