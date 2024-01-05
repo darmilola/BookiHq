@@ -8,6 +8,10 @@ object Colors {
     val lightPrimaryColor: Color = Color(color = 0xFFE6F8FF)
     val surfaceColor: Color = Color(color = 0xFFF5FAFC)
     val darkPrimary: Color = Color(color = 0xFF004659)
+    val pinkColor: Color = Color(color = 0xFFFA2D65)
+    val greenColor: Color = Color(color = 0xFF90BF3E)
+    val lightGreenColor: Color = Color(color = 0xFFF1FDDB)
+    val lightPinkColor: Color = Color(color = 0xFFFEDEF0)
     val lighterPrimaryColor: Color = Color(color = 0xFFE6F8FF)
     val midGrayColor: Color = Color(color = 0xFFB0B0B0)
 }

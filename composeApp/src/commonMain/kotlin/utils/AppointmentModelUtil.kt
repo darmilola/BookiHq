@@ -1,14 +1,12 @@
 package utils
 
+import Models.AppointmentItem
 import Models.AppointmentItemListModel
  fun getAppointmentViewHeight(
-        itemList: List<AppointmentItemListModel>
+        itemList: List<AppointmentItem>
     ): Int {
         val itemCount = itemList.size
-        var subItemCount = 0
-        for (item in itemList) {
-            subItemCount += item.appointmentItems.size
-        }
-        return (subItemCount * 145) + (itemCount * 100)
+
+        return itemCount * 230
     }
 

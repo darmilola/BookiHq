@@ -31,7 +31,7 @@ import components.ImageComponent
 import components.TextComponent
 
 @Composable
-fun AppointmentWidget(iconRes: String = "drawable/schedule.png", iconSize: Int = 35, statusText: String = "PENDING", statusColor: Color = Colors.primaryColor) {
+fun AppointmentWidget(iconRes: String = "drawable/schedule.png", iconSize: Int = 35, statusText: String = "PENDING", statusColor: Color = Colors.primaryColor, statusBgColor: Color = Colors.lightPrimaryColor) {
     val boxModifier = Modifier
         .fillMaxWidth()
         .padding(start = 10.dp, end = 10.dp)
@@ -42,7 +42,7 @@ fun AppointmentWidget(iconRes: String = "drawable/schedule.png", iconSize: Int =
         .fillMaxWidth()
         .fillMaxHeight(0.75f)
         .padding(bottom = 20.dp)
-        .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(10.dp))
+        .background(color = statusBgColor, shape = RoundedCornerShape(10.dp))
 
     val cardContainerModifier = Modifier
         .padding(top = 65.dp)
@@ -59,12 +59,12 @@ fun AppointmentWidget(iconRes: String = "drawable/schedule.png", iconSize: Int =
                 Box(modifier = Modifier.fillMaxWidth(0.80f).fillMaxHeight(), contentAlignment = Alignment.CenterStart) {
                     TextComponent(
                         text = "Haircut is the Service Name",
-                        fontSize = 23,
+                        fontSize = 21,
                         fontFamily = GGSansSemiBold,
                         textStyle = TextStyle(),
-                        textColor = Colors.primaryColor,
+                        textColor = statusColor,
                         textAlign = TextAlign.Left,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Medium,
                         lineHeight = 30,
                         textModifier = Modifier,
                         maxLines = 2,
@@ -104,14 +104,13 @@ fun AppointmentWidget(iconRes: String = "drawable/schedule.png", iconSize: Int =
                             AttachIcon(iconRes = "drawable/time_outline.png", iconSize = 20)
                         }
                         TextComponent(
-                            text = "5 PM 23 June 2024",
+                            text = "5 PM  23  June  2024",
                             fontSize = 16,
-                            fontFamily = GGSansSemiBold,
+                            fontFamily = GGSansRegular,
                             textStyle = TextStyle(),
-                            textColor = Colors.midGrayColor,
+                            textColor = Color.Gray,
                             textAlign = TextAlign.Left,
                             fontWeight = FontWeight.Bold,
-                            lineHeight = 30,
                             textModifier = Modifier.fillMaxWidth().padding(start = 5.dp),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -130,12 +129,11 @@ fun AppointmentWidget(iconRes: String = "drawable/schedule.png", iconSize: Int =
                         TextComponent(
                             text = "Savanna Beauty Services",
                             fontSize = 16,
-                            fontFamily = GGSansSemiBold,
+                            fontFamily = GGSansRegular,
                             textStyle = TextStyle(),
-                            textColor = Colors.midGrayColor,
+                            textColor = Color.Gray,
                             textAlign = TextAlign.Left,
                             fontWeight = FontWeight.Bold,
-                            lineHeight = 30,
                             textModifier = Modifier.fillMaxWidth().padding(start = 5.dp),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -155,12 +153,11 @@ fun AppointmentWidget(iconRes: String = "drawable/schedule.png", iconSize: Int =
                         TextComponent(
                             text = "Helena McCain",
                             fontSize = 16,
-                            fontFamily = GGSansSemiBold,
+                            fontFamily = GGSansRegular,
                             textStyle = TextStyle(),
-                            textColor = Colors.midGrayColor,
+                            textColor = Color.Gray,
                             textAlign = TextAlign.Left,
                             fontWeight = FontWeight.Bold,
-                            lineHeight = 30,
                             textModifier = Modifier.fillMaxWidth().padding(start = 5.dp),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -186,7 +183,7 @@ fun AttachIcon(iconRes: String = "location_icon_filled.png", iconSize: Int = 16)
     val modifier = Modifier
         .padding(top = 2.dp)
         .size(iconSize.dp)
-    ImageComponent(imageModifier = modifier, imageRes = iconRes, colorFilter = ColorFilter.tint(color = Colors.midGrayColor))
+    ImageComponent(imageModifier = modifier, imageRes = iconRes, colorFilter = ColorFilter.tint(color = Color.LightGray))
 }
 
 @Composable

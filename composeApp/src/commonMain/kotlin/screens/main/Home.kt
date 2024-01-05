@@ -1,18 +1,12 @@
 package screens.main
 
-import AppTheme.AppColors
-import AppTheme.AppSemiBoldTypography
-import GGSansBold
 import GGSansSemiBold
 import Models.AppointmentItem
-import Models.AppointmentItemListModel
 import Models.BusinessStatusAdsPage
 import Models.BusinessStatusAdsProgress
 import Styles.Colors
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,7 +21,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
@@ -35,10 +28,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,7 +37,6 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,13 +51,10 @@ import androidx.compose.ui.unit.dp
 import components.ImageComponent
 import components.StraightLine
 import components.TextComponent
-import kotlinx.datetime.LocalDate
-import screens.Bookings.AppointmentItemCard
 import screens.Products.BottomSheet
 import screens.Products.NewProductItem
 import utils.getAppointmentViewHeight
 import widgets.AppointmentWidget
-import widgets.AppointmentsWidget
 import widgets.BusinessStatusImageWidget
 import widgets.BusinessStatusProgressWidget
 import widgets.BusinessStatusWidget
@@ -97,26 +83,23 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
     @Composable
     override fun Content() {
-
-
         mainViewModel.setTitle(options.title)
         val columnModifier = Modifier
             .padding(top = 5.dp)
             .fillMaxSize()
 
-        val appointmentList = ArrayList<AppointmentItemListModel>()
-        val appointmentItems = ArrayList<AppointmentItem>()
+        val appointmentList = ArrayList<AppointmentItem>()
 
         val appointmentItem1 = AppointmentItem(appointmentType = 1)
         val appointmentItem2 = AppointmentItem(appointmentType = 2)
         val appointmentItem3 = AppointmentItem(appointmentType = 3)
 
-        appointmentItems.add(appointmentItem1)
-        appointmentItems.add(appointmentItem2)
-        appointmentItems.add(appointmentItem3)
+        appointmentList.add(appointmentItem1)
+        appointmentList.add(appointmentItem2)
+        appointmentList.add(appointmentItem3)
+        appointmentList.add(appointmentItem1)
+        appointmentList.add(appointmentItem2)
 
-        val datedAppointmentSchedule2 = AppointmentItemListModel(appointmentItems = appointmentItems, appointmentType = 5, appointmentDate = LocalDate(year = 2023, monthNumber = 12, dayOfMonth = 27))
-        appointmentList.add(datedAppointmentSchedule2)
 
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -140,9 +123,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                         ServiceGridScreen()
                         RecommendedSessions()
                         AttachAppointments()
-                        PopulateAppointmentScreen(datedAppointmentScheduleList = appointmentList, mainViewModel = mainViewModel)
-                        RecentAppointments()
-                        PopulateAppointmentScreen(datedAppointmentScheduleList = appointmentList, mainViewModel = mainViewModel)
+                        PopulateAppointmentScreen(appointmentList = appointmentList, mainViewModel = mainViewModel)
                         PopularProducts()
                         PopularProductScreen()
                     }
@@ -273,7 +254,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 modifier = rowModifier
             ) {
                 TextComponent(
-                    text = "Your Appointments",
+                    text = "Recent Appointments",
                     fontSize = 18,
                     fontFamily = GGSansSemiBold,
                     textStyle = TextStyle(),
@@ -281,7 +262,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                     textAlign = TextAlign.Left,
                     fontWeight = FontWeight.Black,
                     lineHeight = 30,
-                    textModifier = Modifier.fillMaxWidth(0.42f)
+                    textModifier = Modifier.fillMaxWidth(0.45f)
                 )
                 StraightLine()
             }
@@ -458,13 +439,41 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     }
 
     @Composable
-    fun PopulateAppointmentScreen(datedAppointmentScheduleList: List<AppointmentItemListModel>, mainViewModel: MainViewModel) {
-        LazyColumn(modifier = Modifier.fillMaxWidth().height(getAppointmentViewHeight(datedAppointmentScheduleList).dp), userScrollEnabled = false) {
-            items(datedAppointmentScheduleList) {item ->
+    fun PopulateAppointmentScreen(appointmentList: List<AppointmentItem>, mainViewModel: MainViewModel) {
+        LazyColumn(modifier = Modifier.fillMaxWidth().height(getAppointmentViewHeight(appointmentList).dp), userScrollEnabled = false) {
+            items(appointmentList) {item ->
+                var iconRes = ""
+                var statusText = ""
+                var statusColor: Color = Colors.primaryColor
+                var statusBgColor: Color = Colors.lightPrimaryColor
+                var iconSize: Int = 35
 
-                AppointmentWidget()
+                when (item.appointmentType) {
+                    1 -> {
+                        iconRes = "drawable/schedule.png"
+                        statusText = "PENDING"
+                        statusColor = Colors.primaryColor
+                        statusBgColor = Colors.lightPrimaryColor
+                        iconSize = 30
+                    }
+                    2 -> {
+                        iconRes = "drawable/appointment_postponed.png"
+                        statusText = "POSTPONED"
+                        statusColor = Colors.pinkColor
+                        statusBgColor = Colors.lightPinkColor
+                        iconSize = 30
+                    }
+                    3 -> {
+                        iconRes = "drawable/appointment_done.png"
+                        statusText = "DONE"
+                        statusColor = Colors.greenColor
+                        statusBgColor = Colors.lightGreenColor
+                        iconSize = 30
+                    }
+                }
 
-              AppointmentItemCard(viewType = item.appointmentType, contentSize = ((item.appointmentItems.size*145)), bookingItems = item, mainViewModel = mainViewModel)
+                AppointmentWidget(iconRes = iconRes, iconSize = iconSize, statusText = statusText, statusColor = statusColor, statusBgColor = statusBgColor)
+
             }
         }
     }
