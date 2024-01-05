@@ -53,10 +53,6 @@ import widgets.TimeGrid
 @Composable
 fun BookingSelectSpecialist() {
 
-    val boxModifier =
-        Modifier
-            .fillMaxHeight()
-            .fillMaxWidth()
     Column(
         Modifier
             .fillMaxSize()

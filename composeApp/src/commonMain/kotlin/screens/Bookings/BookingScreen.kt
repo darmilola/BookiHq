@@ -117,7 +117,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Screen {
                 navigator.pop()
             }
 
-            val bookingNavText = if(currentPage == 1) "Payments" else "Continue"
+            val bookingNavText = if(currentPage == 1) "Go To Payments" else "Continue"
 
             ButtonComponent(modifier = buttonStyle2, buttonText = bookingNavText, colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Color(color = 0xFFFFFFFF), style = TextStyle(), borderStroke = null){
                 coroutineScope.launch {

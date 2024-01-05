@@ -46,8 +46,7 @@ fun ServiceLocationToggle(){
             fontWeight = FontWeight.Black,
             lineHeight = 30,
             textModifier = Modifier
-                .fillMaxWidth().padding(start = 10.dp)
-        )
+                .fillMaxWidth().padding(start = 10.dp))
 
         ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = TextStyle(), onLeftClicked = {
             deliveryType = 0

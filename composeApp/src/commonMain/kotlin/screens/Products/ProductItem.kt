@@ -150,7 +150,6 @@ fun NewProductDescription(onProductClickListener: () -> Unit){
     val columnModifier = Modifier
         .padding(start = 10.dp, end = 10.dp)
         .fillMaxHeight()
-    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
         Column(
             modifier = columnModifier,
             verticalArrangement = Arrangement.Top,
@@ -166,17 +165,16 @@ fun NewProductDescription(onProductClickListener: () -> Unit){
                 text = "Bloom Rose Oil And Argan Oil is For Sale",
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
+                textStyle = TextStyle(),
+                textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
-                fontWeight = FontWeight.ExtraBold,
-                lineHeight = 25,
+                fontWeight = FontWeight.Black,
+                lineHeight = 30,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 2)
             NewProductDescriptionText()
             ViewPopularProduct(onProductClickListener)
         }
-    }
 }
 
 @Composable

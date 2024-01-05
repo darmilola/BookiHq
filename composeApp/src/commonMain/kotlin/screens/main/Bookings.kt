@@ -81,7 +81,6 @@ class BookingsTab(private val mainViewModel: MainViewModel) : Tab {
             .fillMaxHeight()
             .fillMaxWidth()
 
-        MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -92,7 +91,7 @@ class BookingsTab(private val mainViewModel: MainViewModel) : Tab {
                         .padding(bottom = 85.dp)
                         .fillMaxHeight()
                         .fillMaxWidth()
-                        .background(color = Color(color = 0xFFF3F3F3))
+                        .background(color = Color.White)
                 ) {
 
                     ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = MaterialTheme.typography.h4, onLeftClicked = {
@@ -111,7 +110,7 @@ class BookingsTab(private val mainViewModel: MainViewModel) : Tab {
 
             }
         }
-    }
+
 
     @Composable
     private fun populateBookingItemList(bookingItems: List<Pair<Int,Int>>){
@@ -121,215 +120,4 @@ class BookingsTab(private val mainViewModel: MainViewModel) : Tab {
             }
         }
     }
-
-    @Composable
-    fun attachUserProfileImage() {
-        Box(
-            Modifier
-                .padding(20.dp)
-                .border(width = 3.dp, color = Color.DarkGray, shape = RoundedCornerShape(75.dp))
-                .size(150.dp)
-                .background(color = Color(0xFBFBFB))
-        ) {
-            val modifier = Modifier
-                .padding(6.dp)
-                .clip(CircleShape)
-                .size(150.dp)
-            ImageComponent(imageModifier = modifier, imageRes = "1.jpg")
-        }
-
-    }
-
-    @Composable
-    fun UserFullNameComp(){
-        val rowModifier = Modifier
-            .fillMaxWidth()
-        MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.Top,
-                modifier = rowModifier
-            ) {
-                val modifier = Modifier.padding(start = 5.dp)
-                TextComponent(
-                    text = "Margaret C. Barbosa",
-                    fontSize = 23,
-                    fontFamily = GGSansBold,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.DarkGray,
-                    textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.ExtraBold,
-                    lineHeight = 30
-                )
-            }
-        }
-    }
-
-
-    @OptIn(ExperimentalMaterialApi::class)
-    @Composable
-    fun EditProfileComp(style: TextStyle){
-
-        val buttonStyle = Modifier
-            .padding(top = 15.dp)
-            .fillMaxWidth(0.40f)
-            .background(color = Color.Transparent)
-            .height(50.dp)
-
-        ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke((1.5).dp, color = Color(color = 0x90C8C8C8)), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor =  Color.DarkGray, style = style){}
-
-    }
-
-
-    @OptIn(ExperimentalMaterialApi::class)
-    @Composable
-    public fun AccountActionButtonComponent(modifier: Modifier, buttonText: String, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, onClick: (() -> Unit)? = null) {
-        val rowModifier = Modifier
-            .fillMaxWidth()
-        MaterialTheme(colors = AppColors(), typography = AppRegularTypography()) {
-
-
-            Button(
-                onClick = {
-                    if (onClick != null) {
-                        onClick()
-                    }
-                },
-                modifier = modifier,
-                colors = colors,
-                elevation = ButtonDefaults.elevation(
-                    defaultElevation = 0.dp,
-                    pressedElevation = 0.dp,
-                    disabledElevation = 0.dp
-                )
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.Top,
-                    modifier = rowModifier
-                ) {
-
-                    val iconModifier = Modifier
-                        .padding(top = 5.dp)
-                        .size(24.dp)
-
-                    val iconTextBoxModifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth(0.90f)
-
-                    val iconNavModifier = Modifier
-                        .fillMaxWidth()
-                        .size(28.dp)
-
-                    val textModifier = Modifier
-                        .padding(top = 2.dp, end = 5.dp, start = 20.dp)
-                        .wrapContentSize()
-                    Row(
-                        horizontalArrangement = Arrangement.Start,
-                        verticalAlignment = Alignment.Top,
-                        modifier = iconTextBoxModifier
-                    ) {
-                        ImageComponent(imageModifier = iconModifier, imageRes = iconRes)
-                        TextComponent(
-                            text = buttonText,
-                            fontSize = fontSize,
-                            textStyle = style,
-                            textColor = textColor,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = GGSansSemiBold,
-                            textModifier = textModifier
-                        )
-                    }
-
-                    Row(
-                        horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.Top,
-                        modifier = iconNavModifier
-                    ) {
-                        ImageComponent(imageModifier = iconModifier, imageRes = "chevron_right.png")
-                    }
-
-                }
-            }
-        }
-    }
-
-
-    @Composable
-    fun attachAccountAction() {
-        val columnModifier = Modifier
-            .padding(top = 20.dp, start = 5.dp)
-            .fillMaxWidth()
-
-        val buttonStyle = Modifier
-            .padding(bottom = 5.dp)
-            .fillMaxWidth()
-            .height(50.dp)
-
-        MaterialTheme(colors = AppColors(), typography = AppRegularTypography()) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.Start,
-                modifier = columnModifier
-            ) {
-
-                AccountActionButtonComponent(
-                    modifier = buttonStyle,
-                    buttonText = "Settings",
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                    fontSize = 20,
-                    textColor = Color.DarkGray,
-                    style = MaterialTheme.typography.button,
-                    iconRes = "settings_icon.png"
-                ) {}
-
-
-                AccountActionButtonComponent(
-                    modifier = buttonStyle,
-                    buttonText = "My Bookings",
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                    fontSize = 20,
-                    textColor = Color.DarkGray,
-                    style = MaterialTheme.typography.button,
-                    iconRes = "booking_icon.png"
-                ) {}
-
-                AccountActionButtonComponent(
-                    modifier = buttonStyle,
-                    buttonText = "Address",
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                    fontSize = 20,
-                    textColor = Color.DarkGray,
-                    style = MaterialTheme.typography.button,
-                    iconRes = "location_icon.png"
-                ) {}
-
-                Divider(color = Color(color = 0x90C8C8C8), thickness = 2.dp, modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 20.dp))
-
-
-                AccountActionButtonComponent(
-                    modifier = buttonStyle,
-                    buttonText = "Help & Support",
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                    fontSize = 20,
-                    textColor = Color.DarkGray,
-                    style = MaterialTheme.typography.button,
-                    iconRes = "help_circle_icon.png"
-                ) {}
-
-                AccountActionButtonComponent(
-                    modifier = buttonStyle,
-                    buttonText = "Log out",
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                    fontSize = 20,
-                    textColor = Color.DarkGray,
-                    style = MaterialTheme.typography.button,
-                    iconRes = "logout_icon.png"
-                ) {}
-
-            }
-        }
-    }
-
 }

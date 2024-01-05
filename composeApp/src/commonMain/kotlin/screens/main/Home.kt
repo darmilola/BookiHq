@@ -9,8 +9,10 @@ import Models.AppointmentItemListModel
 import Models.BusinessStatusAdsPage
 import Models.BusinessStatusAdsProgress
 import Styles.Colors
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +35,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
@@ -64,6 +67,7 @@ import screens.Bookings.AppointmentItemCard
 import screens.Products.BottomSheet
 import screens.Products.NewProductItem
 import utils.getAppointmentViewHeight
+import widgets.AppointmentWidget
 import widgets.AppointmentsWidget
 import widgets.BusinessStatusImageWidget
 import widgets.BusinessStatusProgressWidget
@@ -82,8 +86,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
             val title = "Home"
             val icon = painterResource("home_icon.png")
 
-
-
             return remember {
                 TabOptions(
                     index = 0u,
@@ -97,7 +99,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     override fun Content() {
 
 
-        mainViewModel.setTitle(options.title.toString())
+        mainViewModel.setTitle(options.title)
         val columnModifier = Modifier
             .padding(top = 5.dp)
             .fillMaxSize()
@@ -107,7 +109,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
         val appointmentItem1 = AppointmentItem(appointmentType = 1)
         val appointmentItem2 = AppointmentItem(appointmentType = 2)
-        val appointmentItem3 = AppointmentItem(appointmentType = 1)
+        val appointmentItem3 = AppointmentItem(appointmentType = 3)
 
         appointmentItems.add(appointmentItem1)
         appointmentItems.add(appointmentItem2)
@@ -154,7 +156,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     fun ServiceGridScreen() {
         LazyVerticalGrid(
             columns = GridCells.Fixed(4),
-            modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp).height(320.dp),
+            modifier = Modifier.fillMaxWidth().height(300.dp),
             contentPadding = PaddingValues(5.dp),
             verticalArrangement = Arrangement.Center,
             horizontalArrangement = Arrangement.Center
@@ -202,63 +204,11 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
         }
     }
 
-
-        @Composable
-        fun Appointments() {
-            LazyRow(
-                modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(100.dp),
-                contentPadding = PaddingValues(6.dp)
-            ) {
-                items(3) {
-                    when (it) {
-                        0 -> {
-                            AppointmentsWidget(
-                                iconRes = "scissors_icon.png",
-                                serviceTitle = "Haircut",
-                                appointmentTime = "Today  |  5:45pm"
-                            )
-                        }
-
-                        1 -> {
-                            AppointmentsWidget(
-                                iconRes = "paste_icon.png",
-                                serviceTitle = "Tooth Wash",
-                                appointmentTime = "Tomorrow  |  5:00pm"
-                            )
-                        }
-
-                        2 -> {
-                            AppointmentsWidget(
-                                iconRes = "scissors_icon.png",
-                                serviceTitle = "Aromatherapy",
-                                appointmentTime = "August 8th | 8:00pm"
-                            )
-                        }
-
-                        else -> {
-                            AppointmentsWidget(
-                                iconRes = "scissors_icon.png",
-                                serviceTitle = "IV Drip Therapy",
-                                appointmentTime = "Today | 5:45pm"
-                            )
-                        }
-
-                    }
-                }
-            }
-        }
-
-
-
-
-
-
 @Composable
     fun AttachOurServices(){
         val rowModifier = Modifier
-            .padding(start = 20.dp, top = 20.dp)
+            .padding(start = 10.dp, top = 20.dp)
             .fillMaxWidth()
-        MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
             Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
@@ -267,26 +217,25 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 TextComponent(
                     text = "Our Services",
                     fontSize = 18,
-                    fontFamily = GGSansBold,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.DarkGray,
+                    fontFamily = GGSansSemiBold,
+                    textStyle = TextStyle(),
+                    textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Black,
                     lineHeight = 30,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
                     textModifier = Modifier.fillMaxWidth(0.30f)
                 )
                 StraightLine()
             }
-
-        }
     }
 
     @Composable
     fun RecommendedSessions(){
         val rowModifier = Modifier
-            .padding(start = 20.dp, top = 20.dp)
+            .padding(start = 10.dp, top = 10.dp)
             .fillMaxWidth()
-        MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
             Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
@@ -295,13 +244,13 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 TextComponent(
                     text = "Recommended",
                     fontSize = 18,
-                    textModifier = Modifier.fillMaxWidth(0.34f),
-                    fontFamily = GGSansBold,
+                    textModifier = Modifier.fillMaxWidth(0.32f),
+                    fontFamily = GGSansSemiBold,
                     textStyle = TextStyle(),
-                    textColor = Color.DarkGray,
+                    textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Bold,
-                    lineHeight = 25,
+                    fontWeight = FontWeight.Black,
+                    lineHeight = 30,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -311,44 +260,40 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
             RecommendedAppointmentList()
 
         }
-    }
 
 
     @Composable
     fun AttachAppointments(){
         val rowModifier = Modifier
-            .padding(start = 20.dp, top = 40.dp)
+            .padding(start = 10.dp, top = 30.dp, bottom = 20.dp)
             .fillMaxWidth()
-        MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
             Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = rowModifier
             ) {
                 TextComponent(
-                    text = "Your Appointment",
+                    text = "Your Appointments",
                     fontSize = 18,
                     fontFamily = GGSansSemiBold,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.DarkGray,
+                    textStyle = TextStyle(),
+                    textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.ExtraBold,
+                    fontWeight = FontWeight.Black,
                     lineHeight = 30,
-                    textModifier = Modifier.fillMaxWidth(0.40f)
+                    textModifier = Modifier.fillMaxWidth(0.42f)
                 )
                 StraightLine()
             }
-
-        }
     }
+
 
 
     @Composable
     fun RecentAppointments(){
         val rowModifier = Modifier
-            .padding(start = 20.dp, top = 40.dp)
+            .padding(start = 10.dp, top = 40.dp)
             .fillMaxWidth()
-        MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
             Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
@@ -358,23 +303,22 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                     text = "Recently",
                     fontSize = 18,
                     fontFamily = GGSansSemiBold,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.DarkGray,
+                    textStyle = TextStyle(),
+                    textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.ExtraBold,
+                    fontWeight = FontWeight.Black,
                     lineHeight = 30,
-                    textModifier = Modifier.fillMaxWidth(0.20f)
+                    textModifier = Modifier.fillMaxWidth(0.22f)
                 )
                 StraightLine()
             }
 
         }
-    }
 
     @Composable
     fun PopularProducts(){
         val rowModifier = Modifier
-            .padding(start = 20.dp, top = 30.dp)
+            .padding(start = 10.dp, top = 20.dp)
             .fillMaxWidth()
             Row(
                 horizontalArrangement = Arrangement.Start,
@@ -385,12 +329,12 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                     text = "Popular Products",
                     fontSize = 18,
                     fontFamily = GGSansSemiBold,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.DarkGray,
+                    textStyle = TextStyle(),
+                    textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.ExtraBold,
+                    fontWeight = FontWeight.Black,
                     lineHeight = 30,
-                    textModifier = Modifier.fillMaxWidth(0.40f)
+                    textModifier = Modifier.fillMaxWidth(0.42f)
                 )
                 StraightLine()
             }
@@ -402,8 +346,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
     @Composable
     fun PopularProductScreen() {
-
-        val coroutineScope = rememberCoroutineScope()
 
         Column {
 
@@ -417,7 +359,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
             LazyColumn(
                 modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(960.dp),
-                contentPadding = PaddingValues(6.dp),
+                contentPadding = PaddingValues(top = 6.dp, bottom = 6.dp),
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 userScrollEnabled = false
             ) {
@@ -437,19 +379,21 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
             3
         })
 
-
         var viewType by remember { mutableStateOf(0) }
-        var itemColor: Color = Colors.primaryColor
+        val itemColor: Color = Colors.primaryColor
 
         val boxModifier =
             Modifier
-                .height(470.dp)
+                .background(color = Color.White)
+                .height(450.dp)
                 .fillMaxWidth()
+                .padding(start = 5.dp, end = 5.dp)
 
         val boxBgModifier =
             Modifier
                 .fillMaxHeight()
                 .fillMaxWidth()
+
 
 
         Box(modifier = boxBgModifier) {
@@ -465,7 +409,8 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
             Box(contentAlignment = Alignment.BottomCenter, modifier = boxModifier) {
                 HorizontalPager(
                     state = pagerState,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    pageSpacing = 15.dp
                 ) { page ->
                     viewType = page
                     RecommendedServiceItem (viewType = page, onSessionClickListener = {
@@ -487,19 +432,8 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     repeat(pagerState.pageCount) { iteration ->
-                        when (iteration) {
-                            0 -> {
-                                itemColor = Color(color =  0xFFFF799D)
-                            }
-                            1 -> {
-                                itemColor = Colors.primaryColor
-                            }
-                            2 -> {
-                                itemColor = Color(color = 0xFFF98600)
-                            }
-                        }
-                        var color = Color.LightGray
-                        var width = 0
+                        val color: Color
+                        val width: Int
                         if (pagerState.currentPage == iteration) {
                             color = itemColor
                             width = 20
@@ -522,12 +456,15 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
         }
 
     }
-    @OptIn(ExperimentalMaterialApi::class)
+
     @Composable
     fun PopulateAppointmentScreen(datedAppointmentScheduleList: List<AppointmentItemListModel>, mainViewModel: MainViewModel) {
         LazyColumn(modifier = Modifier.fillMaxWidth().height(getAppointmentViewHeight(datedAppointmentScheduleList).dp), userScrollEnabled = false) {
             items(datedAppointmentScheduleList) {item ->
-                AppointmentItemCard(viewType = item.appointmentType, contentSize = ((item.appointmentItems.size*145)), bookingItems = item, mainViewModel = mainViewModel)
+
+                AppointmentWidget()
+
+              AppointmentItemCard(viewType = item.appointmentType, contentSize = ((item.appointmentItems.size*145)), bookingItems = item, mainViewModel = mainViewModel)
             }
         }
     }
@@ -535,7 +472,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     @Composable
     fun AttachBusinessName(){
         val rowModifier = Modifier
-            .padding(start = 20.dp)
+            .padding(start = 10.dp)
             .fillMaxWidth()
             Row(
                 horizontalArrangement = Arrangement.Start,
@@ -547,11 +484,11 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 TextComponent(
                     text = "JonJo, Beauty and Spa Services",
                     fontSize = 18,
-                    fontFamily = GGSansBold,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.DarkGray,
+                    fontFamily = GGSansSemiBold,
+                    textStyle = TextStyle(),
+                    textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Black,
                     lineHeight = 30,
                     textModifier = modifier
                 )
@@ -586,7 +523,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     fun BusinessStatusDisplay() {
         val boxBgModifier =
             Modifier
-                .padding(start = 12.dp, end = 12.dp)
+                .padding(start = 5.dp, end = 5.dp)
                 .fillMaxHeight()
                 .fillMaxWidth()
 

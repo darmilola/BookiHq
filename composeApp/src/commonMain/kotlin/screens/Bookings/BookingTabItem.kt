@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,38 +53,8 @@ import screens.main.MainViewModel
 
 @Composable
 fun BookingItemCard(viewType: Int = 0, contentSize: Int = 0, itemCount: Int = 0) {
-    var itemColor: Long = 0L
-    var imageRes: String = ""
-    var headerFooterHeight: Int = 180
-
-
-
-    when (viewType) {
-        0 -> {
-            itemColor = 0xFFFF799D
-            imageRes = "app_logo_minimal.png"
-        }
-        1 -> {
-            itemColor = 0xFF65B8FA
-            imageRes = "task_icon.png"
-        }
-        2 -> {
-            itemColor =  0xFF68EA8C
-            imageRes = "schedule_icon.png"
-        }
-        3 -> {
-            itemColor = 0xFFF8CF69
-            imageRes = "video_icon.png"
-        }
-        4 -> {
-            itemColor = 0xFFDD6EEA
-            imageRes = "purchase_icon.png"
-        }
-        else -> {
-            itemColor = 0xFFFF799D
-            imageRes = "app_logo_minimal.png"
-        }
-    }
+     val itemColor: Long = 0L
+     val headerFooterHeight: Int = 180
 
 
     Card(
@@ -93,6 +64,9 @@ fun BookingItemCard(viewType: Int = 0, contentSize: Int = 0, itemCount: Int = 0)
             .height((contentSize+headerFooterHeight).dp)
             .fillMaxWidth(),
         shape = RoundedCornerShape(15.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 2.dp
+        ),
         border = null
     ) {
         Row(

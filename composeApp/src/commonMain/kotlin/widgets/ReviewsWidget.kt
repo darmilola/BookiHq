@@ -36,8 +36,6 @@ fun ReviewsWidget() {
         .padding(start = 5.dp, bottom = 10.dp)
         .fillMaxWidth()
     Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
-        val modifier = Modifier
-            .fillMaxWidth()
         AttachReviewHeader()
         AttachUserReviewsContent()
     }
@@ -65,29 +63,22 @@ fun AttachUserImage() {
 fun AttachReviewHeader() {
     val rowModifier = Modifier
         .fillMaxWidth()
-
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
             modifier = rowModifier
         ) {
-
             AttachUserImage()
-
             val columnModifier = Modifier
                 .padding(start = 3.dp)
                 .fillMaxWidth()
             Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
-                val modifier = Modifier
-                    .fillMaxWidth()
                 AttachUserName()
                 AttachReviewDate()
             }
 
         }
     }
-}
 
 @Composable
 fun AttachUserName(){
@@ -101,7 +92,6 @@ fun AttachUserName(){
             verticalAlignment = Alignment.Top,
             modifier = rowModifier
         ) {
-            val modifier = Modifier.padding(start = 5.dp)
             TextComponent(
                 text = "Margaret C.",
                 fontSize = 18,

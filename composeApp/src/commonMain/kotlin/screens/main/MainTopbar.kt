@@ -78,9 +78,8 @@ fun leftTopBarItem(currentScreen: Int = 0) {
 @Composable
 fun welcomeToProfile(){
     val rowModifier = Modifier
-        .padding(start = 20.dp, top = 5.dp)
+        .padding(start = 10.dp, top = 5.dp)
         .fillMaxWidth()
-    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
@@ -92,7 +91,6 @@ fun welcomeToProfile(){
             TitleWidget(textColor = Color.DarkGray, title = ",")
         }
     }
-}
 
 @Composable
 fun rightTopBarItem(mainViewModel: MainViewModel) {

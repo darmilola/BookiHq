@@ -44,40 +44,21 @@ import components.TextComponent
 import screens.Products.NewProductDescriptionText
 import screens.Products.ViewPopularProduct
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RecommendedServiceItem(viewType: Int = 0, onSessionClickListener: () -> Unit) {
-    var itemColor: Color = Colors.primaryColor
-
-    when (viewType) {
-        0 -> {
-            itemColor = Color(color =  0xFFFF799D)
-        }
-        1 -> {
-            itemColor = Colors.primaryColor
-        }
-        2 -> {
-            itemColor = Color(color = 0xFFF98600)
-        }
-    }
 
 
     val columnModifier = Modifier
-        .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .clickable {
             onSessionClickListener()
         }
         .height(410.dp)
         .fillMaxWidth()
-    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
-        Card(
+        Column(
             modifier = Modifier
-                .padding(start = 10.dp, end = 10.dp, top = 10.dp)
+                .padding(top = 10.dp)
                 .height(410.dp)
-                .wrapContentWidth(),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 2.dp
-            )
+                .wrapContentWidth()
         ) {
             Row(
                 modifier = Modifier
@@ -87,8 +68,8 @@ fun RecommendedServiceItem(viewType: Int = 0, onSessionClickListener: () -> Unit
             ) {
                 Row(
                     modifier = Modifier
-                        .background(color = itemColor)
-                        .fillMaxWidth(0.010f)
+                        .background(color = Colors.primaryColor)
+                        .fillMaxWidth(0.005f)
                         .fillMaxHeight()
                 ) {}
                 Column(
@@ -100,24 +81,13 @@ fun RecommendedServiceItem(viewType: Int = 0, onSessionClickListener: () -> Unit
                 }
             }
         }
-    }
 }
+
 
 @Composable
 fun RecommendedServicePriceAndAction(viewType: Int = 0) {
-    var textColor = Color(color = 0xfffa265)
+    val textColor = Colors.primaryColor
 
-    when (viewType) {
-        0 -> {
-            textColor =  Color(color = 0xFFFF799D)
-        }
-        1 -> {
-            textColor =  Colors.primaryColor
-        }
-        2 -> {
-            textColor =   Color(color = 0xFFF98600)
-        }
-    }
     Row(modifier = Modifier.height(50.dp).padding(start = 10.dp, end = 10.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically) {
@@ -147,7 +117,7 @@ fun RecommendedServicePriceAndAction(viewType: Int = 0) {
                     textStyle = textStyle,
                     textColor = textColor,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Black,
+                    fontWeight = FontWeight.Bold,
                     textModifier = Modifier.wrapContentSize().padding(end = 7.dp))
 
                     ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = textColor))
@@ -171,7 +141,7 @@ fun PopularServicePriceContent(textColor: Color) {
             textStyle = textStyle,
             textColor = textColor,
             textAlign = TextAlign.Right,
-            fontWeight = FontWeight.Black,
+            fontWeight = FontWeight.Bold,
             lineHeight = 30,
             textModifier = Modifier
                 .padding(top = 5.dp)
@@ -189,15 +159,12 @@ fun RecommendedServiceDescription() {
         verticalArrangement = Arrangement.Top,
         horizontalAlignment  = Alignment.Start,
     ) {
-        val modifier = Modifier
-            .fillMaxWidth()
-
         TextComponent(
             text = "Medium Length Layer Cut with cute Salon stuff",
             fontSize = 20,
             fontFamily = GGSansBold,
             textStyle = TextStyle(),
-            textColor = Color.DarkGray,
+            textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Bold,
             lineHeight = 25,
@@ -209,9 +176,9 @@ fun RecommendedServiceDescription() {
         TextComponent(
             textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
             text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aene ligula",
-            fontSize = 20, fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6, textColor = Color.Gray, textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Black,
+            fontSize = 18, fontFamily = GGSansRegular,
+            textStyle = TextStyle(), textColor = Color.Gray, textAlign = TextAlign.Left,
+            fontWeight = FontWeight.Bold,
             lineHeight = 23, maxLines = 3,
             overflow = TextOverflow.Ellipsis)
 
@@ -238,42 +205,6 @@ fun RecommendedServicesImage(viewType: Int = 0) {
             )
         }
 }
-
-
-@Composable
-fun PopularServiceDescription(onProductClickListener: () -> Unit){
-    val columnModifier = Modifier
-        .padding(start = 10.dp, end = 10.dp)
-        .fillMaxHeight()
-    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
-        Column(
-            modifier = columnModifier,
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment  = Alignment.Start,
-        ) {
-
-            val modifier = Modifier
-                .padding(top = 5.dp)
-                .fillMaxWidth()
-                .wrapContentHeight()
-
-            TextComponent(
-                text = "Bloom Rose Oil And Argan Oil is For Sale",
-                fontSize = 18,
-                fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
-                textAlign = TextAlign.Left,
-                fontWeight = FontWeight.ExtraBold,
-                lineHeight = 25,
-                textModifier = modifier
-            )
-            NewProductDescriptionText()
-            ViewPopularProduct(onProductClickListener)
-        }
-    }
-}
-
 @Composable
 fun StraightLine() {
     Box(
@@ -281,8 +212,7 @@ fun StraightLine() {
             .fillMaxWidth()
             .height(2.dp)
             .background(color = Color(color = 0x80CCCCCC))
-    ) {
-    }
+    ) {}
 }
 
 

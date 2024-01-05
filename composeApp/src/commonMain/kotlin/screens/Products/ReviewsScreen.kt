@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import widgets.ReviewsWidget
 
-@OptIn(ExperimentalResourceApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AttachProductReviews(){
 
@@ -68,7 +68,7 @@ fun AttachProductReviews(){
             ) {
                 repeat(pagerState.pageCount) { iteration ->
                     val color: Color
-                    var width = 0
+                    var width: Int
                     if (pagerState.currentPage == iteration) {
                         color = Colors.primaryColor
                         width = 20

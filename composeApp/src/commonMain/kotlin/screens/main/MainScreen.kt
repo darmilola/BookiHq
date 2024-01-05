@@ -156,7 +156,6 @@ private fun RowScope.TabNavigationItem(tab: Tab, selectedImage: String, unselect
 }
 
 object MainScreenLanding : Screen {
-    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
         Row(modifier = Modifier.fillMaxSize()) {}
