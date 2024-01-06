@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -92,18 +93,16 @@ fun attachAuthenticationText(currentScreen: Int = 0) {
         .padding(top = 30.dp, start = 10.dp)
         .fillMaxWidth()
 
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Top,
             modifier = rowModifier
         ) {
-            val modifier = Modifier.padding(start = 5.dp)
             TextComponent(
                 text = authText,
                 fontSize = 20,
                 fontFamily = GGSansRegular,
-                textStyle = MaterialTheme.typography.h6,
+                textStyle = TextStyle(),
                 textColor = Colors.primaryColor,
                 textAlign = TextAlign.Left,
                 fontWeight = FontWeight.ExtraBold,
@@ -111,7 +110,6 @@ fun attachAuthenticationText(currentScreen: Int = 0) {
             )
         }
     }
-}
 
 
 @Composable

@@ -22,59 +22,6 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
-@OptIn(ExperimentalResourceApi::class)
-@Composable
-fun WelcomePagerGradient() {
-    val bgStyle = Modifier
-        .padding(bottom = 200.dp)
-        .fillMaxWidth()
-        .height(200.dp)
-
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = bgStyle) {
-        welcomeGradientBlock()
-    }
-}
-
-@Composable
-fun welcomeGradientBlock() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color(color = 0x4D000000),
-                        Color(color = 0x66000000),
-                        Color(color = 0x8C000000),
-                        Color(color = 0xff000000)
-                    )
-                )
-            )
-    ) {
-    }
-}
-
-
-@Composable
-fun welcomeLineGradientBlock() {
-    Box(
-        modifier = Modifier
-            .padding(top = 7.dp)
-            .width(200.dp)
-            .height(3.dp)
-            .background(
-                brush = Brush.horizontalGradient(
-                    colors = listOf(
-                        Color(color = 0xFFF43569),
-                        Color(color = 0xFFFF823E)
-                    )
-                )
-            )
-    ) {
-    }
-}
-
 @Composable
 fun StraightLine() {
     Box(

@@ -35,7 +35,6 @@ import components.ButtonComponent
 import components.IconButtonComponent
 import components.ImageComponent
 import components.TextComponent
-import components.welcomeLineGradientBlock
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 

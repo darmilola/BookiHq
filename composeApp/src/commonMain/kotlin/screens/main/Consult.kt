@@ -109,7 +109,6 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
             .fillMaxHeight()
             .fillMaxWidth()
 
-        MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -121,7 +120,6 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
             }
         }
 
-    }
 
     @Composable
     fun ConsultDesc() {
