@@ -4,72 +4,43 @@ package screens.main
 import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import AppTheme.AppRegularTypography
-import AppTheme.AppSemiBoldTypography
-import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import components.ButtonComponent
-import components.GradientButton
-import components.IconButtonComponent
-import components.ImageComponent
 import components.TextComponent
-import dev.icerock.moko.mvvm.livedata.compose.observeAsState
-import screens.Bookings.BookingScreen
-import screens.SplashScreenCompose
-import screens.authentication.AuthenticationComposeScreen
-import screens.authentication.AuthenticationViewModel
-import screens.authentication.attachAuthenticationButton
-import screens.authentication.attachWaveIcon
 import widgets.ActionItemComponent
+import widgets.ProfileImageUpdate
 
 class AccountTab(private val mainViewModel: MainViewModel) : Tab {
 
@@ -106,8 +77,8 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = columnModifier
             ) {
-                    attachUserProfileImage()
-                    UserFullNameComp()
+                    ProfileImageUpdate()
+                    UserPreferredName()
                     EditProfileComp(TextStyle(fontFamily = GGSansSemiBold, fontWeight = FontWeight.Black, fontSize = TextUnit(18f, TextUnitType.Sp)))
                     Divider(color = Color(color = 0x90C8C8C8), thickness = 2.dp, modifier = Modifier.fillMaxWidth(0.90f).padding(top = 30.dp))
                     AttachAccountAction()
@@ -115,26 +86,9 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
         }
     }
 
-    @Composable
-    fun attachUserProfileImage() {
-        Box(
-            Modifier
-                .padding(top = 20.dp, bottom = 5.dp)
-                .border(width = 2.dp, color = Color(color = 0xfffa2d65), shape = RoundedCornerShape(75.dp))
-                .size(150.dp)
-                .background(color = Color(0xFBFBFB))
-        ) {
-            val modifier = Modifier
-                .padding(4.dp)
-                .clip(CircleShape)
-                .size(150.dp)
-            ImageComponent(imageModifier = modifier, imageRes = "1.jpg")
-        }
-
-    }
 
     @Composable
-    fun UserFullNameComp(){
+    fun UserPreferredName(){
         val rowModifier = Modifier
             .fillMaxWidth()
         MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
@@ -143,7 +97,6 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                 verticalAlignment = Alignment.Top,
                 modifier = rowModifier
             ) {
-                val modifier = Modifier.padding(start = 5.dp)
                 TextComponent(
                     text = "Dianne Williamson",
                     fontSize = 25,
@@ -151,15 +104,13 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                     textStyle = MaterialTheme.typography.h6,
                     textColor = Color.DarkGray,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Black,
-                    letterSpacing = TextUnit(1f, TextUnitType.Sp)
+                    fontWeight = FontWeight.Black
                 )
             }
         }
     }
 
 
-    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun EditProfileComp(style: TextStyle){
         val buttonStyle = Modifier
@@ -168,9 +119,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
             .background(color = Color.Transparent)
             .height(50.dp)
 
-        val navigator = LocalNavigator.currentOrThrow
-
-        ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke((1.5).dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 19, shape = RoundedCornerShape(25.dp), textColor =  Color.DarkGray, style = style){
+        ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke((1.5).dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 20, shape = RoundedCornerShape(25.dp), textColor =  Color.DarkGray, style = style){
             mainViewModel.setId(4)
         }
 
@@ -181,15 +130,14 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
     @Composable
     fun AttachAccountAction() {
         val columnModifier = Modifier
-            .padding(top = 20.dp, start = 5.dp)
+            .padding(top = 10.dp, start = 5.dp)
             .fillMaxWidth()
 
-        val buttonStyle = Modifier
+        val actionStyle = Modifier
             .padding(bottom = 5.dp)
             .fillMaxWidth()
-            .height(60.dp)
+            .height(65.dp)
 
-        MaterialTheme(colors = AppColors(), typography = AppRegularTypography()) {
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.Start,
@@ -197,77 +145,86 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
             ) {
 
                 ActionItemComponent(
-                    modifier = buttonStyle,
+                    modifier = actionStyle,
                     buttonText = "Orders",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
-                    textColor = Color(color = 0xFF3d3d4e),
-                    style = MaterialTheme.typography.button,
-                    iconRes = "drawable/order_icon.png",
+                    textColor = Colors.darkPrimary,
+                    style = TextStyle(),
+                    iconRes = "drawable/shopping_basket.png",
                     isDestructiveAction = false, onClick = {
                         mainViewModel.setId(5)
                     })
 
 
                 ActionItemComponent(
-                    modifier = buttonStyle,
-                    buttonText = "Switch Business",
+                    modifier = actionStyle,
+                    buttonText = "Switch Vendor",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
-                    textColor = Color(color = 0xFF3d3d4e),
-                    style = MaterialTheme.typography.button,
-                    iconRes = "drawable/switch_icon.png",
+                    textColor = Colors.darkPrimary,
+                    style = TextStyle(),
+                    iconRes = "drawable/switch.png",
                     isDestructiveAction = false, onClick = {
                         mainViewModel.setId(6)
                     })
 
 
                 ActionItemComponent(
-                    modifier = buttonStyle,
+                    modifier = actionStyle,
                     buttonText = "Invite Friends",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
-                    textColor = Color(color = 0xFF3d3d4e),
-                    style = MaterialTheme.typography.button,
-                    iconRes = "drawable/share_icon.png",
+                    textColor = Colors.darkPrimary,
+                    style = TextStyle(),
+                    iconRes = "drawable/invite.png",
                     isDestructiveAction = false)
 
 
 
                 Divider(color = Color(color = 0x90C8C8C8), thickness = 2.dp, modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 10.dp))
 
+
                 ActionItemComponent(
-                    modifier = buttonStyle,
+                    modifier = actionStyle,
+                    buttonText = "FAQs",
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                    fontSize = 20,
+                    textColor = Colors.darkPrimary,
+                    style = TextStyle(),
+                    iconRes = "drawable/faq.png",
+                    isDestructiveAction = false)
+
+                ActionItemComponent(
+                    modifier = actionStyle,
                     buttonText = "Help & Support",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
-                    textColor = Color(color = 0xFF3d3d4e),
-                    style = MaterialTheme.typography.button,
-                    iconRes = "drawable/help_icon.png",
+                    textColor = Colors.darkPrimary,
+                    style = TextStyle(),
+                    iconRes = "drawable/support.png",
                     isDestructiveAction = false)
 
                 ActionItemComponent(
-                    modifier = buttonStyle,
+                    modifier = actionStyle,
                     buttonText = "Terms And Condition",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
-                    textColor = Color(color = 0xFF3d3d4e),
-                    style = MaterialTheme.typography.button,
-                    iconRes = "drawable/terms_icon.png",
+                    textColor = Colors.darkPrimary,
+                    style = TextStyle(),
+                    iconRes = "drawable/terms.png",
                     isDestructiveAction = false)
-
 
                 Divider(color = Color(color = 0x90C8C8C8), thickness = 2.dp, modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 10.dp))
 
-
                 ActionItemComponent(
-                    modifier = buttonStyle,
+                    modifier = actionStyle,
                     buttonText = "Log Out",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
-                    textColor = Color(color = 0xfffa2d65),
-                    style = MaterialTheme.typography.button,
-                    iconRes = "drawable/power_icon.png",
+                    textColor = Colors.pinkColor,
+                    style = TextStyle(),
+                    iconRes = "drawable/sign_out.png",
                     isDestructiveAction = true
                 )
 
@@ -275,4 +232,3 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
         }
     }
 
-}

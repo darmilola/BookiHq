@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun SplashScreenBackground() {
    val bgStyle = Modifier

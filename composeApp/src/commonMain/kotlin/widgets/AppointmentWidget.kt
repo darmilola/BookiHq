@@ -4,6 +4,7 @@ import GGSansRegular
 import GGSansSemiBold
 import Styles.Colors
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,9 +16,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,12 +36,57 @@ import components.ImageComponent
 import components.TextComponent
 
 @Composable
-fun AppointmentWidget(iconRes: String = "drawable/schedule.png", iconSize: Int = 35, statusText: String = "PENDING", statusColor: Color = Colors.primaryColor, statusBgColor: Color = Colors.lightPrimaryColor) {
+fun AppointmentWidget(itemType: Int = 0) {
+
+    val menuItems = arrayListOf<String>()
+
+    var menuItem = ""
+
+    menuItem = if(itemType == 1){
+        "Postpone"
+    }
+    else {
+        "Delete"
+    }
+
+    menuItems.add(menuItem)
+
+    var iconRes = ""
+    var statusText = ""
+    var statusColor: Color = Colors.primaryColor
+    var statusBgColor: Color = Colors.lightPrimaryColor
+    var iconSize: Int = 35
+
+    when (itemType) {
+        1 -> {
+            iconRes = "drawable/schedule.png"
+            statusText = "PENDING"
+            statusColor = Colors.primaryColor
+            statusBgColor = Colors.lightPrimaryColor
+            iconSize = 30
+        }
+        2 -> {
+            iconRes = "drawable/appointment_postponed.png"
+            statusText = "POSTPONED"
+            statusColor = Colors.pinkColor
+            statusBgColor = Colors.lightPinkColor
+            iconSize = 30
+        }
+        3 -> {
+            iconRes = "drawable/appointment_done.png"
+            statusText = "DONE"
+            statusColor = Colors.greenColor
+            statusBgColor = Colors.lightGreenColor
+            iconSize = 30
+        }
+    }
+
+
     val boxModifier = Modifier
         .fillMaxWidth()
         .padding(start = 10.dp, end = 10.dp)
         .background(color = Color.White)
-        .height(230.dp)
+        .height(220.dp)
 
     val innerContainerModifier = Modifier
         .fillMaxWidth()
@@ -72,10 +122,29 @@ fun AppointmentWidget(iconRes: String = "drawable/schedule.png", iconSize: Int =
                     )
                 }
 
-                Box(modifier = Modifier.fillMaxWidth()) {
+                Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.CenterEnd) {
 
+                    val expandedMenuItem = remember { mutableStateOf(false) }
+                    AttachIcon(iconRes = "drawable/overflow_menu.png", iconSize = 25, iconTint = statusColor){
+                        expandedMenuItem.value = true
+                    }
 
-                    //overflow
+                    DropdownMenu(
+                        expanded = expandedMenuItem.value,
+                        onDismissRequest = { expandedMenuItem.value = false },
+                        modifier = Modifier
+                            .fillMaxWidth(0.40f)
+                            .background(Color.White)
+                    ) {
+                        menuItems.forEachIndexed { index, title ->
+                            DropdownMenuItem(
+                                onClick = {
+
+                                }) {
+                                SubtitleTextWidget(text = title, fontSize = 20)
+                            }
+                        }
+                    }
 
                 }
             }
@@ -101,19 +170,19 @@ fun AppointmentWidget(iconRes: String = "drawable/schedule.png", iconSize: Int =
                         modifier = rowModifier
                     ) {
                         Box(modifier = Modifier.fillMaxWidth(0.15f), contentAlignment = Alignment.Center) {
-                            AttachIcon(iconRes = "drawable/time_outline.png", iconSize = 20)
+                            AttachIcon(iconRes = "drawable/time_outline.png", iconSize = 20, iconTint = statusColor){}
                         }
                         TextComponent(
-                            text = "5 PM  23  June  2024",
-                            fontSize = 16,
+                            text = "5 pm  23  June  2024",
+                            textModifier = Modifier.fillMaxWidth().padding(start = 5.dp),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            fontSize = 18,
                             fontFamily = GGSansRegular,
                             textStyle = TextStyle(),
                             textColor = Color.Gray,
                             textAlign = TextAlign.Left,
-                            fontWeight = FontWeight.Bold,
-                            textModifier = Modifier.fillMaxWidth().padding(start = 5.dp),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            fontWeight = FontWeight.Black,
                         )
                     }
                     Row(
@@ -124,19 +193,19 @@ fun AppointmentWidget(iconRes: String = "drawable/schedule.png", iconSize: Int =
                             .fillMaxWidth()
                     ) {
                         Box(modifier = Modifier.fillMaxWidth(0.15f), contentAlignment = Alignment.Center) {
-                            AttachIcon(iconSize = 18)
+                            AttachIcon(iconSize = 18, iconTint = statusColor, iconRes = "location_icon_filled.png"){}
                         }
                         TextComponent(
                             text = "Savanna Beauty Services",
-                            fontSize = 16,
+                            textModifier = Modifier.fillMaxWidth().padding(start = 5.dp),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            fontSize = 18,
                             fontFamily = GGSansRegular,
                             textStyle = TextStyle(),
                             textColor = Color.Gray,
                             textAlign = TextAlign.Left,
-                            fontWeight = FontWeight.Bold,
-                            textModifier = Modifier.fillMaxWidth().padding(start = 5.dp),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            fontWeight = FontWeight.Black,
                         )
                     }
                     Row(
@@ -147,20 +216,20 @@ fun AppointmentWidget(iconRes: String = "drawable/schedule.png", iconSize: Int =
                             .fillMaxWidth()
                     ) {
                         Box(modifier = Modifier.fillMaxWidth(0.15f), contentAlignment = Alignment.Center) {
-                            AttachIcon(iconRes = "drawable/therapist_3.png", iconSize = 24)
+                            AttachIcon(iconRes = "drawable/therapist_3.png", iconSize = 24, iconTint = statusColor){}
                         }
 
                         TextComponent(
                             text = "Helena McCain",
-                            fontSize = 16,
+                            textModifier = Modifier.fillMaxWidth().padding(start = 5.dp),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            fontSize = 18,
                             fontFamily = GGSansRegular,
                             textStyle = TextStyle(),
                             textColor = Color.Gray,
                             textAlign = TextAlign.Left,
-                            fontWeight = FontWeight.Bold,
-                            textModifier = Modifier.fillMaxWidth().padding(start = 5.dp),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            fontWeight = FontWeight.Black,
                         )
                     }
 
@@ -179,11 +248,14 @@ fun AppointmentWidget(iconRes: String = "drawable/schedule.png", iconSize: Int =
 }
 
 @Composable
-fun AttachIcon(iconRes: String = "location_icon_filled.png", iconSize: Int = 16) {
+fun AttachIcon(iconRes: String = "location_icon_filled.png", iconSize: Int = 16, iconTint: Color = Colors.primaryColor, onIconClicked:() -> Unit) {
     val modifier = Modifier
         .padding(top = 2.dp)
+        .clickable {
+            onIconClicked()
+        }
         .size(iconSize.dp)
-    ImageComponent(imageModifier = modifier, imageRes = iconRes, colorFilter = ColorFilter.tint(color = Color.LightGray))
+    ImageComponent(imageModifier = modifier, imageRes = iconRes, colorFilter = ColorFilter.tint(color = iconTint))
 }
 
 @Composable

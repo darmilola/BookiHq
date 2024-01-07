@@ -24,7 +24,6 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import screens.authentication.WelcomeScreen
 import widgets.SplashScreenWidget
 
-@OptIn(ExperimentalResourceApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun SplashScreenCompose() {
    val  modifier =

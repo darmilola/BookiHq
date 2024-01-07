@@ -178,7 +178,7 @@ fun RecommendedServiceDescription() {
             text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aene ligula",
             fontSize = 18, fontFamily = GGSansRegular,
             textStyle = TextStyle(), textColor = Color.Gray, textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.Black,
             lineHeight = 23, maxLines = 3,
             overflow = TextOverflow.Ellipsis)
 

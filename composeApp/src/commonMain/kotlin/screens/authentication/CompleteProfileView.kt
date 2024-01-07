@@ -52,6 +52,7 @@ import screens.main.MainScreen
 import widgets.DropDownWidget
 import widgets.InputWidget
 import widgets.PageBackNavWidget
+import widgets.ProfileImageUpdate
 import widgets.SubtitleTextWidget
 import widgets.TitleWidget
 
@@ -113,35 +114,6 @@ fun CompleteProfileCompose() {
 
 
 
-@Composable
-fun ProfileImageUpdate() {
-    Box(Modifier.fillMaxWidth().height(220.dp), contentAlignment = Alignment.Center) {
-        Box(
-            Modifier
-                .padding(top = 20.dp, bottom = 5.dp)
-                .size(200.dp)
-                .clip(CircleShape)
-                .border(
-                    width = (2.5).dp,
-                    color = Colors.primaryColor,
-                    shape = CircleShape)
-                .background(color = Color.Transparent)
-        ) {
-            val modifier = Modifier
-                .padding(3.dp)
-                .clip(CircleShape)
-                .border(
-                    width = 2.dp,
-                    color = Color.White,
-                    shape = CircleShape
-                )
-                .fillMaxSize()
-            ImageComponent(imageModifier = modifier, imageRes = "1.jpg")
-        }
-            EditProfilePictureButton()
-
-    }
-}
 
 @Composable
 fun AttachDropDownWidget(){
@@ -149,22 +121,6 @@ fun AttachDropDownWidget(){
     DropDownWidget(menuItems = countryList, placeHolderText = "Country of Residence",)
 }
 
-@Composable
-fun EditProfilePictureButton() {
-    Box(modifier = Modifier.size(200.dp), contentAlignment = Alignment.BottomEnd) {
-        val modifier = Modifier
-            .padding(end = 10.dp)
-            .background(color = Colors.surfaceColor, shape = CircleShape)
-            .size(width = 60.dp, height = 60.dp)
-
-        Box(modifier = modifier,
-            contentAlignment = Alignment.Center
-        ) {
-            ImageComponent(imageModifier = Modifier.size(35.dp).clickable {
-            }, imageRes = "drawable/recycle_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
-        }
-    }
-}
 
 @Composable
 fun AttachBackIcon() {

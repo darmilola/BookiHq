@@ -5,6 +5,7 @@ import AppTheme.AppColors
 import AppTheme.AppRegularTypography
 import GGSansBold
 import GGSansSemiBold
+import Models.AppointmentItem
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -52,6 +53,8 @@ import components.ToggleButton
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import screens.Bookings.BookingItemCard
+import utils.getAppointmentViewHeight
+import widgets.AppointmentWidget
 
 class BookingsTab(private val mainViewModel: MainViewModel) : Tab {
 
@@ -94,18 +97,24 @@ class BookingsTab(private val mainViewModel: MainViewModel) : Tab {
                         .background(color = Color.White)
                 ) {
 
-                    ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = MaterialTheme.typography.h4, onLeftClicked = {
 
-                    }, onRightClicked = {
+                    val appointmentList = ArrayList<AppointmentItem>()
 
-                    }, leftText = "Upcoming", rightText = "Past")
+                    val appointmentItem1 = AppointmentItem(appointmentType = 1)
+                    val appointmentItem2 = AppointmentItem(appointmentType = 2)
+                    val appointmentItem3 = AppointmentItem(appointmentType = 3)
 
-                    val listOfInt = ArrayList<Pair<Int, Int>>()
-                    listOfInt.add(Pair(0,1))
-                    listOfInt.add(Pair(1,2))
-                    listOfInt.add(Pair(2,3))
+                    appointmentList.add(appointmentItem1)
+                    appointmentList.add(appointmentItem2)
+                    appointmentList.add(appointmentItem3)
+                    appointmentList.add(appointmentItem1)
+                    appointmentList.add(appointmentItem2)
+                    appointmentList.add(appointmentItem3)
+                    appointmentList.add(appointmentItem1)
+                    appointmentList.add(appointmentItem2)
 
-                    populateBookingItemList(listOfInt)
+                    PopulateAppointmentScreen(appointmentList = appointmentList, mainViewModel = mainViewModel)
+
                 }
 
             }
@@ -113,10 +122,10 @@ class BookingsTab(private val mainViewModel: MainViewModel) : Tab {
 
 
     @Composable
-    private fun populateBookingItemList(bookingItems: List<Pair<Int,Int>>){
-        LazyColumn {
-            items(bookingItems) {item ->
-                BookingItemCard(viewType = item.first, contentSize = ((item.second*135)), itemCount = item.second)
+    fun PopulateAppointmentScreen(appointmentList: List<AppointmentItem>, mainViewModel: MainViewModel) {
+        LazyColumn(modifier = Modifier.fillMaxWidth().height(getAppointmentViewHeight(appointmentList).dp), userScrollEnabled = true) {
+            items(appointmentList) {item ->
+                AppointmentWidget(itemType = item.appointmentType)
             }
         }
     }

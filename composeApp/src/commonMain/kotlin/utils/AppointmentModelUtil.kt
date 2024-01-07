@@ -7,6 +7,6 @@ import Models.AppointmentItemListModel
     ): Int {
         val itemCount = itemList.size
 
-        return itemCount * 230
+        return itemCount * 220
     }
 

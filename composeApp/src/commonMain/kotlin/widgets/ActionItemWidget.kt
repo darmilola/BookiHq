@@ -2,7 +2,9 @@ package widgets
 
 import AppTheme.AppColors
 import AppTheme.AppRegularTypography
+import GGSansRegular
 import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
@@ -32,15 +35,12 @@ import components.ImageComponent
 import components.TextComponent
 
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-public fun ActionItemComponent(modifier: Modifier, buttonText: String, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, onClick: (() -> Unit)? = null, isDestructiveAction: Boolean = false) {
+fun ActionItemComponent(modifier: Modifier, buttonText: String, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, onClick: (() -> Unit)? = null, isDestructiveAction: Boolean = false) {
     val rowModifier = Modifier
-        .fillMaxWidth()
-    MaterialTheme(colors = AppColors(), typography = AppRegularTypography()) {
+        .fillMaxWidth().wrapContentHeight()
 
-
-        Button(
+     Button(
             onClick = {
                 if (onClick != null) {
                     onClick()
@@ -104,13 +104,13 @@ public fun ActionItemComponent(modifier: Modifier, buttonText: String, colors: B
 
             }
         }
-    }
 }
+
 
 @Composable
 fun AttachItemImage(iconRes: String, isDestructiveAction: Boolean = false) {
-    val imageBgColor = if(isDestructiveAction) Color(color = 0x20fa2d65) else Color(color = 0x203d3d4e)
-    val imageTintColor = if(isDestructiveAction) Color(color = 0xfffa2d65) else Color(color = 0xFF3d3d4e)
+    val imageBgColor = if(isDestructiveAction) Color(color = 0x20fa2d65) else Colors.lightPrimaryColor
+    val imageTintColor = if(isDestructiveAction) Color(color = 0xfffa2d65) else Colors.darkPrimary
     Box(
         Modifier
             .clip(CircleShape)

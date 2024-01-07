@@ -442,38 +442,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     fun PopulateAppointmentScreen(appointmentList: List<AppointmentItem>, mainViewModel: MainViewModel) {
         LazyColumn(modifier = Modifier.fillMaxWidth().height(getAppointmentViewHeight(appointmentList).dp), userScrollEnabled = false) {
             items(appointmentList) {item ->
-                var iconRes = ""
-                var statusText = ""
-                var statusColor: Color = Colors.primaryColor
-                var statusBgColor: Color = Colors.lightPrimaryColor
-                var iconSize: Int = 35
-
-                when (item.appointmentType) {
-                    1 -> {
-                        iconRes = "drawable/schedule.png"
-                        statusText = "PENDING"
-                        statusColor = Colors.primaryColor
-                        statusBgColor = Colors.lightPrimaryColor
-                        iconSize = 30
-                    }
-                    2 -> {
-                        iconRes = "drawable/appointment_postponed.png"
-                        statusText = "POSTPONED"
-                        statusColor = Colors.pinkColor
-                        statusBgColor = Colors.lightPinkColor
-                        iconSize = 30
-                    }
-                    3 -> {
-                        iconRes = "drawable/appointment_done.png"
-                        statusText = "DONE"
-                        statusColor = Colors.greenColor
-                        statusBgColor = Colors.lightGreenColor
-                        iconSize = 30
-                    }
-                }
-
-                AppointmentWidget(iconRes = iconRes, iconSize = iconSize, statusText = statusText, statusColor = statusColor, statusBgColor = statusBgColor)
-
+                AppointmentWidget(itemType = item.appointmentType)
             }
         }
     }
