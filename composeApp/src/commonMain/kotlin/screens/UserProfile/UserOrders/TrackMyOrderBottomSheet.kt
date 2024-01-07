@@ -1,6 +1,7 @@
 package screens.UserProfile.UserOrders
 
 import GGSansRegular
+import Styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -39,7 +41,7 @@ fun TrackMyOrderBottomSheet(onDismiss: () -> Unit) {
         onDismissRequest = { onDismiss() },
         sheetState = modalBottomSheetState,
         shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
-        containerColor = Color(0xFFF3F3F3),
+        containerColor = Color.White,
         dragHandle = { },
     ) {
         SheetContent()
@@ -59,9 +61,9 @@ fun SheetContent() {
         SheetContentHeader()
         TextComponent(
             text = "Track My Order",
-            fontSize = 35,
+            fontSize = 30,
             fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6,
+            textStyle = TextStyle(),
             textColor = Color.DarkGray,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Black,
@@ -70,7 +72,7 @@ fun SheetContent() {
         )
 
         Row(modifier = Modifier.fillMaxHeight().fillMaxWidth().padding(top = 20.dp)) {
-            TrackOrderProgress(modifier = Modifier.fillMaxWidth().fillMaxHeight(), numberOfSteps = 3, currentOrderProgress = 0)
+            TrackOrderProgress(modifier = Modifier.fillMaxWidth().fillMaxHeight(), numberOfSteps = 3, currentOrderProgress = 1)
         }
     }
 }
@@ -91,8 +93,8 @@ fun SheetContentHeader() {
                 text = "Cancel",
                 fontSize = 20,
                 fontFamily = GGSansRegular,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.Blue,
+                textStyle = TextStyle(),
+                textColor = Colors.primaryColor,
                 textAlign = TextAlign.Left,
                 fontWeight = FontWeight.Black,
                 lineHeight = 35,

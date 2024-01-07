@@ -25,12 +25,13 @@ fun PageBackNavWidget(onBackPressed: (() -> Unit)) {
     val boxModifier = Modifier
             .border(border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(15.dp))
             .background(color = Color.Transparent)
+            .clickable {
+            onBackPressed()
+            }
             .size(50.dp)
     Box(modifier = boxModifier,
             contentAlignment = Alignment.Center
         ) {
-            ImageComponent(imageModifier = Modifier.size(25.dp).clickable {
-                onBackPressed()
-            }, imageRes = "drawable/nav_back_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+            ImageComponent(imageModifier = Modifier.size(25.dp), imageRes = "drawable/nav_back_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
         }
 }

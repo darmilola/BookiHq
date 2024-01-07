@@ -4,6 +4,7 @@ import AppTheme.AppColors
 import AppTheme.AppSemiBoldTypography
 import GGSansRegular
 import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Card
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +36,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -42,7 +45,6 @@ import components.TextComponent
 import screens.UserProfile.UserOrders.OrderDetails
 
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun OrderItemDetail() {
     val navigator = LocalNavigator.currentOrThrow
@@ -53,7 +55,6 @@ fun OrderItemDetail() {
         }
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .fillMaxHeight()
-    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
         Column(modifier = columnModifier,
             verticalArrangement = Arrangement.Top
         ) {
@@ -81,18 +82,18 @@ fun OrderItemDetail() {
                     text = "Total",
                     fontSize = 20,
                     fontFamily = GGSansRegular,
-                    textStyle = MaterialTheme.typography.h6,
+                    textStyle = TextStyle(),
                     textColor = Color.DarkGray,
                     textAlign = TextAlign.Left,
                     fontWeight = FontWeight.Black,
                     textModifier = Modifier.padding(top = 5.dp).height(30.dp).fillMaxWidth(0.20f)
                 )
                 TextComponent(
-                    text = "$2.300",
+                    text = "$2,300",
                     fontSize = 20,
                     fontFamily = GGSansRegular,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color(color = 0xfffa2d65),
+                    textStyle = TextStyle(),
+                    textColor = Colors.primaryColor,
                     textAlign = TextAlign.Right,
                     fontWeight = FontWeight.Black,
                     textModifier = Modifier.padding(top = 5.dp).height(30.dp).fillMaxWidth()
@@ -101,7 +102,6 @@ fun OrderItemDetail() {
             }
         }
     }
-}
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -163,7 +163,6 @@ fun OrderDetailItemDetail(onProductClickListener: () -> Unit){
     val columnModifier = Modifier
         .padding(start = 10.dp, end = 10.dp)
         .fillMaxHeight()
-    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
         Column(
             modifier = columnModifier,
             verticalArrangement = Arrangement.Top,
@@ -179,17 +178,19 @@ fun OrderDetailItemDetail(onProductClickListener: () -> Unit){
                 text = "Bloom Rose Oil And Argan Oil is For Sale",
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
+                textStyle = TextStyle(),
                 textColor = Color.DarkGray,
                 textAlign = TextAlign.Left,
-                fontWeight = FontWeight.ExtraBold,
+                fontWeight = FontWeight.Medium,
                 lineHeight = 25,
-                textModifier = modifier
+                textModifier = modifier,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
             OrderDetailItemPriceInfoContent()
         }
     }
-}
+
 
 @Composable
 fun OrderDetailItemPriceInfoContent() {
@@ -216,11 +217,11 @@ fun OrderDetailItemPriceInfoContent() {
         TextComponent(
             text = "$670,000",
             fontSize = 20,
-            fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color(color = 0xfffa2d65),
+            fontFamily = GGSansRegular,
+            textStyle = TextStyle(),
+            textColor = Colors.primaryColor,
             textAlign = TextAlign.Right,
-            fontWeight = FontWeight.Medium,
+            fontWeight = FontWeight.Black,
             lineHeight = 30,
             textModifier = Modifier
                 .wrapContentSize())
@@ -270,12 +271,12 @@ fun OrderIDView() {
                horizontalAlignment = Alignment.End) {
             TextComponent(
                 text = "Copy",
-                fontSize = 15,
-                fontFamily = GGSansSemiBold,
+                fontSize = 16,
+                fontFamily = GGSansRegular,
                 textStyle = TextStyle(),
-                textColor = Color.Blue,
+                textColor = Colors.primaryColor,
                 textAlign = TextAlign.Right,
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.Black,
                 lineHeight = 30,
                 textModifier = Modifier
                     .wrapContentSize())

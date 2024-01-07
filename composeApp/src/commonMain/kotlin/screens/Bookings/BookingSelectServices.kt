@@ -93,10 +93,7 @@ fun BookingSelectServices() {
         ServiceLocationToggle()
         AttachServiceTypeToggle()
         Calendar()
-
     }
-
-
 }
 
 @Composable

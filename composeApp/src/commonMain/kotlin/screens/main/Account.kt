@@ -79,7 +79,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
             ) {
                     ProfileImageUpdate()
                     UserPreferredName()
-                    EditProfileComp(TextStyle(fontFamily = GGSansSemiBold, fontWeight = FontWeight.Black, fontSize = TextUnit(18f, TextUnitType.Sp)))
+                    EditProfileButton(TextStyle(fontFamily = GGSansSemiBold, fontWeight = FontWeight.Black, fontSize = TextUnit(18f, TextUnitType.Sp)))
                     Divider(color = Color(color = 0x90C8C8C8), thickness = 2.dp, modifier = Modifier.fillMaxWidth(0.90f).padding(top = 30.dp))
                     AttachAccountAction()
             }
@@ -112,7 +112,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
 
 
     @Composable
-    fun EditProfileComp(style: TextStyle){
+    fun EditProfileButton(style: TextStyle){
         val buttonStyle = Modifier
             .padding(top = 15.dp)
             .fillMaxWidth(0.40f)
@@ -120,7 +120,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
             .height(50.dp)
 
         ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke((1.5).dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 20, shape = RoundedCornerShape(25.dp), textColor =  Color.DarkGray, style = style){
-            mainViewModel.setId(4)
+            mainViewModel.setId(9)
         }
 
     }

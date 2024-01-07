@@ -118,7 +118,7 @@ fun OrderArrivedView(currentStep: Int, currentOrderProgress: Int){
     Column(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
 
         ImageComponent(imageModifier = Modifier.size(100.dp).clickable {
-        }, imageRes = "drawable/celebrate_icon.png", colorFilter = ColorFilter.tint(color = Color.DarkGray))
+        }, imageRes = "drawable/celebrate_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
 
         OrderStatusDate()
         OrderStatusText(orderStatusTitle = "Your Order has arrived", orderStatusDescription = "Thank you for shopping with us. We hope you like the products!", isCurrentStage = isCurrentStage)
@@ -139,7 +139,7 @@ fun OrderStatusText(orderStatusTitle: String, orderStatusDescription: String, is
             textStyle = TextStyle(),
             textColor = titleColor,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Normal,
+            fontWeight = FontWeight.Bold,
             lineHeight = 25,
             textModifier = Modifier.wrapContentSize().padding(top = 5.dp))
 
@@ -160,7 +160,7 @@ fun OrderStatusText(orderStatusTitle: String, orderStatusDescription: String, is
 fun OrderStatusDate(){
     Row(modifier = Modifier.wrapContentSize()) {
         TextComponent(
-            text = "SATURDAY DEC 23, 2023",
+            text = "Saturday Dec 23, 2023",
             fontSize = 18,
             fontFamily = GGSansRegular,
             textStyle = TextStyle(),
@@ -173,7 +173,7 @@ fun OrderStatusDate(){
         Box(modifier = Modifier.size(5.dp).padding(start = 5.dp, end = 5.dp).background(color = Color.DarkGray, shape = CircleShape))
 
         TextComponent(
-            text = "3:11 PM",
+            text = "3:11 pm",
             fontSize = 18,
             fontFamily = GGSansRegular,
             textStyle = TextStyle(),
@@ -257,7 +257,7 @@ fun Step(modifier: Modifier = Modifier, isCompete: Boolean, isCurrentStep: Boole
 
 @Composable
 fun EnhancedStep(modifier: Modifier = Modifier, isCompete: Boolean = false, isCurrent: Boolean = false, dividerMultiplier: Int = 1, isLastStep: Boolean = false) {
-    val dividerColor = if (isCurrent || isCompete) Color.DarkGray else Color.LightGray
+    val dividerColor = if (isCurrent || isCompete) Colors.primaryColor else Colors.lightPrimaryColor
     val dividerHeight = dividerMultiplier * 65
 
 
@@ -277,8 +277,8 @@ fun EnhancedStep(modifier: Modifier = Modifier, isCompete: Boolean = false, isCu
 
 @Composable
 fun CurrentDotIndicator(isCompete: Boolean, isCurrent: Boolean) {
-    val circleColor = if (isCompete || isCurrent) Color.DarkGray else Color.LightGray
-    val boxBg = Color(0x35444444)
+    val circleColor = if (isCompete || isCurrent) Colors.primaryColor else Colors.lightPrimaryColor
+    val boxBg = Colors.lightPrimaryColor
     Box(
         modifier = Modifier.size(40.dp).background(color = boxBg, shape = CircleShape),
         contentAlignment = Alignment.Center
@@ -289,6 +289,6 @@ fun CurrentDotIndicator(isCompete: Boolean, isCurrent: Boolean) {
 
 @Composable
 fun DotIndicator(isCompete: Boolean, isCurrent: Boolean) {
-    val circleColor = if (isCompete || isCurrent) Color.DarkGray else Color.LightGray
+    val circleColor = if (isCompete || isCurrent) Colors.primaryColor else Colors.lightPrimaryColor
     Box(modifier = Modifier.size(20.dp).background(color = circleColor, shape = CircleShape)){}
 }

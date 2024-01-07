@@ -4,6 +4,7 @@ import AppTheme.AppColors
 import AppTheme.AppSemiBoldTypography
 import GGSansRegular
 import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,7 +43,6 @@ import components.TextComponent
 import screens.UserProfile.UserOrders.OrderItemDetail
 import screens.UserProfile.UserOrders.TrackMyOrderBottomSheet
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun OrderDetailList() {
     val columnModifier = Modifier
@@ -53,7 +53,6 @@ fun OrderDetailList() {
         .height(((130 * 3)+500).dp)
 
 
-    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
         Column(modifier = columnModifier,
             verticalArrangement = Arrangement.Top
         ) {
@@ -84,8 +83,8 @@ fun OrderDetailList() {
 
             }
         }
-    }
 }
+
 
 
 
@@ -101,7 +100,6 @@ fun OrderDetailsStatusView(){
     val columnModifier = Modifier
         .padding(start = 10.dp, end = 10.dp)
         .wrapContentHeight()
-    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
         Column(
             modifier = columnModifier,
             verticalArrangement = Arrangement.Top,
@@ -146,7 +144,7 @@ fun OrderDetailsStatusView(){
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
                 textStyle = TextStyle(),
-                textColor = Color.Blue,
+                textColor = Colors.primaryColor,
                 textAlign = TextAlign.Right,
                 fontWeight = FontWeight.Black,
                 lineHeight = 30,
@@ -158,4 +156,3 @@ fun OrderDetailsStatusView(){
             )
         }
     }
-}

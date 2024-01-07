@@ -33,13 +33,11 @@ import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
-@OptIn(ExperimentalResourceApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun AuthenticationScreenCompose(currentPosition: Int = 0) {
 
-    val viewModel: AuthenticationViewModel = AuthenticationViewModel()
+    val viewModel = AuthenticationViewModel()
     viewModel.changeScreen(currentPosition)
-    val authenticationScreenData = viewModel.authenticationScreenData ?: return
     val state = viewModel.authenticationScreenData!!.screenType
 
 
@@ -124,7 +122,6 @@ fun AuthenticationScreenCompose(currentPosition: Int = 0) {
 class AuthenticationComposeScreen(currentScreen: Int = 0) : Screen {
 
     private val sc = currentScreen
-    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
         AuthenticationScreenCompose(currentPosition = sc)

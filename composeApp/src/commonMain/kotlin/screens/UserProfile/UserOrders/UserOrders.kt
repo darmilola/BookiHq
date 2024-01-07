@@ -4,6 +4,7 @@ import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import AppTheme.AppSemiBoldTypography
 import GGSansSemiBold
+import Styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -39,20 +41,20 @@ import components.TextComponent
 import components.ToggleButton
 import screens.consultation.rightTopBarItem
 import screens.main.MainViewModel
+import widgets.PageBackNavWidget
+import widgets.TitleWidget
 
 class UserOrders (private val mainViewModel: MainViewModel) : Screen {
 
-    @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
 
         val columnModifier = Modifier
             .padding(top = 5.dp)
-            .background(color = Color(0xfffbfafe))
+            .background(color = Color.White)
             .fillMaxHeight()
             .fillMaxWidth()
 
-        MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -63,17 +65,9 @@ class UserOrders (private val mainViewModel: MainViewModel) : Screen {
                         .padding(bottom = 25.dp)
                         .fillMaxHeight()
                         .fillMaxWidth()
-                        .background(color = Color(color = 0xFFF3F3F3))
+                        .background(color = Color.White)
                 ) {
-
                     UserOrdersScreenTopBar()
-                    ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = MaterialTheme.typography.h4, onLeftClicked = {
-
-
-                    }, onRightClicked = {
-
-                    }, leftText = "Pending", rightText = "Delivered")
-
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(1),
                         modifier = Modifier.fillMaxWidth().padding(top = 10.dp).fillMaxHeight(),
@@ -89,7 +83,7 @@ class UserOrders (private val mainViewModel: MainViewModel) : Screen {
             }
         }
 
-    }
+
 
     @Composable
     fun UserOrdersScreenTopBar() {
@@ -99,9 +93,9 @@ class UserOrders (private val mainViewModel: MainViewModel) : Screen {
             .height(40.dp)
 
         val colModifier = Modifier
-            .padding(top = 35.dp, end = 0.dp)
+            .padding(top = 35.dp, end = 0.dp, start = 10.dp)
             .fillMaxWidth()
-            .height(40.dp)
+            .height(70.dp)
 
         Column(modifier = colModifier,
             verticalArrangement = Arrangement.Center,
@@ -137,29 +131,16 @@ class UserOrders (private val mainViewModel: MainViewModel) : Screen {
     @Composable
     fun leftTopBarItem() {
         val navigator = LocalNavigator.currentOrThrow
-        val modifier = Modifier
-            .padding(start = 15.dp)
-            .clickable {
-                   navigator.pop()
-              }
-            .size(22.dp)
-        ImageComponent(imageModifier = modifier, imageRes = "back_arrow.png", colorFilter = ColorFilter.tint(color = Color.DarkGray))
+        PageBackNavWidget {
+            navigator.pop()
+        }
     }
 
     @Composable
     fun OrderTitle(){
-        MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
-            TextComponent(
-                text = "Orders",
-                fontSize = 20,
-                fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Normal,
-            )
+            TitleWidget(textColor = Colors.primaryColor, title = "Orders")
         }
-    }
+
 
 }
 

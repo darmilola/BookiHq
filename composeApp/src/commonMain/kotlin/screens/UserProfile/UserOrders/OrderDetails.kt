@@ -22,14 +22,14 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import components.ImageComponent
+import widgets.PageBackNavWidget
 
 class OrderDetails() : Screen {
-    @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
         val rowModifier = Modifier
             .fillMaxWidth()
-            .height(40.dp)
+            .height(70.dp)
 
         val colModifier = Modifier
             .padding(top = 40.dp, end = 0.dp)
@@ -59,16 +59,11 @@ class OrderDetails() : Screen {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun leftTopBarItem() {
     val navigator = LocalNavigator.currentOrThrow
-    val modifier = Modifier
-        .padding(start = 15.dp)
-        .clickable {
-            navigator.pop()
-        }
-        .size(22.dp)
-    ImageComponent(imageModifier = modifier, imageRes = "back_arrow.png", colorFilter = ColorFilter.tint(color = Color.DarkGray))
+    PageBackNavWidget {
+        navigator.pop()
+    }
 }
 

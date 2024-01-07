@@ -3,6 +3,7 @@ package screens.UserProfile.UserOrders
 import AppTheme.AppColors
 import AppTheme.AppSemiBoldTypography
 import GGSansRegular
+import Styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,40 +37,40 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import components.ImageComponent
 import components.TextComponent
-import screens.Bookings.StraightLine
 import screens.UserProfile.UserOrders.OrderDetails
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun OrderItemList() {
     val navigator = LocalNavigator.currentOrThrow
     val columnModifier = Modifier
-        .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
+        .padding(start = 10.dp, top = 35.dp, bottom = 10.dp, end = 10.dp)
         .clickable {
             navigator.push(OrderDetails())
         }
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .height(250.dp)
-    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
         Column(modifier = columnModifier,
             verticalArrangement = Arrangement.Top
         ) {
-            Column(modifier = Modifier.fillMaxWidth().padding(start = 15.dp, end = 15.dp),
+            Column(modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+
+                  StraightLine()
 
                 Row(
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.height(50.dp).fillMaxWidth()
                 ) {
+
                     TextComponent(
                         text = "Friday, 26 Dec, 2023",
                         fontSize = 18,
                         fontFamily = GGSansRegular,
-                        textStyle = MaterialTheme.typography.h6,
-                        textColor = Color(color = 0xFFFF6B94),
+                        textStyle = TextStyle(),
+                        textColor = Colors.primaryColor,
                         textAlign = TextAlign.Left,
                         fontWeight = FontWeight.Black,
                         textModifier = Modifier.wrapContentHeight().fillMaxWidth(0.50f))
@@ -77,10 +79,9 @@ fun OrderItemList() {
                              navigator.push(OrderDetails())
                         },
                         contentAlignment = Alignment.CenterEnd) {
-                        ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = Color(color = 0xfffa2d65)))
+                        ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
                     }
                 }
-
                 StraightLine()
             }
             LazyHorizontalGrid(
@@ -110,18 +111,30 @@ fun OrderItemList() {
                     textModifier = Modifier.padding(top = 5.dp).height(30.dp).fillMaxWidth(0.20f)
                 )
                 TextComponent(
-                    text = "$2.300",
+                    text = "$2,300",
                     fontSize = 20,
                     fontFamily = GGSansRegular,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color(color = 0xfffa2d65),
+                    textStyle = TextStyle(),
+                    textColor = Colors.primaryColor,
                     textAlign = TextAlign.Right,
                     fontWeight = FontWeight.Black,
                     textModifier = Modifier.padding(top = 5.dp).height(30.dp).fillMaxWidth()
                 )
 
             }
+            StraightLine()
         }
+    }
+
+
+@Composable
+fun StraightLine() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(2.dp)
+            .background(color = Color(color = 0x40CCCCCC))
+    ) {
     }
 }
 

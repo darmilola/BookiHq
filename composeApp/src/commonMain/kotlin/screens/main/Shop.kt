@@ -1,7 +1,5 @@
 package screens.main
 
-import AppTheme.AppBoldTypography
-import AppTheme.AppColors
 import GGSansRegular
 import GGSansSemiBold
 import Styles.Colors
@@ -44,7 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import components.ImageComponent
 import components.TextComponent
-import screens.Products.ProductSearchBar
+import screens.Products.SearchBar
 import screens.Products.CategoryScreen
 
 
@@ -72,7 +70,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
         mainViewModel.setTitle("Products")
         Scaffold(
             topBar = {
-                     ProductSearchBar()
+                     SearchBar()
             },
             content = {
                 content()

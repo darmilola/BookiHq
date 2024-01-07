@@ -56,12 +56,8 @@ import widgets.ProfileImageUpdate
 import widgets.SubtitleTextWidget
 import widgets.TitleWidget
 
-@OptIn(ExperimentalResourceApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun CompleteProfileCompose() {
-    val viewModel: AuthenticationViewModel = AuthenticationViewModel()
-    val authenticationScreenData = viewModel.authenticationScreenData ?: return
-
     val  rootModifier =
         Modifier
             .fillMaxWidth()
@@ -101,10 +97,7 @@ fun CompleteProfileCompose() {
 
                 }, leftText = "Male", rightText = "Female")
 
-                /* EmailInput()
-                PasswordInput()
-                CountryInput()
-                GenderInput()*/
+
                 ButtonComponent(modifier = buttonStyle, buttonText = "Continue", colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(30.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4, borderStroke = null) {
                     navigator.replaceAll(MainScreen)
                 }

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -25,7 +24,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.CurrentTab
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import components.ImageComponent
@@ -33,7 +31,8 @@ import dev.icerock.moko.mvvm.livedata.compose.observeAsState
 import screens.Bookings.BookingScreen
 import screens.Bookings.ServiceInformationPage
 import screens.Products.CartScreen
-import screens.UserProfile.ConnectBusiness.ConnectPage
+import screens.UserProfile.SwitchVendor.ConnectPage
+import screens.UserProfile.EditProfile
 import screens.UserProfile.UserOrders.UserOrders
 import screens.authentication.AuthenticationComposeScreen
 import screens.consultation.ConsultationScreen
@@ -44,43 +43,38 @@ object MainScreen : Screen {
     @Composable
     override fun Content() {
 
-        val mainViewModel: MainViewModel = MainViewModel()
-        var screenTitle: State<String> =  mainViewModel.screenTitle.observeAsState()
+        val mainViewModel = MainViewModel()
+        val navigator = LocalNavigator.currentOrThrow
         val screenId: State<Int> =  mainViewModel.screenId.observeAsState()
-        println(screenId.value)
 
         if (screenId.value == 1){
-            val navigator = LocalNavigator.currentOrThrow
             navigator.push(BookingScreen(mainViewModel))
         }
         if (screenId.value == 2){
-            val navigator = LocalNavigator.currentOrThrow
             navigator.push(ConsultationScreen(mainViewModel))
         }
-
         if (screenId.value == 3){
-            val navigator = LocalNavigator.currentOrThrow
             navigator.push(CartScreen(mainViewModel))
         }
         if (screenId.value == 4){
-            val navigator = LocalNavigator.currentOrThrow
             navigator.replace(AuthenticationComposeScreen(currentScreen = 4))
         }
         if (screenId.value == 5){
-            val navigator = LocalNavigator.currentOrThrow
+            println("am here")
+            println(navigator)
             navigator.push(UserOrders(mainViewModel))
         }
         if (screenId.value == 6){
-            val navigator = LocalNavigator.currentOrThrow
             navigator.push(ConnectPage)
         }
         if (screenId.value == 7){
-            val navigator = LocalNavigator.currentOrThrow
             navigator.push(ServiceInformationPage)
         }
         if (screenId.value == 8){
-            val navigator = LocalNavigator.currentOrThrow
             navigator.push(VirtualConsultationRoom)
+        }
+        if (screenId.value == 9){
+            navigator.push(EditProfile(mainViewModel))
         }
 
         TabNavigator(showDefaultTab(mainViewModel)) {
