@@ -1,11 +1,5 @@
 package screens.main
 
-import AppTheme.AppBoldTypography
-import AppTheme.AppColors
-import AppTheme.AppSemiBoldTypography
-import GGSansBold
-import GGSansRegular
-import GGSansSemiBold
 import Styles.Colors
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.keyframes
@@ -21,34 +15,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import components.ImageComponent
-import components.TextComponent
 import dev.icerock.moko.mvvm.livedata.compose.observeAsState
-import screens.authentication.attachWaveIcon
 import widgets.TitleWidget
 
 @Composable
-fun MainTopBar(mainViewModel: MainViewModel) {
+fun MainTopBar(mainViewModel: MainViewModel, isBottomNavSelected: Boolean = false, onNotificationTabSelected:() -> Unit) {
 
     val rowModifier = Modifier
         .padding(top = 55.dp, end = 0.dp)
@@ -57,7 +39,9 @@ fun MainTopBar(mainViewModel: MainViewModel) {
 
         Box(modifier = rowModifier) {
             centerTopBarItem(mainViewModel)
-            rightTopBarItem(mainViewModel)
+            rightTopBarItem(mainViewModel, isBottomNavSelected = isBottomNavSelected){
+                onNotificationTabSelected()
+            }
         }
 }
 
@@ -71,12 +55,12 @@ fun leftTopBarItem(currentScreen: Int = 0) {
 
     Box(modifier = rowModifier
     ) {
-       welcomeToProfile()
+       WelcomeToProfile()
     }
 }
 
 @Composable
-fun welcomeToProfile(){
+fun WelcomeToProfile(){
     val rowModifier = Modifier
         .padding(start = 10.dp, top = 5.dp)
         .fillMaxWidth()
@@ -93,8 +77,21 @@ fun welcomeToProfile(){
     }
 
 @Composable
-fun rightTopBarItem(mainViewModel: MainViewModel) {
+fun rightTopBarItem(mainViewModel: MainViewModel, isBottomNavSelected: Boolean = false, onNotificationTabSelected:() -> Unit) {
     val tabNavigator = LocalTabNavigator.current
+    var imageRes = ""
+
+    imageRes = if(isBottomNavSelected){
+        "drawable/bell_outline.png"
+    }else{
+        "drawable/bell_filled.png"
+    }
+    val imageTint: Color = if(isBottomNavSelected){
+        Colors.darkPrimary
+    }else{
+        Colors.primaryColor
+    }
+
     val modifier = Modifier
         .padding(end = 10.dp)
         .background(color = Color.Transparent)
@@ -118,9 +115,10 @@ fun rightTopBarItem(mainViewModel: MainViewModel) {
     Box(modifier = modifier,
         contentAlignment = Alignment.CenterEnd
         ) {
-            ImageComponent(imageModifier = Modifier.size(35.dp).clickable {
+            ImageComponent(imageModifier = Modifier.size(33.dp).clickable {
                 tabNavigator.current = NotificationTab(mainViewModel)
-            }, imageRes = "notification.png", colorFilter = ColorFilter.tint(color = Color.DarkGray))
+                onNotificationTabSelected()
+            }, imageRes = imageRes, colorFilter = ColorFilter.tint(color = imageTint))
         Box(modifier = indicatorModifier){}
         }
     }
@@ -137,7 +135,6 @@ fun centerTopBarItem(mainViewModel: MainViewModel) {
     Box(modifier = rowModifier,
         contentAlignment = Alignment.Center
     ) {
-        MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
        val shouldDisplay = screenTitle.value.contentEquals("Home")
             AnimatedVisibility(
                 visible = !shouldDisplay,
@@ -163,4 +160,3 @@ fun centerTopBarItem(mainViewModel: MainViewModel) {
             }
         }
     }
- }

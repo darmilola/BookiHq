@@ -67,7 +67,6 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
 
     @Composable
     override fun Content() {
-        mainViewModel.setTitle("Products")
         Scaffold(
             topBar = {
                      SearchBar()
@@ -84,8 +83,6 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
 
     @Composable
     fun AttachShoppingCartImage(iconRes: String) {
-
-
         val indicatorModifier = Modifier
             .padding(end = 15.dp, bottom = 20.dp)
             .background(color = Color.Transparent)
@@ -124,7 +121,6 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
     }
 
 
-    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun content() {
         val columnModifier = Modifier

@@ -39,48 +39,57 @@ import screens.consultation.ConsultationScreen
 import screens.consultation.VirtualConsultationRoom
 
 object MainScreen : Screen {
+    val mainViewModel = MainViewModel()
 
     @Composable
     override fun Content() {
-
-        val mainViewModel = MainViewModel()
-        val navigator = LocalNavigator.currentOrThrow
         val screenId: State<Int> =  mainViewModel.screenId.observeAsState()
+        val navigator = LocalNavigator.currentOrThrow
+        var isBottomNavSelected by remember { mutableStateOf(true) }
 
         if (screenId.value == 1){
             navigator.push(BookingScreen(mainViewModel))
+            mainViewModel.setId(-1)
         }
         if (screenId.value == 2){
             navigator.push(ConsultationScreen(mainViewModel))
+            mainViewModel.setId(-1)
         }
         if (screenId.value == 3){
             navigator.push(CartScreen(mainViewModel))
+            mainViewModel.setId(-1)
         }
         if (screenId.value == 4){
             navigator.replace(AuthenticationScreen(currentScreen = 4))
+            mainViewModel.setId(-1)
         }
         if (screenId.value == 5){
-            println("am here")
-            println(navigator)
             navigator.push(UserOrders(mainViewModel))
+            mainViewModel.setId(-1)
         }
         if (screenId.value == 6){
             navigator.push(ConnectPage)
+            mainViewModel.setId(-1)
         }
         if (screenId.value == 7){
             navigator.push(ServiceInformationPage)
+            mainViewModel.setId(-1)
         }
         if (screenId.value == 8){
             navigator.push(VirtualConsultationRoom)
+            mainViewModel.setId(-1)
         }
         if (screenId.value == 9){
             navigator.push(EditProfile(mainViewModel))
+            mainViewModel.setId(-1)
         }
 
         TabNavigator(showDefaultTab(mainViewModel)) {
             Scaffold(
                 topBar = {
-                     MainTopBar(mainViewModel)
+                     MainTopBar(mainViewModel, isBottomNavSelected = isBottomNavSelected){
+                         isBottomNavSelected = false
+                     }
                 },
                 content = {
                      CurrentTab()
@@ -93,11 +102,21 @@ object MainScreen : Screen {
                         elevation = 0.dp
                     )
                     {
-                        TabNavigationItem(HomeTab(mainViewModel), selectedImage = "drawable/home_icon.png", unselectedImage = "drawable/home_outline_v2.png", imageSize = 28, isHomeTabSelected = true, tabNavigator = it)
-                        TabNavigationItem(ShopTab(mainViewModel), selectedImage = "drawable/shopping_basket.png", unselectedImage = "drawable/shopping_basket_outline.png", imageSize = 28, tabNavigator = it)
-                        TabNavigationItem(ConsultTab(mainViewModel), selectedImage = "drawable/video_chat.png", unselectedImage = "drawable/video_chat_outline.png", imageSize = 32, tabNavigator = it)
-                        TabNavigationItem(BookingsTab(mainViewModel), selectedImage = "drawable/appointment_icon.png", unselectedImage = "drawable/appointment_outline.png", imageSize = 30, tabNavigator = it)
-                        TabNavigationItem(AccountTab(mainViewModel), selectedImage = "drawable/user.png", unselectedImage = "drawable/user_outline.png", imageSize = 30, tabNavigator = it)
+                        TabNavigationItem(HomeTab(mainViewModel), selectedImage = "drawable/home_icon.png", unselectedImage = "drawable/home_outline.png", imageSize = 28, currentTabId = 0, tabNavigator = it, mainViewModel){
+                            isBottomNavSelected = true
+                        }
+                        TabNavigationItem(ShopTab(mainViewModel), selectedImage = "drawable/shopping_basket.png", unselectedImage = "drawable/shopping_basket_outline.png", imageSize = 28, currentTabId = 1, tabNavigator = it, mainViewModel){
+                            isBottomNavSelected = true
+                        }
+                        TabNavigationItem(ConsultTab(mainViewModel), selectedImage = "drawable/video_chat.png", unselectedImage = "drawable/video_chat_outline.png", imageSize = 32, currentTabId = 2, tabNavigator = it, mainViewModel){
+                            isBottomNavSelected = true
+                        }
+                        TabNavigationItem(BookingsTab(mainViewModel), selectedImage = "drawable/appointment_icon.png", unselectedImage = "drawable/appointment_outline.png", imageSize = 30, currentTabId = 3, tabNavigator = it, mainViewModel){
+                            isBottomNavSelected = true
+                        }
+                        TabNavigationItem(AccountTab(mainViewModel), selectedImage = "drawable/user.png", unselectedImage = "drawable/user_outline.png", imageSize = 30, currentTabId = 4, tabNavigator = it, mainViewModel){
+                            isBottomNavSelected = true
+                        }
                     }
                 }
             )
@@ -114,22 +133,57 @@ private fun showDefaultTab(mainViewModel: MainViewModel): HomeTab {
 
 
 @Composable
-private fun RowScope.TabNavigationItem(tab: Tab, selectedImage: String, unselectedImage: String, imageSize: Int = 30, isHomeTabSelected: Boolean = false, tabNavigator: TabNavigator) {
+private fun RowScope.TabNavigationItem(tab: Tab, selectedImage: String, unselectedImage: String, imageSize: Int = 30, currentTabId: Int = 0, tabNavigator: TabNavigator, mainViewModel: MainViewModel, onBottomNavSelected:() -> Unit) {
     var imageStr by remember { mutableStateOf(unselectedImage) }
     var imageTint by remember { mutableStateOf(Color.Gray) }
+    var screenTitle by remember { mutableStateOf("Home") }
 
 
-    if(tabNavigator.current == tab){
+    if(tabNavigator.current is ShopTab && currentTabId == 1){
          imageStr  = selectedImage
          imageTint = Colors.primaryColor
+         screenTitle = "Products"
+         onBottomNavSelected()
+         mainViewModel.setTitle(screenTitle)
+
     }
-    else if (tabNavigator.current is HomeTab && isHomeTabSelected){
+
+   else if(tabNavigator.current is ConsultTab && currentTabId == 2){
+        imageStr  = selectedImage
+        imageTint = Colors.primaryColor
+        screenTitle = "Consultation"
+        onBottomNavSelected()
+        mainViewModel.setTitle(screenTitle)
+    }
+
+    else if(tabNavigator.current is BookingsTab && currentTabId == 3){
+        imageStr  = selectedImage
+        imageTint = Colors.primaryColor
+        screenTitle = "Appointments"
+        onBottomNavSelected()
+        mainViewModel.setTitle(screenTitle)
+    }
+
+    else if(tabNavigator.current is AccountTab && currentTabId == 4){
+        imageStr  = selectedImage
+        imageTint = Colors.primaryColor
+        screenTitle = "Account"
+        onBottomNavSelected()
+        mainViewModel.setTitle(screenTitle)
+    }
+
+    else if (tabNavigator.current is HomeTab && currentTabId == 0){
          imageStr  = selectedImage
          imageTint = Colors.primaryColor
+         screenTitle = "Home"
+         onBottomNavSelected()
+         mainViewModel.setTitle(screenTitle)
     }
+
     else{
          imageTint = Color.DarkGray
          imageStr =   unselectedImage
+         screenTitle = "Home"
     }
 
     BottomNavigationItem(
@@ -141,19 +195,12 @@ private fun RowScope.TabNavigationItem(tab: Tab, selectedImage: String, unselect
 
         selectedContentColor = Colors.primaryColor,
 
-        unselectedContentColor = Color.DarkGray,
+        unselectedContentColor = Colors.darkPrimary,
 
         icon = {
             ImageComponent(imageModifier = Modifier.size(imageSize.dp), imageRes = imageStr, colorFilter = ColorFilter.tint(imageTint))
         }
     )
-}
-
-object MainScreenLanding : Screen {
-    @Composable
-    override fun Content() {
-        Row(modifier = Modifier.fillMaxSize()) {}
-    }
 }
 
 

@@ -65,7 +65,7 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
     @Composable
     override fun Content() {
 
-        mainViewModel.setTitle(options.title.toString())
+        mainViewModel.setTitle(options.title)
         val columnModifier = Modifier
             .padding(top = 5.dp)
             .fillMaxHeight()

@@ -65,8 +65,6 @@ class BookingsTab(private val mainViewModel: MainViewModel) : Tab {
             val title = "Bookings"
             val icon = painterResource("calender_icon_semi.png")
 
-
-
             return remember {
                 TabOptions(
                     index = 0u,
@@ -78,7 +76,6 @@ class BookingsTab(private val mainViewModel: MainViewModel) : Tab {
 
     @Composable
     override fun Content() {
-        mainViewModel.setTitle(options.title.toString())
         val columnModifier = Modifier
             .padding(top = 5.dp)
             .fillMaxHeight()

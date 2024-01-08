@@ -137,13 +137,9 @@ class CartScreen(private val mainViewModel: MainViewModel) : Screen {
 
     @Composable
     fun leftTopBarItem() {
-        val coroutineScope = rememberCoroutineScope()
         val navigator = LocalNavigator.currentOrThrow
         PageBackNavWidget(){
-            coroutineScope.launch {
-                    navigator.pop()
-            }
-
+            navigator.pop()
         }
     }
 

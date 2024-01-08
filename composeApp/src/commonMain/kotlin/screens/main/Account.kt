@@ -51,8 +51,6 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
             val title = "Profile"
             val icon = painterResource("profile_icon.png")
 
-
-
             return remember {
                 TabOptions(
                     index = 0u,
@@ -64,14 +62,12 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
 
     @Composable
     override fun Content() {
-        mainViewModel.setTitle(options.title.toString())
         val columnModifier = Modifier
             .padding(top = 5.dp, bottom = 100.dp)
             .fillMaxHeight()
             .verticalScroll(rememberScrollState())
             .fillMaxWidth()
 
-        MaterialTheme(colors = AppColors(), typography = AppRegularTypography()) {
             Column(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -84,7 +80,6 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                     AttachAccountAction()
             }
         }
-    }
 
 
     @Composable

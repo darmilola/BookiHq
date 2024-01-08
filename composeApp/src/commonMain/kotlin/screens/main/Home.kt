@@ -62,9 +62,6 @@ import widgets.HomeServicesWidget
 import widgets.RecommendedServiceItem
 
 class HomeTab(private val mainViewModel: MainViewModel) : Tab {
-
-
-
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
         @Composable
@@ -83,7 +80,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
     @Composable
     override fun Content() {
-        mainViewModel.setTitle(options.title)
         val columnModifier = Modifier
             .padding(top = 5.dp)
             .fillMaxSize()
@@ -268,33 +264,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
             }
     }
 
-
-
-    @Composable
-    fun RecentAppointments(){
-        val rowModifier = Modifier
-            .padding(start = 10.dp, top = 40.dp)
-            .fillMaxWidth()
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = rowModifier
-            ) {
-                TextComponent(
-                    text = "Recently",
-                    fontSize = 18,
-                    fontFamily = GGSansSemiBold,
-                    textStyle = TextStyle(),
-                    textColor = Colors.darkPrimary,
-                    textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Black,
-                    lineHeight = 30,
-                    textModifier = Modifier.fillMaxWidth(0.22f)
-                )
-                StraightLine()
-            }
-
-        }
 
     @Composable
     fun PopularProducts(){
@@ -517,6 +486,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
         val modifier = Modifier
             .padding(top = 2.dp)
             .size(20.dp)
-        ImageComponent(imageModifier = modifier, imageRes = "location_icon_filled.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+        ImageComponent(imageModifier = modifier, imageRes = "location_icon_filled.png", colorFilter = ColorFilter.tint(color = Colors.pinkColor))
     }
 }

@@ -5,7 +5,7 @@ import dev.icerock.moko.mvvm.livedata.MutableLiveData
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 
 class MainViewModel: ViewModel() {
-    private var _screenTitle = MutableLiveData("Home")
+    private var _screenTitle = MutableLiveData("")
 
     private var _screenId = MutableLiveData(0)
     val screenTitle: LiveData<String>
