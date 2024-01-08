@@ -34,7 +34,7 @@ import screens.Products.CartScreen
 import screens.UserProfile.SwitchVendor.ConnectPage
 import screens.UserProfile.EditProfile
 import screens.UserProfile.UserOrders.UserOrders
-import screens.authentication.AuthenticationComposeScreen
+import screens.authentication.AuthenticationScreen
 import screens.consultation.ConsultationScreen
 import screens.consultation.VirtualConsultationRoom
 
@@ -57,7 +57,7 @@ object MainScreen : Screen {
             navigator.push(CartScreen(mainViewModel))
         }
         if (screenId.value == 4){
-            navigator.replace(AuthenticationComposeScreen(currentScreen = 4))
+            navigator.replace(AuthenticationScreen(currentScreen = 4))
         }
         if (screenId.value == 5){
             println("am here")

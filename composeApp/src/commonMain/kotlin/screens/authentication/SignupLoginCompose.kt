@@ -39,7 +39,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun SignUpLoginCompose(currentScreen: Int = 0) {
+fun SignUpLogin(currentScreen: Int = 0) {
 
     val viewModel: AuthenticationViewModel = AuthenticationViewModel()
     val authenticationScreenData = viewModel.authenticationScreenData ?: return
@@ -125,27 +125,26 @@ fun attachAuthenticationButton() {
         .fillMaxWidth(0.95f)
         .height(56.dp)
 
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         Column(verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = columnModifier
         ) {
 
             IconButtonComponent(modifier = buttonStyle, buttonText = "Use Phone Number", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/phone_light_icon.png", iconSize = 45, colorFilter = ColorFilter.tint(color = Color.Gray)){
-                navigator.push(AuthenticationComposeScreen(2))
+                navigator.push(AuthenticationScreen(2))
             }
             IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Email", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/email_icon.png",  colorFilter = ColorFilter.tint(color = Color.Gray)){
-                navigator.replace(AuthenticationComposeScreen(0))
+                navigator.replace(AuthenticationScreen(3))
             }
             IconButtonComponent(modifier = buttonStyle, buttonText = "Connect with Google", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "google_icon.png")
 
             IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with X", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/x_logo.png",  colorFilter = ColorFilter.tint(color = Color.Gray)){
-                navigator.push(AuthenticationComposeScreen(1))
+                navigator.push(AuthenticationScreen(1))
             }
             IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Instagram", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "instagram_icon.png")
         }
     }
-}
+
 
 
 @Composable
@@ -204,7 +203,7 @@ fun attachAuthenticationTypeChangeView(currentScreen: Int = 0) {
         .fillMaxHeight()
         .fillMaxWidth()
         .clickable {
-            navigator.replace(AuthenticationComposeScreen(currentScreen))
+            navigator.replace(AuthenticationScreen(currentScreen))
         }
 
     MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {

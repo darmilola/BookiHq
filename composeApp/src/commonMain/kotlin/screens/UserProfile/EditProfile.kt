@@ -75,12 +75,11 @@ fun EditProfileCompose() {
             AttachBackIcon()
             PageTitle()
             ProfileImageUpdate()
-            InputWidget(iconRes = "drawable/card_icon.png", placeholderText = "Preferred Name", iconSize = 40)
-            InputWidget(iconRes = "drawable/email_icon.png", placeholderText = "Email", iconSize = 24)
-            InputWidget(iconRes = "drawable/phone_icon.png", placeholderText = "Phone number", iconSize = 24, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone), isPasswordField = false)
+            InputWidget(iconRes = "drawable/card_icon.png", placeholderText = "Firstname", iconSize = 40)
+            InputWidget(iconRes = "drawable/phone_icon.png", placeholderText = "Phone number", iconSize = 28, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone), isPasswordField = false)
             AttachCountryDropDownWidget()
 
-            ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(15.dp), style = MaterialTheme.typography.h4, onLeftClicked = {
+            ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(15.dp), style = TextStyle(), onLeftClicked = {
 
             }, onRightClicked = {
 

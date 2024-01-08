@@ -183,7 +183,7 @@ fun ConnectTitle(){
 
 
 @Composable
-fun BusinessInfoContent(onSessionClickListener: () -> Unit) {
+fun BusinessInfoContent(onConnectedListener: () -> Unit) {
     val columnModifier = Modifier
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .padding(start = 10.dp, end = 10.dp)
@@ -229,8 +229,24 @@ fun BusinessInfoContent(onSessionClickListener: () -> Unit) {
                     textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 5.dp), text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aene ligula", fontSize = 18, fontFamily = GGSansRegular,
                     textStyle = TextStyle(), textColor = Color.DarkGray, textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Black, lineHeight = 25, maxLines = 3,  overflow = TextOverflow.Ellipsis)
+                val buttonStyle = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
 
-                AttachActionButtons()
+                Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+
+                    ButtonComponent(
+                        modifier = buttonStyle,
+                        buttonText = "Connect",
+                        borderStroke = null,
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
+                        fontSize = 18,
+                        shape = CircleShape,
+                        textColor = Color.White,
+                        style = TextStyle()) {
+                        onConnectedListener()
+                    }
+                }
             }
         }
     }

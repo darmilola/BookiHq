@@ -1,7 +1,5 @@
 package screens.authentication
 
-import AppTheme.AppBoldTypography
-import AppTheme.AppColors
 import Styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -29,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import components.ButtonComponent
@@ -37,12 +33,8 @@ import widgets.OTPTextField
 import widgets.SubtitleTextWidget
 import widgets.TitleWidget
 
-@OptIn(ExperimentalResourceApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun VerifyOTPCompose() {
-    val viewModel: AuthenticationViewModel = AuthenticationViewModel()
-    val authenticationScreenData = viewModel.authenticationScreenData ?: return
-
+fun VerifyOTP(viewType: Int = 0) {
     val  rootModifier =
         Modifier
             .fillMaxWidth()
@@ -57,7 +49,6 @@ fun VerifyOTPCompose() {
     val navigator = LocalNavigator.currentOrThrow
 
 
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         val topLayoutModifier =
             Modifier
                 .padding(top = 40.dp)
@@ -70,7 +61,7 @@ fun VerifyOTPCompose() {
             Column(modifier = topLayoutModifier) {
                 AttachBackIcon(0)
                 EnterVerificationCodeTitle()
-                AttachVerificationCodeText()
+                AttachVerificationCodeText(viewType = viewType)
 
                 Row(modifier = Modifier
                     .fillMaxWidth()
@@ -94,34 +85,37 @@ fun VerifyOTPCompose() {
 
                 }
 
-                ResendVerificationCode()
+                ResendVerificationCode(viewType = viewType)
                 ButtonComponent(modifier = buttonStyle, buttonText = "Verify", borderStroke = null, colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4) {
-                    navigator.replace(AuthenticationComposeScreen(currentScreen = 4))
+                    navigator.replace(AuthenticationScreen(currentScreen = 5))
                 }
             }
         }
     }
-}
 
 
 
 
 @Composable
-fun AttachVerificationCodeText() {
+fun AttachVerificationCodeText(viewType: Int = 0) {
     val rowModifier = Modifier
         .padding(top = 30.dp)
         .fillMaxWidth()
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.Top,
+    val verifyText: String = if(viewType == 0) "Verification code has been sent to your\n Mobile Number" else "Verification code has been sent to your Email"
+    val handleText: String = if(viewType == 0) "(+234)\t08102853533" else "damilolaakinterinwa@gmail.com"
+    Column (
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = rowModifier
     ) {
-        SubtitleTextWidget(text = "Verification code has been sent to your\n Mobile Number (+234) 08102853533", textAlign = TextAlign.Center)
+
+        SubtitleTextWidget(text = verifyText, textAlign = TextAlign.Center)
+        SubtitleTextWidget(text = handleText, textColor = Colors.primaryColor, textAlign = TextAlign.Center)
     }
 }
 
 @Composable
-fun ResendVerificationCode() {
+fun ResendVerificationCode(viewType: Int = 0) {
     val rowModifier = Modifier
         .padding(top = 50.dp)
         .fillMaxWidth()
@@ -133,14 +127,21 @@ fun ResendVerificationCode() {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = rowModifier
         ) {
-            val modifier = Modifier.padding(start = 5.dp)
-                .clickable {
-                    navigator.push(AuthenticationComposeScreen(2))
-                }
 
             SubtitleTextWidget(text = "Did not receive Verification Code?", textAlign = TextAlign.Center)
 
-            Box(modifier = Modifier.fillMaxWidth().padding(top = 10.dp).wrapContentHeight()){
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp)
+                .clickable {
+                    if(viewType == 0){
+                        navigator.push(AuthenticationScreen(2))
+                    }
+                    else{
+                        navigator.push(AuthenticationScreen(3))
+                    }
+                 }
+                .wrapContentHeight()){
                 SubtitleTextWidget(text = "Resend", textAlign = TextAlign.Center, textColor = Colors.primaryColor)
             }
         }
@@ -161,12 +162,5 @@ fun EnterVerificationCodeTitle(){
         modifier = rowModifier
     ) {
         TitleWidget(title = "Enter Verification Code", textColor = Colors.primaryColor)
-    }
-}
-
-object VerifyOTPScreen : Screen {
-    @Composable
-    override fun Content() {
-        ContinueWithPhoneCompose()
     }
 }

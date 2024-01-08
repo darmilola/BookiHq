@@ -36,9 +36,13 @@ import components.ImageComponent
 import components.TextFieldComponent
 
 @Composable
-fun InputWidget(iconRes: String, placeholderText: String, iconSize: Int, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), isPasswordField: Boolean = false) {
+fun InputWidget(iconRes: String, placeholderText: String, iconSize: Int, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), isPasswordField: Boolean = false, isFocusedByDefault: Boolean = false) {
     var text by remember { mutableStateOf("") }
     var borderStroke by remember { mutableStateOf(BorderStroke(2.dp, color  = Color.Transparent)) }
+
+    if(isFocusedByDefault){
+       borderStroke =  BorderStroke(2.dp, color  = Colors.primaryColor)
+    }
 
     val modifier  = Modifier
         .padding(end = 10.dp, start = 10.dp, top = 20.dp)

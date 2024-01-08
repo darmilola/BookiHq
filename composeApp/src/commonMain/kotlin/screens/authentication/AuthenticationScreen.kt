@@ -1,40 +1,17 @@
 package screens.authentication
 
-import AppTheme.AppBoldTypography
-import AppTheme.AppColors
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
-import androidx.compose.animation.with
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
-import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 @Composable
-fun AuthenticationScreenCompose(currentPosition: Int = 0) {
+fun AuthenticationScreenCompose(currentPosition: Int = 0, viewType: Int = -1) {
 
     val viewModel = AuthenticationViewModel()
     viewModel.changeScreen(currentPosition)
@@ -84,47 +61,46 @@ fun AuthenticationScreenCompose(currentPosition: Int = 0) {
         // content transform.
         when (targetState) {
             0 -> {
-                SignUpLoginCompose(1)
-
+                SignUpLogin(1)
             }
             1 -> {
-
-                SignUpLoginCompose(0)
-
-                }
+                SignUpLogin(0)
+                 }
             2 -> {
-
-                ContinueWithPhoneCompose()
-
+                ContinueWithPhone()
             }
             3 -> {
-                VerifyOTPCompose()
+                ContinueWithEmail()
             }
-
             4 -> {
-                CompleteProfileCompose()
+                if(viewType == 0){
+                    VerifyOTP(viewType = 0)
+                }
+                else{
+                    VerifyOTP(viewType = 1)
+                }
+            }
+
+            5 -> {
+                CompleteProfile()
 
             }
 
-
-            else -> {
-
-            }
-
-
-            }
         }
+
+    }
 
 
 
 }
 
-class AuthenticationComposeScreen(currentScreen: Int = 0) : Screen {
+class AuthenticationScreen(currentScreen: Int = 0, private val viewType: Int = -1) : Screen {
 
     private val sc = currentScreen
+
     @Composable
     override fun Content() {
-        AuthenticationScreenCompose(currentPosition = sc)
+        AuthenticationScreenCompose(currentPosition = sc, viewType = viewType)
     }
 }
 

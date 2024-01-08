@@ -70,7 +70,7 @@ fun AttachActionButtons(style: TextStyle){
         .height(50.dp)
 
         ButtonComponent(modifier = buttonStyle, buttonText = "Continue", borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = CircleShape, textColor = Color.White, style = style){
-            navigator.replace(AuthenticationComposeScreen(currentScreen = 1))
+            navigator.replace(AuthenticationScreen(currentScreen = 1))
         }
     }
 

@@ -8,7 +8,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun LoginScreenCompose() {
-    SignUpLoginCompose(0)
+    SignUpLogin(0)
 
 }
 
