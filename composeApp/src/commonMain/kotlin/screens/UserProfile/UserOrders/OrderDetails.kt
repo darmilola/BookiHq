@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,10 +22,28 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabOptions
 import components.ImageComponent
+import screens.main.MainViewModel
 import widgets.PageBackNavWidget
 
-class OrderDetails() : Screen {
+class OrderDetails(private val mainViewModel: MainViewModel) : Tab {
+
+    override val options: TabOptions
+        @Composable
+        get() {
+            val title = "Orders"
+
+            return remember {
+                TabOptions(
+                    index = 0u,
+                    title = title
+                )
+            }
+        }
+
     @Composable
     override fun Content() {
         val rowModifier = Modifier
@@ -50,20 +69,20 @@ class OrderDetails() : Screen {
                         .fillMaxHeight(),
                     contentAlignment = Alignment.CenterStart
                 ) {
-                    leftTopBarItem()
+                    leftTopBarItem(mainViewModel)
                 }
 
             }
-            OrderDetailList()
+            OrderDetailList(mainViewModel)
         }
     }
 }
 
 @Composable
-fun leftTopBarItem() {
-    val navigator = LocalNavigator.currentOrThrow
+fun leftTopBarItem(mainViewModel: MainViewModel) {
+    val navigator = LocalTabNavigator.current
     PageBackNavWidget {
-        navigator.pop()
+        navigator.current = UserOrders(mainViewModel = mainViewModel)
     }
 }
 

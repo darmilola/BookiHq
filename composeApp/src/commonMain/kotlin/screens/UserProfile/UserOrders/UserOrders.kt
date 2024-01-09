@@ -25,6 +25,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,15 +37,35 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabOptions
 import components.ImageComponent
 import components.TextComponent
 import components.ToggleButton
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 import screens.consultation.rightTopBarItem
+import screens.main.MainTab
 import screens.main.MainViewModel
 import widgets.PageBackNavWidget
 import widgets.TitleWidget
 
-class UserOrders (private val mainViewModel: MainViewModel) : Screen {
+class UserOrders (private val mainViewModel: MainViewModel) : Tab {
+
+
+    override val options: TabOptions
+        @Composable
+        get() {
+            val title = "Orders"
+
+            return remember {
+                TabOptions(
+                    index = 0u,
+                    title = title
+                )
+            }
+        }
 
     @Composable
     override fun Content() {
@@ -76,7 +97,7 @@ class UserOrders (private val mainViewModel: MainViewModel) : Screen {
                         horizontalArrangement = Arrangement.spacedBy(5.dp)
                     ) {
                         items(10) {
-                            OrderItemList()
+                            OrderItemList(mainViewModel)
                         }
                     }
                 }
@@ -130,9 +151,11 @@ class UserOrders (private val mainViewModel: MainViewModel) : Screen {
 
     @Composable
     fun leftTopBarItem() {
-        val navigator = LocalNavigator.currentOrThrow
+        val navigator = LocalTabNavigator.current
         PageBackNavWidget {
-            navigator.pop()
+            println("clicked... ")
+            navigator.current = MainTab(mainViewModel)
+            //mainViewModel.setId(-1)
         }
     }
 

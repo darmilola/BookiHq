@@ -196,14 +196,8 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
             .background(color = Color.Transparent)
             .size(9.dp)
             .background(
-                brush = Brush.horizontalGradient(
-                    colors = listOf(
-                        Colors.primaryColor,
-                        Colors.primaryColor
-                    )
-                ),
-                shape = RoundedCornerShape(5.dp)
-            )
+                color = Colors.pinkColor,
+                shape = RoundedCornerShape(5.dp))
 
 
             Column(

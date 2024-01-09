@@ -8,21 +8,35 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabOptions
+import screens.main.MainViewModel
 
+class ConnectPageTab(private val mainViewModel: MainViewModel) : Tab {
+    override val options: TabOptions
+        @Composable
+        get() {
+            val title = "ConnectPage"
 
-object ConnectPage : Screen {
+            return remember {
+                TabOptions(
+                    index = 0u,
+                    title = title
+                )
+            }
+        }
+
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
+        val navigator = LocalTabNavigator.current
         Scaffold(
             topBar = {
-                SwitchVendorHeader()
+                SwitchVendorHeader(mainViewModel)
             },
             content = {
                 LazyColumn(
@@ -32,7 +46,7 @@ object ConnectPage : Screen {
                 ) {
                     items(10) {
                         ConnectBusinessItemComponent {
-                            navigator.push(VendorInfoPage)
+                            navigator.current = SwitchVendorInfoPage(mainViewModel)
                         }
                     }
                 }

@@ -33,9 +33,13 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabOptions
 import components.StraightLine
 import components.TextComponent
 import kotlinx.coroutines.launch
+import screens.main.MainTab
 import screens.main.MainViewModel
 import widgets.CheckOutSummaryWidget
 import widgets.ProductDeliveryAddressWidget
@@ -43,7 +47,20 @@ import widgets.PageBackNavWidget
 import widgets.PaymentMethodWidget
 
 
-class CartScreen(private val mainViewModel: MainViewModel) : Screen {
+class CartScreen(private val mainViewModel: MainViewModel) : Tab {
+
+    override val options: TabOptions
+        @Composable
+        get() {
+            val title = "Cart"
+
+            return remember {
+                TabOptions(
+                    index = 0u,
+                    title = title
+                )
+            }
+        }
 
     @Composable
     override fun Content() {
@@ -69,7 +86,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Screen {
                     .fillMaxWidth()
                     .fillMaxHeight(),
                     contentAlignment = Alignment.CenterStart) {
-                    leftTopBarItem()
+                    leftTopBarItem(mainViewModel)
                 }
 
                 Box(modifier =  Modifier.weight(3.0f)
@@ -136,10 +153,10 @@ class CartScreen(private val mainViewModel: MainViewModel) : Screen {
     }
 
     @Composable
-    fun leftTopBarItem() {
-        val navigator = LocalNavigator.currentOrThrow
+    fun leftTopBarItem(mainViewModel: MainViewModel) {
+        val navigator = LocalTabNavigator.current
         PageBackNavWidget(){
-            navigator.pop()
+            navigator.current = MainTab(mainViewModel)
         }
     }
 

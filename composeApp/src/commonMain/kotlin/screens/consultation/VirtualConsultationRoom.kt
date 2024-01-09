@@ -44,13 +44,30 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabOptions
 import components.ImageComponent
 import components.TextComponent
+import screens.main.MainTab
+import screens.main.MainViewModel
 
 
-object VirtualConsultationRoom : Screen {
+class VirtualConsultationRoom(private val mainViewModel: MainViewModel) : Tab {
 
-    @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+    override val options: TabOptions
+        @Composable
+        get() {
+            val title = "Virtual Room"
+
+            return remember {
+                TabOptions(
+                    index = 0u,
+                    title = title
+                )
+            }
+        }
+
     @Composable
     override fun Content() {
         Box {
@@ -74,7 +91,7 @@ object VirtualConsultationRoom : Screen {
                 },
                 floatingActionButtonPosition = FabPosition.End,
                 bottomBar = {
-                    AttachActionButtons()
+                    AttachActionButtons(mainViewModel)
                 },
                 backgroundColor = Color.Transparent,
 
@@ -167,8 +184,8 @@ object VirtualConsultationRoom : Screen {
     }
 
     @Composable
-    fun AttachActionButtons(){
-        val navigator = LocalNavigator.currentOrThrow
+    fun AttachActionButtons(mainViewModel: MainViewModel){
+        val navigator = LocalTabNavigator.current
         Row(modifier = Modifier.fillMaxWidth().height(120.dp).padding(bottom = 20.dp, start = 40.dp, end = 40.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically) {
@@ -185,7 +202,7 @@ object VirtualConsultationRoom : Screen {
             Box(modifier = Modifier.weight(1f),
                 contentAlignment = Alignment.Center) {
                 VideoCallEndActionWidget(iconRes = "drawable/end_call_icon.png"){
-                    navigator.pop()
+                    navigator.current = MainTab(mainViewModel)
                 }
             }
 
@@ -198,7 +215,6 @@ object VirtualConsultationRoom : Screen {
     fun VideoCallActionWidget(iconRes: String){
         val columnModifier = Modifier
             .wrapContentSize()
-        MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
             Column(
                 modifier = columnModifier,
                 verticalArrangement = Arrangement.Center,
@@ -210,7 +226,7 @@ object VirtualConsultationRoom : Screen {
                 AttachConsultActionImages(iconRes)
             }
         }
-    }
+
 
     @Composable
     fun VideoCallEndActionWidget(iconRes: String, onEndCallClicked: () -> Unit){

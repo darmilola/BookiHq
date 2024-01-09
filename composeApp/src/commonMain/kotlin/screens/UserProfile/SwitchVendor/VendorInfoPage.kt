@@ -18,7 +18,7 @@ object VendorInfoPage : Screen {
             content = {
                 val navigator = LocalNavigator.currentOrThrow
                     BusinessInfoContent {
-                        navigator.replaceAll(MainScreen)
+                        navigator.replaceAll(MainScreen())
                     }
 
             },

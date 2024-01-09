@@ -32,12 +32,27 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabOptions
 import components.ButtonComponent
 import kotlinx.coroutines.launch
 import screens.main.MainViewModel
 
 
-class BookingScreen(private val mainViewModel: MainViewModel) : Screen {
+class BookingScreen(private val mainViewModel: MainViewModel) : Tab {
+
+    override val options: TabOptions
+        @Composable
+        get() {
+            val title = "Bookings"
+
+            return remember {
+                TabOptions(
+                    index = 0u,
+                    title = title
+                )
+            }
+        }
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
@@ -54,7 +69,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Screen {
                     .background(color = Color.White)
                     Column(modifier = layoutModifier) {
 
-                        BookingScreenTopBar(pagerState)
+                        BookingScreenTopBar(pagerState, mainViewModel)
 
                         val bgStyle = Modifier
                             .fillMaxWidth()

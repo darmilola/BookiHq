@@ -115,7 +115,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
             .height(50.dp)
 
         ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke((1.5).dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 20, shape = RoundedCornerShape(25.dp), textColor =  Color.DarkGray, style = style){
-            mainViewModel.setId(9)
+                mainViewModel.setId(9)
         }
 
     }

@@ -32,16 +32,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import components.ImageComponent
 import components.TextComponent
 import kotlinx.coroutines.launch
+import screens.main.MainTab
 import screens.main.MainViewModel
 import widgets.PageBackNavWidget
 import widgets.StepsProgressBar
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ConsultationScreenTopBar(pagerState: PagerState) {
+fun ConsultationScreenTopBar(pagerState: PagerState, mainViewModel: MainViewModel) {
 
     val rowModifier = Modifier
         .fillMaxWidth()
@@ -69,7 +71,7 @@ fun ConsultationScreenTopBar(pagerState: PagerState) {
                 .fillMaxHeight()
                 .padding(start = 10.dp),
                 contentAlignment = Alignment.CenterStart) {
-                leftTopBarItem(pagerState)
+                leftTopBarItem(pagerState, mainViewModel)
             }
 
             Box(modifier =  Modifier.weight(3.0f)
@@ -99,9 +101,9 @@ fun ConsultationScreenTopBar(pagerState: PagerState) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun leftTopBarItem(pagerState: PagerState) {
+fun leftTopBarItem(pagerState: PagerState, mainViewModel: MainViewModel) {
     val coroutineScope = rememberCoroutineScope()
-    val navigator = LocalNavigator.currentOrThrow
+    val navigator = LocalTabNavigator.current
     val currentPage = pagerState.currentPage
     PageBackNavWidget(){
         coroutineScope.launch {
@@ -113,7 +115,7 @@ fun leftTopBarItem(pagerState: PagerState) {
                     pagerState.animateScrollToPage(0)
                 }
                 else -> {
-                    navigator.pop()
+                    navigator.current = MainTab(mainViewModel = mainViewModel)
                 }
             }
         }

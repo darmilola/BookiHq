@@ -29,13 +29,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabOptions
 import components.ButtonComponent
 import kotlinx.coroutines.launch
 import screens.main.MainViewModel
 
 
-class ConsultationScreen(private val mainViewModel: MainViewModel) : Screen {
+class ConsultationScreen(private val mainViewModel: MainViewModel) : Tab {
 
+    override val options: TabOptions
+        @Composable
+        get() {
+            val title = "Consultation"
+
+            return remember {
+                TabOptions(
+                    index = 0u,
+                    title = title
+                )
+            }
+        }
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
@@ -51,7 +65,7 @@ class ConsultationScreen(private val mainViewModel: MainViewModel) : Screen {
                     .background(color = Color.White)
             Column(modifier = layoutModifier) {
 
-                ConsultationScreenTopBar(pagerState)
+                ConsultationScreenTopBar(pagerState, mainViewModel)
 
                 val bgStyle = Modifier
                     .fillMaxWidth()

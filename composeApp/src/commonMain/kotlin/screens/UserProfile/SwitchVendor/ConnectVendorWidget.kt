@@ -55,7 +55,7 @@ fun ConnectBusinessSearchBar(){
 
 
 @Composable
-fun switchVendorHeader(){
+fun SwitchVendorHeader(){
     Column(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
            verticalArrangement = Arrangement.Center,
            horizontalAlignment = Alignment.CenterHorizontally) {

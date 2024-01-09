@@ -35,17 +35,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import components.ImageComponent
 import components.TextComponent
 import screens.UserProfile.UserOrders.OrderDetails
+import screens.main.MainViewModel
 
 @Composable
-fun OrderItemList() {
-    val navigator = LocalNavigator.currentOrThrow
+fun OrderItemList(mainViewModel: MainViewModel) {
+    val navigator = LocalTabNavigator.current
     val columnModifier = Modifier
         .padding(start = 10.dp, top = 35.dp, bottom = 10.dp, end = 10.dp)
         .clickable {
-            navigator.push(OrderDetails())
+            navigator.current = OrderDetails(mainViewModel)
         }
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .height(250.dp)
@@ -76,8 +78,8 @@ fun OrderItemList() {
                         textModifier = Modifier.wrapContentHeight().fillMaxWidth(0.50f))
 
                     Box(modifier = Modifier.fillMaxWidth().clickable {
-                             navigator.push(OrderDetails())
-                        },
+                          navigator.current = OrderDetails(mainViewModel)
+                    },
                         contentAlignment = Alignment.CenterEnd) {
                         ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
                     }

@@ -21,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,8 +31,12 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabOptions
 import components.ButtonComponent
 import components.ToggleButton
+import screens.main.MainTab
 import screens.main.MainViewModel
 import widgets.DropDownWidget
 import widgets.InputWidget
@@ -39,16 +44,29 @@ import widgets.PageBackNavWidget
 import widgets.ProfileImageUpdate
 import widgets.TitleWidget
 
-class EditProfile(private val mainViewModel: MainViewModel) : Screen {
+class EditProfile(private val mainViewModel: MainViewModel) : Tab {
+
+    override val options: TabOptions
+        @Composable
+        get() {
+            val title = "Edit Profile"
+
+            return remember {
+                TabOptions(
+                    index = 0u,
+                    title = title
+                )
+            }
+        }
 
     @Composable
     override fun Content() {
-        EditProfileCompose()
+        EditProfileCompose(mainViewModel)
     }
 }
 
 @Composable
-fun EditProfileCompose() {
+fun EditProfileCompose(mainViewModel: MainViewModel) {
     val rootModifier =
         Modifier
             .fillMaxWidth()
@@ -72,7 +90,7 @@ fun EditProfileCompose() {
 
     Column(modifier = rootModifier) {
         Column(modifier = topLayoutModifier) {
-            AttachBackIcon()
+            AttachBackIcon(mainViewModel)
             PageTitle()
             ProfileImageUpdate()
             InputWidget(iconRes = "drawable/card_icon.png", placeholderText = "Firstname", iconSize = 40)
@@ -85,9 +103,9 @@ fun EditProfileCompose() {
 
             }, leftText = "Male", rightText = "Female")
 
-            val navigator = LocalNavigator.currentOrThrow
+            val navigator = LocalTabNavigator.current
             ButtonComponent(modifier = buttonStyle, buttonText = "Save", colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = CircleShape, textColor = Color(color = 0xFFFFFFFF), style = TextStyle(), borderStroke = null) {
-                navigator.pop()
+                navigator.current = MainTab(mainViewModel = mainViewModel)
             }
         }
     }
@@ -104,10 +122,10 @@ fun AttachCountryDropDownWidget(){
 
 
 @Composable
-fun AttachBackIcon() {
-    val navigator = LocalNavigator.currentOrThrow
+fun AttachBackIcon(mainViewModel: MainViewModel) {
+    val navigator = LocalTabNavigator.current
         PageBackNavWidget {
-          navigator.pop()
+          navigator.current = MainTab(mainViewModel)
         }
     }
 

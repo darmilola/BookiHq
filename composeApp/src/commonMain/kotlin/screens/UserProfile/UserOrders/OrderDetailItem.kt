@@ -43,15 +43,16 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import components.ImageComponent
 import components.TextComponent
 import screens.UserProfile.UserOrders.OrderDetails
+import screens.main.MainViewModel
 
 
 @Composable
-fun OrderItemDetail() {
+fun OrderItemDetail(mainViewModel: MainViewModel) {
     val navigator = LocalNavigator.currentOrThrow
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
         .clickable {
-            navigator.push(OrderDetails())
+            navigator.push(OrderDetails(mainViewModel))
         }
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .fillMaxHeight()

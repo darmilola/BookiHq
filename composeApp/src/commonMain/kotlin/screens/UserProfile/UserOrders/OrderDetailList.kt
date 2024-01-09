@@ -42,9 +42,10 @@ import components.ImageComponent
 import components.TextComponent
 import screens.UserProfile.UserOrders.OrderItemDetail
 import screens.UserProfile.UserOrders.TrackMyOrderBottomSheet
+import screens.main.MainViewModel
 
 @Composable
-fun OrderDetailList() {
+fun OrderDetailList(mainViewModel: MainViewModel) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
         .clickable {}
@@ -71,7 +72,7 @@ fun OrderDetailList() {
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 items(1) {
-                    OrderItemDetail()
+                    OrderItemDetail(mainViewModel = mainViewModel)
                 }
             }
 
