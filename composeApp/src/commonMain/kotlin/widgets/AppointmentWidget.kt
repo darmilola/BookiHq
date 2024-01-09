@@ -34,9 +34,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import components.ImageComponent
 import components.TextComponent
+import screens.main.MainViewModel
 
 @Composable
-fun AppointmentWidget(itemType: Int = 0) {
+fun AppointmentWidget(itemType: Int = 0, mainViewModel: MainViewModel) {
 
     val menuItems = arrayListOf<String>()
 
@@ -44,6 +45,9 @@ fun AppointmentWidget(itemType: Int = 0) {
 
     menuItem = if(itemType == 1){
         "Postpone"
+    }
+    else if(itemType == 4){
+        "Join Now"
     }
     else {
         "Delete"
@@ -56,6 +60,7 @@ fun AppointmentWidget(itemType: Int = 0) {
     var statusColor: Color = Colors.primaryColor
     var statusBgColor: Color = Colors.lightPrimaryColor
     var iconSize: Int = 35
+    var serviceTitle: String = "Haircut is the Service Name"
 
     when (itemType) {
         1 -> {
@@ -78,6 +83,22 @@ fun AppointmentWidget(itemType: Int = 0) {
             statusColor = Colors.greenColor
             statusBgColor = Colors.lightGreenColor
             iconSize = 30
+        }
+        4 -> {
+            iconRes = "drawable/video_chat_outline.png"
+            statusText = "PENDING"
+            statusColor = Colors.pinkColor
+            statusBgColor = Colors.lightPinkColor
+            iconSize = 35
+            serviceTitle = "Virtual Consultation"
+        }
+        5 -> {
+            iconRes = "drawable/consultation.png"
+            statusText = "PENDING"
+            statusColor = Colors.primaryColor
+            statusBgColor = Colors.lightPrimaryColor
+            iconSize = 40
+            serviceTitle = "Physical Consultation"
         }
     }
 
@@ -108,7 +129,7 @@ fun AppointmentWidget(itemType: Int = 0) {
             ) {
                 Box(modifier = Modifier.fillMaxWidth(0.80f).fillMaxHeight(), contentAlignment = Alignment.CenterStart) {
                     TextComponent(
-                        text = "Haircut is the Service Name",
+                        text = serviceTitle,
                         fontSize = 21,
                         fontFamily = GGSansSemiBold,
                         textStyle = TextStyle(),
@@ -139,7 +160,7 @@ fun AppointmentWidget(itemType: Int = 0) {
                         menuItems.forEachIndexed { index, title ->
                             DropdownMenuItem(
                                 onClick = {
-
+                                    mainViewModel.setId(8)
                                 }) {
                                 SubtitleTextWidget(text = title, fontSize = 20)
                             }

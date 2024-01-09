@@ -100,13 +100,16 @@ class BookingsTab(private val mainViewModel: MainViewModel) : Tab {
                     val appointmentItem1 = AppointmentItem(appointmentType = 1)
                     val appointmentItem2 = AppointmentItem(appointmentType = 2)
                     val appointmentItem3 = AppointmentItem(appointmentType = 3)
+                    val appointmentItem4 = AppointmentItem(appointmentType = 4)
 
                     appointmentList.add(appointmentItem1)
                     appointmentList.add(appointmentItem2)
                     appointmentList.add(appointmentItem3)
                     appointmentList.add(appointmentItem1)
+                    appointmentList.add(appointmentItem4)
                     appointmentList.add(appointmentItem2)
                     appointmentList.add(appointmentItem3)
+                    appointmentList.add(appointmentItem4)
                     appointmentList.add(appointmentItem1)
                     appointmentList.add(appointmentItem2)
 
@@ -122,7 +125,7 @@ class BookingsTab(private val mainViewModel: MainViewModel) : Tab {
     fun PopulateAppointmentScreen(appointmentList: List<AppointmentItem>, mainViewModel: MainViewModel) {
         LazyColumn(modifier = Modifier.fillMaxWidth().height(getAppointmentViewHeight(appointmentList).dp), userScrollEnabled = true) {
             items(appointmentList) {item ->
-                AppointmentWidget(itemType = item.appointmentType)
+                AppointmentWidget(itemType = item.appointmentType, mainViewModel)
             }
         }
     }
