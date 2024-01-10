@@ -36,6 +36,8 @@ import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import components.ButtonComponent
 import components.ImageComponent
 import components.TextComponent
+import screens.Bookings.BookingScreen
+import screens.Products.CartScreen
 import screens.Products.SearchBar
 import screens.main.MainTab
 import screens.main.MainViewModel
@@ -54,8 +56,6 @@ fun SwitchVendorHeader(mainViewModel: MainViewModel? = null){
         ConnectBusinessSearchBar()
     }
 }
-
-
 
 @Composable
 fun ConnectBusinessTitle(mainViewModel: MainViewModel?){
@@ -156,8 +156,14 @@ fun leftTopBarItem(mainViewModel: MainViewModel?) {
 fun InfoPageLeftTopBarItem(mainViewModel: MainViewModel?) {
     val navigator = LocalTabNavigator.current
     PageBackNavWidget {
-        if (mainViewModel != null){
+        if (mainViewModel != null && mainViewModel.fromId.value == 6){
             navigator.current = ConnectPageTab(mainViewModel)
+        }
+        else if (mainViewModel != null && mainViewModel.fromId.value == 1){
+            navigator.current = BookingScreen(mainViewModel)
+        }
+        else if (mainViewModel != null && mainViewModel.fromId.value == 3){
+            navigator.current = CartScreen(mainViewModel)
         }
     }
 }
@@ -166,76 +172,4 @@ fun InfoPageLeftTopBarItem(mainViewModel: MainViewModel?) {
 @Composable
 fun SwitchTitle(){
     TitleWidget(title = "Switch Vendor", textColor = Colors.primaryColor)
-}
-
-
-@Composable
-fun SwitchBusinessInfoContent(onConnectedListener: () -> Unit) {
-    val columnModifier = Modifier
-        .background(color = Color.White, shape = RoundedCornerShape(10.dp))
-        .padding(start = 10.dp, end = 10.dp)
-        .fillMaxHeight()
-        .fillMaxWidth()
-    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-        Card(
-            modifier = Modifier
-                .padding(start = 10.dp, end = 10.dp)
-                .fillMaxHeight(0.70f)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp)
-        ) {
-            Column(
-                modifier = columnModifier,
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                BusinessLogo(size = 120, borderStroke = BorderStroke(2.dp, color = Color(color = 0xfffa2d65)))
-                TextComponent(
-                    text = "This is the Business name you are trying to connect with",
-                    fontSize = 20,
-                    fontFamily = GGSansSemiBold,
-                    textStyle = TextStyle(),
-                    textColor = Colors.darkPrimary,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.ExtraBold,
-                    lineHeight = 25,
-                    textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 10.dp),
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis)
-
-                AttachLocationIcon()
-
-                TextComponent(
-                    textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 5.dp), text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aene ligula", fontSize = 18, fontFamily = GGSansRegular,
-                    textStyle = TextStyle(), textColor = Color.DarkGray, textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Black, lineHeight = 25, maxLines = 3,  overflow = TextOverflow.Ellipsis)
-
-                AttachLocationInfoIcon()
-
-                TextComponent(
-                    textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 5.dp), text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aene ligula", fontSize = 18, fontFamily = GGSansRegular,
-                    textStyle = TextStyle(), textColor = Color.DarkGray, textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Black, lineHeight = 25, maxLines = 3,  overflow = TextOverflow.Ellipsis)
-                val buttonStyle = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-
-                Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-
-                    ButtonComponent(
-                        modifier = buttonStyle,
-                        buttonText = "Connect",
-                        borderStroke = null,
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
-                        fontSize = 18,
-                        shape = CircleShape,
-                        textColor = Color.White,
-                        style = TextStyle()
-                    ) {
-                        onConnectedListener()
-                    }
-                }
-            }
-        }
-    }
 }

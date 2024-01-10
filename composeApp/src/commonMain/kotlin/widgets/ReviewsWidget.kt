@@ -1,6 +1,5 @@
 package widgets
 
-import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import GGSansRegular
 import GGSansSemiBold
@@ -86,7 +85,6 @@ fun AttachUserName(){
         .padding(start = 5.dp)
         .wrapContentWidth()
 
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Top,
@@ -105,7 +103,7 @@ fun AttachUserName(){
             )
         }
     }
-}
+
 
 @Composable
 fun AttachReviewDate(){

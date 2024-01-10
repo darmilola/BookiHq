@@ -25,9 +25,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import components.TextComponent
 import components.ToggleButton
+import screens.main.MainViewModel
 
 @Composable
-fun ProductDeliveryAddressWidget() {
+fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel) {
     var deliveryType by remember { mutableStateOf(0) }
     val columnModifier = Modifier
         .padding(start = 10.dp, bottom = 10.dp, top = 15.dp, end = 10.dp)
@@ -54,10 +55,10 @@ fun ProductDeliveryAddressWidget() {
         }
 
        if(deliveryType == 0) {
-            HomeDeliveryWidget()
+            HomeDeliveryWidget(mainViewModel = mainViewModel, fromView = 3)
        }
         else{
-            ParlorDeliveryWidget()
+            ParlorDeliveryWidget(mainViewModel, fromView = 3)
         }
 
 

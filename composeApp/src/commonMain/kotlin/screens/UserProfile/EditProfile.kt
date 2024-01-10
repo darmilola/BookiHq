@@ -36,6 +36,8 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import components.ButtonComponent
 import components.ToggleButton
+import screens.Bookings.BookingScreen
+import screens.Products.CartScreen
 import screens.main.MainTab
 import screens.main.MainViewModel
 import widgets.DropDownWidget
@@ -93,8 +95,16 @@ fun EditProfileCompose(mainViewModel: MainViewModel) {
             AttachBackIcon(mainViewModel)
             PageTitle()
             ProfileImageUpdate()
-            InputWidget(iconRes = "drawable/card_icon.png", placeholderText = "Firstname", iconSize = 40)
-            InputWidget(iconRes = "drawable/phone_icon.png", placeholderText = "Phone number", iconSize = 28, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone), isPasswordField = false)
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Box(modifier = Modifier.fillMaxWidth(0.50f), contentAlignment = Alignment.Center){
+                    InputWidget(iconRes = "drawable/card_icon.png", placeholderText = "Firstname", iconSize = 40)
+                }
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
+                    InputWidget(iconRes = "drawable/card_icon.png", placeholderText = "Lastname", iconSize = 40)
+                }
+            }
+            InputWidget(iconRes = "drawable/address.png", placeholderText = "Address", iconSize = 28, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone), isPasswordField = false)
+            InputWidget(iconRes = "drawable/phone_icon.png", placeholderText = "Contact Phone", iconSize = 28, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), isPasswordField = false)
             AttachCountryDropDownWidget()
 
             ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(15.dp), style = TextStyle(), onLeftClicked = {
@@ -125,7 +135,17 @@ fun AttachCountryDropDownWidget(){
 fun AttachBackIcon(mainViewModel: MainViewModel) {
     val navigator = LocalTabNavigator.current
         PageBackNavWidget {
-          navigator.current = MainTab(mainViewModel)
+            when (mainViewModel.fromId.value) {
+                1 -> {
+                    navigator.current = BookingScreen(mainViewModel)
+                }
+                3 -> {
+                    navigator.current = CartScreen(mainViewModel)
+                }
+                else -> {
+                    navigator.current = MainTab(mainViewModel)
+                }
+            }
         }
     }
 

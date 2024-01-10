@@ -1,6 +1,5 @@
 package components
 
-import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import GGSansRegular
 import GGSansSemiBold

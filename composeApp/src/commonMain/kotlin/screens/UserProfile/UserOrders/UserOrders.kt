@@ -1,8 +1,6 @@
 package screens.UserProfile.UserOrders
 
-import AppTheme.AppBoldTypography
 import AppTheme.AppColors
-import AppTheme.AppSemiBoldTypography
 import GGSansSemiBold
 import Styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi

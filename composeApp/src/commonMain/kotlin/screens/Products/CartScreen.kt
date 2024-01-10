@@ -1,7 +1,6 @@
 package screens.Products
 
 import AppTheme.AppColors
-import AppTheme.AppSemiBoldTypography
 import GGSansSemiBold
 import Styles.Colors
 import androidx.compose.foundation.layout.Arrangement
@@ -121,7 +120,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
                 .weight(1f, false)) {
 
                 PopulateCartItemList(carList)
-                ProductDeliveryAddressWidget()
+                ProductDeliveryAddressWidget(mainViewModel)
                 StraightLine()
                 PaymentMethodWidget()
                 StraightLine()
@@ -163,7 +162,6 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
 
     @Composable
     fun CartScreenTitle(){
-        MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
             TextComponent(
                 text = "Cart(10)",
                 fontSize = 20,
@@ -174,7 +172,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
                 fontWeight = FontWeight.Black,
             )
         }
-    }
+
 
     @Composable
     fun rightTopBarItem() {}

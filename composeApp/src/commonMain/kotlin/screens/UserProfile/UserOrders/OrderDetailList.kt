@@ -1,7 +1,6 @@
 package screens.UserProfile.UserOrders
 
 import AppTheme.AppColors
-import AppTheme.AppSemiBoldTypography
 import GGSansRegular
 import GGSansSemiBold
 import Styles.Colors

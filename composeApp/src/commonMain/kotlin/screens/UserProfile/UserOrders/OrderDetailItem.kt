@@ -1,7 +1,6 @@
 package screens.UserProfile.UserOrders
 
 import AppTheme.AppColors
-import AppTheme.AppSemiBoldTypography
 import GGSansRegular
 import GGSansSemiBold
 import Styles.Colors
@@ -115,7 +114,6 @@ fun OrderDetailItemComponent(onProductClickListener: () -> Unit) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 10.dp, bottom = 10.dp)
         .height(110.dp)
-    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
         Row(modifier = columnModifier,
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Top
@@ -124,7 +122,6 @@ fun OrderDetailItemComponent(onProductClickListener: () -> Unit) {
             OrderDetailItemDetail {}
         }
     }
-}
 
 
 

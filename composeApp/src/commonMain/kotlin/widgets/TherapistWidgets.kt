@@ -1,6 +1,5 @@
 package widgets
 
-import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import GGSansRegular
 import GGSansSemiBold
@@ -112,8 +111,6 @@ fun TherapistName(){
     val rowModifier = Modifier
         .padding(start = 20.dp)
         .width(140.dp)
-
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -131,4 +128,3 @@ fun TherapistName(){
             )
         }
     }
-}

@@ -1,7 +1,6 @@
 package widgets
 
 import AppTheme.AppColors
-import AppTheme.AppRegularTypography
 import GGSansRegular
 import GGSansSemiBold
 import Styles.Colors

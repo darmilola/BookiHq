@@ -1,7 +1,5 @@
 package screens.main
 
-
-import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -53,7 +51,6 @@ class DiaryTab(private val mainViewModel: MainViewModel) : Tab {
             .fillMaxHeight()
             .fillMaxWidth()
 
-        MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -73,4 +70,3 @@ class DiaryTab(private val mainViewModel: MainViewModel) : Tab {
     }
 
 
-}

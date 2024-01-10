@@ -4,6 +4,7 @@ import GGSansRegular
 import GGSansSemiBold
 import Styles.Colors
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,12 +28,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import components.ImageComponent
 import components.TextComponent
+import screens.main.MainViewModel
 import widgets.Step
 
 @Composable
-fun ParlorDeliveryWidget() {
+fun ParlorDeliveryWidget(mainViewModel: MainViewModel, fromView: Int) {
     Row(
-        modifier = Modifier.fillMaxWidth().height(100.dp),
+        modifier = Modifier.fillMaxWidth().height(100.dp).clickable {
+            mainViewModel.setId(10)
+            mainViewModel.setFromId(fromView)
+        },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(modifier = Modifier.weight(1F), contentAlignment = Alignment.TopCenter) {

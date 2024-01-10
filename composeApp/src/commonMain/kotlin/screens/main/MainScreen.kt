@@ -38,6 +38,7 @@ import screens.Products.CartScreen
 import screens.UserProfile.SwitchVendor.ConnectPage
 import screens.UserProfile.EditProfile
 import screens.UserProfile.SwitchVendor.ConnectPageTab
+import screens.UserProfile.SwitchVendor.SwitchVendorInfoPage
 import screens.UserProfile.UserOrders.UserOrders
 import screens.authentication.AuthenticationScreen
 import screens.consultation.ConsultationScreen
@@ -75,6 +76,9 @@ class MainScreen : Screen {
                 }
                 9 -> {
                     it.current = EditProfile(mainViewModel)
+                }
+                10 -> {
+                    it.current = SwitchVendorInfoPage(mainViewModel)
                 }
             }
 

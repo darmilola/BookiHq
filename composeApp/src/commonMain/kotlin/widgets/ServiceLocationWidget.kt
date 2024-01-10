@@ -23,9 +23,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import components.TextComponent
 import components.ToggleButton
+import screens.main.MainViewModel
 
 @Composable
-fun ServiceLocationToggle(){
+fun ServiceLocationToggle(mainViewModel: MainViewModel){
     var deliveryType by remember { mutableStateOf(0) }
     Column(
         modifier = Modifier
@@ -56,10 +57,10 @@ fun ServiceLocationToggle(){
 
 
         if(deliveryType == 0) {
-            ParlorDeliveryWidget()
+            ParlorDeliveryWidget(mainViewModel, 1)
         }
         else{
-            HomeDeliveryWidget()
+            HomeDeliveryWidget(mainViewModel, 1)
         }
 
     }

@@ -46,7 +46,8 @@ class ConnectPageTab(private val mainViewModel: MainViewModel) : Tab {
                 ) {
                     items(10) {
                         ConnectBusinessItemComponent {
-                            navigator.current = SwitchVendorInfoPage(mainViewModel)
+                            mainViewModel.setFromId(6)
+                            mainViewModel.setId(10)
                         }
                     }
                 }

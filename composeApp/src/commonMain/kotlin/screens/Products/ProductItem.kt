@@ -1,7 +1,6 @@
 package screens.Products
 
 import AppTheme.AppColors
-import AppTheme.AppSemiBoldTypography
 import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
@@ -70,7 +69,6 @@ fun NewProductItem(onProductClickListener: () -> Unit) {
             onProductClickListener()
         }
         .height(220.dp)
-    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
         Row(modifier = columnModifier,
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Top
@@ -79,7 +77,6 @@ fun NewProductItem(onProductClickListener: () -> Unit) {
             NewProductDescription(onProductClickListener)
         }
     }
-}
 
 
     @Composable
@@ -227,7 +224,6 @@ fun ProductNameAndPrice(){
         .padding(start = 10.dp, end = 10.dp)
         .clickable {}
         .fillMaxHeight()
-    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
         Column(
             modifier = columnModifier,
             verticalArrangement = Arrangement.Center,
@@ -269,7 +265,6 @@ fun ProductNameAndPrice(){
 
         }
     }
-}
 
 
 @Composable

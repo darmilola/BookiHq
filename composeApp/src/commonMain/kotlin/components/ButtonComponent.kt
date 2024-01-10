@@ -1,6 +1,5 @@
 package components
 
-import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import GGSansSemiBold
 import Styles.Colors
@@ -176,7 +175,6 @@ fun LocationToggleButton(borderStroke: BorderStroke?, shape: Shape, colors: Butt
     val rowModifier = Modifier
         .padding(top = 15.dp)
         .fillMaxWidth()
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Top,
@@ -237,7 +235,6 @@ fun LocationToggleButton(borderStroke: BorderStroke?, shape: Shape, colors: Butt
         }
 
     }
-}
 
 
 

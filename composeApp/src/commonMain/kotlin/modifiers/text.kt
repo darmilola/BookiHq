@@ -1,4 +1,0 @@
-package modifiers
-
-class text {
-}

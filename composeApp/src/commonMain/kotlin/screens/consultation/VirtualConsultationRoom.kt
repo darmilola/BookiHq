@@ -1,7 +1,6 @@
 package screens.consultation
 
 import AppTheme.AppColors
-import AppTheme.AppSemiBoldTypography
 import GGSansRegular
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -235,7 +234,6 @@ class VirtualConsultationRoom(private val mainViewModel: MainViewModel) : Tab {
             .clickable {
                 onEndCallClicked()
             }
-        MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
             Column(
                 modifier = columnModifier,
                 verticalArrangement = Arrangement.Center,
@@ -247,7 +245,7 @@ class VirtualConsultationRoom(private val mainViewModel: MainViewModel) : Tab {
                 AttachConsultActionEndImage(iconRes)
             }
         }
-    }
+
 
     @Composable
     fun AttachConsultActionImages(iconRes: String) {

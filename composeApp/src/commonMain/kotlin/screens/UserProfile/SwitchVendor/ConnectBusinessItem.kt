@@ -1,7 +1,6 @@
 package screens.UserProfile.SwitchVendor
 
-import AppTheme.AppColors
-import AppTheme.AppSemiBoldTypography
+
 import GGSansSemiBold
 import Styles.Colors
 import androidx.compose.foundation.BorderStroke
@@ -41,7 +40,6 @@ import components.TextComponent
                 onBusinessClickListener()
             }
             .wrapContentHeight()
-        MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
             Row(modifier = columnModifier,
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
@@ -50,7 +48,7 @@ import components.TextComponent
                 BusinessNameAndHandle()
             }
         }
-    }
+
 
     @Composable
     fun BusinessLogo(size: Int = 70, borderStroke: BorderStroke? = null) {
@@ -83,7 +81,6 @@ import components.TextComponent
         val columnModifier = Modifier
             .padding(start = 5.dp, end = 10.dp)
             .fillMaxHeight()
-        MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
             Column(
                 modifier = columnModifier,
                 verticalArrangement = Arrangement.Top,
@@ -120,4 +117,3 @@ import components.TextComponent
                         .wrapContentSize())
             }
         }
-    }

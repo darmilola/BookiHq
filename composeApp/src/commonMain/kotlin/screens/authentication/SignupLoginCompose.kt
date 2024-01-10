@@ -1,6 +1,5 @@
 package screens.authentication
 
-import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import GGSansBold
 import GGSansRegular
@@ -51,7 +50,6 @@ fun SignUpLogin(currentScreen: Int = 0) {
             .background(color = Color(color = 0xFFFBFBFB))
 
 
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         val topLayoutModifier =
             Modifier
                 .padding(top = 40.dp)
@@ -70,7 +68,7 @@ fun SignUpLogin(currentScreen: Int = 0) {
             attachAuthenticationTypeChangeView(currentScreen)
         }
     }
-}
+
 
 
 @Composable
@@ -160,7 +158,6 @@ fun authenticationTypeChangeText(currentScreen: Int = 0) {
         "Sign Up"
     }
 
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Top,
@@ -191,7 +188,6 @@ fun authenticationTypeChangeText(currentScreen: Int = 0) {
             )
         }
     }
-}
 
 
 @Composable
@@ -206,7 +202,6 @@ fun attachAuthenticationTypeChangeView(currentScreen: Int = 0) {
             navigator.replace(AuthenticationScreen(currentScreen))
         }
 
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Top,
@@ -215,14 +210,13 @@ fun attachAuthenticationTypeChangeView(currentScreen: Int = 0) {
             authenticationTypeChangeText(currentScreen = currentScreen)
         }
     }
-}
+
 
 @Composable
 fun welcomeToSavanna(){
     val rowModifier = Modifier
         .padding(top = 50.dp)
         .fillMaxWidth()
-    MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Top,
@@ -242,6 +236,6 @@ fun welcomeToSavanna(){
             )
         }
     }
-}
+
 
 

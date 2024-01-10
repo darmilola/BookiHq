@@ -1,7 +1,6 @@
 package screens.consultation
 
 import AppTheme.AppColors
-import AppTheme.AppSemiBoldTypography
 import GGSansBold
 import GGSansSemiBold
 import Styles.Colors

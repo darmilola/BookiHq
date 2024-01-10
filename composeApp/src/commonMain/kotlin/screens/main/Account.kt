@@ -1,9 +1,7 @@
 package screens.main
 
 
-import AppTheme.AppBoldTypography
 import AppTheme.AppColors
-import AppTheme.AppRegularTypography
 import GGSansRegular
 import GGSansSemiBold
 import Styles.Colors
@@ -86,7 +84,6 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
     fun UserPreferredName(){
         val rowModifier = Modifier
             .fillMaxWidth()
-        MaterialTheme(colors = AppColors(), typography = AppBoldTypography()) {
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.Top,
@@ -103,7 +100,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                 )
             }
         }
-    }
+
 
 
     @Composable
@@ -116,6 +113,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
 
         ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke((1.5).dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 20, shape = RoundedCornerShape(25.dp), textColor =  Color.DarkGray, style = style){
                 mainViewModel.setId(9)
+                mainViewModel.setFromId(0)
         }
 
     }

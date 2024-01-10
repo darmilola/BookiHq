@@ -1,8 +1,5 @@
 package screens.main
 
-import AppTheme.AppBoldTypography
-import AppTheme.AppColors
-import AppTheme.AppRegularTypography
 import GGSansBold
 import GGSansSemiBold
 import Models.AppointmentItem

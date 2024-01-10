@@ -1,6 +1,5 @@
 package screens.Bookings
 
-import AppTheme.AppBoldTypography
 import AppTheme.AppColors
 import GGSansRegular
 import GGSansSemiBold
@@ -66,6 +65,7 @@ import components.ToggleButton
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import screens.main.MainViewModel
 import widgets.Calendar
 import widgets.DropDownWidget
 import widgets.HomeDeliveryWidget
@@ -73,7 +73,7 @@ import widgets.ParlorDeliveryWidget
 import widgets.ServiceLocationToggle
 
 @Composable
-fun BookingSelectServices() {
+fun BookingSelectServices(mainViewModel: MainViewModel) {
 
     val boxModifier =
         Modifier
@@ -90,7 +90,7 @@ fun BookingSelectServices() {
             AttachServiceImages()
         }
         ServiceTitle()
-        ServiceLocationToggle()
+        ServiceLocationToggle(mainViewModel)
         AttachServiceTypeToggle()
         Calendar()
     }

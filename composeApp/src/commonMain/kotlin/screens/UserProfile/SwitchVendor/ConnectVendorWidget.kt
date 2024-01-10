@@ -1,7 +1,6 @@
 package screens.UserProfile.SwitchVendor
 
 import AppTheme.AppColors
-import AppTheme.AppSemiBoldTypography
 import GGSansRegular
 import GGSansSemiBold
 import Styles.Colors
@@ -250,28 +249,6 @@ fun BusinessInfoContent(onConnectedListener: () -> Unit) {
             }
         }
     }
-}
-
-@Composable
-fun AttachActionButtons() {
-    val buttonStyle = Modifier
-        .fillMaxWidth()
-        .height(50.dp)
-
-    Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-
-        ButtonComponent(
-            modifier = buttonStyle,
-            buttonText = "Connect",
-            borderStroke = null,
-            colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
-            fontSize = 18,
-            shape = CircleShape,
-            textColor = Color.White,
-            style = TextStyle()) {
-        }
-    }
-
 }
 
 

@@ -1,7 +1,6 @@
 package screens.Products
 
 import AppTheme.AppColors
-import AppTheme.AppSemiBoldTypography
 import GGSansBold
 import GGSansSemiBold
 import Styles.Colors
@@ -49,7 +48,6 @@ fun CartItem(onProductClickListener: () -> Unit) {
             onProductClickListener()
         }
         .height(160.dp)
-    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
         Row(modifier = columnModifier,
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
@@ -58,7 +56,7 @@ fun CartItem(onProductClickListener: () -> Unit) {
             CartItemDetail {}
         }
     }
-}
+
 
 
 
@@ -98,7 +96,6 @@ fun CartItemDetail(onProductClickListener: () -> Unit){
     val columnModifier = Modifier
         .padding(start = 10.dp, end = 10.dp)
         .fillMaxHeight()
-    MaterialTheme(colors = AppColors(), typography = AppSemiBoldTypography()) {
         Column(
             modifier = columnModifier,
             verticalArrangement = Arrangement.Top,
@@ -127,7 +124,6 @@ fun CartItemDetail(onProductClickListener: () -> Unit){
             CartIncrementDecrementWidget()
         }
     }
-}
 
 @Composable
 fun CartProductPriceInfoContent() {

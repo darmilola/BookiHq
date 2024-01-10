@@ -168,7 +168,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab {
                 userScrollEnabled = false
             ) { page ->
                 when (page) {
-                    0 -> BookingSelectServices()
+                    0 -> BookingSelectServices(mainViewModel)
                     1 -> BookingSelectSpecialist()
                     2 -> BookingPayment()
                 }

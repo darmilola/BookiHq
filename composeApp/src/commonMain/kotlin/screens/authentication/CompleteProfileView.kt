@@ -3,6 +3,7 @@ package screens.authentication
 import Styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.Composable
@@ -23,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import components.ButtonComponent
 import components.ToggleButton
 import screens.UserProfile.SwitchVendor.ConnectPage
@@ -62,7 +65,16 @@ fun CompleteProfile() {
             PageTitle()
             SubtitleTextWidget(text = "Lorem ipsum is placeholder text commonly used in Printing")
             ProfileImageUpdate()
-            InputWidget(iconRes = "drawable/card_icon.png", placeholderText = "Firstname", iconSize = 40)
+            Row(modifier = Modifier.fillMaxWidth()) {
+               Box(modifier = Modifier.fillMaxWidth(0.50f), contentAlignment = Alignment.Center){
+                   InputWidget(iconRes = "drawable/card_icon.png", placeholderText = "Firstname", iconSize = 40)
+               }
+              Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
+                    InputWidget(iconRes = "drawable/card_icon.png", placeholderText = "Lastname", iconSize = 40)
+              }
+            }
+            InputWidget(iconRes = "drawable/address.png", placeholderText = "Address", iconSize = 28, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone), isPasswordField = false)
+            InputWidget(iconRes = "drawable/phone_icon.png", placeholderText = "Contact Phone", iconSize = 28, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), isPasswordField = false)
             AttachCountryDropDownWidget()
 
             ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(15.dp), style = TextStyle(), onLeftClicked = {
