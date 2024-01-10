@@ -82,7 +82,7 @@ fun BookingScreenTopBar(pagerState: PagerState, mainViewModel: MainViewModel) {
                 .fillMaxWidth(0.20f)
                 .fillMaxHeight(),
                 contentAlignment = Alignment.Center) {
-                rightTopBarItem()
+                rightTopBarItem(mainViewModel)
             }
 
         }
@@ -136,7 +136,7 @@ fun BookingTitle(){
     }
 
 @Composable
-fun rightTopBarItem() {
+fun rightTopBarItem(mainViewModel: MainViewModel) {
     val modifier = Modifier
         .padding(end = 10.dp)
         .background(color = Color.Transparent)
@@ -161,7 +161,8 @@ fun rightTopBarItem() {
         contentAlignment = Alignment.CenterEnd
     ) {
         ImageComponent(imageModifier = Modifier.size(35.dp).clickable {
-        }, imageRes = "clipboard_icon.png", colorFilter = ColorFilter.tint(color = Color.DarkGray))
+            mainViewModel.setId(11)
+        }, imageRes = "drawable/list.png", colorFilter = ColorFilter.tint(color = Colors.darkPrimary))
         Box(modifier = indicatorModifier){}
     }
 }

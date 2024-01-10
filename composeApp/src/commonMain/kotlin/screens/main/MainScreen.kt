@@ -33,6 +33,7 @@ import dev.icerock.moko.mvvm.livedata.compose.observeAsState
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import screens.Bookings.BookingScreen
+import screens.Bookings.PendingAppointmentsTab
 import screens.Bookings.ServiceInformationPage
 import screens.Products.CartScreen
 import screens.UserProfile.SwitchVendor.ConnectPage
@@ -79,6 +80,9 @@ class MainScreen : Screen {
                 }
                 10 -> {
                     it.current = SwitchVendorInfoPage(mainViewModel)
+                }
+                11 -> {
+                    it.current = PendingAppointmentsTab(mainViewModel)
                 }
             }
 

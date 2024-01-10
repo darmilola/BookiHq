@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import components.ButtonComponent
@@ -86,7 +87,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab {
                                     modifier = bgStyle
                                 ) {
                                     AttachBookingPages(pagerState)
-                                    AttachActionButtons(pagerState)
+                                    AttachActionButtons(pagerState, mainViewModel)
                                 }
                             }
 
@@ -95,12 +96,12 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab {
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun AttachActionButtons(pagerState: PagerState){
+    fun AttachActionButtons(pagerState: PagerState, mainViewModel: MainViewModel){
 
         var btnFraction by remember { mutableStateOf(0f) }
 
         val currentPage = pagerState.currentPage
-        val navigator = LocalNavigator.currentOrThrow
+        val navigator = LocalTabNavigator.current
 
         btnFraction = if (pagerState.currentPage == 1){
             0.5f
@@ -129,7 +130,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab {
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,) {
             ButtonComponent(modifier = buttonStyle, buttonText = "Add More Services", borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Colors.primaryColor, style = TextStyle()){
-                navigator.pop()
+                mainViewModel.setId(0)
             }
 
             val bookingNavText = if(currentPage == 1) "Go To Payments" else "Continue"

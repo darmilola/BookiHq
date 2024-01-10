@@ -1,5 +1,6 @@
 package widgets
 
+import Dialogs.PostponeDialog
 import GGSansRegular
 import GGSansSemiBold
 import Styles.Colors
@@ -40,17 +41,31 @@ import screens.main.MainViewModel
 fun AppointmentWidget(itemType: Int = 0, mainViewModel: MainViewModel) {
 
     val menuItems = arrayListOf<String>()
+    val openPostponeDialog = remember { mutableStateOf(false) }
+
+    when{
+        openPostponeDialog.value -> {
+            PostponeDialog(onConfirmation = {
+              openPostponeDialog.value = false
+            }, onDismissRequest = {
+                openPostponeDialog.value = false
+            })
+        }
+
+    }
 
     var menuItem = ""
 
-    menuItem = if(itemType == 1){
-        "Postpone"
-    }
-    else if(itemType == 4){
-        "Join Now"
-    }
-    else {
-        "Delete"
+    menuItem = when (itemType) {
+        1 -> {
+            "Postpone"
+        }
+        4 -> {
+            "Join Now"
+        }
+        else -> {
+            "Delete"
+        }
     }
 
     menuItems.add(menuItem)
@@ -160,7 +175,8 @@ fun AppointmentWidget(itemType: Int = 0, mainViewModel: MainViewModel) {
                         menuItems.forEachIndexed { index, title ->
                             DropdownMenuItem(
                                 onClick = {
-                                    mainViewModel.setId(8)
+                                    openPostponeDialog.value = true
+                                    //mainViewModel.setId(8)
                                 }) {
                                 SubtitleTextWidget(text = title, fontSize = 20)
                             }
