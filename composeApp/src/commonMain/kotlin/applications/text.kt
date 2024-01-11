@@ -1,0 +1,4 @@
+package applications
+
+class text {
+}

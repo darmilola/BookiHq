@@ -1,0 +1,4 @@
+package UIStates
+
+class EmptyStates {
+}

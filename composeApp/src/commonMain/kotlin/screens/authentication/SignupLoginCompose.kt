@@ -228,7 +228,7 @@ fun welcomeToSavanna(){
                 text = "Welcome to Savanna",
                 fontSize = 23,
                 fontFamily = GGSansBold,
-                textStyle = MaterialTheme.typography.h6,
+                textStyle = TextStyle(),
                 textColor = Colors.primaryColor,
                 textAlign = TextAlign.Left,
                 fontWeight = FontWeight.ExtraBold,
