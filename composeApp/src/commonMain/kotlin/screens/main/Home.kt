@@ -56,10 +56,13 @@ import screens.Products.NewProductItem
 import utils.getAppointmentViewHeight
 import widgets.AppointmentWidget
 import widgets.BusinessStatusImageWidget
+import widgets.BusinessStatusItemWidget
 import widgets.BusinessStatusProgressWidget
 import widgets.BusinessStatusWidget
+import widgets.BusinessStatusWidgetUpdated
 import widgets.HomeServicesWidget
 import widgets.RecommendedServiceItem
+import widgets.StatusProgressWidget
 
 class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     @OptIn(ExperimentalResourceApi::class)
@@ -196,7 +199,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 modifier = rowModifier
             ) {
                 TextComponent(
-                    text = "Our Services",
+                    text = "Services",
                     fontSize = 18,
                     fontFamily = GGSansSemiBold,
                     textStyle = TextStyle(),
@@ -206,7 +209,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                     lineHeight = 30,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    textModifier = Modifier.fillMaxWidth(0.30f)
+                    textModifier = Modifier.fillMaxWidth(0.20f)
                 )
                 StraightLine()
             }
@@ -449,20 +452,20 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     @Composable
     fun GetBusinessPageList() : List<BusinessStatusAdsPage> {
          val adsList: ArrayList<BusinessStatusAdsPage> = arrayListOf()
-         val imageWidget = BusinessStatusImageWidget()
-         val statusAdsPage = BusinessStatusAdsPage(statusImage = imageWidget)
+         val imageWidget = BusinessStatusItemWidget()
+         val statusAdsPage = BusinessStatusAdsPage(statusWidget = imageWidget)
          adsList.add(statusAdsPage)
          adsList.add(statusAdsPage)
          adsList.add(statusAdsPage)
          adsList.add(statusAdsPage)
          adsList.add(statusAdsPage)
-        return adsList
+         return adsList
     }
 
     @Composable
     fun GetBusinessPageProgressList(pageCount: Int) : List<BusinessStatusAdsProgress> {
         val progressList: ArrayList<BusinessStatusAdsProgress> = arrayListOf()
-        val progressWidget = BusinessStatusProgressWidget()
+        val progressWidget = StatusProgressWidget()
         for(i in 0..< pageCount){
             val adsProgress = BusinessStatusAdsProgress(adsProgress = progressWidget, pageId = i)
             progressList.add(adsProgress)
@@ -480,7 +483,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
         Box(modifier = boxBgModifier) {
             val businessPageList = GetBusinessPageList()
-            BusinessStatusWidget(businessPageList, GetBusinessPageProgressList(businessPageList.size))
+            BusinessStatusWidgetUpdated(businessPageList, GetBusinessPageProgressList(businessPageList.size))
         }
     }
 

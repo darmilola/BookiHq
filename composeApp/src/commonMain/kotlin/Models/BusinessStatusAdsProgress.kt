@@ -1,6 +1,6 @@
 package Models
 
-import widgets.BusinessStatusProgressWidget
+import widgets.StatusProgressWidget
 
-data class BusinessStatusAdsProgress(val adsProgress: BusinessStatusProgressWidget, val pageId: Int = 0){
+data class BusinessStatusAdsProgress(val adsProgress: StatusProgressWidget, val pageId: Int = 0){
 }

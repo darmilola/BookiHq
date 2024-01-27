@@ -53,7 +53,7 @@ fun BusinessStatusWidget(adsPageList: List<BusinessStatusAdsPage>, adsPageProgre
             }, onProgress = {
                  currentPageProgress = it
             })
-            adsPageList[currentPage].statusImage.GetStatusImage("drawable/sale$currentPage.jpg")
+            adsPageList[currentPage].statusWidget.GetStatusWidget("drawable/sale$currentPage.jpg")
         }
 
         LaunchedEffect(key1 = isRestart) {
@@ -70,24 +70,6 @@ fun BusinessStatusWidget(adsPageList: List<BusinessStatusAdsPage>, adsPageProgre
                 currentPage = page //manual scrolls to page and fling animate
                 currentPageProgress = 0f
                 isRestart = false
-            }
-        }
-
-        Row(modifier = Modifier.fillMaxWidth().padding(start = 5.dp, end = 5.dp)) {
-                for (item in adsPageProgress) {
-                    Box(modifier = Modifier.weight(1f)) {
-                            item.adsProgress.GetStatusProgressBar(0f, pageId = item.pageId, currentPage = currentPage)
-
-                    }
-                }
-           }
-        Row(modifier = Modifier.fillMaxWidth().padding(start = 5.dp, end = 5.dp)) {
-            for (item in adsPageProgress) {
-                Box(modifier = Modifier.weight(1f)) {
-                    if(item.pageId == currentPage) {
-                        item.adsProgress.GetStatusProgressBar(currentPageProgress)
-                    }
-                }
             }
         }
     }

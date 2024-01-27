@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
@@ -188,11 +189,11 @@ fun BusinessInfoContent(onConnectedListener: () -> Unit) {
         .padding(start = 10.dp, end = 10.dp)
         .fillMaxHeight()
         .fillMaxWidth()
-    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Card(
             modifier = Modifier
                 .padding(start = 10.dp, end = 10.dp)
-                .fillMaxHeight(0.70f)
+                .fillMaxHeight(0.90f)
                 .fillMaxWidth(),
             shape = RoundedCornerShape(10.dp)
         ) {
@@ -203,7 +204,7 @@ fun BusinessInfoContent(onConnectedListener: () -> Unit) {
             ) {
                 BusinessLogo(size = 120, borderStroke = BorderStroke(2.dp, color = Color(color = 0xfffa2d65)))
                 TextComponent(
-                    text = "This is the Business name you are trying to connect with",
+                    text = "This is the Business name you are trying to connect with (@businessName)",
                     fontSize = 20,
                     fontFamily = GGSansSemiBold,
                     textStyle = TextStyle(),
@@ -228,8 +229,122 @@ fun BusinessInfoContent(onConnectedListener: () -> Unit) {
                     textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 5.dp), text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aene ligula", fontSize = 18, fontFamily = GGSansRegular,
                     textStyle = TextStyle(), textColor = Color.DarkGray, textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Black, lineHeight = 25, maxLines = 3,  overflow = TextOverflow.Ellipsis)
+
+                Row(modifier = Modifier.fillMaxWidth().height(50.dp).padding(start = 30.dp, end = 30.dp)) {
+
+                    Row(modifier = Modifier.weight(1f).height(50.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier.fillMaxHeight().wrapContentWidth(),
+                            contentAlignment = Alignment.BottomCenter
+                        ) {
+                            val modifier = Modifier
+                                .size(24.dp)
+                            ImageComponent(
+                                imageModifier = modifier,
+                                imageRes = "drawable/open_sign.png",
+                                colorFilter = ColorFilter.tint(color = Colors.primaryColor)
+                            )
+                        }
+
+                        Box(
+                            modifier = Modifier.fillMaxHeight().wrapContentWidth(),
+                            contentAlignment = Alignment.BottomCenter
+                        ) {
+                            TextComponent(
+                                textModifier = Modifier.wrapContentWidth()
+                                    .padding(start = 5.dp),
+                                text = "9:00 AM",
+                                fontSize = 16,
+                                textStyle = TextStyle(),
+                                textColor = Color.DarkGray,
+                                textAlign = TextAlign.Left,
+                                fontWeight = FontWeight.Normal,
+                                lineHeight = 23,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+
+                    }
+                    Row(modifier = Modifier.weight(1f).height(50.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically) {
+
+                        Box(
+                            modifier = Modifier.fillMaxHeight().wrapContentWidth(),
+                            contentAlignment = Alignment.BottomCenter
+                        ) {
+                            val modifier = Modifier
+                                .size(24.dp)
+                            ImageComponent(
+                                imageModifier = modifier,
+                                imageRes = "drawable/close_sign.png",
+                                colorFilter = ColorFilter.tint(color = Colors.primaryColor)
+                            )
+                        }
+
+                        Box(
+                            modifier = Modifier.fillMaxHeight().wrapContentWidth(),
+                            contentAlignment = Alignment.BottomCenter
+                        ) {
+                            TextComponent(
+                                textModifier = Modifier.wrapContentWidth()
+                                    .padding(start = 5.dp),
+                                text = "10:00 PM",
+                                fontSize = 16,
+                                textStyle = TextStyle(),
+                                textColor = Color.DarkGray,
+                                textAlign = TextAlign.Left,
+                                fontWeight = FontWeight.Normal,
+                                lineHeight = 23,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+
+                    }
+                }
+                Row(modifier = Modifier.fillMaxWidth().height(50.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically) {
+
+                    Box(
+                        modifier = Modifier.fillMaxHeight().wrapContentWidth(),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        val modifier = Modifier
+                            .size(24.dp)
+                        ImageComponent(
+                            imageModifier = modifier,
+                            imageRes = "drawable/home_service.png",
+                            colorFilter = ColorFilter.tint(color = Colors.primaryColor)
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier.fillMaxHeight().wrapContentWidth(),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        TextComponent(
+                            textModifier = Modifier.wrapContentWidth()
+                                .padding(start = 5.dp),
+                            text = "Home Service Available",
+                            fontSize = 16,
+                            textStyle = TextStyle(),
+                            textColor = Color.DarkGray,
+                            textAlign = TextAlign.Left,
+                            fontWeight = FontWeight.Normal,
+                            lineHeight = 23,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
                 val buttonStyle = Modifier
                     .fillMaxWidth()
+                    .padding(top = 25.dp)
                     .height(50.dp)
 
                 Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {

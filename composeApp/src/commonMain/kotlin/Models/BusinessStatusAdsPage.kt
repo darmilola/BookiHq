@@ -1,5 +1,5 @@
 package Models
 
-import widgets.BusinessStatusImageWidget
+import widgets.BusinessStatusItemWidget
 
-data class BusinessStatusAdsPage(val statusImage: BusinessStatusImageWidget)
+data class BusinessStatusAdsPage(val statusWidget: BusinessStatusItemWidget)
