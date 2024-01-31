@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import components.ImageComponent
 import components.TextComponent
-import presentation.main.MainViewModel
+import presentation.viewmodels.MainViewModel
 
 @Composable
 fun HomeServicesWidget(iconRes: String, serviceTitle: String, mainViewModel: MainViewModel, iconSize: Int = 40){

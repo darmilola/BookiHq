@@ -33,6 +33,7 @@ import components.IconButtonComponent
 import components.ImageComponent
 import components.TextComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import presentation.viewmodels.AuthenticationViewModel
 
 
 @OptIn(ExperimentalResourceApi::class)

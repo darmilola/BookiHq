@@ -33,7 +33,7 @@ import components.ToggleButton
 import presentation.Bookings.BookingScreen
 import presentation.Products.CartScreen
 import presentation.main.MainTab
-import presentation.main.MainViewModel
+import presentation.viewmodels.MainViewModel
 import presentation.widgets.DropDownWidget
 import presentation.widgets.InputWidget
 import presentation.widgets.PageBackNavWidget

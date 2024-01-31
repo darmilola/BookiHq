@@ -2,7 +2,7 @@ package presentation.widgets
 
 import GGSansSemiBold
 import models.AvailableSlotsUIModel
-import models.WorkingHoursDataSource
+import presentation.dataModeller.WorkingHoursDataSource
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import components.TextComponent
+import models.AvailableSlot
 
 @Composable
 fun TimeGrid() {
@@ -63,7 +64,7 @@ fun TimeGrid() {
 
 
 @Composable
-fun TimeItem(availableSlot: AvailableSlotsUIModel.AvailableSlot, onWorkHourClickListener: (AvailableSlotsUIModel.AvailableSlot) -> Unit) {
+fun TimeItem(availableSlot: AvailableSlot, onWorkHourClickListener: (AvailableSlot) -> Unit) {
     val timeStampObject = availableSlot.timeSlot
     val timeRange = timeStampObject.first
     val meridianVal: String = if(timeStampObject.second) "AM" else "PM"

@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import components.ImageComponent
 import dev.icerock.moko.mvvm.livedata.compose.observeAsState
+import presentation.viewmodels.MainViewModel
 import presentation.widgets.TitleWidget
 
 @Composable

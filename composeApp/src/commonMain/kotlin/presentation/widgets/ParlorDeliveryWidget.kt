@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import components.ImageComponent
 import components.TextComponent
-import presentation.main.MainViewModel
+import presentation.viewmodels.MainViewModel
 
 @Composable
 fun ParlorDeliveryWidget(mainViewModel: MainViewModel, fromView: Int) {

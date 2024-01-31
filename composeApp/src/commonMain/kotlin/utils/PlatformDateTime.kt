@@ -1,3 +1,5 @@
+package utils
+
 expect object PlatformDateTime {
     fun getFormattedDate(
         timestamp: String,

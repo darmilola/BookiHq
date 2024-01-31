@@ -32,7 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import components.ImageComponent
 import components.TextComponent
-import presentation.main.MainViewModel
+import presentation.viewmodels.MainViewModel
 import presentation.widgets.Calendar
 import presentation.widgets.DropDownWidget
 import presentation.widgets.ServiceLocationToggle

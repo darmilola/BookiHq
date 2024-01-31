@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import components.ImageComponent
 import components.TextComponent
+import presentation.viewmodels.MainViewModel
 import presentation.widgets.SubtitleTextWidget
 
 class NotificationTab(private val mainViewModel: MainViewModel) : Tab {

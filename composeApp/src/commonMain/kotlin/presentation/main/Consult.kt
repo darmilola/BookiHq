@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import components.ButtonComponent
 import components.ImageComponent
 import components.TextComponent
+import presentation.viewmodels.MainViewModel
 import presentation.widgets.AttachImageStacks
 
 class ConsultTab(private val mainViewModel: MainViewModel) : Tab {

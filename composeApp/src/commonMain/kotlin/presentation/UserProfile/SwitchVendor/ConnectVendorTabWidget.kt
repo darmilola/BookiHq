@@ -18,7 +18,7 @@ import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import presentation.Bookings.BookingScreen
 import presentation.Products.CartScreen
 import presentation.main.MainTab
-import presentation.main.MainViewModel
+import presentation.viewmodels.MainViewModel
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget
 

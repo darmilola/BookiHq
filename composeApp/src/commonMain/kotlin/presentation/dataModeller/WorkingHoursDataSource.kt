@@ -1,4 +1,7 @@
-package models
+package presentation.dataModeller
+
+import models.AvailableSlot
+import models.AvailableSlotsUIModel
 
 class WorkingHoursDataSource {
 
@@ -40,8 +43,10 @@ class WorkingHoursDataSource {
         )
     }
 
-    private fun toItemUiModel(timeSlot: Pair<Pair<String, String>, Boolean> , isSelectedSlot: Boolean, isAvailable: Boolean = true) = AvailableSlotsUIModel.AvailableSlot(
-        timeSlot = timeSlot,
-        isAvailable = isAvailable,
-        isSelected = isSelectedSlot)
+    private fun toItemUiModel(timeSlot: Pair<Pair<String, String>, Boolean> , isSelectedSlot: Boolean, isAvailable: Boolean = true) =
+        AvailableSlot(
+            timeSlot = timeSlot,
+            isAvailable = isAvailable,
+            isSelected = isSelectedSlot
+        )
 }

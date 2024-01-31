@@ -43,7 +43,7 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import components.ImageComponent
 import components.TextComponent
 import presentation.main.MainTab
-import presentation.main.MainViewModel
+import presentation.viewmodels.MainViewModel
 
 
 class VirtualConsultationRoom(private val mainViewModel: MainViewModel) : Tab {

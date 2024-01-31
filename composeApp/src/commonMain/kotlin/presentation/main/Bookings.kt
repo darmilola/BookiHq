@@ -20,6 +20,7 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import presentation.viewmodels.MainViewModel
 import utils.getAppointmentViewHeight
 import presentation.widgets.AppointmentWidget
 

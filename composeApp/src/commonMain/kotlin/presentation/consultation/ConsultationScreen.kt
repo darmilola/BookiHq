@@ -32,7 +32,7 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import components.ButtonComponent
 import kotlinx.coroutines.launch
-import presentation.main.MainViewModel
+import presentation.viewmodels.MainViewModel
 
 
 class ConsultationScreen(private val mainViewModel: MainViewModel) : Tab {

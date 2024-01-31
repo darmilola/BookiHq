@@ -1,9 +1,12 @@
 
-package models
+package presentation.dataModeller
+import utils.PlatformDateTime
 import kotlinx.datetime.LocalDate
-import PlatformDateTime
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.plus
+import models.CalendarUiModel
+import models.Date
+import models.DateRange
 
 
 class CalendarDataSource {
@@ -40,7 +43,7 @@ class CalendarDataSource {
         )
     }
 
-    private fun toItemUiModel(date: LocalDate, isSelectedDate: Boolean) = CalendarUiModel.Date(
+    private fun toItemUiModel(date: LocalDate, isSelectedDate: Boolean) = Date(
         isSelected = isSelectedDate,
         isToday = date == today,
         date = date,

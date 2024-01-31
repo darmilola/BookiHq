@@ -1,4 +1,4 @@
-package presentation.Products
+package presentation.viewmodels
 
 import androidx.compose.runtime.mutableStateOf
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
@@ -15,7 +15,8 @@ class ProductTabViewModel: ViewModel() {
 
     private val authScreenOrder: List<ProductScreenScreenEnum> = listOf(
         ProductScreenScreenEnum.DESCRIPTION_SCREEN,
-        ProductScreenScreenEnum.REVIEWS_SCREEN)
+        ProductScreenScreenEnum.REVIEWS_SCREEN
+    )
 
     private fun productTabScreenData(): ProductTabScreenData {
         return ProductTabScreenData(

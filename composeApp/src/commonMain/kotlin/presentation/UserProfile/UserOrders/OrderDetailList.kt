@@ -37,7 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import components.ImageComponent
 import components.TextComponent
-import presentation.main.MainViewModel
+import presentation.viewmodels.MainViewModel
 
 @Composable
 fun OrderDetailList(mainViewModel: MainViewModel) {

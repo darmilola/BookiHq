@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.Color
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import presentation.main.MainViewModel
+import presentation.viewmodels.MainViewModel
 
 class SwitchVendorInfoPage(private val mainViewModel: MainViewModel) : Tab {
     override val options: TabOptions

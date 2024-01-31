@@ -32,7 +32,7 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import components.StraightLine
 import components.TextComponent
 import presentation.main.MainTab
-import presentation.main.MainViewModel
+import presentation.viewmodels.MainViewModel
 import presentation.widgets.CheckOutSummaryWidget
 import presentation.widgets.ProductDeliveryAddressWidget
 import presentation.widgets.PageBackNavWidget

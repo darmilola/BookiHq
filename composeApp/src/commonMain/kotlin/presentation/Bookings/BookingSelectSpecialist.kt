@@ -2,7 +2,7 @@ package presentation.Bookings
 
 import GGSansSemiBold
 import models.AvailableTherapistUIModel
-import models.TherapistDataSource
+import presentation.dataModeller.TherapistDataSource
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -41,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import components.TextComponent
+import models.AvailableTherapist
 import presentation.widgets.AttachTherapistWidget
 import presentation.widgets.ReviewsWidget
 import presentation.widgets.TimeGrid
@@ -90,7 +91,7 @@ fun AvailableTimeContent() {
 fun TherapistContent() {
     val dataSource = TherapistDataSource()
     // get CalendarUiModel from CalendarDataSource, and the lastSelectedDate is Today.
-    val selectedTherapist = AvailableTherapistUIModel.AvailableTherapist(0, true, true)
+    val selectedTherapist = AvailableTherapist(0, true, true)
     val availableTherapist = dataSource.getAvailableTherapist(lastSelectedTherapist = selectedTherapist)
 
     var selectedTherapistUIModel by remember { mutableStateOf(availableTherapist) }

@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import components.ButtonComponent
 import components.TextComponent
+import presentation.viewmodels.MainViewModel
 import presentation.widgets.ActionItemComponent
 import presentation.widgets.ProfileImageUpdate
 

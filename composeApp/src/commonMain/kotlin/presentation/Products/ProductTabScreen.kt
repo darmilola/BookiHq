@@ -6,6 +6,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import presentation.viewmodels.ProductTabViewModel
 
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalAnimationApi::class)

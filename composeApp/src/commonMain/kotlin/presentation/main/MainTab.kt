@@ -24,6 +24,7 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import components.ImageComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import presentation.viewmodels.MainViewModel
 
 class MainTab(private val mainViewModel: MainViewModel): Tab {
     @OptIn(ExperimentalResourceApi::class)

@@ -43,6 +43,7 @@ import components.ImageComponent
 import components.TextComponent
 import presentation.Products.SearchBar
 import presentation.Products.CategoryScreen
+import presentation.viewmodels.MainViewModel
 
 
 class ShopTab(private val mainViewModel: MainViewModel) : Tab {

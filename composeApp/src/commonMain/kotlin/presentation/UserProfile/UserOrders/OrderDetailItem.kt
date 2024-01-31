@@ -39,7 +39,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import components.ImageComponent
 import components.TextComponent
-import presentation.main.MainViewModel
+import presentation.viewmodels.MainViewModel
 
 
 @Composable

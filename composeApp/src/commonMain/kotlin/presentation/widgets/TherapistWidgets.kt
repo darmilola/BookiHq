@@ -30,9 +30,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import components.ImageComponent
 import components.TextComponent
+import models.AvailableTherapist
 
 @Composable
-fun AttachUserProfileImage(availableTherapist: AvailableTherapistUIModel.AvailableTherapist) {
+fun AttachUserProfileImage(availableTherapist: AvailableTherapist) {
     val selectedVisibilityAlpha: Float = if (availableTherapist.isSelected) 1f else 0f
     Box(
         Modifier
@@ -90,7 +91,7 @@ fun AttachUserProfileImage(availableTherapist: AvailableTherapistUIModel.Availab
 }
 
 @Composable
-fun AttachTherapistWidget(availableTherapist: AvailableTherapistUIModel.AvailableTherapist, onTherapistSelectedListener: (AvailableTherapistUIModel.AvailableTherapist) -> Unit){
+fun AttachTherapistWidget(availableTherapist: AvailableTherapist, onTherapistSelectedListener: (AvailableTherapist) -> Unit){
     val rowModifier = Modifier
         .width(160.dp)
         .height(200.dp)

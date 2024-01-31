@@ -1,4 +1,4 @@
-package presentation.authentication
+package presentation.viewmodels
 
 import androidx.compose.runtime.mutableStateOf
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
@@ -15,7 +15,8 @@ class AuthenticationViewModel: ViewModel() {
 
     private val authScreenOrder: List<AuthenticationScreenEnum> = listOf(
         AuthenticationScreenEnum.LOGIN_SCREEN,
-        AuthenticationScreenEnum.SIGNUP_SCREEN)
+        AuthenticationScreenEnum.SIGNUP_SCREEN
+    )
 
     private fun createAuthenticationScreenData(): AuthenticationScreenData {
         return AuthenticationScreenData(

@@ -16,6 +16,7 @@ import presentation.UserProfile.SwitchVendor.SwitchVendorInfoPage
 import presentation.UserProfile.UserOrders.UserOrders
 import presentation.consultation.ConsultationScreen
 import presentation.consultation.VirtualConsultationRoom
+import presentation.viewmodels.MainViewModel
 
 class MainScreen : Screen {
 

@@ -1,4 +1,5 @@
-import platform.Foundation.NSDate
+package utils
+
 import platform.Foundation.NSDateFormatter
 import platform.Foundation.NSTimeZone
 

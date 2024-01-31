@@ -1,7 +1,7 @@
 package presentation.widgets
 
 import GGSansSemiBold
-import models.CalendarDataSource
+import presentation.dataModeller.CalendarDataSource
 import models.CalendarUiModel
 import theme.styles.Colors
 import androidx.compose.foundation.clickable
@@ -41,6 +41,7 @@ import components.ImageComponent
 import components.TextComponent
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
+import models.Date
 
 @Composable
 fun Calendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 40.dp)) {
@@ -83,7 +84,7 @@ fun Calendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 10.dp, 
 }
 
 @Composable
-fun CalenderContent(calendarUiModel: CalendarUiModel, onDateClickListener: (CalendarUiModel.Date) -> Unit, listState: LazyListState) {
+fun CalenderContent(calendarUiModel: CalendarUiModel, onDateClickListener: (Date) -> Unit, listState: LazyListState) {
 
     LazyRow(modifier = Modifier.padding( top = 10.dp).fillMaxWidth(), state = listState) {
         // pass the visibleDates to the UI
@@ -96,7 +97,7 @@ fun CalenderContent(calendarUiModel: CalendarUiModel, onDateClickListener: (Cale
 
 
 @Composable
-fun ContentItem(date: CalendarUiModel.Date, onClickListener: (CalendarUiModel.Date) -> Unit) {
+fun ContentItem(date: Date, onClickListener: (Date) -> Unit) {
     val textColor: Color = if(date.isSelected){
         Color.White
     }

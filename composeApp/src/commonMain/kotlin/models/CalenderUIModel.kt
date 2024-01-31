@@ -10,12 +10,12 @@ data class CalendarUiModel(
 
     val startDate: Date = visibleDates.first() // the first of the visible dates
     val endDate: Date = visibleDates.last() // the last of the visible dates
+}
 
-    data class Date(
-        val date: LocalDate,
-        val isSelected: Boolean,
-        val isToday: Boolean
-    ) {
-        val day: DayOfWeek = date.dayOfWeek   // get the day by formatting the date
-    }
+data class Date(
+    val date: LocalDate,
+    val isSelected: Boolean,
+    val isToday: Boolean
+) {
+    val day: DayOfWeek = date.dayOfWeek   // get the day by formatting the date
 }

@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import presentation.main.MainViewModel
+import presentation.viewmodels.MainViewModel
 
 class ConnectPageTab(private val mainViewModel: MainViewModel) : Tab {
     override val options: TabOptions

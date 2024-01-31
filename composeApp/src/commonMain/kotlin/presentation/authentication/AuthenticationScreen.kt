@@ -9,6 +9,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
+import presentation.viewmodels.AuthenticationViewModel
 
 @Composable
 fun AuthenticationScreenCompose(currentPosition: Int = 0, viewType: Int = -1) {
