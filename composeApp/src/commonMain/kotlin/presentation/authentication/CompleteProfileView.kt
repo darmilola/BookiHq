@@ -26,8 +26,8 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
-import components.ButtonComponent
-import components.ToggleButton
+import presentation.components.ButtonComponent
+import presentation.components.ToggleButton
 import presentation.UserProfile.SwitchVendor.ConnectPage
 import presentation.widgets.DropDownWidget
 import presentation.widgets.InputWidget

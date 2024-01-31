@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import components.ButtonComponent
+import presentation.components.ButtonComponent
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.PhoneInputWidget
 import presentation.widgets.SubtitleTextWidget

@@ -27,7 +27,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import components.ButtonComponent
+import presentation.components.ButtonComponent
 import presentation.widgets.OTPTextField
 import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget

@@ -1,7 +1,7 @@
 package presentation.dataModeller
 
-import models.AvailableTherapist
-import models.AvailableTherapistUIModel
+import domain.Models.AvailableTherapist
+import domain.Models.AvailableTherapistUIModel
 
 class TherapistDataSource {
 

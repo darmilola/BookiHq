@@ -29,9 +29,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import components.IconButtonComponent
-import components.ImageComponent
-import components.TextComponent
+import presentation.components.IconButtonComponent
+import presentation.components.ImageComponent
+import presentation.components.TextComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import presentation.viewmodels.AuthenticationViewModel
 

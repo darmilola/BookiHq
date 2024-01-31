@@ -1,9 +1,9 @@
 package presentation.main
 
 import GGSansSemiBold
-import models.AppointmentItem
-import models.BusinessStatusAdsPage
-import models.BusinessStatusAdsProgress
+import domain.Models.AppointmentItem
+import domain.Models.BusinessStatusAdsPage
+import domain.Models.BusinessStatusAdsProgress
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -48,9 +48,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import components.ImageComponent
-import components.StraightLine
-import components.TextComponent
+import presentation.components.ImageComponent
+import presentation.components.StraightLine
+import presentation.components.TextComponent
 import presentation.Products.BottomSheet
 import presentation.Products.NewProductItem
 import presentation.viewmodels.MainViewModel

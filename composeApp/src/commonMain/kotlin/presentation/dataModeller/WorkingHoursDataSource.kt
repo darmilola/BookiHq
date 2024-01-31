@@ -1,7 +1,7 @@
 package presentation.dataModeller
 
-import models.AvailableSlot
-import models.AvailableSlotsUIModel
+import domain.Models.AvailableSlot
+import domain.Models.AvailableSlotsUIModel
 
 class WorkingHoursDataSource {
 

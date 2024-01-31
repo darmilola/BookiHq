@@ -1,7 +1,7 @@
 package presentation.widgets
 
 import GGSansSemiBold
-import models.PhoneExtensionModel
+import domain.Models.PhoneExtensionModel
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -32,7 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import components.TextFieldComponent
+import presentation.components.TextFieldComponent
 
 @Composable
 fun PhoneInputWidget() {

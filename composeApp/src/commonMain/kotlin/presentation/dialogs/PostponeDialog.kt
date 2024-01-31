@@ -27,8 +27,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import components.ButtonComponent
-import components.TextComponent
+import presentation.components.ButtonComponent
+import presentation.components.TextComponent
 import presentation.widgets.Calendar
 import presentation.widgets.TimeGrid
 import presentation.widgets.TitleWidget

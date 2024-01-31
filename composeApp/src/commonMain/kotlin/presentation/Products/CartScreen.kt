@@ -29,8 +29,8 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import components.StraightLine
-import components.TextComponent
+import presentation.components.StraightLine
+import presentation.components.TextComponent
 import presentation.main.MainTab
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.CheckOutSummaryWidget

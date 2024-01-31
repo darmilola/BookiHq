@@ -1,7 +1,6 @@
 package presentation.widgets
 
 import GGSansSemiBold
-import models.AvailableSlotsUIModel
 import presentation.dataModeller.WorkingHoursDataSource
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
@@ -28,8 +27,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import components.TextComponent
-import models.AvailableSlot
+import presentation.components.TextComponent
+import domain.Models.AvailableSlot
 
 @Composable
 fun TimeGrid() {

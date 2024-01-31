@@ -1,4 +1,4 @@
-package components
+package presentation.components
 
 import GGSansSemiBold
 import theme.styles.Colors

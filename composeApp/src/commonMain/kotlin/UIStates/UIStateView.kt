@@ -24,9 +24,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import components.ButtonComponent
-import components.ImageComponent
-import components.TextComponent
+import presentation.components.ButtonComponent
+import presentation.components.ImageComponent
+import presentation.components.TextComponent
 
 @Composable
 fun UIStateViewComponent(/*modifier: Modifier, buttonText: String, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, onClick: (() -> Unit)? = null, isDestructiveAction: Boolean = false*/) {

@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import components.SplashScreenBackground
+import presentation.components.SplashScreenBackground
 import kotlinx.coroutines.delay
 import presentation.authentication.WelcomeScreen
 import presentation.widgets.SplashScreenWidget

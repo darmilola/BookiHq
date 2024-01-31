@@ -19,8 +19,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import components.ImageComponent
-import components.TextComponent
+import presentation.components.ImageComponent
+import presentation.components.TextComponent
 
 @Composable
 fun CountryCodeView(countryCode: String, countryFlagRes: String) {

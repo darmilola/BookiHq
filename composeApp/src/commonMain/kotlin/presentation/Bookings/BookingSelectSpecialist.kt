@@ -1,7 +1,6 @@
 package presentation.Bookings
 
 import GGSansSemiBold
-import models.AvailableTherapistUIModel
 import presentation.dataModeller.TherapistDataSource
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
@@ -40,8 +39,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import components.TextComponent
-import models.AvailableTherapist
+import presentation.components.TextComponent
+import domain.Models.AvailableTherapist
 import presentation.widgets.AttachTherapistWidget
 import presentation.widgets.ReviewsWidget
 import presentation.widgets.TimeGrid

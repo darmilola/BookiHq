@@ -1,4 +1,4 @@
-package models
+package domain.Models
 
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate

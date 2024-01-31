@@ -1,7 +1,7 @@
 package presentation.widgets
 
-import models.BusinessStatusAdsPage
-import models.BusinessStatusAdsProgress
+import domain.Models.BusinessStatusAdsPage
+import domain.Models.BusinessStatusAdsProgress
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -30,7 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import components.ImageComponent
+import presentation.components.ImageComponent
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)

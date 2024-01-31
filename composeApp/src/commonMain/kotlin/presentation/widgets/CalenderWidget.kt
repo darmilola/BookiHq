@@ -2,7 +2,7 @@ package presentation.widgets
 
 import GGSansSemiBold
 import presentation.dataModeller.CalendarDataSource
-import models.CalendarUiModel
+import domain.Models.CalendarUiModel
 import theme.styles.Colors
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,11 +37,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import components.ImageComponent
-import components.TextComponent
+import presentation.components.ImageComponent
+import presentation.components.TextComponent
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
-import models.Date
+import domain.Models.Date
 
 @Composable
 fun Calendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 40.dp)) {

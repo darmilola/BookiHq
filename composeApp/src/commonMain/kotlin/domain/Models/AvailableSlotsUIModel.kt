@@ -1,4 +1,4 @@
-package models
+package domain.Models
 
 data class AvailableSlotsUIModel(
     val selectedSlot: AvailableSlot,

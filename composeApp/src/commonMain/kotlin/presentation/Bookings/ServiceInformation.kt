@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import components.ButtonComponent
-import components.TextComponent
+import presentation.components.ButtonComponent
+import presentation.components.TextComponent
 import presentation.UserProfile.SwitchVendor.BusinessLogo
 import presentation.widgets.DescriptionTextWidget
 import presentation.widgets.PageBackNavWidget

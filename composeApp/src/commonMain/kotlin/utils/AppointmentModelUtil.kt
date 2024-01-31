@@ -1,6 +1,6 @@
 package utils
 
-import models.AppointmentItem
+import domain.Models.AppointmentItem
 
 fun getAppointmentViewHeight(
         itemList: List<AppointmentItem>

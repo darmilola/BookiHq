@@ -1,7 +1,7 @@
 package presentation.Bookings
 
 import GGSansSemiBold
-import models.AppointmentItem
+import domain.Models.AppointmentItem
 import theme.styles.Colors
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import components.TextComponent
+import presentation.components.TextComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import presentation.viewmodels.MainViewModel

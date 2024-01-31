@@ -33,9 +33,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import components.ButtonComponent
-import components.ImageComponent
-import components.TextComponent
+import presentation.components.ButtonComponent
+import presentation.components.ImageComponent
+import presentation.components.TextComponent
 import presentation.Products.SearchBar
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget

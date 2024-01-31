@@ -2,7 +2,7 @@ package presentation.widgets
 
 import GGSansRegular
 import GGSansSemiBold
-import models.PhoneExtensionModel
+import domain.Models.PhoneExtensionModel
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -35,8 +35,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import components.ImageComponent
-import components.TextComponent
+import presentation.components.ImageComponent
+import presentation.components.TextComponent
 
 
 @Composable

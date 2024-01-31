@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import components.ImageComponent
+import presentation.components.ImageComponent
 
 @Composable
 fun PageBackNavWidget(onBackPressed: (() -> Unit)) {

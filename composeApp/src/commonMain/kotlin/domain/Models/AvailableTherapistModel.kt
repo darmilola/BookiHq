@@ -1,4 +1,4 @@
-package models
+package domain.Models
 
 data class AvailableTherapistUIModel(
     val selectedTherapist: AvailableTherapist,

@@ -1,6 +1,6 @@
 package presentation.main
 
-import models.AppointmentItem
+import domain.Models.AppointmentItem
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

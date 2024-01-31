@@ -45,10 +45,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import components.ButtonComponent
-import components.ImageComponent
-import components.TextComponent
-import components.ToggleButton
+import presentation.components.ButtonComponent
+import presentation.components.ImageComponent
+import presentation.components.TextComponent
+import presentation.components.ToggleButton
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import presentation.widgets.CartIncrementDecrementWidget
 

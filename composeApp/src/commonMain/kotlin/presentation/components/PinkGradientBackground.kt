@@ -1,4 +1,4 @@
-package components
+package presentation.components
 
 import theme.styles.Colors
 import androidx.compose.foundation.background

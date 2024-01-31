@@ -1,4 +1,4 @@
-package components
+package presentation.components
 
 import GGSansRegular
 import GGSansSemiBold

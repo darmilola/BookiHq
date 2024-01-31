@@ -2,7 +2,6 @@ package presentation.widgets
 
 import GGSansRegular
 import GGSansSemiBold
-import models.AvailableTherapistUIModel
 import theme.styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,9 +27,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import components.ImageComponent
-import components.TextComponent
-import models.AvailableTherapist
+import presentation.components.ImageComponent
+import presentation.components.TextComponent
+import domain.Models.AvailableTherapist
 
 @Composable
 fun AttachUserProfileImage(availableTherapist: AvailableTherapist) {

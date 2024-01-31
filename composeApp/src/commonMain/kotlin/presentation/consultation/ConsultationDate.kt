@@ -32,7 +32,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import components.TextComponent
+import presentation.components.TextComponent
 import presentation.widgets.Calendar
 import presentation.widgets.ReviewsWidget
 import presentation.widgets.TimeGrid

@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import components.ButtonComponent
+import presentation.components.ButtonComponent
 import kotlinx.coroutines.launch
 import presentation.viewmodels.MainViewModel
 

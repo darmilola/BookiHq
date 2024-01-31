@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
-import components.ImageComponent
+import presentation.components.ImageComponent
 import dev.icerock.moko.mvvm.livedata.compose.observeAsState
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.TitleWidget
