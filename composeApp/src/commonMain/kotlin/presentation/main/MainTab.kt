@@ -24,6 +24,7 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import presentation.components.ImageComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import presentation.appointments.AppointmentsTab
 import presentation.viewmodels.MainViewModel
 
 class MainTab(private val mainViewModel: MainViewModel): Tab {
@@ -72,7 +73,7 @@ class MainTab(private val mainViewModel: MainViewModel): Tab {
                         TabNavigationItem(ConsultTab(mainViewModel), selectedImage = "drawable/video_chat.png", unselectedImage = "drawable/video_chat_outline.png", imageSize = 32, currentTabId = 2, tabNavigator = it, mainViewModel){
                             isBottomNavSelected = true
                         }
-                        TabNavigationItem(BookingsTab(mainViewModel), selectedImage = "drawable/appointment_icon.png", unselectedImage = "drawable/appointment_outline.png", imageSize = 30, currentTabId = 3, tabNavigator = it, mainViewModel){
+                        TabNavigationItem(AppointmentsTab(mainViewModel), selectedImage = "drawable/appointment_icon.png", unselectedImage = "drawable/appointment_outline.png", imageSize = 30, currentTabId = 3, tabNavigator = it, mainViewModel){
                             isBottomNavSelected = true
                         }
                         TabNavigationItem(AccountTab(mainViewModel), selectedImage = "drawable/user.png", unselectedImage = "drawable/user_outline.png", imageSize = 30, currentTabId = 4, tabNavigator = it, mainViewModel){
@@ -113,7 +114,7 @@ class MainTab(private val mainViewModel: MainViewModel): Tab {
             mainViewModel.setTitle(screenTitle)
         }
 
-        else if(tabNavigator.current is BookingsTab && currentTabId == 3){
+        else if(tabNavigator.current is AppointmentsTab && currentTabId == 3){
             imageStr  = selectedImage
             imageTint = Colors.primaryColor
             screenTitle = "Appointments"

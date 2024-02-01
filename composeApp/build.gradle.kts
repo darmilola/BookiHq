@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    kotlin("plugin.serialization") version "1.9.21"
 }
 
 kotlin {
@@ -43,6 +44,7 @@ kotlin {
             implementation(libs.compose.ui)
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.ktor.client.okhttp)
 
         }
         commonMain.dependencies {
@@ -82,7 +84,30 @@ kotlin {
             implementation("dev.icerock.moko:mvvm-livedata-resources:0.16.1") // api mvvm-core, moko-resources, extensions for LiveData with moko-resources
             implementation("dev.icerock.moko:mvvm-flow-resources:0.16.1") // api mvvm-core, moko-resources, extensions for Flow with moko-resources
 
+            // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-swing
+            runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.8.0-RC2")
 
+            //DI
+            implementation("io.insert-koin:koin-core:3.5.0")
+            implementation("io.insert-koin:koin-test:3.5.0")
+
+            implementation(libs.ktor.client.core)
+            implementation(libs.kotlinx.coroutines.core)
+
+            //serialization
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+            implementation("io.ktor:ktor-client-content-negotiation:2.3.8")
+            implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.8")
+
+            //reactiveX
+            implementation ("com.badoo.reaktive:reaktive:2.1.0-beta01")
+            implementation ("com.badoo.reaktive:reaktive-annotations:2.1.0-beta01")
+            implementation ("com.badoo.reaktive:coroutines-interop:2.1.0-beta01")
+
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
     }
 }

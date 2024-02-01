@@ -1,4 +1,4 @@
-package presentation.main
+package presentation.appointments
 
 import domain.Models.AppointmentItem
 import androidx.compose.foundation.background
@@ -24,7 +24,7 @@ import presentation.viewmodels.MainViewModel
 import utils.getAppointmentViewHeight
 import presentation.widgets.AppointmentWidget
 
-class BookingsTab(private val mainViewModel: MainViewModel) : Tab {
+class AppointmentsTab(private val mainViewModel: MainViewModel) : Tab, AppointmentContract.View {
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -96,5 +96,22 @@ class BookingsTab(private val mainViewModel: MainViewModel) : Tab {
                 AppointmentWidget(itemType = item.appointmentType, mainViewModel)
             }
         }
+    }
+
+    override fun showError() {
+        TODO("Not yet implemented")
+    }
+
+    override fun showLce(
+        loadingVisible: Boolean,
+        contentVisible: Boolean,
+        emptyVisible: Boolean,
+        errorVisible: Boolean
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun showAppointment() {
+        TODO("Not yet implemented")
     }
 }

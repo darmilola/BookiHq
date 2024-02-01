@@ -8,12 +8,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import cafe.adriel.voyager.navigator.Navigator
+import di.initKoin
 import presentation.SplashScreen
 import presentation.SplashScreenCompose
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initKoin()
         enableEdgeToEdge()
         setContent {
             Navigator(SplashScreen)
