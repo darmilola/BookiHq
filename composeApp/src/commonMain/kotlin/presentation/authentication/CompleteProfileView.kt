@@ -61,7 +61,7 @@ fun CompleteProfile() {
 
     Column(modifier = rootModifier) {
         Column(modifier = topLayoutModifier) {
-            AttachBackIcon()
+            //AttachBackIcon(proxyNavigator = )
             PageTitle()
             SubtitleTextWidget(text = "Lorem ipsum is placeholder text commonly used in Printing")
             ProfileImageUpdate()

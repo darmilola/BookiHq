@@ -3,11 +3,13 @@ package presentation.authentication
 import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
+import ProxyNavigator
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -15,10 +17,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,13 +39,14 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import presentation.components.IconButtonComponent
 import presentation.components.ImageComponent
 import presentation.components.TextComponent
+import applications.platform.auth0.StartAuth0
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import presentation.viewmodels.AuthenticationViewModel
 
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun SignUpLogin(currentScreen: Int = 0) {
+fun SignUpLogin(currentScreen: Int = 0, proxyNavigator: ProxyNavigator) {
 
     val viewModel: AuthenticationViewModel = AuthenticationViewModel()
     val authenticationScreenData = viewModel.authenticationScreenData ?: return
@@ -60,12 +68,14 @@ fun SignUpLogin(currentScreen: Int = 0) {
 
         Column(modifier = rootModifier) {
             Column(modifier = topLayoutModifier) {
-                AttachBackIcon(-1)
-                welcomeToSavanna()
+                Box(modifier = Modifier.wrapContentSize().padding(start = 10.dp, top = 10.dp)) {
+                    AttachBackIcon(-1, proxyNavigator)
+                }
+                welcomeToZazzy()
                 attachAuthenticationText(currentScreen)
-                attachAuthenticationButton()
+                attachAuthenticationButton(proxyNavigator)
             }
-            attachAuthenticationTypeChangeView(currentScreen)
+            attachAuthenticationTypeChangeView(currentScreen, proxyNavigator)
         }
     }
 
@@ -76,7 +86,7 @@ fun attachWaveIcon() {
     val modifier = Modifier
         .padding(end = 10.dp)
         .size(30.dp)
-    ImageComponent(imageModifier = modifier, imageRes = "wave_hands.png")
+    ImageComponent(imageModifier = modifier, imageRes = "drawable/wave_hands.png")
 }
 
 @Composable
@@ -111,12 +121,17 @@ fun attachAuthenticationText(currentScreen: Int = 0) {
 
 
 @Composable
-fun attachAuthenticationButton() {
+fun attachAuthenticationButton(proxyNavigator: ProxyNavigator) {
     val columnModifier = Modifier
         .padding(top = 50.dp, start = 10.dp)
         .fillMaxWidth()
 
     val navigator = LocalNavigator.currentOrThrow
+    var startAuth0 by remember { mutableStateOf(false) }
+
+    if(startAuth0){
+        StartAuth0()
+    }
 
     val buttonStyle = Modifier
         .padding(bottom = 15.dp)
@@ -129,17 +144,18 @@ fun attachAuthenticationButton() {
         ) {
 
             IconButtonComponent(modifier = buttonStyle, buttonText = "Use Phone Number", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/phone_light_icon.png", iconSize = 45, colorFilter = ColorFilter.tint(color = Color.Gray)){
-                navigator.push(AuthenticationScreen(2))
+                navigator.push(AuthenticationScreen(2, proxyNavigator = proxyNavigator))
             }
             IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Email", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/email_icon.png",  colorFilter = ColorFilter.tint(color = Color.Gray)){
-                navigator.replace(AuthenticationScreen(3))
+                navigator.replace(AuthenticationScreen(3, proxyNavigator = proxyNavigator))
             }
-            IconButtonComponent(modifier = buttonStyle, buttonText = "Connect with Google", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "google_icon.png")
+            IconButtonComponent(modifier = buttonStyle, buttonText = "Connect with Google", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/google_icon.png")
 
             IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with X", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/x_logo.png",  colorFilter = ColorFilter.tint(color = Color.Gray)){
-                navigator.push(AuthenticationScreen(1))
+              proxyNavigator.openPage("Twitter")
+            // startAuth0 = true
             }
-            IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Instagram", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "instagram_icon.png")
+            IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Instagram", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/instagram_icon.png")
         }
     }
 
@@ -191,7 +207,7 @@ fun authenticationTypeChangeText(currentScreen: Int = 0) {
 
 
 @Composable
-fun attachAuthenticationTypeChangeView(currentScreen: Int = 0) {
+fun attachAuthenticationTypeChangeView(currentScreen: Int = 0, proxyNavigator: ProxyNavigator) {
     val navigator = LocalNavigator.currentOrThrow
     val rowModifier = Modifier
         .padding(bottom = 40.dp)
@@ -199,7 +215,7 @@ fun attachAuthenticationTypeChangeView(currentScreen: Int = 0) {
         .fillMaxHeight()
         .fillMaxWidth()
         .clickable {
-            navigator.replace(AuthenticationScreen(currentScreen))
+            navigator.replace(AuthenticationScreen(currentScreen, proxyNavigator = proxyNavigator))
         }
 
         Row(
@@ -213,7 +229,7 @@ fun attachAuthenticationTypeChangeView(currentScreen: Int = 0) {
 
 
 @Composable
-fun welcomeToSavanna(){
+fun welcomeToZazzy(){
     val rowModifier = Modifier
         .padding(top = 50.dp)
         .fillMaxWidth()
@@ -225,7 +241,7 @@ fun welcomeToSavanna(){
             val modifier = Modifier.padding(start = 5.dp)
             attachWaveIcon()
             TextComponent(
-                text = "Welcome to Savanna",
+                text = "Welcome to Zazzy",
                 fontSize = 23,
                 fontFamily = GGSansBold,
                 textStyle = TextStyle(),

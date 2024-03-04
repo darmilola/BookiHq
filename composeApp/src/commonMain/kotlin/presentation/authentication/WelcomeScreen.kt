@@ -1,5 +1,6 @@
 package presentation.authentication
 
+import ProxyNavigator
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -25,7 +26,7 @@ import presentation.components.ButtonComponent
 import presentation.widgets.WelcomeScreenPagerContent
 
 @Composable
-fun WelcomeScreenCompose() {
+fun WelcomeScreenCompose(proxyNavigator: ProxyNavigator) {
     val bgStyle = Modifier
         .fillMaxWidth()
         .fillMaxHeight()
@@ -45,7 +46,7 @@ fun WelcomeScreenCompose() {
                 }
 
                 Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.Center) {
-                    AttachActionButtons(TextStyle())
+                    AttachActionButtons(proxyNavigator)
                 }
 
             }
@@ -62,22 +63,22 @@ fun WelcomeScreenCompose() {
 
 
 @Composable
-fun AttachActionButtons(style: TextStyle){
+fun AttachActionButtons(proxyNavigator: ProxyNavigator){
     val navigator = LocalNavigator.currentOrThrow
     val buttonStyle = Modifier
-        .padding(bottom = 10.dp)
+        .padding(bottom = 25.dp)
         .fillMaxWidth(0.90f)
         .height(50.dp)
 
-        ButtonComponent(modifier = buttonStyle, buttonText = "Continue", borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = CircleShape, textColor = Color.White, style = style){
-            navigator.replace(AuthenticationScreen(currentScreen = 1))
+        ButtonComponent(modifier = buttonStyle, buttonText = "Continue", borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = CircleShape, textColor = Color.White, style = TextStyle()) {
+            navigator.replace(AuthenticationScreen(currentScreen = 1, proxyNavigator = proxyNavigator))
         }
     }
 
 
-object WelcomeScreen : Screen {
+class WelcomeScreen(val proxyNavigator: ProxyNavigator) : Screen {
     @Composable
     override fun Content() {
-        WelcomeScreenCompose()
+        WelcomeScreenCompose(proxyNavigator)
     }
 }

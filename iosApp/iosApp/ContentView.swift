@@ -1,15 +1,32 @@
 import UIKit
 import SwiftUI
 import ComposeApp
-import NSD
+import AuthenticationServices
+import Auth0
 
 struct ComposeView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
-        var viewController: UIViewController  = MainViewControllerKt.MainViewController()
+        var viewController: UIViewController  = MainViewController().MainViewController {
+             Auth0
+              .webAuth()
+              .start { result in
+                  switch result {
+                  case .success(let credentials):
+                      print("Obtained credentials: \(credentials)")
+                  case .failure(let error):
+                      print("Failed with: \(error)")
+                  }
+              }
+            
+        }
         return viewController
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+
+  
+    
+      
     
 }
 

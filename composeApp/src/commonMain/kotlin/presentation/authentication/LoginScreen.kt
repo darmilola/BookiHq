@@ -5,6 +5,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 
+/*
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun LoginScreenCompose() {
@@ -22,4 +23,5 @@ object LoginScreen : Screen {
 }
 
 
+*/
 

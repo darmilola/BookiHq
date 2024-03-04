@@ -4,7 +4,7 @@ import platform.Foundation.NSDateFormatter
 import platform.Foundation.NSTimeZone
 
 actual object PlatformDateTime {
-    actual fun getFormattedDate(timestamp: String): String {
+  /*  actual fun getFormattedDate(timestamp: String): String {
         val df = NSDateFormatter()
         val timestampFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         val outputFormat = "MMM dd, yyyy HH:mm:ss"
@@ -40,5 +40,20 @@ actual object PlatformDateTime {
     fun getYear(): Int {
         let dateComponents = NSDateComponents()
         return dateComponents.year
+    }*/
+    actual fun getFormattedDate(timestamp: String): String {
+        TODO("Not yet implemented")
+    }
+
+    actual fun getDay(): Int {
+        TODO("Not yet implemented")
+    }
+
+    actual fun getMonth(): Int {
+        TODO("Not yet implemented")
+    }
+
+    actual fun getYear(): Int {
+        TODO("Not yet implemented")
     }
 }

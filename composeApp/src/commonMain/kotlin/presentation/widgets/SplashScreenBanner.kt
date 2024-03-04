@@ -18,7 +18,6 @@ import presentation.components.ImageComponent
 import presentation.components.TextComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun SplashScreenWidget(textStyle: TextStyle) {
     val bgStyle = Modifier
@@ -34,7 +33,7 @@ fun SplashScreenWidget(textStyle: TextStyle) {
 fun attachCompanyLogo() {
     val modifier = Modifier
         .size(250.dp)
-    ImageComponent(imageModifier = modifier, imageRes = "0.png")
+    ImageComponent(imageModifier = modifier, imageRes = "drawable/0.png")
 }
 
 @Composable

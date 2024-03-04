@@ -43,7 +43,6 @@ fun WelcomeScreenTextWidget() {
 
         Box(modifier = modifier, contentAlignment = Alignment.TopCenter) {
             welcomeScreenTextContent(textStyle = TextStyle(), fontFamily = GGSansBold)
-
         }
     }
 
@@ -73,7 +72,7 @@ fun welcomeScreenTextContent(textStyle: TextStyle, fontFamily: FontFamily? = nul
                 .height(140.dp)
             TextComponent(
                 textModifier = modifier,
-                text = "A residence of\nattractions",
+                text = "Finger Lickin' Good - KFC",
                 fontSize = 55,
                 fontFamily = GGSansRegular,
                 textStyle = TextStyle(),
@@ -96,7 +95,7 @@ fun welcomeScreenTextContent(textStyle: TextStyle, fontFamily: FontFamily? = nul
         }
 
         TextComponent(
-            text = "Does She or Doesn't She? Only Her\nNutella Knows for Sure.",
+            text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum",
             fontSize = 20,
             fontFamily = GGSansRegular,
             textStyle = TextStyle(),
@@ -104,7 +103,7 @@ fun welcomeScreenTextContent(textStyle: TextStyle, fontFamily: FontFamily? = nul
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Black,
             lineHeight = 25,
-            textModifier = Modifier.fillMaxWidth().padding(top = 20.dp)
+            textModifier = Modifier.fillMaxWidth().padding(top = 10.dp)
         )
 
 

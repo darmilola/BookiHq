@@ -1,5 +1,6 @@
 package presentation.authentication
 
+import ProxyNavigator
 import theme.styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +30,7 @@ import presentation.widgets.TitleWidget
 
 
 @Composable
-fun ContinueWithEmail() {
+fun ContinueWithEmail(proxyNavigator: ProxyNavigator) {
 
     val navigator = LocalNavigator.currentOrThrow
     val  rootModifier =
@@ -52,12 +53,12 @@ fun ContinueWithEmail() {
 
     Column(modifier = rootModifier) {
         Column(modifier = topLayoutModifier) {
-            AttachEmailBackIcon()
+            AttachEmailBackIcon(proxyNavigator = proxyNavigator)
             EnterEmailTitle()
             AttachSendCodeToEmailDescription()
             InputWidget(iconRes = "drawable/email_icon.png", placeholderText = "Email", iconSize = 24, isFocusedByDefault = true)
             ButtonComponent(modifier = buttonStyle, buttonText = "Continue", borderStroke = null, colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color(color = 0xFFFFFFFF), style = TextStyle() ){
-                navigator.replace(AuthenticationScreen(currentScreen = 4, viewType = 1))
+                navigator.replace(AuthenticationScreen(currentScreen = 4, viewType = 1, proxyNavigator))
             }
 
 
@@ -68,15 +69,15 @@ fun ContinueWithEmail() {
 }
 
 @Composable
-fun AttachEmailBackIcon(goToScreen: Int = 0) {
+fun AttachEmailBackIcon(goToScreen: Int = 0, proxyNavigator: ProxyNavigator) {
     val navigator = LocalNavigator.currentOrThrow
     PageBackNavWidget(){
         if(goToScreen == -1){
-            navigator.replaceAll(WelcomeScreen)
+            navigator.replaceAll(WelcomeScreen(proxyNavigator))
         }
 
         else {
-            navigator.replace(AuthenticationScreen(goToScreen))
+            navigator.replace(AuthenticationScreen(goToScreen, proxyNavigator = proxyNavigator))
         }
     }
 }

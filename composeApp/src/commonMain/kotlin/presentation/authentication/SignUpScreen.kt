@@ -1,5 +1,6 @@
 package presentation.authentication
 
+import ProxyNavigator
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -7,19 +8,19 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun SignUpScreenCompose() {
+fun SignUpScreenCompose(proxyNavigator: ProxyNavigator) {
 
 
 
-   SignUpLogin(1)
+   SignUpLogin(1, proxyNavigator)
 
 }
 
 
-object SignUpScreen : Screen {
+class SignUpScreen(val proxyNavigator: ProxyNavigator) : Screen {
     @Composable
     override fun Content() {
-        SignUpScreenCompose()
+        SignUpScreenCompose(proxyNavigator)
     }
 }
 

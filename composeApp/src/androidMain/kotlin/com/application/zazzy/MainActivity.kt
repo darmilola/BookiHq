@@ -1,5 +1,6 @@
 package com.application.zazzy
 
+import ProxyNavigator
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -12,7 +13,7 @@ import di.initKoin
 import presentation.SplashScreen
 import presentation.SplashScreenCompose
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), ProxyNavigator {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initKoin()
@@ -28,6 +29,10 @@ class MainActivity : ComponentActivity() {
           //  window.statusBarColor = ContextCompat.getColor(this, R.color.light_background_color)
            // window.navigationBarColor = ContextCompat.getColor(this, R.color.light_background_color)
         }
+    }
+
+    override fun openPage(pageTitle: String) {
+        TODO("Not yet implemented")
     }
 
 }

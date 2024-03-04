@@ -1,5 +1,6 @@
 package presentation
 
+import ProxyNavigator
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,7 +24,7 @@ import presentation.authentication.WelcomeScreen
 import presentation.widgets.SplashScreenWidget
 
 @Composable
-fun SplashScreenCompose() {
+fun SplashScreenCompose(proxyNavigator: ProxyNavigator) {
    val  modifier =
         Modifier.fillMaxWidth()
             .fillMaxHeight()
@@ -43,7 +44,7 @@ fun SplashScreenCompose() {
         LaunchedEffect(key1 = true) {
             delay(3000L)
 
-            navigator.replaceAll(WelcomeScreen)
+            navigator.replaceAll(WelcomeScreen(proxyNavigator))
         }
     }
 
@@ -61,10 +62,10 @@ fun businessTagline(){
     }
 
 
-object SplashScreen : Screen {
+class SplashScreen(val proxyNavigator: ProxyNavigator) : Screen {
     @Composable
     override fun Content() {
-        SplashScreenCompose()
+        SplashScreenCompose(proxyNavigator = proxyNavigator)
     }
 }
 

@@ -27,6 +27,8 @@ kotlin {
         }
     }*/
 
+
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -45,6 +47,8 @@ kotlin {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
+            //Auth0
+            implementation ("com.auth0.android:auth0:2.+")
 
         }
         commonMain.dependencies {
@@ -104,6 +108,7 @@ kotlin {
             implementation ("com.badoo.reaktive:reaktive-annotations:2.1.0-beta01")
             implementation ("com.badoo.reaktive:coroutines-interop:2.1.0-beta01")
 
+
         }
 
         iosMain.dependencies {
@@ -116,6 +121,7 @@ android {
     namespace = "com.application.zazzy"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
+
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
@@ -126,6 +132,8 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+        manifestPlaceholders["auth0Domain"] = "@string/com_auth0_domain"
+        manifestPlaceholders["auth0Scheme"] = "demo"
     }
     buildFeatures {
         compose = true
@@ -150,5 +158,6 @@ android {
     dependencies {
         debugImplementation(libs.compose.ui.tooling)
     }
+
 }
 

@@ -1,5 +1,6 @@
 package presentation.authentication
 
+import ProxyNavigator
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -12,7 +13,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import presentation.viewmodels.AuthenticationViewModel
 
 @Composable
-fun AuthenticationScreenCompose(currentPosition: Int = 0, viewType: Int = -1) {
+fun AuthenticationScreenCompose(currentPosition: Int = 0, viewType: Int = -1, proxyNavigator: ProxyNavigator) {
 
     val viewModel = AuthenticationViewModel()
     viewModel.changeScreen(currentPosition)
@@ -62,23 +63,23 @@ fun AuthenticationScreenCompose(currentPosition: Int = 0, viewType: Int = -1) {
         // content transform.
         when (targetState) {
             0 -> {
-                SignUpLogin(1)
+                SignUpLogin(1, proxyNavigator)
             }
             1 -> {
-                SignUpLogin(0)
+                SignUpLogin(0, proxyNavigator)
                  }
             2 -> {
-                ContinueWithPhone()
+                ContinueWithPhone(proxyNavigator)
             }
             3 -> {
-                ContinueWithEmail()
+                ContinueWithEmail(proxyNavigator)
             }
             4 -> {
                 if(viewType == 0){
-                    VerifyOTP(viewType = 0)
+                    VerifyOTP(viewType = 0,proxyNavigator = proxyNavigator)
                 }
                 else{
-                    VerifyOTP(viewType = 1)
+                    VerifyOTP(viewType = 1,proxyNavigator = proxyNavigator)
                 }
             }
 
@@ -95,13 +96,13 @@ fun AuthenticationScreenCompose(currentPosition: Int = 0, viewType: Int = -1) {
 
 }
 
-class AuthenticationScreen(currentScreen: Int = 0, private val viewType: Int = -1) : Screen {
+class AuthenticationScreen(currentScreen: Int = 0, private val viewType: Int = -1,val  proxyNavigator: ProxyNavigator) : Screen {
 
     private val sc = currentScreen
 
     @Composable
     override fun Content() {
-        AuthenticationScreenCompose(currentPosition = sc, viewType = viewType)
+        AuthenticationScreenCompose(currentPosition = sc, viewType = viewType, proxyNavigator = proxyNavigator)
     }
 }
 

@@ -1,5 +1,6 @@
 package presentation.authentication
 
+import ProxyNavigator
 import theme.styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,7 +34,7 @@ import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
 
 @Composable
-fun VerifyOTP(viewType: Int = 0) {
+fun VerifyOTP(viewType: Int = 0, proxyNavigator: ProxyNavigator) {
     val  rootModifier =
         Modifier
             .fillMaxWidth()
@@ -58,7 +59,7 @@ fun VerifyOTP(viewType: Int = 0) {
 
         Column(modifier = rootModifier) {
             Column(modifier = topLayoutModifier) {
-                AttachBackIcon(0)
+                AttachBackIcon(0, proxyNavigator)
                 EnterVerificationCodeTitle()
                 AttachVerificationCodeText(viewType = viewType)
 
@@ -84,9 +85,9 @@ fun VerifyOTP(viewType: Int = 0) {
 
                 }
 
-                ResendVerificationCode(viewType = viewType)
+                ResendVerificationCode(viewType = viewType,proxyNavigator = proxyNavigator)
                 ButtonComponent(modifier = buttonStyle, buttonText = "Verify", borderStroke = null, colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4) {
-                    navigator.replace(AuthenticationScreen(currentScreen = 5))
+                    navigator.replace(AuthenticationScreen(currentScreen = 5, proxyNavigator = proxyNavigator))
                 }
             }
         }
@@ -114,7 +115,7 @@ fun AttachVerificationCodeText(viewType: Int = 0) {
 }
 
 @Composable
-fun ResendVerificationCode(viewType: Int = 0) {
+fun ResendVerificationCode(viewType: Int = 0, proxyNavigator: ProxyNavigator) {
     val rowModifier = Modifier
         .padding(top = 50.dp)
         .fillMaxWidth()
@@ -134,10 +135,10 @@ fun ResendVerificationCode(viewType: Int = 0) {
                 .padding(top = 10.dp)
                 .clickable {
                     if(viewType == 0){
-                        navigator.push(AuthenticationScreen(2))
+                        navigator.push(AuthenticationScreen(2,proxyNavigator = proxyNavigator))
                     }
                     else{
-                        navigator.push(AuthenticationScreen(3))
+                        navigator.push(AuthenticationScreen(3,proxyNavigator = proxyNavigator))
                     }
                  }
                 .wrapContentHeight()){

@@ -1,5 +1,6 @@
 package presentation.authentication
 
+import ProxyNavigator
 import theme.styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,7 +29,7 @@ import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
 
 @Composable
-fun ContinueWithPhone() {
+fun ContinueWithPhone(proxyNavigator: ProxyNavigator) {
 
     val navigator = LocalNavigator.currentOrThrow
     val  rootModifier =
@@ -51,13 +52,13 @@ fun ContinueWithPhone() {
 
         Column(modifier = rootModifier) {
             Column(modifier = topLayoutModifier) {
-                AttachBackIcon()
+                AttachBackIcon(proxyNavigator = proxyNavigator)
                 EnterPhoneNumberTitle()
                 AttachSendCodeDescription()
                 PhoneInputWidget()
 
                 ButtonComponent(modifier = buttonStyle, buttonText = "Continue", borderStroke = null, colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4 ){
-                    navigator.replace(AuthenticationScreen(currentScreen = 4, viewType = 0))
+                    navigator.replace(AuthenticationScreen(currentScreen = 4, viewType = 0, proxyNavigator))
                 }
 
 
@@ -68,14 +69,14 @@ fun ContinueWithPhone() {
     }
 
 @Composable
-fun AttachBackIcon(goToScreen: Int = 0) {
+fun AttachBackIcon(goToScreen: Int = 0, proxyNavigator: ProxyNavigator) {
     val navigator = LocalNavigator.currentOrThrow
     PageBackNavWidget(){
         if(goToScreen == -1){
-            navigator.replaceAll(WelcomeScreen)
+            navigator.replaceAll(WelcomeScreen(proxyNavigator = proxyNavigator))
         }
         else {
-            navigator.replace(AuthenticationScreen(goToScreen))
+            navigator.replace(AuthenticationScreen(goToScreen, proxyNavigator = proxyNavigator))
         }
     }
 }
