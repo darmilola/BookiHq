@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
             val authResponse = Auth0ConnectionResponse(email = auth0ConnectionResponse!!.email!!,
                 connectionType = auth0ConnectionResponse!!.connectionType.toString(),
                 status = auth0ConnectionResponse!!.status!!, action = auth0ConnectionResponse!!.action!!)
-            authScreen.setLoginAuthResponse(authResponse)
+            authScreen.setSignupAuthResponse(authResponse)
             setContent {
                 Navigator(authScreen)
             }

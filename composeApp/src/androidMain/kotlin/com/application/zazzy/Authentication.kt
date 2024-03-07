@@ -49,7 +49,7 @@ class Authentication : AppCompatActivity() {
         WebAuthProvider.login(account)
             .withConnection(connectionType)
             .withScheme("demo")
-            .withRedirectUri("demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy.Zazzy/callback")
+            .withRedirectUri("dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy.Zazzy/callback")
             .start(this, object : Callback<Credentials, AuthenticationException> {
                 override fun onFailure(error: AuthenticationException) {
                     val intent = Intent(this@Authentication, MainActivity::class.java)
@@ -83,7 +83,7 @@ class Authentication : AppCompatActivity() {
             .withConnection(connectionType)
             .withScheme("demo")
             .withScope("openid profile email")
-            .withRedirectUri("demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy.Zazzy/callback")
+            .withRedirectUri("dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy.Zazzy/callback")
             .start(this, object : Callback<Credentials, AuthenticationException> {
                 override fun onFailure(error: AuthenticationException) {
                     val intent = Intent(this@Authentication, MainActivity::class.java)
