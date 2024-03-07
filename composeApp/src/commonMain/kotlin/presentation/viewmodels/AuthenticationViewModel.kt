@@ -1,36 +1,46 @@
 package presentation.viewmodels
 
-import androidx.compose.runtime.mutableStateOf
-import dev.icerock.moko.mvvm.viewmodel.ViewModel
+import com.hoc081098.kmp.viewmodel.SavedStateHandle
+import com.hoc081098.kmp.viewmodel.ViewModel
+import kotlinx.coroutines.flow.StateFlow
 
-class AuthenticationViewModel: ViewModel() {
+class AuthenticationViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
     private var pageIndex = 0
 
-    private val _authenticationScreenData = mutableStateOf(createAuthenticationScreenData())
-    val authenticationScreenData: AuthenticationScreenData?
-        get() = _authenticationScreenData.value
+    //private val _authenticationScreenData = mutableStateOf(createAuthenticationScreenData())
+
+    private var _currentScreen =  savedStateHandle.getStateFlow("currentScreen", 1)
+   /* val authenticationScreenData: AuthenticationScreenData?
+        get() = _authenticationScreenData.value*/
+
+    val currentScreenValue: StateFlow<Int>
+        get() = _currentScreen
 
 
+    fun switchScreen(currentScreen: Int) {
+        savedStateHandle["currentScreen"] = currentScreen
+    }
 
-    private val authScreenOrder: List<AuthenticationScreenEnum> = listOf(
+  /*  private val authScreenOrder: List<AuthenticationScreenEnum> = listOf(
         AuthenticationScreenEnum.LOGIN_SCREEN,
         AuthenticationScreenEnum.SIGNUP_SCREEN
     )
-
-    private fun createAuthenticationScreenData(): AuthenticationScreenData {
+*/
+ /*   private fun createAuthenticationScreenData(): AuthenticationScreenData {
         return AuthenticationScreenData(
             screenType = pageIndex
         )
-    }
+    }*/
 
-    fun changeScreen(newPageIndex: Int) {
+/*    fun changeScreen(newPageIndex: Int) {
         pageIndex = newPageIndex
         _authenticationScreenData.value = createAuthenticationScreenData()
-    }
+    }*/
 
 }
 
+/*
 enum class AuthenticationScreenEnum {
     LOGIN_SCREEN,
     SIGNUP_SCREEN
@@ -39,4 +49,4 @@ enum class AuthenticationScreenEnum {
 
 data class AuthenticationScreenData(
     val screenType: Int
-)
+)*/

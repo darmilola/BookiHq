@@ -1,6 +1,6 @@
 package presentation.authentication
 
-import ProxyNavigator
+import PlatformNavigator
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -22,11 +22,12 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import domain.Models.AuthSSOScreen
 import presentation.components.ButtonComponent
 import presentation.widgets.WelcomeScreenPagerContent
 
 @Composable
-fun WelcomeScreenCompose(proxyNavigator: ProxyNavigator) {
+fun WelcomeScreenCompose(platformNavigator: PlatformNavigator) {
     val bgStyle = Modifier
         .fillMaxWidth()
         .fillMaxHeight()
@@ -46,7 +47,7 @@ fun WelcomeScreenCompose(proxyNavigator: ProxyNavigator) {
                 }
 
                 Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.Center) {
-                    AttachActionButtons(proxyNavigator)
+                    AttachActionButtons(platformNavigator)
                 }
 
             }
@@ -63,7 +64,7 @@ fun WelcomeScreenCompose(proxyNavigator: ProxyNavigator) {
 
 
 @Composable
-fun AttachActionButtons(proxyNavigator: ProxyNavigator){
+fun AttachActionButtons(platformNavigator: PlatformNavigator){
     val navigator = LocalNavigator.currentOrThrow
     val buttonStyle = Modifier
         .padding(bottom = 25.dp)
@@ -71,14 +72,14 @@ fun AttachActionButtons(proxyNavigator: ProxyNavigator){
         .height(50.dp)
 
         ButtonComponent(modifier = buttonStyle, buttonText = "Continue", borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = CircleShape, textColor = Color.White, style = TextStyle()) {
-            navigator.replace(AuthenticationScreen(currentScreen = 1, proxyNavigator = proxyNavigator))
+            navigator.replace(AuthenticationScreen(currentPosition = AuthSSOScreen.AUTH_LOGIN.toPath(), platformNavigator = platformNavigator))
         }
     }
 
 
-class WelcomeScreen(val proxyNavigator: ProxyNavigator) : Screen {
+class WelcomeScreen(val platformNavigator: PlatformNavigator) : Screen {
     @Composable
     override fun Content() {
-        WelcomeScreenCompose(proxyNavigator)
+        WelcomeScreenCompose(platformNavigator)
     }
 }

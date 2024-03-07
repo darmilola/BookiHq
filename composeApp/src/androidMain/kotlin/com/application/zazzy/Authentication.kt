@@ -1,50 +1,125 @@
 package com.application.zazzy
 
-import android.os.Build
+import PlatformNavigator
+import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
+import android.widget.EditText
+import android.widget.LinearLayout
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
+import cafe.adriel.voyager.navigator.Navigator
 import com.auth0.android.Auth0
+import com.auth0.android.authentication.AuthenticationAPIClient
 import com.auth0.android.authentication.AuthenticationException
 import com.auth0.android.callback.Callback
 import com.auth0.android.provider.WebAuthProvider
 import com.auth0.android.result.Credentials
+import com.auth0.android.result.UserProfile
+import com.russhwolf.settings.Settings
+import domain.Models.Auth0ConnectionResponse
+import domain.Models.AuthenticationAction
+import domain.Models.AuthenticationStatus
+import presentation.SplashScreen
+import utils.AndroidAuth0ConnectionResponse
 
-class Authentication : ComponentActivity() {
+
+class Authentication : AppCompatActivity() {
+
+    private var connectionType: String? = ""
+    private var authAction: String? = ""
+    private val preferenceSettings: Settings = Settings()
+    private val account = Auth0("msZpuVAzJvHN6HI7ZLLjHp4e8HjTwe1H", "dev-6s0tarpbfr017qxp.us.auth0.com")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val twitterAuth = loginWithTwitter()
+        connectionType = intent.getStringExtra("connectionType")
+        authAction = intent.getStringExtra("authAction")
 
-        if (twitterAuth){
-            finish()
-            onDestroy()
+        if (authAction == AuthenticationAction.SIGNUP.toPath()){
+             startSSOSignup(connectionType.toString())
         }
-        else{
-            finish()
-            onDestroy()
+        else if (authAction == AuthenticationAction.LOGIN.toPath()){
+            startSSOLogin(connectionType.toString())
         }
     }
-    private fun loginWithTwitter(): Boolean {
-        val account = Auth0("msZpuVAzJvHN6HI7ZLLjHp4e8HjTwe1H", "dev-6s0tarpbfr017qxp.us.auth0.com")
-        var isSuccess: Boolean = false
-        // Setup the WebAuthProvider, using the custom scheme and scope.
-        WebAuthProvider.login(account)
-            .withScheme("demo")
-            .withScope("openid profile email")
-            // Launch the authentication passing the callback where the results will be received
-            .start(this, object : Callback<Credentials, AuthenticationException> {
-                // Called when there is an authentication failure
-                override fun onFailure(exception: AuthenticationException) {
-                    isSuccess = false
-                }
-                // Called when authentication completed successfully
-                override fun onSuccess(credentials: Credentials) {
-                    // Get the access token from the credentials object.
-                    // This can be used to call APIs
-                    val accessToken = credentials.accessToken
-                    isSuccess = true
 
+    private fun startSSOLogin(connectionType: String) {
+        WebAuthProvider.login(account)
+            .withConnection(connectionType)
+            .withScheme("demo")
+            .withRedirectUri("demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy.Zazzy/callback")
+            .start(this, object : Callback<Credentials, AuthenticationException> {
+                override fun onFailure(error: AuthenticationException) {
+                    val intent = Intent(this@Authentication, MainActivity::class.java)
+                    val response = AndroidAuth0ConnectionResponse(connectionType = connectionType, email = "", action = authAction!!, status = AuthenticationStatus.FAILURE.toPath())
+                    intent.putExtra("authResponse", response)
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    startActivity(intent)
+                }
+                override fun onSuccess(result: Credentials) {
+                    val accessToken = result.accessToken
+                    val client = AuthenticationAPIClient(auth0 = account)
+                    client.userInfo(accessToken)
+                        .start(object : Callback<UserProfile, AuthenticationException> {
+                            override fun onFailure(error: AuthenticationException) {
+                                val intent = Intent(this@Authentication, MainActivity::class.java)
+                                val response = AndroidAuth0ConnectionResponse(connectionType = connectionType, email = "", action = authAction!!, status = AuthenticationStatus.FAILURE.toPath())
+                                intent.putExtra("authResponse", response)
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                startActivity(intent)
+                            }
+                            override fun onSuccess(result: UserProfile) {
+                                println(result)
+                            }
+                        })
                 }
             })
-        return isSuccess
+       }
+
+    private fun startSSOSignup(connectionType: String) {
+        WebAuthProvider.login(account)
+            .withConnection(connectionType)
+            .withScheme("demo")
+            .withScope("openid profile email")
+            .withRedirectUri("demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy.Zazzy/callback")
+            .start(this, object : Callback<Credentials, AuthenticationException> {
+                override fun onFailure(error: AuthenticationException) {
+                    val intent = Intent(this@Authentication, MainActivity::class.java)
+                    val response = AndroidAuth0ConnectionResponse(connectionType = connectionType, email = "", action = authAction!!, status = AuthenticationStatus.FAILURE.toPath())
+                    intent.putExtra("authResponse", response)
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    startActivity(intent)
+                }
+                override fun onSuccess(result: Credentials) {
+                    val accessToken = result.accessToken
+                    val client = AuthenticationAPIClient(auth0 = account)
+                    client.userInfo(accessToken)
+                        .start(object : Callback<UserProfile, AuthenticationException> {
+                            override fun onFailure(error: AuthenticationException) {
+                                val intent = Intent(this@Authentication, MainActivity::class.java)
+                                val response = AndroidAuth0ConnectionResponse(connectionType = connectionType, email = "", action = authAction!!, status = AuthenticationStatus.FAILURE.toPath())
+                                intent.putExtra("authResponse", response)
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                startActivity(intent)
+                            }
+                            override fun onSuccess(result: UserProfile) {
+                                println(result)
+                            }
+                        })
+                }
+            })
     }
+    private fun logout() {
+        WebAuthProvider.logout(account)
+            .withScheme("demo")
+            .withReturnToUrl("demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy.Zazzy/callback")
+            .start(this, object: Callback<Void?, AuthenticationException> {
+                override fun onSuccess(result: Void?) {
+                    preferenceSettings.clear()
+                }
+                override fun onFailure(error: AuthenticationException) {}})
+    }
+
 }

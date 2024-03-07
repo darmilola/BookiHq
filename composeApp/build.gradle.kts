@@ -12,7 +12,7 @@ kotlin {
     androidTarget {
         compilations.all {
             kotlinOptions {
-                jvmTarget = "1.8"
+                jvmTarget = "11"
             }
         }
     }
@@ -77,7 +77,7 @@ kotlin {
             implementation("dev.icerock.moko:mvvm-compose:0.16.1") // api mvvm-core, getViewModel for Compose Multiplatform
             implementation("dev.icerock.moko:mvvm-flow-compose:0.16.1") // api mvvm-flow, binding extensions for Compose Multiplatform
             implementation("dev.icerock.moko:mvvm-livedata-compose:0.16.1") // api mvvm-livedata, binding extensions for Compose Multiplatform
-
+            implementation("io.github.hoc081098:kmp-viewmodel-compose:0.6.1")
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
 
 
@@ -109,6 +109,28 @@ kotlin {
             implementation ("com.badoo.reaktive:coroutines-interop:2.1.0-beta01")
 
 
+            //Networking
+            implementation(libs.ktor.client.core)
+            implementation("io.ktor:ktor-client-logging:2.3.8")
+
+
+            //Twilio
+            implementation ("com.twilio.sdk:twilio:9.16.0")
+
+            //Image Upload
+            implementation("com.darkrockstudios:mpfilepicker:3.1.0")
+            implementation("io.github.qdsfdhvh:image-loader:1.7.8")
+            implementation("io.github.qdsfdhvh:image-loader-extension-moko-resources:1.7.8")
+
+            //datastore
+            implementation("com.russhwolf:multiplatform-settings-no-arg:1.1.1")
+            implementation("com.russhwolf:multiplatform-settings-serialization:1.1.1")
+
+            //paging
+            implementation("app.cash.paging:paging-compose-common:3.3.0-alpha02-0.4.0")
+            implementation("app.cash.paging:paging-common:3.3.0-alpha02-0.4.0")
+
+
         }
 
         iosMain.dependencies {
@@ -119,7 +141,7 @@ kotlin {
 
 android {
     namespace = "com.application.zazzy"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdk = 34
 
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
@@ -144,6 +166,7 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/DEPENDENCIES"
         }
     }
     buildTypes {
@@ -152,8 +175,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     dependencies {
         debugImplementation(libs.compose.ui.tooling)

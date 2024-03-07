@@ -1,6 +1,6 @@
 package presentation.authentication
 
-import ProxyNavigator
+import PlatformNavigator
 import theme.styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import domain.Models.AuthSSOScreen
 import presentation.components.ButtonComponent
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.PhoneInputWidget
@@ -29,7 +30,7 @@ import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
 
 @Composable
-fun ContinueWithPhone(proxyNavigator: ProxyNavigator) {
+fun ContinueWithPhone(platformNavigator: PlatformNavigator) {
 
     val navigator = LocalNavigator.currentOrThrow
     val  rootModifier =
@@ -52,13 +53,13 @@ fun ContinueWithPhone(proxyNavigator: ProxyNavigator) {
 
         Column(modifier = rootModifier) {
             Column(modifier = topLayoutModifier) {
-                AttachBackIcon(proxyNavigator = proxyNavigator)
+                AttachBackIcon(platformNavigator = platformNavigator)
                 EnterPhoneNumberTitle()
                 AttachSendCodeDescription()
                 PhoneInputWidget()
 
-                ButtonComponent(modifier = buttonStyle, buttonText = "Continue", borderStroke = null, colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4 ){
-                    navigator.replace(AuthenticationScreen(currentScreen = 4, viewType = 0, proxyNavigator))
+                ButtonComponent(modifier = buttonStyle, buttonText = "Continue", borderStroke = null, colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4){
+                    navigator.replace(AuthenticationScreen(currentPosition = AuthSSOScreen.AUTH_LOGIN.toPath(), platformNavigator = platformNavigator))
                 }
 
 
@@ -69,14 +70,14 @@ fun ContinueWithPhone(proxyNavigator: ProxyNavigator) {
     }
 
 @Composable
-fun AttachBackIcon(goToScreen: Int = 0, proxyNavigator: ProxyNavigator) {
+fun AttachBackIcon(goToScreen: Int = AuthSSOScreen.AUTH_LOGIN.toPath(), platformNavigator: PlatformNavigator) {
     val navigator = LocalNavigator.currentOrThrow
     PageBackNavWidget(){
-        if(goToScreen == -1){
-            navigator.replaceAll(WelcomeScreen(proxyNavigator = proxyNavigator))
+        if(goToScreen == AuthSSOScreen.WELCOME_SCREEN.toPath()){
+            navigator.replaceAll(WelcomeScreen(platformNavigator))
         }
         else {
-            navigator.replace(AuthenticationScreen(goToScreen, proxyNavigator = proxyNavigator))
+            navigator.replace(AuthenticationScreen(goToScreen, platformNavigator = platformNavigator))
         }
     }
 }

@@ -26,6 +26,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import com.russhwolf.settings.Settings
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
 import presentation.UserProfile.SwitchVendor.ConnectPage
@@ -37,6 +38,8 @@ import presentation.widgets.TitleWidget
 
 @Composable
 fun CompleteProfile() {
+    val preferenceSettings = Settings()
+   // preferenceSettings.clear()
     val  rootModifier =
         Modifier
             .fillMaxWidth()

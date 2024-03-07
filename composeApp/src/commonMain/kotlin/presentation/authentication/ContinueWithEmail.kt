@@ -1,6 +1,6 @@
 package presentation.authentication
 
-import ProxyNavigator
+import PlatformNavigator
 import theme.styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +30,7 @@ import presentation.widgets.TitleWidget
 
 
 @Composable
-fun ContinueWithEmail(proxyNavigator: ProxyNavigator) {
+fun ContinueWithEmail(platformNavigator: PlatformNavigator) {
 
     val navigator = LocalNavigator.currentOrThrow
     val  rootModifier =
@@ -53,12 +53,12 @@ fun ContinueWithEmail(proxyNavigator: ProxyNavigator) {
 
     Column(modifier = rootModifier) {
         Column(modifier = topLayoutModifier) {
-            AttachEmailBackIcon(proxyNavigator = proxyNavigator)
+            AttachEmailBackIcon(platformNavigator = platformNavigator)
             EnterEmailTitle()
             AttachSendCodeToEmailDescription()
             InputWidget(iconRes = "drawable/email_icon.png", placeholderText = "Email", iconSize = 24, isFocusedByDefault = true)
             ButtonComponent(modifier = buttonStyle, buttonText = "Continue", borderStroke = null, colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color(color = 0xFFFFFFFF), style = TextStyle() ){
-                navigator.replace(AuthenticationScreen(currentScreen = 4, viewType = 1, proxyNavigator))
+               // navigator.replace(AuthenticationScreen(currentScreen = 4, viewType = 1, platformNavigator = platformNavigator))
             }
 
 
@@ -69,15 +69,15 @@ fun ContinueWithEmail(proxyNavigator: ProxyNavigator) {
 }
 
 @Composable
-fun AttachEmailBackIcon(goToScreen: Int = 0, proxyNavigator: ProxyNavigator) {
+fun AttachEmailBackIcon(goToScreen: Int = 0, platformNavigator: PlatformNavigator) {
     val navigator = LocalNavigator.currentOrThrow
     PageBackNavWidget(){
         if(goToScreen == -1){
-            navigator.replaceAll(WelcomeScreen(proxyNavigator))
+            navigator.replaceAll(WelcomeScreen(platformNavigator))
         }
 
         else {
-            navigator.replace(AuthenticationScreen(goToScreen, proxyNavigator = proxyNavigator))
+           // navigator.replace(AuthenticationScreen(goToScreen, platformNavigator = platformNavigator))
         }
     }
 }

@@ -1,6 +1,6 @@
 package presentation.authentication
 
-import ProxyNavigator
+import PlatformNavigator
 import theme.styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,7 +34,7 @@ import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
 
 @Composable
-fun VerifyOTP(viewType: Int = 0, proxyNavigator: ProxyNavigator) {
+fun VerifyOTP(viewType: Int = 0, platformNavigator: PlatformNavigator) {
     val  rootModifier =
         Modifier
             .fillMaxWidth()
@@ -59,7 +59,7 @@ fun VerifyOTP(viewType: Int = 0, proxyNavigator: ProxyNavigator) {
 
         Column(modifier = rootModifier) {
             Column(modifier = topLayoutModifier) {
-                AttachBackIcon(0, proxyNavigator)
+                AttachBackIcon(0, platformNavigator)
                 EnterVerificationCodeTitle()
                 AttachVerificationCodeText(viewType = viewType)
 
@@ -85,9 +85,9 @@ fun VerifyOTP(viewType: Int = 0, proxyNavigator: ProxyNavigator) {
 
                 }
 
-                ResendVerificationCode(viewType = viewType,proxyNavigator = proxyNavigator)
+               // ResendVerificationCode(viewType = viewType,platformNavigator = platformNavigator)
                 ButtonComponent(modifier = buttonStyle, buttonText = "Verify", borderStroke = null, colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4) {
-                    navigator.replace(AuthenticationScreen(currentScreen = 5, proxyNavigator = proxyNavigator))
+                    navigator.replace(AuthenticationScreen(platformNavigator = platformNavigator))
                 }
             }
         }
@@ -114,8 +114,9 @@ fun AttachVerificationCodeText(viewType: Int = 0) {
     }
 }
 
+/*
 @Composable
-fun ResendVerificationCode(viewType: Int = 0, proxyNavigator: ProxyNavigator) {
+fun ResendVerificationCode(viewType: Int = 0, platformNavigator: PlatformNavigator) {
     val rowModifier = Modifier
         .padding(top = 50.dp)
         .fillMaxWidth()
@@ -135,10 +136,10 @@ fun ResendVerificationCode(viewType: Int = 0, proxyNavigator: ProxyNavigator) {
                 .padding(top = 10.dp)
                 .clickable {
                     if(viewType == 0){
-                        navigator.push(AuthenticationScreen(2,proxyNavigator = proxyNavigator))
+                        navigator.push(AuthenticationScreen(2, platformNavigator = platformNavigator))
                     }
                     else{
-                        navigator.push(AuthenticationScreen(3,proxyNavigator = proxyNavigator))
+                        navigator.push(AuthenticationScreen(3, platformNavigator = platformNavigator))
                     }
                  }
                 .wrapContentHeight()){
@@ -146,6 +147,7 @@ fun ResendVerificationCode(viewType: Int = 0, proxyNavigator: ProxyNavigator) {
             }
         }
    }
+*/
 
 
 

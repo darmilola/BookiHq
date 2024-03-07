@@ -45,7 +45,7 @@ fun ProfileImageUpdate() {
                     shape = CircleShape
                 )
                 .fillMaxSize()
-            ImageComponent(imageModifier = modifier, imageRes = "1.jpg")
+            ImageComponent(imageModifier = modifier, imageRes = "drawable/1.jpg")
         }
         EditProfilePictureButton()
 

@@ -3,7 +3,7 @@ package presentation.authentication
 import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
-import ProxyNavigator
+import PlatformNavigator
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -36,21 +36,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import domain.Models.Auth0ConnectionType
+import domain.Models.AuthSSOScreen
 import presentation.components.IconButtonComponent
 import presentation.components.ImageComponent
 import presentation.components.TextComponent
-import applications.platform.auth0.StartAuth0
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import presentation.viewmodels.AuthenticationViewModel
 
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
-fun SignUpLogin(currentScreen: Int = 0, proxyNavigator: ProxyNavigator) {
-
-    val viewModel: AuthenticationViewModel = AuthenticationViewModel()
-    val authenticationScreenData = viewModel.authenticationScreenData ?: return
-
+fun SignUpLogin(currentScreen: Int = AuthSSOScreen.AUTH_LOGIN.toPath(), platformNavigator: PlatformNavigator) {
 
     val  rootModifier =
         Modifier.fillMaxWidth()
@@ -69,13 +64,13 @@ fun SignUpLogin(currentScreen: Int = 0, proxyNavigator: ProxyNavigator) {
         Column(modifier = rootModifier) {
             Column(modifier = topLayoutModifier) {
                 Box(modifier = Modifier.wrapContentSize().padding(start = 10.dp, top = 10.dp)) {
-                    AttachBackIcon(-1, proxyNavigator)
+                    AttachBackIcon(AuthSSOScreen.WELCOME_SCREEN.toPath(), platformNavigator)
                 }
                 welcomeToZazzy()
                 attachAuthenticationText(currentScreen)
-                attachAuthenticationButton(proxyNavigator)
+                attachAuthenticationButton(platformNavigator,currentScreen)
             }
-            attachAuthenticationTypeChangeView(currentScreen, proxyNavigator)
+            attachAuthenticationTypeChangeView(currentScreen, platformNavigator)
         }
     }
 
@@ -90,12 +85,12 @@ fun attachWaveIcon() {
 }
 
 @Composable
-fun attachAuthenticationText(currentScreen: Int = 0) {
-    val authText: String = if(currentScreen == 0){
+fun attachAuthenticationText(currentScreen: Int = AuthSSOScreen.AUTH_LOGIN.toPath()) {
+    val authText: String = if(currentScreen == AuthSSOScreen.AUTH_LOGIN.toPath()){
         "Login to Your Account"
     }
-    else{
-        "Sign Up"
+    else {
+        "Sign Up For New Account"
     }
     val rowModifier = Modifier
         .padding(top = 30.dp, start = 10.dp)
@@ -121,17 +116,10 @@ fun attachAuthenticationText(currentScreen: Int = 0) {
 
 
 @Composable
-fun attachAuthenticationButton(proxyNavigator: ProxyNavigator) {
+fun attachAuthenticationButton(platformNavigator: PlatformNavigator, currentScreen: Int = AuthSSOScreen.AUTH_LOGIN.toPath()) {
     val columnModifier = Modifier
         .padding(top = 50.dp, start = 10.dp)
         .fillMaxWidth()
-
-    val navigator = LocalNavigator.currentOrThrow
-    var startAuth0 by remember { mutableStateOf(false) }
-
-    if(startAuth0){
-        StartAuth0()
-    }
 
     val buttonStyle = Modifier
         .padding(bottom = 15.dp)
@@ -143,19 +131,29 @@ fun attachAuthenticationButton(proxyNavigator: ProxyNavigator) {
             modifier = columnModifier
         ) {
 
-            IconButtonComponent(modifier = buttonStyle, buttonText = "Use Phone Number", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/phone_light_icon.png", iconSize = 45, colorFilter = ColorFilter.tint(color = Color.Gray)){
-                navigator.push(AuthenticationScreen(2, proxyNavigator = proxyNavigator))
-            }
             IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Email", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/email_icon.png",  colorFilter = ColorFilter.tint(color = Color.Gray)){
-                navigator.replace(AuthenticationScreen(3, proxyNavigator = proxyNavigator))
+                if (currentScreen == AuthSSOScreen.AUTH_LOGIN.toPath()){
+                    platformNavigator.startAuth0Login(Auth0ConnectionType.EMAIL.toPath())
+                }else{
+                    platformNavigator.startAuth0Signup(Auth0ConnectionType.EMAIL.toPath())
+                }
+
             }
-            IconButtonComponent(modifier = buttonStyle, buttonText = "Connect with Google", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/google_icon.png")
+            IconButtonComponent(modifier = buttonStyle, buttonText = "Connect with Google", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/google_icon.png"){
+                if (currentScreen == AuthSSOScreen.AUTH_LOGIN.toPath()){
+                    platformNavigator.startAuth0Login(Auth0ConnectionType.GOOGLE.toPath())
+                }else{
+                    platformNavigator.startAuth0Signup(Auth0ConnectionType.GOOGLE.toPath())
+                }
+            }
 
             IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with X", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/x_logo.png",  colorFilter = ColorFilter.tint(color = Color.Gray)){
-              proxyNavigator.openPage("Twitter")
-            // startAuth0 = true
+                if (currentScreen == AuthSSOScreen.AUTH_LOGIN.toPath()){
+                    platformNavigator.startAuth0Login(Auth0ConnectionType.TWITTER.toPath())
+                }else{
+                    platformNavigator.startAuth0Signup(Auth0ConnectionType.TWITTER.toPath())
+                }
             }
-            IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Instagram", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/instagram_icon.png")
         }
     }
 
@@ -167,11 +165,18 @@ fun authenticationTypeChangeText(currentScreen: Int = 0) {
         .padding(top = 20.dp, start = 10.dp)
         .fillMaxWidth()
 
-    val authText: String = if(currentScreen == 0){
+    val authActionText: String = if(currentScreen == AuthSSOScreen.AUTH_LOGIN.toPath()){
+        "Sign up"
+    }
+    else {
         "Login"
     }
-    else{
-        "Sign Up"
+
+    val authText: String = if(currentScreen == AuthSSOScreen.AUTH_LOGIN.toPath()){
+        "Don't have an account?"
+    }
+    else {
+        "Already Have Account?"
     }
 
         Row(
@@ -182,7 +187,7 @@ fun authenticationTypeChangeText(currentScreen: Int = 0) {
             val modifier = Modifier.padding(start = 5.dp)
             TextComponent(
                 textModifier = modifier,
-                text = "Don't have an account?",
+                text = authText,
                 fontSize = 15,
                 fontFamily = GGSansRegular,
                 textStyle = MaterialTheme.typography.h6,
@@ -193,7 +198,7 @@ fun authenticationTypeChangeText(currentScreen: Int = 0) {
             )
             TextComponent(
                 textModifier = modifier,
-                text = authText,
+                text = authActionText,
                 fontSize = 15,
                 fontFamily = GGSansSemiBold,
                 textStyle = MaterialTheme.typography.h6,
@@ -207,7 +212,7 @@ fun authenticationTypeChangeText(currentScreen: Int = 0) {
 
 
 @Composable
-fun attachAuthenticationTypeChangeView(currentScreen: Int = 0, proxyNavigator: ProxyNavigator) {
+fun attachAuthenticationTypeChangeView(currentScreen: Int = AuthSSOScreen.AUTH_LOGIN.toPath(), platformNavigator: PlatformNavigator) {
     val navigator = LocalNavigator.currentOrThrow
     val rowModifier = Modifier
         .padding(bottom = 40.dp)
@@ -215,9 +220,13 @@ fun attachAuthenticationTypeChangeView(currentScreen: Int = 0, proxyNavigator: P
         .fillMaxHeight()
         .fillMaxWidth()
         .clickable {
-            navigator.replace(AuthenticationScreen(currentScreen, proxyNavigator = proxyNavigator))
+            if(currentScreen == AuthSSOScreen.AUTH_LOGIN.toPath()){
+                navigator.replace(AuthenticationScreen(AuthSSOScreen.AUTH_SIGNUP.toPath(), platformNavigator = platformNavigator))
+            }
+            else{
+                navigator.replace(AuthenticationScreen(AuthSSOScreen.AUTH_LOGIN.toPath(), platformNavigator = platformNavigator))
+            }
         }
-
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Top,
@@ -238,7 +247,6 @@ fun welcomeToZazzy(){
             verticalAlignment = Alignment.Top,
             modifier = rowModifier
         ) {
-            val modifier = Modifier.padding(start = 5.dp)
             attachWaveIcon()
             TextComponent(
                 text = "Welcome to Zazzy",
