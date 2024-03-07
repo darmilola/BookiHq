@@ -3,11 +3,10 @@ package presentation.authentication
 import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
-import PlatformNavigator
+import domain.Models.PlatformNavigator
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,14 +29,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import domain.Models.Auth0ConnectionType
 import domain.Models.AuthSSOScreen
 import presentation.components.IconButtonComponent
 import presentation.components.ImageComponent
-import presentation.components.TextComponent
+import presentations.components.TextComponent
 
 
 @Composable

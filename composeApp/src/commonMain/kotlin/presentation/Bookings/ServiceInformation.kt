@@ -28,11 +28,11 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import presentation.components.ButtonComponent
-import presentation.components.TextComponent
 import presentation.UserProfile.SwitchVendor.BusinessLogo
 import presentation.widgets.DescriptionTextWidget
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget
+import presentations.components.TextComponent
 
 object ServiceInformationPage : Screen {
     @Composable

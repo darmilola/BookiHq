@@ -38,8 +38,8 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import presentation.components.ImageComponent
-import presentation.components.TextComponent
 import presentation.viewmodels.MainViewModel
+import presentations.components.TextComponent
 
 
 @Composable

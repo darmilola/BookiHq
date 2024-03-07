@@ -23,13 +23,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import presentation.components.TextComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import presentation.viewmodels.MainViewModel
 import utils.getAppointmentViewHeight
 import presentation.widgets.AppointmentWidget
 import presentation.widgets.PageBackNavWidget
+import presentations.components.TextComponent
 
 class PendingAppointmentsTab(private val mainViewModel: MainViewModel) : Tab {
     @OptIn(ExperimentalResourceApi::class)

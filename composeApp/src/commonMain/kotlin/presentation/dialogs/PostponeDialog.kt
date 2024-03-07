@@ -28,10 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import presentation.components.ButtonComponent
-import presentation.components.TextComponent
 import presentation.widgets.Calendar
 import presentation.widgets.TimeGrid
 import presentation.widgets.TitleWidget
+import presentations.components.TextComponent
 
 @Composable
 fun PostponeDialog(onDismissRequest: () -> Unit,

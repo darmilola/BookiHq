@@ -50,7 +50,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import presentation.components.ImageComponent
 import presentation.components.StraightLine
-import presentation.components.TextComponent
 import presentation.Products.BottomSheet
 import presentation.Products.NewProductItem
 import presentation.viewmodels.MainViewModel
@@ -61,6 +60,7 @@ import presentation.widgets.BusinessStatusWidgetUpdated
 import presentation.widgets.HomeServicesWidget
 import presentation.widgets.RecommendedServiceItem
 import presentation.widgets.StatusProgressWidget
+import presentations.components.TextComponent
 
 class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     @OptIn(ExperimentalResourceApi::class)

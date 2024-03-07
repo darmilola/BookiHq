@@ -1,11 +1,9 @@
 package presentation.authentication
 
-import PlatformNavigator
+import domain.Models.PlatformNavigator
 import theme.styles.Colors
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -116,7 +114,7 @@ fun AttachVerificationCodeText(viewType: Int = 0) {
 
 /*
 @Composable
-fun ResendVerificationCode(viewType: Int = 0, platformNavigator: PlatformNavigator) {
+fun ResendVerificationCode(viewType: Int = 0, platformNavigator: domain.Models.PlatformNavigator) {
     val rowModifier = Modifier
         .padding(top = 50.dp)
         .fillMaxWidth()

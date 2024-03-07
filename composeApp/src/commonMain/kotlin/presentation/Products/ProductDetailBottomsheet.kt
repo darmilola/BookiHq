@@ -47,10 +47,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import presentation.components.ButtonComponent
 import presentation.components.ImageComponent
-import presentation.components.TextComponent
 import presentation.components.ToggleButton
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import presentation.widgets.CartIncrementDecrementWidget
+import presentations.components.TextComponent
 
 @Composable
 fun ProductDetailContent() {

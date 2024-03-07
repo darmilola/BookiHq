@@ -24,8 +24,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import presentation.components.ImageComponent
-import presentation.components.TextComponent
 import presentation.viewmodels.MainViewModel
+import presentations.components.TextComponent
 
 @Composable
 fun HomeDeliveryWidget(mainViewModel: MainViewModel, fromView: Int) {

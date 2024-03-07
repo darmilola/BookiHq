@@ -35,10 +35,10 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import presentation.components.ButtonComponent
 import presentation.components.ImageComponent
-import presentation.components.TextComponent
 import presentation.Products.SearchBar
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget
+import presentations.components.TextComponent
 
 @Composable
 fun ConnectBusinessSearchBar(){

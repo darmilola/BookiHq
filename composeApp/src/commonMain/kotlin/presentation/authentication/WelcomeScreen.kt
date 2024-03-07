@@ -1,6 +1,6 @@
 package presentation.authentication
 
-import PlatformNavigator
+import domain.Models.PlatformNavigator
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

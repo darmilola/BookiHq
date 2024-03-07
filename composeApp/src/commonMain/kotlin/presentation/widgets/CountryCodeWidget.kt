@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import presentation.components.ImageComponent
-import presentation.components.TextComponent
+import presentations.components.TextComponent
 
 @Composable
 fun CountryCodeView(countryCode: String, countryFlagRes: String) {

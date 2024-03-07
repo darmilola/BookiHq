@@ -1,10 +1,8 @@
 package presentation
 
-import PlatformNavigator
+import domain.Models.PlatformNavigator
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -46,20 +44,6 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator) {
             navigator.replaceAll(WelcomeScreen(platformNavigator))
         }
     }
-
-
-@Composable
-fun businessTagline(){
-    val rowModifier = Modifier
-        .fillMaxWidth()
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.Top,
-            modifier = rowModifier
-        ) {
-        }
-    }
-
 
 class SplashScreen(val platformNavigator: PlatformNavigator) : Screen {
     @Composable

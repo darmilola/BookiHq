@@ -1,15 +1,8 @@
 package com.application.zazzy
 
-import PlatformNavigator
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.widget.EditText
-import android.widget.LinearLayout
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import cafe.adriel.voyager.navigator.Navigator
 import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationAPIClient
 import com.auth0.android.authentication.AuthenticationException
@@ -18,11 +11,9 @@ import com.auth0.android.provider.WebAuthProvider
 import com.auth0.android.result.Credentials
 import com.auth0.android.result.UserProfile
 import com.russhwolf.settings.Settings
-import domain.Models.Auth0ConnectionResponse
 import domain.Models.AuthenticationAction
 import domain.Models.AuthenticationStatus
-import presentation.SplashScreen
-import utils.AndroidAuth0ConnectionResponse
+import applications.auth0.AndroidAuth0ConnectionResponse
 
 
 class Authentication : AppCompatActivity() {

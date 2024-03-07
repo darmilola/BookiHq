@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import presentation.components.ButtonComponent
 import presentation.components.ImageComponent
-import presentation.components.TextComponent
+import presentations.components.TextComponent
 
 @Composable
 fun UIStateViewComponent(/*modifier: Modifier, buttonText: String, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, onClick: (() -> Unit)? = null, isDestructiveAction: Boolean = false*/) {

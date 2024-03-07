@@ -19,7 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import presentation.components.ImageComponent
-import presentation.components.TextComponent
+import presentations.components.TextComponent
+
 class BusinessStatusItemWidget {
     @Composable
     fun GetStatusWidget(imageRes: String) {

@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import presentation.components.ImageComponent
-import presentation.components.TextFieldComponent
+import presentations.components.TextFieldComponent
 
 @Composable
 fun InputWidget(iconRes: String, placeholderText: String, iconSize: Int, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), isPasswordField: Boolean = false, isFocusedByDefault: Boolean = false) {

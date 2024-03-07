@@ -39,11 +39,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import presentation.components.TextComponent
 import domain.Models.AvailableTherapist
 import presentation.widgets.AttachTherapistWidget
 import presentation.widgets.ReviewsWidget
 import presentation.widgets.TimeGrid
+import presentations.components.TextComponent
 
 @Composable
 fun BookingSelectSpecialist() {

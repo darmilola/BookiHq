@@ -7,6 +7,7 @@ import domain.Models.Auth0ConnectionResponse
 import domain.Models.AuthSSOScreen
 import domain.Models.AuthenticationAction
 import domain.Models.AuthenticationStatus
+import domain.Models.PlatformNavigator
 import platform.UIKit.UIViewController
 import presentation.SplashScreen
 import presentation.authentication.AuthenticationScreen

@@ -21,9 +21,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import presentation.components.TextComponent
 import presentation.components.ToggleButton
 import presentation.viewmodels.MainViewModel
+import presentations.components.TextComponent
 
 @Composable
 fun ServiceLocationToggle(mainViewModel: MainViewModel){

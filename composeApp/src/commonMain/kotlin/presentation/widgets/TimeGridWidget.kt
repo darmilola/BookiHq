@@ -27,8 +27,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import presentation.components.TextComponent
 import domain.Models.AvailableSlot
+import presentations.components.TextComponent
 
 @Composable
 fun TimeGrid() {

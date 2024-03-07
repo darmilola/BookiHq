@@ -1,28 +1,30 @@
 package presentation.authentication
 
-import PlatformNavigator
+import domain.Models.PlatformNavigator
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
+import di.initKoin
 import domain.Models.Auth0ConnectionResponse
 import domain.Models.AuthSSOScreen
 
 open class AuthenticationScreen(private val currentPosition: Int = AuthSSOScreen.AUTH_LOGIN.toPath(), open val  platformNavigator: PlatformNavigator? = null) : Screen {
     private val preferenceSettings: Settings = Settings()
+    private var userEmail: String = ""
+
     @Composable
     override fun Content() {
-      //  val currentScreen = remember { mutableStateOf(1) }
-
+        initKoin()
         preferenceSettings as ObservableSettings
         preferenceSettings.addStringListener("email","email") {
-            value: String -> println(value)
+            value: String -> userEmail = value
         }
 
-       // authenticationPresenter.startAuth0()
+        // authenticationPresenter.startAuth0()
 
-       // val authStatus = preferenceSettings.getInt("authStatus", 0)
+        // val authStatus = preferenceSettings.getInt("authStatus", 0)
         //println("AuthStatus$authStatus")
 
         //  if(authStatus == 8){
@@ -33,14 +35,12 @@ open class AuthenticationScreen(private val currentPosition: Int = AuthSSOScreen
     }
 
     open fun setLoginAuthResponse(auth0ConnectionResponse: Auth0ConnectionResponse) {
-        println("response $auth0ConnectionResponse")
         preferenceSettings["connectionType"] = auth0ConnectionResponse.connectionType
         preferenceSettings["email"] = auth0ConnectionResponse.email
         preferenceSettings["authAction"] = auth0ConnectionResponse.action
     }
 
     open fun setSignupAuthResponse(auth0ConnectionResponse: Auth0ConnectionResponse) {
-        println("response $auth0ConnectionResponse")
         preferenceSettings["connectionType"] = auth0ConnectionResponse.connectionType
         preferenceSettings["email"] = auth0ConnectionResponse.email
         preferenceSettings["authAction"] = auth0ConnectionResponse.action
@@ -63,6 +63,6 @@ open class AuthenticationScreen(private val currentPosition: Int = AuthSSOScreen
 
                 }
 
-          }
+      }
 }
 

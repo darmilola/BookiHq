@@ -30,13 +30,13 @@ import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import presentation.components.StraightLine
-import presentation.components.TextComponent
 import presentation.main.MainTab
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.CheckOutSummaryWidget
 import presentation.widgets.ProductDeliveryAddressWidget
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.PaymentMethodWidget
+import presentations.components.TextComponent
 
 
 class CartScreen(private val mainViewModel: MainViewModel) : Tab {

@@ -15,7 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import presentation.components.TextComponent
+import presentations.components.TextComponent
 
 @Composable
 fun SubtitleTextWidget(text: String, fontSize: Int = 18, textAlign: TextAlign = TextAlign.Left, textColor: Color = Color.Gray) {

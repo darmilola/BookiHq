@@ -38,10 +38,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import presentation.components.ImageComponent
-import presentation.components.TextComponent
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import domain.Models.Date
+import presentations.components.TextComponent
 
 @Composable
 fun Calendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 40.dp)) {

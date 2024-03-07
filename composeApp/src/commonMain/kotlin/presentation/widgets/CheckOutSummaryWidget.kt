@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import presentation.components.ButtonComponent
-import presentation.components.TextComponent
+import presentations.components.TextComponent
 
 @Composable
 fun CheckOutSummaryWidget() {

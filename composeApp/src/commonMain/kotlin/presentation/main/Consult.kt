@@ -41,9 +41,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import presentation.components.ButtonComponent
 import presentation.components.ImageComponent
-import presentation.components.TextComponent
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.AttachImageStacks
+import presentations.components.TextComponent
 
 class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
 

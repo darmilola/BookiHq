@@ -32,7 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import presentation.components.ImageComponent
-import presentation.components.TextComponent
+import presentations.components.TextComponent
 
 @Composable
 fun BookingItemCard(viewType: Int = 0, contentSize: Int = 0, itemCount: Int = 0) {

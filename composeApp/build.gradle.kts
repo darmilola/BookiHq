@@ -92,7 +92,7 @@ kotlin {
             runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.8.0-RC2")
 
             //DI
-            implementation("io.insert-koin:koin-core:3.5.0")
+            implementation(libs.koin.core)
             implementation("io.insert-koin:koin-test:3.5.0")
 
             implementation(libs.ktor.client.core)

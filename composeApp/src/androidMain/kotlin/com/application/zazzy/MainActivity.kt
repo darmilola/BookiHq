@@ -1,21 +1,18 @@
 package com.application.zazzy
 
-import PlatformNavigator
+import domain.Models.PlatformNavigator
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import cafe.adriel.voyager.navigator.Navigator
-import com.russhwolf.settings.Settings
-import com.russhwolf.settings.set
 import domain.Models.Auth0ConnectionResponse
 import domain.Models.AuthSSOScreen
 import domain.Models.AuthenticationAction
-import domain.Models.AuthenticationStatus
 import presentation.SplashScreen
 import presentation.authentication.AuthenticationScreen
-import utils.AndroidAuth0ConnectionResponse
+import applications.auth0.AndroidAuth0ConnectionResponse
 
 
 class MainActivity : ComponentActivity(), PlatformNavigator {

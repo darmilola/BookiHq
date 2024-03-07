@@ -1,17 +1,25 @@
-package presentation.components
+package presentations.components
 
-import GGSansRegular
-import GGSansSemiBold
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldColors
@@ -32,17 +40,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
+import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.painterResource
 
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-public fun TextComponent(textModifier: Modifier, text: String, fontSize: Int, textStyle: TextStyle, textColor: Color, textAlign: TextAlign, fontWeight: FontWeight?, fontFamily: FontFamily? = null, lineHeight: Int = 10,maxLines: Int = 10, overflow: TextOverflow = TextOverflow.Clip, letterSpacing: Int = 0) {
-    Text(text, fontSize = fontSize.sp, fontFamily = fontFamily, modifier = textModifier, style = textStyle, color = textColor, textAlign = textAlign,fontWeight = fontWeight, lineHeight = lineHeight.sp, overflow = overflow, maxLines = maxLines, letterSpacing = letterSpacing.sp)
+public fun TextComponent(textModifier: Modifier, text: String, fontSize: Int, textStyle: TextStyle, textColor: Color, textAlign: TextAlign, fontWeight: FontWeight?, fontFamily: FontFamily? = null, lineHeight: Int = 10,maxLines: Int = 10, overflow: TextOverflow = TextOverflow.Clip, letterSpacing: Int = 0, textDecoration: TextDecoration? = null) {
+    Text(text, fontSize = fontSize.sp, fontFamily = fontFamily, modifier = textModifier, style = textStyle, color = textColor, textAlign = textAlign,fontWeight = fontWeight, lineHeight = lineHeight.sp, overflow = overflow, maxLines = maxLines, letterSpacing = letterSpacing.sp, textDecoration = textDecoration)
 }
 
 @OptIn(ExperimentalResourceApi::class)
@@ -69,26 +82,24 @@ fun TextFieldComponent(text: TextFieldValue, readOnly: Boolean = false, modifier
 @Composable
 fun PlaceholderTextComponent(placeholderTile: String, textColor: Color = Color.LightGray, textSize: Float = 18f) {
     val textStyle = TextStyle(
-            fontSize = TextUnit(textSize, TextUnitType.Sp),
-            fontFamily = GGSansRegular,
-            textAlign = TextAlign.Start,
-            fontWeight = FontWeight.Normal
-        )
+        fontSize = TextUnit(textSize, TextUnitType.Sp),
+        textAlign = TextAlign.Start,
+        fontWeight = FontWeight.Normal
+    )
 
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
-            TextComponent(
-                text = placeholderTile,
-                fontSize = textSize.toInt(),
-                fontFamily = GGSansSemiBold,
-                textStyle = textStyle,
-                textColor = textColor,
-                textAlign = TextAlign.Start,
-                fontWeight = FontWeight.Bold,
-                textModifier = Modifier.wrapContentSize(),
-                letterSpacing = 0
-            )
-        }
- }
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
+        TextComponent(
+            text = placeholderTile,
+            fontSize = textSize.toInt(),
+            textStyle = textStyle,
+            textColor = textColor,
+            textAlign = TextAlign.Start,
+            fontWeight = FontWeight.Normal,
+            textModifier = Modifier.wrapContentSize(),
+            letterSpacing = 0
+        )
+    }
+}
 
 @Composable
 fun TextFieldComponent(text: String, readOnly: Boolean = false, modifier: Modifier, textStyle: TextStyle = LocalTextStyle.current, onValueChange: (String) -> Unit, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), color: TextFieldColors = TextFieldDefaults.textFieldColors(
@@ -96,14 +107,14 @@ fun TextFieldComponent(text: String, readOnly: Boolean = false, modifier: Modifi
     focusedIndicatorColor = Color.Transparent,
     unfocusedIndicatorColor = Color.Transparent,
     disabledIndicatorColor = Color.Transparent
-), isSingleLine: Boolean = false, isPasswordField: Boolean = false, isReadOnly: Boolean = false, placeholderText: String, onFocusChange: (Boolean) -> Unit, placeholderTextSize: Float = 18f) {
+), isSingleLine: Boolean = false, isPasswordField: Boolean = false, isReadOnly: Boolean = false, placeholderText: String, onFocusChange: (Boolean) -> Unit, placeholderTextSize: Float = 18f, maxLines: Int = 1) {
 
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
     onFocusChange(isFocused)
     val visualTransformation: VisualTransformation = if (isPasswordField) PasswordVisualTransformation() else VisualTransformation.None
 
-    BasicTextField(value = text, modifier = modifier, textStyle = textStyle, readOnly = isReadOnly, singleLine = isSingleLine, keyboardOptions = keyboardOptions, visualTransformation = visualTransformation, onValueChange = onValueChange, interactionSource = interactionSource, decorationBox = { innerTextField ->
+    BasicTextField(value = text, modifier = modifier, textStyle = textStyle, readOnly = isReadOnly, singleLine = isSingleLine, keyboardOptions = keyboardOptions, visualTransformation = visualTransformation, onValueChange = onValueChange, interactionSource = interactionSource, maxLines = maxLines, decorationBox = { innerTextField ->
         Row(modifier = Modifier.fillMaxWidth()) {
             if (text.isEmpty()) {
                 PlaceholderTextComponent(placeholderText, textColor = Color.Gray, textSize = placeholderTextSize)

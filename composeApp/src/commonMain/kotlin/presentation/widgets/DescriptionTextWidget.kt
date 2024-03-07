@@ -13,7 +13,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import presentation.components.TextComponent
+import presentations.components.TextComponent
+
 @Composable
 fun DescriptionTextWidget(text: String, fontSize: Int = 23, textAlign: TextAlign = TextAlign.Left, textColor: Color = Color.DarkGray) {
     Column(
