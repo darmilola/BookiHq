@@ -13,15 +13,21 @@ androidx-material = "1.11.0"
 androidx-constraintlayout = "2.1.4"
 androidx-test-junit = "1.1.5"
 androidx-espresso-core = "3.5.1"
+httpmime = "4.5.14"
 koinCore = "3.5.0"
 kotlin = "1.9.20"
 junit = "4.13.2"
 apple-plugin = "212.4638.14-0.13.1"
+kotlinTransformationBuilderSdk = "1.4.1"
+kotlinUploader = "1.7.0"
+kotlinUrlGen = "1.8.0"
 ktor = "2.3.8"
 coroutines = "1.7.3"
 rxkotlin = "3.0.1"
+peekaboo = "0.4.3"
 
 [libraries]
+httpmime = { module = "org.apache.httpcomponents:httpmime", version.ref = "httpmime" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -40,6 +46,9 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version = "2.6.2" }
 androidx-ui-geometry-android = { group = "androidx.compose.ui", name = "ui-geometry-android", version = "1.5.4" }
+kotlin-transformation-builder-sdk = { module = "com.cloudinary:kotlin-transformation-builder-sdk", version.ref = "kotlinTransformationBuilderSdk" }
+kotlin-uploader = { module = "com.cloudinary:kotlin-uploader", version.ref = "kotlinUploader" }
+kotlin-url-gen = { module = "com.cloudinary:kotlin-url-gen", version.ref = "kotlinUrlGen" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
@@ -47,6 +56,8 @@ ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 rxkotlin = { module = "io.reactivex.rxjava3:rxkotlin", version.ref = "rxkotlin" }
+peekaboo-ui = { module = "io.github.onseok:peekaboo-ui", version.ref = "peekaboo" }
+peekaboo-image-picker = { module = "io.github.onseok:peekaboo-image-picker", version.ref = "peekaboo" }
 
 
 [plugins]

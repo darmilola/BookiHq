@@ -60,6 +60,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
 
     @Composable
     override fun Content() {
+
         val columnModifier = Modifier
             .padding(top = 5.dp, bottom = 100.dp)
             .fillMaxHeight()
@@ -71,7 +72,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = columnModifier
             ) {
-                    ProfileImageUpdate()
+                    ProfileImageUpdate(profileImageUrl = "drawable/user_icon.png"){}
                     UserPreferredName()
                     EditProfileButton(TextStyle(fontFamily = GGSansSemiBold, fontWeight = FontWeight.Black, fontSize = TextUnit(18f, TextUnitType.Sp)))
                     Divider(color = Color(color = 0x90C8C8C8), thickness = 2.dp, modifier = Modifier.fillMaxWidth(0.90f).padding(top = 30.dp))

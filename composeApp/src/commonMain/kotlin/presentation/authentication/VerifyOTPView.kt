@@ -27,6 +27,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import presentation.components.ButtonComponent
+import presentation.widgets.AuthenticationBackNav
 import presentation.widgets.OTPTextField
 import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
@@ -57,7 +58,7 @@ fun VerifyOTP(viewType: Int = 0, platformNavigator: PlatformNavigator) {
 
         Column(modifier = rootModifier) {
             Column(modifier = topLayoutModifier) {
-                AttachBackIcon(0, platformNavigator)
+                AuthenticationBackNav(0, platformNavigator)
                 EnterVerificationCodeTitle()
                 AttachVerificationCodeText(viewType = viewType)
 

@@ -8,10 +8,10 @@ actual fun httpClient(config: HttpClientConfig<*>.() -> Unit) = HttpClient(OkHtt
     config(this)
     engine {
         config {
-            followRedirects(true)
+            followRedirects(false)
         }
-        addInterceptor(RequestInterceptor())
-        addNetworkInterceptor(RequestInterceptor())
+       // addInterceptor(RequestInterceptor())
+        //addNetworkInterceptor(RequestInterceptor())
 
     }
 }

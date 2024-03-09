@@ -28,8 +28,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import presentation.components.ImageComponent
 import presentation.widgets.CartIncrementDecrementWidget
+import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable

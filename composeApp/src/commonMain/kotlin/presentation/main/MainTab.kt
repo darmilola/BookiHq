@@ -21,11 +21,11 @@ import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import presentation.components.ImageComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import presentation.appointments.AppointmentsTab
 import presentation.viewmodels.MainViewModel
+import presentations.components.ImageComponent
 
 class MainTab(private val mainViewModel: MainViewModel): Tab {
     @OptIn(ExperimentalResourceApi::class)

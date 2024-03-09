@@ -48,7 +48,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import presentation.components.ImageComponent
 import presentation.components.StraightLine
 import presentation.Products.BottomSheet
 import presentation.Products.NewProductItem
@@ -60,6 +59,7 @@ import presentation.widgets.BusinessStatusWidgetUpdated
 import presentation.widgets.HomeServicesWidget
 import presentation.widgets.RecommendedServiceItem
 import presentation.widgets.StatusProgressWidget
+import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 class HomeTab(private val mainViewModel: MainViewModel) : Tab {

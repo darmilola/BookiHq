@@ -15,7 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import presentation.components.ImageComponent
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import domain.Models.AuthSSOScreenNav
+import domain.Models.PlatformNavigator
+import presentation.authentication.AuthenticationScreen
+import presentation.authentication.WelcomeScreen
+import presentations.components.ImageComponent
 
 @Composable
 fun PageBackNavWidget(onBackPressed: (() -> Unit)) {
@@ -31,4 +37,17 @@ fun PageBackNavWidget(onBackPressed: (() -> Unit)) {
         ) {
             ImageComponent(imageModifier = Modifier.size(25.dp), imageRes = "drawable/nav_back_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
         }
+}
+
+@Composable
+fun AuthenticationBackNav(goToScreen: Int = AuthSSOScreenNav.AUTH_LOGIN.toPath(), platformNavigator: PlatformNavigator) {
+    val navigator = LocalNavigator.currentOrThrow
+    PageBackNavWidget {
+        if(goToScreen == AuthSSOScreenNav.WELCOME_SCREEN.toPath()){
+            navigator.replaceAll(WelcomeScreen(platformNavigator))
+        }
+        else {
+            navigator.replace(AuthenticationScreen(goToScreen, platformNavigator = platformNavigator))
+        }
+    }
 }

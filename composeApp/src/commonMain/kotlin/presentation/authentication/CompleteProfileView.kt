@@ -18,6 +18,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,7 +31,11 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import com.preat.peekaboo.image.picker.SelectionMode
+import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
+import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
+import domain.Models.PlatformNavigator
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
 import presentation.UserProfile.SwitchVendor.ConnectPage
@@ -37,10 +46,28 @@ import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
 
 @Composable
-fun CompleteProfile() {
+fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, platformNavigator: PlatformNavigator) {
+
+    val placeHolderImage = "drawable/user_icon.png"
+    val firstname = remember { mutableStateOf("") }
+    val lastname = remember { mutableStateOf("") }
+    val address = remember { mutableStateOf("") }
+    val contactPhone = remember { mutableStateOf("") }
+    val country = remember { mutableStateOf("") }
+    val gender = remember { mutableStateOf("") }
+    val profileImageUrl = remember { mutableStateOf(placeHolderImage) }
+    var showFilePicker by remember { mutableStateOf(false) }
+    val imagePickerScope = rememberCoroutineScope()
     val preferenceSettings = Settings()
-   // preferenceSettings.clear()
-    val  rootModifier =
+    val fileType = listOf("jpg", "png")
+
+    preferenceSettings as ObservableSettings
+
+    preferenceSettings.addStringListener("imageUrl","") {
+            value: String -> profileImageUrl.value = value
+    }
+
+    val rootModifier =
         Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.95f)
@@ -61,13 +88,24 @@ fun CompleteProfile() {
                 .fillMaxHeight()
                 .background(color = Color.White)
 
+    val imagePicker = rememberImagePickerLauncher(
+        selectionMode = SelectionMode.Single,
+        scope = imagePickerScope,
+        onResult = { byteArrays ->
+            byteArrays.firstOrNull()?.let {
+                platformNavigator.startImageUpload(it)
+            }
+        }
+    )
+
 
     Column(modifier = rootModifier) {
         Column(modifier = topLayoutModifier) {
-            //AttachBackIcon(proxyNavigator = )
             PageTitle()
             SubtitleTextWidget(text = "Lorem ipsum is placeholder text commonly used in Printing")
-            ProfileImageUpdate()
+            ProfileImageUpdate(profileImageUrl = profileImageUrl.value, isAsync = profileImageUrl.value != placeHolderImage, onUploadImageClicked = {
+                imagePicker.launch()
+            })
             Row(modifier = Modifier.fillMaxWidth()) {
                Box(modifier = Modifier.fillMaxWidth(0.50f), contentAlignment = Alignment.Center){
                    InputWidget(iconRes = "drawable/card_icon.png", placeholderText = "Firstname", iconSize = 40)
@@ -87,11 +125,10 @@ fun CompleteProfile() {
             }, leftText = "Male", rightText = "Female")
 
             ButtonComponent(modifier = buttonStyle, buttonText = "Continue", colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = CircleShape, textColor = Color(color = 0xFFFFFFFF), style = TextStyle(), borderStroke = null) {
-                navigator.push(ConnectPage)
+                navigator.push(ConnectPage())
             }
         }
     }
-
 }
 
 

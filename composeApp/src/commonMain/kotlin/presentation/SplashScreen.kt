@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import di.initKoin
 import presentation.components.SplashScreenBackground
 import kotlinx.coroutines.delay
 import presentation.authentication.WelcomeScreen
@@ -48,6 +49,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator) {
 class SplashScreen(val platformNavigator: PlatformNavigator) : Screen {
     @Composable
     override fun Content() {
+        initKoin()
         SplashScreenCompose(platformNavigator = platformNavigator)
     }
 }

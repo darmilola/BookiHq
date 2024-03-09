@@ -13,11 +13,13 @@ import io.ktor.serialization.kotlinx.json.json
 import org.koin.core.context.KoinContext
 import kotlinx.serialization.json.Json
 import org.koin.core.context.stopKoin
+import presentation.authentication.AuthenticationModule.AuthenticationModule
 
 fun initKoin(){
     stopKoin()
     startKoin {
         modules(KtorModule)
+        modules(AuthenticationModule)
     }
 }
 

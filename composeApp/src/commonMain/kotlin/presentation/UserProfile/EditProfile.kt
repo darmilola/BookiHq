@@ -88,7 +88,7 @@ fun EditProfileCompose(mainViewModel: MainViewModel) {
         Column(modifier = topLayoutModifier) {
             AttachBackIcon(mainViewModel)
             PageTitle()
-            ProfileImageUpdate()
+            ProfileImageUpdate(profileImageUrl = "drawable/user_icon.png"){}
             Row(modifier = Modifier.fillMaxWidth()) {
                 Box(modifier = Modifier.fillMaxWidth(0.50f), contentAlignment = Alignment.Center){
                     InputWidget(iconRes = "drawable/card_icon.png", placeholderText = "Firstname", iconSize = 40)
@@ -126,7 +126,7 @@ fun AttachCountryDropDownWidget(){
 
 
 @Composable
-fun AttachBackIcon(mainViewModel: MainViewModel) {
+private fun AttachBackIcon(mainViewModel: MainViewModel) {
     val navigator = LocalTabNavigator.current
         PageBackNavWidget {
             when (mainViewModel.fromId.value) {

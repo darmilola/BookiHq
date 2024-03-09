@@ -30,9 +30,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import domain.Models.Auth0ConnectionType
-import domain.Models.AuthSSOScreen
+import domain.Models.AuthSSOScreenNav
 import presentation.components.IconButtonComponent
-import presentation.components.ImageComponent
+import presentation.widgets.AuthenticationBackNav
+import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 
@@ -56,7 +57,7 @@ fun SignUpLogin(platformNavigator: PlatformNavigator) {
         Column(modifier = rootModifier) {
             Column(modifier = topLayoutModifier) {
                 Box(modifier = Modifier.wrapContentSize().padding(start = 10.dp, top = 10.dp)) {
-                    AttachBackIcon(AuthSSOScreen.WELCOME_SCREEN.toPath(), platformNavigator)
+                    AuthenticationBackNav(AuthSSOScreenNav.WELCOME_SCREEN.toPath(), platformNavigator)
                 }
                 welcomeToZazzy()
                 attachAuthenticationText()
@@ -141,14 +142,14 @@ fun authenticationTypeChangeText(currentScreen: Int = 0) {
         .padding(top = 20.dp, start = 10.dp)
         .fillMaxWidth()
 
-    val authActionText: String = if(currentScreen == AuthSSOScreen.AUTH_LOGIN.toPath()){
+    val authActionText: String = if(currentScreen == AuthSSOScreenNav.AUTH_LOGIN.toPath()){
         "Sign up"
     }
     else {
         "Login"
     }
 
-    val authText: String = if(currentScreen == AuthSSOScreen.AUTH_LOGIN.toPath()){
+    val authText: String = if(currentScreen == AuthSSOScreenNav.AUTH_LOGIN.toPath()){
         "Don't have an account?"
     }
     else {

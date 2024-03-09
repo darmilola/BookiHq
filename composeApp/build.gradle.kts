@@ -47,10 +47,12 @@ kotlin {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
+            implementation ("com.cloudinary:cloudinary-android:2.5.0")
+
             //Auth0
             implementation ("com.auth0.android:auth0:2.+")
-
         }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -118,9 +120,12 @@ kotlin {
             implementation ("com.twilio.sdk:twilio:9.16.0")
 
             //Image Upload
-            implementation("com.darkrockstudios:mpfilepicker:3.1.0")
-            implementation("io.github.qdsfdhvh:image-loader:1.7.8")
-            implementation("io.github.qdsfdhvh:image-loader-extension-moko-resources:1.7.8")
+            // peekaboo-ui
+            implementation(libs.peekaboo.ui)
+
+            // peekaboo-image-picker
+            implementation(libs.peekaboo.image.picker)
+            api("io.github.qdsfdhvh:image-loader:1.7.8")
 
             //datastore
             implementation("com.russhwolf:multiplatform-settings-no-arg:1.1.1")
@@ -129,7 +134,6 @@ kotlin {
             //paging
             implementation("app.cash.paging:paging-compose-common:3.3.0-alpha02-0.4.0")
             implementation("app.cash.paging:paging-common:3.3.0-alpha02-0.4.0")
-
 
         }
 
@@ -182,5 +186,8 @@ android {
         debugImplementation(libs.compose.ui.tooling)
     }
 
+}
+dependencies {
+    implementation(libs.androidx.appcompat)
 }
 

@@ -34,10 +34,10 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import presentation.components.ButtonComponent
-import presentation.components.ImageComponent
 import presentation.Products.SearchBar
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget
+import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable

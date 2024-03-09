@@ -37,13 +37,13 @@ import presentations.components.TextComponent
 
 @Composable
 fun LoadingDialog(dialogTitle: String) {
-        Dialog(properties = DialogProperties(usePlatformDefaultWidth = false), onDismissRequest = {
+        Dialog(properties = DialogProperties(usePlatformDefaultWidth = true), onDismissRequest = {
 
         }) {
             Surface(
                 shape = RoundedCornerShape(10.dp),
                 color = Color.White,
-                modifier = Modifier.fillMaxWidth(0.40f)
+                modifier = Modifier.fillMaxWidth(0.70f)
             ) {
                 LoadingDialogContent(dialogTitle)
             }

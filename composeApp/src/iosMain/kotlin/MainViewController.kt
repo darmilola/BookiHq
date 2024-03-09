@@ -4,12 +4,19 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
 import com.russhwolf.settings.Settings
 import domain.Models.Auth0ConnectionResponse
-import domain.Models.AuthSSOScreen
+import domain.Models.AuthSSOScreenNav
 import domain.Models.AuthenticationAction
 import domain.Models.AuthenticationStatus
 import domain.Models.PlatformNavigator
+import kotlinx.cinterop.BetaInteropApi
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.usePinned
+import platform.Foundation.NSData
+import platform.Foundation.create
 import platform.UIKit.UIViewController
 import presentation.SplashScreen
+import presentation.UserProfile.SwitchVendor.ConnectPage
 import presentation.authentication.AuthenticationScreen
 
 
@@ -18,12 +25,14 @@ class MainViewController: PlatformNavigator {
     private var onLoginEvent: ((connectionType: String) -> Unit)? = null
     private var onSignupEvent: ((connectionType: String) -> Unit)? = null
     private var onLogoutEvent: ((connectionType: String) -> Unit)? = null
+    private var onUploadImageEvent: ((data: NSData) -> Unit)? = null
     private val preferenceSettings: Settings = Settings()
-    private val authScreen = AuthenticationScreen(currentPosition = AuthSSOScreen.AUTH_LOGIN.toPath(), platformNavigator = this)
+    private val authScreen = AuthenticationScreen(currentPosition = AuthSSOScreenNav.AUTH_LOGIN.toPath(), platformNavigator = this)
 
     fun MainViewController(onLoginEvent:(connectionType: String) -> Unit,
                            onLogoutEvent:(connectionType: String) -> Unit,
-                           onSignupEvent: ((connectionType: String) -> Unit)?): UIViewController {
+                           onSignupEvent: ((connectionType: String) -> Unit)?,
+                           onUploadImageEvent: (data: NSData) -> Unit): UIViewController {
 
             val view = ComposeUIViewController {
                 Navigator(SplashScreen(this)) { navigator ->
@@ -34,6 +43,7 @@ class MainViewController: PlatformNavigator {
             this.onLoginEvent = onLoginEvent
             this.onLogoutEvent = onLogoutEvent
             this.onSignupEvent = onSignupEvent
+            this.onUploadImageEvent = onUploadImageEvent
             return view
     }
 
@@ -57,6 +67,15 @@ class MainViewController: PlatformNavigator {
             authScreen.setLoginAuthResponse(response)
         }
     }
+
+   fun onImageUploadResponse(imageUrl: String) {
+        authScreen.setImageUploadResponse(imageUrl)
+    }
+
+    fun onImageUploadProcessing(isDone: Boolean) {
+        authScreen.setImageUploadProcessing(isDone)
+    }
+
 
     private fun onLogoutAuthResponse(response: Auth0ConnectionResponse) {
         preferenceSettings.clear()
@@ -84,6 +103,19 @@ class MainViewController: PlatformNavigator {
     override fun startAuth0Logout(connectionType: String) {
         onLogoutEvent?.let {
             it(connectionType)
+        }
+    }
+
+    @OptIn(ExperimentalForeignApi::class)
+    override fun startImageUpload(imageByteArray: ByteArray) {
+        val data = imageByteArray.usePinned {
+            NSData.create(
+                bytes = it.addressOf(0),
+                length = imageByteArray.size.toULong()
+            )
+        }
+        onUploadImageEvent?.let {
+            it(data)
         }
     }
 }

@@ -3,6 +3,8 @@ import SwiftUI
 import ComposeApp
 import Auth0
 import JWTDecode
+import Cloudinary
+import CloudKit
 
 struct ComposeView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
@@ -12,7 +14,7 @@ struct ComposeView: UIViewControllerRepresentable {
             onLoginEvent: { connectionType in
                 Auth0
                  .webAuth()
-                 .redirectURL(URL(string: "com.application.zazzy.Zazzy://dev-6s0tarpbfr017qxp.us.auth0.com/ios/com.application.zazzy.Zazzy/callback")!)
+                 .redirectURL(URL(string: "demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy/callback")!)
                  .connection(connectionType)
                  .start { result in
                      switch result {
@@ -30,7 +32,7 @@ struct ComposeView: UIViewControllerRepresentable {
             onLogoutEvent: {connectionType in
                 Auth0
                     .webAuth()
-                    .redirectURL(URL(string: "com.application.zazzy.Zazzy://dev-6s0tarpbfr017qxp.us.auth0.com/ios/com.application.zazzy.Zazzy/callback")!)
+                    .redirectURL(URL(string: "demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy/callback")!)
                     .clearSession { result in
                         switch result {
                         case .success:
@@ -45,7 +47,7 @@ struct ComposeView: UIViewControllerRepresentable {
             onSignupEvent: { connectionType in
                 Auth0
                  .webAuth()
-                 .redirectURL(URL(string: "https://com.application.zazzy.Zazzy://dev-6s0tarpbfr017qxp.us.auth0.com/ios/com.application.zazzy.Zazzy/callback")!)
+                 .redirectURL(URL(string: "demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy/callback")!)
                  .connection(connectionType)
                  .start { result in
                      switch result {
@@ -59,11 +61,30 @@ struct ComposeView: UIViewControllerRepresentable {
                              .setAuthResponse(response: Auth0ConnectionResponse(connectionType: connectionType, email:  "", action: "signup", status: "failure"))
                      }
                  }
-            })
+            },
+            
+            onUploadImageEvent: { data in
+                let config = CLDConfiguration(cloudName: "df2aprbbs", apiKey:"699592978195546", secure: true)
+                let cloudinary = CLDCloudinary(configuration: config)
+                let params = CLDUploadRequestParams()
+                let request = cloudinary
+                .createUploader()
+                .upload(data: data, uploadPreset: "UserUploads", params: CLDUploadRequestParams())
+                { progress in
+                    mainController.onImageUploadProcessing(isDone: true)
+                      // Handle progress
+                } completionHandler: { result, error in
+                   mainController.onImageUploadProcessing(isDone: false)
+                    mainController.onImageUploadResponse(imageUrl: result?.secureUrl ?? "empty")
+                      // Handle result
+                }
+            }
+        
+        )
         
       
     }
-
+    
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
     
     func getMainController() -> MainViewController {

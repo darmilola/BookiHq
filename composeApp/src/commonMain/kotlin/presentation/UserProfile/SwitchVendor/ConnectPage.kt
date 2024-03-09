@@ -14,12 +14,20 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.russhwolf.settings.ObservableSettings
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.set
+import domain.Models.Auth0ConnectionResponse
+import domain.Models.PlatformNavigator
 
 
-object ConnectPage : Screen {
+open class ConnectPage() : Screen {
+
+    private val preferenceSettings: Settings = Settings()
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+
         Scaffold(
             topBar = {
                 SwitchVendorHeader()
@@ -40,4 +48,6 @@ object ConnectPage : Screen {
             backgroundColor = Color.White,
         )
     }
+
+
 }

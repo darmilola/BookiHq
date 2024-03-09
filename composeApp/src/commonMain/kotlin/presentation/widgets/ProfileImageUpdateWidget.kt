@@ -18,11 +18,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import presentation.components.ImageComponent
+import presentations.components.ImageComponent
 
 
 @Composable
-fun ProfileImageUpdate() {
+fun ProfileImageUpdate(profileImageUrl: String, isAsync: Boolean = false,onUploadImageClicked: () -> Unit) {
     Box(Modifier.fillMaxWidth().height(220.dp), contentAlignment = Alignment.Center) {
         Box(
             Modifier
@@ -45,15 +45,17 @@ fun ProfileImageUpdate() {
                     shape = CircleShape
                 )
                 .fillMaxSize()
-            ImageComponent(imageModifier = modifier, imageRes = "drawable/1.jpg")
+            ImageComponent(imageModifier = modifier, imageRes = profileImageUrl, isAsync = isAsync)
         }
-        EditProfilePictureButton()
+        EditProfilePictureButton(){
+            onUploadImageClicked()
+        }
 
     }
 }
 
 @Composable
-fun EditProfilePictureButton() {
+fun EditProfilePictureButton(onUploadImageClicked: () -> Unit) {
     Box(modifier = Modifier.size(200.dp), contentAlignment = Alignment.BottomEnd) {
         val modifier = Modifier
             .padding(end = 10.dp)
@@ -64,7 +66,8 @@ fun EditProfilePictureButton() {
             contentAlignment = Alignment.Center
         ) {
             ImageComponent(imageModifier = Modifier.size(35.dp).clickable {
-            }, imageRes = "drawable/recycle_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+                  onUploadImageClicked()
+            }, imageRes = "drawable/upload_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
         }
     }
 }

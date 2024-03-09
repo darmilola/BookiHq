@@ -40,9 +40,9 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import presentation.components.ImageComponent
 import presentation.main.MainTab
 import presentation.viewmodels.MainViewModel
+import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 

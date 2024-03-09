@@ -22,8 +22,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import domain.Models.AuthSSOScreen
+import domain.Models.AuthSSOScreenNav
 import presentation.components.ButtonComponent
+import presentation.widgets.AuthenticationBackNav
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.PhoneInputWidget
 import presentation.widgets.SubtitleTextWidget
@@ -53,13 +54,13 @@ fun ContinueWithPhone(platformNavigator: PlatformNavigator) {
 
         Column(modifier = rootModifier) {
             Column(modifier = topLayoutModifier) {
-                AttachBackIcon(platformNavigator = platformNavigator)
+                AuthenticationBackNav(platformNavigator = platformNavigator)
                 EnterPhoneNumberTitle()
                 AttachSendCodeDescription()
                 PhoneInputWidget()
 
                 ButtonComponent(modifier = buttonStyle, buttonText = "Continue", borderStroke = null, colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4){
-                    navigator.replace(AuthenticationScreen(currentPosition = AuthSSOScreen.AUTH_LOGIN.toPath(), platformNavigator = platformNavigator))
+                    navigator.replace(AuthenticationScreen(currentPosition = AuthSSOScreenNav.AUTH_LOGIN.toPath(), platformNavigator = platformNavigator))
                 }
 
 
@@ -68,20 +69,6 @@ fun ContinueWithPhone(platformNavigator: PlatformNavigator) {
 
         }
     }
-
-@Composable
-fun AttachBackIcon(goToScreen: Int = AuthSSOScreen.AUTH_LOGIN.toPath(), platformNavigator: PlatformNavigator) {
-    val navigator = LocalNavigator.currentOrThrow
-    PageBackNavWidget(){
-        if(goToScreen == AuthSSOScreen.WELCOME_SCREEN.toPath()){
-            navigator.replaceAll(WelcomeScreen(platformNavigator))
-        }
-        else {
-            navigator.replace(AuthenticationScreen(goToScreen, platformNavigator = platformNavigator))
-        }
-    }
-}
-
 
 @Composable
 fun EnterPhoneNumberTitle(){

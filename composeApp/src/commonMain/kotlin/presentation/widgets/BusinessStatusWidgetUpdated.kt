@@ -30,8 +30,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import presentation.components.ImageComponent
 import kotlinx.coroutines.launch
+import presentations.components.ImageComponent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

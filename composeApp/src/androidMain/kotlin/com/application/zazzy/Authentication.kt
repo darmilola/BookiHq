@@ -40,7 +40,7 @@ class Authentication : AppCompatActivity() {
         WebAuthProvider.login(account)
             .withConnection(connectionType)
             .withScheme("demo")
-            .withRedirectUri("dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy.Zazzy/callback")
+            .withRedirectUri("demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy/callback")
             .start(this, object : Callback<Credentials, AuthenticationException> {
                 override fun onFailure(error: AuthenticationException) {
                     val intent = Intent(this@Authentication, MainActivity::class.java)
@@ -62,7 +62,11 @@ class Authentication : AppCompatActivity() {
                                 startActivity(intent)
                             }
                             override fun onSuccess(result: UserProfile) {
-                                println(result)
+                                val intent = Intent(this@Authentication, MainActivity::class.java)
+                                val response = AndroidAuth0ConnectionResponse(connectionType = connectionType, email = result.email, action = authAction!!, status = AuthenticationStatus.SUCCESS.toPath())
+                                intent.putExtra("authResponse", response)
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                startActivity(intent)
                             }
                         })
                 }
@@ -74,7 +78,7 @@ class Authentication : AppCompatActivity() {
             .withConnection(connectionType)
             .withScheme("demo")
             .withScope("openid profile email")
-            .withRedirectUri("dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy.Zazzy/callback")
+            .withRedirectUri("demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy/callback")
             .start(this, object : Callback<Credentials, AuthenticationException> {
                 override fun onFailure(error: AuthenticationException) {
                     val intent = Intent(this@Authentication, MainActivity::class.java)
@@ -96,16 +100,21 @@ class Authentication : AppCompatActivity() {
                                 startActivity(intent)
                             }
                             override fun onSuccess(result: UserProfile) {
-                                println(result)
+                                val intent = Intent(this@Authentication, MainActivity::class.java)
+                                val response = AndroidAuth0ConnectionResponse(connectionType = connectionType, email = result.email, action = authAction!!, status = AuthenticationStatus.SUCCESS.toPath())
+                                intent.putExtra("authResponse", response)
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                startActivity(intent)
                             }
                         })
                 }
             })
     }
+
     private fun logout() {
         WebAuthProvider.logout(account)
             .withScheme("demo")
-            .withReturnToUrl("demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy.Zazzy/callback")
+            .withReturnToUrl("demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy/callback")
             .start(this, object: Callback<Void?, AuthenticationException> {
                 override fun onSuccess(result: Void?) {
                     preferenceSettings.clear()

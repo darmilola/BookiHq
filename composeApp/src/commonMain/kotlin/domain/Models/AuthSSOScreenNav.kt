@@ -1,10 +1,12 @@
 package domain.Models
 
-enum class AuthSSOScreen {
+enum class AuthSSOScreenNav {
     AUTH_LOGIN,
     AUTH_SIGNUP,
     VERIFY_OTP,
     WELCOME_SCREEN,
+    CONNECT_VENDOR,
+    MAIN,
     COMPLETE_PROFILE;
     fun toPath() = when (this) {
         AUTH_LOGIN -> 0
@@ -12,6 +14,8 @@ enum class AuthSSOScreen {
         COMPLETE_PROFILE -> 2
         VERIFY_OTP -> 3
         WELCOME_SCREEN -> 4
+        CONNECT_VENDOR -> 5
+        MAIN -> 6
     }
 
     fun toEventPropertyName() = when (this) {
@@ -20,5 +24,7 @@ enum class AuthSSOScreen {
         COMPLETE_PROFILE -> "complete_profile"
         VERIFY_OTP -> "verify_otp"
         WELCOME_SCREEN -> "welcome_screen"
+        CONNECT_VENDOR -> "connect_vendor"
+        MAIN -> "main"
     }
 }

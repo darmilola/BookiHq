@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import presentation.components.ImageComponent
+import presentations.components.ImageComponent
 
 @Composable
 fun attachImage() {

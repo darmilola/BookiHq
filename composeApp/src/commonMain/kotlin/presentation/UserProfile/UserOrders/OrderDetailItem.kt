@@ -37,8 +37,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import presentation.components.ImageComponent
 import presentation.viewmodels.MainViewModel
+import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 

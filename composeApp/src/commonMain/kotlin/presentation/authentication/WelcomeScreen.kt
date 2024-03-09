@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import domain.Models.AuthSSOScreen
+import domain.Models.AuthSSOScreenNav
 import presentation.components.ButtonComponent
 import presentation.widgets.WelcomeScreenPagerContent
 
@@ -72,7 +72,7 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator){
         .height(50.dp)
 
         ButtonComponent(modifier = buttonStyle, buttonText = "Continue", borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = CircleShape, textColor = Color.White, style = TextStyle()) {
-            navigator.replace(AuthenticationScreen(currentPosition = AuthSSOScreen.AUTH_LOGIN.toPath(), platformNavigator = platformNavigator))
+            navigator.replace(AuthenticationScreen(currentPosition = AuthSSOScreenNav.AUTH_LOGIN.toPath(), platformNavigator = platformNavigator))
         }
     }
 

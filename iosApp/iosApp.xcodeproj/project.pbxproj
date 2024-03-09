@@ -12,6 +12,7 @@
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		594DCA802B95A1CB00991A2B /* Auth0 in Frameworks */ = {isa = PBXBuildFile; productRef = 594DCA7F2B95A1CB00991A2B /* Auth0 */; };
 		594DCA822B95A58600991A2B /* Auth0.plist in Resources */ = {isa = PBXBuildFile; fileRef = 594DCA812B95A58600991A2B /* Auth0.plist */; };
+		59CF0B752B9B5EE000A1E7E5 /* Cloudinary in Frameworks */ = {isa = PBXBuildFile; productRef = 59CF0B742B9B5EE000A1E7E5 /* Cloudinary */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
 /* End PBXBuildFile section */
 
@@ -34,6 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				59CF0B752B9B5EE000A1E7E5 /* Cloudinary in Frameworks */,
 				594DCA802B95A1CB00991A2B /* Auth0 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -117,6 +119,7 @@
 			name = iosApp;
 			packageProductDependencies = (
 				594DCA7F2B95A1CB00991A2B /* Auth0 */,
+				59CF0B742B9B5EE000A1E7E5 /* Cloudinary */,
 			);
 			productName = iosApp;
 			productReference = 7555FF7B242A565900829871 /* Zazzy.app */;
@@ -149,6 +152,7 @@
 			mainGroup = 7555FF72242A565900829871;
 			packageReferences = (
 				594DCA7E2B95A1CB00991A2B /* XCRemoteSwiftPackageReference "Auth0" */,
+				59CF0B732B9B5EE000A1E7E5 /* XCRemoteSwiftPackageReference "cloudinary_ios" */,
 			);
 			productRefGroup = 7555FF7C242A565900829871 /* Products */;
 			projectDirPath = "";
@@ -421,6 +425,14 @@
 				minimumVersion = 2.0.0;
 			};
 		};
+		59CF0B732B9B5EE000A1E7E5 /* XCRemoteSwiftPackageReference "cloudinary_ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/cloudinary/cloudinary_ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -428,6 +440,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 594DCA7E2B95A1CB00991A2B /* XCRemoteSwiftPackageReference "Auth0" */;
 			productName = Auth0;
+		};
+		59CF0B742B9B5EE000A1E7E5 /* Cloudinary */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 59CF0B732B9B5EE000A1E7E5 /* XCRemoteSwiftPackageReference "cloudinary_ios" */;
+			productName = Cloudinary;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

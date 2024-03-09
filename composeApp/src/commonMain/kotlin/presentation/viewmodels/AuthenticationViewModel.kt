@@ -2,51 +2,46 @@ package presentation.viewmodels
 
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
+import domain.Models.Auth0ConnectionResponse
+import domain.Models.AuthenticationResponse
+import domain.Models.User
 import kotlinx.coroutines.flow.StateFlow
 
 class AuthenticationViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
-    private var pageIndex = 0
+    private var _authenticatedEmail = savedStateHandle.getStateFlow("userEmail", "")
 
-    //private val _authenticationScreenData = mutableStateOf(createAuthenticationScreenData())
+    private var _auth0Response = savedStateHandle.getStateFlow("auth0Response", Auth0ConnectionResponse())
 
-    private var _currentScreen =  savedStateHandle.getStateFlow("currentScreen", 1)
-   /* val authenticationScreenData: AuthenticationScreenData?
-        get() = _authenticationScreenData.value*/
+    private var _userData = savedStateHandle.getStateFlow("user", User())
 
-    val currentScreenValue: StateFlow<Int>
-        get() = _currentScreen
+    val authenticatedEmail: StateFlow<String>
+        get() = _authenticatedEmail
 
+    val auth0Response: StateFlow<Auth0ConnectionResponse>
+        get() = _auth0Response
 
-    fun switchScreen(currentScreen: Int) {
-        savedStateHandle["currentScreen"] = currentScreen
+    val userData: StateFlow<User>
+        get() = _userData
+
+    fun setAuthenticatedEmail(userEmail: String) {
+        savedStateHandle["userEmail"] = userEmail
     }
 
-  /*  private val authScreenOrder: List<AuthenticationScreenEnum> = listOf(
-        AuthenticationScreenEnum.LOGIN_SCREEN,
-        AuthenticationScreenEnum.SIGNUP_SCREEN
-    )
-*/
- /*   private fun createAuthenticationScreenData(): AuthenticationScreenData {
-        return AuthenticationScreenData(
-            screenType = pageIndex
-        )
-    }*/
+    fun setAuth0Started(auth0Started: Boolean) {
+        savedStateHandle["auth0Started"] = auth0Started
+    }
 
-/*    fun changeScreen(newPageIndex: Int) {
-        pageIndex = newPageIndex
-        _authenticationScreenData.value = createAuthenticationScreenData()
-    }*/
+    fun setAuth0Response(auth0Response: Auth0ConnectionResponse) {
+        savedStateHandle["auth0Response"] = auth0Response
+    }
+
+    fun setAuth0Ended(auth0Ended: Boolean) {
+        savedStateHandle["auth0Ended"] = auth0Ended
+    }
+
+    fun setUserData(user: User) {
+        savedStateHandle["user"] = user
+    }
 
 }
-
-/*
-enum class AuthenticationScreenEnum {
-    LOGIN_SCREEN,
-    SIGNUP_SCREEN
-}
-
-
-data class AuthenticationScreenData(
-    val screenType: Int
-)*/
