@@ -16,14 +16,22 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
 import di.initKoin
 import presentation.components.SplashScreenBackground
 import kotlinx.coroutines.delay
+import presentation.UserProfile.SwitchVendor.ConnectPage
 import presentation.authentication.WelcomeScreen
+import presentation.main.MainScreen
 import presentation.widgets.SplashScreenWidget
 
 @Composable
 fun SplashScreenCompose(platformNavigator: PlatformNavigator) {
+
+    val preferenceSettings: Settings = Settings()
+
+
    val  modifier =
         Modifier.fillMaxWidth()
             .fillMaxHeight()
@@ -42,9 +50,33 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator) {
         }
         LaunchedEffect(key1 = true) {
             delay(3000L)
-            navigator.replaceAll(WelcomeScreen(platformNavigator))
+            authenticateSplashScreen(preferenceSettings, onAuthenticated = {
+                navigator.replaceAll(MainScreen())
+            }, onConnectVendor = {
+                navigator.replaceAll(ConnectPage())
+            }, onWelcome = {
+                navigator.replaceAll(WelcomeScreen(platformNavigator))
+            })
+
         }
     }
+
+ private fun authenticateSplashScreen(settings: Settings, onAuthenticated :() -> Unit,
+                                      onConnectVendor :() -> Unit, onWelcome :() -> Unit){
+     val userEmail = settings.getString("userEmail", "")
+     val isVendorConnected = settings.getBoolean("isVendorConnected", false)
+
+     if (userEmail.isNotEmpty() && isVendorConnected){
+         onAuthenticated()
+     }
+     else if(userEmail.isNotEmpty() && !isVendorConnected){
+         onConnectVendor()
+     }
+     else{
+         onWelcome()
+     }
+
+ }
 
 class SplashScreen(val platformNavigator: PlatformNavigator) : Screen {
     @Composable

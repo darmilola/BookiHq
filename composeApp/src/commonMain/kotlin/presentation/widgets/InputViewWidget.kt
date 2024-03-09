@@ -1,10 +1,10 @@
-package presentation.widgets
+package presentations.widgets
 
-import GGSansSemiBold
-import theme.styles.Colors
+import theme.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -36,47 +36,88 @@ import presentations.components.ImageComponent
 import presentations.components.TextFieldComponent
 
 @Composable
-fun InputWidget(iconRes: String, placeholderText: String, iconSize: Int, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), isPasswordField: Boolean = false, isFocusedByDefault: Boolean = false) {
-    var text by remember { mutableStateOf("") }
-    var borderStroke by remember { mutableStateOf(BorderStroke(2.dp, color  = Color.Transparent)) }
+fun InputWidget(iconRes: String, placeholderText: String,defaultValue: String = "",iconSize: Int, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), isFocusedByDefault: Boolean = false, viewHeight: Int = 70, isSingleLine: Boolean = false, maxLines: Int = 1, mBorderStroke: BorderStroke =  BorderStroke(2.dp, color  = Color.Transparent), isPasswordField: Boolean = false, onValueChange: ((String) -> Unit)? = null) {
+    var text by remember { mutableStateOf(defaultValue) }
+    var passwordIconRes by remember { mutableStateOf("drawable/not_visible.png") }
+    var borderStroke by remember { mutableStateOf(mBorderStroke) }
 
     if(isFocusedByDefault){
-       borderStroke =  BorderStroke(2.dp, color  = Colors.primaryColor)
+        borderStroke =  BorderStroke(2.dp, color  = Colors.primaryColor)
     }
+
+    var ismPasswordField by remember { mutableStateOf(isPasswordField) }
+
+
 
     val modifier  = Modifier
         .padding(end = 10.dp, start = 10.dp, top = 20.dp)
         .fillMaxWidth()
-        .height(70.dp)
+        .height(viewHeight.dp)
         .border(border = borderStroke, shape = RoundedCornerShape(15.dp))
         .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(15.dp))
 
     Row(modifier = modifier,
         horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically) {
+        verticalAlignment = Alignment.Top) {
 
-        Box(modifier = Modifier.fillMaxHeight().width(50.dp), contentAlignment = Alignment.Center){
-            ImageComponent(imageModifier = Modifier
-                .size(iconSize.dp), imageRes = iconRes, colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+        Box(modifier = Modifier.fillMaxHeight().width(50.dp), contentAlignment = Alignment.Center) {
+            ImageComponent(
+                imageModifier = Modifier
+                    .size(iconSize.dp),
+                imageRes = iconRes,
+                colorFilter = ColorFilter.tint(color = Colors.primaryColor)
+            )
         }
         TextFieldComponent(
             text = text,
             readOnly = false,
-            textStyle = TextStyle(fontSize = TextUnit(22f, TextUnitType.Sp), fontFamily = GGSansSemiBold, fontWeight = FontWeight.Normal, textAlign = TextAlign.Start, color = Color.Gray),
-            modifier = Modifier.fillMaxHeight().fillMaxWidth().padding(end = 10.dp),
+            textStyle = TextStyle(
+                fontSize = TextUnit(18f, TextUnitType.Sp),
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Start,
+                color = Color.Gray
+            ),
+            modifier = Modifier.fillMaxHeight().fillMaxWidth(0.90f).padding(end = 10.dp),
             keyboardOptions = keyboardOptions,
             onValueChange = {
                 text = it
-            } , isSingleLine = true, placeholderText = placeholderText, onFocusChange = {
-                    it ->
-                borderStroke = if (it){
-                    BorderStroke(2.dp, color  = Colors.primaryColor)
-                } else{
-                    BorderStroke(2.dp, color  = Color.Transparent)
+                if (onValueChange != null) {
+                    onValueChange(text)
                 }
             },
-            isPasswordField = isPasswordField,
-            placeholderTextSize = 20f
+            isSingleLine = isSingleLine,
+            placeholderText = placeholderText,
+            onFocusChange = { it ->
+                borderStroke = if (it) {
+                    BorderStroke(2.dp, color = Colors.primaryColor)
+                } else {
+                    BorderStroke(2.dp, color = Color.Transparent)
+                }
+            },
+            isPasswordField = ismPasswordField,
+            placeholderTextSize = 16f,
+            maxLines = maxLines
         )
+        if (isPasswordField) {
+            Box(
+                modifier = Modifier.fillMaxHeight().fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                ImageComponent(
+                    imageModifier = Modifier
+                        .size(iconSize.dp).clickable {
+                            ismPasswordField = !ismPasswordField
+                            passwordIconRes = if(ismPasswordField){
+                                "drawable/not_visible.png"
+                            } else{
+                                "drawable/visible.png"
+                            }
+                        },
+                    imageRes = passwordIconRes,
+                    colorFilter = ColorFilter.tint(color = Colors.primaryColor)
+                )
+            }
+        }
     }
 }
+

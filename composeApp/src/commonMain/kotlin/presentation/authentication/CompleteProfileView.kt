@@ -1,5 +1,6 @@
 package presentation.authentication
 
+import StackedSnackbarHost
 import theme.styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,12 +18,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,15 +38,18 @@ import com.russhwolf.settings.Settings
 import domain.Models.PlatformNavigator
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
-import presentation.UserProfile.SwitchVendor.ConnectPage
 import presentation.widgets.DropDownWidget
-import presentation.widgets.InputWidget
 import presentation.widgets.ProfileImageUpdate
+import presentation.widgets.SnackBarType
 import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
+import presentation.widgets.ShowSnackBar
+import presentations.widgets.InputWidget
+import rememberStackedSnackbarHostState
+import utils.InputValidator
 
 @Composable
-fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, platformNavigator: PlatformNavigator) {
+fun CompleteProfile(authenticationPresenter: AuthenticationPresenter,userEmail: String, platformNavigator: PlatformNavigator) {
 
     val placeHolderImage = "drawable/user_icon.png"
     val firstname = remember { mutableStateOf("") }
@@ -54,18 +57,31 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, platformNa
     val address = remember { mutableStateOf("") }
     val contactPhone = remember { mutableStateOf("") }
     val country = remember { mutableStateOf("") }
-    val gender = remember { mutableStateOf("") }
+    val gender = remember { mutableStateOf("male") }
     val profileImageUrl = remember { mutableStateOf(placeHolderImage) }
-    var showFilePicker by remember { mutableStateOf(false) }
     val imagePickerScope = rememberCoroutineScope()
     val preferenceSettings = Settings()
-    val fileType = listOf("jpg", "png")
+    val inputList =  ArrayList<String>()
+    val stackedSnackBarHostState = rememberStackedSnackbarHostState(
+        maxStack = 5,
+        animation = StackedSnackbarAnimation.Bounce
+    )
 
     preferenceSettings as ObservableSettings
 
     preferenceSettings.addStringListener("imageUrl","") {
             value: String -> profileImageUrl.value = value
     }
+
+    inputList.add(firstname.value)
+    inputList.add(lastname.value)
+    inputList.add(address.value)
+    inputList.add(contactPhone.value)
+    inputList.add(country.value)
+    inputList.add(gender.value)
+    inputList.add(userEmail)
+
+
 
     val rootModifier =
         Modifier
@@ -77,8 +93,6 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, platformNa
         .padding(start = 10.dp, end = 10.dp, top = 30.dp)
         .fillMaxWidth()
         .height(50.dp)
-
-    val navigator = LocalNavigator.currentOrThrow
 
     val topLayoutModifier =
             Modifier
@@ -98,34 +112,115 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, platformNa
         }
     )
 
+    Scaffold(
+        snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState)  }
+    ) {
 
-    Column(modifier = rootModifier) {
-        Column(modifier = topLayoutModifier) {
-            PageTitle()
-            SubtitleTextWidget(text = "Lorem ipsum is placeholder text commonly used in Printing")
-            ProfileImageUpdate(profileImageUrl = profileImageUrl.value, isAsync = profileImageUrl.value != placeHolderImage, onUploadImageClicked = {
-                imagePicker.launch()
-            })
-            Row(modifier = Modifier.fillMaxWidth()) {
-               Box(modifier = Modifier.fillMaxWidth(0.50f), contentAlignment = Alignment.Center){
-                   InputWidget(iconRes = "drawable/card_icon.png", placeholderText = "Firstname", iconSize = 40)
-               }
-              Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
-                    InputWidget(iconRes = "drawable/card_icon.png", placeholderText = "Lastname", iconSize = 40)
-              }
-            }
-            InputWidget(iconRes = "drawable/address.png", placeholderText = "Address", iconSize = 28, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone), isPasswordField = false)
-            InputWidget(iconRes = "drawable/phone_icon.png", placeholderText = "Contact Phone", iconSize = 28, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), isPasswordField = false)
-            AttachCountryDropDownWidget()
 
-            ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(15.dp), style = TextStyle(), onLeftClicked = {
 
-            }, onRightClicked = {
 
-            }, leftText = "Male", rightText = "Female")
+        Column(modifier = rootModifier) {
+            Column(modifier = topLayoutModifier) {
+                PageTitle()
+                SubtitleTextWidget(text = "Lorem ipsum is placeholder text commonly used in Printing")
+                ProfileImageUpdate(
+                    profileImageUrl = profileImageUrl.value,
+                    isAsync = profileImageUrl.value != placeHolderImage,
+                    onUploadImageClicked = {
+                        imagePicker.launch()
+                    })
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(0.50f),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        InputWidget(
+                            iconRes = "drawable/card_icon.png",
+                            placeholderText = "Firstname",
+                            iconSize = 40
+                        ){
+                            firstname.value = it
+                        }
+                    }
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        InputWidget(
+                            iconRes = "drawable/card_icon.png",
+                            placeholderText = "Lastname",
+                            iconSize = 40
+                        ){
+                            lastname.value = it
+                        }
+                    }
+                }
+                InputWidget(
+                    iconRes = "drawable/address.png",
+                    placeholderText = "Address",
+                    iconSize = 28,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    isPasswordField = false
+                ){
+                    address.value = it
+                }
+                InputWidget(
+                    iconRes = "drawable/phone_icon.png",
+                    placeholderText = "Contact Phone",
+                    iconSize = 28,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    isPasswordField = false
+                ){
+                    contactPhone.value = it
+                }
+                AttachCountryDropDownWidget() {
+                    country.value = it
+                }
 
-            ButtonComponent(modifier = buttonStyle, buttonText = "Continue", colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = CircleShape, textColor = Color(color = 0xFFFFFFFF), style = TextStyle(), borderStroke = null) {
-                navigator.push(ConnectPage())
+                ToggleButton(
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                    fontSize = 18,
+                    shape = RoundedCornerShape(15.dp),
+                    style = TextStyle(),
+                    onLeftClicked = {
+                      gender.value = "Male"
+                    },
+                    onRightClicked = {
+                      gender.value = "Female"
+                    },
+                    leftText = "Male",
+                    rightText = "Female"
+                )
+
+                ButtonComponent(
+                    modifier = buttonStyle,
+                    buttonText = "Save",
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
+                    fontSize = 18,
+                    shape = CircleShape,
+                    textColor = Color(color = 0xFFFFFFFF),
+                    style = TextStyle(),
+                    borderStroke = null
+                ) {
+                    if (!InputValidator(inputList).isValidInput()
+                    ) {
+                        println(inputList)
+                        ShowSnackBar(title = "Input Required", description = "Please provide the required info", actionLabel = "", duration = StackedSnackbarDuration.Short, snackBarType = SnackBarType.ERROR,
+                                onActionClick = {}, stackedSnackBarHostState = stackedSnackBarHostState)
+
+                    } else if (profileImageUrl.value == placeHolderImage) {
+
+                        ShowSnackBar(title = "Profile Image Required", description = "Please Upload a required Profile Image", actionLabel = "", duration = StackedSnackbarDuration.Short, snackBarType = SnackBarType.ERROR,
+                            stackedSnackBarHostState,onActionClick = {})
+
+
+                    } else {
+                        authenticationPresenter.completeProfile(
+                            firstname.value, lastname.value,
+                            userEmail = userEmail, address = address.value,
+                            contactPhone = contactPhone.value, country = country.value,
+                            gender = gender.value, profileImageUrl = profileImageUrl.value
+                        )
+
+                    }
+                }
             }
         }
     }
@@ -135,9 +230,11 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, platformNa
 
 
 @Composable
-fun AttachCountryDropDownWidget(){
+fun AttachCountryDropDownWidget(onMenuItemClick : (String) -> Unit) {
     val countryList = listOf("South Africa", "Nigeria")
-    DropDownWidget(menuItems = countryList, placeHolderText = "Country of Residence",)
+    DropDownWidget(menuItems = countryList, placeHolderText = "Country of Residence", onMenuItemClick = {
+        onMenuItemClick(countryList[it])
+    })
 }
 
 
@@ -155,5 +252,5 @@ fun PageTitle(){
             modifier = rowModifier
         ) {
             TitleWidget(title = "Complete Your Profile", textColor = Colors.primaryColor)
-        }
+     }
 }

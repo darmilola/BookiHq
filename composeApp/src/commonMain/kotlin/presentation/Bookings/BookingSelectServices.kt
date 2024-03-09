@@ -96,7 +96,7 @@ fun AttachServiceTypeToggle(){
 @Composable
 fun AttachDropDownWidget(){
     val serviceList = listOf("Service A ", "Service B ", "Service C ", "Service D ", "Service E ")
-    DropDownWidget(menuItems = serviceList,iconRes = "drawable/spa_treatment_leaves.png", placeHolderText = "Select Service Type", iconSize = 30)
+    DropDownWidget(menuItems = serviceList,iconRes = "drawable/spa_treatment_leaves.png", placeHolderText = "Select Service Type", iconSize = 30, onMenuItemClick = {})
 }
 
 

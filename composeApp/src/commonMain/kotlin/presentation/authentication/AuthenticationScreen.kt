@@ -37,6 +37,7 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
     private var userNavigation = false
     private var userNavigationPosition = AuthSSOScreenNav.AUTH_LOGIN.toPath()
     private var authenticationViewModel: AuthenticationViewModel? = null
+    private var auth0UserEmail = ""
 
     @Composable
     override fun Content() {
@@ -45,11 +46,13 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
         val contentLoading = remember { mutableStateOf(false) }
         val errorVisible = remember { mutableStateOf(false) }
         val imageUploading = remember { mutableStateOf(false) }
-        val userEmail = remember { mutableStateOf("") }
+        val isAuthEmailAssigned = remember { mutableStateOf(false) }
 
+        // for Ios Auth0
         preferenceSettings as ObservableSettings
         preferenceSettings.addStringListener("auth0Email","") {
-                value: String -> userEmail.value = value
+                value: String -> auth0UserEmail = value
+                isAuthEmailAssigned.value = true
         }
 
         preferenceSettings.addBooleanListener("imageUploadProcessing",false) {
@@ -57,7 +60,9 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
         }
 
         if (auth0ConnectionResponse != null && currentPosition == AuthSSOScreenNav.AUTH_LOGIN.toPath()) {
-            userEmail.value = auth0ConnectionResponse.email
+            // for Android Auth0
+            auth0UserEmail = auth0ConnectionResponse.email
+            isAuthEmailAssigned.value = true
         }
 
         uiStateViewModel = kmpViewModel(
@@ -81,24 +86,31 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
                 preferenceSettings.clear()
                 contentLoading.value = false
                 contentVisible.value = true
+                isAuthEmailAssigned.value = false
             },
             onErrorVisible = {
                 preferenceSettings.clear()
                 errorVisible.value = true
                 contentLoading.value = false
+                isAuthEmailAssigned.value = false
             },
             enterPlatform = {
                 preferenceSettings.clear()
                 userNavigation = true
+                isAuthEmailAssigned.value = false
                 userNavigationPosition = AuthSSOScreenNav.MAIN.toPath()
             },
             completeProfile = {
                 preferenceSettings.clear()
                 userNavigation = true
+                isAuthEmailAssigned.value = false
                 userNavigationPosition = AuthSSOScreenNav.COMPLETE_PROFILE.toPath()
             },
             connectVendor = {
                 preferenceSettings.clear()
+                preferenceSettings["userEmail"] = it
+                preferenceSettings["isVendorConnected"] = false
+                isAuthEmailAssigned.value = false
                 userNavigation = true
                 userNavigationPosition = AuthSSOScreenNav.CONNECT_VENDOR.toPath()
 
@@ -106,20 +118,25 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
         handler.init()
 
         //Main Service Content Arena
-        if (contentLoading.value) {
+        if (contentLoading.value && currentPosition != AuthSSOScreenNav.COMPLETE_PROFILE.toPath()) {
             Box(modifier = Modifier.fillMaxWidth(0.80f)) {
                 LoadingDialog("Loading...")
             }
         }
+        else if (contentLoading.value && currentPosition == AuthSSOScreenNav.COMPLETE_PROFILE.toPath()) {
+            Box(modifier = Modifier.fillMaxWidth(0.80f)) {
+                LoadingDialog("Completing Profile...")
+            }
+        }
 
-        else if(imageUploading.value){
+        else if(imageUploading.value) {
             Box(modifier = Modifier.fillMaxWidth(0.80f)) {
                 LoadingDialog("Uploading...")
             }
         }
 
-        if (userEmail.value.isNotEmpty() && currentPosition == AuthSSOScreenNav.AUTH_LOGIN.toPath()) {
-            authenticationPresenter.getUserProfile(userEmail.value)
+        if (isAuthEmailAssigned.value && auth0UserEmail.isNotEmpty() && currentPosition == AuthSSOScreenNav.AUTH_LOGIN.toPath()) {
+            authenticationPresenter.getUserProfile(auth0UserEmail)
         }
 
         if(!userNavigation) {
@@ -127,7 +144,7 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
         }
         else if(userNavigation && userNavigationPosition == AuthSSOScreenNav.COMPLETE_PROFILE.toPath()){
             currentPosition =  AuthSSOScreenNav.COMPLETE_PROFILE.toPath()
-            AuthenticationScreenCompose(currentPosition = userNavigationPosition)
+            AuthenticationScreenCompose(currentPosition = userNavigationPosition, userEmail = auth0UserEmail)
         }
         else if(userNavigation && userNavigationPosition == AuthSSOScreenNav.CONNECT_VENDOR.toPath()){
             currentPosition =  AuthSSOScreenNav.CONNECT_VENDOR.toPath()
@@ -163,7 +180,7 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
     }
 
     @Composable
-    open fun AuthenticationScreenCompose(currentPosition: Int = AuthSSOScreenNav.AUTH_LOGIN.toPath()) {
+    open fun AuthenticationScreenCompose(currentPosition: Int = AuthSSOScreenNav.AUTH_LOGIN.toPath(), userEmail: String = "") {
               when (currentPosition) {
                     AuthSSOScreenNav.AUTH_LOGIN.toPath() -> {
                         SignUpLogin(platformNavigator = platformNavigator!!)
@@ -174,7 +191,7 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
                     }
 
                 AuthSSOScreenNav.COMPLETE_PROFILE.toPath() -> {
-                        CompleteProfile(authenticationPresenter, platformNavigator = platformNavigator!!)
+                        CompleteProfile(authenticationPresenter,userEmail,platformNavigator = platformNavigator!!)
                     }
 
                 }

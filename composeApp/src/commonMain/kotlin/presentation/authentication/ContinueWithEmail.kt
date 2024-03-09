@@ -23,10 +23,10 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import presentation.components.ButtonComponent
-import presentation.widgets.InputWidget
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
+import presentations.widgets.InputWidget
 
 
 @Composable

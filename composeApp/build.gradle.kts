@@ -51,6 +51,10 @@ kotlin {
 
             //Auth0
             implementation ("com.auth0.android:auth0:2.+")
+
+            //snackbar
+            implementation("io.github.rizmaulana:compose-stacked-snackbar:1.0.3")
+
         }
 
         commonMain.dependencies {
@@ -134,6 +138,11 @@ kotlin {
             //paging
             implementation("app.cash.paging:paging-compose-common:3.3.0-alpha02-0.4.0")
             implementation("app.cash.paging:paging-common:3.3.0-alpha02-0.4.0")
+
+            //snackbar
+            implementation("io.github.rizmaulana:compose-stacked-snackbar:1.0.4")
+
+
 
         }
 

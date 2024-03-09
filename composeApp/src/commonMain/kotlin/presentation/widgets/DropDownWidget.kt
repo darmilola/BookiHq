@@ -107,7 +107,7 @@ fun DropDownWidgetView(menuItems: List<String>,
             menuItems.forEachIndexed { index, title ->
                 DropdownMenuItem(
                     onClick = {
-                        if (index != 0) {
+                        if (index != -1) {
                             onMenuItemClick(index)
                         }
                     }) {
@@ -118,10 +118,9 @@ fun DropDownWidgetView(menuItems: List<String>,
 }
 
 @Composable
-fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_icon.png", placeHolderText: String, iconSize: Int = 25) {
+fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_icon.png", placeHolderText: String, iconSize: Int = 25, onMenuItemClick : (Int) -> Unit) {
 
     val expandedMenuItem = remember { mutableStateOf(false) }
-
     val selectedMenuIndex = remember { mutableStateOf(-1) }
 
     val modifier  = Modifier
@@ -153,6 +152,7 @@ fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_
             onMenuItemClick = { index ->
                 selectedMenuIndex.value = index
                 expandedMenuItem.value = false
+                onMenuItemClick(selectedMenuIndex.value)
             }
         )
     }

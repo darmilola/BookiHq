@@ -35,10 +35,10 @@ import presentation.Products.CartScreen
 import presentation.main.MainTab
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.DropDownWidget
-import presentation.widgets.InputWidget
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.ProfileImageUpdate
 import presentation.widgets.TitleWidget
+import presentations.widgets.InputWidget
 
 class EditProfile(private val mainViewModel: MainViewModel) : Tab {
 
@@ -121,7 +121,7 @@ fun EditProfileCompose(mainViewModel: MainViewModel) {
 @Composable
 fun AttachCountryDropDownWidget(){
     val countryList = listOf("South Africa", "Nigeria")
-    DropDownWidget(menuItems = countryList, placeHolderText = "Country of Residence",)
+    DropDownWidget(menuItems = countryList, placeHolderText = "Country of Residence", onMenuItemClick = {})
 }
 
 
