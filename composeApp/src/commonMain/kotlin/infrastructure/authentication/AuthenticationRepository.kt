@@ -12,7 +12,8 @@ interface AuthenticationRepository {
         userEmail: String,
         address: String,
         contactPhone: String,
-        country: String,
+        countryId: Int,
+        cityId: Int,
         gender: String,
         profileImageUrl: String
     ): Single<ServerResponse>
@@ -23,7 +24,8 @@ interface AuthenticationRepository {
         userEmail: String,
         address: String,
         contactPhone: String,
-        country: String,
+        countryId: Int,
+        cityId: Int,
         gender: String,
         profileImageUrl: String
     ): Single<ServerResponse>

@@ -25,7 +25,8 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
         userEmail: String,
         address: String,
         contactPhone: String,
-        country: String,
+        countryId: Int,
+        cityId: Int,
         gender: String,
         profileImageUrl: String
     ) {
@@ -33,7 +34,7 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showLce(UIStates(loadingVisible = true))
-                    authenticationRepositoryImpl.completeProfile(firstname, lastname, userEmail, address, contactPhone, country, gender, profileImageUrl)
+                    authenticationRepositoryImpl.completeProfile(firstname, lastname, userEmail, address, contactPhone, countryId, cityId, gender, profileImageUrl)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
@@ -62,7 +63,8 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
         userEmail: String,
         address: String,
         contactPhone: String,
-        country: String,
+        countryId: Int,
+        cityId: Int,
         gender: String,
         profileImageUrl: String
     ) {
@@ -70,7 +72,7 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showLce(UIStates(loadingVisible = true))
-                    authenticationRepositoryImpl.updateProfile(firstname, lastname, userEmail, address, contactPhone, country, gender,profileImageUrl)
+                    authenticationRepositoryImpl.updateProfile(firstname, lastname, userEmail, address, contactPhone, countryId, cityId, gender,profileImageUrl)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){

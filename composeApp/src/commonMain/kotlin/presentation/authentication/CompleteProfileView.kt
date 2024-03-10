@@ -35,7 +35,13 @@ import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
+import domain.Models.CountryList
+import domain.Models.NGCityList
 import domain.Models.PlatformNavigator
+import domain.Models.SACityList
+import domain.Models.getCountries
+import domain.Models.getNGCityList
+import domain.Models.getSACityList
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
 import presentation.widgets.DropDownWidget
@@ -56,7 +62,8 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter,userEmail: 
     val lastname = remember { mutableStateOf("") }
     val address = remember { mutableStateOf("") }
     val contactPhone = remember { mutableStateOf("") }
-    val country = remember { mutableStateOf("") }
+    val country = remember { mutableStateOf(-1) }
+    val city = remember { mutableStateOf(-1) }
     val gender = remember { mutableStateOf("male") }
     val profileImageUrl = remember { mutableStateOf(placeHolderImage) }
     val imagePickerScope = rememberCoroutineScope()
@@ -77,7 +84,6 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter,userEmail: 
     inputList.add(lastname.value)
     inputList.add(address.value)
     inputList.add(contactPhone.value)
-    inputList.add(country.value)
     inputList.add(gender.value)
     inputList.add(userEmail)
 
@@ -174,6 +180,10 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter,userEmail: 
                     country.value = it
                 }
 
+                AttachCityDropDownWidget(selectedCountry = country.value) {
+                    city.value = it
+                }
+
                 ToggleButton(
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 18,
@@ -199,23 +209,17 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter,userEmail: 
                     style = TextStyle(),
                     borderStroke = null
                 ) {
-                    if (!InputValidator(inputList).isValidInput()
-                    ) {
-                        println(inputList)
+                    if (!InputValidator(inputList).isValidInput() || country.value == -1 || city.value == -1) {
                         ShowSnackBar(title = "Input Required", description = "Please provide the required info", actionLabel = "", duration = StackedSnackbarDuration.Short, snackBarType = SnackBarType.ERROR,
                                 onActionClick = {}, stackedSnackBarHostState = stackedSnackBarHostState)
-
                     } else if (profileImageUrl.value == placeHolderImage) {
-
                         ShowSnackBar(title = "Profile Image Required", description = "Please Upload a required Profile Image", actionLabel = "", duration = StackedSnackbarDuration.Short, snackBarType = SnackBarType.ERROR,
                             stackedSnackBarHostState,onActionClick = {})
-
-
                     } else {
                         authenticationPresenter.completeProfile(
                             firstname.value, lastname.value,
                             userEmail = userEmail, address = address.value,
-                            contactPhone = contactPhone.value, country = country.value,
+                            contactPhone = contactPhone.value, countryId = country.value, cityId = city.value,
                             gender = gender.value, profileImageUrl = profileImageUrl.value
                         )
 
@@ -230,10 +234,30 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter,userEmail: 
 
 
 @Composable
-fun AttachCountryDropDownWidget(onMenuItemClick : (String) -> Unit) {
-    val countryList = listOf("South Africa", "Nigeria")
+fun AttachCountryDropDownWidget(onMenuItemClick : (Int) -> Unit) {
+    val countryList = getCountries().values.toList()
     DropDownWidget(menuItems = countryList, placeHolderText = "Country of Residence", onMenuItemClick = {
-        onMenuItemClick(countryList[it])
+        onMenuItemClick(it)
+    })
+}
+
+@Composable
+fun AttachCityDropDownWidget(selectedCountry: Int = -1, onMenuItemClick : (Int) -> Unit) {
+    val SACity = getSACityList().values.toList()
+    val NGCity = getNGCityList().values.toList()
+    val cityList: List<String> = when (selectedCountry) {
+        CountryList.SOUTH_AFRICA.getId() -> {
+            SACity
+        }
+        CountryList.NIGERIA.getId() -> {
+            NGCity
+        }
+        else -> {
+            listOf()
+        }
+    }
+    DropDownWidget(menuItems = cityList, iconRes = "drawable/urban_icon.png", placeHolderText = "City", onMenuItemClick = {
+        onMenuItemClick(it)
     })
 }
 

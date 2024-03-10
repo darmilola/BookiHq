@@ -17,18 +17,6 @@ kotlin {
         }
     }
 
-  /*  // export correct artifact to use all classes of library directly from Swift
-    targets.withType(org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget::class.java).all {
-        binaries.withType(org.jetbrains.kotlin.gradle.plugin.mpp.Framework::class.java).all {
-            export("dev.icerock.moko:mvvm-core:0.16.1")
-            export("dev.icerock.moko:mvvm-livedata:0.16.1")
-            export("dev.icerock.moko:mvvm-livedata-resources:0.16.1")
-            export("dev.icerock.moko:mvvm-state:0.16.1")
-        }
-    }*/
-
-
-
     listOf(
         iosX64(),
         iosArm64(),
@@ -48,13 +36,8 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
             implementation ("com.cloudinary:cloudinary-android:2.5.0")
-
             //Auth0
             implementation ("com.auth0.android:auth0:2.+")
-
-            //snackbar
-            implementation("io.github.rizmaulana:compose-stacked-snackbar:1.0.3")
-
         }
 
         commonMain.dependencies {
@@ -65,8 +48,6 @@ kotlin {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
             val voyagerVersion = "1.0.0-rc10"
-
-            // Multiplatform
 
             // Navigator
             implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
@@ -79,6 +60,7 @@ kotlin {
 
             // Transitions
             implementation("cafe.adriel.voyager:voyager-transitions:$voyagerVersion")
+
             // compose multiplatform
             implementation("dev.icerock.moko:mvvm-compose:0.16.1") // api mvvm-core, getViewModel for Compose Multiplatform
             implementation("dev.icerock.moko:mvvm-flow-compose:0.16.1") // api mvvm-flow, binding extensions for Compose Multiplatform
@@ -123,7 +105,6 @@ kotlin {
             //Twilio
             implementation ("com.twilio.sdk:twilio:9.16.0")
 
-            //Image Upload
             // peekaboo-ui
             implementation(libs.peekaboo.ui)
 
@@ -139,10 +120,8 @@ kotlin {
             implementation("app.cash.paging:paging-compose-common:3.3.0-alpha02-0.4.0")
             implementation("app.cash.paging:paging-common:3.3.0-alpha02-0.4.0")
 
-            //snackbar
+            //SnackBar
             implementation("io.github.rizmaulana:compose-stacked-snackbar:1.0.4")
-
-
 
         }
 

@@ -10,7 +10,8 @@ data class CompleteProfileRequest(
     @SerialName("userEmail") val userEmail: String,
     @SerialName("address") val address: String,
     @SerialName("contactPhone") val contactPhone: String,
-    @SerialName("country") val country: String,
+    @SerialName("countryId") val countryId: Int,
+    @SerialName("cityId") val cityId: Int,
     @SerialName("gender") val gender: String,
     @SerialName("profileImageUrl") val profileImageUrl: String)
 
@@ -20,7 +21,8 @@ data class UpdateProfileRequest(@SerialName("firstname") val firstname: String,
                                   @SerialName("userEmail") val userEmail: String,
                                   @SerialName("address") val address: String,
                                   @SerialName("contactPhone") val contactPhone: String,
-                                  @SerialName("country") val country: String,
+                                  @SerialName("countryId") val countryId: Int,
+                                  @SerialName("cityId") val cityId: Int,
                                   @SerialName("gender") val gender: String,
                                   @SerialName("profileImageUrl") val profileImageUrl: String)
 
