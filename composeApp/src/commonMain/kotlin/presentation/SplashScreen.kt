@@ -17,11 +17,10 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.russhwolf.settings.Settings
-import com.russhwolf.settings.get
 import di.initKoin
 import presentation.components.SplashScreenBackground
 import kotlinx.coroutines.delay
-import presentation.UserProfile.SwitchVendor.ConnectPage
+import presentation.UserProfile.ConnectVendor.ConnectPage
 import presentation.authentication.WelcomeScreen
 import presentation.main.MainScreen
 import presentation.widgets.SplashScreenWidget

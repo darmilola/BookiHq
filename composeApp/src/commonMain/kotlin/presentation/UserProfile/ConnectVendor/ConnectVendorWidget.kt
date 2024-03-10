@@ -1,4 +1,4 @@
-package presentation.UserProfile.SwitchVendor
+package presentation.UserProfile.ConnectVendor
 
 import GGSansRegular
 import GGSansSemiBold
@@ -33,19 +33,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import domain.Models.Vendor
 import presentation.components.ButtonComponent
 import presentation.Products.SearchBar
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
-
-@Composable
-fun ConnectBusinessSearchBar(){
-
-    SearchBar(placeholderText = "Search Vendor")
-
-}
 
 
 @Composable
@@ -55,7 +49,6 @@ fun SwitchVendorHeader(){
            horizontalAlignment = Alignment.CenterHorizontally) {
         ConnectBusinessTitle()
         ConnectBusinessDescription()
-        ConnectBusinessSearchBar()
     }
 }
 
@@ -82,9 +75,7 @@ fun ConnectBusinessTitle(){
             Box(modifier =  Modifier.weight(1.0f)
                 .fillMaxWidth()
                 .fillMaxHeight(),
-                contentAlignment = Alignment.CenterStart) {
-                leftTopBarItem()
-            }
+                contentAlignment = Alignment.CenterStart) {}
 
             Box(modifier =  Modifier.weight(3.0f)
                 .fillMaxWidth()
@@ -106,10 +97,10 @@ fun ConnectBusinessTitle(){
 fun BusinessInfoTitle(){
     val rowModifier = Modifier
         .fillMaxWidth()
-        .height(40.dp)
+        .fillMaxHeight()
 
     val colModifier = Modifier
-        .padding(top = 55.dp, end = 0.dp)
+        .padding(top = 55.dp, start = 10.dp)
         .fillMaxWidth()
         .height(70.dp)
 
@@ -148,13 +139,13 @@ fun BusinessInfoTitle(){
 fun ConnectBusinessDescription(){
     TextComponent(
         text = "Search for your favorite vendor and connect with to get your services from them.",
-        fontSize = 18,
+        fontSize = 16,
         fontFamily = GGSansRegular,
         textStyle = TextStyle(),
-        textColor = Color.Gray,
+        textColor = Color.DarkGray,
         textAlign = TextAlign.Center,
-        fontWeight = FontWeight.Black,
-        lineHeight = 25,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 20,
         textModifier = Modifier.fillMaxWidth().wrapContentHeight().padding(start = 10.dp, end = 10.dp, top = 20.dp))
 }
 
@@ -177,7 +168,7 @@ fun ConnectTitle(){
 
 
 @Composable
-fun BusinessInfoContent(onConnectedListener: () -> Unit) {
+fun BusinessInfoContent(vendor: Vendor, onConnectedListener: () -> Unit) {
     val columnModifier = Modifier
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .padding(start = 10.dp, end = 10.dp)
@@ -196,15 +187,15 @@ fun BusinessInfoContent(onConnectedListener: () -> Unit) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                BusinessLogo(size = 120, borderStroke = BorderStroke(2.dp, color = Color(color = 0xfffa2d65)))
+                BusinessLogo(logoUrl = vendor.businessLogo)
                 TextComponent(
-                    text = "This is the Business name you are trying to connect with (@businessName)",
-                    fontSize = 20,
-                    fontFamily = GGSansSemiBold,
+                    text = vendor.businessName,
+                    fontSize = 18,
+                    fontFamily = GGSansRegular,
                     textStyle = TextStyle(),
                     textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.ExtraBold,
+                    fontWeight = FontWeight.Normal,
                     lineHeight = 25,
                     textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 10.dp),
                     maxLines = 2,
@@ -213,16 +204,16 @@ fun BusinessInfoContent(onConnectedListener: () -> Unit) {
                 AttachLocationIcon()
 
                 TextComponent(
-                    textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 5.dp), text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aene ligula", fontSize = 18, fontFamily = GGSansRegular,
+                    textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 5.dp), text = vendor.businessAddress, fontSize = 18, fontFamily = GGSansRegular,
                     textStyle = TextStyle(), textColor = Color.DarkGray, textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Black, lineHeight = 25, maxLines = 3,  overflow = TextOverflow.Ellipsis)
+                    fontWeight = FontWeight.Normal, lineHeight = 25, maxLines = 3,  overflow = TextOverflow.Ellipsis)
 
                 AttachLocationInfoIcon()
 
                 TextComponent(
-                    textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 5.dp), text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aene ligula", fontSize = 18, fontFamily = GGSansRegular,
+                    textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 5.dp), text = vendor.businessAbout, fontSize = 18, fontFamily = GGSansRegular,
                     textStyle = TextStyle(), textColor = Color.DarkGray, textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Black, lineHeight = 25, maxLines = 3,  overflow = TextOverflow.Ellipsis)
+                    fontWeight = FontWeight.Normal, lineHeight = 25, maxLines = 3,  overflow = TextOverflow.Ellipsis)
 
                 Row(modifier = Modifier.fillMaxWidth().height(50.dp).padding(start = 30.dp, end = 30.dp)) {
 
@@ -249,7 +240,7 @@ fun BusinessInfoContent(onConnectedListener: () -> Unit) {
                             TextComponent(
                                 textModifier = Modifier.wrapContentWidth()
                                     .padding(start = 5.dp),
-                                text = "9:00 AM",
+                                text = vendor.openingHour.toString() +" AM",
                                 fontSize = 16,
                                 textStyle = TextStyle(),
                                 textColor = Color.DarkGray,
@@ -286,7 +277,7 @@ fun BusinessInfoContent(onConnectedListener: () -> Unit) {
                             TextComponent(
                                 textModifier = Modifier.wrapContentWidth()
                                     .padding(start = 5.dp),
-                                text = "10:00 PM",
+                                text = vendor.closingHour.toString()+ " PM",
                                 fontSize = 16,
                                 textStyle = TextStyle(),
                                 textColor = Color.DarkGray,
@@ -324,7 +315,7 @@ fun BusinessInfoContent(onConnectedListener: () -> Unit) {
                         TextComponent(
                             textModifier = Modifier.wrapContentWidth()
                                 .padding(start = 5.dp),
-                            text = "Home Service Available",
+                            text = if (vendor.homeServiceAvailable) "Home Service Available" else "No Home Service",
                             fontSize = 16,
                             textStyle = TextStyle(),
                             textColor = Color.DarkGray,
@@ -366,7 +357,7 @@ fun AttachLocationIcon() {
     val modifier = Modifier
         .padding(top = 5.dp)
         .size(30.dp)
-    ImageComponent(imageModifier = modifier, imageRes = "location_icon_filled.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+    ImageComponent(imageModifier = modifier, imageRes = "drawable/location_icon_filled.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
 }
 
 @Composable

@@ -491,6 +491,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
         val modifier = Modifier
             .padding(top = 2.dp)
             .size(20.dp)
-        ImageComponent(imageModifier = modifier, imageRes = "location_icon_filled.png", colorFilter = ColorFilter.tint(color = Colors.pinkColor))
+        ImageComponent(imageModifier = modifier, imageRes = "drawable/location_icon_filled.png", colorFilter = ColorFilter.tint(color = Colors.pinkColor))
     }
 }

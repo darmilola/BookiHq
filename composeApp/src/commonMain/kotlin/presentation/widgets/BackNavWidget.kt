@@ -31,11 +31,11 @@ fun PageBackNavWidget(onBackPressed: (() -> Unit)) {
             .clickable {
               onBackPressed()
               }
-            .size(50.dp)
+            .size(45.dp)
     Box(modifier = boxModifier,
             contentAlignment = Alignment.Center
         ) {
-            ImageComponent(imageModifier = Modifier.size(25.dp), imageRes = "drawable/nav_back_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+            ImageComponent(imageModifier = Modifier.size(20.dp), imageRes = "drawable/nav_back_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
         }
 }
 

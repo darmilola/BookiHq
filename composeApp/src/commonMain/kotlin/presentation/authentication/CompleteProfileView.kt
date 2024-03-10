@@ -35,6 +35,7 @@ import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
+import com.russhwolf.settings.set
 import domain.Models.CountryList
 import domain.Models.NGCityList
 import domain.Models.PlatformNavigator
@@ -216,6 +217,8 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter,userEmail: 
                         ShowSnackBar(title = "Profile Image Required", description = "Please Upload a required Profile Image", actionLabel = "", duration = StackedSnackbarDuration.Short, snackBarType = SnackBarType.ERROR,
                             stackedSnackBarHostState,onActionClick = {})
                     } else {
+                        preferenceSettings["countryId"] = country.value
+                        preferenceSettings["cityId"] = city.value
                         authenticationPresenter.completeProfile(
                             firstname.value, lastname.value,
                             userEmail = userEmail, address = address.value,

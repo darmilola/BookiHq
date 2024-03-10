@@ -33,7 +33,7 @@ class MainTab(private val mainViewModel: MainViewModel): Tab {
         @Composable
         get() {
             val title = "Main"
-            val icon = painterResource("home_icon.png")
+            val icon = painterResource("drawable/home_icon.png")
 
             return remember {
                 TabOptions(

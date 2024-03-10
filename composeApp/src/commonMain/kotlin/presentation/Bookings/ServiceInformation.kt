@@ -28,7 +28,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import presentation.components.ButtonComponent
-import presentation.UserProfile.SwitchVendor.BusinessLogo
+import presentation.UserProfile.ConnectVendor.BusinessLogo
 import presentation.widgets.DescriptionTextWidget
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget
@@ -139,7 +139,7 @@ fun ServiceInfoContent() {
                 Row(modifier = Modifier.wrapContentHeight().fillMaxWidth().padding(bottom = 10.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically) {
-                    BusinessLogo(size = 45)
+                    BusinessLogo(logoUrl = "")
 
                     Box(modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp, top = 10.dp)) {
                         DescriptionTextWidget(fontSize = 20, textColor = Color.DarkGray, text = "This is the Business name")

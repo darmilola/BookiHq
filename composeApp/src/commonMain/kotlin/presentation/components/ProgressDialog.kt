@@ -12,6 +12,6 @@ import theme.Colors
     CircularProgressIndicator(
         modifier = Modifier.size(40.dp),
         color = Colors.primaryColor,
-        strokeWidth = 8.dp)
+        strokeWidth = 4.dp)
 
 }

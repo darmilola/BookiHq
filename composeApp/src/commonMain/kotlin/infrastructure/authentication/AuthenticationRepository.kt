@@ -2,7 +2,9 @@ package infrastructure.authentication
 
 import com.badoo.reaktive.single.Single
 import domain.Models.AuthenticationResponse
+import domain.Models.ListDataResponse
 import domain.Models.ServerResponse
+import domain.Models.Vendor
 
 interface AuthenticationRepository {
     suspend fun getUserProfile(userEmail: String): Single<AuthenticationResponse>
@@ -31,7 +33,6 @@ interface AuthenticationRepository {
     ): Single<ServerResponse>
 
     suspend fun deleteProfile(userEmail: String): Single<ServerResponse>
-    suspend fun connectVendor(userEmail: String, vendorId: Int): Single<ServerResponse>
 }
 
 

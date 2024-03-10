@@ -69,7 +69,9 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
     override fun Content() {
         Scaffold(
             topBar = {
-                     SearchBar()
+                     SearchBar(){
+
+                     }
             },
             content = {
                 content()

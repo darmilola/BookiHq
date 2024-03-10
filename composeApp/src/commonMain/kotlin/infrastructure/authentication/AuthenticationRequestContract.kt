@@ -31,6 +31,3 @@ data class DeleteProfileRequest(@SerialName("userEmail") val userEmail: String)
 
 @Serializable
 data class GetProfileRequest(@SerialName("userEmail") val userEmail: String)
-@Serializable
-data class ConnectVendorRequest(@SerialName("userEmail") val userEmail: String,
-                                @SerialName("vendorId") val vendorId: Int)

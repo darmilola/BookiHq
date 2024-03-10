@@ -1,176 +1,168 @@
-package presentation.authentication
+package presentation.UserProfile.ConnectVendor
 
-import infrastructure.authentication.AuthenticationRepositoryImpl
-import io.ktor.client.HttpClient
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import presentation.viewmodels.UIStates
 import com.badoo.reaktive.single.subscribe
-import domain.Models.User
+import infrastructure.connectVendor.ConnectVendorRepositoryImpl
+import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import presentation.viewmodels.UIStates
 
-
-class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Presenter() {
-
+class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Presenter() {
     private val scope: CoroutineScope = MainScope()
-    private var contractView: AuthenticationContract.View? = null
-    private val authenticationRepositoryImpl: AuthenticationRepositoryImpl = AuthenticationRepositoryImpl(apiService)
+    private var contractView: ConnectVendorContract.View? = null
+    private var connectVendorRepositoryImpl: ConnectVendorRepositoryImpl = ConnectVendorRepositoryImpl(apiService)
+    override fun registerUIContract(view: ConnectVendorContract.View?) {
+         contractView = view
+    }
+    override fun connectVendor(userEmail: String, vendorId: Int) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    contractView?.showLce(UIStates(loadingVisible = true))
+                    connectVendorRepositoryImpl.connectVendor(userEmail,vendorId)
+                        .subscribe(
+                            onSuccess = { result ->
+                                if (result.status == "success"){
+                                    contractView?.showLce(UIStates(contentVisible = true))
+                                    contractView?.onVendorConnected(userEmail)
+                                }
+                                else{
+                                    contractView?.showLce(UIStates(errorOccurred = true))
+                                }
+                            },
+                            onError = {
+                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true)) }
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.showLce(UIStates(errorOccurred = true))
+            }
+        }
+    }
 
-    override fun completeProfile(
-        firstname: String,
-        lastname: String,
-        userEmail: String,
-        address: String,
-        contactPhone: String,
+    override fun getVendor(countryId: Int, cityId: Int) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    contractView?.showLce(UIStates(loadingVisible = true))
+                    connectVendorRepositoryImpl.getVendor(countryId, cityId)
+                        .subscribe(
+                            onSuccess = { result ->
+                                if (result.status == "success"){
+                                    contractView?.showLce(UIStates(contentVisible = true))
+                                    contractView?.showVendors(result.listItem)
+                                }
+                                else{
+                                    contractView?.showLce(UIStates(errorOccurred = true))
+                                }
+                            },
+                            onError = {
+                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true)) }
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.showLce(UIStates(errorOccurred = true))
+            }
+        }
+    }
+
+    override fun getMoreVendor(countryId: Int, cityId: Int, nextPage: Int) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    contractView?.onLoadMoreVendorStarted(true)
+                    connectVendorRepositoryImpl.getVendor(countryId, cityId,nextPage)
+                        .subscribe(
+                            onSuccess = { result ->
+                                if (result.status == "success"){
+                                    contractView?.onLoadMoreVendorEnded(true)
+                                    contractView?.showVendors(result.listItem)
+                                }
+                                else{
+                                    contractView?.onLoadMoreVendorEnded(false)
+                                }
+                            },
+                            onError = {
+                                it.message?.let { it1 -> contractView?.onLoadMoreVendorEnded(false) }
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.onLoadMoreVendorEnded(false)
+            }
+        }
+    }
+
+    override fun searchVendor(countryId: Int, cityId: Int, searchQuery: String) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    contractView?.showLce(UIStates(loadingVisible = true))
+                    connectVendorRepositoryImpl.searchVendor(countryId, cityId,searchQuery)
+                        .subscribe(
+                            onSuccess = { result ->
+                                if (result.status == "success"){
+                                    contractView?.showLce(UIStates(contentVisible = true))
+                                    contractView?.showVendors(result.listItem, isFromSearch = true)
+                                }
+                                else{
+                                    contractView?.showLce(UIStates(errorOccurred = true))
+                                }
+                            },
+                            onError = {
+                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true)) }
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.showLce(UIStates(errorOccurred = true))
+            }
+        }
+    }
+
+    override fun searchMoreVendors(
         countryId: Int,
         cityId: Int,
-        gender: String,
-        profileImageUrl: String
+        searchQuery: String,
+        nextPage: Int
     ) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(UIStates(loadingVisible = true))
-                    authenticationRepositoryImpl.completeProfile(firstname, lastname, userEmail, address, contactPhone, countryId, cityId, gender, profileImageUrl)
+                    contractView?.onLoadMoreVendorStarted(true)
+                    connectVendorRepositoryImpl.searchVendor(countryId, cityId,searchQuery,nextPage)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(UIStates(contentVisible = true))
-                                    contractView?.goToConnectVendor(userEmail)
+                                    contractView?.onLoadMoreVendorEnded(true)
+                                    contractView?.showVendors(result.listItem, isFromSearch = true)
                                 }
                                 else{
-                                    contractView?.showLce(UIStates(errorOccurred = true))
+                                    contractView?.onLoadMoreVendorEnded(false)
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true), message = it1) }
+                                it.message?.let { it1 -> contractView?.onLoadMoreVendorEnded(false) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(UIStates(errorOccurred = true))
+                contractView?.onLoadMoreVendorEnded(false)
             }
         }
     }
 
-    override fun updateProfile(
-        firstname: String,
-        lastname: String,
-        userEmail: String,
-        address: String,
-        contactPhone: String,
-        countryId: Int,
-        cityId: Int,
-        gender: String,
-        profileImageUrl: String
-    ) {
-        scope.launch(Dispatchers.Main) {
-            try {
-                val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(UIStates(loadingVisible = true))
-                    authenticationRepositoryImpl.updateProfile(firstname, lastname, userEmail, address, contactPhone, countryId, cityId, gender,profileImageUrl)
-                        .subscribe(
-                            onSuccess = { result ->
-                                if (result.status == "success"){
-                                    contractView?.showLce(UIStates(contentVisible = true))
-                                    contractView?.onProfileUpdated()
-                                }
-                                else{
-                                    contractView?.showLce(UIStates(errorOccurred = true))
-                                }
-                            },
-                            onError = {
-                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true), message = it1) }
-                            },
-                        )
-                }
-                result.dispose()
-            } catch(e: Exception) {
-                contractView?.showLce(UIStates(errorOccurred = true))
-            }
-        }
-    }
-    override fun getUserProfile(userEmail: String) {
-        scope.launch(Dispatchers.Main) {
-            try {
-                val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(UIStates(loadingVisible = true))
-                    authenticationRepositoryImpl.getUserProfile(userEmail)
-                        .subscribe(
-                            onSuccess = { result ->
-                                if (result.status == "success"){
-                                    contractView?.showLce(UIStates(contentVisible = true))
-                                    directUser(result.userInfo)
-                                }
-                                else{
-                                    contractView?.showLce(UIStates(errorOccurred = true))
-                                    contractView?.goToCompleteProfile(userEmail)
-                                }
-                            },
-                            onError = {
-                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true), message = it1) }
-                            },
-                        )
-                }
-                result.dispose()
-            } catch(e: Exception) {
-                contractView?.showLce(UIStates(errorOccurred = true))
-            }
-        }
-    }
-
-    private fun directUser(user: User){
-        if (user.connectedVendor != -1){
-            contractView?.goToMainScreen(user.userEmail!!)
-        }
-        else if (user.connectedVendor == -1){
-            contractView?.goToConnectVendor(user.userEmail!!)
-        }
-    }
-
-    override fun deleteProfile(userEmail: String) {
-        scope.launch(Dispatchers.Main) {
-            try {
-                val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(UIStates(loadingVisible = true))
-                    authenticationRepositoryImpl.deleteProfile(userEmail)
-                        .subscribe(
-                            onSuccess = { result ->
-                                println(result)
-                                if (result.status == "success"){
-                                    contractView?.showLce(UIStates(contentVisible = true))
-                                    contractView?.onProfileDeleted()
-                                }
-                                else{
-                                    contractView?.showLce(UIStates(errorOccurred = true))
-                                }
-                            },
-                            onError = {
-                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true), message = it1) }
-                            },
-                        )
-                }
-                result.dispose()
-            } catch(e: Exception) {
-                contractView?.showLce(UIStates(errorOccurred = true))
-            }
-        }
-    }
-
-    override fun registerUIContract(view: AuthenticationContract.View?) {
-        contractView = view
-    }
-
-    override fun startAuth0() {
-        contractView?.onAuth0Started()
-    }
-
-    override fun endAuth0() {
-        contractView?.onAuth0Ended()
-    }
 
 }

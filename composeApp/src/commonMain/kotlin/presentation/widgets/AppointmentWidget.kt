@@ -230,10 +230,10 @@ fun AppointmentWidget(itemType: Int = 0, mainViewModel: MainViewModel) {
                             .fillMaxWidth()
                     ) {
                         Box(modifier = Modifier.fillMaxWidth(0.15f), contentAlignment = Alignment.Center) {
-                            AttachIcon(iconSize = 18, iconTint = statusColor, iconRes = "location_icon_filled.png"){}
+                            AttachIcon(iconSize = 18, iconTint = statusColor, iconRes = "drawable/location_icon_filled.png"){}
                         }
                         TextComponent(
-                            text = "Savanna Beauty Services",
+                            text = "HomeStead Beauty Services",
                             textModifier = Modifier.fillMaxWidth().padding(start = 5.dp),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -285,7 +285,7 @@ fun AppointmentWidget(itemType: Int = 0, mainViewModel: MainViewModel) {
 }
 
 @Composable
-fun AttachIcon(iconRes: String = "location_icon_filled.png", iconSize: Int = 16, iconTint: Color = Colors.primaryColor, onIconClicked:() -> Unit) {
+fun AttachIcon(iconRes: String = "drawable/location_icon_filled.png", iconSize: Int = 16, iconTint: Color = Colors.primaryColor, onIconClicked:() -> Unit) {
     val modifier = Modifier
         .padding(top = 2.dp)
         .clickable {

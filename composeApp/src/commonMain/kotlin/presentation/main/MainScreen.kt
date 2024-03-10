@@ -11,8 +11,8 @@ import presentation.Bookings.BookingScreen
 import presentation.Bookings.PendingAppointmentsTab
 import presentation.Products.CartScreen
 import presentation.UserProfile.EditProfile
-import presentation.UserProfile.SwitchVendor.ConnectPageTab
-import presentation.UserProfile.SwitchVendor.SwitchVendorInfoPage
+import presentation.UserProfile.ConnectVendor.ConnectPageTab
+import presentation.UserProfile.ConnectVendor.ConnectVendorInfoPage
 import presentation.UserProfile.UserOrders.UserOrders
 import presentation.consultation.ConsultationScreen
 import presentation.consultation.VirtualConsultationRoom
@@ -52,7 +52,7 @@ class MainScreen : Screen {
                     it.current = EditProfile(mainViewModel)
                 }
                 10 -> {
-                    it.current = SwitchVendorInfoPage(mainViewModel)
+                    it.current = ConnectVendorInfoPage(mainViewModel)
                 }
                 11 -> {
                     it.current = PendingAppointmentsTab(mainViewModel)

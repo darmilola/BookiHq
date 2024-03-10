@@ -1,4 +1,4 @@
-package presentation.UserProfile.SwitchVendor
+package presentation.UserProfile.ConnectVendor
 
 import theme.styles.Colors
 import androidx.compose.foundation.layout.Arrangement
@@ -31,7 +31,6 @@ fun SwitchVendorHeader(mainViewModel: MainViewModel? = null){
         horizontalAlignment = Alignment.CenterHorizontally) {
         ConnectBusinessTitle(mainViewModel)
         ConnectBusinessDescription()
-        ConnectBusinessSearchBar()
     }
 }
 

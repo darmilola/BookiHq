@@ -10,9 +10,9 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
-import org.koin.core.context.KoinContext
 import kotlinx.serialization.json.Json
 import org.koin.core.context.stopKoin
+import presentation.UserProfile.ConnectVendor.ConnectVendorModule
 import presentation.authentication.AuthenticationModule.AuthenticationModule
 
 fun initKoin(){
@@ -20,6 +20,7 @@ fun initKoin(){
     startKoin {
         modules(KtorModule)
         modules(AuthenticationModule)
+        modules(ConnectVendorModule.ConnectVendorModule)
     }
 }
 

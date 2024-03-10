@@ -20,7 +20,7 @@ import domain.Models.AuthSSOScreenNav
 import domain.Models.User
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import presentation.UserProfile.SwitchVendor.ConnectPage
+import presentation.UserProfile.ConnectVendor.ConnectPage
 import presentation.dialogs.LoadingDialog
 import presentation.main.MainScreen
 import presentation.viewmodels.AuthenticationViewModel
@@ -113,7 +113,6 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
                 isAuthEmailAssigned.value = false
                 userNavigation = true
                 userNavigationPosition = AuthSSOScreenNav.CONNECT_VENDOR.toPath()
-
             })
         handler.init()
 

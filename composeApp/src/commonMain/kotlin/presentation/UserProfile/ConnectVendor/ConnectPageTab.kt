@@ -1,4 +1,4 @@
-package presentation.UserProfile.SwitchVendor
+package presentation.UserProfile.ConnectVendor
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,29 +8,36 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import com.russhwolf.settings.ObservableSettings
-import com.russhwolf.settings.Settings
-import com.russhwolf.settings.set
-import domain.Models.Auth0ConnectionResponse
-import domain.Models.PlatformNavigator
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabOptions
+import domain.Models.Vendor
+import presentation.viewmodels.MainViewModel
 
+class ConnectPageTab(private val mainViewModel: MainViewModel) : Tab {
+    override val options: TabOptions
+        @Composable
+        get() {
+            val title = "ConnectPage"
 
-open class ConnectPage() : Screen {
+            return remember {
+                TabOptions(
+                    index = 0u,
+                    title = title
+                )
+            }
+        }
 
-    private val preferenceSettings: Settings = Settings()
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-
+        val navigator = LocalTabNavigator.current
         Scaffold(
             topBar = {
-                SwitchVendorHeader()
+                SwitchVendorHeader(mainViewModel)
             },
             content = {
                 LazyColumn(
@@ -39,8 +46,9 @@ open class ConnectPage() : Screen {
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
                     items(10) {
-                        ConnectBusinessItemComponent {
-                            navigator.push(VendorInfoPage)
+                        ConnectBusinessItemComponent(Vendor()) {
+                            mainViewModel.setFromId(6)
+                            mainViewModel.setId(10)
                         }
                     }
                 }
@@ -48,6 +56,4 @@ open class ConnectPage() : Screen {
             backgroundColor = Color.White,
         )
     }
-
-
 }

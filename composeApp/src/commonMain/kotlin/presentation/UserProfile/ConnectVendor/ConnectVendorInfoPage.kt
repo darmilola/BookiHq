@@ -1,4 +1,4 @@
-package presentation.UserProfile.SwitchVendor
+package presentation.UserProfile.ConnectVendor
 
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -7,9 +7,10 @@ import androidx.compose.ui.graphics.Color
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import domain.Models.Vendor
 import presentation.viewmodels.MainViewModel
 
-class SwitchVendorInfoPage(private val mainViewModel: MainViewModel) : Tab {
+class ConnectVendorInfoPage(private val mainViewModel: MainViewModel) : Tab {
     override val options: TabOptions
         @Composable
         get() {
@@ -31,7 +32,7 @@ class SwitchVendorInfoPage(private val mainViewModel: MainViewModel) : Tab {
             },
             content = {
                 val navigator = LocalTabNavigator.current
-                BusinessInfoContent {
+                BusinessInfoContent(Vendor()) {
                     navigator.current = ConnectPageTab(mainViewModel = mainViewModel)
                 }
 

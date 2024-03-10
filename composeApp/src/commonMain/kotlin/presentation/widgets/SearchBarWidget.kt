@@ -36,14 +36,15 @@ import presentations.components.ImageComponent
 import presentations.components.TextFieldComponent
 
 @Composable
-fun SearchBarWidget(iconRes: String, placeholderText: String, iconSize: Int, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), isPasswordField: Boolean = false) {
+fun SearchBarWidget(iconRes: String, placeholderText: String, iconSize: Int, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    isPasswordField: Boolean = false, onValueChange: (String) -> Unit) {
     var text by remember { mutableStateOf("") }
     var borderStroke by remember { mutableStateOf(BorderStroke(1.dp, color  = Color.Gray)) }
 
     val modifier  = Modifier
         .padding(end = 10.dp, start = 10.dp, top = 20.dp)
         .fillMaxWidth()
-        .height(60.dp)
+        .height(50.dp)
         .border(border = borderStroke, shape = CircleShape)
         .background(color = Color.White, shape = CircleShape)
 
@@ -58,13 +59,13 @@ fun SearchBarWidget(iconRes: String, placeholderText: String, iconSize: Int, key
         TextFieldComponent(
             text = text,
             readOnly = false,
-            textStyle = TextStyle(fontSize = TextUnit(22f, TextUnitType.Sp), fontFamily = GGSansSemiBold, fontWeight = FontWeight.Normal, textAlign = TextAlign.Start, color = Color.Gray),
+            textStyle = TextStyle(),
             modifier = Modifier.fillMaxHeight().fillMaxWidth().padding(end = 10.dp),
             keyboardOptions = keyboardOptions,
             onValueChange = {
                 text = it
-            } , isSingleLine = true, placeholderText = placeholderText, onFocusChange = {
-                    it ->
+                onValueChange(it)
+            } , isSingleLine = true, placeholderText = placeholderText, onFocusChange = { it ->
                 borderStroke = if (it){
                     BorderStroke(1.dp, color  = Colors.primaryColor)
                 } else{
@@ -72,7 +73,7 @@ fun SearchBarWidget(iconRes: String, placeholderText: String, iconSize: Int, key
                 }
             },
             isPasswordField = isPasswordField,
-            placeholderTextSize = 20f
+            placeholderTextSize = 17f
         )
     }
 }

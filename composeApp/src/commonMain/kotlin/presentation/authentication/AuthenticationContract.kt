@@ -59,7 +59,6 @@ class AuthenticationContract {
         abstract fun updateProfile(firstname: String, lastname: String, userEmail: String, address: String,
                                      contactPhone: String,   countryId: Int,
                                    cityId: Int, gender: String, profileImageUrl: String)
-        abstract fun connectVendor(userEmail: String, vendorId: Int)
         abstract fun getUserProfile(userEmail: String)
 
         abstract fun deleteProfile(userEmail: String)
