@@ -50,7 +50,7 @@ fun AttachUserImage() {
             .padding(3.dp)
             .clip(shape = RoundedCornerShape(35.dp))
             .size(70.dp)
-        ImageComponent(imageModifier = modifier, imageRes = "1.jpg")
+        ImageComponent(imageModifier = modifier, imageRes = "drawable/1.jpg")
     }
 
 }

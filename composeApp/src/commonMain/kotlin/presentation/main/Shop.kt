@@ -78,7 +78,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
             },
          backgroundColor = Color.White,
          floatingActionButton = {
-             AttachShoppingCartImage("shopping_cart.png")
+             AttachShoppingCartImage("drawable/shopping_cart.png")
          }
         )
     }

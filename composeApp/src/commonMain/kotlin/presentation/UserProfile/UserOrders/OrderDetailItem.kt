@@ -145,7 +145,7 @@ fun OrderDetailItemImage() {
         ) {
             ImageComponent(
                 imageModifier = imageModifier,
-                imageRes = "woman2.jpg",
+                imageRes = "drawable/woman2.jpg",
                 contentScale = ContentScale.Crop
             )
         }

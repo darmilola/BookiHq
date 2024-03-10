@@ -1,6 +1,8 @@
 
 package presentation.dataModeller
-import applications.date.PlatformDateTime
+import applications.date.getDay
+import applications.date.getMonth
+import applications.date.getYear
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.plus
@@ -12,8 +14,8 @@ import domain.Models.DateRange
 class CalendarDataSource {
 
 
-    private val dateTime = PlatformDateTime
-    val today: LocalDate = LocalDate(dateTime.getYear(), dateTime.getMonth(), dateTime.getDay())
+
+    val today: LocalDate = LocalDate(getYear(), getMonth(), getDay())
        
 
     fun getData(startDate: LocalDate = today, lastSelectedDate: LocalDate): CalendarUiModel {

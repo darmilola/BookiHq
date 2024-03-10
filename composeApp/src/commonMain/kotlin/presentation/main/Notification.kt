@@ -48,7 +48,7 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
         @Composable
         get() {
             val title = "Notifications"
-            val icon = painterResource("notification.png")
+            val icon = painterResource("drawable/notification.png")
 
             return remember {
                 TabOptions(
@@ -116,22 +116,22 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
 
         when (viewType) {
             0 -> {
-                imageRes = "schedule_icon.png"
+                imageRes = "drawable/schedule_icon.png"
             }
             1 -> {
-                imageRes = "task_icon.png"
+                imageRes = "drawable/task_icon.png"
             }
             2 -> {
-                imageRes = "schedule_icon.png"
+                imageRes = "drawable/schedule_icon.png"
             }
             3 -> {
-                imageRes = "video_icon.png"
+                imageRes = "drawable/video_icon.png"
             }
             4 -> {
-                imageRes = "purchase_icon.png"
+                imageRes = "drawable/purchase_icon.png"
             }
             else -> {
-                imageRes = "schedule_icon.png"
+                imageRes = "drawable/schedule_icon.png"
             }
         }
 
@@ -300,7 +300,7 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
 
 
 @Composable
-fun AttachIcon(iconRes: String = "location_icon_filled.png", iconSize: Int = 16, iconTint: Color = Colors.primaryColor, onIconClicked:() -> Unit) {
+fun AttachIcon(iconRes: String = "drawable/location_icon_filled.png", iconSize: Int = 16, iconTint: Color = Colors.primaryColor, onIconClicked:() -> Unit) {
     val modifier = Modifier
         .padding(top = 2.dp)
         .clickable {

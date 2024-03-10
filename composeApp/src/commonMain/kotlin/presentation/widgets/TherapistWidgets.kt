@@ -50,7 +50,7 @@ fun AttachUserProfileImage(availableTherapist: AvailableTherapist) {
             .width(140.dp)
             .height(160.dp)
 
-        ImageComponent(imageModifier = modifier, imageRes = "1.jpg")
+        ImageComponent(imageModifier = modifier, imageRes = "drawable/1.jpg")
         Box(
            modifier =  Modifier
                 .padding(4.dp)
@@ -63,7 +63,7 @@ fun AttachUserProfileImage(availableTherapist: AvailableTherapist) {
         ) {
             ImageComponent(imageModifier = Modifier
                 .padding(top = 2.dp)
-                .size(24.dp), imageRes = "check_mark_icon.png", colorFilter = ColorFilter.tint(color = Color.White))
+                .size(24.dp), imageRes = "drawable/check_mark_icon.png", colorFilter = ColorFilter.tint(color = Color.White))
 
         }
         Row (horizontalArrangement = Arrangement.Center,
@@ -74,7 +74,7 @@ fun AttachUserProfileImage(availableTherapist: AvailableTherapist) {
                 .width(50.dp)
                 .background(color = Colors.primaryColor)
                 .height(24.dp)) {
-            ImageComponent(imageModifier = Modifier.size(12.dp), imageRes = "star_icon.png", colorFilter = ColorFilter.tint(color = Color.White))
+            ImageComponent(imageModifier = Modifier.size(12.dp), imageRes = "drawable/star_icon.png", colorFilter = ColorFilter.tint(color = Color.White))
             TextComponent(
                 text = "4.85",
                 fontSize = 12,

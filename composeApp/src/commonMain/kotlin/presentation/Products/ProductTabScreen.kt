@@ -18,7 +18,6 @@ fun ProductTabScreen(currentPosition: Int = 0) {
     val productTabScreenData = viewModel.productTabScreenData ?: return
     val state = viewModel.productTabScreenData!!.screenType
 
-
     AnimatedContent(targetState = state) { targetState ->
         // It's important to use targetState and not state, as its critical to ensure
         // a successful lookup of all the incoming and outgoing content during

@@ -93,7 +93,7 @@ fun ActionItemComponent(modifier: Modifier, buttonText: String, colors: ButtonCo
                     verticalAlignment = Alignment.Top,
                     modifier = iconNavModifier
                 ) {
-                    ImageComponent(imageModifier = iconModifier, imageRes = "chevron_right.png", colorFilter = ColorFilter.tint(color = Color(color = 0xFF3d3d4e)))
+                    ImageComponent(imageModifier = iconModifier, imageRes = "drawable/chevron_right.png", colorFilter = ColorFilter.tint(color = Color(color = 0xFF3d3d4e)))
                 }
 
             }

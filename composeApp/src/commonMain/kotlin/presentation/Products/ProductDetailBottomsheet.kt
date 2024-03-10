@@ -230,7 +230,7 @@ fun ProductPriceInfoContent() {
 @Composable
 fun ProductFavInfoContent() {
    Row {
-       ImageComponent(imageModifier = Modifier.size(24.dp).padding(top = 3.dp), imageRes = "fav_icon.png", colorFilter = ColorFilter.tint(color = Color(0xfffa2d65)))
+       ImageComponent(imageModifier = Modifier.size(24.dp).padding(top = 3.dp), imageRes = "drawable/fav_icon.png", colorFilter = ColorFilter.tint(color = Color(0xfffa2d65)))
        TextComponent(
            text = "500",
            fontSize = 22,
@@ -323,7 +323,7 @@ fun attachServiceImages(){
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { page ->
-            ImageComponent(imageModifier = Modifier.fillMaxWidth().height(350.dp), imageRes = "$page.jpg", contentScale = ContentScale.Crop)
+            ImageComponent(imageModifier = Modifier.fillMaxWidth().height(350.dp), imageRes = "drawable/$page.jpg", contentScale = ContentScale.Crop)
         }
         Row(
             Modifier
@@ -368,7 +368,7 @@ fun attachCancelIcon() {
     ) {
         val modifier = Modifier
             .size(25.dp)
-        ImageComponent(imageModifier = modifier, imageRes = "cancel_icon.png", colorFilter = ColorFilter.tint(color = Colors.darkPrimary))
+        ImageComponent(imageModifier = modifier, imageRes = "drawable/cancel_icon.png", colorFilter = ColorFilter.tint(color = Colors.darkPrimary))
     }
 
 }
@@ -384,7 +384,7 @@ fun attachShareIcon() {
     ) {
         val modifier = Modifier
             .size(25.dp)
-        ImageComponent(imageModifier = modifier, imageRes = "export_icon.png", colorFilter = ColorFilter.tint(color = Colors.darkPrimary))
+        ImageComponent(imageModifier = modifier, imageRes = "drawable/export_icon.png", colorFilter = ColorFilter.tint(color = Colors.darkPrimary))
     }
 
 }

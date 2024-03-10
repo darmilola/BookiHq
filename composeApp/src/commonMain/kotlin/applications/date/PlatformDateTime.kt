@@ -1,11 +1,9 @@
 package applications.date
 
-expect object PlatformDateTime {
-    fun getFormattedDate(
+expect fun getFormattedDate(
         timestamp: String,
     ): String
 
-    fun getDay(): Int
-    fun getMonth(): Int
-    fun getYear(): Int
-}
+expect   fun getDay(): Int
+expect  fun getMonth(): Int
+expect   fun getYear(): Int

@@ -52,7 +52,7 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
         @Composable
         get() {
             val title = "Consult"
-            val icon = painterResource("video_icon.png")
+            val icon = painterResource("drawable/video_icon.png")
 
             return remember {
                 TabOptions(
@@ -217,7 +217,7 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
                     .width(120.dp)
                     .clip(shape = RoundedCornerShape(17.dp))
                     .height(130.dp)
-                ImageComponent(imageModifier = modifier, imageRes = "therap1.jpg")
+                ImageComponent(imageModifier = modifier, imageRes = "drawable/therap1.jpg")
             }
 
             Box(
@@ -232,7 +232,7 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
                     .width(125.dp)
                     .clip(shape = RoundedCornerShape(17.dp))
                     .height(130.dp)
-                ImageComponent(imageModifier = modifier, imageRes = "doctor.jpg")
+                ImageComponent(imageModifier = modifier, imageRes = "drawable/doctor.jpg")
             }
 
             Box(
@@ -248,7 +248,7 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
                     .width(120.dp)
                     .clip(shape = RoundedCornerShape(17.dp))
                     .height(130.dp)
-                ImageComponent(imageModifier = modifier, imageRes = "1.jpg")
+                ImageComponent(imageModifier = modifier, imageRes = "drawable/1.jpg")
             }
             AttachCircle()
         }

@@ -98,7 +98,7 @@ fun NewProductItem(onProductClickListener: () -> Unit) {
             ) {
                 ImageComponent(
                     imageModifier = imageModifier,
-                    imageRes = "oil.jpg",
+                    imageRes = "drawable/oil.jpg",
                     contentScale = ContentScale.Crop
                 )
                 DiscountText()

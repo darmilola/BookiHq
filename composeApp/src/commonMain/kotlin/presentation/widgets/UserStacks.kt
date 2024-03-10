@@ -20,7 +20,7 @@ fun attachImage() {
             .border(width = 2.dp, color = Color.White, shape = RoundedCornerShape(25.dp))
             .size(50.dp)
             .clip(CircleShape)
-        ImageComponent(imageModifier = modifier, imageRes = "therap1.jpg")
+        ImageComponent(imageModifier = modifier, imageRes = "drawable/therap1.jpg")
     }
 
 
@@ -31,13 +31,13 @@ fun AttachImageStacks() {
             .border(width = 3.dp, color = Colors.lightPrimaryColor, shape = CircleShape)
             .size(50.dp)
             .clip(CircleShape)
-        ImageComponent(imageModifier = modifier, imageRes = "therap1.jpg")
+        ImageComponent(imageModifier = modifier, imageRes = "drawable/therap1.jpg")
         val modifier2 = Modifier
             .padding(start = 30.dp)
             .border(width = 3.dp, color = Colors.lightPrimaryColor, shape = CircleShape)
             .size(50.dp)
             .clip(CircleShape)
-        ImageComponent(imageModifier = modifier2, imageRes = "doctor.jpg")
+        ImageComponent(imageModifier = modifier2, imageRes = "drawable/doctor.jpg")
     }
 
 }

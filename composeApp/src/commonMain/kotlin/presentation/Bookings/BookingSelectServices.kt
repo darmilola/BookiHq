@@ -149,7 +149,7 @@ fun AttachServiceImages(){
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { page ->
-            ImageComponent(imageModifier = Modifier.fillMaxWidth().height(350.dp), imageRes = "$page.jpg", contentScale = ContentScale.Crop)
+            ImageComponent(imageModifier = Modifier.fillMaxWidth().height(350.dp), imageRes = "drawable/$page.jpg", contentScale = ContentScale.Crop)
         }
         Row(
             Modifier

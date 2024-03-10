@@ -144,7 +144,7 @@ fun OrderItemImage() {
     Box(contentAlignment = Alignment.Center) {
             ImageComponent(
                 imageModifier = imageModifier,
-                imageRes = "oil.jpg",
+                imageRes = "drawable/oil.jpg",
                 contentScale = ContentScale.Crop)
         }
 

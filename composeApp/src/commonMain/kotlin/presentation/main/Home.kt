@@ -68,7 +68,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
         @Composable
         get() {
             val title = "Home"
-            val icon = painterResource("home_icon.png")
+            val icon = painterResource("drawable/home_icon.png")
 
             return remember {
                 TabOptions(
@@ -434,7 +434,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 val modifier = Modifier.padding(start = 3.dp)
                 AttachLocationIcon()
                 TextComponent(
-                    text = "JonJo, Beauty and Spa Services",
+                    text = "Lorep Ipsum, Beauty and Spa Services",
                     fontSize = 18,
                     fontFamily = GGSansSemiBold,
                     textStyle = TextStyle(),

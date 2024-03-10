@@ -170,7 +170,7 @@ fun CalenderHeader(calendarUiModel: CalendarUiModel, onPrevClickListener: (Local
             }) {
             ImageComponent(
                 imageModifier = imageModifier.rotate(180f),
-                imageRes = "left_arrow.png",
+                imageRes = "drawable/left_arrow.png",
                 colorFilter = ColorFilter.tint(color = Colors.darkPrimary)
             )
         }
@@ -204,7 +204,7 @@ fun CalenderHeader(calendarUiModel: CalendarUiModel, onPrevClickListener: (Local
             verticalAlignment = Alignment.Top) {
             ImageComponent(
                 imageModifier = imageModifier,
-                imageRes = "left_arrow.png",
+                imageRes = "drawable/left_arrow.png",
                 colorFilter = ColorFilter.tint(color = Colors.darkPrimary)
             )
         }

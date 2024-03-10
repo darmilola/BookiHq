@@ -163,7 +163,7 @@ fun AttachLocationIcon() {
     val modifier = Modifier
         .padding(top = 2.dp)
         .size(18.dp)
-    ImageComponent(imageModifier = modifier, imageRes = "location_icon_filled.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+    ImageComponent(imageModifier = modifier, imageRes = "drawable/location_icon_filled.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
 }
 
 
