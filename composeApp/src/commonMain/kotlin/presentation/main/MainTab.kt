@@ -60,23 +60,23 @@ class MainTab(private val mainViewModel: MainViewModel): Tab {
                 bottomBar = {
                     BottomNavigation(modifier = Modifier
                         .padding(bottom = 25.dp)
-                        .height(50.dp), backgroundColor = Color.Transparent,
+                        .height(40.dp), backgroundColor = Color.Transparent,
                         elevation = 0.dp
                     )
                     {
-                        TabNavigationItem(HomeTab(mainViewModel), selectedImage = "drawable/home_icon.png", unselectedImage = "drawable/home_outline.png", imageSize = 28, currentTabId = 0, tabNavigator = it, mainViewModel){
+                        TabNavigationItem(HomeTab(mainViewModel), selectedImage = "drawable/home_icon.png", unselectedImage = "drawable/home_outline.png", imageSize = 24, currentTabId = 0, tabNavigator = it, mainViewModel){
                             isBottomNavSelected = true
                         }
-                        TabNavigationItem(ShopTab(mainViewModel), selectedImage = "drawable/shopping_basket.png", unselectedImage = "drawable/shopping_basket_outline.png", imageSize = 28, currentTabId = 1, tabNavigator = it, mainViewModel){
+                        TabNavigationItem(ShopTab(mainViewModel), selectedImage = "drawable/shopping_basket.png", unselectedImage = "drawable/shopping_basket_outline.png", imageSize = 24, currentTabId = 1, tabNavigator = it, mainViewModel){
                             isBottomNavSelected = true
                         }
-                        TabNavigationItem(ConsultTab(mainViewModel), selectedImage = "drawable/video_chat.png", unselectedImage = "drawable/video_chat_outline.png", imageSize = 32, currentTabId = 2, tabNavigator = it, mainViewModel){
+                        TabNavigationItem(ConsultTab(mainViewModel), selectedImage = "drawable/video_chat.png", unselectedImage = "drawable/video_chat_outline.png", imageSize = 28, currentTabId = 2, tabNavigator = it, mainViewModel){
                             isBottomNavSelected = true
                         }
-                        TabNavigationItem(AppointmentsTab(mainViewModel), selectedImage = "drawable/appointment_icon.png", unselectedImage = "drawable/appointment_outline.png", imageSize = 30, currentTabId = 3, tabNavigator = it, mainViewModel){
+                        TabNavigationItem(AppointmentsTab(mainViewModel), selectedImage = "drawable/appointment_icon.png", unselectedImage = "drawable/appointment_outline.png", imageSize = 28, currentTabId = 3, tabNavigator = it, mainViewModel){
                             isBottomNavSelected = true
                         }
-                        TabNavigationItem(AccountTab(mainViewModel), selectedImage = "drawable/user.png", unselectedImage = "drawable/user_outline.png", imageSize = 30, currentTabId = 4, tabNavigator = it, mainViewModel){
+                        TabNavigationItem(AccountTab(mainViewModel), selectedImage = "drawable/user.png", unselectedImage = "drawable/user_outline.png", imageSize = 28, currentTabId = 4, tabNavigator = it, mainViewModel){
                             isBottomNavSelected = true
                         }
                     }

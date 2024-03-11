@@ -202,8 +202,7 @@ fun NewProductDescriptionText() {
             lineHeight = 20,
             textModifier = modifier,
             maxLines = 4,
-            overflow = TextOverflow.Ellipsis
-        )
+            overflow = TextOverflow.Ellipsis)
 
     }
 
@@ -228,33 +227,33 @@ fun ProductNameAndPrice(){
 
             TextComponent(
                 text = "Bloom Rose Oil And Argan Oil",
-                fontSize = 18,
+                fontSize = 16,
                 fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
+                textStyle = MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
                 fontWeight = FontWeight.Bold,
-                overflow = TextOverflow.Ellipsis,
                 lineHeight = 20,
                 maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
                 textModifier = modifier
             )
 
             TextComponent(
                 text = "$67,000",
                 fontSize = 16,
-                fontFamily = GGSansBold,
+                fontFamily = GGSansSemiBold,
                 textStyle = MaterialTheme.typography.h6,
-                textColor = Colors.darkPrimary,
+                textColor = Colors.primaryColor,
                 textAlign = TextAlign.Left,
-                fontWeight = FontWeight.Black,
+                fontWeight = FontWeight.Bold,
                 lineHeight = 30,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
                 textModifier = Modifier
-                    .padding(top = 5.dp)
+                    .padding(top = 10.dp)
                     .fillMaxWidth()
-                    .wrapContentHeight()
-            )
-
+                    .wrapContentHeight())
         }
     }
 

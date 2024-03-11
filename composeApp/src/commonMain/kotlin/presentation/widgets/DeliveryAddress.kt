@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import presentation.components.ToggleButton
 import presentation.viewmodels.MainViewModel
@@ -37,12 +39,15 @@ fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel) {
     Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
         TextComponent(
             text = "Delivery Location",
-            fontSize = 20,
+            fontSize = 18,
             fontFamily = GGSansSemiBold,
-            textStyle = TextStyle(),
+            textStyle = MaterialTheme.typography.h6,
             textColor = Colors.darkPrimary,
-            textAlign = TextAlign.Start,
-            fontWeight = FontWeight.Black,
+            textAlign = TextAlign.Left,
+            fontWeight = FontWeight.Bold,
+            lineHeight = 20,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             textModifier = Modifier.padding(start = 10.dp, top = 10.dp)
         )
 

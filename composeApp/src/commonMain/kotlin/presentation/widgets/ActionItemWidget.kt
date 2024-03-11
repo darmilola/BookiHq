@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +25,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
@@ -65,25 +67,28 @@ fun ActionItemComponent(modifier: Modifier, buttonText: String, colors: ButtonCo
                 val iconNavModifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 5.dp)
-                    .size(28.dp)
+                    .size(24.dp)
 
                 val textModifier = Modifier
                     .padding(end = 5.dp, start = 10.dp, top = 5.dp)
-                    .fillMaxHeight().fillMaxWidth()
+                    .fillMaxHeight().wrapContentHeight()
                 Row(
                     horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.Top,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = iconTextBoxModifier
                 ) {
                     AttachItemImage(iconRes, isDestructiveAction)
                     TextComponent(
                         text = buttonText,
-                        fontSize = fontSize,
-                        textStyle = style,
-                        textColor = textColor,
-                        textAlign = TextAlign.Start,
-                        fontWeight = FontWeight.Bold,
+                        fontSize = 16,
                         fontFamily = GGSansSemiBold,
+                        textStyle = MaterialTheme.typography.h6,
+                        textColor = Colors.darkPrimary,
+                        textAlign = TextAlign.Left,
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = 20,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         textModifier = textModifier
                     )
                 }
@@ -108,12 +113,12 @@ fun AttachItemImage(iconRes: String, isDestructiveAction: Boolean = false) {
     Box(
         Modifier
             .clip(CircleShape)
-            .size(45.dp)
+            .size(40.dp)
             .background(color = imageBgColor),
         contentAlignment = Alignment.Center
     ) {
         val modifier = Modifier
-            .size(20.dp)
+            .size(16.dp)
         ImageComponent(imageModifier = modifier, imageRes = iconRes, colorFilter = ColorFilter.tint(color = imageTintColor))
     }
 

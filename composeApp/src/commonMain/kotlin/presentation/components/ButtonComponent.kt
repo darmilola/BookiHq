@@ -42,6 +42,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
@@ -323,7 +324,7 @@ fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, onRightClicked: () ->
 
 
 @Composable
-fun RadioToggleButton(shape: Shape, fontSize: Int, style: TextStyle, title: String, actionLabel: ArrayList<String>, gridCount: Int = 2) {
+fun RadioToggleButton(shape: Shape,title: String, actionLabel: ArrayList<String>, gridCount: Int = 2) {
 
     var checkedId by remember { mutableStateOf(0) }
 
@@ -338,13 +339,15 @@ fun RadioToggleButton(shape: Shape, fontSize: Int, style: TextStyle, title: Stri
 
         TextComponent(
             text = title,
-            fontSize = 20,
+            fontSize = 18,
             fontFamily = GGSansSemiBold,
-            textStyle = TextStyle(),
+            textStyle = MaterialTheme.typography.h6,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Black,
-            lineHeight = 30,
+            fontWeight = FontWeight.Bold,
+            lineHeight = 20,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             textModifier = Modifier
                 .fillMaxWidth().padding(bottom = 10.dp)
         )
@@ -388,12 +391,15 @@ fun RadioToggleButton(shape: Shape, fontSize: Int, style: TextStyle, title: Stri
                             )
                             TextComponent(
                                 text = actionLabel[it],
-                                fontSize = fontSize,
-                                textStyle = style,
-                                fontFamily = GGSansSemiBold,
                                 textColor = if (checkedId == it) Color.White else Colors.primaryColor,
                                 textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.Bold
+                                fontSize = 18,
+                                fontFamily = GGSansSemiBold,
+                                textStyle = MaterialTheme.typography.h6,
+                                fontWeight = FontWeight.Bold,
+                                lineHeight = 20,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
                             )
                         }
                     }

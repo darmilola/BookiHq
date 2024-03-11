@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import presentation.components.ButtonComponent
 import presentations.components.TextComponent
@@ -41,20 +43,26 @@ fun CheckOutSummaryWidget() {
                  text = "Sub-total",
                  fontSize = 18,
                  fontFamily = GGSansSemiBold,
-                 textStyle = TextStyle(),
+                 textStyle = MaterialTheme.typography.h6,
                  textColor = Color.Gray,
                  textAlign = TextAlign.Right,
                  fontWeight = FontWeight.Bold,
+                 lineHeight = 20,
+                 maxLines = 1,
+                 overflow = TextOverflow.Ellipsis,
                  textModifier = Modifier.fillMaxWidth(0.50f)
              )
              TextComponent(
                  text = "$150,000",
                  fontSize = 18,
                  fontFamily = GGSansSemiBold,
-                 textStyle = TextStyle(),
+                 textStyle = MaterialTheme.typography.h6,
                  textColor = Color.Gray,
                  textAlign = TextAlign.Right,
                  fontWeight = FontWeight.Bold,
+                 lineHeight = 20,
+                 maxLines = 1,
+                 overflow = TextOverflow.Ellipsis,
                  textModifier = Modifier.fillMaxWidth()
              )
          }
@@ -65,20 +73,26 @@ fun CheckOutSummaryWidget() {
                 text = "Delivery Fee",
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
+                textStyle = MaterialTheme.typography.h6,
                 textColor = Color.Gray,
                 textAlign = TextAlign.Right,
                 fontWeight = FontWeight.Bold,
+                lineHeight = 20,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 textModifier = Modifier.fillMaxWidth(0.50f)
             )
             TextComponent(
                 text = "Free",
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
+                textStyle = MaterialTheme.typography.h6,
                 textColor = Color.Gray,
                 textAlign = TextAlign.Right,
                 fontWeight = FontWeight.Bold,
+                lineHeight = 20,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 textModifier = Modifier.fillMaxWidth()
             )
         }
@@ -86,22 +100,28 @@ fun CheckOutSummaryWidget() {
         Row(modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)) {
             TextComponent(
                 text = "Total",
-                fontSize = 20,
-                fontFamily = GGSansBold,
-                textStyle = TextStyle(),
+                fontSize = 18,
+                fontFamily = GGSansSemiBold,
+                textStyle = MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Right,
                 fontWeight = FontWeight.Bold,
+                lineHeight = 20,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 textModifier = Modifier.fillMaxWidth(0.50f)
             )
             TextComponent(
                 text = "$185,900",
-                fontSize = 20,
-                fontFamily = GGSansBold,
-                textStyle = TextStyle(),
+                fontSize = 18,
+                fontFamily = GGSansSemiBold,
+                textStyle = MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Right,
                 fontWeight = FontWeight.Bold,
+                lineHeight = 20,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 textModifier = Modifier.fillMaxWidth()
             )
         }

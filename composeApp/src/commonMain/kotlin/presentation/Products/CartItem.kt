@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -101,16 +102,16 @@ fun CartItemDetail(onProductClickListener: () -> Unit){
 
             TextComponent(
                 text = "Bloom Rose Oil And Argan Oil is For Sale",
-                fontSize = 18,
+                fontSize = 16,
                 fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
+                textStyle = MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
-                fontWeight = FontWeight.Black,
-                lineHeight = 25,
-                textModifier = modifier,
+                fontWeight = FontWeight.Bold,
+                lineHeight = 20,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                textModifier = modifier
             )
             CartProductPriceInfoContent()
             CartIncrementDecrementWidget()
@@ -122,32 +123,36 @@ fun CartProductPriceInfoContent() {
     Row(
         modifier = Modifier
             .height(40.dp)
+            .padding(top = 10.dp)
             .fillMaxHeight(),
     ) {
         TextComponent(
             text = "$670,000",
-            fontSize = 20,
+            fontSize = 16,
             fontFamily = GGSansSemiBold,
-            textStyle = TextStyle(),
+            textStyle = MaterialTheme.typography.h6,
             textColor = Colors.primaryColor,
-            textAlign = TextAlign.Right,
-            fontWeight = FontWeight.Black,
-            lineHeight = 30,
+            textAlign = TextAlign.Left,
+            fontWeight = FontWeight.Bold,
+            lineHeight = 20,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
             textModifier = Modifier
-                .padding(end = 10.dp)
                 .wrapContentSize())
 
         TextComponent(
             text = "$67,000",
-            fontSize = 18,
-            fontFamily = GGSansSemiBold,
+            fontSize = 14,
             textStyle = TextStyle(textDecoration = TextDecoration.LineThrough),
             textColor = Color.LightGray,
-            textAlign = TextAlign.Right,
+            fontFamily = GGSansSemiBold,
+            textAlign = TextAlign.Left,
             fontWeight = FontWeight.Medium,
-            lineHeight = 30,
+            lineHeight = 20,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
             textModifier = Modifier
-                .wrapContentSize())
+                .wrapContentSize().padding(start = 10.dp))
 
     }
 }

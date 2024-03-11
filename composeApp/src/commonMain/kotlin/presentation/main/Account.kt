@@ -1,7 +1,6 @@
 package presentation.main
 
 
-import GGSansRegular
 import GGSansSemiBold
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
@@ -14,7 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
@@ -31,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
@@ -72,8 +72,8 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = columnModifier
             ) {
-                    ProfileImageUpdate(profileImageUrl = "drawable/user_icon.png"){}
-                    UserPreferredName()
+                    ProfileImageUpdate(profileImageUrl = "drawable/user_icon.png", showEditIcon = false){}
+                    UserAccountName()
                     EditProfileButton(TextStyle(fontFamily = GGSansSemiBold, fontWeight = FontWeight.Black, fontSize = TextUnit(18f, TextUnitType.Sp)))
                     Divider(color = Color(color = 0x90C8C8C8), thickness = 2.dp, modifier = Modifier.fillMaxWidth(0.90f).padding(top = 30.dp))
                     AttachAccountAction()
@@ -82,9 +82,10 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
 
 
     @Composable
-    fun UserPreferredName(){
+    fun UserAccountName(){
         val rowModifier = Modifier
             .fillMaxWidth()
+            .padding(top = 10.dp)
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.Top,
@@ -92,12 +93,15 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
             ) {
                 TextComponent(
                     text = "Dianne Williamson",
-                    fontSize = 25,
-                    fontFamily = GGSansRegular,
+                    fontSize = 18,
+                    fontFamily = GGSansSemiBold,
                     textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.DarkGray,
+                    textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Black
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 20,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
@@ -110,9 +114,9 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
             .padding(top = 15.dp)
             .fillMaxWidth(0.40f)
             .background(color = Color.Transparent)
-            .height(50.dp)
+            .height(45.dp)
 
-        ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke((1.5).dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 20, shape = RoundedCornerShape(25.dp), textColor =  Color.DarkGray, style = style){
+        ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke(1.dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor =  Color.DarkGray, style = style){
                 mainViewModel.setId(9)
                 mainViewModel.setFromId(0)
         }
@@ -128,9 +132,8 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
             .fillMaxWidth()
 
         val actionStyle = Modifier
-            .padding(bottom = 5.dp)
             .fillMaxWidth()
-            .height(65.dp)
+            .height(60.dp)
 
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -176,7 +179,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
 
 
 
-                Divider(color = Color(color = 0x90C8C8C8), thickness = 2.dp, modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 10.dp))
+                Divider(color = Color(color = 0x90C8C8C8), thickness = 1.dp, modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 10.dp))
 
 
                 ActionItemComponent(
@@ -209,7 +212,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                     iconRes = "drawable/terms.png",
                     isDestructiveAction = false)
 
-                Divider(color = Color(color = 0x90C8C8C8), thickness = 2.dp, modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 10.dp))
+                Divider(color = Color(color = 0x90C8C8C8), thickness = 1.dp, modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 10.dp))
 
                 ActionItemComponent(
                     modifier = actionStyle,

@@ -150,7 +150,7 @@ fun CartIncrementDecrementWidget(){
 
             TextComponent(
                 text = counter.toString(),
-                fontSize = 27,
+                fontSize = 20,
                 fontFamily = GGSansRegular,
                 textStyle = MaterialTheme.typography.h4,
                 textColor = Colors.darkPrimary,

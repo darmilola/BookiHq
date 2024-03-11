@@ -158,13 +158,13 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
 
         Column(modifier = Modifier.fillMaxWidth().padding(top = 10.dp)) {
             ScrollableTabRow(selectedTabIndex = tabIndex,
-                modifier = Modifier.height(50.dp),
+                modifier = Modifier.height(40.dp),
                 backgroundColor = Color.Transparent,
                 indicator = { tabPositions ->
                     Box(
                         modifier = Modifier
                             .tabIndicatorOffset(tabPositions[tabIndex])
-                            .height(4.dp)
+                            .height(3.dp)
                             .padding(start = 30.dp, end = 30.dp)
                             .clip(RoundedCornerShape(4.dp))
                             .background(color = Colors.primaryColor)
@@ -177,9 +177,9 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
                     {
                         TextComponent(
                             text = title,
-                            fontSize = 20,
+                            fontSize = 16,
                             fontFamily = GGSansSemiBold,
-                            textStyle = TextStyle(),
+                            textStyle = MaterialTheme.typography.h6,
                             textColor = Colors.darkPrimary,
                             textAlign = TextAlign.Center,
                             fontWeight = FontWeight.Bold,

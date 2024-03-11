@@ -12,6 +12,6 @@ fun PaymentMethodWidget() {
     toggleLabelList.add("Credit/Debit Card")
     toggleLabelList.add("Cash On Delivery")
 
-    RadioToggleButton(fontSize = 18, shape = RoundedCornerShape(27.dp), style = TextStyle(), actionLabel = toggleLabelList, title = "Payment Method", gridCount = 1)
+    RadioToggleButton(shape = RoundedCornerShape(27.dp), actionLabel = toggleLabelList, title = "Payment Method", gridCount = 1)
 
 }
