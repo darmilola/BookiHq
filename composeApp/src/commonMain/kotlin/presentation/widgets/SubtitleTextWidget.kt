@@ -1,6 +1,7 @@
 package presentation.widgets
 
 import GGSansRegular
+import GGSansSemiBold
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import presentations.components.TextComponent
 
 @Composable
-fun SubtitleTextWidget(text: String, fontSize: Int = 16, textAlign: TextAlign = TextAlign.Left, textColor: Color = Color.Gray) {
+fun SubtitleTextWidget(text: String, fontSize: Int = 16, textAlign: TextAlign = TextAlign.Left, textColor: Color = Color.DarkGray) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -29,9 +30,9 @@ fun SubtitleTextWidget(text: String, fontSize: Int = 16, textAlign: TextAlign = 
         horizontalAlignment  = Alignment.Start,
     ) {
         TextComponent(
-            textModifier = Modifier.fillMaxWidth().wrapContentHeight(), text = text, fontSize = fontSize, fontFamily = GGSansRegular,
+            textModifier = Modifier.fillMaxWidth().wrapContentHeight(), text = text, fontSize = fontSize, fontFamily = GGSansSemiBold,
             textStyle = MaterialTheme.typography.h6, textColor = textColor, textAlign = textAlign,
-            fontWeight = FontWeight.ExtraBold, lineHeight = 30, maxLines = 3,  overflow = TextOverflow.Ellipsis)
+            fontWeight = FontWeight.Medium, lineHeight = 30, maxLines = 3,  overflow = TextOverflow.Ellipsis)
     }
 
 }

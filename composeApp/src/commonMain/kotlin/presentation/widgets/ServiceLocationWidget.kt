@@ -49,7 +49,7 @@ fun ServiceLocationToggle(mainViewModel: MainViewModel){
             textModifier = Modifier
                 .fillMaxWidth().padding(start = 10.dp))
 
-        ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = TextStyle(), onLeftClicked = {
+        ToggleButton( shape = RoundedCornerShape(10.dp), onLeftClicked = {
             deliveryType = 0
         }, onRightClicked = {
             deliveryType = 1

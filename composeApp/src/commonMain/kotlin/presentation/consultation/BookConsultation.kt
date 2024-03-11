@@ -120,7 +120,7 @@ fun ConsultLocationToggle(){
             textModifier = Modifier
                 .fillMaxWidth().padding(start = 15.dp)
         )
-        ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = TextStyle(), leftText = "Virtual", rightText = "In Person", onLeftClicked = {}, onRightClicked = {})
+        ToggleButton(shape = RoundedCornerShape(10.dp), leftText = "Virtual", rightText = "In Person", onLeftClicked = {}, onRightClicked = {})
     }
 
 }

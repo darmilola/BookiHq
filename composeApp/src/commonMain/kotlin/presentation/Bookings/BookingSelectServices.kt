@@ -1,5 +1,6 @@
 package presentation.Bookings
 
+import GGSansRegular
 import GGSansSemiBold
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -20,6 +21,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,7 +67,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel) {
 fun AttachServiceTypeToggle(){
     Column(
         modifier = Modifier
-            .padding(start = 10.dp, end = 10.dp, top = 35.dp)
+            .padding(start = 10.dp, end = 10.dp, top = 25.dp)
             .fillMaxWidth()
             .wrapContentHeight(),
         verticalArrangement = Arrangement.Center,
@@ -82,13 +84,8 @@ fun AttachServiceTypeToggle(){
             fontWeight = FontWeight.Black,
             lineHeight = 30,
             textModifier = Modifier
-                .padding(bottom = 5.dp)
-                .fillMaxWidth()
-        )
-
+                .fillMaxWidth().padding(start = 10.dp))
         AttachDropDownWidget()
-
-
     }
 
 }
@@ -113,14 +110,15 @@ fun ServiceTitle(){
         horizontalAlignment  = Alignment.CenterHorizontally,
     ) {
 
+
         TextComponent(
             text = "Manicure",
-            fontSize = 25,
+            fontSize = 23,
             fontFamily = GGSansSemiBold,
-            textStyle = TextStyle(),
-            textColor = Colors.darkPrimary,
+            textStyle =  MaterialTheme.typography.h6,
+            textColor = Color.DarkGray,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Light,
+            fontWeight = FontWeight.Black,
             lineHeight = 30,
             textModifier = Modifier
                 .fillMaxWidth()

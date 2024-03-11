@@ -1,5 +1,6 @@
 package presentation.widgets
 
+import GGSansRegular
 import GGSansSemiBold
 import presentation.dataModeller.WorkingHoursDataSource
 import theme.styles.Colors
@@ -83,8 +84,8 @@ fun TimeItem(availableSlot: AvailableSlot, onWorkHourClickListener: (AvailableSl
     ) {
         TextComponent(
             text = timeRange.first+" - "+timeRange.second+ " "+meridianVal,
-            fontSize = 18,
-            fontFamily = GGSansSemiBold,
+            fontSize = 16,
+            fontFamily = GGSansRegular,
             textStyle = TextStyle(),
             textColor = color,
             textAlign = TextAlign.Center,

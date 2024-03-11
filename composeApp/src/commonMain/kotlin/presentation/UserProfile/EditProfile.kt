@@ -101,7 +101,7 @@ fun EditProfileCompose(mainViewModel: MainViewModel) {
             InputWidget(iconRes = "drawable/phone_icon.png", placeholderText = "Contact Phone", iconSize = 28, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), isPasswordField = false)
             AttachCountryDropDownWidget()
 
-            ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(15.dp), style = TextStyle(), onLeftClicked = {
+            ToggleButton(shape = RoundedCornerShape(15.dp), onLeftClicked = {
 
             }, onRightClicked = {
 

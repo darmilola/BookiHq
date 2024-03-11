@@ -1,6 +1,7 @@
 package presentation.Products
 
 import GGSansBold
+import GGSansRegular
 import GGSansSemiBold
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -118,9 +119,9 @@ fun SheetContent() {
             SheetContentHeader()
         }
         ProductNameInfoContent()
-        Divider(color = Color(color = 0x90C8C8C8), thickness = 2.dp, modifier = Modifier.fillMaxWidth(0.90f).padding(top = 20.dp))
+        Divider(color = Color(color = 0x90C8C8C8), thickness = 1.dp, modifier = Modifier.fillMaxWidth(0.90f).padding(top = 20.dp))
 
-        ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = MaterialTheme.typography.h4, onLeftClicked = {
+        ToggleButton(shape = RoundedCornerShape(10.dp), onLeftClicked = {
           currentTabScreen = 0
         }, onRightClicked = {
             currentTabScreen = 1
@@ -145,22 +146,23 @@ fun ProductDescription() {
 
         TextComponent(
             text = "Description",
-            fontSize = 23,
-            fontFamily = GGSansSemiBold,
-            textStyle = TextStyle(),
+            fontSize = 18,
+            fontFamily = GGSansRegular,
+            textStyle = MaterialTheme.typography.h6,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Bold,
-            lineHeight = 30,
+            fontWeight = FontWeight.ExtraBold,
+            lineHeight = 20,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             textModifier = Modifier
-                .fillMaxWidth()
-        )
+                .fillMaxWidth())
 
-
-   TextComponent(
-            textModifier = Modifier.fillMaxWidth().padding(top = 5.dp, bottom = 20.dp), text = "Alternative theories suggest that the word SPA is an acronym of the Latin phrase Salus/Sanum per aquam or Sanitas per aquam, which translates as “health through water”. Many historians argue that it was originally coined in the Roman Empire and that it has been found inscribed on the walls of ancient Roman baths", fontSize = 18, fontFamily = GGSansSemiBold,
-            textStyle = TextStyle(), textColor = Color.Gray, textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Bold, lineHeight = 25)
+        TextComponent(
+            textModifier = Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 20.dp), text = "Alternative theories suggest that the word SPA is an acronym of the Latin phrase Salus/Sanum per aquam or Sanitas per aquam, which translates as “health through water”. Many historians argue that it was originally coined in the Roman Empire and that it has been found inscribed on the walls of ancient Roman baths",
+            fontSize = 16, fontFamily = GGSansRegular,
+            textStyle = MaterialTheme.typography.h6, textColor = Color.DarkGray, textAlign = TextAlign.Left,
+            fontWeight = FontWeight.Medium, lineHeight = 25)
     }
 
 }
@@ -193,13 +195,13 @@ fun ProductPriceInfoContent() {
     ) {
         TextComponent(
             text = "$67,000",
-            fontSize = 18,
-            fontFamily = GGSansBold,
+            fontSize = 16,
+            fontFamily = GGSansRegular,
             textStyle = TextStyle(textDecoration = TextDecoration.LineThrough),
             textColor = Color.LightGray,
             textAlign = TextAlign.Right,
-            fontWeight = FontWeight.Bold,
-            lineHeight = 30,
+            fontWeight = FontWeight.ExtraBold,
+            lineHeight = 20,
             textModifier = Modifier
                 .padding(top = 5.dp)
                 .fillMaxWidth()
@@ -208,16 +210,16 @@ fun ProductPriceInfoContent() {
 
         TextComponent(
             text = "$670,000",
-            fontSize = 23,
+            fontSize = 20,
             fontFamily = GGSansBold,
             textStyle = TextStyle(),
-            textColor = Colors.primaryColor,
             textAlign = TextAlign.Right,
-            fontWeight = FontWeight.Bold,
-            lineHeight = 30,
+            fontWeight = FontWeight.ExtraBold,
+            lineHeight = 20,
+            textColor = Colors.primaryColor,
             maxLines = 1,
             textModifier = Modifier
-                .padding(top = 5.dp)
+                .padding(top = 10.dp)
                 .fillMaxWidth()
                 .wrapContentHeight()
         )
@@ -229,22 +231,23 @@ fun ProductPriceInfoContent() {
 
 @Composable
 fun ProductFavInfoContent() {
-   Row {
-       ImageComponent(imageModifier = Modifier.size(24.dp).padding(top = 3.dp), imageRes = "drawable/fav_icon.png", colorFilter = ColorFilter.tint(color = Color(0xfffa2d65)))
+   Row(modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(bottom = 10.dp)) {
+       ImageComponent(imageModifier = Modifier.size(20.dp), imageRes = "drawable/fav_icon.png", colorFilter = ColorFilter.tint(color = Color(0xfffa2d65)))
        TextComponent(
            text = "500",
-           fontSize = 22,
-           fontFamily = GGSansSemiBold,
-           textStyle = TextStyle(),
+           fontSize = 18,
+           fontFamily = GGSansRegular,
+           textStyle = MaterialTheme.typography.h6,
            textColor = Colors.darkPrimary,
            textAlign = TextAlign.Left,
-           fontWeight = FontWeight.Bold,
-           lineHeight = 30,
+           fontWeight = FontWeight.ExtraBold,
+           lineHeight = 20,
            textModifier = Modifier
                .padding(start = 5.dp)
                .fillMaxWidth()
                .wrapContentHeight()
        )
+
    }
 }
 
@@ -288,18 +291,17 @@ fun ProductTitle(){
 
         TextComponent(
             text = "Bloom Rose Oil And Argan Oil",
-            fontSize = 23,
-            fontFamily = GGSansBold,
-            textStyle = TextStyle(),
+            fontSize = 16,
+            fontFamily = GGSansRegular,
+            textStyle = MaterialTheme.typography.h6,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Bold,
-            lineHeight = 30,
-            maxLines = 2,
+            fontWeight = FontWeight.ExtraBold,
+            lineHeight = 20,
+            maxLines = 1,
             textModifier = Modifier
                 .fillMaxWidth(),
-            overflow = TextOverflow.Ellipsis
-        )
+            overflow = TextOverflow.Ellipsis)
     }
 }
 

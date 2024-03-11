@@ -134,17 +134,17 @@ fun ContentItem(date: Date, onClickListener: (Date) -> Unit) {
             TextComponent(
                 text = date.date.dayOfMonth.toString(),
                 textModifier = Modifier.align(Alignment.CenterHorizontally),
-                fontSize = 25,
+                fontSize = 23,
                 fontFamily = GGSansSemiBold,
-                fontWeight = FontWeight.ExtraBold,
+                fontWeight = FontWeight.Black,
                 textColor = textColor,
                 textAlign = TextAlign.Center,
-                textStyle = MaterialTheme.typography.h4
+                textStyle = MaterialTheme.typography.h6
             )
             TextComponent(
                 text = date.date.dayOfWeek.toString().substring(0,3),
-                textModifier = Modifier.align(Alignment.CenterHorizontally),
-                fontSize = 16,
+                textModifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 10.dp),
+                fontSize = 13,
                 fontFamily = GGSansSemiBold,
                 fontWeight = FontWeight.Light,
                 textColor = textColor,
@@ -186,12 +186,12 @@ fun CalenderHeader(calendarUiModel: CalendarUiModel, onPrevClickListener: (Local
                 },
                 textModifier = Modifier
                     .align(Alignment.CenterVertically),
-                fontSize = 20,
+                fontSize = 16,
                 fontFamily = GGSansSemiBold,
                 fontWeight = FontWeight.Bold,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Center,
-                textStyle = TextStyle()
+                textStyle = MaterialTheme.typography.h6
             )
         }
 

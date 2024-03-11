@@ -1,5 +1,6 @@
 package presentation.components
 
+import GGSansRegular
 import GGSansSemiBold
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
@@ -23,6 +24,7 @@ import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconToggleButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.runtime.Composable
@@ -238,7 +240,7 @@ fun LocationToggleButton(borderStroke: BorderStroke?, shape: Shape, colors: Butt
 
 
 @Composable
-fun ToggleButton(shape: Shape, colors: ButtonColors, fontSize: Int, style: TextStyle, onLeftClicked: () ->  Unit, onRightClicked: () ->  Unit, leftText: String, rightText: String) {
+fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, onRightClicked: () ->  Unit, leftText: String, rightText: String) {
 
     var isLeftChecked by remember { mutableStateOf(true) }
 
@@ -277,12 +279,12 @@ fun ToggleButton(shape: Shape, colors: ButtonColors, fontSize: Int, style: TextS
                 ) {
                     TextComponent(
                         text = leftText,
-                        fontSize = fontSize,
-                        textStyle = style,
-                        fontFamily = GGSansSemiBold,
+                        fontSize = 16,
+                        textStyle = MaterialTheme.typography.h6,
+                        fontFamily = GGSansRegular,
                         textColor = leftTextColor,
                         textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.ExtraBold
                     )
                 }
             }
@@ -304,12 +306,12 @@ fun ToggleButton(shape: Shape, colors: ButtonColors, fontSize: Int, style: TextS
                 ) {
                     TextComponent(
                         text = rightText,
-                        fontSize = fontSize,
-                        textStyle = style,
-                        fontFamily = GGSansSemiBold,
+                        fontSize = 16,
+                        textStyle = MaterialTheme.typography.h6,
+                        fontFamily = GGSansRegular,
                         textColor = rightTextColor,
                         textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.ExtraBold
                     )
                 }
             }

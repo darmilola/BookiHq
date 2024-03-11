@@ -1,5 +1,6 @@
 package presentation.widgets
 
+import GGSansRegular
 import GGSansSemiBold
 import theme.styles.Colors
 import androidx.compose.foundation.border
@@ -11,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,13 +46,13 @@ fun ReviewsWidget() {
 fun AttachUserImage() {
     Box(
         Modifier
-            .border(width = 1.dp, color = Colors.primaryColor, shape = RoundedCornerShape(35.dp))
-            .size(70.dp)
+            .border(width = 1.dp, color = Colors.primaryColor, shape = CircleShape)
+            .size(50.dp)
     ) {
         val modifier = Modifier
-            .padding(3.dp)
+            .padding(1.dp)
             .clip(shape = RoundedCornerShape(35.dp))
-            .size(70.dp)
+            .size(50.dp)
         ImageComponent(imageModifier = modifier, imageRes = "drawable/1.jpg")
     }
 
@@ -89,9 +92,9 @@ fun AttachUserName(){
         ) {
             TextComponent(
                 text = "Margaret C.",
-                fontSize = 18,
-                fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
+                fontSize = 16,
+                fontFamily = GGSansRegular,
+                textStyle = MaterialTheme.typography.h6,
                 textColor = Color.DarkGray,
                 textAlign = TextAlign.Start,
                 fontWeight = FontWeight.Bold,
@@ -105,7 +108,7 @@ fun AttachUserName(){
 @Composable
 fun AttachReviewDate(){
     val rowModifier = Modifier
-        .padding(start = 5.dp)
+        .padding(start = 5.dp, top = 7.dp)
         .wrapContentWidth()
 
         Row(
@@ -115,13 +118,15 @@ fun AttachReviewDate(){
         ) {
             TextComponent(
                 text = "09 December 2024",
-                fontSize = 16,
-                fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
+                fontSize = 14,
+                fontFamily = GGSansRegular,
+                textStyle = MaterialTheme.typography.h6,
                 textColor = Color.Gray,
                 textAlign = TextAlign.Start,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Medium
             )
+
+
         }
     }
 
@@ -134,8 +139,9 @@ fun AttachUserReviewsContent() {
         val modifier = Modifier
             .fillMaxWidth()
         TextComponent(
-            textModifier = modifier, text = " \"Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula\" ", fontSize = 18, fontFamily = GGSansSemiBold,
-            textStyle = TextStyle(), textColor = Color.Gray, textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Bold, lineHeight = 25)
+            textModifier = modifier, text = "\"Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula\"", fontSize = 16, fontFamily = GGSansRegular,
+            textStyle = MaterialTheme.typography.h6, textColor = Color.DarkGray, textAlign = TextAlign.Left,
+            fontWeight = FontWeight.Medium, lineHeight = 25)
+
     }
 }

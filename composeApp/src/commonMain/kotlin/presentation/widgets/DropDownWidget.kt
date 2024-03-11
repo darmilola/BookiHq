@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -74,14 +75,14 @@ fun DropDownWidgetView(menuItems: List<String>,
 
                     TextComponent(
                         text =  if(selectedIndex != -1) menuItems[selectedIndex] else placeHolderText,
-                        fontSize = if(selectedIndex != -1) 20 else 18,
-                        fontFamily = if(selectedIndex != -1) GGSansSemiBold else  GGSansRegular,
-                        textStyle = TextStyle(),
+                        fontSize = 16,
+                        fontFamily = GGSansSemiBold,
+                        textStyle = MaterialTheme.typography.h6,
                         textColor = if(selectedIndex != -1) Colors.darkPrimary else  Color.Gray,
                         textAlign = TextAlign.Start,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Black,
                         textModifier = Modifier.wrapContentHeight().fillMaxWidth().padding(end = 5.dp))
-                }
+                    }
 
                 Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(), contentAlignment = Alignment.Center){
                     val imageModifier = Modifier
@@ -111,7 +112,7 @@ fun DropDownWidgetView(menuItems: List<String>,
                             onMenuItemClick(index)
                         }
                     }) {
-                    SubtitleTextWidget(text = title, fontSize = 20)
+                    SubtitleTextWidget(text = title, fontSize = 16)
                 }
             }
         }
@@ -127,7 +128,7 @@ fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_
         .padding(end = 10.dp, start = 10.dp, top = 20.dp)
         .fillMaxWidth()
         .height(65.dp)
-        .border(border = BorderStroke(2.dp, color  = Colors.primaryColor), shape = RoundedCornerShape(15.dp))
+        .border(border = BorderStroke(1.5.dp, color  = Colors.primaryColor), shape = RoundedCornerShape(15.dp))
         .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(15.dp))
 
     Column (

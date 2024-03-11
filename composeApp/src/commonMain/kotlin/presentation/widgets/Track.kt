@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +43,7 @@ fun StepsProgressBar(modifier: Modifier = Modifier, numberOfSteps: Int, currentS
         for (step in 0..numberOfSteps) {
             if(step == numberOfSteps){
                 Step(
-                    modifier = Modifier.weight(1F),
+                    modifier = Modifier.weight(1.2F),
                     isCompete = step < currentStep,
                     isCurrentStep = step == currentStep,
                     isLastStep = true,
@@ -119,7 +120,6 @@ fun OrderArrivedView(currentStep: Int, currentOrderProgress: Int){
 
         ImageComponent(imageModifier = Modifier.size(100.dp).clickable {
         }, imageRes = "drawable/celebrate_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
-
         OrderStatusDate()
         OrderStatusText(orderStatusTitle = "Your Order has arrived", orderStatusDescription = "Thank you for shopping with us. We hope you like the products!", isCurrentStage = isCurrentStage)
 
@@ -214,16 +214,16 @@ fun Step(modifier: Modifier = Modifier, isCompete: Boolean, isCurrentStep: Boole
 
     Column(verticalArrangement = Arrangement.Top,
            horizontalAlignment= Alignment.Start,
-           modifier = modifier.wrapContentHeight()) {
+           modifier = modifier.wrapContentHeight().fillMaxWidth()) {
         Row(
-            modifier = Modifier.height(50.dp).padding(start = 10.dp),
+            modifier = Modifier.height(40.dp).padding(start = 10.dp),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
             //Line
 
             Box(
-                modifier = Modifier.size(40.dp).background(color = color, shape = CircleShape),
+                modifier = Modifier.size(32.dp).background(color = color, shape = CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 ImageComponent(
@@ -236,18 +236,18 @@ fun Step(modifier: Modifier = Modifier, isCompete: Boolean, isCurrentStep: Boole
             if (!isLastStep) Divider(
                 modifier = Modifier.padding(start = 15.dp, end = 5.dp),
                 color = color,
-                thickness = 3.dp
+                thickness = 2.dp
             )
         }
         TextComponent(
             text = itemTitle,
             fontSize = 16,
-            fontFamily = GGSansBold,
-            textStyle = TextStyle(),
-            textColor = Colors.darkPrimary,
+            fontFamily = GGSansRegular,
+            textStyle = MaterialTheme.typography.h6,
+            textColor = Color.DarkGray,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Bold,
-            textModifier = Modifier.padding(bottom = 5.dp).fillMaxWidth().fillMaxHeight()
+            textModifier = Modifier.padding(bottom = 5.dp, top = 5.dp).fillMaxWidth().fillMaxHeight()
                 .alpha(if (isCurrentStep) 1F else 0F)
         )
     }
@@ -260,8 +260,7 @@ fun EnhancedStep(modifier: Modifier = Modifier, isCompete: Boolean = false, isCu
     val dividerColor = if (isCurrent || isCompete) Colors.primaryColor else Colors.lightPrimaryColor
     val dividerHeight = dividerMultiplier * 65
 
-
-     Column (modifier = modifier.background(color = Color.Transparent),
+    Column (modifier = modifier.background(color = Color.Transparent),
              verticalArrangement = Arrangement.Center,
              horizontalAlignment = Alignment.CenterHorizontally) {
        if (isCurrent) CurrentDotIndicator(isCompete, isCurrent) else DotIndicator(isCompete, isCurrent)

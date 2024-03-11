@@ -47,7 +47,7 @@ fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel) {
         )
 
         Row(modifier = Modifier.fillMaxWidth()) {
-            ToggleButton(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(10.dp), style = MaterialTheme.typography.h4, onLeftClicked = {
+            ToggleButton(shape = RoundedCornerShape(10.dp), onLeftClicked = {
                 deliveryType = 0
             }, onRightClicked = {
                 deliveryType = 1

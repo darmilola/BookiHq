@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,7 +49,7 @@ fun ParlorDeliveryWidget(mainViewModel: MainViewModel, fromView: Int) {
                 text = "Kare Beauty Shop And Spa",
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
+                textStyle =  MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
                 fontWeight = FontWeight.Black,
@@ -56,12 +58,13 @@ fun ParlorDeliveryWidget(mainViewModel: MainViewModel, fromView: Int) {
                     .wrapContentHeight()
                     .fillMaxWidth())
 
+
             TextComponent(
-                textModifier = Modifier.fillMaxWidth(),
+                textModifier = Modifier.fillMaxWidth().padding(top = 5.dp),
                 text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo",
-                fontSize = 18, fontFamily = GGSansRegular,
-                textStyle = TextStyle(), textColor = Color.Gray, textAlign = TextAlign.Left,
-                fontWeight = FontWeight.Black,
+                fontSize = 15, fontFamily = GGSansRegular,
+                textStyle = MaterialTheme.typography.h6, textColor = Color.LightGray, textAlign = TextAlign.Left,
+                fontWeight = FontWeight.Medium,
                 lineHeight = 23, maxLines = 1,
                 overflow = TextOverflow.Ellipsis)
         }

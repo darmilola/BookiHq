@@ -186,10 +186,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter,userEmail: 
                 }
 
                 ToggleButton(
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                    fontSize = 18,
                     shape = RoundedCornerShape(15.dp),
-                    style = TextStyle(),
                     onLeftClicked = {
                       gender.value = "Male"
                     },

@@ -1,7 +1,6 @@
 package presentation.Bookings
 
 import theme.styles.Colors
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +17,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
@@ -113,26 +112,23 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab {
 
         val coroutineScope = rememberCoroutineScope()
 
-        val buttonStyle = Modifier
-            .fillMaxWidth(btnFraction)
-            .height(50.dp)
-
         val buttonStyle2 = Modifier
             .padding(start = 5.dp, end = 5.dp)
             .fillMaxWidth()
-            .height(50.dp)
+            .height(45.dp)
 
 
         Row (modifier = bgStyle,
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,) {
-            ButtonComponent(modifier = buttonStyle, buttonText = "Add More Services", borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Colors.primaryColor, style = TextStyle()){
-                mainViewModel.setId(0)
-            }
 
-            val bookingNavText = if(currentPage == 1) "Go To Payments" else "Continue"
+            val bookingNavText = if(currentPage == 2) "Go To Payments" else "Continue"
 
-            ButtonComponent(modifier = buttonStyle2, buttonText = bookingNavText, colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Color(color = 0xFFFFFFFF), style = TextStyle(), borderStroke = null){
+            ButtonComponent(modifier = buttonStyle2, buttonText = bookingNavText,
+                colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
+                fontSize = 16, shape = RoundedCornerShape(10.dp),
+                textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h6, borderStroke = null) {
+
                 coroutineScope.launch {
                     if(currentPage == 0){
                         pagerState.animateScrollToPage(1)
@@ -153,7 +149,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab {
 
         val  boxModifier =
             Modifier
-                .padding(top = 15.dp)
+                .padding(top = 5.dp)
                 .background(color = Color.White)
                 .fillMaxHeight(0.85f)
                 .fillMaxWidth()
@@ -168,7 +164,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab {
                 when (page) {
                     0 -> BookingSelectServices(mainViewModel)
                     1 -> BookingSelectSpecialist()
-                    2 -> BookingPayment()
+                    2 -> BookingOverview()
                 }
             }
 

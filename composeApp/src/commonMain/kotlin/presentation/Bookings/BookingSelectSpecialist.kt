@@ -79,8 +79,9 @@ fun AvailableTimeContent() {
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Black,
-            textModifier = Modifier.fillMaxWidth()
-        )
+            lineHeight = 30,
+            textModifier = Modifier
+                .fillMaxWidth().padding(start = 10.dp))
 
         TimeGrid()
     }
@@ -111,7 +112,9 @@ fun TherapistContent() {
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Black,
-            textModifier = Modifier.fillMaxWidth())
+            lineHeight = 30,
+            textModifier = Modifier
+                .fillMaxWidth().padding(start = 10.dp))
 
         LazyRow(
             modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(230.dp),
@@ -149,8 +152,7 @@ fun AttachServiceReviews(){
         lineHeight = 30,
         textModifier = Modifier
             .padding(bottom = 5.dp, start = 15.dp, top = 20.dp)
-            .fillMaxWidth()
-    )
+            .fillMaxWidth())
 
     val pagerState = rememberPagerState(pageCount = {
         5

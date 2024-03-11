@@ -1,5 +1,6 @@
 package presentation.Bookings
 
+import GGSansRegular
 import GGSansSemiBold
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -47,7 +49,7 @@ fun BookingScreenTopBar(pagerState: PagerState, mainViewModel: MainViewModel) {
     val stepList = arrayListOf<String>()
     stepList.add("Service")
     stepList.add("Therapist")
-    stepList.add("Payment")
+    stepList.add("Overview")
 
     val colModifier = Modifier
         .padding(top = 40.dp, end = 0.dp)
@@ -84,7 +86,7 @@ fun BookingScreenTopBar(pagerState: PagerState, mainViewModel: MainViewModel) {
             }
 
         }
-        Row(modifier = Modifier.fillMaxWidth().height(80.dp),
+        Row(modifier = Modifier.fillMaxWidth().height(70.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically) {
             StepsProgressBar(modifier = Modifier.fillMaxWidth().padding(start = 10.dp), numberOfSteps = 2, currentStep = pagerState.currentPage, stepItems = stepList)
@@ -124,10 +126,10 @@ fun leftTopBarItem(pagerState: PagerState, mainViewModel: MainViewModel) {
 fun BookingTitle(){
         TextComponent(
                 text = "Book Appointment",
-                fontSize = 20,
-                fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
-                textColor = Colors.darkPrimary,
+                fontSize = 16,
+                fontFamily = GGSansRegular,
+                textStyle = MaterialTheme.typography.h6,
+                textColor = Color.DarkGray,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
             )
