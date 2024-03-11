@@ -2,6 +2,7 @@ package presentation.widgets
 
 import GGSansBold
 import GGSansRegular
+import androidx.compose.foundation.BorderStroke
 import theme.styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +19,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,26 +47,23 @@ fun RecommendedServiceItem(viewType: Int = 0, onSessionClickListener: () -> Unit
         .clickable {
             onSessionClickListener()
         }
-        .height(410.dp)
+        .fillMaxHeight()
         .fillMaxWidth()
-        Column(
-            modifier = Modifier
-                .padding(top = 10.dp)
-                .height(410.dp)
-                .wrapContentWidth()
-        ) {
+    Card(modifier = Modifier.height(360.dp).fillMaxWidth(),
+        shape = RoundedCornerShape(topStart = 5.dp, bottomStart = 5.dp),
+        border = BorderStroke(0.5.dp, color = Colors.lighterPrimaryColor),
+        colors = CardDefaults.cardColors(containerColor = Color.White)) {
             Row(
                 modifier = Modifier
-                    .background(color = Color.White)
                     .fillMaxWidth()
                     .fillMaxHeight()
             ) {
-                Row(
+                Box(
                     modifier = Modifier
                         .background(color = Colors.primaryColor)
-                        .fillMaxWidth(0.005f)
+                        .fillMaxWidth(0.01f)
                         .fillMaxHeight()
-                ) {}
+                )
                 Column(
                     modifier = columnModifier
                 ) {
@@ -70,7 +72,7 @@ fun RecommendedServiceItem(viewType: Int = 0, onSessionClickListener: () -> Unit
                     RecommendedServicePriceAndAction(viewType = viewType)
                 }
             }
-        }
+    }
 }
 
 
@@ -95,19 +97,17 @@ fun RecommendedServicePriceAndAction(viewType: Int = 0) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxSize()
             ) {
-                val textStyle: TextStyle = TextStyle(
-                    fontSize = TextUnit(20f, TextUnitType.Sp),
-                    fontFamily = GGSansRegular,
-                    fontWeight = FontWeight.Black
-                )
                 TextComponent(
                     text = if(viewType == 0) "Book Now" else if (viewType == 1) "Let's Discuss" else "Buy Now",
-                    fontSize = 20,
                     fontFamily = GGSansRegular,
-                    textStyle = textStyle,
+                    textStyle = MaterialTheme.typography.h6,
                     textColor = textColor,
-                    textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Right,
+                    fontWeight = FontWeight.ExtraBold,
+                    lineHeight = 20,
+                    maxLines = 2,
+                    fontSize = 16,
+                    overflow = TextOverflow.Ellipsis,
                     textModifier = Modifier.wrapContentSize().padding(end = 7.dp))
 
                     ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = textColor))
@@ -119,20 +119,17 @@ fun RecommendedServicePriceAndAction(viewType: Int = 0) {
 }
 @Composable
 fun PopularServicePriceContent(textColor: Color) {
-    val textStyle: TextStyle = TextStyle(
-        fontSize = TextUnit(20f, TextUnitType.Sp),
-        fontFamily = GGSansRegular,
-        fontWeight = FontWeight.Black
-    )
      TextComponent(
             text = "$670,000",
-            fontSize = 20,
+            fontSize = 16,
             fontFamily = GGSansRegular,
-            textStyle = textStyle,
+            textStyle = MaterialTheme.typography.h6,
             textColor = textColor,
             textAlign = TextAlign.Right,
-            fontWeight = FontWeight.Bold,
-            lineHeight = 30,
+            fontWeight = FontWeight.ExtraBold,
+            lineHeight = 20,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
             textModifier = Modifier
                 .padding(top = 5.dp)
                 .wrapContentSize()
@@ -143,7 +140,7 @@ fun PopularServicePriceContent(textColor: Color) {
 fun RecommendedServiceDescription() {
     Column(
         modifier = Modifier
-            .padding(top = 10.dp, start = 10.dp, end = 10.dp)
+            .padding(top = 15.dp, start = 10.dp, end = 10.dp)
             .fillMaxWidth()
             .wrapContentHeight(),
         verticalArrangement = Arrangement.Top,
@@ -151,25 +148,28 @@ fun RecommendedServiceDescription() {
     ) {
         TextComponent(
             text = "Medium Length Layer Cut with cute Salon stuff",
-            fontSize = 20,
-            fontFamily = GGSansBold,
-            textStyle = TextStyle(),
+            fontSize = 18,
+            fontFamily = GGSansRegular,
+            textStyle = MaterialTheme.typography.h6,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Bold,
-            lineHeight = 25,
+            fontWeight = FontWeight.ExtraBold,
+            lineHeight = 20,
             textModifier = Modifier.fillMaxWidth().padding(bottom = 5.dp),
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
 
         TextComponent(
-            textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
+            textModifier = Modifier.fillMaxWidth().padding(top = 5.dp, bottom = 10.dp),
             text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aene ligula",
-            fontSize = 18, fontFamily = GGSansRegular,
-            textStyle = TextStyle(), textColor = Color.Gray, textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Black,
-            lineHeight = 23, maxLines = 3,
+            fontSize = 14, fontFamily = GGSansRegular,
+            textStyle = MaterialTheme.typography.h6,
+            textColor = Colors.darkPrimary,
+            textAlign = TextAlign.Left,
+            fontWeight = FontWeight.ExtraBold,
+            lineHeight = 20,
+            maxLines = 2,
             overflow = TextOverflow.Ellipsis)
 
          StraightLine()
@@ -200,7 +200,7 @@ fun StraightLine() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(2.dp)
+            .height(1.dp)
             .background(color = Color(color = 0x80CCCCCC))
     ) {}
 }

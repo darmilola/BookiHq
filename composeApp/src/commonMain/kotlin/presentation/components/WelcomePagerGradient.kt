@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import theme.styles.Colors
 
 @Composable
 fun StraightLine() {
@@ -15,7 +16,7 @@ fun StraightLine() {
         modifier = Modifier
             .fillMaxWidth()
             .height(1.dp)
-            .background(color = Color(0x50CCCCCC))
+            .background(color =  Colors.lighterPrimaryColor)
     ) {
     }
 }

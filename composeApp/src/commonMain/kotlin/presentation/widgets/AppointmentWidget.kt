@@ -11,14 +11,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
@@ -145,14 +148,16 @@ fun AppointmentWidget(itemType: Int = 0, mainViewModel: MainViewModel) {
                 Box(modifier = Modifier.fillMaxWidth(0.80f).fillMaxHeight(), contentAlignment = Alignment.CenterStart) {
                     TextComponent(
                         text = serviceTitle,
-                        fontSize = 21,
-                        fontFamily = GGSansSemiBold,
-                        textStyle = TextStyle(),
+                        fontSize = 16,
+                        fontFamily = GGSansRegular,
+                        textStyle = MaterialTheme.typography.h6,
                         textColor = statusColor,
                         textAlign = TextAlign.Left,
-                        fontWeight = FontWeight.Medium,
-                        lineHeight = 30,
-                        textModifier = Modifier,
+                        fontWeight = FontWeight.ExtraBold,
+                        lineHeight = 20,
+                        textModifier = Modifier
+                            .padding(top = 5.dp)
+                            .wrapContentSize(),
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -200,77 +205,83 @@ fun AppointmentWidget(itemType: Int = 0, mainViewModel: MainViewModel) {
 
                     val rowModifier = Modifier
                         .padding(start = 10.dp)
-                        .fillMaxWidth().wrapContentHeight()
+                        .fillMaxWidth().height(35.dp)
                     Row(
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.Top,
                         modifier = rowModifier
                     ) {
-                        Box(modifier = Modifier.fillMaxWidth(0.15f), contentAlignment = Alignment.Center) {
+                        Box(modifier = Modifier.fillMaxWidth(0.15f).fillMaxHeight(), contentAlignment = Alignment.Center) {
                             AttachIcon(iconRes = "drawable/time_outline.png", iconSize = 20, iconTint = statusColor){}
                         }
-                        TextComponent(
-                            text = "5 pm  23  June  2024",
-                            textModifier = Modifier.fillMaxWidth().padding(start = 5.dp),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 18,
-                            fontFamily = GGSansRegular,
-                            textStyle = TextStyle(),
-                            textColor = Color.Gray,
-                            textAlign = TextAlign.Left,
-                            fontWeight = FontWeight.Black,
-                        )
+                        Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.CenterStart) {
+                            TextComponent(
+                                text = "5 pm  23  June  2024",
+                                textModifier = Modifier.wrapContentSize()
+                                    .padding(start = 5.dp),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                fontSize = 16,
+                                fontFamily = GGSansRegular,
+                                textStyle = MaterialTheme.typography.h6,
+                                textColor = Color.DarkGray,
+                                textAlign = TextAlign.Left,
+                                fontWeight = FontWeight.Medium,
+                            )
+                        }
                     }
                     Row(
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.Top,
                         modifier =  Modifier
-                            .padding(start = 10.dp, top = 10.dp)
-                            .fillMaxWidth()
+                            .padding(start = 10.dp)
+                            .fillMaxWidth().height(35.dp)
                     ) {
                         Box(modifier = Modifier.fillMaxWidth(0.15f), contentAlignment = Alignment.Center) {
                             AttachIcon(iconSize = 18, iconTint = statusColor, iconRes = "drawable/location_icon_filled.png"){}
                         }
-                        TextComponent(
-                            text = "HomeStead Beauty Services",
-                            textModifier = Modifier.fillMaxWidth().padding(start = 5.dp),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 18,
-                            fontFamily = GGSansRegular,
-                            textStyle = TextStyle(),
-                            textColor = Color.Gray,
-                            textAlign = TextAlign.Left,
-                            fontWeight = FontWeight.Black,
-                        )
+                        Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.CenterStart) {
+                            TextComponent(
+                                text = "HomeStead Beauty Services",
+                                textModifier = Modifier.wrapContentSize()
+                                    .padding(start = 5.dp),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                fontSize = 16,
+                                fontFamily = GGSansRegular,
+                                textStyle = MaterialTheme.typography.h6,
+                                textColor = Color.DarkGray,
+                                textAlign = TextAlign.Left,
+                                fontWeight = FontWeight.Medium,
+                            )
+                        }
                     }
                     Row(
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.Top,
                         modifier = Modifier
-                            .padding(start = 10.dp, top = 10.dp)
-                            .fillMaxWidth()
+                            .padding(start = 10.dp)
+                            .fillMaxWidth().height(35.dp)
                     ) {
                         Box(modifier = Modifier.fillMaxWidth(0.15f), contentAlignment = Alignment.Center) {
                             AttachIcon(iconRes = "drawable/therapist_3.png", iconSize = 24, iconTint = statusColor){}
                         }
-
-                        TextComponent(
-                            text = "Helena McCain",
-                            textModifier = Modifier.fillMaxWidth().padding(start = 5.dp),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 18,
-                            fontFamily = GGSansRegular,
-                            textStyle = TextStyle(),
-                            textColor = Color.Gray,
-                            textAlign = TextAlign.Left,
-                            fontWeight = FontWeight.Black,
-                        )
-                    }
-
-                }
+                     Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.CenterStart) {
+                         TextComponent(
+                             text = "Helena McCain",
+                             textModifier = Modifier.wrapContentSize().padding(start = 5.dp),
+                             maxLines = 1,
+                             overflow = TextOverflow.Ellipsis,
+                             fontSize = 16,
+                             fontFamily = GGSansRegular,
+                             textStyle = MaterialTheme.typography.h6,
+                             textColor = Color.DarkGray,
+                             textAlign = TextAlign.Left,
+                             fontWeight = FontWeight.Medium,
+                         )
+                     }
+                 }
+              }
                 Box(Modifier.fillMaxWidth().fillMaxHeight().background(color = statusColor)) {
 
                     AttachAppointmentStatus(iconRes = iconRes, iconSize = iconSize, statusText = statusText)
@@ -309,17 +320,16 @@ fun AttachAppointmentStatus(iconRes: String = "drawable/schedule.png", iconSize:
 
          TextComponent(
              text = statusText,
-             fontSize = 15,
+             fontSize = 14,
              fontFamily = GGSansRegular,
-             textStyle = TextStyle(),
+             textStyle = MaterialTheme.typography.h6,
              textColor = Color.White,
              textAlign = TextAlign.Center,
-             fontWeight = FontWeight.Bold,
+             fontWeight = FontWeight.Medium,
              lineHeight = 30,
              textModifier = Modifier.fillMaxWidth().padding(top = 15.dp),
              maxLines = 1,
-             overflow = TextOverflow.Ellipsis
-         )
+             overflow = TextOverflow.Ellipsis)
 
      }
 

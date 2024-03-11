@@ -1,5 +1,6 @@
 package presentation.widgets
 
+import GGSansRegular
 import GGSansSemiBold
 import theme.styles.Colors
 import androidx.compose.foundation.background
@@ -11,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,17 +43,17 @@ fun HomeServicesWidget(iconRes: String, serviceTitle: String, mainViewModel: Mai
             horizontalAlignment  = Alignment.CenterHorizontally,
         ) {
             val modifier = Modifier
-                .padding(top = 5.dp)
+                .padding(top = 10.dp)
                 .fillMaxWidth()
             AttachServiceImage(iconRes)
             TextComponent(
                 text = serviceTitle,
-                fontSize = 18,
-                fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
+                fontSize = 14,
+                fontFamily = GGSansRegular,
+                textStyle = MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.ExtraBold,
                 lineHeight = 30,
                 textModifier = modifier
             )

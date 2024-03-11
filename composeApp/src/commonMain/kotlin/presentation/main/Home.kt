@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -126,7 +127,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                         ServiceGridScreen()
                         RecommendedSessions()
                         AttachAppointments()
-                        PopulateAppointmentScreen(appointmentList = appointmentList, mainViewModel = mainViewModel)
+                        RecentAppointmentScreen(appointmentList = appointmentList, mainViewModel = mainViewModel)
                         PopularProducts()
                         PopularProductScreen()
                     }
@@ -200,12 +201,12 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
             ) {
                 TextComponent(
                     text = "Services",
-                    fontSize = 18,
-                    fontFamily = GGSansSemiBold,
-                    textStyle = TextStyle(),
+                    fontSize = 16,
+                    fontFamily = GGSansRegular,
+                    textStyle = MaterialTheme.typography.h6,
                     textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Black,
+                    fontWeight = FontWeight.ExtraBold,
                     lineHeight = 30,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
@@ -226,24 +227,22 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 modifier = rowModifier
             ) {
                 TextComponent(
-                    text = "Recommended",
-                    fontSize = 18,
-                    textModifier = Modifier.fillMaxWidth(0.32f),
-                    fontFamily = GGSansSemiBold,
-                    textStyle = TextStyle(),
+                    text = "Recommendation",
+                    textModifier = Modifier.fillMaxWidth(0.35f),
+                    fontSize = 16,
+                    fontFamily = GGSansRegular,
+                    textStyle = MaterialTheme.typography.h6,
                     textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Black,
+                    fontWeight = FontWeight.ExtraBold,
                     lineHeight = 30,
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
                 StraightLine()
             }
-
-            RecommendedAppointmentList()
-
-        }
+             RecommendedAppointmentList()
+      }
 
 
     @Composable
@@ -257,15 +256,15 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 modifier = rowModifier
             ) {
                 TextComponent(
-                    text = "Recent Appointments",
-                    fontSize = 18,
-                    fontFamily = GGSansSemiBold,
-                    textStyle = TextStyle(),
+                    text = "Recently",
+                    fontSize = 16,
+                    fontFamily = GGSansRegular,
+                    textStyle = MaterialTheme.typography.h6,
                     textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
                     fontWeight = FontWeight.Black,
-                    lineHeight = 30,
-                    textModifier = Modifier.fillMaxWidth(0.45f)
+                    lineHeight = 10,
+                    textModifier = Modifier.fillMaxWidth(0.20f)
                 )
                 StraightLine()
             }
@@ -285,14 +284,17 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 TextComponent(
                     text = "Popular Products",
                     fontSize = 18,
-                    fontFamily = GGSansSemiBold,
-                    textStyle = TextStyle(),
+                    fontFamily = GGSansRegular,
+                    textStyle = MaterialTheme.typography.h6,
                     textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Black,
-                    lineHeight = 30,
-                    textModifier = Modifier.fillMaxWidth(0.42f)
+                    fontWeight = FontWeight.ExtraBold,
+                    lineHeight = 20,
+                    textModifier = Modifier.fillMaxWidth(0.42f),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
+
                 StraightLine()
             }
 
@@ -342,9 +344,9 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
         val boxModifier =
             Modifier
                 .background(color = Color.White)
-                .height(450.dp)
+                .height(410.dp)
                 .fillMaxWidth()
-                .padding(start = 5.dp, end = 5.dp)
+                .padding(start = 5.dp)
 
         val boxBgModifier =
             Modifier
@@ -367,7 +369,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier.fillMaxSize(),
-                    pageSpacing = 15.dp
+                    pageSpacing = 10.dp
                 ) { page ->
                     viewType = page
                     RecommendedServiceItem (viewType = page, onSessionClickListener = {
@@ -415,7 +417,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     }
 
     @Composable
-    fun PopulateAppointmentScreen(appointmentList: List<AppointmentItem>, mainViewModel: MainViewModel) {
+    fun RecentAppointmentScreen(appointmentList: List<AppointmentItem>, mainViewModel: MainViewModel) {
         LazyColumn(modifier = Modifier.fillMaxWidth().height(getAppointmentViewHeight(appointmentList).dp), userScrollEnabled = false) {
             items(appointmentList) {item ->
                 AppointmentWidget(itemType = item.appointmentType, mainViewModel)

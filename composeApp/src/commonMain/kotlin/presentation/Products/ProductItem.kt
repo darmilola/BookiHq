@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
@@ -64,7 +65,7 @@ fun NewProductItem(onProductClickListener: () -> Unit) {
         .clickable {
             onProductClickListener()
         }
-        .height(220.dp)
+        .height(200.dp)
         Row(modifier = columnModifier,
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Top
@@ -117,7 +118,7 @@ fun NewProductImage() {
         modifier = Modifier
             .padding(start = 5.dp, end = 5.dp, top = 5.dp)
             .background(color = Color.White)
-            .height(220.dp)
+            .height(200.dp)
             .fillMaxWidth(0.45f),
         shape = RoundedCornerShape(8.dp),
         border = null
@@ -148,21 +149,15 @@ fun NewProductDescription(onProductClickListener: () -> Unit){
             verticalArrangement = Arrangement.Top,
             horizontalAlignment  = Alignment.Start,
         ) {
-
-            val modifier = Modifier
-                .padding(top = 5.dp)
-                .fillMaxWidth()
-                .wrapContentHeight()
-
             TextComponent(
                 text = "Bloom Rose Oil And Argan Oil is For Sale",
-                fontSize = 18,
-                fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
+                fontSize = 16,
+                fontFamily = GGSansRegular,
+                textStyle = MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
-                fontWeight = FontWeight.Black,
-                lineHeight = 30,
+                fontWeight = FontWeight.ExtraBold,
+                lineHeight = 20,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 2)
             NewProductDescriptionText()
@@ -176,8 +171,8 @@ fun ViewPopularProduct(onProductClickListener: () -> Unit){
         .padding(top = 10.dp)
         .fillMaxWidth()
         .background(color = Color.Transparent)
-        .height(45.dp)
-    ButtonComponent(modifier = buttonStyle, buttonText = "View Product", borderStroke = BorderStroke((1).dp, color = Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = RoundedCornerShape(10.dp), textColor =  Colors.primaryColor, style = TextStyle(fontFamily = GGSansRegular)){
+        .height(40.dp)
+    ButtonComponent(modifier = buttonStyle, buttonText = "View Product", borderStroke = BorderStroke((1).dp, color = Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 14, shape = RoundedCornerShape(10.dp), textColor =  Colors.primaryColor, style = TextStyle(fontFamily = GGSansRegular)){
         onProductClickListener()
     }
 }
@@ -188,7 +183,7 @@ fun ViewPopularProduct(onProductClickListener: () -> Unit){
 fun NewProductDescriptionText() {
     Column(
         modifier = Modifier
-            .padding(top = 5.dp)
+            .padding(top = 10.dp)
             .fillMaxWidth()
             .wrapContentHeight(),
         verticalArrangement = Arrangement.Top,
@@ -198,17 +193,18 @@ fun NewProductDescriptionText() {
             .fillMaxWidth()
         TextComponent(
             text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula",
-            fontSize = 17,
-            fontFamily = GGSansSemiBold,
-            textStyle = TextStyle(),
-            textColor = Color.Gray,
+            fontSize = 15,
+            fontFamily = GGSansRegular,
+            textStyle = MaterialTheme.typography.h6,
+            textColor = Color.DarkGray,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Bold,
-            lineHeight = 25,
+            fontWeight = FontWeight.Medium,
+            lineHeight = 20,
             textModifier = modifier,
             maxLines = 4,
             overflow = TextOverflow.Ellipsis
         )
+
     }
 
 }

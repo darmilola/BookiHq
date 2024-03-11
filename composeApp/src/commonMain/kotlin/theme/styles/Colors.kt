@@ -14,5 +14,5 @@ object Colors {
     val lightGreenColor: Color = Color(color = 0xFFF1FDDB)
     val lightPinkColor: Color = Color(color = 0xFFFEDEF0)
     val lighterPrimaryColor: Color = Color(color = 0xFFE6F8FF)
-    val midGrayColor: Color = Color(color = 0xFFB0B0B0)
+    val backgroundColor: Color = Color(color = 0xFFF4F5F7)
 }
