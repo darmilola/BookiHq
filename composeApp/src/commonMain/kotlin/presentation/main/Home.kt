@@ -1,5 +1,6 @@
 package presentation.main
 
+import GGSansRegular
 import GGSansSemiBold
 import domain.Models.AppointmentItem
 import domain.Models.BusinessStatusAdsPage
@@ -29,6 +30,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -428,19 +430,19 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
             .fillMaxWidth()
             Row(
                 horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.Top,
-                modifier = rowModifier
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = rowModifier,
             ) {
                 val modifier = Modifier.padding(start = 3.dp)
                 AttachLocationIcon()
                 TextComponent(
                     text = "Lorep Ipsum, Beauty and Spa Services",
-                    fontSize = 18,
-                    fontFamily = GGSansSemiBold,
-                    textStyle = TextStyle(),
+                    fontSize = 16,
+                    fontFamily = GGSansRegular,
+                    textStyle = MaterialTheme.typography.h6,
                     textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Black,
+                    fontWeight = FontWeight.ExtraBold,
                     lineHeight = 30,
                     textModifier = modifier
                 )
@@ -475,7 +477,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     fun BusinessStatusDisplay() {
         val boxBgModifier =
             Modifier
-                .padding(start = 5.dp, end = 5.dp)
                 .fillMaxHeight()
                 .fillMaxWidth()
 
@@ -489,7 +490,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     @Composable
     fun AttachLocationIcon() {
         val modifier = Modifier
-            .padding(top = 2.dp)
             .size(20.dp)
         ImageComponent(imageModifier = modifier, imageRes = "drawable/location_icon_filled.png", colorFilter = ColorFilter.tint(color = Colors.pinkColor))
     }

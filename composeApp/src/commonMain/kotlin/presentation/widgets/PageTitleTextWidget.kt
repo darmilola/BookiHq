@@ -1,6 +1,7 @@
 package presentation.widgets
 
 import GGSansBold
+import GGSansRegular
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -14,14 +15,16 @@ import presentations.components.TextComponent
 fun TitleWidget(title: String, textColor: Color){
         TextComponent(
             text = title,
-            fontSize = 25,
-            fontFamily = GGSansBold,
+            fontSize = 22,
+            fontFamily = GGSansRegular,
             textStyle = MaterialTheme.typography.h6,
             textColor = textColor,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Normal,
+            fontWeight = FontWeight.ExtraBold,
             lineHeight = 30,
+            maxLines = 1,
             textModifier = Modifier.wrapContentSize()
         )
 }
+
 

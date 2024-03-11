@@ -54,8 +54,7 @@ fun leftTopBarItem(currentScreen: Int = 0) {
         .fillMaxWidth()
         .fillMaxHeight()
 
-    Box(modifier = rowModifier
-    ) {
+    Box(modifier = rowModifier, contentAlignment = Alignment.CenterStart) {
        WelcomeToProfile()
     }
 }
@@ -70,7 +69,6 @@ fun WelcomeToProfile(){
             verticalAlignment = Alignment.CenterVertically,
             modifier = rowModifier
         ) {
-            val modifier = Modifier.padding(start = 5.dp)
             TitleWidget(textColor = Color.DarkGray, title = "Welcome ")
             TitleWidget(textColor = Colors.primaryColor, title = "Damilola")
             TitleWidget(textColor = Color.DarkGray, title = ",")

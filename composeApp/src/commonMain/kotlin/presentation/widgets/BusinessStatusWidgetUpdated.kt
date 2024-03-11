@@ -6,6 +6,7 @@ import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -52,7 +53,7 @@ fun BusinessStatusWidgetUpdated(adsPageList: List<BusinessStatusAdsPage>, adsPag
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { page ->
-            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().background(color = Color.Transparent)) {
+            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.60f).background(color = Color.Transparent)) {
 
                 LoadBusinessStatus(currentPage = currentImageId, totalPage = adsPageList.size, adsPageList){
                     currentImageId = it
@@ -60,40 +61,26 @@ fun BusinessStatusWidgetUpdated(adsPageList: List<BusinessStatusAdsPage>, adsPag
 
             }
         }
+        Row(
+            Modifier
+                .height(30.dp)
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            repeat(adsPageList.size) { iteration ->
+                val color = if (pagerState.currentPage == iteration) Colors.primaryColor else Colors.primaryColor.copy(alpha = 0.4f)
+                Box(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .clip(CircleShape)
+                        .background(color)
+                        .size(10.dp)
 
-        Row(modifier = Modifier.fillMaxWidth().height(100.dp).padding(start = 5.dp, end = 5.dp, top = 15.dp)) {
-            Box(modifier = Modifier.weight(2f).background(color = Color.Transparent).padding(top = 10.dp, start = 10.dp)) {
-
-                Box(modifier = Modifier.size(36.dp).clip(CircleShape).background(color = Colors.transparentPrimaryColor).clickable {
-                   if (currentImageId > 0) currentImageId -= 1
-                }, contentAlignment = Alignment.Center){
-
-                    ImageComponent(imageModifier = Modifier.size(16.dp), colorFilter = ColorFilter.tint(color = Color.White), imageRes = "drawable/back_arrow_icon.png")
-
-                }
-
-            }
-         Row(modifier = Modifier.weight(3f).padding(start = 5.dp, end = 5.dp, top = 20.dp)) {
-            for (item in adsPageProgress) {
-                Box(modifier = Modifier.weight(1f).height(20.dp)) {
-                    item.adsProgress.DotProgressProgressBarWidget(
-                        pageId = item.pageId,
-                        currentPage = currentImageId
-                    )
-
-                }
+                )
             }
         }
-            Box(modifier = Modifier.weight(2f).background(color = Color.Transparent).padding(top = 10.dp, end = 10.dp), contentAlignment = Alignment.CenterEnd) {
 
-                Box(modifier = Modifier.size(36.dp).clip(CircleShape).background(color = Colors.transparentPrimaryColor).clickable {
-                   if (currentImageId < adsPageList.size) currentImageId += 1 else currentImageId = 0
-                }, contentAlignment = Alignment.Center){
-                    ImageComponent(imageModifier = Modifier.size(16.dp), colorFilter = ColorFilter.tint(color = Color.White), imageRes = "drawable/forward_arrow_icon.png")
-                }
-
-            }
-        }
     }
 
 

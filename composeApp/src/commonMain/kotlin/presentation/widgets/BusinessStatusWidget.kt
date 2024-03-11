@@ -42,7 +42,6 @@ fun BusinessStatusWidget(adsPageList: List<BusinessStatusAdsPage>, adsPageProgre
             modifier = Modifier.fillMaxSize()
         ) { page ->
             LoadBusinessStatus(currentPage = currentPage, pagerState.pageCount, onNextPage = {
-                  println("next is $it")
                   currentPage = it
                   isRestart = true
 

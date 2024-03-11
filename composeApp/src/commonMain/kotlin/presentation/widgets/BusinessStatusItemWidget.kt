@@ -2,6 +2,7 @@ package presentation.widgets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,19 +26,10 @@ class BusinessStatusItemWidget {
     @Composable
     fun GetStatusWidget(imageRes: String) {
         val imageModifier =
-            Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-        Card(
-            modifier = Modifier
-                .padding(top = 10.dp)
-                .background(color = Color.White)
-                .fillMaxSize(),
-            shape = RoundedCornerShape(8.dp),
-            border = null
-        ) {
+            Modifier.aspectRatio(ratio = 1f).fillMaxWidth()
             Box(
                 modifier = Modifier
+                    .padding(top = 15.dp)
                     .fillMaxWidth()
                     .fillMaxHeight(),
                 contentAlignment = Alignment.BottomStart
@@ -53,45 +45,14 @@ class BusinessStatusItemWidget {
                         .background(color = Color.Transparent).padding(top = 100.dp),
                     contentAlignment = Alignment.BottomStart
                 ) {
-                    TextGradientBlock()
+                    //TextGradientBlock()
                 }
 
             }
         }
-    }
 
-    @Composable
-    fun TextGradientBlock() {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color(color = 0x00000000),
-                            Color(color = 0x50000000),
-                            Color(color = 0x90000000),
-                            Color.Black
 
-                        )
-                    )
-                )
-        ) {
-            TextComponent(
-                textModifier = Modifier.fillMaxWidth().fillMaxHeight()
-                    .padding(top = 10.dp, bottom = 20.dp, start = 15.dp, end = 15.dp),
-                text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-                fontSize = 16,
-                textStyle = TextStyle(),
-                textColor = Color.White,
-                textAlign = TextAlign.Left,
-                fontWeight = FontWeight.Normal,
-                maxLines = 3,
-                lineHeight = 20
-            )
-        }
-    }
+
 
 }
 
