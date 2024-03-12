@@ -8,3 +8,6 @@ data class ServerResponse(@SerialName("status") val status: String = "", @Serial
 
 @Serializable
 data class AuthenticationResponse(@SerialName("status") val status: String = "",  @SerialName("data") val userInfo: User = User())
+
+@Serializable
+data class HomePageResponse(@SerialName("status") val status: String = "", @SerialName("homePage") val homepageModel: HomepageModel = HomepageModel())
