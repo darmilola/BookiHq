@@ -41,7 +41,7 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun AppointmentWidget(itemType: Int = 0, mainViewModel: MainViewModel) {
+fun AppointmentWidget(itemType: Int = 0) {
 
     val menuItems = arrayListOf<String>()
     val openPostponeDialog = remember { mutableStateOf(false) }

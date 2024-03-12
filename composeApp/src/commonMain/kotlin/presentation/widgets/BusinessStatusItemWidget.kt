@@ -37,7 +37,8 @@ class BusinessStatusItemWidget {
                 ImageComponent(
                     imageModifier = imageModifier,
                     imageRes = imageRes,
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    isAsync = true
                 )
 
                 Box(

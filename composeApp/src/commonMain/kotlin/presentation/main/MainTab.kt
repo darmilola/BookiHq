@@ -21,13 +21,36 @@ import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
+import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.viewModelFactory
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
+import domain.Models.HomePageResponse
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import presentation.appointments.AppointmentsTab
+import presentation.main.home.HomeTab
+import presentation.main.home.HomepageContract
+import presentation.main.home.HomepagePresenter
+import presentation.viewmodels.AsyncUIStates
+import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.UIStates
 import presentations.components.ImageComponent
 
-class MainTab(private val mainViewModel: MainViewModel): Tab {
+class MainTab(private val mainViewModel: MainViewModel): Tab, KoinComponent {
+
+    private val preferenceSettings: Settings = Settings()
+    private val homepagePresenter: HomepagePresenter by inject()
+    private var uiStateViewModel: UIStateViewModel? = null
+    private var homePageViewModel: HomePageViewModel? = null
+    private var userEmail: String = ""
+    private var connectedVendor: Int = -1
+
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
         @Composable
@@ -46,10 +69,45 @@ class MainTab(private val mainViewModel: MainViewModel): Tab {
     @Composable
     override fun Content() {
         var isBottomNavSelected by remember { mutableStateOf(true) }
-        TabNavigator(showDefaultTab(mainViewModel)) {
+        userEmail = preferenceSettings["userEmail", ""]
+        connectedVendor = preferenceSettings["connectedVendorId", 1]
+
+        if (uiStateViewModel == null) {
+            uiStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+            homepagePresenter.getUserHomepage(userEmail, connectedVendor)
+        }
+
+
+        if (homePageViewModel == null) {
+            homePageViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    HomePageViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+
+        val handler = HomePageHandler(homePageViewModel!!, uiStateViewModel!!, homepagePresenter,
+            onPageLoading = {
+                homePageViewModel!!.setHomePageUIState(AsyncUIStates(isLoading = true))
+            }, onContentVisible = {
+                homePageViewModel!!.setHomePageUIState(AsyncUIStates(isSuccess = true, isDone = true))
+            }, onErrorVisible = {
+                homePageViewModel!!.setHomePageUIState(AsyncUIStates(isSuccess = false, isDone = true))
+            })
+        handler.init()
+
+
+
+
+        TabNavigator(showDefaultTab(homePageViewModel!!, mainViewModel)) {
             Scaffold(
                 topBar = {
-                    MainTopBar(mainViewModel, isBottomNavSelected = isBottomNavSelected){
+                    MainTopBar(mainViewModel, isBottomNavSelected = isBottomNavSelected, homePageViewModel!!){
                         isBottomNavSelected = false
                     }
                 },
@@ -64,7 +122,7 @@ class MainTab(private val mainViewModel: MainViewModel): Tab {
                         elevation = 0.dp
                     )
                     {
-                        TabNavigationItem(HomeTab(mainViewModel), selectedImage = "drawable/home_icon.png", unselectedImage = "drawable/home_outline.png", imageSize = 24, currentTabId = 0, tabNavigator = it, mainViewModel){
+                        TabNavigationItem(HomeTab(homePageViewModel!!, mainViewModel), selectedImage = "drawable/home_icon.png", unselectedImage = "drawable/home_outline.png", imageSize = 24, currentTabId = 0, tabNavigator = it, mainViewModel){
                             isBottomNavSelected = true
                         }
                         TabNavigationItem(ShopTab(mainViewModel), selectedImage = "drawable/shopping_basket.png", unselectedImage = "drawable/shopping_basket_outline.png", imageSize = 24, currentTabId = 1, tabNavigator = it, mainViewModel){
@@ -86,9 +144,9 @@ class MainTab(private val mainViewModel: MainViewModel): Tab {
     }
 
 
-    private fun showDefaultTab(mainViewModel: MainViewModel): HomeTab {
+    private fun showDefaultTab(homePageViewModel: HomePageViewModel, mainViewModel: MainViewModel): HomeTab {
 
-        return  HomeTab(mainViewModel)
+        return  HomeTab(homePageViewModel,mainViewModel)
     }
     @Composable
     private fun RowScope.TabNavigationItem(tab: Tab, selectedImage: String, unselectedImage: String, imageSize: Int = 30, currentTabId: Int = 0, tabNavigator: TabNavigator, mainViewModel: MainViewModel, onBottomNavSelected:() -> Unit) {
@@ -146,18 +204,51 @@ class MainTab(private val mainViewModel: MainViewModel): Tab {
 
         BottomNavigationItem(
             selected = tabNavigator.current == tab,
-
             onClick = {
                 tabNavigator.current = tab
             },
-
             selectedContentColor = Colors.primaryColor,
-
             unselectedContentColor = Colors.darkPrimary,
 
             icon = {
                 ImageComponent(imageModifier = Modifier.size(imageSize.dp), imageRes = imageStr, colorFilter = ColorFilter.tint(imageTint))
             }
         )
+    }
+}
+
+class HomePageHandler(
+    private val homePageViewModel: HomePageViewModel,
+    private val uiStateViewModel: UIStateViewModel,
+    private val homepagePresenter: HomepagePresenter,
+    private val onPageLoading: () -> Unit,
+    private val onContentVisible: () -> Unit,
+    private val onErrorVisible: () -> Unit
+) : HomepageContract.View {
+    fun init() {
+        homepagePresenter.registerUIContract(this)
+    }
+
+    override fun showLce(uiState: UIStates, message: String) {
+        uiStateViewModel.switchState(uiState)
+        uiState.let {
+            when {
+                it.loadingVisible -> {
+                    onPageLoading()
+                }
+
+                it.contentVisible -> {
+                    onContentVisible()
+                }
+
+                it.errorOccurred -> {
+                    onErrorVisible()
+                }
+            }
+        }
+    }
+
+    override fun showHome(homePageResponse: HomePageResponse) {
+        homePageViewModel.setHomePageInfo(homePageResponse)
     }
 }

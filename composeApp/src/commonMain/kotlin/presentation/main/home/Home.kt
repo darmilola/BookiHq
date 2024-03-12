@@ -1,4 +1,4 @@
-package presentation.main
+package presentation.main.home
 
 import GGSansRegular
 import GGSansSemiBold
@@ -30,9 +30,11 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.navigator.tab.Tab
@@ -51,10 +53,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
+import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.viewModelFactory
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
+import com.russhwolf.settings.set
+import domain.Models.HomePageResponse
+import domain.Models.Vendor
+import domain.Models.VendorStatusModel
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import presentation.components.StraightLine
 import presentation.Products.BottomSheet
 import presentation.Products.NewProductItem
+import presentation.authentication.AuthenticationPresenter
+import presentation.components.IndeterminateCircularProgressBar
+import presentation.viewmodels.AsyncUIStates
+import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.UIStates
 import utils.getAppointmentViewHeight
 import presentation.widgets.AppointmentWidget
 import presentation.widgets.BusinessStatusItemWidget
@@ -65,8 +84,9 @@ import presentation.widgets.StatusProgressWidget
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
-class HomeTab(private val mainViewModel: MainViewModel) : Tab {
-    @OptIn(ExperimentalResourceApi::class)
+class HomeTab(private val homePageViewModel: HomePageViewModel,
+              private val mainViewModel: MainViewModel) : Tab, KoinComponent {
+  @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
         @Composable
         get() {
@@ -84,25 +104,47 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
 
     @Composable
     override fun Content() {
-        val columnModifier = Modifier
-            .padding(top = 5.dp)
-            .fillMaxSize()
 
-        val appointmentList = ArrayList<AppointmentItem>()
+         val uiState = homePageViewModel.homePageUIState.collectAsState()
+         val userInfo = homePageViewModel.homePageInfo.value.homepageModel.userInfo
+         val vendorInfo = homePageViewModel.homePageInfo.value.homepageModel.vendorInfo
+         val vendorStatus = homePageViewModel.homePageInfo.value.homepageModel.vendorStatus
 
-        val appointmentItem1 = AppointmentItem(appointmentType = 1)
-        val appointmentItem2 = AppointmentItem(appointmentType = 2)
-        val appointmentItem3 = AppointmentItem(appointmentType = 3)
-        val appointmentItem4 = AppointmentItem(appointmentType = 4)
-        val appointmentItem5 = AppointmentItem(appointmentType = 5)
+        // Main Service Content Arena
 
-        appointmentList.add(appointmentItem1)
-        appointmentList.add(appointmentItem2)
-        appointmentList.add(appointmentItem3)
-        appointmentList.add(appointmentItem1)
-        appointmentList.add(appointmentItem5)
-        appointmentList.add(appointmentItem4)
-        appointmentList.add(appointmentItem2)
+        if (uiState.value.isLoading) {
+            //Content Loading
+            Box(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                    .padding(top = 40.dp, start = 50.dp, end = 50.dp)
+                    .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                IndeterminateCircularProgressBar()
+            }
+        } else if (uiState.value.isDone && !uiState.value.isSuccess) {
+            //Error Occurred display reload
+        } else if (uiState.value.isDone && uiState.value.isSuccess) {
+
+            val columnModifier = Modifier
+                .padding(top = 5.dp)
+                .fillMaxSize()
+
+            val appointmentList = ArrayList<AppointmentItem>()
+
+            val appointmentItem1 = AppointmentItem(appointmentType = 1)
+            val appointmentItem2 = AppointmentItem(appointmentType = 2)
+            val appointmentItem3 = AppointmentItem(appointmentType = 3)
+            val appointmentItem4 = AppointmentItem(appointmentType = 4)
+            val appointmentItem5 = AppointmentItem(appointmentType = 5)
+
+            appointmentList.add(appointmentItem1)
+            appointmentList.add(appointmentItem2)
+            appointmentList.add(appointmentItem3)
+            appointmentList.add(appointmentItem1)
+            appointmentList.add(appointmentItem5)
+            appointmentList.add(appointmentItem4)
+            appointmentList.add(appointmentItem2)
 
 
             Column(
@@ -112,7 +154,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
             ) {
                 Column(
                     Modifier
-                        .padding(bottom = 85.dp)
+                        .padding(bottom = 70.dp)
                         .fillMaxSize()
                         .background(color = Color.White)
 
@@ -120,20 +162,23 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                     Column(
                         Modifier
                             .fillMaxSize()
-                            .verticalScroll(rememberScrollState())) {
-                        AttachBusinessName()
-                        BusinessStatusDisplay()
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        AttachBusinessName(vendorInfo!!)
+                        BusinessStatusDisplay(vendorStatus!!)
                         AttachOurServices()
                         ServiceGridScreen()
                         RecommendedSessions()
                         AttachAppointments()
-                        RecentAppointmentScreen(appointmentList = appointmentList, mainViewModel = mainViewModel)
+                        RecentAppointmentScreen(
+                            appointmentList = appointmentList
+                        )
                         PopularProducts()
                         PopularProductScreen()
                     }
-
                 }
             }
+        }
     }
 
 
@@ -417,16 +462,16 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     }
 
     @Composable
-    fun RecentAppointmentScreen(appointmentList: List<AppointmentItem>, mainViewModel: MainViewModel) {
+    fun RecentAppointmentScreen(appointmentList: List<AppointmentItem>) {
         LazyColumn(modifier = Modifier.fillMaxWidth().height(getAppointmentViewHeight(appointmentList).dp), userScrollEnabled = false) {
             items(appointmentList) {item ->
-                AppointmentWidget(itemType = item.appointmentType, mainViewModel)
+                AppointmentWidget(itemType = item.appointmentType)
             }
         }
     }
 
     @Composable
-    fun AttachBusinessName(){
+    fun AttachBusinessName(vendor: Vendor){
         val rowModifier = Modifier
             .padding(start = 10.dp)
             .fillMaxWidth()
@@ -438,11 +483,11 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
                 val modifier = Modifier.padding(start = 3.dp)
                 AttachLocationIcon()
                 TextComponent(
-                    text = "Lorep Ipsum, Beauty and Spa Services",
+                    text = vendor.businessName,
                     fontSize = 16,
                     fontFamily = GGSansRegular,
                     textStyle = MaterialTheme.typography.h6,
-                    textColor = Colors.darkPrimary,
+                    textColor = Color.DarkGray,
                     textAlign = TextAlign.Left,
                     fontWeight = FontWeight.ExtraBold,
                     lineHeight = 30,
@@ -452,19 +497,17 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
         }
 
     @Composable
-    fun GetBusinessPageList() : List<BusinessStatusAdsPage> {
+    fun GetBusinessPageList(statusList: List<VendorStatusModel>) : List<BusinessStatusAdsPage> {
          val adsList: ArrayList<BusinessStatusAdsPage> = arrayListOf()
          val imageWidget = BusinessStatusItemWidget()
-         val statusAdsPage = BusinessStatusAdsPage(statusWidget = imageWidget)
-         adsList.add(statusAdsPage)
-         adsList.add(statusAdsPage)
-         adsList.add(statusAdsPage)
-         adsList.add(statusAdsPage)
-         adsList.add(statusAdsPage)
+        for (item in statusList){
+            val statusAdsPage = BusinessStatusAdsPage(statusWidget = imageWidget, imageUrl = item.imageUrl)
+            adsList.add(statusAdsPage)
+         }
          return adsList
     }
 
-    @Composable
+    /*@Composable
     fun GetBusinessPageProgressList(pageCount: Int) : List<BusinessStatusAdsProgress> {
         val progressList: ArrayList<BusinessStatusAdsProgress> = arrayListOf()
         val progressWidget = StatusProgressWidget()
@@ -473,18 +516,18 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
             progressList.add(adsProgress)
         }
         return progressList
-    }
+    }*/
 
     @Composable
-    fun BusinessStatusDisplay() {
+    fun BusinessStatusDisplay(statusList: List<VendorStatusModel>) {
         val boxBgModifier =
             Modifier
                 .fillMaxHeight()
                 .fillMaxWidth()
 
         Box(modifier = boxBgModifier) {
-            val businessPageList = GetBusinessPageList()
-            BusinessStatusWidgetUpdated(businessPageList, GetBusinessPageProgressList(businessPageList.size))
+            val businessPageList = GetBusinessPageList(statusList)
+            BusinessStatusWidgetUpdated(businessPageList)
         }
     }
 
@@ -492,7 +535,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab {
     @Composable
     fun AttachLocationIcon() {
         val modifier = Modifier
-            .size(20.dp)
-        ImageComponent(imageModifier = modifier, imageRes = "drawable/location_icon_filled.png", colorFilter = ColorFilter.tint(color = Colors.pinkColor))
+            .size(16.dp)
+        ImageComponent(imageModifier = modifier, imageRes = "drawable/location_icon_filled.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
     }
 }

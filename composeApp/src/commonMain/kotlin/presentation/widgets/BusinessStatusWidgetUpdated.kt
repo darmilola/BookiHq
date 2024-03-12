@@ -36,7 +36,7 @@ import presentations.components.ImageComponent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun BusinessStatusWidgetUpdated(adsPageList: List<BusinessStatusAdsPage>, adsPageProgress: List<BusinessStatusAdsProgress>) {
+fun BusinessStatusWidgetUpdated(adsPageList: List<BusinessStatusAdsPage>) {
     val pagerState = rememberPagerState(pageCount = {
         adsPageList.size
     })
@@ -112,10 +112,10 @@ private fun LoadBusinessStatus(currentPage: Int, totalPage: Int,adsPageList: Lis
         if(currentPageInView >= totalPage || currentPageInView < 0){
             currentPageInView = 0
             onNextPage(currentPageInView)
-            adsPageList[currentPageInView].statusWidget.GetStatusWidget ("drawable/sale$currentPageInView.jpg")
+            adsPageList[currentPageInView].statusWidget.GetStatusWidget (adsPageList[currentPageInView].imageUrl)
         }
         else{
-            adsPageList[currentPageInView].statusWidget.GetStatusWidget ("drawable/sale$currentPage.jpg")
+            adsPageList[currentPageInView].statusWidget.GetStatusWidget (adsPageList[currentPageInView].imageUrl)
             onNextPage(currentPageInView)
         }
 }

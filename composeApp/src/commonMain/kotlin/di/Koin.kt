@@ -14,6 +14,7 @@ import kotlinx.serialization.json.Json
 import org.koin.core.context.stopKoin
 import presentation.UserProfile.ConnectVendor.ConnectVendorModule
 import presentation.authentication.AuthenticationModule.AuthenticationModule
+import presentation.main.home.HomepageModule
 
 fun initKoin(){
     stopKoin()
@@ -21,6 +22,7 @@ fun initKoin(){
         modules(KtorModule)
         modules(AuthenticationModule)
         modules(ConnectVendorModule.ConnectVendorModule)
+        modules(HomepageModule.HomepageModule)
     }
 }
 

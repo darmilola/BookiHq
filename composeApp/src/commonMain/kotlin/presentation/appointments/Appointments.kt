@@ -93,7 +93,7 @@ class AppointmentsTab(private val mainViewModel: MainViewModel) : Tab, Appointme
     fun PopulateAppointmentScreen(appointmentList: List<AppointmentItem>, mainViewModel: MainViewModel) {
         LazyColumn(modifier = Modifier.fillMaxWidth().height(getAppointmentViewHeight(appointmentList).dp), userScrollEnabled = true) {
             items(appointmentList) {item ->
-                AppointmentWidget(itemType = item.appointmentType, mainViewModel)
+                AppointmentWidget(itemType = item.appointmentType)
             }
         }
     }

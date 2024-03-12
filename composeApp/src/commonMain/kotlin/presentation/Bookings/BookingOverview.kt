@@ -56,8 +56,7 @@ import utils.getAppointmentViewHeight
             appointmentList.add(appointmentItem2)
 
             PopulateAppointmentScreen(
-                appointmentList = appointmentList,
-                mainViewModel = MainViewModel()
+                appointmentList = appointmentList
             )
 
             val buttonStyle = Modifier
@@ -73,10 +72,10 @@ import utils.getAppointmentViewHeight
 
     }
     @Composable
-    fun PopulateAppointmentScreen(appointmentList: List<AppointmentItem>, mainViewModel: MainViewModel) {
+    fun PopulateAppointmentScreen(appointmentList: List<AppointmentItem>) {
         LazyColumn(modifier = Modifier.fillMaxWidth().height(getAppointmentViewHeight(appointmentList).dp), userScrollEnabled = true) {
             items(appointmentList) {item ->
-                AppointmentWidget(itemType = item.appointmentType, mainViewModel)
+                AppointmentWidget(itemType = item.appointmentType)
             }
         }
     }

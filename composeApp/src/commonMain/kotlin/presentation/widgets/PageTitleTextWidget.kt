@@ -12,10 +12,10 @@ import androidx.compose.ui.text.style.TextAlign
 import presentations.components.TextComponent
 
 @Composable
-fun TitleWidget(title: String, textColor: Color){
+fun TitleWidget(title: String, textColor: Color, fonSize: Int = 22, textModifier: Modifier = Modifier.wrapContentSize()){
         TextComponent(
             text = title,
-            fontSize = 22,
+            fontSize = fonSize,
             fontFamily = GGSansRegular,
             textStyle = MaterialTheme.typography.h6,
             textColor = textColor,
@@ -23,7 +23,7 @@ fun TitleWidget(title: String, textColor: Color){
             fontWeight = FontWeight.ExtraBold,
             lineHeight = 30,
             maxLines = 1,
-            textModifier = Modifier.wrapContentSize()
+            textModifier = textModifier
         )
 }
 
