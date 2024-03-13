@@ -1,24 +1,23 @@
 
 package presentation.dataModeller
-import applications.date.getDay
-import applications.date.getMonth
-import applications.date.getYear
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.plus
 import domain.Models.CalendarUiModel
 import domain.Models.Date
 import domain.Models.DateRange
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 
 class CalendarDataSource {
 
+    val currentMoment: Instant = Clock.System.now()
+    val today: LocalDate = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault()).date
 
-
-    val today: LocalDate = LocalDate(getYear(), getMonth(), getDay())
-       
-
-    fun getData(startDate: LocalDate = today, lastSelectedDate: LocalDate): CalendarUiModel {
+    fun getDate(startDate: LocalDate = today, lastSelectedDate: LocalDate): CalendarUiModel {
         val endDayOfWeek = today.plus(30, DateTimeUnit.DAY)
         val visibleDates = getDatesBetween(today, endDayOfWeek)
         return toUiModel(visibleDates, lastSelectedDate)

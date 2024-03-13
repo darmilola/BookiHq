@@ -123,6 +123,9 @@ kotlin {
             //SnackBar
             implementation("io.github.rizmaulana:compose-stacked-snackbar:1.0.4")
 
+            //datetime
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0-RC.2")
+
         }
 
         iosMain.dependencies {

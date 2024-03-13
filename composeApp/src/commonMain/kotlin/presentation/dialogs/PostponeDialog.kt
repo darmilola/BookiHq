@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import presentation.components.ButtonComponent
-import presentation.widgets.Calendar
+import presentation.widgets.BookingCalendar
 import presentation.widgets.TimeGrid
 import presentation.widgets.TitleWidget
 import presentations.components.TextComponent
@@ -147,7 +147,7 @@ fun NewDateContent() {
             textModifier = Modifier.fillMaxWidth().padding(start = 10.dp)
         )
 
-        Calendar(modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 20.dp))
+        BookingCalendar(modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 20.dp))
     }
 }
 

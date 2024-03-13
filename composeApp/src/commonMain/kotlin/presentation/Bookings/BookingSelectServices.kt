@@ -1,6 +1,5 @@
 package presentation.Bookings
 
-import GGSansRegular
 import GGSansSemiBold
 import StackedSnackbarHost
 import theme.styles.Colors
@@ -25,7 +24,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,7 +37,7 @@ import domain.Models.ServiceCategoryItem
 import domain.Models.ServiceImages
 import domain.Models.Services
 import presentation.viewmodels.MainViewModel
-import presentation.widgets.Calendar
+import presentation.widgets.BookingCalendar
 import presentation.widgets.DropDownWidget
 import presentation.widgets.ServiceLocationToggle
 import presentation.widgets.ShowSnackBar
@@ -88,7 +86,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,services: Services) {
                 mainViewModel.setSelectedServiceType(it)
             })
             ServiceLocationToggle(mainViewModel)
-            Calendar()
+            BookingCalendar()
         }
     }
 }

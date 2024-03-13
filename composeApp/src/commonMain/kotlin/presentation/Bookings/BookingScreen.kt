@@ -1,5 +1,7 @@
 package presentation.Bookings
 
+import StackedSnackbarHost
+import StackedSnakbarHostState
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -20,6 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +41,9 @@ import domain.Models.Services
 import presentation.components.ButtonComponent
 import kotlinx.coroutines.launch
 import presentation.viewmodels.MainViewModel
+import presentation.widgets.ShowSnackBar
+import presentation.widgets.SnackBarType
+import rememberStackedSnackbarHostState
 
 
 class BookingScreen(private val mainViewModel: MainViewModel) : Tab {
@@ -59,49 +65,63 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab {
     @Composable
     override fun Content() {
 
+        val stackedSnackBarHostState = rememberStackedSnackbarHostState(
+            maxStack = 5,
+            animation = StackedSnackbarAnimation.Bounce
+        )
+
         val pagerState = rememberPagerState(pageCount = {
             3
         })
 
-        val layoutModifier =
+        Scaffold(
+            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState)  }
+        ) {
+
+            val layoutModifier =
                 Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
                     .background(color = Color.White)
-                    Column(modifier = layoutModifier) {
+            Column(modifier = layoutModifier) {
 
-                        BookingScreenTopBar(pagerState, mainViewModel)
+                BookingScreenTopBar(pagerState, mainViewModel)
 
-                        val bgStyle = Modifier
-                            .fillMaxWidth()
-                            .background(color = Color.White)
-                            .fillMaxHeight()
+                val bgStyle = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color.White)
+                    .fillMaxHeight()
 
-                            Box(contentAlignment = Alignment.TopCenter, modifier = Modifier
-                                .fillMaxHeight()
-                                .fillMaxWidth()
-                                .background(color = Color.White)
-                            ) {
+                Box(
+                    contentAlignment = Alignment.TopCenter, modifier = Modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth()
+                        .background(color = Color.White)
+                ) {
 
-                                Column(
-                                    modifier = bgStyle
-                                ) {
-                                    AttachBookingPages(pagerState, services = mainViewModel.selectedService.value)
-                                    AttachActionButtons(pagerState, mainViewModel)
-                                }
-                            }
+                    Column(
+                        modifier = bgStyle
+                    ) {
+                        AttachBookingPages(
+                            pagerState,
+                            services = mainViewModel.selectedService.value
+                        )
+                        AttachActionButtons(pagerState, mainViewModel, stackedSnackBarHostState)
+                    }
+                }
 
-                        }
+            }
         }
+
+    }
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun AttachActionButtons(pagerState: PagerState, mainViewModel: MainViewModel){
+    fun AttachActionButtons(pagerState: PagerState, mainViewModel: MainViewModel, stackedSnackBarHostState: StackedSnakbarHostState){
 
         var btnFraction by remember { mutableStateOf(0f) }
-
         val currentPage = pagerState.currentPage
-        val navigator = LocalTabNavigator.current
+
 
         btnFraction = if (pagerState.currentPage == 1){
             0.5f
@@ -134,7 +154,18 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab {
                 textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h6, borderStroke = null) {
                 coroutineScope.launch {
                     if(currentPage == 0){
-                        pagerState.animateScrollToPage(1)
+                        if(mainViewModel.selectedServiceType.value.serviceId == -1) {
+                            ShowSnackBar(title = "No Service Selected",
+                                description = "Please Select a Service to proceed",
+                                actionLabel = "",
+                                duration = StackedSnackbarDuration.Short,
+                                snackBarType = SnackBarType.ERROR,
+                                stackedSnackBarHostState,
+                                onActionClick = {})
+                        }
+                        else{
+                            pagerState.animateScrollToPage(1)
+                         }
                     }
                     else if(currentPage == 1){
                         pagerState.animateScrollToPage(2)
@@ -166,7 +197,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab {
             ) { page ->
                 when (page) {
                     0 -> BookingSelectServices(mainViewModel, services)
-                    1 -> BookingSelectSpecialist()
+                    1 -> BookingSelectSpecialist(mainViewModel,services)
                     2 -> BookingOverview()
                 }
             }

@@ -8,8 +8,9 @@ data class SpecialistInfo(@SerialName("id") val id: Int? = null, @SerialName("sp
                           @SerialName("rating") val rating: Double? = null, @SerialName("vendor_id") val vendorId: Int? = null,
                           @SerialName("isAvailable") val isAvailable: Boolean? = null, @SerialName("isAvailableForHomeService") val isAvailableForHomeService: Boolean? = false,
                           @SerialName("rateCount") val rateCount: Int? = null, @SerialName("isVendorAccepted") val isVendorAccepted: Boolean? = null, @SerialName("profile_info") val profileInfo: User? = null,
-                          @SerialName("available_date") val availableDate: AvailableDate? = null, @SerialName("available_times") val availableTimes: List<ServiceTime>? = null,
-                          @SerialName("specialist_service_types") val specialistServices: List<ServiceCategoryItem>? = null, @SerialName("specialist_reviews") val specialistReviews: List<SpecialistReviews>? = null, val isSelected: Boolean = false)
+                          @SerialName("available_times") val availableTimes: List<ServiceTime>? = null,
+                          @SerialName("specialist_service_types") val specialistServices: List<ServiceCategoryItem>? = null,
+                          @SerialName("specialist_reviews") val specialistReviews: List<SpecialistReviews>? = null, val isSelected: Boolean = false)
 
 
 data class TherapistUIModel(

@@ -1,7 +1,6 @@
 package presentation.Bookings
 
 import GGSansSemiBold
-import presentation.dataModeller.TherapistDataSource
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -39,23 +38,26 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import domain.Models.AvailableTherapist
+import domain.Models.ServiceCategorySpecialist
+import domain.Models.ServiceCategoryTherapistUIModel
+import domain.Models.Services
+import presentation.viewmodels.MainViewModel
 import presentation.widgets.AttachTherapistWidget
 import presentation.widgets.ReviewsWidget
 import presentation.widgets.TimeGrid
 import presentations.components.TextComponent
 
 @Composable
-fun BookingSelectSpecialist() {
+fun BookingSelectSpecialist(mainViewModel: MainViewModel,services: Services) {
 
     Column(
         Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        TherapistContent()
+        TherapistContent(mainViewModel,services)
         AvailableTimeContent()
-        AttachServiceReviews()
+        //AttachServiceReviews()
     }
 
 
@@ -72,7 +74,7 @@ fun AvailableTimeContent() {
     ) {
 
         TextComponent(
-            text = "Available Time",
+            text = "Service Times",
             fontSize = 18,
             fontFamily = GGSansSemiBold,
             textStyle = TextStyle(),
@@ -88,13 +90,13 @@ fun AvailableTimeContent() {
 }
 
 @Composable
-fun TherapistContent() {
-    val dataSource = TherapistDataSource()
-    // get CalendarUiModel from CalendarDataSource, and the lastSelectedDate is Today.
-    val selectedTherapist = AvailableTherapist(0, true, true)
-    val availableTherapist = dataSource.getAvailableTherapist(lastSelectedTherapist = selectedTherapist)
+fun TherapistContent(mainViewModel: MainViewModel, services: Services) {
 
-    var selectedTherapistUIModel by remember { mutableStateOf(availableTherapist) }
+    val selectedServicesType = mainViewModel.selectedServiceType.value
+    val therapists = selectedServicesType.specialists
+    var selectedTherapistUIModel by remember { mutableStateOf(ServiceCategoryTherapistUIModel(
+        selectedTherapist = ServiceCategorySpecialist(), therapists!!)) }
+
     Column(
         modifier = Modifier
             .padding(start = 20.dp, end = 10.dp, top = 5.dp)
@@ -126,7 +128,7 @@ fun TherapistContent() {
                     selectedTherapist = it,
                     visibleTherapist = selectedTherapistUIModel.visibleTherapist.map { it2 ->
                         it2.copy(
-                            isSelected = it2.therapistId == it.therapistId
+                            isSelected = it2.specialistId == it.specialistId
                         )
                     }
                 )})

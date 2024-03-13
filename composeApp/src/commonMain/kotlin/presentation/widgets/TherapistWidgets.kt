@@ -10,11 +10,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,13 +31,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import domain.Models.AvailableTherapist
+import domain.Models.ServiceCategorySpecialist
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun AttachUserProfileImage(availableTherapist: AvailableTherapist) {
-    val selectedVisibilityAlpha: Float = if (availableTherapist.isSelected) 1f else 0f
+fun AttachTherapistProfileImage(availableTherapist: ServiceCategorySpecialist) {
+    val selectedVisibilityAlpha: Float = if (availableTherapist.isSelected == true) 1f else 0f
     Box(
         Modifier
             .padding(start = 20.dp, bottom = 10.dp)
@@ -90,7 +94,7 @@ fun AttachUserProfileImage(availableTherapist: AvailableTherapist) {
 }
 
 @Composable
-fun AttachTherapistWidget(availableTherapist: AvailableTherapist, onTherapistSelectedListener: (AvailableTherapist) -> Unit){
+fun AttachTherapistWidget(availableTherapist: ServiceCategorySpecialist, onTherapistSelectedListener: (ServiceCategorySpecialist) -> Unit){
     val rowModifier = Modifier
         .width(160.dp)
         .height(200.dp)
@@ -100,7 +104,7 @@ fun AttachTherapistWidget(availableTherapist: AvailableTherapist, onTherapistSel
     Column(
         modifier = rowModifier
     ) {
-        AttachUserProfileImage(availableTherapist)
+        AttachTherapistProfileImage(availableTherapist)
         TherapistName()
     }
 }
@@ -115,15 +119,14 @@ fun TherapistName(){
             verticalAlignment = Alignment.CenterVertically,
             modifier = rowModifier
         ) {
-            val modifier = Modifier.padding(start = 5.dp)
             TextComponent(
                 text = "Jenny Wilson",
-                fontSize = 18,
+                fontSize = 16,
                 fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
+                textStyle = MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Black
+                fontWeight = FontWeight.Bold
             )
         }
     }

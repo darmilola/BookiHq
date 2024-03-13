@@ -33,9 +33,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
@@ -44,14 +46,14 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun Calendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 10.dp)) {
+fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 10.dp)) {
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
     Column(modifier = modifier) {
         val dataSource = CalendarDataSource()
         // get CalendarUiModel from CalendarDataSource, and the lastSelectedDate is Today.
-        val calendarUiModel = dataSource.getData(lastSelectedDate = dataSource.today)
+        val calendarUiModel = dataSource.getDate(lastSelectedDate = dataSource.today)
 
         var selectedUIModel by remember { mutableStateOf(calendarUiModel) }
 
@@ -181,8 +183,12 @@ fun CalenderHeader(calendarUiModel: CalendarUiModel, onPrevClickListener: (Local
                 text = if (calendarUiModel.selectedDate.isToday) {
                     "Today"
                 } else {
-                    calendarUiModel.selectedDate.date.month.toString()
-                        .lowercase() + ", " + calendarUiModel.selectedDate.date.year.toString()
+                    val formattedMonth = calendarUiModel.selectedDate.date.month.toString()
+                        .lowercase()
+                        .replaceFirstChar {
+                        char -> char.titlecase()
+                    }
+                    formattedMonth + ", " + calendarUiModel.selectedDate.date.dayOfMonth.toString()
                 },
                 textModifier = Modifier
                     .align(Alignment.CenterVertically),
