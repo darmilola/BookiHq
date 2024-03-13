@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
@@ -241,11 +242,13 @@ fun LocationToggleButton(borderStroke: BorderStroke?, shape: Shape, colors: Butt
 
 
 @Composable
-fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, onRightClicked: () ->  Unit, leftText: String, rightText: String) {
+fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, selection: Boolean = false, onRightClicked: () ->  Unit, leftText: String, rightText: String, isDisabled: Boolean = false) {
 
-    var isLeftChecked by remember { mutableStateOf(true) }
+    var isLeftChecked by remember { mutableStateOf(!selection) }
 
-    val leftTint  = if(isLeftChecked) Colors.primaryColor else Color.Transparent
+    if(isDisabled) isLeftChecked = true
+
+    val leftTint  = if(isLeftChecked && !isDisabled) Colors.primaryColor else if(isLeftChecked && isDisabled) Colors.disabledPrimaryColor else Color.Transparent
     val rightTint  =  if(!isLeftChecked) Colors.primaryColor else Color.Transparent
 
     val leftTextColor = if (isLeftChecked) Color.White else Colors.primaryColor
@@ -253,10 +256,10 @@ fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, onRightClicked: () ->
     val rightTextColor = if (isLeftChecked) Colors.primaryColor else Color.White
 
     val rowModifier = Modifier
-        .padding(top = 15.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
+        .padding(top = 15.dp, end = 10.dp)
         .fillMaxWidth()
         .height(60.dp)
-        .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(20.dp))
+        .background(color = Colors.lightPrimaryColor, shape = CircleShape)
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
@@ -267,8 +270,10 @@ fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, onRightClicked: () ->
                 modifier = Modifier.padding(start = 10.dp, top = 7.dp, bottom = 7.dp),
                 checked = isLeftChecked,
                 onCheckedChange = {
-                    onLeftClicked()
-                    isLeftChecked = it
+                    if(!isDisabled) {
+                        onLeftClicked()
+                        isLeftChecked = it
+                    }
                 }
             ) {
                 Box(
@@ -294,8 +299,10 @@ fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, onRightClicked: () ->
                 modifier = Modifier.padding(end = 10.dp, top = 7.dp, bottom = 7.dp),
                 checked = !isLeftChecked,
                 onCheckedChange = {
-                    onRightClicked()
-                    isLeftChecked = !it
+                    if(!isDisabled) {
+                        onRightClicked()
+                        isLeftChecked = !it
+                    }
                 }
             ) {
                 Box(

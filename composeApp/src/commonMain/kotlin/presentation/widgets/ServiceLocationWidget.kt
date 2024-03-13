@@ -7,16 +7,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ButtonDefaults
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,10 +26,14 @@ import presentations.components.TextComponent
 
 @Composable
 fun ServiceLocationToggle(mainViewModel: MainViewModel){
-    var deliveryType by remember { mutableStateOf(0) }
+    val selectedServiceTypeState = mainViewModel.selectedServiceType.collectAsState()
+    var locationType by remember { mutableStateOf(0) }
+    if (!selectedServiceTypeState.value.homeServiceAvailable){
+        locationType = 0
+    }
     Column(
         modifier = Modifier
-            .padding(top = 25.dp)
+            .padding(top = 35.dp)
             .fillMaxWidth()
             .wrapContentHeight(),
         verticalArrangement = Arrangement.Center,
@@ -39,7 +42,7 @@ fun ServiceLocationToggle(mainViewModel: MainViewModel){
 
         TextComponent(
             text = "Where do you want your Service?",
-            fontSize = 18,
+            fontSize = 16,
             fontFamily = GGSansSemiBold,
             textStyle = TextStyle(),
             textColor = Colors.darkPrimary,
@@ -49,14 +52,14 @@ fun ServiceLocationToggle(mainViewModel: MainViewModel){
             textModifier = Modifier
                 .fillMaxWidth().padding(start = 10.dp))
 
-        ToggleButton( shape = RoundedCornerShape(10.dp), onLeftClicked = {
-            deliveryType = 0
+        ToggleButton( shape = CircleShape, onLeftClicked = {
+            locationType = 0
         }, onRightClicked = {
-            deliveryType = 1
-        }, leftText = "Parlor", rightText = "Home")
+            locationType = 1
+        }, leftText = "Parlor", rightText = "Home", isDisabled = !selectedServiceTypeState.value.homeServiceAvailable)
 
 
-        if(deliveryType == 0) {
+        if(locationType == 0) {
             ParlorDeliveryWidget(mainViewModel, 1)
         }
         else{

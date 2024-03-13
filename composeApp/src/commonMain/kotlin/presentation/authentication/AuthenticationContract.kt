@@ -8,6 +8,8 @@ class AuthenticationContract {
         fun onAuth0Started()
 
         fun onAuth0Ended()
+        fun showUserProfile(user: User)
+
 
         /**
          * Registration successful callback.
@@ -17,12 +19,6 @@ class AuthenticationContract {
         fun goToCompleteProfile(userEmail: String)
 
         fun goToConnectVendor(userEmail: String)
-
-        fun onProfileDeleted()
-
-        fun onProfileUpdated()
-
-        fun showUserProfile(user: User)
 
         /**
          * Registration failure callback.
@@ -53,15 +49,10 @@ class AuthenticationContract {
         abstract fun registerUIContract(view: View?)
         abstract fun startAuth0()
         abstract fun endAuth0()
+        abstract fun ValidateUserProfile(userEmail: String)
         abstract fun completeProfile(firstname: String, lastname: String, userEmail: String, address: String,
                                      contactPhone: String,   countryId: Int,
                                      cityId: Int, gender: String, profileImageUrl: String)
-        abstract fun updateProfile(firstname: String, lastname: String, userEmail: String, address: String,
-                                     contactPhone: String,   countryId: Int,
-                                   cityId: Int, gender: String, profileImageUrl: String)
-        abstract fun getUserProfile(userEmail: String)
-
-        abstract fun deleteProfile(userEmail: String)
 
     }
 }

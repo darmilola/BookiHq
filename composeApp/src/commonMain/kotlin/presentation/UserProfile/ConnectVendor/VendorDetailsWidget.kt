@@ -15,8 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
-import presentation.Bookings.BookingScreen
-import presentation.Products.CartScreen
+import domain.Models.Screens
 import presentation.main.MainTab
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.PageBackNavWidget
@@ -76,7 +75,7 @@ fun ConnectBusinessTitle(mainViewModel: MainViewModel?){
 }
 
 @Composable
-fun SwitchBusinessInfoTitle(mainViewModel: MainViewModel?){
+fun BusinessInfoTitle(mainViewModel: MainViewModel?){
     val rowModifier = Modifier
         .fillMaxWidth()
         .height(40.dp)
@@ -132,21 +131,14 @@ fun leftTopBarItem(mainViewModel: MainViewModel?) {
 @Composable
 fun InfoPageLeftTopBarItem(mainViewModel: MainViewModel?) {
     val navigator = LocalTabNavigator.current
+    val screenNav = mainViewModel?.screenNav?.value
     PageBackNavWidget {
-        if (mainViewModel != null && mainViewModel.fromId.value == 6){
-            navigator.current = ConnectPageTab(mainViewModel)
-        }
-        else if (mainViewModel != null && mainViewModel.fromId.value == 1){
-            navigator.current = BookingScreen(mainViewModel)
-        }
-        else if (mainViewModel != null && mainViewModel.fromId.value == 3){
-            navigator.current = CartScreen(mainViewModel)
-        }
+        mainViewModel?.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.BOOKING.toPath()))
     }
 }
 
 
 @Composable
 fun SwitchTitle(){
-    TitleWidget(title = "Switch Vendor", textColor = Colors.primaryColor)
+    TitleWidget(title = "Switch ConnectVendor", textColor = Colors.primaryColor)
 }

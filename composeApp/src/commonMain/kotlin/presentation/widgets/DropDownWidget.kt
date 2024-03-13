@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -43,7 +44,7 @@ import presentations.components.TextComponent
 @Composable
 fun DropDownWidgetView(menuItems: List<String>,
                    iconRes: String = "drawable/country_icon.png",
-                   iconSize: Int = 25,
+                   iconSize: Int = 20,
                    placeHolderText: String,
                    menuExpandedState: Boolean,
                    selectedIndex : Int,
@@ -119,17 +120,17 @@ fun DropDownWidgetView(menuItems: List<String>,
 }
 
 @Composable
-fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_icon.png", placeHolderText: String, iconSize: Int = 25, onMenuItemClick : (Int) -> Unit) {
+fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_icon.png",selectedIndex: Int = -1, placeHolderText: String, iconSize: Int = 20, onMenuItemClick : (Int) -> Unit) {
 
     val expandedMenuItem = remember { mutableStateOf(false) }
-    val selectedMenuIndex = remember { mutableStateOf(-1) }
+    val selectedMenuIndex = remember { mutableStateOf(selectedIndex) }
 
     val modifier  = Modifier
-        .padding(end = 10.dp, start = 10.dp, top = 20.dp)
+        .padding(top = 15.dp)
         .fillMaxWidth()
-        .height(65.dp)
-        .border(border = BorderStroke(1.5.dp, color  = Colors.primaryColor), shape = RoundedCornerShape(15.dp))
-        .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(15.dp))
+        .height(60.dp)
+        .border(border = BorderStroke((1.3).dp, color  = Colors.primaryColor), shape = CircleShape)
+        .background(color = Colors.lightPrimaryColor, shape = CircleShape)
 
     Column (
         modifier = modifier,

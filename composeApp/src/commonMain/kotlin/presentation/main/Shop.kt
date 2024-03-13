@@ -98,7 +98,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab {
                 .clip(CircleShape)
                 .size(70.dp)
                 .clickable {
-                   mainViewModel.setId(3)
+                  // mainViewModel.setId(3)
                 }
                 .background(color = Colors.darkPrimary),
             contentAlignment = Alignment.Center

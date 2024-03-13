@@ -1,33 +1,62 @@
 package presentation.viewmodels
 
-import dev.icerock.moko.mvvm.livedata.LiveData
+import com.hoc081098.kmp.viewmodel.SavedStateHandle
+import com.hoc081098.kmp.viewmodel.ViewModel
 import dev.icerock.moko.mvvm.livedata.MutableLiveData
-import dev.icerock.moko.mvvm.viewmodel.ViewModel
+import domain.Models.ServiceCategoryItem
+import domain.Models.Services
+import domain.Models.User
+import domain.Models.Vendor
+import kotlinx.coroutines.flow.StateFlow
 
-class MainViewModel: ViewModel() {
-    private var _screenTitle = MutableLiveData("")
+class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
-    private var _screenId = MutableLiveData(0)
+    private var _screenTitle = savedStateHandle.getStateFlow("screenTitle","")
+    private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
+    private var _connectedVendor =  savedStateHandle.getStateFlow("connectedVendor", Vendor())
+    private var _currentUserInfo =  savedStateHandle.getStateFlow("userInfo", User())
+    private var _selectedServiceType =  savedStateHandle.getStateFlow("selectedServiceType", ServiceCategoryItem())
+    private var _screenNav =  savedStateHandle.getStateFlow("screenNav", Pair(-1,-1))
 
-    private var _fromId = MutableLiveData(0)
-    val screenTitle: LiveData<String>
+    val screenTitle: StateFlow<String>
         get() = _screenTitle
 
-    val screenId: LiveData<Int>
-        get() = _screenId
+    val selectedService: StateFlow<Services>
+        get() = _selectedService
 
-    val fromId: LiveData<Int>
-        get() = _fromId
+    val connectedVendor: StateFlow<Vendor>
+        get() = _connectedVendor
 
-    fun setFromId(newId: Int) {
-        _fromId.value = newId
+    val currentUserInfo: StateFlow<User>
+        get() = _currentUserInfo
+
+    val selectedServiceType: StateFlow<ServiceCategoryItem>
+        get() = _selectedServiceType
+
+    val screenNav: StateFlow<Pair<Int,Int>>
+        get() = _screenNav
+
+    fun setSelectedService(selectedService: Services) {
+        savedStateHandle["selectedService"] = selectedService
     }
 
-    fun setId(newId: Int) {
-        _screenId.value = newId
+    fun setSelectedServiceType(selectedServiceType: ServiceCategoryItem) {
+        savedStateHandle["selectedServiceType"] = selectedServiceType
     }
 
     fun setTitle(newTitle: String) {
-        _screenTitle.value = newTitle
+        savedStateHandle["screenTitle"] = newTitle
+    }
+
+    fun setScreenNav(screenNav: Pair<Int,Int>) {
+        savedStateHandle["screenNav"] = screenNav
+    }
+
+    fun setConnectedVendor(vendor: Vendor) {
+        savedStateHandle["connectedVendor"] = vendor
+    }
+
+    fun setUserInfo(user: User) {
+        savedStateHandle["userInfo"] = user
     }
 }

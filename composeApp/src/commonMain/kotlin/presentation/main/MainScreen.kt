@@ -1,75 +1,117 @@
 package presentation.main
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
-import dev.icerock.moko.mvvm.livedata.compose.observeAsState
+import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
+import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.viewModelFactory
+import com.russhwolf.settings.ObservableSettings
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.set
+import domain.Models.PlatformNavigator
+import domain.Models.Screens
 import presentation.Bookings.BookingScreen
 import presentation.Bookings.PendingAppointmentsTab
 import presentation.Products.CartScreen
 import presentation.UserProfile.EditProfile
 import presentation.UserProfile.ConnectVendor.ConnectPageTab
-import presentation.UserProfile.ConnectVendor.ConnectVendorInfoPage
+import presentation.UserProfile.ConnectVendor.ConnectedVendorDetailsPage
 import presentation.UserProfile.UserOrders.UserOrders
 import presentation.consultation.ConsultationScreen
 import presentation.consultation.VirtualConsultationRoom
+import presentation.dialogs.LoadingDialog
 import presentation.viewmodels.MainViewModel
 
-class MainScreen : Screen {
+class MainScreen(val  platformNavigator: PlatformNavigator? = null) : Screen {
 
+    private var mainViewModel: MainViewModel? = null
+    private val preferenceSettings: Settings = Settings()
     @Composable
     override fun Content() {
-        val mainViewModel = MainViewModel()
-        val screenId: State<Int> =  mainViewModel.screenId.observeAsState()
 
-        TabNavigator(showDefaultTab(mainViewModel)) {
-            when (screenId.value) {
-                0 -> {
-                    it.current = MainTab(mainViewModel)
+   val imageUploading = remember { mutableStateOf(false) }
+
+    if (mainViewModel == null) {
+        mainViewModel = kmpViewModel(
+            factory = viewModelFactory {
+                MainViewModel(savedStateHandle = createSavedStateHandle())
+            },
+        )
+     }
+        preferenceSettings as ObservableSettings
+
+        preferenceSettings.addBooleanListener("imageUploadProcessing",false) {
+                value: Boolean -> imageUploading.value = value
+        }
+
+         if(imageUploading.value) {
+            Box(modifier = Modifier.fillMaxWidth(0.80f)) {
+                LoadingDialog("Uploading...")
+            }
+        }
+
+        val screenNav: State<Pair<Int, Int>>? =  mainViewModel?.screenNav?.collectAsState()
+
+        TabNavigator(showDefaultTab(mainViewModel!!)) {
+            when (screenNav?.value?.second) {
+                Screens.MAIN_TAB.toPath() -> {
+                    it.current = MainTab(mainViewModel!!)
                 }
-                1 -> {
-                    it.current = BookingScreen(mainViewModel)
+                Screens.BOOKING.toPath() -> {
+                    it.current = BookingScreen(mainViewModel!!)
                 }
-                2 -> {
-                    it.current = ConsultationScreen(mainViewModel)
+                Screens.CONSULTATION.toPath() -> {
+                    it.current = ConsultationScreen(mainViewModel!!)
                 }
-                3 -> {
-                    it.current = CartScreen(mainViewModel)
+                Screens.CART.toPath() -> {
+                    it.current = CartScreen(mainViewModel!!)
                 }
-                5 -> {
-                    it.current = UserOrders(mainViewModel)
+                Screens.ORDERS.toPath() -> {
+                    it.current = UserOrders(mainViewModel!!)
                 }
-                6 -> {
-                    it.current = ConnectPageTab(mainViewModel)
+                Screens.CONNECT_VENDOR_PAGE.toPath() -> {
+                    it.current = ConnectPageTab(mainViewModel!!)
                 }
-                8 -> {
-                    it.current = VirtualConsultationRoom(mainViewModel)
+                Screens.CONSULTATION_ROOM.toPath() -> {
+                    it.current = VirtualConsultationRoom(mainViewModel!!)
                 }
-                9 -> {
-                    it.current = EditProfile(mainViewModel)
+                Screens.EDIT_PROFILE.toPath() -> {
+                    it.current = EditProfile(mainViewModel!!, platformNavigator)
                 }
-                10 -> {
-                    it.current = ConnectVendorInfoPage(mainViewModel)
+                Screens.VENDOR_INFO.toPath() -> {
+                    it.current = ConnectedVendorDetailsPage(mainViewModel!!)
                 }
-                11 -> {
-                    it.current = PendingAppointmentsTab(mainViewModel)
+                Screens.PENDING_APPOINTMENT.toPath() -> {
+                    it.current = PendingAppointmentsTab(mainViewModel!!)
                 }
             }
 
             Scaffold(
-                topBar = {
-
-                },
+                topBar = {},
                 content = {
-                    mainViewModel.setId(-1)
                     CurrentTab()
                 })
 
         }
 
+    }
+
+    open fun setImageUploadResponse(imageUrl: String) {
+        preferenceSettings["imageUrl"] = imageUrl
+    }
+
+    open fun setImageUploadProcessing(isDone: Boolean = false) {
+        preferenceSettings["imageUploadProcessing"] = isDone
     }
 
     private fun showDefaultTab(mainViewModel: MainViewModel): MainTab {

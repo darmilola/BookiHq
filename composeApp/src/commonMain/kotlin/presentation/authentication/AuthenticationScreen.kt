@@ -135,7 +135,7 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
         }
 
         if (isAuthEmailAssigned.value && auth0UserEmail.isNotEmpty() && currentPosition == AuthSSOScreenNav.AUTH_LOGIN.toPath()) {
-            authenticationPresenter.getUserProfile(auth0UserEmail)
+            authenticationPresenter.ValidateUserProfile(auth0UserEmail)
         }
 
         if(!userNavigation) {
@@ -148,12 +148,12 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
         else if(userNavigation && userNavigationPosition == AuthSSOScreenNav.CONNECT_VENDOR.toPath()){
             currentPosition =  AuthSSOScreenNav.CONNECT_VENDOR.toPath()
             val navigator = LocalNavigator.current
-            navigator?.replaceAll(ConnectPage())
+            navigator?.replaceAll(ConnectPage(platformNavigator))
         }
         else if(userNavigation && userNavigationPosition == AuthSSOScreenNav.MAIN.toPath()){
             currentPosition =  AuthSSOScreenNav.MAIN.toPath()
             val navigator = LocalNavigator.current
-            navigator?.replaceAll(MainScreen())
+            navigator?.replaceAll(MainScreen(platformNavigator = platformNavigator))
         }
 
     }
@@ -249,15 +249,6 @@ class AuthenticationScreenHandler(
     override fun goToConnectVendor(userEmail: String) {
         connectVendor(userEmail)
     }
-
-    override fun onProfileDeleted() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onProfileUpdated() {
-        TODO("Not yet implemented")
-    }
-
     override fun showUserProfile(user: User) {
         TODO("Not yet implemented")
     }

@@ -2,6 +2,7 @@ package presentation.Bookings
 
 import GGSansRegular
 import GGSansSemiBold
+import StackedSnackbarHost
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -22,7 +23,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,42 +35,69 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import domain.Models.ServiceCategoryItem
+import domain.Models.ServiceImages
+import domain.Models.Services
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.Calendar
 import presentation.widgets.DropDownWidget
 import presentation.widgets.ServiceLocationToggle
+import presentation.widgets.ShowSnackBar
+import presentation.widgets.SnackBarType
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
+import rememberStackedSnackbarHostState
 
 @Composable
-fun BookingSelectServices(mainViewModel: MainViewModel) {
+fun BookingSelectServices(mainViewModel: MainViewModel,services: Services) {
+    val stackedSnackBarHostState = rememberStackedSnackbarHostState(
+        maxStack = 5,
+        animation = StackedSnackbarAnimation.Bounce
+    )
 
     val boxModifier =
         Modifier
             .height(350.dp)
             .fillMaxWidth()
-    Column(
-        Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+    Scaffold(
+        snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState)  }
     ) {
 
-        // AnimationEffect
-        Box(contentAlignment = Alignment.TopStart, modifier = boxModifier) {
-            AttachServiceImages()
+        Column(
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+
+            // AnimationEffect
+            Box(contentAlignment = Alignment.TopStart, modifier = boxModifier) {
+                AttachServiceImages(services.serviceImages)
+            }
+            ServiceTitle(services.serviceTitle)
+            AttachServiceTypeToggle(services, onServiceSelected = {
+                println(it)
+                if (!it.homeServiceAvailable) {
+                    ShowSnackBar(title = "No Home Service",
+                        description = "Home service is not available for the selected service",
+                        actionLabel = "",
+                        duration = StackedSnackbarDuration.Short,
+                        snackBarType = SnackBarType.ERROR,
+                        stackedSnackBarHostState,
+                        onActionClick = {})
+                }
+                mainViewModel.setSelectedServiceType(it)
+            })
+            ServiceLocationToggle(mainViewModel)
+            Calendar()
         }
-        ServiceTitle()
-        ServiceLocationToggle(mainViewModel)
-        AttachServiceTypeToggle()
-        Calendar()
     }
 }
 
 @Composable
-fun AttachServiceTypeToggle(){
+fun AttachServiceTypeToggle(services: Services, onServiceSelected: (ServiceCategoryItem) -> Unit){
     Column(
         modifier = Modifier
-            .padding(start = 10.dp, end = 10.dp, top = 25.dp)
+            .padding(start = 10.dp, end = 10.dp, top = 35.dp)
             .fillMaxWidth()
             .wrapContentHeight(),
         verticalArrangement = Arrangement.Center,
@@ -76,7 +106,7 @@ fun AttachServiceTypeToggle(){
 
         TextComponent(
             text = "What type of Service do you want?",
-            fontSize = 18,
+            fontSize = 16,
             fontFamily = GGSansSemiBold,
             textStyle = TextStyle(),
             textColor = Colors.darkPrimary,
@@ -85,22 +115,32 @@ fun AttachServiceTypeToggle(){
             lineHeight = 30,
             textModifier = Modifier
                 .fillMaxWidth().padding(start = 10.dp))
-        AttachDropDownWidget()
+        AttachDropDownWidget(services, onServiceSelected = {
+               onServiceSelected(it)
+        })
     }
 
 }
 
 @Composable
-fun AttachDropDownWidget(){
-    val serviceList = listOf("Service A ", "Service B ", "Service C ", "Service D ", "Service E ")
-    DropDownWidget(menuItems = serviceList,iconRes = "drawable/spa_treatment_leaves.png", placeHolderText = "Select Service Type", iconSize = 30, onMenuItemClick = {})
+fun AttachDropDownWidget(services: Services, onServiceSelected: (ServiceCategoryItem) -> Unit) {
+    val serviceTypeList = arrayListOf<String>()
+    var selectedService: ServiceCategoryItem? = null
+    for (item in services.serviceTypes){
+         serviceTypeList.add(item.title)
+    }
+    DropDownWidget(menuItems = serviceTypeList, iconRes = "drawable/spa_treatment_leaves.png",
+        placeHolderText = "Select Service Type", iconSize = 25, onMenuItemClick = {
+         selectedService = services.serviceTypes[it]
+         onServiceSelected(selectedService!!)
+    })
 }
 
 
 
 
 @Composable
-fun ServiceTitle(){
+fun ServiceTitle(serviceTitle: String){
     Column(
         modifier = Modifier
             .padding(start = 10.dp, end = 10.dp, top = 10.dp)
@@ -112,8 +152,8 @@ fun ServiceTitle(){
 
 
         TextComponent(
-            text = "Manicure",
-            fontSize = 23,
+            text = serviceTitle,
+            fontSize = 20,
             fontFamily = GGSansSemiBold,
             textStyle =  MaterialTheme.typography.h6,
             textColor = Color.DarkGray,
@@ -129,10 +169,10 @@ fun ServiceTitle(){
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AttachServiceImages(){
+fun AttachServiceImages(serviceImages: ArrayList<ServiceImages>){
 
     val pagerState = rememberPagerState(pageCount = {
-        3
+        serviceImages.size
     })
 
     val  boxModifier =
@@ -147,7 +187,7 @@ fun AttachServiceImages(){
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { page ->
-            ImageComponent(imageModifier = Modifier.fillMaxWidth().height(350.dp), imageRes = "drawable/$page.jpg", contentScale = ContentScale.Crop)
+            ImageComponent(imageModifier = Modifier.fillMaxWidth().height(350.dp), imageRes = serviceImages[page].imageUrl!!, isAsync = true ,contentScale = ContentScale.Crop)
         }
         Row(
             Modifier

@@ -1,10 +1,6 @@
 package presentation.UserProfile.ConnectVendor
 
-import com.badoo.reaktive.single.Single
-import domain.Models.ListDataResponse
 import domain.Models.ResourceListEnvelope
-import domain.Models.ServerResponse
-import domain.Models.User
 import domain.Models.Vendor
 import presentation.viewmodels.UIStates
 

@@ -13,6 +13,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.context.stopKoin
 import presentation.UserProfile.ConnectVendor.ConnectVendorModule
+import presentation.UserProfile.ProfileModule
 import presentation.authentication.AuthenticationModule.AuthenticationModule
 import presentation.main.home.HomepageModule
 
@@ -23,6 +24,7 @@ fun initKoin(){
         modules(AuthenticationModule)
         modules(ConnectVendorModule.ConnectVendorModule)
         modules(HomepageModule.HomepageModule)
+        modules(ProfileModule.ProfileModule)
     }
 }
 

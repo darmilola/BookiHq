@@ -16,11 +16,13 @@ import domain.Models.AuthenticationAction
 import domain.Models.PlatformNavigator
 import presentation.SplashScreen
 import presentation.authentication.AuthenticationScreen
+import presentation.main.MainScreen
 
 
 class MainActivity : ComponentActivity(), PlatformNavigator {
     private var auth0ConnectionResponse: AndroidAuth0ConnectionResponse? = null
     private var authScreen: AuthenticationScreen? = null
+    private val mainScreen = MainScreen(platformNavigator = this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,7 +83,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
     }
 
     override fun startImageUpload(imageByteArray: ByteArray) {
-        authScreen?.setImageUploadProcessing(isDone = true)
+        authScreen?.setImageUploadProcessing(isDone = false)
 
         try {
              MediaManager.get()
@@ -99,16 +101,20 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
 
             }
            override fun onSuccess(requestId: String, resultData: Map<*, *>?) {
-                authScreen?.setImageUploadProcessing(isDone = false)
+                authScreen?.setImageUploadProcessing(isDone = true)
+                mainScreen.setImageUploadProcessing(isDone = true)
                 authScreen?.setImageUploadResponse(resultData?.get("secure_url") as String)
+                mainScreen.setImageUploadResponse(resultData?.get("secure_url") as String)
             }
 
             override fun onError(requestId: String?, error: ErrorInfo?) {
-                authScreen?.setImageUploadProcessing(isDone = false)
+                authScreen?.setImageUploadProcessing(isDone = true)
+                mainScreen.setImageUploadProcessing(isDone = true)
             }
 
             override fun onReschedule(requestId: String?, error: ErrorInfo?) {
-                authScreen?.setImageUploadProcessing(isDone = false)
+                authScreen?.setImageUploadProcessing(isDone = true)
+                mainScreen?.setImageUploadProcessing(isDone = true)
             }
         }).dispatch()
 

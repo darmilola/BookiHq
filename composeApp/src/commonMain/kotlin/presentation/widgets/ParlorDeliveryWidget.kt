@@ -20,11 +20,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Models.Screens
 import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
@@ -32,9 +32,8 @@ import presentations.components.TextComponent
 @Composable
 fun ParlorDeliveryWidget(mainViewModel: MainViewModel, fromView: Int) {
     Row(
-        modifier = Modifier.fillMaxWidth().height(100.dp).clickable {
-            mainViewModel.setId(10)
-            mainViewModel.setFromId(fromView)
+        modifier = Modifier.fillMaxWidth().height(90.dp).clickable {
+           mainViewModel.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.VENDOR_INFO.toPath()))
         },
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -47,7 +46,7 @@ fun ParlorDeliveryWidget(mainViewModel: MainViewModel, fromView: Int) {
         Column(modifier = Modifier.weight(3F)) {
             TextComponent(
                 text = "Kare Beauty Shop And Spa",
-                fontSize = 18,
+                fontSize = 16,
                 fontFamily = GGSansSemiBold,
                 textStyle =  MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,

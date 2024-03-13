@@ -49,7 +49,7 @@ class MainTab(private val mainViewModel: MainViewModel): Tab, KoinComponent {
     private var uiStateViewModel: UIStateViewModel? = null
     private var homePageViewModel: HomePageViewModel? = null
     private var userEmail: String = ""
-    private var connectedVendor: Int = -1
+    private var connectedVendorId: Int = -1
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -70,7 +70,6 @@ class MainTab(private val mainViewModel: MainViewModel): Tab, KoinComponent {
     override fun Content() {
         var isBottomNavSelected by remember { mutableStateOf(true) }
         userEmail = preferenceSettings["userEmail", ""]
-        connectedVendor = preferenceSettings["connectedVendorId", 1]
 
         if (uiStateViewModel == null) {
             uiStateViewModel = kmpViewModel(
@@ -78,7 +77,7 @@ class MainTab(private val mainViewModel: MainViewModel): Tab, KoinComponent {
                     UIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
-            homepagePresenter.getUserHomepage(userEmail, connectedVendor)
+            homepagePresenter.getUserHomepage(userEmail)
         }
 
 

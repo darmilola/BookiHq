@@ -50,9 +50,9 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator) {
         LaunchedEffect(key1 = true) {
             delay(3000L)
             authenticateSplashScreen(preferenceSettings, onAuthenticated = {
-                navigator.replaceAll(MainScreen())
+                navigator.replaceAll(MainScreen(platformNavigator = platformNavigator))
             }, onConnectVendor = {
-                navigator.replaceAll(ConnectPage())
+                navigator.replaceAll(ConnectPage(platformNavigator))
             }, onWelcome = {
                 navigator.replaceAll(WelcomeScreen(platformNavigator))
             })

@@ -57,49 +57,12 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
         }
     }
 
-    override fun updateProfile(
-        firstname: String,
-        lastname: String,
-        userEmail: String,
-        address: String,
-        contactPhone: String,
-        countryId: Int,
-        cityId: Int,
-        gender: String,
-        profileImageUrl: String
-    ) {
+    override fun ValidateUserProfile(userEmail: String) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showLce(UIStates(loadingVisible = true))
-                    authenticationRepositoryImpl.updateProfile(firstname, lastname, userEmail, address, contactPhone, countryId, cityId, gender,profileImageUrl)
-                        .subscribe(
-                            onSuccess = { result ->
-                                if (result.status == "success"){
-                                    contractView?.showLce(UIStates(contentVisible = true))
-                                    contractView?.onProfileUpdated()
-                                }
-                                else{
-                                    contractView?.showLce(UIStates(errorOccurred = true))
-                                }
-                            },
-                            onError = {
-                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true), message = it1) }
-                            },
-                        )
-                }
-                result.dispose()
-            } catch(e: Exception) {
-                contractView?.showLce(UIStates(errorOccurred = true))
-            }
-        }
-    }
-    override fun getUserProfile(userEmail: String) {
-        scope.launch(Dispatchers.Main) {
-            try {
-                val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(UIStates(loadingVisible = true))
-                    authenticationRepositoryImpl.getUserProfile(userEmail)
+                    authenticationRepositoryImpl.validateUserProfile(userEmail)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
@@ -109,44 +72,6 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                                 else{
                                     contractView?.showLce(UIStates(errorOccurred = true))
                                     contractView?.goToCompleteProfile(userEmail)
-                                }
-                            },
-                            onError = {
-                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true), message = it1) }
-                            },
-                        )
-                }
-                result.dispose()
-            } catch(e: Exception) {
-                contractView?.showLce(UIStates(errorOccurred = true))
-            }
-        }
-    }
-
-    private fun directUser(user: User){
-        if (user.connectedVendor != -1){
-            contractView?.goToMainScreen(user.userEmail!!)
-        }
-        else if (user.connectedVendor == -1){
-            contractView?.goToConnectVendor(user.userEmail!!)
-        }
-    }
-
-    override fun deleteProfile(userEmail: String) {
-        scope.launch(Dispatchers.Main) {
-            try {
-                val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(UIStates(loadingVisible = true))
-                    authenticationRepositoryImpl.deleteProfile(userEmail)
-                        .subscribe(
-                            onSuccess = { result ->
-                                println(result)
-                                if (result.status == "success"){
-                                    contractView?.showLce(UIStates(contentVisible = true))
-                                    contractView?.onProfileDeleted()
-                                }
-                                else{
-                                    contractView?.showLce(UIStates(errorOccurred = true))
                                 }
                             },
                             onError = {
@@ -171,6 +96,15 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
 
     override fun endAuth0() {
         contractView?.onAuth0Ended()
+    }
+
+    private fun directUser(user: User){
+        if (user.connectedVendor != -1){
+            contractView?.goToMainScreen(user.userEmail!!)
+        }
+        else if (user.connectedVendor == -1){
+            contractView?.goToConnectVendor(user.userEmail!!)
+        }
     }
 
 }

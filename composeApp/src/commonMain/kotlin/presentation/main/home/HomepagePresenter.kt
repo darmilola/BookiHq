@@ -29,12 +29,12 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
         contractView = view
     }
 
-    override fun getUserHomepage(userEmail: String, connectedVendor: Int) {
+    override fun getUserHomepage(userEmail: String) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showLce(UIStates(loadingVisible = true))
-                    homeRepositoryImpl.getUserHomePage(userEmail, connectedVendor)
+                    homeRepositoryImpl.getUserHomePage(userEmail)
                         .subscribe(
                             onSuccess = { response ->
                                 if (response.status == "success") {

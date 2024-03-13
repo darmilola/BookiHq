@@ -7,14 +7,13 @@ import androidx.compose.ui.graphics.Color
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import domain.Models.Vendor
 import presentation.viewmodels.MainViewModel
 
-class ConnectVendorInfoPage(private val mainViewModel: MainViewModel) : Tab {
+class ConnectedVendorDetailsPage(private val mainViewModel: MainViewModel) : Tab {
     override val options: TabOptions
         @Composable
         get() {
-            val title = "Vendor Info"
+            val title = "ConnectVendor Info"
 
             return remember {
                 TabOptions(
@@ -26,16 +25,14 @@ class ConnectVendorInfoPage(private val mainViewModel: MainViewModel) : Tab {
 
     @Composable
     override fun Content() {
+        val connectedVendor = mainViewModel.connectedVendor.value
         Scaffold(
             topBar = {
-                SwitchBusinessInfoTitle(mainViewModel = mainViewModel)
+                BusinessInfoTitle(mainViewModel = mainViewModel)
             },
             content = {
                 val navigator = LocalTabNavigator.current
-                BusinessInfoContent(Vendor()) {
-                    navigator.current = ConnectPageTab(mainViewModel = mainViewModel)
-                }
-
+                BusinessInfoContent(connectedVendor, isUserAuthenticated = true){}
             },
             backgroundColor = Color.Transparent,
         )

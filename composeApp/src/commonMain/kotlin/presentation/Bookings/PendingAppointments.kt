@@ -144,7 +144,7 @@ class PendingAppointmentsTab(private val mainViewModel: MainViewModel) : Tab {
     @Composable
     fun leftTopBarItem(mainViewModel: MainViewModel) {
         PageBackNavWidget(){
-               mainViewModel.setId(0)
+             //  mainViewModel.setId(0)
         }
 
     }

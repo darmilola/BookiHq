@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Models.Screens
 import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
@@ -32,9 +33,8 @@ import presentations.components.TextComponent
 @Composable
 fun HomeDeliveryWidget(mainViewModel: MainViewModel, fromView: Int) {
     Row(
-        modifier = Modifier.fillMaxWidth().height(100.dp).clickable {
-           mainViewModel.setFromId(fromView)
-           mainViewModel.setId(9)
+        modifier = Modifier.fillMaxWidth().height(90.dp).clickable {
+            mainViewModel.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.EDIT_PROFILE.toPath()))
         },
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -47,7 +47,7 @@ fun HomeDeliveryWidget(mainViewModel: MainViewModel, fromView: Int) {
         Column(modifier = Modifier.weight(3F)) {
             TextComponent(
                 text = "Damilola Akinterinwa",
-                fontSize = 18,
+                fontSize = 16,
                 fontFamily = GGSansSemiBold,
                 textStyle =  MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,

@@ -4,6 +4,6 @@ import com.badoo.reaktive.single.Single
 import domain.Models.HomePageResponse
 
 interface HomeRepository {
-    suspend fun getUserHomePage(userEmail: String, connectedVendor: Int): Single<HomePageResponse>
+    suspend fun getUserHomePage(userEmail: String): Single<HomePageResponse>
 
 }

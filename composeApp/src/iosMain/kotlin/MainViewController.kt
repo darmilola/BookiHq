@@ -16,6 +16,7 @@ import platform.Foundation.create
 import platform.UIKit.UIViewController
 import presentation.SplashScreen
 import presentation.authentication.AuthenticationScreen
+import presentation.main.MainScreen
 
 
 class MainViewController: PlatformNavigator {
@@ -26,7 +27,7 @@ class MainViewController: PlatformNavigator {
     private var onUploadImageEvent: ((data: NSData) -> Unit)? = null
     private val preferenceSettings: Settings = Settings()
     private val authScreen = AuthenticationScreen(currentPosition = AuthSSOScreenNav.AUTH_LOGIN.toPath(), platformNavigator = this)
-
+    private val mainScreen = MainScreen(platformNavigator = this)
     fun MainViewController(onLoginEvent:(connectionType: String) -> Unit,
                            onLogoutEvent:(connectionType: String) -> Unit,
                            onSignupEvent: ((connectionType: String) -> Unit)?,
@@ -68,10 +69,12 @@ class MainViewController: PlatformNavigator {
 
    fun onImageUploadResponse(imageUrl: String) {
         authScreen.setImageUploadResponse(imageUrl)
+        mainScreen.setImageUploadResponse(imageUrl)
     }
 
     fun onImageUploadProcessing(isDone: Boolean) {
         authScreen.setImageUploadProcessing(isDone)
+        mainScreen.setImageUploadProcessing(isDone)
     }
 
 

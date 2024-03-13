@@ -13,6 +13,6 @@ class HomepageContract {
 
     abstract class Presenter {
         abstract fun registerUIContract(view: HomepageContract.View?)
-        abstract fun getUserHomepage(userEmail: String, connectedVendor: Int)
+        abstract fun getUserHomepage(userEmail: String)
     }
 }

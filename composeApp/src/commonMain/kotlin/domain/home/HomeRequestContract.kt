@@ -5,5 +5,4 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class GetHomeRequest(@SerialName("userEmail") val userEmail: String,
-                          @SerialName("connectedVendor") val connectedVendor: Int)
+data class GetHomeRequest(@SerialName("userEmail") val userEmail: String)

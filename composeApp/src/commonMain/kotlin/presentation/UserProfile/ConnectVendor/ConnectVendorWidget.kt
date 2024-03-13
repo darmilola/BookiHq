@@ -1,9 +1,7 @@
 package presentation.UserProfile.ConnectVendor
 
 import GGSansRegular
-import GGSansSemiBold
 import theme.styles.Colors
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,7 +33,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import domain.Models.Vendor
 import presentation.components.ButtonComponent
-import presentation.Products.SearchBar
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget
 import presentations.components.ImageComponent
@@ -163,12 +160,12 @@ fun leftTopBarItem() {
 
 @Composable
 fun ConnectTitle(){
-    TitleWidget(title = "Connect Vendor", textColor = Colors.primaryColor)
+    TitleWidget(title = "Connect ConnectVendor", textColor = Colors.primaryColor)
 }
 
 
 @Composable
-fun BusinessInfoContent(vendor: Vendor, onConnectedListener: () -> Unit) {
+fun BusinessInfoContent(vendor: Vendor,isUserAuthenticated: Boolean = false, onConnectedListener: () -> Unit) {
     val columnModifier = Modifier
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .padding(start = 10.dp, end = 10.dp)
@@ -199,27 +196,51 @@ fun BusinessInfoContent(vendor: Vendor, onConnectedListener: () -> Unit) {
                     lineHeight = 25,
                     textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 10.dp),
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis)
+                    overflow = TextOverflow.Ellipsis
+                )
 
                 AttachLocationIcon()
 
                 TextComponent(
-                    textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 5.dp), text = vendor.businessAddress, fontSize = 18, fontFamily = GGSansRegular,
-                    textStyle = TextStyle(), textColor = Color.DarkGray, textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Normal, lineHeight = 25, maxLines = 3,  overflow = TextOverflow.Ellipsis)
+                    textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 5.dp),
+                    text = vendor.businessAddress,
+                    fontSize = 18,
+                    fontFamily = GGSansRegular,
+                    textStyle = TextStyle(),
+                    textColor = Color.DarkGray,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Normal,
+                    lineHeight = 25,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
+                )
 
                 AttachLocationInfoIcon()
 
                 TextComponent(
-                    textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 5.dp), text = vendor.businessAbout, fontSize = 18, fontFamily = GGSansRegular,
-                    textStyle = TextStyle(), textColor = Color.DarkGray, textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Normal, lineHeight = 25, maxLines = 3,  overflow = TextOverflow.Ellipsis)
+                    textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 5.dp),
+                    text = vendor.businessAbout,
+                    fontSize = 18,
+                    fontFamily = GGSansRegular,
+                    textStyle = TextStyle(),
+                    textColor = Color.DarkGray,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Normal,
+                    lineHeight = 25,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
+                )
 
-                Row(modifier = Modifier.fillMaxWidth().height(50.dp).padding(start = 30.dp, end = 30.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().height(50.dp)
+                        .padding(start = 30.dp, end = 30.dp)
+                ) {
 
-                    Row(modifier = Modifier.weight(1f).height(50.dp),
+                    Row(
+                        modifier = Modifier.weight(1f).height(50.dp),
                         horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically) {
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Box(
                             modifier = Modifier.fillMaxHeight().wrapContentWidth(),
                             contentAlignment = Alignment.BottomCenter
@@ -240,7 +261,7 @@ fun BusinessInfoContent(vendor: Vendor, onConnectedListener: () -> Unit) {
                             TextComponent(
                                 textModifier = Modifier.wrapContentWidth()
                                     .padding(start = 5.dp),
-                                text = vendor.openingHour.toString() +" AM",
+                                text = vendor.openingHour.toString() + " AM",
                                 fontSize = 16,
                                 textStyle = TextStyle(),
                                 textColor = Color.DarkGray,
@@ -253,9 +274,11 @@ fun BusinessInfoContent(vendor: Vendor, onConnectedListener: () -> Unit) {
                         }
 
                     }
-                    Row(modifier = Modifier.weight(1f).height(50.dp),
+                    Row(
+                        modifier = Modifier.weight(1f).height(50.dp),
                         horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically) {
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
                         Box(
                             modifier = Modifier.fillMaxHeight().wrapContentWidth(),
@@ -277,7 +300,7 @@ fun BusinessInfoContent(vendor: Vendor, onConnectedListener: () -> Unit) {
                             TextComponent(
                                 textModifier = Modifier.wrapContentWidth()
                                     .padding(start = 5.dp),
-                                text = vendor.closingHour.toString()+ " PM",
+                                text = vendor.closingHour.toString() + " PM",
                                 fontSize = 16,
                                 textStyle = TextStyle(),
                                 textColor = Color.DarkGray,
@@ -291,9 +314,11 @@ fun BusinessInfoContent(vendor: Vendor, onConnectedListener: () -> Unit) {
 
                     }
                 }
-                Row(modifier = Modifier.fillMaxWidth().height(50.dp),
+                Row(
+                    modifier = Modifier.fillMaxWidth().height(50.dp),
                     horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically) {
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
 
                     Box(
                         modifier = Modifier.fillMaxHeight().wrapContentWidth(),
@@ -327,23 +352,32 @@ fun BusinessInfoContent(vendor: Vendor, onConnectedListener: () -> Unit) {
                         )
                     }
                 }
-                val buttonStyle = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 25.dp)
-                    .height(50.dp)
 
-                Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                if (!isUserAuthenticated) {
 
-                    ButtonComponent(
-                        modifier = buttonStyle,
-                        buttonText = "Connect",
-                        borderStroke = null,
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
-                        fontSize = 18,
-                        shape = CircleShape,
-                        textColor = Color.White,
-                        style = TextStyle()) {
-                        onConnectedListener()
+                    val buttonStyle = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 25.dp)
+                        .height(50.dp)
+
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        ButtonComponent(
+                            modifier = buttonStyle,
+                            buttonText = "Connect",
+                            borderStroke = null,
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
+                            fontSize = 18,
+                            shape = CircleShape,
+                            textColor = Color.White,
+                            style = TextStyle()
+                        ) {
+                            onConnectedListener()
+                        }
                     }
                 }
             }

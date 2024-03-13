@@ -187,10 +187,9 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
                 textColor = Colors.primaryColor,
                 style = TextStyle()
             ) {
-                mainViewModel.setId(2)
+               // mainViewModel.setId(2)
             }
         }
-
     }
 
 

@@ -12,10 +12,12 @@ class AuthenticationRepositoryImpl(apiService: HttpClient):
 
     private val authenticationNetworkService: AuthenticationNetworkService = AuthenticationNetworkService(apiService)
 
-    override suspend fun getUserProfile(userEmail: String): Single<AuthenticationResponse> {
-        val param = GetProfileRequest(userEmail)
-        return authenticationNetworkService.getProfile(param)
+
+    override suspend fun validateUserProfile(userEmail: String): Single<AuthenticationResponse> {
+        val param = ValidateProfileRequest(userEmail)
+        return authenticationNetworkService.validateProfile(param)
     }
+
 
     override suspend fun completeProfile(
         firstname: String,
@@ -30,26 +32,6 @@ class AuthenticationRepositoryImpl(apiService: HttpClient):
     ): Single<ServerResponse> {
         val param = CompleteProfileRequest(firstname, lastname, userEmail, address, contactPhone, countryId, cityId, gender, profileImageUrl)
         return authenticationNetworkService.completeProfile(param)
-    }
-
-    override suspend fun updateProfile(
-        firstname: String,
-        lastname: String,
-        userEmail: String,
-        address: String,
-        contactPhone: String,
-        countryId: Int,
-        cityId: Int,
-        gender: String,
-        profileImageUrl: String
-    ): Single<ServerResponse> {
-        val param = UpdateProfileRequest(firstname, lastname, userEmail, address, contactPhone, countryId,cityId, gender, profileImageUrl)
-        return authenticationNetworkService.updateProfile(param)
-    }
-
-    override suspend fun deleteProfile(userEmail: String): Single<ServerResponse> {
-        val param = DeleteProfileRequest(userEmail)
-        return authenticationNetworkService.deleteProfile(param)
     }
 
 }

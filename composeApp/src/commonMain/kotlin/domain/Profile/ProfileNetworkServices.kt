@@ -1,10 +1,9 @@
-package infrastructure.authentication
+package domain.Profile
 
 import com.badoo.reaktive.single.toSingle
 import domain.Models.AuthenticationResponse
-import domain.Models.ListDataResponse
 import domain.Models.ServerResponse
-import domain.Models.Vendor
+import infrastructure.authentication.CompleteProfileRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -13,26 +12,26 @@ import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
+open class ProfileNetworkService(private val apiService: HttpClient) {
 
-open class AuthenticationNetworkService(private val apiService: HttpClient) {
-    suspend fun completeProfile(completeProfileRequest: CompleteProfileRequest) =
+    suspend fun updateProfile(updateProfileRequest: UpdateProfileRequest) =
         apiService.post {
-            url("/api/v1/auth/user/profile/complete")
+            url("/api/v1/auth/user/profile/update")
             /*headers {
                 append(HttpHeaders.Authorization, "abc123")
             }*/
             contentType(ContentType.Application.Json)
-            setBody(completeProfileRequest)
+            setBody(updateProfileRequest)
         }.body<ServerResponse>().toSingle()
 
-    suspend fun validateProfile(validateProfileRequest: ValidateProfileRequest) =
+    suspend fun deleteProfile(deleteProfileRequest: DeleteProfileRequest) =
         apiService.post {
-            url("/api/v1/auth/user/profile/get")
+            url("/api/v1/auth/user/profile/delete")
             /*headers {
                 append(HttpHeaders.Authorization, "abc123")
             }*/
             contentType(ContentType.Application.Json)
-            setBody(validateProfileRequest)
-        }.body<AuthenticationResponse>().toSingle()
+            setBody(deleteProfileRequest)
+        }.body<ServerResponse>().toSingle()
 
 }

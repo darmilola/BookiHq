@@ -16,7 +16,7 @@ public fun ImageComponent(imageModifier: Modifier, imageRes: String, colorFilter
     if(isAsync){
         Image(
             painter = rememberImagePainter(imageRes),
-            contentDescription = "Vendor Logo",
+            contentDescription = "ConnectVendor Logo",
             contentScale = contentScale,
             modifier = imageModifier,
             colorFilter = colorFilter
@@ -25,7 +25,7 @@ public fun ImageComponent(imageModifier: Modifier, imageRes: String, colorFilter
     else {
         Image(
             painter = painterResource(imageRes),
-            contentDescription = "Vendor Logo",
+            contentDescription = "ConnectVendor Logo",
             contentScale = contentScale,
             modifier = imageModifier,
             colorFilter = colorFilter

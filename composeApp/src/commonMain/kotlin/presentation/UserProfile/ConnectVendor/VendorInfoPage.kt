@@ -8,7 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -18,6 +17,7 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
+import domain.Models.PlatformNavigator
 import domain.Models.ResourceListEnvelope
 import domain.Models.Vendor
 import org.koin.core.component.KoinComponent
@@ -28,13 +28,12 @@ import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentation.viewmodels.UIStates
 
-class VendorInfoPage(val vendor: Vendor) : Screen, KoinComponent {
+class VendorInfoPage(val vendor: Vendor, val  platformNavigator: PlatformNavigator? = null) : Screen, KoinComponent {
 
     private val preferenceSettings: Settings = Settings()
     private val connectVendorPresenter: ConnectVendorPresenter by inject()
     private var uiStateViewModel: UIStateViewModel? = null
 
-    @OptIn(InternalVoyagerApi::class)
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -77,13 +76,13 @@ class VendorInfoPage(val vendor: Vendor) : Screen, KoinComponent {
 
         if (pageLoading.value) {
             Box(modifier = Modifier.fillMaxWidth(0.90f)) {
-                LoadingDialog("Connecting Vendor")
+                LoadingDialog("Connecting ConnectVendor")
             }
         }
         else if (vendorConnected.value){
             preferenceSettings["connectedVendor"] = vendor.vendorId
             preferenceSettings["isVendorConnected"] = true
-            navigator.replaceAll(MainScreen())
+            navigator.replaceAll(MainScreen(platformNavigator))
         }
 
 

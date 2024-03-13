@@ -60,6 +60,7 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import domain.Models.HomePageResponse
+import domain.Models.Services
 import domain.Models.Vendor
 import domain.Models.VendorStatusModel
 import org.koin.core.component.KoinComponent
@@ -109,6 +110,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
          val userInfo = homePageViewModel.homePageInfo.value.homepageModel.userInfo
          val vendorInfo = homePageViewModel.homePageInfo.value.homepageModel.vendorInfo
          val vendorStatus = homePageViewModel.homePageInfo.value.homepageModel.vendorStatus
+         val vendorServices = homePageViewModel.homePageInfo.value.homepageModel.vendorServices
 
         // Main Service Content Arena
 
@@ -125,6 +127,8 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
         } else if (uiState.value.isDone && !uiState.value.isSuccess) {
             //Error Occurred display reload
         } else if (uiState.value.isDone && uiState.value.isSuccess) {
+              mainViewModel.setUserInfo(userInfo!!)
+              mainViewModel.setConnectedVendor(vendorInfo!!)
 
             val columnModifier = Modifier
                 .padding(top = 5.dp)
@@ -164,10 +168,10 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
                     ) {
-                        AttachBusinessName(vendorInfo!!)
+                        AttachBusinessName(vendorInfo)
                         BusinessStatusDisplay(vendorStatus!!)
                         AttachOurServices()
-                        ServiceGridScreen()
+                        ServiceGridScreen(vendorServices!!)
                         RecommendedSessions()
                         AttachAppointments()
                         RecentAppointmentScreen(
@@ -183,56 +187,19 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
 
 
     @Composable
-    fun ServiceGridScreen() {
+    fun ServiceGridScreen(vendorServices: List<Services>) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(4),
-            modifier = Modifier.fillMaxWidth().height(300.dp),
+            modifier = Modifier.fillMaxWidth().height(280.dp),
             contentPadding = PaddingValues(5.dp),
             verticalArrangement = Arrangement.Center,
             horizontalArrangement = Arrangement.Center
         ) {
-            items(8) {
-                when (it) {
-                    0 -> {
-                        HomeServicesWidget(iconRes = "drawable/hair_cut.png", serviceTitle = "Haircut", mainViewModel)
-                    }
-
-                    1 -> {
-                        HomeServicesWidget(iconRes = "drawable/beauty_treatment.png", serviceTitle = "Facials", mainViewModel, iconSize = 50)
-                    }
-
-                    2 -> {
-                        HomeServicesWidget(iconRes = "drawable/nail.png", serviceTitle = "Nails", mainViewModel, iconSize = 45)
-                    }
-
-                    3 -> {
-                        HomeServicesWidget(iconRes = "drawable/hair_dye.png", serviceTitle = "Coloring", mainViewModel, iconSize = 45)
-                    }
-
-                    4 -> {
-                        HomeServicesWidget(iconRes = "drawable/spa.png", serviceTitle = "Spa", mainViewModel, iconSize = 45)
-                    }
-
-                    5 -> {
-                        HomeServicesWidget(iconRes = "drawable/waxing.png", serviceTitle = "Waxing", mainViewModel)
-                    }
-
-                    6 -> {
-                        HomeServicesWidget(iconRes = "drawable/lipstick.png", serviceTitle = "Makeup", mainViewModel)
-                    }
-
-                    7 -> {
-                        HomeServicesWidget(iconRes = "drawable/massage.png", serviceTitle = "Massage", mainViewModel)
-                    }
-
-                    else -> {
-                        HomeServicesWidget(iconRes = "drawable/spa.png", serviceTitle = "Facials", mainViewModel)
-                    }
-
-                }
+            items(vendorServices.size) {
+                   HomeServicesWidget(vendorServices[it], mainViewModel)
+                 }
             }
         }
-    }
 
 @Composable
     fun AttachOurServices(){
@@ -419,9 +386,9 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                     viewType = page
                     RecommendedServiceItem (viewType = page, onSessionClickListener = {
                         when (page) {
-                            0 -> mainViewModel.setId(1)
+                            0 -> mainViewModel.setSelectedService(Services())
                             1 -> {
-                                 mainViewModel.setId(2)
+                                 mainViewModel.setSelectedService(Services())
                             }
                             else -> {
                                 showSheet = true

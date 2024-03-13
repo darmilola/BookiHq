@@ -117,8 +117,8 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
             .height(45.dp)
 
         ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke(1.dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor =  Color.DarkGray, style = style){
-                mainViewModel.setId(9)
-                mainViewModel.setFromId(0)
+               // mainViewModel.setId(9)
+               // mainViewModel.setFromId(0)
         }
 
     }
@@ -150,20 +150,20 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                     style = TextStyle(),
                     iconRes = "drawable/shopping_basket.png",
                     isDestructiveAction = false, onClick = {
-                        mainViewModel.setId(5)
+                       // mainViewModel.setId(5)
                     })
 
 
                 ActionItemComponent(
                     modifier = actionStyle,
-                    buttonText = "Switch Vendor",
+                    buttonText = "Switch ConnectVendor",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
                     textColor = Colors.darkPrimary,
                     style = TextStyle(),
                     iconRes = "drawable/switch.png",
                     isDestructiveAction = false, onClick = {
-                        mainViewModel.setId(6)
+                       // mainViewModel.setId(6)
                     })
 
 

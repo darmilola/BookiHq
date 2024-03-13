@@ -35,7 +35,7 @@ import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
-import com.russhwolf.settings.set
+import domain.Models.PlatformNavigator
 import domain.Models.ResourceListEnvelope
 import domain.Models.Vendor
 import domain.Models.VendorItemUIModel
@@ -43,7 +43,6 @@ import domain.Models.getVendorListItemViewHeight
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.Products.SearchBar
-import presentation.authentication.AuthenticationPresenter
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.ConnectPageViewModel
@@ -53,7 +52,7 @@ import presentation.viewmodels.UIStates
 import theme.Colors
 
 
-open class ConnectPage() : Screen, KoinComponent {
+open class ConnectPage(val  platformNavigator: PlatformNavigator? = null) : Screen, KoinComponent {
 
     private val preferenceSettings: Settings = Settings()
     private val connectVendorPresenter: ConnectVendorPresenter by inject()
@@ -179,7 +178,7 @@ open class ConnectPage() : Screen, KoinComponent {
                         ) {
                             items(vendorUIModel.vendorsList.size) { i ->
                                 ConnectBusinessItemComponent(vendor = vendorUIModel.vendorsList[i]) {
-                                    navigator.push(VendorInfoPage(vendor = it))
+                                    navigator.push(VendorInfoPage(vendor = it, platformNavigator))
                                 }
                                 if (i == lastIndex && loadMoreState.value) {
                                     Box(

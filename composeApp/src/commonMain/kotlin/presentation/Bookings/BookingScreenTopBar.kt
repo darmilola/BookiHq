@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import domain.Models.Screens
 import kotlinx.coroutines.launch
 import presentation.main.MainTab
 import presentation.viewmodels.MainViewModel
@@ -82,7 +83,6 @@ fun BookingScreenTopBar(pagerState: PagerState, mainViewModel: MainViewModel) {
                 .fillMaxWidth(0.20f)
                 .fillMaxHeight(),
                 contentAlignment = Alignment.Center) {
-                rightTopBarItem(mainViewModel)
             }
 
         }
@@ -113,7 +113,7 @@ fun leftTopBarItem(pagerState: PagerState, mainViewModel: MainViewModel) {
                     pagerState.animateScrollToPage(0)
                 }
                 else -> {
-                    navigator.current = MainTab(mainViewModel)
+                    mainViewModel.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.MAIN_TAB.toPath()))
                 }
             }
         }
@@ -161,7 +161,7 @@ fun rightTopBarItem(mainViewModel: MainViewModel) {
         contentAlignment = Alignment.CenterEnd
     ) {
         ImageComponent(imageModifier = Modifier.size(35.dp).clickable {
-            mainViewModel.setId(11)
+          //  mainViewModel.setId(11)
         }, imageRes = "drawable/list.png", colorFilter = ColorFilter.tint(color = Colors.darkPrimary))
         Box(modifier = indicatorModifier){}
     }

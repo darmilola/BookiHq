@@ -202,7 +202,7 @@ fun centerTopBarItem(mainViewModel: MainViewModel,homePageViewModel: HomePageVie
         .fillMaxWidth()
         .fillMaxHeight()
 
-    val screenTitle: State<String> =  mainViewModel.screenTitle.observeAsState()
+    val screenTitle: State<String> =  mainViewModel.screenTitle.collectAsState()
 
     Box(modifier = rowModifier,
         contentAlignment = Alignment.Center
