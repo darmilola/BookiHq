@@ -10,7 +10,7 @@ import io.ktor.client.HttpClient
 
 class ProfileRepositoryImpl(apiService: HttpClient): ProfileRepository {
 
-    private val profileNetworkService: ProfileNetworkService = ProfileNetworkService((apiService))
+    private val profileNetworkService: ProfileNetworkService = ProfileNetworkService(apiService)
     override suspend fun updateProfile(
         firstname: String,
         lastname: String,

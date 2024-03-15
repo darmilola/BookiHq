@@ -30,7 +30,7 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun ParlorDeliveryWidget(mainViewModel: MainViewModel, fromView: Int) {
+fun ParlorDeliveryWidget(mainViewModel: MainViewModel) {
     Row(
         modifier = Modifier.fillMaxWidth().height(90.dp).clickable {
            mainViewModel.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.VENDOR_INFO.toPath()))

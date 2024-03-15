@@ -26,10 +26,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,33 +38,81 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import domain.Models.ServiceCategorySpecialist
-import domain.Models.ServiceCategoryTherapistUIModel
-import domain.Models.Services
+import domain.Models.ServiceTypeSpecialist
+import domain.Models.ServiceTypeTherapistUIModel
+import domain.Models.ServiceTime
+import presentation.components.IndeterminateCircularProgressBar
+import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.AttachTherapistWidget
 import presentation.widgets.ReviewsWidget
 import presentation.widgets.TimeGrid
 import presentations.components.TextComponent
 
 @Composable
-fun BookingSelectSpecialist(mainViewModel: MainViewModel,services: Services) {
+fun BookingSelectSpecialist(mainViewModel: MainViewModel, uiStateViewModel: UIStateViewModel,
+                            bookingViewModel: BookingViewModel,
+                            bookingPresenter: BookingPresenter) {
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        TherapistContent(mainViewModel,services)
-        AvailableTimeContent()
-        //AttachServiceReviews()
-    }
+    val uiStates = uiStateViewModel.uiData.collectAsState()
+    val therapists = bookingViewModel.serviceSpecialists.collectAsState()
+    val selectedTherapist = remember { mutableStateOf(ServiceTypeSpecialist()) }
 
+    LaunchedEffect(Unit, block = {
+        bookingPresenter.getServiceTherapists(bookingViewModel.selectedServiceType.value.categoryId, bookingViewModel.selectedDate.value.toString())
+    })
 
+    if (uiStates.value.loadingVisible) {
+        //Content Loading
+        Box(
+            modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                .padding(top = 40.dp, start = 50.dp, end = 50.dp)
+                .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            IndeterminateCircularProgressBar()
+        }
+    } else if (uiStates.value.errorOccurred) {
+
+         //error occurred, refresh
+
+    } else if (uiStates.value.contentVisible) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+             TherapistContent(bookingViewModel,therapists.value, onTherapistSelected = {
+                 selectedTherapist.value = it
+             })
+            if(selectedTherapist.value.id != null) {
+                AvailableTimeContent(selectedTherapist.value)
+                if (selectedTherapist.value.specialistInfo?.specialistReviews?.isNotEmpty() == true) {
+                    AttachServiceReviews(selectedTherapist.value)
+                }
+            }
+          }
+
+      }
 }
 
+
+
+
+
+
 @Composable
-fun AvailableTimeContent() {
+fun AvailableTimeContent(serviceTypeSpecialist: ServiceTypeSpecialist) {
+
+    val availableTime = serviceTypeSpecialist.specialistInfo?.availableTimes
+    val normalisedBookedTimes = arrayListOf<ServiceTime>()
+    val bookedTimes = arrayListOf<ServiceTime>()
+    val displayTimes = remember { mutableStateOf(arrayListOf<ServiceTime>()) }
+    for (item in serviceTypeSpecialist.specialistInfo?.bookedTimes!!){
+        normalisedBookedTimes.add(item.serviceTime!!)
+    }
+
     Column(
         modifier = Modifier
             .padding(start = 20.dp, end = 10.dp, top = 15.dp, bottom = 10.dp)
@@ -85,17 +133,30 @@ fun AvailableTimeContent() {
             textModifier = Modifier
                 .fillMaxWidth().padding(start = 10.dp))
 
-        TimeGrid()
+        availableTime!!.map { it ->
+            if (it in normalisedBookedTimes){
+                val bookedTime =  availableTime.find { it2 ->
+                    it.id == it2.id
+                }?.copy(isAvailable = false)
+
+                bookedTimes.add(bookedTime!!)
+            }
+            else{
+                bookedTimes.add(it)
+            }
+        }
+         displayTimes.value = bookedTimes
+
+         TimeGrid(displayTimes.value)
+
+
     }
 }
 
 @Composable
-fun TherapistContent(mainViewModel: MainViewModel, services: Services) {
+fun TherapistContent(bookingViewModel: BookingViewModel, specialists: List<ServiceTypeSpecialist>, onTherapistSelected: (ServiceTypeSpecialist) -> Unit) {
 
-    val selectedServicesType = mainViewModel.selectedServiceType.value
-    val therapists = selectedServicesType.specialists
-    var selectedTherapistUIModel by remember { mutableStateOf(ServiceCategoryTherapistUIModel(
-        selectedTherapist = ServiceCategorySpecialist(), therapists!!)) }
+    val selectedTherapistUIModel = remember { mutableStateOf(ServiceTypeTherapistUIModel(selectedTherapist = ServiceTypeSpecialist(), specialists))}
 
     Column(
         modifier = Modifier
@@ -122,29 +183,28 @@ fun TherapistContent(mainViewModel: MainViewModel, services: Services) {
             modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(230.dp),
             contentPadding = PaddingValues(6.dp)
         ) {
-            items(selectedTherapistUIModel.visibleTherapist.size) { i ->
-                AttachTherapistWidget(selectedTherapistUIModel.visibleTherapist[i], onTherapistSelectedListener = {
-                        it -> selectedTherapistUIModel = selectedTherapistUIModel.copy(
+            items(selectedTherapistUIModel.value.visibleTherapist.size) { i ->
+                AttachTherapistWidget(selectedTherapistUIModel.value.visibleTherapist[i], onTherapistSelectedListener = {
+                        it -> selectedTherapistUIModel.value = selectedTherapistUIModel.value.copy(
                     selectedTherapist = it,
-                    visibleTherapist = selectedTherapistUIModel.visibleTherapist.map { it2 ->
+                    visibleTherapist = selectedTherapistUIModel.value.visibleTherapist.map { it2 ->
                         it2.copy(
                             isSelected = it2.specialistId == it.specialistId
                         )
-                    }
-                )})
+                    })
+                    onTherapistSelected(it)
+                })
             }
-
-
         }
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AttachServiceReviews(){
-
+fun AttachServiceReviews(serviceTypeSpecialist: ServiceTypeSpecialist){
+    val specialistReviews = serviceTypeSpecialist.specialistInfo?.specialistReviews
     TextComponent(
-        text = "Jenny's Reviews",
+        text = serviceTypeSpecialist.specialistInfo?.profileInfo?.firstname+"'s Reviews",
         fontSize = 18,
         fontFamily = GGSansSemiBold,
         textStyle = TextStyle(),
@@ -157,7 +217,7 @@ fun AttachServiceReviews(){
             .fillMaxWidth())
 
     val pagerState = rememberPagerState(pageCount = {
-        5
+        specialistReviews?.size!!
     })
 
     val boxModifier =
@@ -181,7 +241,7 @@ fun AttachServiceReviews(){
                 state = pagerState,
                 modifier = Modifier.fillMaxSize()
             ) { page ->
-                ReviewsWidget()
+                ReviewsWidget(specialistReviews!![page])
             }
             Row(
                 Modifier

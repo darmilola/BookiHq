@@ -37,17 +37,38 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
+import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.viewModelFactory
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.set
+import domain.Models.AuthSSOScreenNav
+import domain.Models.ServiceTypeSpecialist
 import domain.Models.Services
+import domain.Models.User
 import presentation.components.ButtonComponent
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import presentation.authentication.AuthenticationContract
+import presentation.authentication.AuthenticationPresenter
+import presentation.authentication.AuthenticationScreenHandler
+import presentation.viewmodels.AuthenticationViewModel
+import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.UIStates
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
 
 
-class BookingScreen(private val mainViewModel: MainViewModel) : Tab {
+class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
+    private val preferenceSettings: Settings = Settings()
+    private val bookingPresenter: BookingPresenter by inject()
+    private var uiStateViewModel: UIStateViewModel? = null
+    private var bookingViewModel: BookingViewModel? = null
     override val options: TabOptions
         @Composable
         get() {
@@ -64,6 +85,35 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab {
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
+
+        uiStateViewModel = kmpViewModel(
+            factory = viewModelFactory {
+                UIStateViewModel(savedStateHandle = createSavedStateHandle())
+            },
+        )
+
+        bookingViewModel = kmpViewModel(
+            factory = viewModelFactory {
+                BookingViewModel(savedStateHandle = createSavedStateHandle())
+            },
+        )
+
+
+
+        // View Contract Handler Initialisation
+        val handler = BookingScreenHandler(
+            bookingViewModel!!, bookingPresenter,
+          onPageLoading = {
+               uiStateViewModel!!.switchState(UIStates(loadingVisible = true))
+        }, onContentVisible = {
+                uiStateViewModel!!.switchState(UIStates(contentVisible = true))
+            }, onErrorVisible = {
+                uiStateViewModel!!.switchState(UIStates(errorOccurred = true))
+            })
+        handler.init()
+
+
+
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -154,7 +204,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab {
                 textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h6, borderStroke = null) {
                 coroutineScope.launch {
                     if(currentPage == 0){
-                        if(mainViewModel.selectedServiceType.value.serviceId == -1) {
+                        if(bookingViewModel?.selectedServiceType?.value?.serviceId == -1) {
                             ShowSnackBar(title = "No Service Selected",
                                 description = "Please Select a Service to proceed",
                                 actionLabel = "",
@@ -196,8 +246,8 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab {
                 userScrollEnabled = false
             ) { page ->
                 when (page) {
-                    0 -> BookingSelectServices(mainViewModel, services)
-                    1 -> BookingSelectSpecialist(mainViewModel,services)
+                    0 -> BookingSelectServices(mainViewModel, bookingViewModel!!,services)
+                    1 -> BookingSelectSpecialist(mainViewModel,uiStateViewModel!!,bookingViewModel!!,bookingPresenter)
                     2 -> BookingOverview()
                 }
             }
@@ -206,4 +256,42 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab {
 
     }
 }
+
+class BookingScreenHandler(
+    private val bookingViewModel: BookingViewModel,
+    private val bookingPresenter: BookingPresenter,
+    private val onPageLoading: () -> Unit,
+    private val onContentVisible: () -> Unit,
+    private val onErrorVisible: () -> Unit,
+) : BookingContract.View {
+    fun init() {
+        bookingPresenter.registerUIContract(this)
+    }
+
+    override fun showLce(uiState: UIStates, message: String) {
+        uiState.let {
+            when{
+                it.loadingVisible -> {
+                    onPageLoading()
+                }
+
+                it.contentVisible -> {
+                    onContentVisible()
+                }
+
+                it.errorOccurred -> {
+                    onErrorVisible()
+                }
+            }
+        }
+    }
+
+    override fun showTherapists(serviceSpecialists: List<ServiceTypeSpecialist>) {
+        bookingViewModel.setSpecialists(serviceSpecialists)
+    }
+
+
+}
+
+
 

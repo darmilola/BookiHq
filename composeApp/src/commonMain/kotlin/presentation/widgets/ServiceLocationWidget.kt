@@ -21,12 +21,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import presentation.components.ToggleButton
+import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentations.components.TextComponent
 
 @Composable
-fun ServiceLocationToggle(mainViewModel: MainViewModel){
-    val selectedServiceTypeState = mainViewModel.selectedServiceType.collectAsState()
+fun ServiceLocationToggle(bookingViewModel: BookingViewModel, mainViewModel: MainViewModel){
+    val selectedServiceTypeState = bookingViewModel.selectedServiceType.collectAsState()
     var locationType by remember { mutableStateOf(0) }
     if (!selectedServiceTypeState.value.homeServiceAvailable){
         locationType = 0
@@ -60,10 +61,10 @@ fun ServiceLocationToggle(mainViewModel: MainViewModel){
 
 
         if(locationType == 0) {
-            ParlorDeliveryWidget(mainViewModel, 1)
+            ParlorDeliveryWidget(mainViewModel)
         }
         else{
-            HomeDeliveryWidget(mainViewModel, 1)
+            HomeDeliveryWidget(mainViewModel)
         }
 
     }

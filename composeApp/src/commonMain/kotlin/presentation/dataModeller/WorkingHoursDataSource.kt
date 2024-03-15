@@ -1,11 +1,9 @@
 package presentation.dataModeller
 
-import domain.Models.AvailableSlot
-import domain.Models.AvailableSlotsUIModel
 
 class WorkingHoursDataSource {
 
-
+/*
     fun getWorkingHours(lastSelectedSlot: Pair<Pair<String, String>, Boolean>): AvailableSlotsUIModel {
         val visibleHours = getWorkHours()
         return toUiModel(visibleHours, lastSelectedSlot, isSlotAvailable = true)
@@ -52,5 +50,5 @@ class WorkingHoursDataSource {
             timeSlot = timeSlot,
             isAvailable = isAvailable,
             isSelected = isSelectedSlot
-        )
+        )*/
 }

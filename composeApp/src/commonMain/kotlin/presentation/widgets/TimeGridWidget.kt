@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,19 +35,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import domain.Models.AvailableSlot
+import domain.Models.AvailableTimeUIModel
+import domain.Models.ServiceTime
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun TimeGrid() {
+fun TimeGrid(availableTimes: List<ServiceTime>? = arrayListOf()) {
 
-    val dataSource = WorkingHoursDataSource()
-    // get CalendarUiModel from CalendarDataSource, and the lastSelectedDate is Today.
-    val timePair = Pair(Pair("7:00","12:00"), false)
-    val workingHours = dataSource.getWorkingHours(lastSelectedSlot = timePair)
-
-    var selectedWorkHourUIModel by remember { mutableStateOf(workingHours) }
+    var workHourUIModel by remember {  mutableStateOf( AvailableTimeUIModel(selectedTime = ServiceTime(), arrayListOf()))}
+    workHourUIModel = AvailableTimeUIModel(ServiceTime(),availableTimes!!)
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -55,34 +53,41 @@ fun TimeGrid() {
         verticalArrangement = Arrangement.spacedBy(2.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        items(selectedWorkHourUIModel.visibleSlots.size) { i ->
-            TimeItem(selectedWorkHourUIModel.visibleSlots[i], onWorkHourClickListener = {
-                    it -> selectedWorkHourUIModel = selectedWorkHourUIModel.copy(
-                selectedSlot = it,
-                visibleSlots = selectedWorkHourUIModel.visibleSlots.map { it2 ->
-                    it2.copy(
-                        isSelected = it2.timeSlot == it.timeSlot
+        items(workHourUIModel.visibleTime.size) { i ->
+                TimeItem(workHourUIModel.visibleTime[i], onWorkHourClickListener = { it ->
+                    workHourUIModel = workHourUIModel.copy(
+                        selectedTime = it,
+                        visibleTime = workHourUIModel.visibleTime.map { it2 ->
+                            it2.copy(
+                                isSelected = it2.id == it.id
+                            )
+                        }
+
                     )
-                }
-            )})
+              })
         }
     }
 }
 
 
 @Composable
-fun TimeItem(availableSlot: AvailableSlot, onWorkHourClickListener: (AvailableSlot) -> Unit) {
-    val timeStampObject = availableSlot.timeSlot
-    val timeRange = timeStampObject.first
-    val meridianVal: String = if(timeStampObject.second) "AM" else "PM"
-    val color: Color = if(availableSlot.isSelected) Colors.primaryColor else Color.Gray
+fun TimeItem(availableTime: ServiceTime, onWorkHourClickListener: (ServiceTime) -> Unit) {
+    val color: Color = if(availableTime.isSelected){
+        Colors.primaryColor
+    } else if (!availableTime.isAvailable){
+        Color.LightGray
+    } else {
+        Color.Gray
+    }
 
     Row(
         modifier = Modifier
             .padding(start = 5.dp, end = 5.dp, top = 15.dp)
             .fillMaxWidth()
             .clickable {
-                onWorkHourClickListener(availableSlot)
+                if (availableTime.isAvailable) {
+                    onWorkHourClickListener(availableTime)
+                }
             }
             .border(border = BorderStroke((1.5).dp, color), shape = RoundedCornerShape(7.dp))
             .height(45.dp),
@@ -90,7 +95,7 @@ fun TimeItem(availableSlot: AvailableSlot, onWorkHourClickListener: (AvailableSl
         verticalAlignment = Alignment.CenterVertically
     ) {
         TextComponent(
-            text = timeRange.first+" "+meridianVal,
+            text = availableTime.time!!+" PM",
             fontSize = 15,
             fontFamily = GGSansSemiBold,
             textStyle = MaterialTheme.typography.h6,

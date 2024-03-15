@@ -10,15 +10,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,17 +23,19 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
-import domain.Models.ServiceCategorySpecialist
+import domain.Models.ServiceTypeSpecialist
+import domain.Models.User
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun AttachTherapistProfileImage(availableTherapist: ServiceCategorySpecialist) {
-    val selectedVisibilityAlpha: Float = if (availableTherapist.isSelected == true) 1f else 0f
+fun AttachTherapistProfileImage(availableTherapist: ServiceTypeSpecialist) {
+    val selectedVisibilityAlpha: Float = if (availableTherapist.isSelected) 1f else 0f
     Box(
         Modifier
             .padding(start = 20.dp, bottom = 10.dp)
@@ -54,7 +52,7 @@ fun AttachTherapistProfileImage(availableTherapist: ServiceCategorySpecialist) {
             .width(140.dp)
             .height(160.dp)
 
-        ImageComponent(imageModifier = modifier, imageRes = "drawable/1.jpg")
+        ImageComponent(imageModifier = modifier, imageRes = availableTherapist.specialistInfo?.profileInfo?.profileImageUrl!!, isAsync = true)
         Box(
            modifier =  Modifier
                 .padding(4.dp)
@@ -80,7 +78,7 @@ fun AttachTherapistProfileImage(availableTherapist: ServiceCategorySpecialist) {
                 .height(24.dp)) {
             ImageComponent(imageModifier = Modifier.size(12.dp), imageRes = "drawable/star_icon.png", colorFilter = ColorFilter.tint(color = Color.White))
             TextComponent(
-                text = "4.85",
+                text = availableTherapist.specialistInfo.rating.toString(),
                 fontSize = 12,
                 fontFamily = GGSansRegular,
                 textStyle = MaterialTheme.typography.h6,
@@ -94,7 +92,7 @@ fun AttachTherapistProfileImage(availableTherapist: ServiceCategorySpecialist) {
 }
 
 @Composable
-fun AttachTherapistWidget(availableTherapist: ServiceCategorySpecialist, onTherapistSelectedListener: (ServiceCategorySpecialist) -> Unit){
+fun AttachTherapistWidget(availableTherapist: ServiceTypeSpecialist, onTherapistSelectedListener: (ServiceTypeSpecialist) -> Unit){
     val rowModifier = Modifier
         .width(160.dp)
         .height(200.dp)
@@ -105,12 +103,12 @@ fun AttachTherapistWidget(availableTherapist: ServiceCategorySpecialist, onThera
         modifier = rowModifier
     ) {
         AttachTherapistProfileImage(availableTherapist)
-        TherapistName()
+        TherapistName(availableTherapist.specialistInfo?.profileInfo!!)
     }
 }
 
 @Composable
-fun TherapistName(){
+fun TherapistName(profileInfo: User){
     val rowModifier = Modifier
         .padding(start = 20.dp)
         .width(140.dp)
@@ -120,7 +118,8 @@ fun TherapistName(){
             modifier = rowModifier
         ) {
             TextComponent(
-                text = "Jenny Wilson",
+                text = profileInfo.firstname+" "+ profileInfo.lastname?.first().toString()
+                    .uppercase() +".",
                 fontSize = 16,
                 fontFamily = GGSansSemiBold,
                 textStyle = MaterialTheme.typography.h6,

@@ -12,11 +12,10 @@ import kotlinx.coroutines.flow.StateFlow
 class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
     private var _screenTitle = savedStateHandle.getStateFlow("screenTitle","")
-    private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
     private var _connectedVendor =  savedStateHandle.getStateFlow("connectedVendor", Vendor())
     private var _currentUserInfo =  savedStateHandle.getStateFlow("userInfo", User())
-    private var _selectedServiceType =  savedStateHandle.getStateFlow("selectedServiceType", ServiceCategoryItem())
     private var _screenNav =  savedStateHandle.getStateFlow("screenNav", Pair(-1,-1))
+    private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
 
     val screenTitle: StateFlow<String>
         get() = _screenTitle
@@ -30,19 +29,8 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     val currentUserInfo: StateFlow<User>
         get() = _currentUserInfo
 
-    val selectedServiceType: StateFlow<ServiceCategoryItem>
-        get() = _selectedServiceType
-
     val screenNav: StateFlow<Pair<Int,Int>>
         get() = _screenNav
-
-    fun setSelectedService(selectedService: Services) {
-        savedStateHandle["selectedService"] = selectedService
-    }
-
-    fun setSelectedServiceType(selectedServiceType: ServiceCategoryItem) {
-        savedStateHandle["selectedServiceType"] = selectedServiceType
-    }
 
     fun setTitle(newTitle: String) {
         savedStateHandle["screenTitle"] = newTitle
@@ -58,5 +46,9 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
 
     fun setUserInfo(user: User) {
         savedStateHandle["userInfo"] = user
+    }
+
+    fun setSelectedService(selectedService: Services) {
+        savedStateHandle["selectedService"] = selectedService
     }
 }

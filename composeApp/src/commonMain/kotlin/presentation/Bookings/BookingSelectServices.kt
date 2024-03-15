@@ -36,7 +36,10 @@ import androidx.compose.ui.unit.dp
 import domain.Models.ServiceCategoryItem
 import domain.Models.ServiceImages
 import domain.Models.Services
+import org.koin.core.component.inject
+import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.BookingCalendar
 import presentation.widgets.DropDownWidget
 import presentation.widgets.ServiceLocationToggle
@@ -47,7 +50,9 @@ import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 
 @Composable
-fun BookingSelectServices(mainViewModel: MainViewModel,services: Services) {
+fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: BookingViewModel,
+                          services: Services) {
+
     val stackedSnackBarHostState = rememberStackedSnackbarHostState(
         maxStack = 5,
         animation = StackedSnackbarAnimation.Bounce
@@ -73,7 +78,6 @@ fun BookingSelectServices(mainViewModel: MainViewModel,services: Services) {
             }
             ServiceTitle(services.serviceTitle)
             AttachServiceTypeToggle(services, onServiceSelected = {
-                println(it)
                 if (!it.homeServiceAvailable) {
                     ShowSnackBar(title = "No Home Service",
                         description = "Home service is not available for the selected service",
@@ -83,10 +87,12 @@ fun BookingSelectServices(mainViewModel: MainViewModel,services: Services) {
                         stackedSnackBarHostState,
                         onActionClick = {})
                 }
-                mainViewModel.setSelectedServiceType(it)
+                bookingViewModel.setSelectedServiceType(it)
             })
-            ServiceLocationToggle(mainViewModel)
-            BookingCalendar()
+            ServiceLocationToggle(bookingViewModel, mainViewModel)
+            BookingCalendar {
+                bookingViewModel.setSelectedDate(it)
+            }
         }
     }
 }
@@ -117,7 +123,6 @@ fun AttachServiceTypeToggle(services: Services, onServiceSelected: (ServiceCateg
                onServiceSelected(it)
         })
     }
-
 }
 
 @Composable
@@ -134,9 +139,6 @@ fun AttachDropDownWidget(services: Services, onServiceSelected: (ServiceCategory
     })
 }
 
-
-
-
 @Composable
 fun ServiceTitle(serviceTitle: String){
     Column(
@@ -147,7 +149,6 @@ fun ServiceTitle(serviceTitle: String){
         verticalArrangement = Arrangement.Center,
         horizontalAlignment  = Alignment.CenterHorizontally,
     ) {
-
 
         TextComponent(
             text = serviceTitle,

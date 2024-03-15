@@ -147,7 +147,7 @@ fun NewDateContent() {
             textModifier = Modifier.fillMaxWidth().padding(start = 10.dp)
         )
 
-        BookingCalendar(modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 20.dp))
+        BookingCalendar(modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 20.dp)){}
     }
 }
 

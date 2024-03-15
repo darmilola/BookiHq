@@ -46,7 +46,7 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 10.dp)) {
+fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 10.dp), onDateSelected: (LocalDate) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
@@ -54,6 +54,7 @@ fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 
         val dataSource = CalendarDataSource()
         // get CalendarUiModel from CalendarDataSource, and the lastSelectedDate is Today.
         val calendarUiModel = dataSource.getDate(lastSelectedDate = dataSource.today)
+        onDateSelected(calendarUiModel.selectedDate.date)
 
         var selectedUIModel by remember { mutableStateOf(calendarUiModel) }
 

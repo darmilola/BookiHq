@@ -60,10 +60,10 @@ fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel) {
         }
 
        if(deliveryType == 0) {
-            HomeDeliveryWidget(mainViewModel = mainViewModel, fromView = 3)
+            HomeDeliveryWidget(mainViewModel = mainViewModel)
        }
         else{
-            ParlorDeliveryWidget(mainViewModel, fromView = 3)
+            ParlorDeliveryWidget(mainViewModel)
         }
 
 

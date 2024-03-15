@@ -56,7 +56,7 @@ fun AttachProductReviews(){
                 state = pagerState,
                 modifier = Modifier.fillMaxSize()
             ) { page ->
-                ReviewsWidget()
+               // ReviewsWidget()
             }
             Row(
                 Modifier

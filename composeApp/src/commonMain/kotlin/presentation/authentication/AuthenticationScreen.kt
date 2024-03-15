@@ -78,24 +78,24 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
         )
 
         // View Contract Handler Initialisation
-        val handler = AuthenticationScreenHandler(authenticationViewModel!!,authenticationPresenter,
+        val handler = AuthenticationScreenHandler(authenticationViewModel!!,authenticationPresenter
+            ,preferenceSettings,
             onPageLoading = {
                 contentLoading.value = true
             },
             onContentVisible = {
-                preferenceSettings.clear()
                 contentLoading.value = false
                 contentVisible.value = true
                 isAuthEmailAssigned.value = false
             },
             onErrorVisible = {
-                preferenceSettings.clear()
                 errorVisible.value = true
                 contentLoading.value = false
                 isAuthEmailAssigned.value = false
             },
             enterPlatform = {
-                preferenceSettings.clear()
+                preferenceSettings["userEmail"] = it
+                preferenceSettings["isVendorConnected"] = true
                 userNavigation = true
                 isAuthEmailAssigned.value = false
                 userNavigationPosition = AuthSSOScreenNav.MAIN.toPath()
@@ -200,6 +200,7 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
 class AuthenticationScreenHandler(
     private val authenticationViewModel: AuthenticationViewModel,
     private val authenticationPresenter: AuthenticationPresenter,
+    private val preferenceSettings: Settings,
     private val onPageLoading: () -> Unit,
     private val onContentVisible: () -> Unit,
     private val onErrorVisible: () -> Unit,
@@ -231,6 +232,7 @@ class AuthenticationScreenHandler(
 
 
     override fun onAuth0Started() {
+        preferenceSettings.clear()
         authenticationViewModel.setAuth0Started(true)
     }
 
