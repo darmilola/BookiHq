@@ -57,7 +57,7 @@ import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.DropDownWidget
 import presentation.widgets.PageBackNavWidget
-import presentation.widgets.ProfileImageUpdate
+import presentation.widgets.AccountProfileImage
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import presentation.widgets.TitleWidget
@@ -200,7 +200,7 @@ fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: Platform
         Column(modifier = topLayoutModifier) {
             AttachBackIcon(mainViewModel)
             PageTitle()
-            ProfileImageUpdate(
+            AccountProfileImage(
                 profileImageUrl = profileImageUrl.value!!,
                 isAsync = true,
                 onUploadImageClicked = {
@@ -260,7 +260,7 @@ fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: Platform
 
             val isFemale: Boolean = gender.value == "female"
 
-            ToggleButton(shape = RoundedCornerShape(15.dp), selection = isFemale, onLeftClicked = {
+            ToggleButton(shape = RoundedCornerShape(15.dp), isRightSelection = isFemale, onLeftClicked = {
 
             }, onRightClicked = {
 

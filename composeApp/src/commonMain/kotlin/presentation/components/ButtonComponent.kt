@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
@@ -242,9 +241,9 @@ fun LocationToggleButton(borderStroke: BorderStroke?, shape: Shape, colors: Butt
 
 
 @Composable
-fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, selection: Boolean = false, onRightClicked: () ->  Unit, leftText: String, rightText: String, isDisabled: Boolean = false) {
+fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, isRightSelection: Boolean = false, onRightClicked: () ->  Unit, leftText: String, rightText: String, isDisabled: Boolean = false) {
 
-    var isLeftChecked by remember { mutableStateOf(!selection) }
+    var isLeftChecked by remember { mutableStateOf(!isRightSelection) }
 
     if(isDisabled) isLeftChecked = true
 

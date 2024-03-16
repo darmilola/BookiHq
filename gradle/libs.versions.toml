@@ -25,6 +25,7 @@ ktor = "2.3.8"
 coroutines = "1.7.3"
 rxkotlin = "3.0.1"
 peekaboo = "0.4.3"
+coreI18n = "1.0.0-alpha01"
 
 [libraries]
 httpmime = { module = "org.apache.httpcomponents:httpmime", version.ref = "httpmime" }
@@ -58,6 +59,7 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 rxkotlin = { module = "io.reactivex.rxjava3:rxkotlin", version.ref = "rxkotlin" }
 peekaboo-ui = { module = "io.github.onseok:peekaboo-ui", version.ref = "peekaboo" }
 peekaboo-image-picker = { module = "io.github.onseok:peekaboo-image-picker", version.ref = "peekaboo" }
+androidx-core-i18n = { group = "androidx.core", name = "core-i18n", version.ref = "coreI18n" }
 
 
 [plugins]

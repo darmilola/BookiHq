@@ -15,7 +15,7 @@ data class Appointment(
     @SerialName("service_type_id") val serviceTypeId: Int? = -1, @SerialName("appointmentTime") val appointmentTime: Int? = -1,
     @SerialName("appointmentDate") val appointmentDate: String? = null, @SerialName("isRecommendedAppointment") val isRecommendedAppointment: Boolean = false,
     @SerialName("recommendation_id") val recommendationId: Int? = -1, @SerialName("specialist") val specialistInfo: SpecialistInfo? = null,
-    @SerialName("service_type") val serviceCategoryItem: ServiceCategoryItem? = null, @SerialName("service") val services: Services? = null,
+    @SerialName("service_type") val serviceTypeItem: ServiceTypeItem? = null, @SerialName("service") val services: Services? = null,
     @SerialName("time") val serviceTime: ServiceTime? = null, @SerialName("consultationReason") val consultationReason: String? = null, val isSelected: Boolean = false)
 
 data class AppointmentItemUIModel(

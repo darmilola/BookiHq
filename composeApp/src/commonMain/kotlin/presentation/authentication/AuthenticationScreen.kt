@@ -51,8 +51,10 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
         // for Ios Auth0
         preferenceSettings as ObservableSettings
         preferenceSettings.addStringListener("auth0Email","") {
-                value: String -> auth0UserEmail = value
-                isAuthEmailAssigned.value = true
+                value: String -> if(value != "") {
+              auth0UserEmail = value
+              isAuthEmailAssigned.value = true
+           }
         }
 
         preferenceSettings.addBooleanListener("imageUploadProcessing",false) {
@@ -137,7 +139,6 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
         if (isAuthEmailAssigned.value && auth0UserEmail.isNotEmpty() && currentPosition == AuthSSOScreenNav.AUTH_LOGIN.toPath()) {
             authenticationPresenter.ValidateUserProfile(auth0UserEmail)
         }
-
         if(!userNavigation) {
             AuthenticationScreenCompose(currentPosition = currentPosition)
         }
@@ -159,15 +160,23 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
     }
 
     open fun setLoginAuthResponse(auth0ConnectionResponse: Auth0ConnectionResponse) {
-        preferenceSettings["connectionType"] = auth0ConnectionResponse.connectionType
-        preferenceSettings["auth0Email"] = auth0ConnectionResponse.email
-        preferenceSettings["authAction"] = auth0ConnectionResponse.action
+        println(auth0ConnectionResponse.email)
+        preferenceSettings.clear()
+        if (auth0ConnectionResponse.email.isNotEmpty()) {
+            preferenceSettings["connectionType"] = auth0ConnectionResponse.connectionType
+            preferenceSettings["auth0Email"] = auth0ConnectionResponse.email
+            preferenceSettings["authAction"] = auth0ConnectionResponse.action
+        }
     }
 
     open fun setSignupAuthResponse(auth0ConnectionResponse: Auth0ConnectionResponse) {
-        preferenceSettings["connectionType"] = auth0ConnectionResponse.connectionType
-        preferenceSettings["auth0Email"] = auth0ConnectionResponse.email
-        preferenceSettings["authAction"] = auth0ConnectionResponse.action
+        println(auth0ConnectionResponse.email)
+        preferenceSettings.clear()
+        if (auth0ConnectionResponse.email.isNotEmpty()) {
+            preferenceSettings["connectionType"] = auth0ConnectionResponse.connectionType
+            preferenceSettings["auth0Email"] = auth0ConnectionResponse.email
+            preferenceSettings["authAction"] = auth0ConnectionResponse.action
+        }
     }
 
     open fun setImageUploadResponse(imageUrl: String) {

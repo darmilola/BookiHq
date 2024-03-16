@@ -24,6 +24,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +44,7 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import domain.Models.AuthSSOScreenNav
+import domain.Models.Screens
 import domain.Models.ServiceTypeSpecialist
 import domain.Models.Services
 import domain.Models.User
@@ -64,8 +66,6 @@ import rememberStackedSnackbarHostState
 
 
 class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
-
-    private val preferenceSettings: Settings = Settings()
     private val bookingPresenter: BookingPresenter by inject()
     private var uiStateViewModel: UIStateViewModel? = null
     private var bookingViewModel: BookingViewModel? = null
@@ -86,17 +86,21 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
     @Composable
     override fun Content() {
 
-        uiStateViewModel = kmpViewModel(
-            factory = viewModelFactory {
-                UIStateViewModel(savedStateHandle = createSavedStateHandle())
-            },
-        )
+        if (uiStateViewModel == null) {
+            uiStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
 
+    if(bookingViewModel == null) {
         bookingViewModel = kmpViewModel(
             factory = viewModelFactory {
                 BookingViewModel(savedStateHandle = createSavedStateHandle())
             },
         )
+    }
 
 
 
@@ -123,6 +127,15 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
         val pagerState = rememberPagerState(pageCount = {
             3
         })
+        val addMoreService = remember { mutableStateOf(false) }
+
+        if (addMoreService.value){
+            rememberCoroutineScope().launch {
+                pagerState.scrollToPage(0)
+                bookingViewModel!!.setCurrentBookingId(-1)
+                mainViewModel.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.MAIN_TAB.toPath()))
+            }
+        }
 
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState)  }
@@ -135,7 +148,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                     .background(color = Color.White)
             Column(modifier = layoutModifier) {
 
-                BookingScreenTopBar(pagerState, mainViewModel)
+                BookingScreenTopBar(pagerState, mainViewModel, bookingViewModel!!)
 
                 val bgStyle = Modifier
                     .fillMaxWidth()
@@ -154,7 +167,10 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                     ) {
                         AttachBookingPages(
                             pagerState,
-                            services = mainViewModel.selectedService.value
+                            services = mainViewModel.selectedService.value,
+                            onAddMoreServiceClicked = {
+                                addMoreService.value = true
+                            }
                         )
                         AttachActionButtons(pagerState, mainViewModel, stackedSnackBarHostState)
                     }
@@ -218,7 +234,27 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                          }
                     }
                     else if(currentPage == 1){
-                        pagerState.animateScrollToPage(2)
+                        if(bookingViewModel?.currentAppointmentBooking?.value?.serviceTypeSpecialist == null) {
+                            ShowSnackBar(title = "No Therapist Selected",
+                                description = "Please Select a Therapist to proceed",
+                                actionLabel = "",
+                                duration = StackedSnackbarDuration.Short,
+                                snackBarType = SnackBarType.ERROR,
+                                stackedSnackBarHostState,
+                                onActionClick = {})
+                        }
+                        else if(bookingViewModel?.currentAppointmentBooking?.value?.appointmentTime == null) {
+                            ShowSnackBar(title = "No Time Selected",
+                                description = "Please Select Appointment Time to proceed",
+                                actionLabel = "",
+                                duration = StackedSnackbarDuration.Short,
+                                snackBarType = SnackBarType.ERROR,
+                                stackedSnackBarHostState,
+                                onActionClick = {})
+                        }
+                        else {
+                            pagerState.animateScrollToPage(2)
+                        }
                     }
                 }
             }
@@ -229,7 +265,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun AttachBookingPages(pagerState: PagerState, services: Services){
+    fun AttachBookingPages(pagerState: PagerState, services: Services,onAddMoreServiceClicked:() -> Unit){
 
         val  boxModifier =
             Modifier
@@ -248,7 +284,9 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                 when (page) {
                     0 -> BookingSelectServices(mainViewModel, bookingViewModel!!,services)
                     1 -> BookingSelectSpecialist(mainViewModel,uiStateViewModel!!,bookingViewModel!!,bookingPresenter)
-                    2 -> BookingOverview()
+                    2 -> BookingOverview(mainViewModel,uiStateViewModel!!,bookingViewModel!!,bookingPresenter, onAddMoreServiceClicked = {
+                         onAddMoreServiceClicked()
+                    })
                 }
             }
 

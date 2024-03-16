@@ -80,6 +80,7 @@ import presentation.widgets.AppointmentWidget
 import presentation.widgets.BusinessStatusItemWidget
 import presentation.widgets.BusinessStatusWidgetUpdated
 import presentation.widgets.HomeServicesWidget
+import presentation.widgets.NewAppointmentWidget
 import presentation.widgets.RecommendedServiceItem
 import presentation.widgets.StatusProgressWidget
 import presentations.components.ImageComponent
@@ -139,15 +140,14 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
             val appointmentItem1 = AppointmentItem(appointmentType = 1)
             val appointmentItem2 = AppointmentItem(appointmentType = 2)
             val appointmentItem3 = AppointmentItem(appointmentType = 3)
-            val appointmentItem4 = AppointmentItem(appointmentType = 4)
-            val appointmentItem5 = AppointmentItem(appointmentType = 5)
 
             appointmentList.add(appointmentItem1)
             appointmentList.add(appointmentItem2)
             appointmentList.add(appointmentItem3)
             appointmentList.add(appointmentItem1)
-            appointmentList.add(appointmentItem5)
-            appointmentList.add(appointmentItem4)
+            appointmentList.add(appointmentItem2)
+            appointmentList.add(appointmentItem3)
+            appointmentList.add(appointmentItem1)
             appointmentList.add(appointmentItem2)
 
 
@@ -268,7 +268,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                 modifier = rowModifier
             ) {
                 TextComponent(
-                    text = "Recently",
+                    text = "Recent Appointments",
                     fontSize = 16,
                     fontFamily = GGSansRegular,
                     textStyle = MaterialTheme.typography.h6,
@@ -276,7 +276,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                     textAlign = TextAlign.Left,
                     fontWeight = FontWeight.Black,
                     lineHeight = 10,
-                    textModifier = Modifier.fillMaxWidth(0.20f)
+                    textModifier = Modifier.fillMaxWidth(0.40f)
                 )
                 StraightLine()
             }
@@ -432,7 +432,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
     fun RecentAppointmentScreen(appointmentList: List<AppointmentItem>) {
         LazyColumn(modifier = Modifier.fillMaxWidth().height(getAppointmentViewHeight(appointmentList).dp), userScrollEnabled = false) {
             items(appointmentList) {item ->
-                AppointmentWidget(itemType = item.appointmentType)
+                NewAppointmentWidget(itemType = item.appointmentType)
             }
         }
     }

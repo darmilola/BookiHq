@@ -26,12 +26,25 @@ import presentation.viewmodels.MainViewModel
 import presentations.components.TextComponent
 
 @Composable
-fun ServiceLocationToggle(bookingViewModel: BookingViewModel, mainViewModel: MainViewModel){
-    val selectedServiceTypeState = bookingViewModel.selectedServiceType.collectAsState()
+fun ServiceLocationToggle(bookingViewModel: BookingViewModel, mainViewModel: MainViewModel, onSpaSelectedListener:() -> Unit,
+                          onHomeSelectedListener:() -> Unit){
+
     var locationType by remember { mutableStateOf(0) }
+    val isHomeService = bookingViewModel.currentAppointmentBooking.value.isHomeService
+    if(isHomeService){
+        locationType = 1
+        onHomeSelectedListener()
+    }else{
+        locationType = 0
+        onSpaSelectedListener()
+    }
+
+    val selectedServiceTypeState = bookingViewModel.selectedServiceType.collectAsState()
     if (!selectedServiceTypeState.value.homeServiceAvailable){
         locationType = 0
+        onSpaSelectedListener()
     }
+
     Column(
         modifier = Modifier
             .padding(top = 35.dp)
@@ -53,19 +66,13 @@ fun ServiceLocationToggle(bookingViewModel: BookingViewModel, mainViewModel: Mai
             textModifier = Modifier
                 .fillMaxWidth().padding(start = 10.dp))
 
-        ToggleButton( shape = CircleShape, onLeftClicked = {
+        ToggleButton(shape = CircleShape, onLeftClicked = {
+            onSpaSelectedListener()
             locationType = 0
         }, onRightClicked = {
+            onHomeSelectedListener()
             locationType = 1
-        }, leftText = "Parlor", rightText = "Home", isDisabled = !selectedServiceTypeState.value.homeServiceAvailable)
-
-
-        if(locationType == 0) {
-            ParlorDeliveryWidget(mainViewModel)
-        }
-        else{
-            HomeDeliveryWidget(mainViewModel)
-        }
+        }, leftText = "Parlor", rightText = "Home", isRightSelection = locationType != 0, isDisabled = !selectedServiceTypeState.value.homeServiceAvailable)
 
     }
 

@@ -27,8 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import com.preat.peekaboo.image.picker.SelectionMode
@@ -37,16 +35,14 @@ import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import domain.Models.CountryList
-import domain.Models.NGCityList
 import domain.Models.PlatformNavigator
-import domain.Models.SACityList
 import domain.Models.getCountries
 import domain.Models.getNGCityList
 import domain.Models.getSACityList
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
 import presentation.widgets.DropDownWidget
-import presentation.widgets.ProfileImageUpdate
+import presentation.widgets.AccountProfileImage
 import presentation.widgets.SnackBarType
 import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
@@ -130,7 +126,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter,userEmail: 
             Column(modifier = topLayoutModifier) {
                 PageTitle()
                 SubtitleTextWidget(text = "Lorem ipsum is placeholder text commonly used in Printing")
-                ProfileImageUpdate(
+                AccountProfileImage(
                     profileImageUrl = profileImageUrl.value,
                     isAsync = profileImageUrl.value != placeHolderImage,
                     onUploadImageClicked = {

@@ -41,10 +41,16 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun TimeGrid(availableTimes: List<ServiceTime>? = arrayListOf()) {
+fun TimeGrid(availableTimes: List<ServiceTime>? = arrayListOf(), selectedTime: ServiceTime? = null, onWorkHourClickListener: (ServiceTime) -> Unit) {
+    var workHourUIModel by remember {  mutableStateOf( AvailableTimeUIModel(selectedTime = ServiceTime(), availableTimes!!))}
+    workHourUIModel = if (selectedTime != null){
+        AvailableTimeUIModel(selectedTime, visibleTime = availableTimes!!)
+    }
+    else{
+         AvailableTimeUIModel(ServiceTime(),availableTimes!!)
+    }
 
-    var workHourUIModel by remember {  mutableStateOf( AvailableTimeUIModel(selectedTime = ServiceTime(), arrayListOf()))}
-    workHourUIModel = AvailableTimeUIModel(ServiceTime(),availableTimes!!)
+
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -55,6 +61,7 @@ fun TimeGrid(availableTimes: List<ServiceTime>? = arrayListOf()) {
     ) {
         items(workHourUIModel.visibleTime.size) { i ->
                 TimeItem(workHourUIModel.visibleTime[i], onWorkHourClickListener = { it ->
+                    onWorkHourClickListener(it)
                     workHourUIModel = workHourUIModel.copy(
                         selectedTime = it,
                         visibleTime = workHourUIModel.visibleTime.map { it2 ->

@@ -72,7 +72,7 @@ fun AvailableTimeContent() {
             fontWeight = FontWeight.Black,
             textModifier = Modifier.fillMaxWidth()
         )
-        TimeGrid()
+        TimeGrid(onWorkHourClickListener = {})
     }
 }
 

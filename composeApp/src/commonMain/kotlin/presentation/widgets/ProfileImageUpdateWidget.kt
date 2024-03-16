@@ -22,7 +22,7 @@ import presentations.components.ImageComponent
 
 
 @Composable
-fun ProfileImageUpdate(profileImageUrl: String, isAsync: Boolean = false, showEditIcon: Boolean = true,onUploadImageClicked: () -> Unit) {
+fun AccountProfileImage(profileImageUrl: String, isAsync: Boolean = false, showEditIcon: Boolean = true, onUploadImageClicked: () -> Unit) {
     Box(Modifier.fillMaxWidth().height(220.dp), contentAlignment = Alignment.Center) {
         Box(
             Modifier

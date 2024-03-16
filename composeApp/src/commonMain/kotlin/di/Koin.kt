@@ -43,7 +43,7 @@ private val KtorModule = module {
                 level = LogLevel.BODY
             }
             install(HttpTimeout) {
-                requestTimeoutMillis = 15_000
+                requestTimeoutMillis = 30_000
             }
             install(ContentNegotiation) {
                 json(Json {

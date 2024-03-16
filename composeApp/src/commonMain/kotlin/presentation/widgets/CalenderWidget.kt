@@ -23,6 +23,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,31 +43,42 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import domain.Models.Date
+import kotlinx.datetime.format.MonthNames
+import presentation.viewmodels.BookingViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 10.dp), onDateSelected: (LocalDate) -> Unit) {
+fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 10.dp),bookingViewModel: BookingViewModel? = null, onDateSelected: (LocalDate) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
+    val unsavedAppointmentDate = bookingViewModel?.currentAppointmentBooking?.value?.appointmentDate
 
     Column(modifier = modifier) {
         val dataSource = CalendarDataSource()
         // get CalendarUiModel from CalendarDataSource, and the lastSelectedDate is Today.
         val calendarUiModel = dataSource.getDate(lastSelectedDate = dataSource.today)
-        onDateSelected(calendarUiModel.selectedDate.date)
-
         var selectedUIModel by remember { mutableStateOf(calendarUiModel) }
-
         var initialVisibleDates by remember { mutableStateOf(5) }
 
+        if (unsavedAppointmentDate != null) {
+               selectedUIModel = selectedUIModel.copy(selectedDate = Date(date = unsavedAppointmentDate, isSelected = true, isToday = false),visibleDates = selectedUIModel.visibleDates.map { it2 ->
+                   it2.copy(
+                       isSelected = it2.date == unsavedAppointmentDate
+                   )
+               })
+              onDateSelected(selectedUIModel.selectedDate.date)
+            }
+        else{
+             onDateSelected(calendarUiModel.selectedDate.date)
+         }
 
         CalenderHeader(selectedUIModel, onPrevClickListener = { startDate ->
             coroutineScope.launch {
                 if (initialVisibleDates > 0) initialVisibleDates--
                 listState.animateScrollToItem(index = initialVisibleDates)
             }
-        },
+           },
             onNextClickListener = { endDate ->
                 coroutineScope.launch {
                     if (initialVisibleDates < listState.layoutInfo.totalItemsCount - 5) initialVisibleDates++
@@ -82,6 +94,7 @@ fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 
                     )
                 }
             )
+            onDateSelected(selectedUIModel.selectedDate.date)
         }, listState = listState)
     }
 }

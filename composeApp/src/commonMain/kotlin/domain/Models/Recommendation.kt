@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class Recommendation(@SerialName("id") val recommendationId: Int = -1, @SerialName("vendor_id") val vendorId: Int = -1,
                           @SerialName("recommendationType") val recommendationType: String? = null,
                           @SerialName("description") val description: String = "", @SerialName("product_id") val productId: Int = -1,
-                          @SerialName("service_type_id") val serviceTypeId: Int = -1, @SerialName("service_category") val serviceCategoryItem: ServiceCategoryItem? = null,
+                          @SerialName("service_type_id") val serviceTypeId: Int = -1, @SerialName("service_category") val serviceTypeItem: ServiceTypeItem? = null,
                           @SerialName("product") val product: Product? = null, val isSelected: Boolean = false)
 
 data class RecommendationItemUIModel(

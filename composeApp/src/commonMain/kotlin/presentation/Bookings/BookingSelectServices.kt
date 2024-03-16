@@ -24,6 +24,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,13 +34,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import domain.Models.ServiceCategoryItem
+import domain.Models.ServiceTypeItem
 import domain.Models.ServiceImages
 import domain.Models.Services
-import org.koin.core.component.inject
+import domain.Models.UnsavedAppointment
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.BookingCalendar
 import presentation.widgets.DropDownWidget
 import presentation.widgets.ServiceLocationToggle
@@ -53,6 +53,19 @@ import rememberStackedSnackbarHostState
 fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: BookingViewModel,
                           services: Services) {
 
+    var currentBookingId = -1
+    val savedBooking = bookingViewModel.currentAppointmentBooking.value
+    if(bookingViewModel.currentBookingId.value == -1) {
+        currentBookingId = (0..100000000).random()
+        bookingViewModel.setCurrentBookingId(currentBookingId)
+    }
+    else{
+        currentBookingId = bookingViewModel.currentBookingId.value
+    }
+    val currentBooking =  if (savedBooking.bookingId != -1) savedBooking else UnsavedAppointment(currentBookingId)
+    currentBooking.services = services
+    currentBooking.serviceId = services.serviceId
+
     val stackedSnackBarHostState = rememberStackedSnackbarHostState(
         maxStack = 5,
         animation = StackedSnackbarAnimation.Bounce
@@ -65,7 +78,6 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
     Scaffold(
         snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState)  }
     ) {
-
         Column(
             Modifier
                 .fillMaxSize()
@@ -77,7 +89,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
                 AttachServiceImages(services.serviceImages)
             }
             ServiceTitle(services.serviceTitle)
-            AttachServiceTypeToggle(services, onServiceSelected = {
+            AttachServiceTypeToggle(services,bookingViewModel, onServiceSelected = {
                 if (!it.homeServiceAvailable) {
                     ShowSnackBar(title = "No Home Service",
                         description = "Home service is not available for the selected service",
@@ -87,10 +99,25 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
                         stackedSnackBarHostState,
                         onActionClick = {})
                 }
-                bookingViewModel.setSelectedServiceType(it)
+                if (it.serviceId != -1) {
+                    bookingViewModel.setSelectedServiceType(it)
+                    currentBooking.serviceTypeItem = it
+                    currentBooking.serviceTypeId = it.categoryId
+                    bookingViewModel.setCurrentBooking(currentBooking)
+                }
             })
-            ServiceLocationToggle(bookingViewModel, mainViewModel)
-            BookingCalendar {
+            println(bookingViewModel.currentAppointmentBooking.value.toString())
+            ServiceLocationToggle(bookingViewModel, mainViewModel, onSpaSelectedListener = {
+                currentBooking.isHomeService = false
+                bookingViewModel.setCurrentBooking(currentBooking)
+            }, onHomeSelectedListener = {
+                currentBooking.isHomeService = true
+                println(currentBooking)
+                bookingViewModel.setCurrentBooking(currentBooking)
+            })
+            BookingCalendar(bookingViewModel = bookingViewModel) {
+                currentBooking.appointmentDate = it
+                bookingViewModel.setCurrentBooking(currentBooking)
                 bookingViewModel.setSelectedDate(it)
             }
         }
@@ -98,7 +125,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
 }
 
 @Composable
-fun AttachServiceTypeToggle(services: Services, onServiceSelected: (ServiceCategoryItem) -> Unit){
+fun AttachServiceTypeToggle(services: Services,bookingViewModel: BookingViewModel, onServiceSelected: (ServiceTypeItem) -> Unit){
     Column(
         modifier = Modifier
             .padding(start = 10.dp, end = 10.dp, top = 35.dp)
@@ -119,20 +146,25 @@ fun AttachServiceTypeToggle(services: Services, onServiceSelected: (ServiceCateg
             lineHeight = 30,
             textModifier = Modifier
                 .fillMaxWidth().padding(start = 10.dp))
-        AttachDropDownWidget(services, onServiceSelected = {
+        AttachDropDownWidget(services, bookingViewModel = bookingViewModel, onServiceSelected = {
                onServiceSelected(it)
         })
     }
 }
 
 @Composable
-fun AttachDropDownWidget(services: Services, onServiceSelected: (ServiceCategoryItem) -> Unit) {
+fun AttachDropDownWidget(services: Services, bookingViewModel: BookingViewModel, onServiceSelected: (ServiceTypeItem) -> Unit) {
     val serviceTypeList = arrayListOf<String>()
-    var selectedService: ServiceCategoryItem? = null
+    var selectedIndex: Int = -1
+    val unsavedAppointment = bookingViewModel.currentAppointmentBooking.value
+    if (unsavedAppointment.serviceTypeId != -1) {
+        selectedIndex = services.serviceTypes.indexOf(unsavedAppointment.serviceTypeItem!!)
+    }
+    var selectedService: ServiceTypeItem? = null
     for (item in services.serviceTypes){
          serviceTypeList.add(item.title)
     }
-    DropDownWidget(menuItems = serviceTypeList, iconRes = "drawable/spa_treatment_leaves.png",
+    DropDownWidget(menuItems = serviceTypeList, selectedIndex = selectedIndex, iconRes = "drawable/spa_treatment_leaves.png",
         placeHolderText = "Select Service Type", iconSize = 25, onMenuItemClick = {
          selectedService = services.serviceTypes[it]
          onServiceSelected(selectedService!!)

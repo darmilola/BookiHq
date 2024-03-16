@@ -2,9 +2,9 @@ package presentation.viewmodels
 
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
-import dev.icerock.moko.mvvm.livedata.MutableLiveData
-import domain.Models.ServiceCategoryItem
+import domain.Models.ServiceTypeItem
 import domain.Models.Services
+import domain.Models.UnsavedAppointment
 import domain.Models.User
 import domain.Models.Vendor
 import kotlinx.coroutines.flow.StateFlow
@@ -16,12 +16,16 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     private var _currentUserInfo =  savedStateHandle.getStateFlow("userInfo", User())
     private var _screenNav =  savedStateHandle.getStateFlow("screenNav", Pair(-1,-1))
     private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
+    private var _currentUnsavedAppointments =  savedStateHandle.getStateFlow("currentUnsavedAppointments", arrayListOf<UnsavedAppointment>())
 
     val screenTitle: StateFlow<String>
         get() = _screenTitle
 
     val selectedService: StateFlow<Services>
         get() = _selectedService
+
+    val unSavedAppointments: StateFlow<ArrayList<UnsavedAppointment>>
+        get() = _currentUnsavedAppointments
 
     val connectedVendor: StateFlow<Vendor>
         get() = _connectedVendor
@@ -50,5 +54,13 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
 
     fun setSelectedService(selectedService: Services) {
         savedStateHandle["selectedService"] = selectedService
+    }
+
+    fun setCurrentUnsavedAppointments(unsavedAppointments: ArrayList<UnsavedAppointment>) {
+        savedStateHandle["currentUnsavedAppointments"] = unsavedAppointments
+    }
+
+    fun clearUnsavedAppointments() {
+        savedStateHandle["currentUnsavedAppointments"] = arrayListOf<UnsavedAppointment>()
     }
 }

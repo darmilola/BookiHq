@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import presentation.components.ButtonComponent
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.ActionItemComponent
-import presentation.widgets.ProfileImageUpdate
+import presentation.widgets.AccountProfileImage
 import presentations.components.TextComponent
 
 class AccountTab(private val mainViewModel: MainViewModel) : Tab {
@@ -72,7 +72,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = columnModifier
             ) {
-                    ProfileImageUpdate(profileImageUrl = "drawable/user_icon.png", showEditIcon = false){}
+                    AccountProfileImage(profileImageUrl = "drawable/user_icon.png", showEditIcon = false){}
                     UserAccountName()
                     EditProfileButton(TextStyle(fontFamily = GGSansSemiBold, fontWeight = FontWeight.Black, fontSize = TextUnit(18f, TextUnitType.Sp)))
                     Divider(color = Color(color = 0x90C8C8C8), thickness = 2.dp, modifier = Modifier.fillMaxWidth(0.90f).padding(top = 30.dp))
@@ -156,7 +156,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
 
                 ActionItemComponent(
                     modifier = actionStyle,
-                    buttonText = "Switch ConnectVendor",
+                    buttonText = "Switch Vendor",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
                     textColor = Colors.darkPrimary,

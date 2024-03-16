@@ -98,7 +98,7 @@ fun AvailableTimeContent() {
             textModifier = Modifier.fillMaxWidth().padding(start = 10.dp)
         )
 
-        TimeGrid()
+        TimeGrid(onWorkHourClickListener = {})
     }
 }
 

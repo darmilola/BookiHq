@@ -33,6 +33,7 @@ import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import domain.Models.Screens
 import kotlinx.coroutines.launch
 import presentation.main.MainTab
+import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.StepsProgressBar
@@ -41,7 +42,7 @@ import presentations.components.TextComponent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun BookingScreenTopBar(pagerState: PagerState, mainViewModel: MainViewModel) {
+fun BookingScreenTopBar(pagerState: PagerState, mainViewModel: MainViewModel, bookingViewModel: BookingViewModel) {
 
     val rowModifier = Modifier
         .fillMaxWidth()
@@ -69,7 +70,7 @@ fun BookingScreenTopBar(pagerState: PagerState, mainViewModel: MainViewModel) {
                 .fillMaxHeight()
                 .padding(start = 10.dp),
                 contentAlignment = Alignment.CenterStart) {
-                leftTopBarItem(pagerState, mainViewModel)
+                leftTopBarItem(pagerState, mainViewModel, bookingViewModel)
             }
 
             Box(modifier =  Modifier.weight(3.0f)
@@ -99,7 +100,7 @@ fun BookingScreenTopBar(pagerState: PagerState, mainViewModel: MainViewModel) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun leftTopBarItem(pagerState: PagerState, mainViewModel: MainViewModel) {
+fun leftTopBarItem(pagerState: PagerState, mainViewModel: MainViewModel, bookingViewModel: BookingViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val navigator = LocalTabNavigator.current
     val currentPage = pagerState.currentPage
@@ -113,6 +114,8 @@ fun leftTopBarItem(pagerState: PagerState, mainViewModel: MainViewModel) {
                     pagerState.animateScrollToPage(0)
                 }
                 else -> {
+                    bookingViewModel.clearCurrentBooking()
+                    mainViewModel.clearUnsavedAppointments()
                     mainViewModel.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.MAIN_TAB.toPath()))
                 }
             }
