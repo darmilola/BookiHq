@@ -16,7 +16,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     private var _currentUserInfo =  savedStateHandle.getStateFlow("userInfo", User())
     private var _screenNav =  savedStateHandle.getStateFlow("screenNav", Pair(-1,-1))
     private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
-    private var _currentUnsavedAppointments =  savedStateHandle.getStateFlow("currentUnsavedAppointments", arrayListOf<UnsavedAppointment>())
+    private var _currentUnsavedAppointments =  savedStateHandle.getStateFlow("currentUnsavedAppointments", mutableListOf<UnsavedAppointment>())
 
     val screenTitle: StateFlow<String>
         get() = _screenTitle
@@ -24,7 +24,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     val selectedService: StateFlow<Services>
         get() = _selectedService
 
-    val unSavedAppointments: StateFlow<ArrayList<UnsavedAppointment>>
+    val unSavedAppointments: StateFlow<MutableList<UnsavedAppointment>>
         get() = _currentUnsavedAppointments
 
     val connectedVendor: StateFlow<Vendor>
@@ -56,8 +56,14 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
         savedStateHandle["selectedService"] = selectedService
     }
 
-    fun setCurrentUnsavedAppointments(unsavedAppointments: ArrayList<UnsavedAppointment>) {
+    fun setCurrentUnsavedAppointments(unsavedAppointments: MutableList<UnsavedAppointment>) {
         savedStateHandle["currentUnsavedAppointments"] = unsavedAppointments
+    }
+
+    fun removeUnsavedAppointment(unsavedAppointment: UnsavedAppointment) {
+        val newList = _currentUnsavedAppointments.value
+        newList.remove(unsavedAppointment)
+        savedStateHandle["currentUnsavedAppointments"] = newList
     }
 
     fun clearUnsavedAppointments() {

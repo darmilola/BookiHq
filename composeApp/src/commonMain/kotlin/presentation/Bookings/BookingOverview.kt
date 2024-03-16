@@ -12,6 +12,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,50 +21,48 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import domain.Models.AppointmentItem
 import domain.Models.UnsavedAppointment
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.format.DayOfWeekNames
+import kotlinx.datetime.format.MonthNames
+import kotlinx.datetime.format.char
 import presentation.components.ButtonComponent
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.NewAppointmentWidget
+import presentation.widgets.UnsavedAppointmentWidget
 import theme.styles.Colors
 import utils.getUnSavedAppointmentViewHeight
 
 @Composable
  fun BookingOverview(mainViewModel: MainViewModel, uiStateViewModel: UIStateViewModel,
                      bookingViewModel: BookingViewModel,
-                     bookingPresenter: BookingPresenter, onAddMoreServiceClicked:() -> Unit) {
-
+                     bookingPresenter: BookingPresenter, onAddMoreServiceClicked:() -> Unit, onRemoveItem: (UnsavedAppointment) -> Unit) {
 
        val currentBooking: UnsavedAppointment = bookingViewModel.currentAppointmentBooking.value
-       val unsavedAppointments: ArrayList<UnsavedAppointment> = mainViewModel.unSavedAppointments.value
-   // println("current"+currentBooking.bookingId)
-   // println("Unsaved"+unsavedAppointments)
+       val unsavedAppointments = mainViewModel.unSavedAppointments.collectAsState()
 
-    if(unsavedAppointments.isNotEmpty()) {
-       val initialBooking =  unsavedAppointments.find {
+    if(unsavedAppointments.value.isNotEmpty()) {
+       val initialBooking =  unsavedAppointments.value.find {
            it.bookingId == currentBooking.bookingId
        }
         if (initialBooking != null){
-            println("Am not null")
-            val initialIndex = unsavedAppointments.indexOf(initialBooking)
-            println(initialIndex)
-            unsavedAppointments.removeAt(initialIndex)
-            unsavedAppointments.add(currentBooking)
-            mainViewModel.setCurrentUnsavedAppointments(unsavedAppointments)
+            val initialIndex = unsavedAppointments.value.indexOf(initialBooking)
+            unsavedAppointments.value.removeAt(initialIndex)
+            unsavedAppointments.value.add(currentBooking)
+            mainViewModel.setCurrentUnsavedAppointments(unsavedAppointments.value)
         }
         else{
-            println("Am null")
             if(currentBooking.serviceId != -1 && currentBooking.serviceTypeId != -1) {
-                unsavedAppointments.add(currentBooking)
-                mainViewModel.setCurrentUnsavedAppointments(unsavedAppointments)
+                unsavedAppointments.value.add(currentBooking)
+                mainViewModel.setCurrentUnsavedAppointments(unsavedAppointments.value)
             }
         }
      }
     else{
-        println("Am empty")
-           if(currentBooking.serviceId != -1 && currentBooking.serviceTypeId != -1) {
-               unsavedAppointments.add(currentBooking)
-               mainViewModel.setCurrentUnsavedAppointments(unsavedAppointments)
+          if(currentBooking.serviceId != -1 && currentBooking.serviceTypeId != -1) {
+               unsavedAppointments.value.add(currentBooking)
+               mainViewModel.setCurrentUnsavedAppointments(unsavedAppointments.value)
            }
        }
 
@@ -79,15 +79,10 @@ import utils.getUnSavedAppointmentViewHeight
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            val appointmentList = ArrayList<AppointmentItem>()
-            val appointmentItem1 = AppointmentItem(appointmentType = 1)
-            val appointmentItem2 = AppointmentItem(appointmentType = 2)
-
-            appointmentList.add(appointmentItem1)
-            appointmentList.add(appointmentItem2)
-
             PopulateAppointmentScreen(
-                appointmentList = mainViewModel.unSavedAppointments.value
+                appointmentList = mainViewModel.unSavedAppointments.value, onRemoveItem = { it ->
+                    onRemoveItem(it)
+                }
             )
 
             val buttonStyle = Modifier
@@ -104,10 +99,12 @@ import utils.getUnSavedAppointmentViewHeight
 
     }
     @Composable
-    fun PopulateAppointmentScreen(appointmentList: List<UnsavedAppointment>) {
+    fun PopulateAppointmentScreen(appointmentList: MutableList<UnsavedAppointment>, onRemoveItem: (UnsavedAppointment) -> Unit) {
         LazyColumn(modifier = Modifier.fillMaxWidth().height(getUnSavedAppointmentViewHeight(appointmentList).dp), userScrollEnabled = true) {
             items(appointmentList) {item ->
-                NewAppointmentWidget()
+                UnsavedAppointmentWidget(unsavedAppointment = item, onRemoveItem = {
+                    onRemoveItem(it)
+                })
             }
         }
     }

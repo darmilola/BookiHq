@@ -286,6 +286,8 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                     1 -> BookingSelectSpecialist(mainViewModel,uiStateViewModel!!,bookingViewModel!!,bookingPresenter)
                     2 -> BookingOverview(mainViewModel,uiStateViewModel!!,bookingViewModel!!,bookingPresenter, onAddMoreServiceClicked = {
                          onAddMoreServiceClicked()
+                    }, onRemoveItem = {
+                         mainViewModel.removeUnsavedAppointment(it)
                     })
                 }
             }
