@@ -353,7 +353,7 @@ private fun AttachBackIcon(mainViewModel: MainViewModel) {
                     navigator.current = CartScreen(mainViewModel)
                 }
                 else -> {
-                    navigator.current = MainTab(mainViewModel)
+                  //  navigator.current = MainTab(mainViewModel)
                 }
             }
         }

@@ -57,20 +57,20 @@ fun MainTopBar(mainViewModel: MainViewModel, isBottomNavSelected: Boolean = fals
 
 
 @Composable
-fun leftTopBarItem(homePageViewModel: HomePageViewModel) {
+fun leftTopBarItem(mainViewModel: MainViewModel) {
     val rowModifier = Modifier
         .background(color = Color.Transparent)
         .fillMaxWidth()
         .fillMaxHeight()
 
     Box(modifier = rowModifier, contentAlignment = Alignment.CenterStart) {
-       WelcomeToProfile(homePageViewModel)
+       WelcomeToProfile(mainViewModel)
     }
 }
 
 @Composable
-fun WelcomeToProfile(homePageViewModel: HomePageViewModel) {
-    val state = homePageViewModel.homePageUIState.collectAsState()
+fun WelcomeToProfile(mainViewModel: MainViewModel) {
+    val state = mainViewModel.mainUIState.collectAsState()
     val rowModifier = Modifier
         .fillMaxWidth()
         Row(
@@ -79,8 +79,7 @@ fun WelcomeToProfile(homePageViewModel: HomePageViewModel) {
             modifier = rowModifier
         ) {
             if(state.value.isDone && state.value.isSuccess) {
-                val userInfoState = homePageViewModel.homePageInfo.collectAsState()
-                val userInfo = userInfoState.value.homepageModel.userInfo
+                val userInfo = mainViewModel.currentUserInfo.value
                 BusinessImage(businessImageUrl = "drawable/sample_logo_icon.png") {}
                 Box(
                     modifier = Modifier.wrapContentWidth().height(60.dp).padding(top = 10.dp),
@@ -99,7 +98,7 @@ fun WelcomeToProfile(homePageViewModel: HomePageViewModel) {
                         )
                         TitleWidget(
                             textColor = Colors.primaryColor,
-                            title = userInfo?.firstname!!,
+                            title = userInfo.firstname!!,
                             fonSize = 16,
                             textModifier = Modifier.height(25.dp).wrapContentWidth()
                         )
@@ -228,7 +227,7 @@ fun centerTopBarItem(mainViewModel: MainViewModel,homePageViewModel: HomePageVie
                     this.durationMillis = 0
                 })
             ) {
-                   leftTopBarItem(homePageViewModel)
+                   leftTopBarItem(mainViewModel)
             }
         }
     }

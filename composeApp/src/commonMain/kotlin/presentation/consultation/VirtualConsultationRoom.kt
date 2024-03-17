@@ -195,7 +195,7 @@ class VirtualConsultationRoom(private val mainViewModel: MainViewModel) : Tab {
             Box(modifier = Modifier.weight(1f),
                 contentAlignment = Alignment.Center) {
                 VideoCallEndActionWidget(iconRes = "drawable/end_call_icon.png"){
-                    navigator.current = MainTab(mainViewModel)
+                   // navigator.current = MainTab(mainViewModel)
                 }
             }
 

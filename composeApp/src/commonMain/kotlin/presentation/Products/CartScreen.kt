@@ -130,7 +130,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
         var showSheet by remember { mutableStateOf(false) }
 
         if (showSheet) {
-            BottomSheet() {
+            ProductDetailBottomSheet() {
                 showSheet = false
             }
         }
@@ -148,7 +148,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
     fun leftTopBarItem(mainViewModel: MainViewModel) {
         val navigator = LocalTabNavigator.current
         PageBackNavWidget(){
-            navigator.current = MainTab(mainViewModel)
+          //  navigator.current = MainTab(mainViewModel)
         }
     }
 

@@ -122,7 +122,7 @@ fun leftTopBarItem(mainViewModel: MainViewModel?) {
     val navigator = LocalTabNavigator.current
     PageBackNavWidget {
         if (mainViewModel != null){
-            navigator.current = MainTab(mainViewModel)
+           // navigator.current = MainTab(mainViewModel)
         }
     }
 }

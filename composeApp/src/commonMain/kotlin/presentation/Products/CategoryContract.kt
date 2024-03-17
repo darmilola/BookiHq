@@ -1,0 +1,40 @@
+package presentation.Products
+
+import domain.Models.FavoriteProduct
+import domain.Models.Product
+import domain.Models.ProductCategory
+import domain.Models.ResourceListEnvelope
+import presentation.viewmodels.UIStates
+
+class CategoryContract {
+    interface View {
+        fun showLce(uiState: UIStates, message: String = "")
+        fun showProductCategories(productCategories: List<ProductCategory>, favoriteProducts: List<FavoriteProduct>)
+    }
+
+    abstract class Presenter {
+        abstract fun registerUIContract(view: View?)
+        abstract fun getProductCategory(vendorId: Int, userId: Int)
+
+    }
+}
+
+
+
+class ProductContract {
+    interface View {
+        fun showLce(uiState: UIStates, message: String = "")
+        fun showProducts(products: ResourceListEnvelope<Product>?, isFromSearch: Boolean = false)
+        fun onLoadMoreProductStarted(isSuccess: Boolean = false)
+        fun onLoadMoreProductEnded(isSuccess: Boolean = false)
+    }
+
+    abstract class Presenter {
+        abstract fun registerUIContract(view: View?)
+        abstract fun getProducts(vendorId: Int, categoryId: Int)
+        abstract fun getMoreProducts(vendorId: Int, categoryId: Int, nextPage: Int = 1)
+        abstract fun searchProducts(vendorId: Int, searchQuery: String)
+        abstract fun searchMoreProducts(vendorId: Int, searchQuery: String, nextPage: Int = 1)
+
+    }
+}

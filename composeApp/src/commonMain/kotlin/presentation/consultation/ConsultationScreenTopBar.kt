@@ -102,7 +102,7 @@ fun leftTopBarItem(pagerState: PagerState, mainViewModel: MainViewModel) {
                     pagerState.animateScrollToPage(0)
                 }
                 else -> {
-                    navigator.current = MainTab(mainViewModel = mainViewModel)
+                    //navigator.current = MainTab(mainViewModel = mainViewModel)
                 }
             }
         }

@@ -1,18 +1,25 @@
 package presentation.main
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import theme.styles.Colors
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -27,11 +34,13 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import domain.Models.HomePageResponse
+import domain.Models.HomepageModel
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.appointments.AppointmentsTab
+import presentation.components.IndeterminateCircularProgressBar
 import presentation.main.home.HomeTab
 import presentation.main.home.HomepageContract
 import presentation.main.home.HomepagePresenter
@@ -42,16 +51,10 @@ import presentation.viewmodels.UIStateViewModel
 import presentation.viewmodels.UIStates
 import presentations.components.ImageComponent
 
-class MainTab(private val mainViewModel: MainViewModel): Tab, KoinComponent {
+class MainTab(private val mainViewModel: MainViewModel,private val homePageViewModel: HomePageViewModel,
+              private val  uiStateViewModel: UIStateViewModel, private val homepagePresenter: HomepagePresenter): Tab, KoinComponent {
 
-    private val preferenceSettings: Settings = Settings()
-    private val homepagePresenter: HomepagePresenter by inject()
-    private var uiStateViewModel: UIStateViewModel? = null
-    private var homePageViewModel: HomePageViewModel? = null
-    private var userEmail: String = ""
-    private var connectedVendorId: Int = -1
-
-    @OptIn(ExperimentalResourceApi::class)
+   @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
         @Composable
         get() {
@@ -69,76 +72,131 @@ class MainTab(private val mainViewModel: MainViewModel): Tab, KoinComponent {
     @Composable
     override fun Content() {
         var isBottomNavSelected by remember { mutableStateOf(true) }
-        userEmail = preferenceSettings["userEmail", ""]
-
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
-                factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
-                },
-            )
-            homepagePresenter.getUserHomepage(userEmail)
-        }
 
 
-        if (homePageViewModel == null) {
-            homePageViewModel = kmpViewModel(
-                factory = viewModelFactory {
-                    HomePageViewModel(savedStateHandle = createSavedStateHandle())
-                },
-            )
-        }
-
-
-        val handler = HomePageHandler(homePageViewModel!!, uiStateViewModel!!, homepagePresenter,
+        val handler = HomePageHandler(
+            homePageViewModel, uiStateViewModel, homepagePresenter,
             onPageLoading = {
-                homePageViewModel!!.setHomePageUIState(AsyncUIStates(isLoading = true))
+                mainViewModel.setMainUIState(AsyncUIStates(isLoading = true))
             }, onContentVisible = {
-                homePageViewModel!!.setHomePageUIState(AsyncUIStates(isSuccess = true, isDone = true))
+                mainViewModel.setMainUIState(
+                    AsyncUIStates(
+                        isSuccess = true,
+                        isDone = true
+                    )
+                )
             }, onErrorVisible = {
-                homePageViewModel!!.setHomePageUIState(AsyncUIStates(isSuccess = false, isDone = true))
+                mainViewModel.setMainUIState(
+                    AsyncUIStates(
+                        isSuccess = false,
+                        isDone = true
+                    )
+                )
             })
         handler.init()
 
+        val uiState = mainViewModel.mainUIState.collectAsState()
 
 
+        // Main Service Content Arena
 
-        TabNavigator(showDefaultTab(homePageViewModel!!, mainViewModel)) {
-            Scaffold(
-                topBar = {
-                    MainTopBar(mainViewModel, isBottomNavSelected = isBottomNavSelected, homePageViewModel!!){
-                        isBottomNavSelected = false
+        if (uiState.value.isLoading) {
+            //Content Loading
+            Box(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                    .padding(top = 40.dp, start = 50.dp, end = 50.dp)
+                    .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                IndeterminateCircularProgressBar()
+            }
+        } else if (uiState.value.isDone && !uiState.value.isSuccess) {
+            //Error Occurred display reload
+        } else if (uiState.value.isDone && uiState.value.isSuccess) {
+
+
+            TabNavigator(showDefaultTab(homePageViewModel, mainViewModel)) {
+                Scaffold(
+                    topBar = {
+                        MainTopBar(
+                            mainViewModel,
+                            isBottomNavSelected = isBottomNavSelected,
+                            homePageViewModel
+                        ) {
+                            isBottomNavSelected = false
+                        }
+                    },
+                    content = {
+                        CurrentTab()
+                    },
+                    backgroundColor = Color.White,
+                    bottomBar = {
+                        BottomNavigation(
+                            modifier = Modifier
+                                .padding(bottom = 25.dp)
+                                .height(40.dp), backgroundColor = Color.Transparent,
+                            elevation = 0.dp
+                        )
+                        {
+                            TabNavigationItem(
+                                HomeTab(homePageViewModel, mainViewModel),
+                                selectedImage = "drawable/home_icon.png",
+                                unselectedImage = "drawable/home_outline.png",
+                                imageSize = 24,
+                                currentTabId = 0,
+                                tabNavigator = it,
+                                mainViewModel
+                            ) {
+                                isBottomNavSelected = true
+                            }
+                            TabNavigationItem(
+                                ShopTab(mainViewModel),
+                                selectedImage = "drawable/shopping_basket.png",
+                                unselectedImage = "drawable/shopping_basket_outline.png",
+                                imageSize = 24,
+                                currentTabId = 1,
+                                tabNavigator = it,
+                                mainViewModel
+                            ) {
+                                isBottomNavSelected = true
+                            }
+                            TabNavigationItem(
+                                ConsultTab(mainViewModel),
+                                selectedImage = "drawable/video_chat.png",
+                                unselectedImage = "drawable/video_chat_outline.png",
+                                imageSize = 28,
+                                currentTabId = 2,
+                                tabNavigator = it,
+                                mainViewModel
+                            ) {
+                                isBottomNavSelected = true
+                            }
+                            TabNavigationItem(
+                                AppointmentsTab(mainViewModel),
+                                selectedImage = "drawable/appointment_icon.png",
+                                unselectedImage = "drawable/appointment_outline.png",
+                                imageSize = 28,
+                                currentTabId = 3,
+                                tabNavigator = it,
+                                mainViewModel
+                            ) {
+                                isBottomNavSelected = true
+                            }
+                            TabNavigationItem(
+                                AccountTab(mainViewModel),
+                                selectedImage = "drawable/user.png",
+                                unselectedImage = "drawable/user_outline.png",
+                                imageSize = 28,
+                                currentTabId = 4,
+                                tabNavigator = it,
+                                mainViewModel
+                            ) {
+                                isBottomNavSelected = true
+                            }
+                        }
                     }
-                },
-                content = {
-                    CurrentTab()
-                },
-                backgroundColor = Color.White,
-                bottomBar = {
-                    BottomNavigation(modifier = Modifier
-                        .padding(bottom = 25.dp)
-                        .height(40.dp), backgroundColor = Color.Transparent,
-                        elevation = 0.dp
-                    )
-                    {
-                        TabNavigationItem(HomeTab(homePageViewModel!!, mainViewModel), selectedImage = "drawable/home_icon.png", unselectedImage = "drawable/home_outline.png", imageSize = 24, currentTabId = 0, tabNavigator = it, mainViewModel){
-                            isBottomNavSelected = true
-                        }
-                        TabNavigationItem(ShopTab(mainViewModel), selectedImage = "drawable/shopping_basket.png", unselectedImage = "drawable/shopping_basket_outline.png", imageSize = 24, currentTabId = 1, tabNavigator = it, mainViewModel){
-                            isBottomNavSelected = true
-                        }
-                        TabNavigationItem(ConsultTab(mainViewModel), selectedImage = "drawable/video_chat.png", unselectedImage = "drawable/video_chat_outline.png", imageSize = 28, currentTabId = 2, tabNavigator = it, mainViewModel){
-                            isBottomNavSelected = true
-                        }
-                        TabNavigationItem(AppointmentsTab(mainViewModel), selectedImage = "drawable/appointment_icon.png", unselectedImage = "drawable/appointment_outline.png", imageSize = 28, currentTabId = 3, tabNavigator = it, mainViewModel){
-                            isBottomNavSelected = true
-                        }
-                        TabNavigationItem(AccountTab(mainViewModel), selectedImage = "drawable/user.png", unselectedImage = "drawable/user_outline.png", imageSize = 28, currentTabId = 4, tabNavigator = it, mainViewModel){
-                            isBottomNavSelected = true
-                        }
-                    }
-                }
-            )
+                )
+            }
         }
     }
 
@@ -160,7 +218,6 @@ class MainTab(private val mainViewModel: MainViewModel): Tab, KoinComponent {
             screenTitle = "Products"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
-
         }
 
         else if(tabNavigator.current is ConsultTab && currentTabId == 2){

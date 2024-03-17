@@ -57,7 +57,7 @@ import domain.Models.Vendor
 import domain.Models.VendorStatusModel
 import org.koin.core.component.KoinComponent
 import presentation.components.StraightLine
-import presentation.Products.BottomSheet
+import presentation.Products.ProductDetailBottomSheet
 import presentation.Products.NewProductItem
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.HomePageViewModel
@@ -91,31 +91,17 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
 
     @Composable
     override fun Content() {
-
-         val uiState = homePageViewModel.homePageUIState.collectAsState()
          val userInfo = homePageViewModel.homePageInfo.value.homepageModel.userInfo
          val vendorInfo = homePageViewModel.homePageInfo.value.homepageModel.vendorInfo
          val vendorStatus = homePageViewModel.homePageInfo.value.homepageModel.vendorStatus
          val vendorServices = homePageViewModel.homePageInfo.value.homepageModel.vendorServices
          val vendorRecommendations = homePageViewModel.homePageInfo.value.homepageModel.recommendationRecommendations
-
-        // Main Service Content Arena
-
-        if (uiState.value.isLoading) {
-            //Content Loading
-            Box(
-                modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                    .padding(top = 40.dp, start = 50.dp, end = 50.dp)
-                    .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                IndeterminateCircularProgressBar()
-            }
-        } else if (uiState.value.isDone && !uiState.value.isSuccess) {
-            //Error Occurred display reload
-        } else if (uiState.value.isDone && uiState.value.isSuccess) {
-              mainViewModel.setUserInfo(userInfo!!)
-              mainViewModel.setConnectedVendor(vendorInfo!!)
+        if (userInfo != null) {
+            mainViewModel.setUserInfo(userInfo)
+        }
+        if (vendorInfo != null) {
+            mainViewModel.setConnectedVendor(vendorInfo)
+        }
 
             val columnModifier = Modifier
                 .padding(top = 5.dp)
@@ -154,11 +140,19 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
                     ) {
-                        AttachBusinessName(vendorInfo)
-                        BusinessStatusDisplay(vendorStatus!!)
+                        if (vendorInfo != null) {
+                            AttachBusinessName(vendorInfo)
+                        }
+                        if (vendorStatus != null) {
+                            BusinessStatusDisplay(vendorStatus)
+                        }
                         AttachOurServices()
-                        ServiceGridScreen(vendorServices!!)
-                        RecommendedSessions(vendorRecommendations!!)
+                        if (vendorServices != null) {
+                            ServiceGridScreen(vendorServices)
+                        }
+                        if (vendorRecommendations != null) {
+                            RecommendedSessions(vendorRecommendations)
+                        }
                         AttachAppointments()
                         RecentAppointmentScreen(
                             appointmentList = appointmentList
@@ -169,7 +163,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                 }
             }
         }
-    }
+
 
 
     @Composable
@@ -309,7 +303,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
             var showSheet by remember { mutableStateOf(false) }
 
             if (showSheet) {
-                BottomSheet() {
+                ProductDetailBottomSheet() {
                     showSheet = false
                 }
             }
@@ -349,12 +343,10 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                 .fillMaxWidth()
 
 
-
         Box(modifier = boxBgModifier) {
-
             var showProductBottomSheet by remember { mutableStateOf(false) }
             if (showProductBottomSheet) {
-                BottomSheet() {
+                ProductDetailBottomSheet() {
                     showProductBottomSheet = false
                 }
             }
@@ -456,17 +448,6 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
          }
          return adsList
     }
-
-    /*@Composable
-    fun GetBusinessPageProgressList(pageCount: Int) : List<BusinessStatusAdsProgress> {
-        val progressList: ArrayList<BusinessStatusAdsProgress> = arrayListOf()
-        val progressWidget = StatusProgressWidget()
-        for(i in 0..< pageCount){
-            val adsProgress = BusinessStatusAdsProgress(adsProgress = progressWidget, pageId = i)
-            progressList.add(adsProgress)
-        }
-        return progressList
-    }*/
 
     @Composable
     fun BusinessStatusDisplay(statusList: List<VendorStatusModel>) {

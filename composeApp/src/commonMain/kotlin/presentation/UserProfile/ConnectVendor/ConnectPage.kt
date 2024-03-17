@@ -100,12 +100,11 @@ open class ConnectPage(val  platformNavigator: PlatformNavigator? = null) : Scre
            }
 
 
-
         val loadMoreState = vendorResourceListEnvelopeViewModel!!.isLoadingMore.collectAsState()
         val vendorList = vendorResourceListEnvelopeViewModel?.resources?.collectAsState()
         val selectedVendor = connectPageViewModel?.selectedVendor?.collectAsState()
-        val totalOrdersCount = vendorResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
-        val displayedOrdersCount = vendorResourceListEnvelopeViewModel?.displayedItemCount?.collectAsState()
+        val totalVendorsCount = vendorResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
+        val displayedVendorsCount = vendorResourceListEnvelopeViewModel?.displayedItemCount?.collectAsState()
         var vendorUIModel by remember { mutableStateOf(VendorItemUIModel(selectedVendor?.value!!, vendorList!!.value)) }
         val lastIndex = vendorList!!.value.size.minus(1)
 
@@ -188,7 +187,7 @@ open class ConnectPage(val  platformNavigator: PlatformNavigator? = null) : Scre
                                         IndeterminateCircularProgressBar()
                                     }
                                 }
-                                else if (i == lastIndex && (displayedOrdersCount!!.value < totalOrdersCount!!.value)) {
+                                else if (i == lastIndex && (displayedVendorsCount!!.value < totalVendorsCount!!.value)) {
                                     val buttonStyle = Modifier
                                         .height(60.dp)
                                         .fillMaxWidth()

@@ -19,6 +19,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
     private var _vendorRecommendation =  savedStateHandle.getStateFlow("vendorRecommendation", VendorRecommendation())
     private var _currentUnsavedAppointments =  savedStateHandle.getStateFlow("currentUnsavedAppointments", SnapshotStateList<UnsavedAppointment>())
+    private var _mainUiState =  savedStateHandle.getStateFlow("mainUiState", AsyncUIStates())
 
     val screenTitle: StateFlow<String>
         get() = _screenTitle
@@ -40,6 +41,8 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
 
     val screenNav: StateFlow<Pair<Int,Int>>
         get() = _screenNav
+    val mainUIState: StateFlow<AsyncUIStates>
+        get() = _mainUiState
 
     fun setTitle(newTitle: String) {
         savedStateHandle["screenTitle"] = newTitle
@@ -73,5 +76,8 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     }
     fun clearVendorRecommendation() {
         savedStateHandle["vendorRecommendation"] = VendorRecommendation()
+    }
+    fun setMainUIState(asyncUIStates: AsyncUIStates) {
+        savedStateHandle["mainUiState"] = asyncUIStates
     }
 }

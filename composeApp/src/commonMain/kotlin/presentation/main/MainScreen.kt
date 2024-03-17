@@ -17,9 +17,12 @@ import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import domain.Models.PlatformNavigator
 import domain.Models.Screens
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import presentation.Bookings.BookingScreen
 import presentation.Bookings.PendingAppointmentsTab
 import presentation.Products.CartScreen
@@ -30,15 +33,24 @@ import presentation.UserProfile.UserOrders.UserOrders
 import presentation.consultation.ConsultationScreen
 import presentation.consultation.VirtualConsultationRoom
 import presentation.dialogs.LoadingDialog
+import presentation.main.home.HomepagePresenter
+import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.UIStateViewModel
 
-class MainScreen(val  platformNavigator: PlatformNavigator? = null) : Screen {
+class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, KoinComponent {
 
     private var mainViewModel: MainViewModel? = null
     private val preferenceSettings: Settings = Settings()
+    private val homepagePresenter: HomepagePresenter by inject()
+    private var uiStateViewModel: UIStateViewModel? = null
+    private var homePageViewModel: HomePageViewModel? = null
+    private var userEmail: String = ""
+
     @Composable
     override fun Content() {
 
+   userEmail = preferenceSettings["userEmail", ""] // User Email Retrieved After Authentication to populate the System
    val imageUploading = remember { mutableStateOf(false) }
 
     if (mainViewModel == null) {
@@ -47,7 +59,7 @@ class MainScreen(val  platformNavigator: PlatformNavigator? = null) : Screen {
                 MainViewModel(savedStateHandle = createSavedStateHandle())
             },
         )
-     }
+      }
         preferenceSettings as ObservableSettings
 
         preferenceSettings.addBooleanListener("imageUploadProcessing",false) {
@@ -60,12 +72,29 @@ class MainScreen(val  platformNavigator: PlatformNavigator? = null) : Screen {
             }
         }
 
-        val screenNav: State<Pair<Int, Int>>? =  mainViewModel?.screenNav?.collectAsState()
+        if (uiStateViewModel == null) {
+            uiStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
 
-        TabNavigator(showDefaultTab(mainViewModel!!)) {
+        if (homePageViewModel == null) {
+            homePageViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    HomePageViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+            homepagePresenter.getUserHomepage(userEmail)
+        }
+
+        val screenNav: State<Pair<Int, Int>>? = mainViewModel?.screenNav?.collectAsState()
+
+        TabNavigator(showDefaultTab(mainViewModel!!, homePageViewModel!!, uiStateViewModel!!, homepagePresenter)) {
             when (screenNav?.value?.second) {
                 Screens.MAIN_TAB.toPath() -> {
-                    it.current = MainTab(mainViewModel!!)
+                    it.current = MainTab(mainViewModel!!, homePageViewModel!!, uiStateViewModel!!, homepagePresenter)
                 }
                 Screens.BOOKING.toPath() -> {
                     it.current = BookingScreen(mainViewModel!!)
@@ -106,17 +135,17 @@ class MainScreen(val  platformNavigator: PlatformNavigator? = null) : Screen {
 
     }
 
-    open fun setImageUploadResponse(imageUrl: String) {
+    fun setImageUploadResponse(imageUrl: String) {
         preferenceSettings["imageUrl"] = imageUrl
     }
 
-    open fun setImageUploadProcessing(isDone: Boolean = false) {
+   fun setImageUploadProcessing(isDone: Boolean = false) {
         preferenceSettings["imageUploadProcessing"] = isDone
     }
 
-    private fun showDefaultTab(mainViewModel: MainViewModel): MainTab {
-
-        return  MainTab(mainViewModel)
+    private fun showDefaultTab(mainViewModel: MainViewModel, homePageViewModel: HomePageViewModel,
+                               uiStateViewModel: UIStateViewModel, homepagePresenter: HomepagePresenter): MainTab {
+        return  MainTab(mainViewModel, homePageViewModel, uiStateViewModel, homepagePresenter)
     }
 
 }

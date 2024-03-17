@@ -14,3 +14,9 @@ data class HomePageResponse(@SerialName("status") val status: String = "", @Seri
 
 @Serializable
 data class ServiceSpecialistsResponse(@SerialName("status") val status: String = "", @SerialName("specialist") val serviceSpecialists: List<ServiceTypeSpecialist>)
+
+
+@Serializable
+data class ProductCategoryResponse(@SerialName("status") val status: String = "",
+                                   @SerialName("categories") val productCategories: List<ProductCategory>,
+                                   @SerialName("favoriteProducts") val favoriteProducts: List<FavoriteProduct>)

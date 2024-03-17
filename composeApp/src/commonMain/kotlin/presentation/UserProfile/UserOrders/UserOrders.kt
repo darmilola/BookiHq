@@ -131,7 +131,7 @@ class UserOrders (private val mainViewModel: MainViewModel) : Tab {
         val navigator = LocalTabNavigator.current
         PageBackNavWidget {
             println("clicked... ")
-            navigator.current = MainTab(mainViewModel)
+           // navigator.current = MainTab(mainViewModel)
             //mainViewModel.setId(-1)
         }
     }
