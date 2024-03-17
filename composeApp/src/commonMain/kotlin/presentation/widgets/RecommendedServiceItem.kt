@@ -1,6 +1,5 @@
 package presentation.widgets
 
-import GGSansBold
 import GGSansRegular
 import androidx.compose.foundation.BorderStroke
 import theme.styles.Colors
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Card
@@ -29,24 +27,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import domain.Models.VendorRecommendation
+import domain.Models.RecommendationType
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun RecommendedServiceItem(viewType: Int = 0, onSessionClickListener: () -> Unit) {
+fun RecommendedServiceItem(vendorRecommendation: VendorRecommendation, onItemClickListener: (VendorRecommendation) -> Unit) {
 
 
     val columnModifier = Modifier
-        .clickable {
-            onSessionClickListener()
-        }
         .fillMaxHeight()
         .fillMaxWidth()
     Card(modifier = Modifier.height(360.dp).fillMaxWidth(),
@@ -67,9 +61,11 @@ fun RecommendedServiceItem(viewType: Int = 0, onSessionClickListener: () -> Unit
                 Column(
                     modifier = columnModifier
                 ) {
-                    RecommendedServicesImage(viewType = viewType)
-                    RecommendedServiceDescription()
-                    RecommendedServicePriceAndAction(viewType = viewType)
+                    RecommendedServicesImage(vendorRecommendation.serviceTypeItem?.serviceDetails?.serviceImages!![0].imageUrl!!)
+                    RecommendedServiceDescription(vendorRecommendation)
+                    RecommendedServicePriceAndAction(vendorRecommendation, onItemClickListener = {
+                        onItemClickListener(it)
+                    })
                 }
             }
     }
@@ -77,9 +73,7 @@ fun RecommendedServiceItem(viewType: Int = 0, onSessionClickListener: () -> Unit
 
 
 @Composable
-fun RecommendedServicePriceAndAction(viewType: Int = 0) {
-    val textColor = Colors.primaryColor
-
+fun RecommendedServicePriceAndAction(vendorRecommendation: VendorRecommendation, onItemClickListener: (VendorRecommendation) -> Unit) {
     Row(modifier = Modifier.height(50.dp).padding(start = 10.dp, end = 10.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically) {
@@ -87,7 +81,13 @@ fun RecommendedServicePriceAndAction(viewType: Int = 0) {
         Row(modifier = Modifier.fillMaxWidth(0.4f),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically) {
-            PopularServicePriceContent(textColor = textColor)
+            if (vendorRecommendation.recommendationType == RecommendationType.Services.toPath()){
+                PopularServicePriceContent(vendorRecommendation.serviceTypeItem?.price.toString())
+            }
+            else{
+                PopularServicePriceContent(vendorRecommendation.product?.productPrice.toString())
+            }
+
         }
 
         Row(horizontalArrangement = Arrangement.End,
@@ -95,13 +95,15 @@ fun RecommendedServicePriceAndAction(viewType: Int = 0) {
             Row(
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize().clickable {
+                    onItemClickListener(vendorRecommendation)
+                }
             ) {
                 TextComponent(
-                    text = if(viewType == 0) "Book Now" else if (viewType == 1) "Let's Discuss" else "Buy Now",
+                    text = if(vendorRecommendation.recommendationType == RecommendationType.Services.toPath()) "Book Now" else "Buy Now",
                     fontFamily = GGSansRegular,
                     textStyle = MaterialTheme.typography.h6,
-                    textColor = textColor,
+                    textColor = Colors.primaryColor,
                     textAlign = TextAlign.Right,
                     fontWeight = FontWeight.ExtraBold,
                     lineHeight = 20,
@@ -110,7 +112,7 @@ fun RecommendedServicePriceAndAction(viewType: Int = 0) {
                     overflow = TextOverflow.Ellipsis,
                     textModifier = Modifier.wrapContentSize().padding(end = 7.dp))
 
-                    ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = textColor))
+                    ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
             }
 
         }
@@ -118,13 +120,13 @@ fun RecommendedServicePriceAndAction(viewType: Int = 0) {
 
 }
 @Composable
-fun PopularServicePriceContent(textColor: Color) {
+fun PopularServicePriceContent(price: String) {
      TextComponent(
-            text = "$670,000",
+            text = "$$price",
             fontSize = 16,
             fontFamily = GGSansRegular,
             textStyle = MaterialTheme.typography.h6,
-            textColor = textColor,
+            textColor = Colors.primaryColor,
             textAlign = TextAlign.Right,
             fontWeight = FontWeight.ExtraBold,
             lineHeight = 20,
@@ -137,7 +139,8 @@ fun PopularServicePriceContent(textColor: Color) {
     }
 
 @Composable
-fun RecommendedServiceDescription() {
+fun RecommendedServiceDescription(vendorRecommendation: VendorRecommendation) {
+    val recommendationType = vendorRecommendation.recommendationType
     Column(
         modifier = Modifier
             .padding(top = 15.dp, start = 10.dp, end = 10.dp)
@@ -147,7 +150,8 @@ fun RecommendedServiceDescription() {
         horizontalAlignment  = Alignment.Start,
     ) {
         TextComponent(
-            text = "Medium Length Layer Cut with cute Salon stuff",
+            text = if (recommendationType == RecommendationType.Services.toPath())
+                vendorRecommendation.serviceTypeItem?.title!! else vendorRecommendation.product?.productName!!,
             fontSize = 18,
             fontFamily = GGSansRegular,
             textStyle = MaterialTheme.typography.h6,
@@ -162,7 +166,7 @@ fun RecommendedServiceDescription() {
 
         TextComponent(
             textModifier = Modifier.fillMaxWidth().padding(top = 5.dp, bottom = 10.dp),
-            text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aene ligula",
+            text = vendorRecommendation.description,
             fontSize = 14, fontFamily = GGSansRegular,
             textStyle = MaterialTheme.typography.h6,
             textColor = Colors.darkPrimary,
@@ -179,7 +183,7 @@ fun RecommendedServiceDescription() {
 }
 
 @Composable
-fun RecommendedServicesImage(viewType: Int = 0) {
+fun RecommendedServicesImage(imageUrl: String) {
     val imageModifier =
         Modifier
             .height(200.dp)
@@ -190,7 +194,8 @@ fun RecommendedServicesImage(viewType: Int = 0) {
         ) {
             ImageComponent(
                 imageModifier = imageModifier,
-                imageRes = if(viewType == 0) "drawable/fingernails.jpg" else if(viewType == 1) "drawable/sale4.jpg" else "drawable/olive_oil.jpg",
+                imageRes = imageUrl,
+                isAsync = true,
                 contentScale = ContentScale.Crop
             )
         }

@@ -1,10 +1,8 @@
 package presentation.main.home
 
 import GGSansRegular
-import GGSansSemiBold
 import domain.Models.AppointmentItem
 import domain.Models.BusinessStatusAdsPage
-import domain.Models.BusinessStatusAdsProgress
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -21,7 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -48,41 +45,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
-import com.hoc081098.kmp.viewmodel.createSavedStateHandle
-import com.hoc081098.kmp.viewmodel.viewModelFactory
-import com.russhwolf.settings.Settings
-import com.russhwolf.settings.get
-import com.russhwolf.settings.set
-import domain.Models.HomePageResponse
+import domain.Models.VendorRecommendation
+import domain.Models.RecommendationType
+import domain.Models.Screens
 import domain.Models.Services
 import domain.Models.Vendor
 import domain.Models.VendorStatusModel
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import presentation.components.StraightLine
 import presentation.Products.BottomSheet
 import presentation.Products.NewProductItem
-import presentation.authentication.AuthenticationPresenter
 import presentation.components.IndeterminateCircularProgressBar
-import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.UIStateViewModel
-import presentation.viewmodels.UIStates
 import utils.getAppointmentViewHeight
-import presentation.widgets.AppointmentWidget
 import presentation.widgets.BusinessStatusItemWidget
 import presentation.widgets.BusinessStatusWidgetUpdated
 import presentation.widgets.HomeServicesWidget
 import presentation.widgets.NewAppointmentWidget
 import presentation.widgets.RecommendedServiceItem
-import presentation.widgets.StatusProgressWidget
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
@@ -112,6 +97,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
          val vendorInfo = homePageViewModel.homePageInfo.value.homepageModel.vendorInfo
          val vendorStatus = homePageViewModel.homePageInfo.value.homepageModel.vendorStatus
          val vendorServices = homePageViewModel.homePageInfo.value.homepageModel.vendorServices
+         val vendorRecommendations = homePageViewModel.homePageInfo.value.homepageModel.recommendationRecommendations
 
         // Main Service Content Arena
 
@@ -172,7 +158,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                         BusinessStatusDisplay(vendorStatus!!)
                         AttachOurServices()
                         ServiceGridScreen(vendorServices!!)
-                        RecommendedSessions()
+                        RecommendedSessions(vendorRecommendations!!)
                         AttachAppointments()
                         RecentAppointmentScreen(
                             appointmentList = appointmentList
@@ -229,7 +215,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
     }
 
     @Composable
-    fun RecommendedSessions(){
+    fun RecommendedSessions(recommendations: List<VendorRecommendation>){
         val rowModifier = Modifier
             .padding(start = 10.dp, top = 10.dp)
             .fillMaxWidth()
@@ -253,7 +239,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                 )
                 StraightLine()
             }
-             RecommendedAppointmentList()
+             RecommendedAppointmentList(recommendations)
       }
 
 
@@ -345,13 +331,10 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun RecommendedAppointmentList() {
+    fun RecommendedAppointmentList(recommendations: List<VendorRecommendation>) {
         val pagerState = rememberPagerState(pageCount = {
-            3
+            recommendations.size
         })
-
-        var viewType by remember { mutableStateOf(0) }
-        val itemColor: Color = Colors.primaryColor
 
         val boxModifier =
             Modifier
@@ -369,10 +352,10 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
 
         Box(modifier = boxBgModifier) {
 
-            var showSheet by remember { mutableStateOf(false) }
-            if (showSheet) {
+            var showProductBottomSheet by remember { mutableStateOf(false) }
+            if (showProductBottomSheet) {
                 BottomSheet() {
-                    showSheet = false
+                    showProductBottomSheet = false
                 }
             }
 
@@ -383,15 +366,15 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                     modifier = Modifier.fillMaxSize(),
                     pageSpacing = 10.dp
                 ) { page ->
-                    viewType = page
-                    RecommendedServiceItem (viewType = page, onSessionClickListener = {
-                        when (page) {
-                            0 -> mainViewModel.setSelectedService(Services())
-                            1 -> {
-                                 mainViewModel.setSelectedService(Services())
+                    RecommendedServiceItem (recommendations[page], onItemClickListener = {
+                        when (it.recommendationType) {
+                            RecommendationType.Services.toPath() -> {
+                                mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.BOOKING.toPath()))
+                                mainViewModel.setSelectedService(it.serviceTypeItem?.serviceDetails!!)
+                                mainViewModel.setVendorRecommendation(it)
                             }
-                            else -> {
-                                showSheet = true
+                            RecommendationType.Products.toPath() -> {
+                                showProductBottomSheet = true
                             }
                         }
                     })
@@ -406,7 +389,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                         val color: Color
                         val width: Int
                         if (pagerState.currentPage == iteration) {
-                            color = itemColor
+                            color = Colors.primaryColor
                             width = 20
                         } else {
                             color = Color.LightGray

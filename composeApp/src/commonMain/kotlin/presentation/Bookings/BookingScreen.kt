@@ -107,9 +107,11 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
         // View Contract Handler Initialisation
         val handler = BookingScreenHandler(
             bookingViewModel!!, bookingPresenter,
-          onPageLoading = {
+           onPageLoading = {
                uiStateViewModel!!.switchState(UIStates(loadingVisible = true))
-        }, onContentVisible = {
+            },
+            onShowUnsavedAppointment = {},
+            onContentVisible = {
                 uiStateViewModel!!.switchState(UIStates(contentVisible = true))
             }, onErrorVisible = {
                 uiStateViewModel!!.switchState(UIStates(errorOccurred = true))
@@ -124,15 +126,22 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
             animation = StackedSnackbarAnimation.Bounce
         )
 
-        val pagerState = rememberPagerState(pageCount = {
-            3
-        })
+        val pagerState = rememberPagerState(pageCount = { 3 })
         val addMoreService = remember { mutableStateOf(false) }
+        val lastItemRemoved = remember { mutableStateOf(false) }
 
         if (addMoreService.value){
             rememberCoroutineScope().launch {
                 pagerState.scrollToPage(0)
                 bookingViewModel!!.setCurrentBookingId(-1)
+                mainViewModel.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.MAIN_TAB.toPath()))
+            }
+        }
+        if (lastItemRemoved.value){
+            rememberCoroutineScope().launch {
+                pagerState.scrollToPage(0)
+                bookingViewModel!!.setCurrentBookingId(-1)
+                mainViewModel.clearUnsavedAppointments()
                 mainViewModel.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.MAIN_TAB.toPath()))
             }
         }
@@ -170,6 +179,9 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                             services = mainViewModel.selectedService.value,
                             onAddMoreServiceClicked = {
                                 addMoreService.value = true
+                            },
+                            onLastItemRemoved = {
+                                lastItemRemoved.value = true
                             }
                         )
                         AttachActionButtons(pagerState, mainViewModel, stackedSnackBarHostState)
@@ -265,7 +277,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun AttachBookingPages(pagerState: PagerState, services: Services,onAddMoreServiceClicked:() -> Unit){
+    fun AttachBookingPages(pagerState: PagerState, services: Services,onAddMoreServiceClicked:() -> Unit, onLastItemRemoved:() -> Unit){
 
         val  boxModifier =
             Modifier
@@ -286,8 +298,8 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                     1 -> BookingSelectSpecialist(mainViewModel,uiStateViewModel!!,bookingViewModel!!,bookingPresenter)
                     2 -> BookingOverview(mainViewModel,uiStateViewModel!!,bookingViewModel!!,bookingPresenter, onAddMoreServiceClicked = {
                          onAddMoreServiceClicked()
-                    }, onRemoveItem = {
-                         mainViewModel.removeUnsavedAppointment(it)
+                    }, onLastItemRemoved = {
+                         onLastItemRemoved()
                     })
                 }
             }
@@ -301,6 +313,7 @@ class BookingScreenHandler(
     private val bookingViewModel: BookingViewModel,
     private val bookingPresenter: BookingPresenter,
     private val onPageLoading: () -> Unit,
+    private val onShowUnsavedAppointment: () -> Unit,
     private val onContentVisible: () -> Unit,
     private val onErrorVisible: () -> Unit,
 ) : BookingContract.View {
@@ -328,6 +341,10 @@ class BookingScreenHandler(
 
     override fun showTherapists(serviceSpecialists: List<ServiceTypeSpecialist>) {
         bookingViewModel.setSpecialists(serviceSpecialists)
+    }
+
+    override fun showUnsavedAppointment() {
+       onShowUnsavedAppointment()
     }
 
 

@@ -115,7 +115,7 @@ fun leftTopBarItem(pagerState: PagerState, mainViewModel: MainViewModel, booking
                 }
                 else -> {
                     bookingViewModel.clearCurrentBooking()
-                    mainViewModel.clearUnsavedAppointments()
+                    mainViewModel.clearVendorRecommendation()
                     mainViewModel.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.MAIN_TAB.toPath()))
                 }
             }

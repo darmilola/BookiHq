@@ -53,8 +53,10 @@ import rememberStackedSnackbarHostState
 fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: BookingViewModel,
                           services: Services) {
 
+    //Initialising New Booking
     var currentBookingId = -1
     val savedBooking = bookingViewModel.currentAppointmentBooking.value
+
     if(bookingViewModel.currentBookingId.value == -1) {
         currentBookingId = (0..100000000).random()
         bookingViewModel.setCurrentBookingId(currentBookingId)
@@ -70,6 +72,19 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
         maxStack = 5,
         animation = StackedSnackbarAnimation.Bounce
     )
+
+    // initialise new recommendation
+    if (mainViewModel.vendorRecommendation.value.recommendationId != -1){
+        val recommendation = mainViewModel.vendorRecommendation.value
+        val serviceType = recommendation.serviceTypeItem
+        bookingViewModel.setSelectedServiceType(serviceType!!)
+        currentBooking.serviceTypeItem = serviceType
+        currentBooking.serviceTypeId = serviceType.categoryId
+        bookingViewModel.setCurrentBooking(currentBooking)
+        if (services.serviceTypes.size == 0) {
+            services.serviceTypes.add(serviceType)
+        }
+    }
 
     val boxModifier =
         Modifier
@@ -106,13 +121,11 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
                     bookingViewModel.setCurrentBooking(currentBooking)
                 }
             })
-            println(bookingViewModel.currentAppointmentBooking.value.toString())
             ServiceLocationToggle(bookingViewModel, mainViewModel, onSpaSelectedListener = {
                 currentBooking.isHomeService = false
                 bookingViewModel.setCurrentBooking(currentBooking)
             }, onHomeSelectedListener = {
                 currentBooking.isHomeService = true
-                println(currentBooking)
                 bookingViewModel.setCurrentBooking(currentBooking)
             })
             BookingCalendar(bookingViewModel = bookingViewModel) {

@@ -22,6 +22,10 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
         contractView = view
     }
 
+    override fun getUnSavedAppointment() {
+        contractView?.showUnsavedAppointment()
+    }
+
     override fun getServiceTherapists(serviceTypeId: Int, selectedDate: String) {
         scope.launch(Dispatchers.Main) {
             try {

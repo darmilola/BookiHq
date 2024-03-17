@@ -39,8 +39,8 @@ fun ServiceLocationToggle(bookingViewModel: BookingViewModel, mainViewModel: Mai
         onSpaSelectedListener()
     }
 
-    val selectedServiceTypeState = bookingViewModel.selectedServiceType.collectAsState()
-    if (!selectedServiceTypeState.value.homeServiceAvailable){
+    val selectedServiceTypeState = bookingViewModel.selectedServiceType.value
+    if (!selectedServiceTypeState.homeServiceAvailable){
         locationType = 0
         onSpaSelectedListener()
     }
@@ -72,7 +72,7 @@ fun ServiceLocationToggle(bookingViewModel: BookingViewModel, mainViewModel: Mai
         }, onRightClicked = {
             onHomeSelectedListener()
             locationType = 1
-        }, leftText = "Parlor", rightText = "Home", isRightSelection = locationType != 0, isDisabled = !selectedServiceTypeState.value.homeServiceAvailable)
+        }, leftText = "Parlor", rightText = "Home", isRightSelection = locationType != 0, isDisabled = !selectedServiceTypeState.homeServiceAvailable)
 
     }
 

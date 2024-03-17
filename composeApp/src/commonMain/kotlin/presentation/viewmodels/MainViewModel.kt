@@ -1,8 +1,9 @@
 package presentation.viewmodels
 
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
-import domain.Models.ServiceTypeItem
+import domain.Models.VendorRecommendation
 import domain.Models.Services
 import domain.Models.UnsavedAppointment
 import domain.Models.User
@@ -16,7 +17,8 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     private var _currentUserInfo =  savedStateHandle.getStateFlow("userInfo", User())
     private var _screenNav =  savedStateHandle.getStateFlow("screenNav", Pair(-1,-1))
     private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
-    private var _currentUnsavedAppointments =  savedStateHandle.getStateFlow("currentUnsavedAppointments", mutableListOf<UnsavedAppointment>())
+    private var _vendorRecommendation =  savedStateHandle.getStateFlow("vendorRecommendation", VendorRecommendation())
+    private var _currentUnsavedAppointments =  savedStateHandle.getStateFlow("currentUnsavedAppointments", SnapshotStateList<UnsavedAppointment>())
 
     val screenTitle: StateFlow<String>
         get() = _screenTitle
@@ -24,11 +26,14 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     val selectedService: StateFlow<Services>
         get() = _selectedService
 
-    val unSavedAppointments: StateFlow<MutableList<UnsavedAppointment>>
+    val unSavedAppointments: StateFlow<SnapshotStateList<UnsavedAppointment>>
         get() = _currentUnsavedAppointments
 
     val connectedVendor: StateFlow<Vendor>
         get() = _connectedVendor
+
+    val vendorRecommendation: StateFlow<VendorRecommendation>
+        get() = _vendorRecommendation
 
     val currentUserInfo: StateFlow<User>
         get() = _currentUserInfo
@@ -56,17 +61,17 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
         savedStateHandle["selectedService"] = selectedService
     }
 
+    fun setVendorRecommendation(vendorRecommendation: VendorRecommendation) {
+        savedStateHandle["vendorRecommendation"] = vendorRecommendation
+    }
+
     fun setCurrentUnsavedAppointments(unsavedAppointments: MutableList<UnsavedAppointment>) {
         savedStateHandle["currentUnsavedAppointments"] = unsavedAppointments
     }
-
-    fun removeUnsavedAppointment(unsavedAppointment: UnsavedAppointment) {
-        val newList = _currentUnsavedAppointments.value
-        newList.remove(unsavedAppointment)
-        savedStateHandle["currentUnsavedAppointments"] = newList
-    }
-
     fun clearUnsavedAppointments() {
-        savedStateHandle["currentUnsavedAppointments"] = arrayListOf<UnsavedAppointment>()
+        savedStateHandle["currentUnsavedAppointments"] = SnapshotStateList<UnsavedAppointment>()
+    }
+    fun clearVendorRecommendation() {
+        savedStateHandle["vendorRecommendation"] = VendorRecommendation()
     }
 }
