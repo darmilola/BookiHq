@@ -1,6 +1,5 @@
 package presentation.Products
 
-import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
 import theme.styles.Colors
@@ -15,69 +14,72 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Models.Product
 import presentation.components.ButtonComponent
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
+import utils.calculateDiscount
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ProductItem(onProductClickListener: () -> Unit) {
+fun ProductItem(product: Product, onProductClickListener: (Product) -> Unit) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
         .clickable {
-            onProductClickListener()
+            onProductClickListener(product)
         }
         .height(280.dp)
         Column(modifier = columnModifier,
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                ProductImage()
-                ProductNameAndPrice()
+                ProductImage(product)
+                ProductNameAndPrice(product)
             }
 }
 
 
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun NewProductItem(onProductClickListener: () -> Unit) {
+fun HomeProductItem(product: Product, onProductClickListener: (Product) -> Unit) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
         .clickable {
-            onProductClickListener()
+            onProductClickListener(product)
         }
         .height(200.dp)
         Row(modifier = columnModifier,
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Top
         ) {
-            NewProductImage()
-            NewProductDescription(onProductClickListener)
+            HomeProductImage(product)
+            HomeProductDescription(product, onProductClickListener = {
+                onProductClickListener(it)
+            })
         }
     }
 
 
     @Composable
-    fun ProductImage() {
+    fun ProductImage(product: Product) {
         val imageModifier =
             Modifier
                 .fillMaxHeight()
@@ -99,17 +101,20 @@ fun NewProductItem(onProductClickListener: () -> Unit) {
             ) {
                 ImageComponent(
                     imageModifier = imageModifier,
-                    imageRes = "drawable/oil.jpg",
+                    imageRes = product.productImages[0].imageUrl,
+                    isAsync = true,
                     contentScale = ContentScale.Crop
                 )
-                DiscountText()
+                if (product.isDiscounted) {
+                    DiscountText(product)
+                }
             }
         }
     }
 
 
 @Composable
-fun NewProductImage() {
+fun HomeProductImage(product: Product) {
     val imageModifier =
         Modifier
             .fillMaxHeight()
@@ -131,16 +136,25 @@ fun NewProductImage() {
         ) {
             ImageComponent(
                 imageModifier = imageModifier,
-                imageRes = "drawable/woman2.jpg",
-                contentScale = ContentScale.Crop
+                imageRes = product.productImages[0].imageUrl,
+                contentScale = ContentScale.Crop,
+                isAsync = true
             )
+            Box(
+                modifier = Modifier
+                    .padding(5.dp)
+                    .size(35.dp).background(color = Color.White, shape = CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+              ImageComponent(imageModifier = Modifier.size(16.dp), imageRes = "drawable/like_icon.png", colorFilter = ColorFilter.tint(color = Colors.pinkColor))
+            }
         }
     }
 }
 
 
 @Composable
-fun NewProductDescription(onProductClickListener: () -> Unit){
+fun HomeProductDescription(product: Product,onProductClickListener: (Product) -> Unit){
     val columnModifier = Modifier
         .padding(start = 10.dp, end = 10.dp)
         .fillMaxHeight()
@@ -150,7 +164,7 @@ fun NewProductDescription(onProductClickListener: () -> Unit){
             horizontalAlignment  = Alignment.Start,
         ) {
             TextComponent(
-                text = "Bloom Rose Oil And Argan Oil is For Sale",
+                text = product.productName,
                 fontSize = 16,
                 fontFamily = GGSansRegular,
                 textStyle = MaterialTheme.typography.h6,
@@ -160,27 +174,29 @@ fun NewProductDescription(onProductClickListener: () -> Unit){
                 lineHeight = 20,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 2)
-            NewProductDescriptionText()
-            ViewPopularProduct(onProductClickListener)
+            HomeProductProductDescriptionText(product)
+            ViewProductFromHome(product, onProductClickListener = {
+                onProductClickListener(it)
+            })
         }
 }
 
 @Composable
-fun ViewPopularProduct(onProductClickListener: () -> Unit){
+fun ViewProductFromHome(product: Product,onProductClickListener: (Product) -> Unit){
     val buttonStyle = Modifier
         .padding(top = 10.dp)
         .fillMaxWidth()
         .background(color = Color.Transparent)
         .height(40.dp)
-    ButtonComponent(modifier = buttonStyle, buttonText = "View Product", borderStroke = BorderStroke((1).dp, color = Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 14, shape = RoundedCornerShape(10.dp), textColor =  Colors.primaryColor, style = TextStyle(fontFamily = GGSansRegular)){
-        onProductClickListener()
+    ButtonComponent(modifier = buttonStyle, buttonText = "View Product", borderStroke = BorderStroke((1).dp, color = Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 14, shape = RoundedCornerShape(12.dp), textColor =  Colors.primaryColor, style = TextStyle(fontFamily = GGSansRegular)){
+        onProductClickListener(product)
     }
 }
 
 
 
 @Composable
-fun NewProductDescriptionText() {
+fun HomeProductProductDescriptionText(product: Product) {
     Column(
         modifier = Modifier
             .padding(top = 10.dp)
@@ -192,7 +208,7 @@ fun NewProductDescriptionText() {
         val modifier = Modifier
             .fillMaxWidth()
         TextComponent(
-            text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula adipiscing Aenean commodo ligula",
+            text = product.productDescription,
             fontSize = 15,
             fontFamily = GGSansRegular,
             textStyle = MaterialTheme.typography.h6,
@@ -201,7 +217,7 @@ fun NewProductDescriptionText() {
             fontWeight = FontWeight.Medium,
             lineHeight = 20,
             textModifier = modifier,
-            maxLines = 4,
+            maxLines = 5,
             overflow = TextOverflow.Ellipsis)
 
     }
@@ -210,7 +226,8 @@ fun NewProductDescriptionText() {
 
 
 @Composable
-fun ProductNameAndPrice(){
+fun ProductNameAndPrice(product: Product){
+    val price = if(product.isDiscounted) product.discount else product.productPrice
     val columnModifier = Modifier
         .padding(start = 10.dp, end = 10.dp)
         .clickable {}
@@ -226,7 +243,7 @@ fun ProductNameAndPrice(){
                 .wrapContentHeight()
 
             TextComponent(
-                text = "Bloom Rose Oil And Argan Oil",
+                text = product.productName,
                 fontSize = 16,
                 fontFamily = GGSansSemiBold,
                 textStyle = MaterialTheme.typography.h6,
@@ -240,7 +257,7 @@ fun ProductNameAndPrice(){
             )
 
             TextComponent(
-                text = "$67,000",
+                text = "$$price",
                 fontSize = 16,
                 fontFamily = GGSansSemiBold,
                 textStyle = MaterialTheme.typography.h6,
@@ -259,8 +276,10 @@ fun ProductNameAndPrice(){
 
 
 @Composable
-fun DiscountText() {
+fun DiscountText(product: Product) {
 
+    val discount = calculateDiscount(price = product.productPrice, discount = product.discount)
+    println(discount)
     val indicatorModifier = Modifier
         .padding(end = 15.dp, bottom = 20.dp)
         .background(color = Color.Transparent)
@@ -271,7 +290,7 @@ fun DiscountText() {
         Box(modifier = indicatorModifier,
             contentAlignment = Alignment.Center){
             TextComponent(
-                text = "-15%",
+                text = "-$discount%",
                 fontSize = 15,
                 fontFamily = GGSansRegular,
                 textStyle = MaterialTheme.typography.h6,

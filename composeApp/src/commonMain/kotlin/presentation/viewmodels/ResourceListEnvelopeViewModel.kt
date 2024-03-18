@@ -89,8 +89,8 @@ class ResourceListEnvelopeViewModel<out T : Any>(private val savedStateHandle: S
         savedStateHandle["isRefreshing"] = isRefreshing
     }
 
-    fun clearData() {
-        setResources(mutableListOf())
+    fun clearData(data: MutableList<@UnsafeVariance T>) {
+        setResources(data)
         setCurrentPage(-1)
         setDisplayedItemCount(-1)
         setIsSearching(false)

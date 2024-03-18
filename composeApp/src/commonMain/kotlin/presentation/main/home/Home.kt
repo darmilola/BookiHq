@@ -27,11 +27,9 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.navigator.tab.Tab
@@ -49,6 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Models.Product
 import domain.Models.VendorRecommendation
 import domain.Models.RecommendationType
 import domain.Models.Screens
@@ -58,8 +57,7 @@ import domain.Models.VendorStatusModel
 import org.koin.core.component.KoinComponent
 import presentation.components.StraightLine
 import presentation.Products.ProductDetailBottomSheet
-import presentation.Products.NewProductItem
-import presentation.components.IndeterminateCircularProgressBar
+import presentation.Products.HomeProductItem
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
 import utils.getAppointmentViewHeight
@@ -70,6 +68,7 @@ import presentation.widgets.NewAppointmentWidget
 import presentation.widgets.RecommendedServiceItem
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
+import utils.getPopularProductViewHeight
 
 class HomeTab(private val homePageViewModel: HomePageViewModel,
               private val mainViewModel: MainViewModel) : Tab, KoinComponent {
@@ -95,6 +94,8 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
          val vendorInfo = homePageViewModel.homePageInfo.value.homepageModel.vendorInfo
          val vendorStatus = homePageViewModel.homePageInfo.value.homepageModel.vendorStatus
          val vendorServices = homePageViewModel.homePageInfo.value.homepageModel.vendorServices
+         val popularProducts = homePageViewModel.homePageInfo.value.homepageModel.popularProducts
+         val recentAppointments = homePageViewModel.homePageInfo.value.homepageModel.recentAppointment
          val vendorRecommendations = homePageViewModel.homePageInfo.value.homepageModel.recommendationRecommendations
         if (userInfo != null) {
             mainViewModel.setUserInfo(userInfo)
@@ -153,12 +154,16 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                         if (vendorRecommendations != null) {
                             RecommendedSessions(vendorRecommendations)
                         }
+
+                        PopularProducts()
+
+                        if (popularProducts != null) {
+                            PopularProductScreen(popularProducts)
+                        }
                         AttachAppointments()
                         RecentAppointmentScreen(
                             appointmentList = appointmentList
                         )
-                        PopularProducts()
-                        PopularProductScreen()
                     }
                 }
             }
@@ -173,7 +178,8 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
             modifier = Modifier.fillMaxWidth().height(280.dp),
             contentPadding = PaddingValues(5.dp),
             verticalArrangement = Arrangement.Center,
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
+            userScrollEnabled = false
         ) {
             items(vendorServices.size) {
                    HomeServicesWidget(vendorServices[it], mainViewModel)
@@ -240,7 +246,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
     @Composable
     fun AttachAppointments(){
         val rowModifier = Modifier
-            .padding(start = 10.dp, top = 30.dp, bottom = 20.dp)
+            .padding(start = 10.dp, top = 10.dp, bottom = 20.dp)
             .fillMaxWidth()
             Row(
                 horizontalArrangement = Arrangement.Start,
@@ -266,7 +272,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
     @Composable
     fun PopularProducts(){
         val rowModifier = Modifier
-            .padding(start = 10.dp, top = 20.dp)
+            .padding(start = 10.dp, top = 30.dp)
             .fillMaxWidth()
             Row(
                 horizontalArrangement = Arrangement.Start,
@@ -296,27 +302,29 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
 
 
     @Composable
-    fun PopularProductScreen() {
+    fun PopularProductScreen(popularProducts: List<Product>) {
 
         Column {
 
-            var showSheet by remember { mutableStateOf(false) }
+            var showProductBottomSheet by remember { mutableStateOf(false) }
+            val selectedProduct  = remember { mutableStateOf(Product()) }
 
-            if (showSheet) {
-                ProductDetailBottomSheet() {
-                    showSheet = false
+            if (showProductBottomSheet) {
+                ProductDetailBottomSheet(selectedProduct.value) {
+                    showProductBottomSheet = false
                 }
             }
 
             LazyColumn(
-                modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(960.dp),
+                modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(getPopularProductViewHeight(popularProducts).dp),
                 contentPadding = PaddingValues(top = 6.dp, bottom = 6.dp),
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 userScrollEnabled = false
             ) {
-                items(4) {
-                    NewProductItem(onProductClickListener = {
-                        showSheet = true
+                items(popularProducts.size) {
+                    HomeProductItem(popularProducts[it],onProductClickListener = { it ->
+                        showProductBottomSheet = true
+                        selectedProduct.value = it
                     })
                 }
             }
@@ -346,7 +354,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
         Box(modifier = boxBgModifier) {
             var showProductBottomSheet by remember { mutableStateOf(false) }
             if (showProductBottomSheet) {
-                ProductDetailBottomSheet() {
+                ProductDetailBottomSheet(Product()) {
                     showProductBottomSheet = false
                 }
             }

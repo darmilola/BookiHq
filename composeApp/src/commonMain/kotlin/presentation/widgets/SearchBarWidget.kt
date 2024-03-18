@@ -5,6 +5,7 @@ import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -32,11 +33,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.OnBackPressed
 import presentations.components.ImageComponent
 import presentations.components.TextFieldComponent
 
 @Composable
-fun SearchBarWidget(iconRes: String, placeholderText: String, iconSize: Int, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+fun SearchBarWidget(iconRes: String, placeholderText: String, iconSize: Int, onBackPressed:() -> Unit, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     isPasswordField: Boolean = false, onValueChange: (String) -> Unit) {
     var text by remember { mutableStateOf("") }
     var borderStroke by remember { mutableStateOf(BorderStroke(1.dp, color  = Color.Gray)) }
@@ -54,7 +56,12 @@ fun SearchBarWidget(iconRes: String, placeholderText: String, iconSize: Int, key
 
         Box(modifier = Modifier.fillMaxHeight().width(50.dp), contentAlignment = Alignment.Center){
             ImageComponent(imageModifier = Modifier
-                .size(iconSize.dp), imageRes = iconRes, colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+                .size(iconSize.dp).clickable {
+                      if(iconRes == "drawable/back_arrow.png"){
+                          text = ""
+                          onBackPressed()
+                      }
+                }, imageRes = iconRes, colorFilter = ColorFilter.tint(color = Colors.primaryColor))
         }
         TextFieldComponent(
             text = text,

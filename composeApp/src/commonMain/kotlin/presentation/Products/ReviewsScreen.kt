@@ -25,14 +25,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import presentation.widgets.ReviewsWidget
+import domain.Models.Product
+import presentation.widgets.ProductReviewsWidget
+import presentation.widgets.SpecialistReviewsWidget
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AttachProductReviews(){
+fun AttachProductReviews(product: Product){
 
     val pagerState = rememberPagerState(pageCount = {
-        5
+        product.productReviews!!.size
     })
 
     val boxModifier =
@@ -56,7 +58,7 @@ fun AttachProductReviews(){
                 state = pagerState,
                 modifier = Modifier.fillMaxSize()
             ) { page ->
-               // ReviewsWidget()
+                ProductReviewsWidget(product.productReviews!![page])
             }
             Row(
                 Modifier

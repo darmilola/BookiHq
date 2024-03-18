@@ -2,6 +2,7 @@ package presentation.main
 
 import GGSansRegular
 import GGSansSemiBold
+import androidx.compose.foundation.BorderStroke
 import theme.styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -28,10 +30,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
@@ -41,6 +45,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
@@ -49,6 +54,7 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.FavoriteProduct
 import domain.Models.Product
 import domain.Models.ProductCategory
+import domain.Models.ProductItemUIModel
 import domain.Models.ResourceListEnvelope
 import domain.Models.User
 import domain.Models.Vendor
@@ -58,10 +64,12 @@ import presentation.Products.SearchBar
 import presentation.Products.CategoryScreen
 import presentation.Products.CategoryContract
 import presentation.Products.CategoryPresenter
+import presentation.Products.HomeProductItem
 import presentation.Products.ProductContract
 import presentation.Products.ProductDetailBottomSheet
 import presentation.Products.ProductItem
 import presentation.Products.ProductPresenter
+import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ProductViewModel
@@ -70,6 +78,7 @@ import presentation.viewmodels.UIStateViewModel
 import presentation.viewmodels.UIStates
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
+import utils.getPopularProductViewHeight
 
 
 class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
@@ -107,7 +116,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
         currentVendor = mainViewModel.connectedVendor.value
 
         val isUserSearching = remember { mutableStateOf(false) }
-        val searchContent = remember { mutableStateOf("") }
+        val searchQuery = remember { mutableStateOf("") }
 
         if (categoryUIStateViewModel == null) {
             categoryUIStateViewModel = kmpViewModel(
@@ -170,30 +179,37 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
             Scaffold(
                 topBar = {
-                    SearchBar() {
-                        isUserSearching.value = it.isNotEmpty()
+                    SearchBar( onValueChange = {
+                        productResourceListEnvelopeViewModel!!.clearData(mutableListOf<Product>())
+                        isUserSearching.value = true
                         if(it.isNotEmpty()) {
-                            productPresenter.searchProducts(
-                                mainViewModel.connectedVendor.value.vendorId!!,
-                                it
-                            )
+                            searchQuery.value = it
+                            if (!productResourceListEnvelopeViewModel!!.isSearching.value) {
+                                productPresenter.searchProducts(
+                                    mainViewModel.connectedVendor.value.vendorId!!,
+                                    it
+                                )
+                            }
                         }
-                    }
+                    }, onBackPressed = {
+                        productResourceListEnvelopeViewModel!!.clearData(mutableListOf<Product>())
+                        isUserSearching.value = false
+                    })
                 },
                 content = {
                     if (!isUserSearching.value) {
+                        productResourceListEnvelopeViewModel!!.clearData(mutableListOf<Product>())
                         ProductContent(
                             productCategories!!,
                             productResourceListEnvelopeViewModel!!, productUIStateViewModel!!,
                             productPresenter, mainViewModel
                         )
-                    }else{
+                    } else{
+                        productResourceListEnvelopeViewModel!!.clearData(mutableListOf<Product>())
                         SearchContent(
-                            productCategories!!,
+                            searchQuery.value,
                             productResourceListEnvelopeViewModel!!, productUIStateViewModel!!,
-                            productPresenter, mainViewModel,
-                            searchContent.value
-                        )
+                            productPresenter, mainViewModel)
                     }
                 },
                 backgroundColor = Color.White,
@@ -280,17 +296,42 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
 
 @Composable
-fun SearchContent(productCategories: ArrayList<ProductCategory>,productResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Product>,
-                   uiStateViewModel: UIStateViewModel, productPresenter: ProductPresenter, mainViewModel: MainViewModel, searchQuery: String) {
+fun SearchContent(searchQuery: String, productResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Product>,
+                   uiStateViewModel: UIStateViewModel, productPresenter: ProductPresenter, mainViewModel: MainViewModel) {
 
+    val connectedVendor: Vendor = mainViewModel.connectedVendor.value
+    val loadMoreState = productResourceListEnvelopeViewModel.isLoadingMore.collectAsState()
+    val productList = productResourceListEnvelopeViewModel.resources.collectAsState()
+    val totalProductsCount = productResourceListEnvelopeViewModel.totalItemCount.collectAsState()
+    val displayedProductsCount =
+        productResourceListEnvelopeViewModel.displayedItemCount.collectAsState()
+    val lastIndex = productList.value.size.minus(1)
+    val selectedProduct = remember { mutableStateOf(Product()) }
     val productUIState = uiStateViewModel.uiData.collectAsState()
+    var productUIModel by remember {
+        mutableStateOf(
+            ProductItemUIModel(
+                selectedProduct.value,
+                productList.value
+            )
+        )
+    }
+
+    if (!loadMoreState.value) {
+        productUIModel = productUIModel.copy(selectedProduct = selectedProduct.value,
+            productList = productResourceListEnvelopeViewModel.resources.value.map { it2 ->
+                it2.copy(
+                    isSelected = it2.productId == selectedProduct.value.vendorId
+                )
+            })
+    }
 
     Box(
         modifier = Modifier.fillMaxWidth().fillMaxHeight(),
         contentAlignment = Alignment.Center
     ) {
         if (productUIState.value.loadingVisible) {
-            //Content Loading
+            productResourceListEnvelopeViewModel.setIsSearching(true)
             Box(
                 modifier = Modifier.fillMaxWidth().fillMaxHeight()
                     .padding(top = 40.dp, start = 50.dp, end = 50.dp)
@@ -300,9 +341,10 @@ fun SearchContent(productCategories: ArrayList<ProductCategory>,productResourceL
                 IndeterminateCircularProgressBar()
             }
         } else if (productUIState.value.errorOccurred) {
+            productResourceListEnvelopeViewModel.setIsSearching(false)
             // Error Occurred display reload
         } else if (productUIState.value.contentVisible) {
-
+            productResourceListEnvelopeViewModel.setIsSearching(false)
             val columnModifier = Modifier
                 .padding(top = 5.dp)
                 .fillMaxHeight()
@@ -323,29 +365,32 @@ fun SearchContent(productCategories: ArrayList<ProductCategory>,productResourceL
                     Column {
                         var showProductDetailBottomSheet by remember { mutableStateOf(false) }
                         if (showProductDetailBottomSheet) {
-                            ProductDetailBottomSheet() {
+                            ProductDetailBottomSheet(selectedProduct.value) {
                                 showProductDetailBottomSheet = false
                             }
                         }
-
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(2),
-                            modifier = Modifier.fillMaxWidth().padding(top = 10.dp).fillMaxHeight(),
-                            contentPadding = PaddingValues(6.dp),
+                        LazyColumn(
+                            modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(
+                                getPopularProductViewHeight(productUIModel.productList).dp
+                            ),
+                            contentPadding = PaddingValues(top = 6.dp, bottom = 6.dp),
                             verticalArrangement = Arrangement.spacedBy(5.dp),
-                            horizontalArrangement = Arrangement.spacedBy(5.dp)
+                            userScrollEnabled = true
                         ) {
-                            items(10) {
-                                ProductItem(onProductClickListener = {
-                                    showProductDetailBottomSheet = true
-                                })
-                            }
+                            items(productUIModel.productList.size) { it ->
+                                HomeProductItem(
+                                    productUIModel.productList[it],
+                                    onProductClickListener = { it2 ->
+                                        showProductDetailBottomSheet = true
+                                        selectedProduct.value = it2
+                                    })
+                              }
                         }
                     }
                 }
+
             }
         }
-
     }
 }
 
@@ -362,11 +407,12 @@ fun SearchContent(productCategories: ArrayList<ProductCategory>,productResourceL
 
         LaunchedEffect(Unit, block = {
             if(productCategories.isNotEmpty()){
+                productResourceListEnvelopeViewModel.clearData(mutableListOf<Product>())
                 productPresenter.getProducts(mainViewModel.connectedVendor.value.vendorId!!, productCategories[tabIndex].categoryId!!)
                }
             })
 
-            Column(modifier = Modifier.fillMaxWidth().padding(top = 10.dp)) {
+            Column(modifier = Modifier.fillMaxSize().padding(top = 10.dp)) {
                 ScrollableTabRow(selectedTabIndex = tabIndex,
                     modifier = Modifier.height(40.dp),
                     backgroundColor = Color.Transparent,
@@ -399,6 +445,7 @@ fun SearchContent(productCategories: ArrayList<ProductCategory>,productResourceL
                             selected = tabIndex == index,
                             onClick = {
                                 tabIndex = index
+                                productResourceListEnvelopeViewModel.clearData(mutableListOf<Product>())
                                 productPresenter.getProducts(mainViewModel.connectedVendor.value.vendorId!!, productCategories[tabIndex].categoryId!!)
                             }
 
@@ -413,7 +460,6 @@ fun SearchContent(productCategories: ArrayList<ProductCategory>,productResourceL
                         //Content Loading
                         Box(
                             modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                                .padding(top = 40.dp, start = 50.dp, end = 50.dp)
                                 .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
                             contentAlignment = Alignment.Center
                         ) {
@@ -472,7 +518,15 @@ class ShopProductsHandler(
 
 
     override fun showProducts(products: ResourceListEnvelope<Product>?, isFromSearch: Boolean) {
-        if (productResourceListEnvelopeViewModel.resources.value.isNotEmpty()) {
+        if (isFromSearch){
+            productResourceListEnvelopeViewModel.setResources(products?.resources)
+            products?.prevPageUrl?.let { productResourceListEnvelopeViewModel.setPrevPageUrl(it) }
+            products?.nextPageUrl?.let { productResourceListEnvelopeViewModel.setNextPageUrl(it) }
+            products?.currentPage?.let { productResourceListEnvelopeViewModel.setCurrentPage(it) }
+            products?.totalItemCount?.let { productResourceListEnvelopeViewModel.setTotalItemCount(it) }
+            products?.displayedItemCount?.let { productResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
+        }
+       else if (productResourceListEnvelopeViewModel.resources.value.isNotEmpty()) {
             val productList = productResourceListEnvelopeViewModel.resources.value
             productList.addAll(products?.resources!!)
             productResourceListEnvelopeViewModel.setResources(productList)

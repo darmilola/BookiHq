@@ -2,7 +2,6 @@ package presentation.Products
 
 import GGSansBold
 import GGSansRegular
-import GGSansSemiBold
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -46,6 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Models.Product
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -54,10 +54,10 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun ProductDetailContent() {
+fun ProductDetailContent(product: Product) {
     Scaffold(
         content = {
-            SheetContent()
+            ProductBottomSheetContent(product)
         },
         backgroundColor = Color.White,
         bottomBar = {
@@ -71,7 +71,7 @@ fun ProductDetailContent() {
                 val buttonStyle2 = Modifier
                     .padding(bottom = 10.dp, start = 10.dp, end = 10.dp, top = 4.dp)
                     .fillMaxWidth()
-                    .height(50.dp)
+                    .height(45.dp)
 
                 val bgStyle = Modifier
                     .padding(bottom = 10.dp)
@@ -87,7 +87,7 @@ fun ProductDetailContent() {
                         verticalAlignment = Alignment.CenterVertically) {
                         CartIncrementDecrementWidget()
                     }
-                    ButtonComponent(modifier = buttonStyle2, buttonText = "Add to Cart", colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Color(color = 0xFFFFFFFF), style = TextStyle(), borderStroke = null){}
+                    ButtonComponent(modifier = buttonStyle2, buttonText = "Add to Cart", colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 16, shape = RoundedCornerShape(15.dp), textColor = Color(color = 0xFFFFFFFF), style = TextStyle(), borderStroke = null){}
                 }
 
             }
@@ -98,9 +98,11 @@ fun ProductDetailContent() {
 
 
 @Composable
-fun SheetContent() {
+fun ProductBottomSheetContent(product: Product) {
 
     var currentTabScreen by remember { mutableStateOf(0) }
+    val reviewText = if (product.productReviews?.isNotEmpty() == true) "Reviews"  else "No Reviews"
+
 
     val boxModifier =
         Modifier
@@ -115,25 +117,25 @@ fun SheetContent() {
         horizontalAlignment  = Alignment.CenterHorizontally,
     ) {
         Box(contentAlignment = Alignment.TopStart, modifier = boxModifier) {
-            attachServiceImages()
-            SheetContentHeader()
+            AttachScrollingProductImages(product)
+            ProductBottomSheetContentHeader()
         }
-        ProductNameInfoContent()
+        ProductNameInfoContent(product)
         Divider(color = Color(color = 0x90C8C8C8), thickness = 1.dp, modifier = Modifier.fillMaxWidth(0.90f).padding(top = 20.dp))
 
-        ToggleButton(shape = RoundedCornerShape(10.dp), onLeftClicked = {
-          currentTabScreen = 0
+        ToggleButton(shape = CircleShape, onLeftClicked = {
+           currentTabScreen = 0
         }, onRightClicked = {
             currentTabScreen = 1
-        }, leftText = "Description", rightText = "Reviews(20)")
-        ProductTabScreen(currentTabScreen)
+        }, leftText = "Description", rightText = reviewText)
+        ProductTabScreen(product,currentTabScreen)
     }
 }
 
 
 
 @Composable
-fun ProductDescription() {
+fun ProductDescription(product: Product) {
 
     Column(
         modifier = Modifier
@@ -159,7 +161,7 @@ fun ProductDescription() {
                 .fillMaxWidth())
 
         TextComponent(
-            textModifier = Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 20.dp), text = "Alternative theories suggest that the word SPA is an acronym of the Latin phrase Salus/Sanum per aquam or Sanitas per aquam, which translates as “health through water”. Many historians argue that it was originally coined in the Roman Empire and that it has been found inscribed on the walls of ancient Roman baths",
+            textModifier = Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 20.dp), text = product.productDescription,
             fontSize = 16, fontFamily = GGSansRegular,
             textStyle = MaterialTheme.typography.h6, textColor = Color.DarkGray, textAlign = TextAlign.Left,
             fontWeight = FontWeight.Medium, lineHeight = 25)
@@ -169,22 +171,24 @@ fun ProductDescription() {
 
 
 @Composable
-fun ProductNameInfoContent() {
+fun ProductNameInfoContent(product: Product) {
     Row(modifier = Modifier
         .padding(start = 20.dp, end = 20.dp, top = 10.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically) {
         Column(modifier = Modifier
             .fillMaxWidth(0.7f)) {
-            ProductFavInfoContent()
-            ProductTitle()
+            ProductFavInfoContent(product)
+            ProductTitle(product)
         }
-        ProductPriceInfoContent()
+        ProductPriceInfoContent(product)
     }
 }
 
 @Composable
-fun ProductPriceInfoContent() {
+fun ProductPriceInfoContent(product: Product) {
+
+    val price = if(product.isDiscounted) product.discount else product.productPrice
 
     Column(
         modifier = Modifier
@@ -193,23 +197,26 @@ fun ProductPriceInfoContent() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.End,
     ) {
-        TextComponent(
-            text = "$67,000",
-            fontSize = 16,
-            fontFamily = GGSansRegular,
-            textStyle = TextStyle(textDecoration = TextDecoration.LineThrough),
-            textColor = Color.LightGray,
-            textAlign = TextAlign.Right,
-            fontWeight = FontWeight.ExtraBold,
-            lineHeight = 20,
-            textModifier = Modifier
-                .padding(top = 5.dp)
-                .fillMaxWidth()
-                .wrapContentHeight()
-        )
+
+        if(product.isDiscounted) {
+            TextComponent(
+                text = "$" + product.productPrice,
+                fontSize = 16,
+                fontFamily = GGSansRegular,
+                textStyle = TextStyle(textDecoration = TextDecoration.LineThrough),
+                textColor = Color.LightGray,
+                textAlign = TextAlign.Right,
+                fontWeight = FontWeight.ExtraBold,
+                lineHeight = 20,
+                textModifier = Modifier
+                    .padding(top = 5.dp)
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+            )
+        }
 
         TextComponent(
-            text = "$670,000",
+            text = "$$price",
             fontSize = 20,
             fontFamily = GGSansBold,
             textStyle = TextStyle(),
@@ -230,11 +237,11 @@ fun ProductPriceInfoContent() {
 }
 
 @Composable
-fun ProductFavInfoContent() {
+fun ProductFavInfoContent(product: Product) {
    Row(modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(bottom = 10.dp)) {
-       ImageComponent(imageModifier = Modifier.size(20.dp), imageRes = "drawable/fav_icon.png", colorFilter = ColorFilter.tint(color = Color(0xfffa2d65)))
+       ImageComponent(imageModifier = Modifier.size(20.dp), imageRes = "drawable/like_icon.png", colorFilter = ColorFilter.tint(color = Colors.pinkColor))
        TextComponent(
-           text = "500",
+           text = product.favoriteCount.toString(),
            fontSize = 18,
            fontFamily = GGSansRegular,
            textStyle = MaterialTheme.typography.h6,
@@ -252,8 +259,8 @@ fun ProductFavInfoContent() {
 }
 
 @Composable
-fun SheetContentHeader() {
-    Row(modifier = Modifier.height(80.dp).fillMaxWidth(),
+fun ProductBottomSheetContentHeader() {
+    Row(modifier = Modifier.height(30.dp).fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically) {
         Box(modifier = Modifier
@@ -262,10 +269,16 @@ fun SheetContentHeader() {
             .fillMaxHeight()
             .weight(1f),
             contentAlignment = Alignment.CenterStart) {
-            attachCancelIcon()
-        }
-        Box(Modifier.weight(3f)) {
 
+        }
+        Box(Modifier.weight(3f), contentAlignment = Alignment.Center) {
+            Box(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(Colors.primaryColor)
+                    .height(4.dp)
+                    .width(60.dp)
+            )
         }
         Box(modifier = Modifier
             .padding(end = 10.dp)
@@ -273,13 +286,13 @@ fun SheetContentHeader() {
             .fillMaxHeight()
             .weight(1f),
             contentAlignment = Alignment.CenterEnd) {
-            attachShareIcon()
+
         }
     }
 }
 
 @Composable
-fun ProductTitle(){
+fun ProductTitle(product: Product){
     Column(
         modifier = Modifier
             .padding(top = 5.dp)
@@ -290,7 +303,7 @@ fun ProductTitle(){
     ) {
 
         TextComponent(
-            text = "Bloom Rose Oil And Argan Oil",
+            text = product.productName,
             fontSize = 16,
             fontFamily = GGSansRegular,
             textStyle = MaterialTheme.typography.h6,
@@ -305,12 +318,13 @@ fun ProductTitle(){
     }
 }
 
-@OptIn(ExperimentalResourceApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun attachServiceImages(){
+fun AttachScrollingProductImages(product: Product){
 
+    val productImages = product.productImages
     val pagerState = rememberPagerState(pageCount = {
-        3
+        productImages.size
     })
 
     val  boxModifier =
@@ -325,13 +339,13 @@ fun attachServiceImages(){
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { page ->
-            ImageComponent(imageModifier = Modifier.fillMaxWidth().height(350.dp), imageRes = "drawable/$page.jpg", contentScale = ContentScale.Crop)
+            ImageComponent(imageModifier = Modifier.fillMaxWidth().height(350.dp), imageRes = productImages[page].imageUrl, contentScale = ContentScale.Crop, isAsync = true)
         }
         Row(
             Modifier
                 .wrapContentHeight()
                 .fillMaxWidth()
-                .padding(bottom = 4.dp),
+                .padding(bottom = 4.dp, start = 10.dp, end = 10.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             repeat(pagerState.pageCount) { iteration ->

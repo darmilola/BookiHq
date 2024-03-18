@@ -255,9 +255,9 @@ fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, isRightSelection: Boo
     val rightTextColor = if (isLeftChecked) Colors.primaryColor else Color.White
 
     val rowModifier = Modifier
-        .padding(top = 15.dp, end = 10.dp)
+        .padding(top = 15.dp, end = 10.dp, start = 10.dp)
         .fillMaxWidth()
-        .height(60.dp)
+        .height(55.dp)
         .background(color = Colors.lightPrimaryColor, shape = CircleShape)
         Row(
             horizontalArrangement = Arrangement.Start,
@@ -278,13 +278,13 @@ fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, isRightSelection: Boo
                 Box(
                     modifier = Modifier
                         .fillMaxWidth(0.50f)
-                        .height(50.dp)
+                        .height(45.dp)
                         .background(leftTint, shape = shape),
                     contentAlignment = Alignment.Center,
                 ) {
                     TextComponent(
                         text = leftText,
-                        fontSize = 16,
+                        fontSize = 15,
                         textStyle = MaterialTheme.typography.h6,
                         fontFamily = GGSansRegular,
                         textColor = leftTextColor,
@@ -313,7 +313,7 @@ fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, isRightSelection: Boo
                 ) {
                     TextComponent(
                         text = rightText,
-                        fontSize = 16,
+                        fontSize = 15,
                         textStyle = MaterialTheme.typography.h6,
                         fontFamily = GGSansRegular,
                         textColor = rightTextColor,

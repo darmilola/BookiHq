@@ -1,6 +1,7 @@
 package utils
 
 import domain.Models.AppointmentItem
+import domain.Models.Product
 import domain.Models.UnsavedAppointment
 
 fun getAppointmentViewHeight(
@@ -19,5 +20,13 @@ fun getUnSavedAppointmentViewHeight(
     val itemCount = itemList.size
 
     return itemCount * 190
+}
+
+fun getPopularProductViewHeight(
+    itemList: List<Product>
+): Int {
+    val itemCount = itemList.size
+
+    return itemCount * 225
 }
 

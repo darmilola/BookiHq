@@ -38,7 +38,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import domain.Models.Date
 import domain.Models.ServiceTypeSpecialist
 import domain.Models.ServiceTypeTherapistUIModel
 import domain.Models.ServiceTime
@@ -47,7 +46,7 @@ import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.AttachTherapistWidget
-import presentation.widgets.ReviewsWidget
+import presentation.widgets.SpecialistReviewsWidget
 import presentation.widgets.TimeGrid
 import presentations.components.TextComponent
 
@@ -270,7 +269,7 @@ fun AttachServiceReviews(serviceTypeSpecialist: ServiceTypeSpecialist){
                 state = pagerState,
                 modifier = Modifier.fillMaxSize()
             ) { page ->
-                ReviewsWidget(specialistReviews!![page])
+                SpecialistReviewsWidget(specialistReviews!![page])
             }
             Row(
                 Modifier

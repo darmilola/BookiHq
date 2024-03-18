@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import domain.Models.Product
 import presentation.components.StraightLine
 import presentation.main.MainTab
 import presentation.viewmodels.MainViewModel
@@ -130,7 +131,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
         var showSheet by remember { mutableStateOf(false) }
 
         if (showSheet) {
-            ProductDetailBottomSheet() {
+            ProductDetailBottomSheet(Product()) {
                 showSheet = false
             }
         }

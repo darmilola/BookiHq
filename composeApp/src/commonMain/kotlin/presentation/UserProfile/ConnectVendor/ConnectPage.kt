@@ -36,6 +36,7 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import domain.Models.PlatformNavigator
+import domain.Models.Product
 import domain.Models.ResourceListEnvelope
 import domain.Models.Vendor
 import domain.Models.VendorItemUIModel
@@ -146,11 +147,11 @@ open class ConnectPage(val  platformNavigator: PlatformNavigator? = null) : Scre
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally) {
                         SwitchVendorHeader()
-                        SearchBar(placeholderText = "search @vendor"){
-                            vendorResourceListEnvelopeViewModel!!.clearData()
+                        SearchBar(placeholderText = "search @vendor", onValueChange = {
+                            vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                             searchQuery.value = it
                             connectVendorPresenter.searchVendor(countryId,cityId, searchQuery = it)
-                        }
+                        }, onBackPressed = {})
                     }
                 },
                 content = {

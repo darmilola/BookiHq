@@ -5,13 +5,12 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
+import domain.Models.Product
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import presentation.viewmodels.ProductTabViewModel
 
-
-@OptIn(ExperimentalResourceApi::class, ExperimentalAnimationApi::class)
 @Composable
-fun ProductTabScreen(currentPosition: Int = 0) {
+fun ProductTabScreen(product: Product, currentPosition: Int = 0) {
 
     val viewModel: ProductTabViewModel = ProductTabViewModel()
     viewModel.changeScreen(currentPosition)
@@ -19,30 +18,16 @@ fun ProductTabScreen(currentPosition: Int = 0) {
     val state = viewModel.productTabScreenData!!.screenType
 
     AnimatedContent(targetState = state) { targetState ->
-        // It's important to use targetState and not state, as its critical to ensure
-        // a successful lookup of all the incoming and outgoing content during
-        // content transform.
         when (targetState) {
             0 -> {
-                ProductDescription()
+                ProductDescription(product)
             }
             1 -> {
-                AttachProductReviews()
+                if (product.productReviews!!.isNotEmpty()) {
+                    AttachProductReviews(product)
+                }
             }
         }
     }
 
-
-
 }
-
-class ProductTabComposeScreen(currentScreen: Int = 0) : Screen {
-
-    private val sc = currentScreen
-    @OptIn(ExperimentalMaterialApi::class)
-    @Composable
-    override fun Content() {
-        ProductTabScreen(currentPosition = sc)
-    }
-}
-
