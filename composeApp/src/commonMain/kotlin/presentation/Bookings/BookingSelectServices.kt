@@ -35,7 +35,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import domain.Models.ServiceTypeItem
-import domain.Models.ServiceImages
 import domain.Models.Services
 import domain.Models.UnsavedAppointment
 import presentation.viewmodels.BookingViewModel
@@ -67,6 +66,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
     val currentBooking =  if (savedBooking.bookingId != -1) savedBooking else UnsavedAppointment(currentBookingId)
     currentBooking.services = services
     currentBooking.serviceId = services.serviceId
+    bookingViewModel.setCurrentBooking(currentBooking)
 
     val stackedSnackBarHostState = rememberStackedSnackbarHostState(
         maxStack = 5,
@@ -74,7 +74,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
     )
 
     // initialise new recommendation
-    if (mainViewModel.vendorRecommendation.value.recommendationId != -1){
+    if (mainViewModel.vendorRecommendation.value.recommendationId != -1) {
         val recommendation = mainViewModel.vendorRecommendation.value
         val serviceType = recommendation.serviceTypeItem
         bookingViewModel.setSelectedServiceType(serviceType!!)
@@ -84,6 +84,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
         if (services.serviceTypes.size == 0) {
             services.serviceTypes.add(serviceType)
         }
+        bookingViewModel.setCurrentBooking(currentBooking)
     }
 
     val boxModifier =
@@ -101,22 +102,24 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
 
             // AnimationEffect
             Box(contentAlignment = Alignment.TopStart, modifier = boxModifier) {
-                AttachServiceImages(services.serviceImages)
+                AttachServiceImages(mainViewModel)
             }
-            ServiceTitle(services.serviceTitle)
-            AttachServiceTypeToggle(services,bookingViewModel, onServiceSelected = {
-                if (!it.homeServiceAvailable) {
-                    ShowSnackBar(title = "No Home Service",
-                        description = "Home service is not available for the selected service",
+            ServiceTitle(mainViewModel)
+            AttachServiceTypeToggle(mainViewModel,bookingViewModel, onServiceSelected = {
+                if (it.homeServiceAvailable) {
+                    ShowSnackBar(title = "Home Service Is Available",
+                        description = "Home service is available for this service",
                         actionLabel = "",
                         duration = StackedSnackbarDuration.Short,
-                        snackBarType = SnackBarType.ERROR,
+                        snackBarType = SnackBarType.INFO,
                         stackedSnackBarHostState,
                         onActionClick = {})
                 }
                 if (it.serviceId != -1) {
+                    bookingViewModel.undoSelectedServiceType()
                     bookingViewModel.setSelectedServiceType(it)
                     currentBooking.serviceTypeItem = it
+                    currentBooking.serviceTypeSpecialist = null
                     currentBooking.serviceTypeId = it.categoryId
                     bookingViewModel.setCurrentBooking(currentBooking)
                 }
@@ -129,7 +132,9 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
                 bookingViewModel.setCurrentBooking(currentBooking)
             })
             BookingCalendar(bookingViewModel = bookingViewModel) {
+                bookingViewModel.undoSpecialist()
                 currentBooking.appointmentDate = it
+                currentBooking.serviceTypeSpecialist = null
                 bookingViewModel.setCurrentBooking(currentBooking)
                 bookingViewModel.setSelectedDate(it)
             }
@@ -138,7 +143,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
 }
 
 @Composable
-fun AttachServiceTypeToggle(services: Services,bookingViewModel: BookingViewModel, onServiceSelected: (ServiceTypeItem) -> Unit){
+fun AttachServiceTypeToggle(mainViewModel: MainViewModel,bookingViewModel: BookingViewModel, onServiceSelected: (ServiceTypeItem) -> Unit){
     Column(
         modifier = Modifier
             .padding(start = 10.dp, end = 10.dp, top = 35.dp)
@@ -159,33 +164,35 @@ fun AttachServiceTypeToggle(services: Services,bookingViewModel: BookingViewMode
             lineHeight = 30,
             textModifier = Modifier
                 .fillMaxWidth().padding(start = 10.dp))
-        AttachDropDownWidget(services, bookingViewModel = bookingViewModel, onServiceSelected = {
+        AttachDropDownWidget(mainViewModel,bookingViewModel, onServiceSelected = {
                onServiceSelected(it)
         })
     }
 }
 
 @Composable
-fun AttachDropDownWidget(services: Services, bookingViewModel: BookingViewModel, onServiceSelected: (ServiceTypeItem) -> Unit) {
+fun AttachDropDownWidget(mainViewModel: MainViewModel,bookingViewModel: BookingViewModel, onServiceSelected: (ServiceTypeItem) -> Unit) {
+    val serviceState = mainViewModel.selectedService.collectAsState()
     val serviceTypeList = arrayListOf<String>()
     var selectedIndex: Int = -1
-    val unsavedAppointment = bookingViewModel.currentAppointmentBooking.value
-    if (unsavedAppointment.serviceTypeId != -1) {
-        selectedIndex = services.serviceTypes.indexOf(unsavedAppointment.serviceTypeItem!!)
+    val unsavedAppointment = bookingViewModel.currentAppointmentBooking.collectAsState()
+    if (unsavedAppointment.value.serviceTypeId != -1) {
+        selectedIndex = serviceState.value.serviceTypes.indexOf(unsavedAppointment.value.serviceTypeItem!!)
     }
     var selectedService: ServiceTypeItem? = null
-    for (item in services.serviceTypes){
+    for (item in serviceState.value.serviceTypes){
          serviceTypeList.add(item.title)
     }
     DropDownWidget(menuItems = serviceTypeList, selectedIndex = selectedIndex, iconRes = "drawable/spa_treatment_leaves.png",
         placeHolderText = "Select Service Type", iconSize = 25, onMenuItemClick = {
-         selectedService = services.serviceTypes[it]
+         selectedService = serviceState.value.serviceTypes[it]
          onServiceSelected(selectedService!!)
     })
 }
 
 @Composable
-fun ServiceTitle(serviceTitle: String){
+fun ServiceTitle(mainViewModel: MainViewModel){
+    val serviceState = mainViewModel.selectedService.collectAsState()
     Column(
         modifier = Modifier
             .padding(start = 10.dp, end = 10.dp, top = 10.dp)
@@ -196,7 +203,7 @@ fun ServiceTitle(serviceTitle: String){
     ) {
 
         TextComponent(
-            text = serviceTitle,
+            text = serviceState.value.serviceTitle,
             fontSize = 20,
             fontFamily = GGSansSemiBold,
             textStyle =  MaterialTheme.typography.h6,
@@ -213,8 +220,9 @@ fun ServiceTitle(serviceTitle: String){
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AttachServiceImages(serviceImages: ArrayList<ServiceImages>){
-
+fun AttachServiceImages(mainViewModel: MainViewModel){
+    val serviceState = mainViewModel.selectedService.collectAsState()
+    val serviceImages = serviceState.value.serviceImages
     val pagerState = rememberPagerState(pageCount = {
         serviceImages.size
     })

@@ -48,6 +48,16 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
     fun setCurrentBookingId(bookingId: Int) {
         savedStateHandle["currentBookingId"] = bookingId
     }
+
+    fun undoSelectedServiceType() {
+        savedStateHandle["selectedServiceType"] = ServiceTypeItem()
+        savedStateHandle["specialists"] = arrayListOf<ServiceTypeSpecialist>()
+    }
+
+    fun undoSpecialist() {
+        savedStateHandle["specialists"] = arrayListOf<ServiceTypeSpecialist>()
+    }
+
     fun clearCurrentBooking(){
         savedStateHandle["selectedServiceType"] = ServiceTypeItem()
         savedStateHandle["currentAppointmentBooking"] = UnsavedAppointment(-1)

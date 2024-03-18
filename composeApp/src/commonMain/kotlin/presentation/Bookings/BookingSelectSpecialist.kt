@@ -55,16 +55,9 @@ fun BookingSelectSpecialist(mainViewModel: MainViewModel, uiStateViewModel: UISt
                             bookingViewModel: BookingViewModel,
                             bookingPresenter: BookingPresenter) {
 
-    val uiStates = uiStateViewModel.uiData.collectAsState()
     val therapists = bookingViewModel.serviceSpecialists.collectAsState()
-    val currentBooking = bookingViewModel.currentAppointmentBooking.value
-    val selectedTherapist = remember { mutableStateOf(ServiceTypeSpecialist()) }
-    if (currentBooking.serviceTypeSpecialist != null) {
-        selectedTherapist.value = currentBooking.serviceTypeSpecialist!!
-    }
-
     LaunchedEffect(Unit, block = {
-        if (therapists.value.isEmpty()) {
+        if (therapists.value.isEmpty() || (bookingViewModel.currentBookingId.value != bookingViewModel.currentAppointmentBooking.value.bookingId)) {
             bookingPresenter.getServiceTherapists(
                 bookingViewModel.selectedServiceType.value.categoryId,
                 bookingViewModel.selectedDate.value.toString()
@@ -72,8 +65,16 @@ fun BookingSelectSpecialist(mainViewModel: MainViewModel, uiStateViewModel: UISt
         }
     })
 
+    val uiStates = uiStateViewModel.uiData.collectAsState()
+    val currentBooking = bookingViewModel.currentAppointmentBooking.value
+    val selectedTherapist = remember { mutableStateOf(ServiceTypeSpecialist()) }
+    if (currentBooking.serviceTypeSpecialist != null) {
+        selectedTherapist.value = currentBooking.serviceTypeSpecialist!!
+    }
+
+
     if (uiStates.value.loadingVisible) {
-        //Content Loading
+        // Content Loading
         Box(
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
                 .padding(top = 40.dp, start = 50.dp, end = 50.dp)

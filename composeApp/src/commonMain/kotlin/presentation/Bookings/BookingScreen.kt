@@ -176,6 +176,9 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                     ) {
                         AttachBookingPages(
                             pagerState,
+                            uiStateViewModel!!,
+                            mainViewModel,
+                            bookingViewModel!!,
                             services = mainViewModel.selectedService.value,
                             onAddMoreServiceClicked = {
                                 addMoreService.value = true
@@ -277,7 +280,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun AttachBookingPages(pagerState: PagerState, services: Services,onAddMoreServiceClicked:() -> Unit, onLastItemRemoved:() -> Unit){
+    fun AttachBookingPages(pagerState: PagerState,uiStateViewModel: UIStateViewModel,mainViewModel: MainViewModel,bookingViewModel: BookingViewModel,services: Services,onAddMoreServiceClicked:() -> Unit, onLastItemRemoved:() -> Unit){
 
         val  boxModifier =
             Modifier
@@ -294,9 +297,9 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                 userScrollEnabled = false
             ) { page ->
                 when (page) {
-                    0 -> BookingSelectServices(mainViewModel, bookingViewModel!!,services)
-                    1 -> BookingSelectSpecialist(mainViewModel,uiStateViewModel!!,bookingViewModel!!,bookingPresenter)
-                    2 -> BookingOverview(mainViewModel,uiStateViewModel!!,bookingViewModel!!,bookingPresenter, onAddMoreServiceClicked = {
+                    0 -> BookingSelectServices(mainViewModel, bookingViewModel,services)
+                    1 -> BookingSelectSpecialist(mainViewModel,uiStateViewModel,bookingViewModel,bookingPresenter)
+                    2 -> BookingOverview(mainViewModel,uiStateViewModel,bookingViewModel,bookingPresenter, onAddMoreServiceClicked = {
                          onAddMoreServiceClicked()
                     }, onLastItemRemoved = {
                          onLastItemRemoved()

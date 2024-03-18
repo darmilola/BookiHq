@@ -74,6 +74,13 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     fun clearUnsavedAppointments() {
         savedStateHandle["currentUnsavedAppointments"] = SnapshotStateList<UnsavedAppointment>()
     }
+
+    fun removeLastAppointment() {
+        val unsavedAppointments: SnapshotStateList<UnsavedAppointment> = savedStateHandle["currentUnsavedAppointments"]!!
+        unsavedAppointments.removeLastOrNull()
+        savedStateHandle["currentUnsavedAppointments"] = unsavedAppointments
+    }
+
     fun clearVendorRecommendation() {
         savedStateHandle["vendorRecommendation"] = VendorRecommendation()
     }

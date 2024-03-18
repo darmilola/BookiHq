@@ -1,7 +1,6 @@
 package presentation.Bookings
 
 import GGSansRegular
-import GGSansSemiBold
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -25,14 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import domain.Models.Screens
 import kotlinx.coroutines.launch
-import presentation.main.MainTab
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.PageBackNavWidget
@@ -108,6 +105,7 @@ fun leftTopBarItem(pagerState: PagerState, mainViewModel: MainViewModel, booking
         coroutineScope.launch {
             when (currentPage) {
                 2 -> {
+                    mainViewModel.removeLastAppointment()
                     pagerState.animateScrollToPage(1)
                 }
                 1 -> {

@@ -62,11 +62,12 @@ import utils.getUnSavedAppointmentViewHeight
             }
         }
         bookingPresenter.getUnSavedAppointment()
+        unsavedAppointments = mainViewModel.unSavedAppointments.value
     })
 
 
 
-    // View Contract Handler Initialisation
+ /*   // View Contract Handler Initialisation
     val handler = BookingScreenHandler(
         bookingViewModel, bookingPresenter,
         onPageLoading = {},
@@ -76,7 +77,7 @@ import utils.getUnSavedAppointmentViewHeight
           },
          onContentVisible = {}, onErrorVisible = {})
          handler.init()
-
+*/
 
 
 
@@ -95,10 +96,14 @@ import utils.getUnSavedAppointmentViewHeight
                 appointmentList = unsavedAppointments, onRemoveItem = { it ->
                         unsavedAppointments.remove(it)
                         mainViewModel.setCurrentUnsavedAppointments(unsavedAppointments)
-                        if (unsavedAppointments.size == 0){
+                     if (unsavedAppointments.size == 0){
                             onLastItemRemoved()
                         }
                     else{
+                         bookingViewModel.setCurrentBooking(unsavedAppointments.last())
+                         bookingViewModel.setSelectedServiceType(unsavedAppointments.last().serviceTypeItem!!)
+                         bookingViewModel.setSelectedDate(unsavedAppointments.last().appointmentDate!!)
+                         mainViewModel.setSelectedService(unsavedAppointments.last().services!!)
                          bookingPresenter.getUnSavedAppointment()
                     }
                 }
