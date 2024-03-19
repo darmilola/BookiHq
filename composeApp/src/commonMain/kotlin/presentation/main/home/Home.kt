@@ -322,9 +322,9 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                 userScrollEnabled = false
             ) {
                 items(popularProducts.size) {
-                    HomeProductItem(popularProducts[it],onProductClickListener = { it ->
+                    HomeProductItem(popularProducts[it],onProductClickListener = { it2 ->
                         showProductBottomSheet = true
-                        selectedProduct.value = it
+                        selectedProduct.value = it2
                     })
                 }
             }
@@ -461,7 +461,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
     fun BusinessStatusDisplay(statusList: List<VendorStatusModel>) {
         val boxBgModifier =
             Modifier
-                .fillMaxHeight()
+                .fillMaxHeight(0.50f)
                 .fillMaxWidth()
 
         Box(modifier = boxBgModifier) {

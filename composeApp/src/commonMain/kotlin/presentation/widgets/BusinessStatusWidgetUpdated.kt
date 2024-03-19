@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,18 +44,17 @@ fun BusinessStatusWidgetUpdated(adsPageList: List<BusinessStatusAdsPage>) {
     var currentImageId by remember { mutableStateOf(0) }
     var isRestart by remember { mutableStateOf(false) }
 
-    val boxModifier =
-        Modifier
-            .fillMaxHeight()
-            .fillMaxWidth()
 
-    Box(contentAlignment = Alignment.TopCenter, modifier = boxModifier) {
+    Column(modifier = Modifier
+        .fillMaxHeight()
+        .fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally) {
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxWidth().fillMaxHeight(0.60f)
         ) { page ->
-            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.60f).background(color = Color.Transparent)) {
-
+            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().background(color = Color.Transparent)) {
                 LoadBusinessStatus(currentPage = currentImageId, totalPage = adsPageList.size, adsPageList){
                     currentImageId = it
                 }
@@ -64,8 +64,7 @@ fun BusinessStatusWidgetUpdated(adsPageList: List<BusinessStatusAdsPage>) {
         Row(
             Modifier
                 .height(30.dp)
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter),
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             repeat(adsPageList.size) { iteration ->
@@ -80,6 +79,7 @@ fun BusinessStatusWidgetUpdated(adsPageList: List<BusinessStatusAdsPage>) {
                 )
             }
         }
+
 
     }
 
