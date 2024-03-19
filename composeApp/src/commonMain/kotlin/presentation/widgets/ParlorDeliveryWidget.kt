@@ -33,7 +33,17 @@ import presentations.components.TextComponent
 fun ParlorDeliveryWidget(mainViewModel: MainViewModel) {
     Row(
         modifier = Modifier.fillMaxWidth().height(90.dp).clickable {
-           mainViewModel.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.VENDOR_INFO.toPath()))
+            when (mainViewModel.screenNav.value.second) {
+                Screens.BOOKING.toPath() -> {
+                    mainViewModel.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.VENDOR_INFO.toPath()))
+                }
+                Screens.CART.toPath() -> {
+                    mainViewModel.setScreenNav(Pair(Screens.CART.toPath(), Screens.VENDOR_INFO.toPath()))
+                }
+                else -> {
+                    // navigator.current = MainTab(mainViewModel)
+                }
+            }
         },
         verticalAlignment = Alignment.CenterVertically
     ) {

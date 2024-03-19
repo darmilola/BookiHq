@@ -343,17 +343,16 @@ fun AttachCityDropDownWidget(selectedCountry: Int = -1,selectedCity: Int = -1, o
 
 @Composable
 private fun AttachBackIcon(mainViewModel: MainViewModel) {
-    val navigator = LocalTabNavigator.current
         PageBackNavWidget {
             when (mainViewModel.screenNav.value.first) {
                 Screens.BOOKING.toPath() -> {
-                    navigator.current = BookingScreen(mainViewModel)
+                    mainViewModel.setScreenNav(Pair(Screens.EDIT_PROFILE.toPath(), Screens.BOOKING.toPath()))
                 }
                 Screens.CART.toPath() -> {
-                    navigator.current = CartScreen(mainViewModel)
+                    mainViewModel.setScreenNav(Pair(Screens.EDIT_PROFILE.toPath(), Screens.CART.toPath()))
                 }
                 else -> {
-                  //  navigator.current = MainTab(mainViewModel)
+                  // navigator.current = MainTab(mainViewModel)
                 }
             }
         }

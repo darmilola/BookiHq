@@ -56,6 +56,7 @@ import domain.Models.Product
 import domain.Models.ProductCategory
 import domain.Models.ProductItemUIModel
 import domain.Models.ResourceListEnvelope
+import domain.Models.Screens
 import domain.Models.User
 import domain.Models.Vendor
 import org.koin.core.component.KoinComponent
@@ -235,7 +236,9 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                     .clip(CircleShape)
                     .size(70.dp)
                     .clickable {
-                        // mainViewModel.setId(3)
+                        mainViewModel.setScreenNav(
+                            Pair(Screens.MAIN_TAB.toPath(), Screens.CART.toPath())
+                        )
                     }
                     .background(color = Colors.darkPrimary),
                 contentAlignment = Alignment.Center

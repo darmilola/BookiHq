@@ -1,15 +1,15 @@
-package domain.appointments
+package domain.Models
 
-enum class ServiceLocation {
+enum class ConsultationMedium {
     Spa,
-    Home;
+    Virtual;
     fun toPath() = when (this) {
         Spa -> "spa"
-        Home -> "home"
+        Virtual -> "virtual"
     }
 
     fun toEventPropertyName() = when (this) {
         Spa -> "spa"
-        Home -> "home"
+        Virtual -> "virtual"
     }
 }

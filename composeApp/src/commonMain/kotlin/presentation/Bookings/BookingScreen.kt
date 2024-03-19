@@ -55,6 +55,10 @@ import org.koin.core.component.inject
 import presentation.authentication.AuthenticationContract
 import presentation.authentication.AuthenticationPresenter
 import presentation.authentication.AuthenticationScreenHandler
+import presentation.dialogs.ErrorDialog
+import presentation.dialogs.LoadingDialog
+import presentation.dialogs.SuccessDialog
+import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.AuthenticationViewModel
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
@@ -86,6 +90,15 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
     @Composable
     override fun Content() {
 
+        val pagerState = rememberPagerState(pageCount = { 3 })
+        val addMoreService = remember { mutableStateOf(false) }
+        val lastItemRemoved = remember { mutableStateOf(false) }
+        val coroutineScope = rememberCoroutineScope()
+
+        val creatingAppointmentProgress = remember { mutableStateOf(false) }
+        val creatingAppointmentSuccess = remember { mutableStateOf(false) }
+        val creatingAppointmentFailed = remember { mutableStateOf(false) }
+
         if (uiStateViewModel == null) {
             uiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
@@ -103,7 +116,6 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
     }
 
 
-
         // View Contract Handler Initialisation
         val handler = BookingScreenHandler(
             bookingViewModel!!, bookingPresenter,
@@ -115,20 +127,57 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                 uiStateViewModel!!.switchState(UIStates(contentVisible = true))
             }, onErrorVisible = {
                 uiStateViewModel!!.switchState(UIStates(errorOccurred = true))
+            },
+            onCreateAppointmentStarted = {
+                creatingAppointmentProgress.value = true
+            },
+            onCreateAppointmentSuccess = {
+                creatingAppointmentProgress.value = false
+                creatingAppointmentSuccess.value = true
+            },
+            onCreateAppointmentFailed = {
+                creatingAppointmentProgress.value = false
+                creatingAppointmentFailed.value = true
             })
         handler.init()
 
 
+        if (creatingAppointmentProgress.value) {
+            Box(modifier = Modifier.fillMaxWidth(0.90f)) {
+                LoadingDialog("Creating Appointment...")
+            }
+        }
+        else if (creatingAppointmentSuccess.value){
+            Box(modifier = Modifier.fillMaxWidth()) {
+                SuccessDialog("Creating Appointment Successful", actionTitle = "Done", onConfirmation = {
+                    bookingViewModel!!.clearCurrentBooking()
+                    mainViewModel.clearVendorRecommendation()
+                    mainViewModel.clearUnsavedAppointments()
+                    coroutineScope.launch {
+                        pagerState.scrollToPage(0)
+                        mainViewModel.setScreenNav(
+                            Pair(
+                                Screens.BOOKING.toPath(),
+                                Screens.MAIN_TAB.toPath()
+                            )
+                        )
+                    }
+                })
+            }
+        }
+        else if (creatingAppointmentFailed.value){
+            Box(modifier = Modifier.fillMaxWidth()) {
+                ErrorDialog("Creating Appointment Failed", actionTitle = "Retry", onConfirmation = {
+                    bookingPresenter.createAppointment(mainViewModel.unSavedAppointments.value, mainViewModel.currentUserInfo.value, mainViewModel.connectedVendor.value)
+                })
+            }
+        }
 
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
             animation = StackedSnackbarAnimation.Bounce
         )
-
-        val pagerState = rememberPagerState(pageCount = { 3 })
-        val addMoreService = remember { mutableStateOf(false) }
-        val lastItemRemoved = remember { mutableStateOf(false) }
 
         if (addMoreService.value){
             rememberCoroutineScope().launch {
@@ -187,7 +236,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                                 lastItemRemoved.value = true
                             }
                         )
-                        AttachActionButtons(pagerState, mainViewModel, stackedSnackBarHostState)
+                        AttachActionButtons(pagerState, mainViewModel, stackedSnackBarHostState, bookingPresenter)
                     }
                 }
 
@@ -198,7 +247,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun AttachActionButtons(pagerState: PagerState, mainViewModel: MainViewModel, stackedSnackBarHostState: StackedSnakbarHostState){
+    fun AttachActionButtons(pagerState: PagerState, mainViewModel: MainViewModel, stackedSnackBarHostState: StackedSnakbarHostState, bookingPresenter: BookingPresenter){
 
         var btnFraction by remember { mutableStateOf(0f) }
         val currentPage = pagerState.currentPage
@@ -233,42 +282,45 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                 colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
                 fontSize = 16, shape = RoundedCornerShape(10.dp),
                 textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h6, borderStroke = null) {
-                coroutineScope.launch {
-                    if(currentPage == 0){
-                        if(bookingViewModel?.selectedServiceType?.value?.serviceId == -1) {
-                            ShowSnackBar(title = "No Service Selected",
-                                description = "Please Select a Service to proceed",
-                                actionLabel = "",
-                                duration = StackedSnackbarDuration.Short,
-                                snackBarType = SnackBarType.ERROR,
-                                stackedSnackBarHostState,
-                                onActionClick = {})
-                        }
-                        else{
-                            pagerState.animateScrollToPage(1)
-                         }
-                    }
-                    else if(currentPage == 1){
-                        if(bookingViewModel?.currentAppointmentBooking?.value?.serviceTypeSpecialist == null) {
-                            ShowSnackBar(title = "No Therapist Selected",
-                                description = "Please Select a Therapist to proceed",
-                                actionLabel = "",
-                                duration = StackedSnackbarDuration.Short,
-                                snackBarType = SnackBarType.ERROR,
-                                stackedSnackBarHostState,
-                                onActionClick = {})
-                        }
-                        else if(bookingViewModel?.currentAppointmentBooking?.value?.appointmentTime == null) {
-                            ShowSnackBar(title = "No Time Selected",
-                                description = "Please Select Appointment Time to proceed",
-                                actionLabel = "",
-                                duration = StackedSnackbarDuration.Short,
-                                snackBarType = SnackBarType.ERROR,
-                                stackedSnackBarHostState,
-                                onActionClick = {})
-                        }
-                        else {
-                            pagerState.animateScrollToPage(2)
+
+                if (currentPage == 2){
+                    bookingPresenter.createAppointment(mainViewModel.unSavedAppointments.value, mainViewModel.currentUserInfo.value, mainViewModel.connectedVendor.value)
+                }
+                else {
+
+                    coroutineScope.launch {
+                        if (currentPage == 0) {
+                            if (bookingViewModel?.selectedServiceType?.value?.serviceId == -1) {
+                                ShowSnackBar(title = "No Service Selected",
+                                    description = "Please Select a Service to proceed",
+                                    actionLabel = "",
+                                    duration = StackedSnackbarDuration.Short,
+                                    snackBarType = SnackBarType.ERROR,
+                                    stackedSnackBarHostState,
+                                    onActionClick = {})
+                            } else {
+                                pagerState.animateScrollToPage(1)
+                            }
+                        } else if (currentPage == 1) {
+                            if (bookingViewModel?.currentAppointmentBooking?.value?.serviceTypeSpecialist == null) {
+                                ShowSnackBar(title = "No Therapist Selected",
+                                    description = "Please Select a Therapist to proceed",
+                                    actionLabel = "",
+                                    duration = StackedSnackbarDuration.Short,
+                                    snackBarType = SnackBarType.ERROR,
+                                    stackedSnackBarHostState,
+                                    onActionClick = {})
+                            } else if (bookingViewModel?.currentAppointmentBooking?.value?.appointmentTime == null) {
+                                ShowSnackBar(title = "No Time Selected",
+                                    description = "Please Select Appointment Time to proceed",
+                                    actionLabel = "",
+                                    duration = StackedSnackbarDuration.Short,
+                                    snackBarType = SnackBarType.ERROR,
+                                    stackedSnackBarHostState,
+                                    onActionClick = {})
+                            } else {
+                                pagerState.animateScrollToPage(2)
+                            }
                         }
                     }
                 }
@@ -319,6 +371,9 @@ class BookingScreenHandler(
     private val onShowUnsavedAppointment: () -> Unit,
     private val onContentVisible: () -> Unit,
     private val onErrorVisible: () -> Unit,
+    private val onCreateAppointmentStarted: () -> Unit,
+    private val onCreateAppointmentSuccess: () -> Unit,
+    private val onCreateAppointmentFailed: () -> Unit
 ) : BookingContract.View {
     fun init() {
         bookingPresenter.registerUIContract(this)
@@ -338,6 +393,24 @@ class BookingScreenHandler(
                 it.errorOccurred -> {
                     onErrorVisible()
                 }
+            }
+        }
+    }
+
+    override fun showBookingLce(uiState: AsyncUIStates, message: String) {
+        uiState.let {
+            when {
+                it.isLoading -> {
+                    onCreateAppointmentStarted()
+                }
+                it.isSuccess -> {
+                    onCreateAppointmentSuccess()
+                }
+
+                it.isFailed -> {
+                    onCreateAppointmentFailed()
+                }
+
             }
         }
     }

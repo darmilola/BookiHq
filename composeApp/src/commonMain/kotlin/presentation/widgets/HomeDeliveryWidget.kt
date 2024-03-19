@@ -26,6 +26,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.Screens
+import presentation.Bookings.BookingScreen
+import presentation.Products.CartScreen
 import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
@@ -34,7 +36,17 @@ import presentations.components.TextComponent
 fun HomeDeliveryWidget(mainViewModel: MainViewModel) {
     Row(
         modifier = Modifier.fillMaxWidth().height(90.dp).clickable {
-            mainViewModel.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.EDIT_PROFILE.toPath()))
+            when (mainViewModel.screenNav.value.second) {
+                Screens.CART.toPath() -> {
+                    mainViewModel.setScreenNav(Pair(Screens.CART.toPath(), Screens.EDIT_PROFILE.toPath()))
+                }
+                Screens.BOOKING.toPath() -> {
+                    mainViewModel.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.EDIT_PROFILE.toPath()))
+                }
+                else -> {
+
+                }
+            }
         },
         verticalAlignment = Alignment.CenterVertically
     ) {

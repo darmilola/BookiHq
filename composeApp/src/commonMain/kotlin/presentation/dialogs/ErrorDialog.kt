@@ -48,7 +48,7 @@ fun ErrorDialog(dialogTitle: String, actionTitle: String, onConfirmation: () -> 
         Surface(
             shape = RoundedCornerShape(10.dp),
             color = Colors.lighterPrimaryColor,
-            modifier = Modifier.fillMaxWidth(0.40f).fillMaxHeight(0.45f)
+            modifier = Modifier.fillMaxWidth(0.90f).height(230.dp)
         ) {
             ErrorDialogContent(dialogTitle,actionTitle, onConfirmation = {
                 onConfirmation()
@@ -119,7 +119,7 @@ fun ErrorDialogContent(dialogTitle: String, actionTitle: String,
 
                 }
             }
-            Box(modifier = Modifier.fillMaxWidth().weight(1.5f), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.fillMaxWidth().height(55.dp), contentAlignment = Alignment.Center) {
                 ErrorDialogButtonContent(actionTitle, onConfirmation = {
                     onConfirmation()
                 })
@@ -134,7 +134,7 @@ fun ErrorDialogContent(dialogTitle: String, actionTitle: String,
 @Composable
 fun ErrorDialogButtonContent(actionTitle: String, onConfirmation: () -> Unit){
     val buttonStyle = Modifier
-        .fillMaxWidth(0.40f)
+        .fillMaxWidth()
         .height(50.dp)
 
     Row (horizontalArrangement = Arrangement.Center,

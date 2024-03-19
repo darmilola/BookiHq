@@ -79,6 +79,8 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
         val serviceType = recommendation.serviceTypeItem
         bookingViewModel.setSelectedServiceType(serviceType!!)
         currentBooking.serviceTypeItem = serviceType
+        currentBooking.recommendationId = recommendation.recommendationId
+        currentBooking.isRecommendedAppointment = true
         currentBooking.serviceTypeId = serviceType.categoryId
         bookingViewModel.setCurrentBooking(currentBooking)
         if (services.serviceTypes.size == 0) {

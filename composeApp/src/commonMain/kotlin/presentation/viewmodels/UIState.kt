@@ -10,4 +10,5 @@ package presentation.viewmodels
 class AsyncUIStates(
     val isLoading: Boolean = false,
     val isDone: Boolean = false,
-    val isSuccess: Boolean = false)
+    val isSuccess: Boolean = false,
+    val isFailed: Boolean = false)

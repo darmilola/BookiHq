@@ -37,9 +37,6 @@ import presentations.components.TextComponent
 fun CartItem(onProductClickListener: () -> Unit) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 10.dp, bottom = 10.dp)
-        .clickable {
-            onProductClickListener()
-        }
         .height(160.dp)
         Row(modifier = columnModifier,
             horizontalArrangement = Arrangement.Start,

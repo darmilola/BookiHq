@@ -1,4 +1,4 @@
-package domain.appointments
+package domain.Models
 
 enum class ServiceStatus {
     Pending,

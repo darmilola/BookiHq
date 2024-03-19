@@ -119,21 +119,24 @@ fun BusinessInfoTitle(mainViewModel: MainViewModel?){
 
 @Composable
 fun leftTopBarItem(mainViewModel: MainViewModel?) {
-    val navigator = LocalTabNavigator.current
-    PageBackNavWidget {
-        if (mainViewModel != null){
-           // navigator.current = MainTab(mainViewModel)
-        }
-    }
+    PageBackNavWidget {}
 }
 
 
 @Composable
 fun InfoPageLeftTopBarItem(mainViewModel: MainViewModel?) {
-    val navigator = LocalTabNavigator.current
-    val screenNav = mainViewModel?.screenNav?.value
     PageBackNavWidget {
-        mainViewModel?.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.BOOKING.toPath()))
+        when (mainViewModel?.screenNav?.value?.first) {
+            Screens.BOOKING.toPath() -> {
+                mainViewModel.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.BOOKING.toPath()))
+            }
+            Screens.CART.toPath() -> {
+                mainViewModel.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.CART.toPath()))
+            }
+            else -> {
+                // navigator.current = MainTab(mainViewModel)
+            }
+        }
     }
 }
 

@@ -21,4 +21,9 @@ class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
         return bookingNetworkService.getSpecialists(param)
     }
 
+    override suspend fun createAppointment(appointmentRequests: ArrayList<CreateAppointmentRequest>): Single<ServerResponse> {
+        val param = CreateAppointmentRequestArray(appointmentRequests)
+        return bookingNetworkService.createAppointment(param)
+    }
+
 }

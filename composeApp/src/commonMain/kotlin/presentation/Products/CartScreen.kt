@@ -30,6 +30,7 @@ import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import domain.Models.Product
+import domain.Models.Screens
 import presentation.components.StraightLine
 import presentation.main.MainTab
 import presentation.viewmodels.MainViewModel
@@ -128,18 +129,10 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
 
     @Composable
     private fun PopulateCartItemList(cartItems: List<Int>){
-        var showSheet by remember { mutableStateOf(false) }
 
-        if (showSheet) {
-            ProductDetailBottomSheet(Product()) {
-                showSheet = false
-            }
-        }
         LazyColumn(modifier = Modifier.height((180 * cartItems.size).dp)) {
             items(cartItems) {item ->
-                CartItem(onProductClickListener = {
-                    showSheet = true
-                })
+                CartItem(onProductClickListener = {})
                 StraightLine()
             }
         }
@@ -147,9 +140,13 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
 
     @Composable
     fun leftTopBarItem(mainViewModel: MainViewModel) {
-        val navigator = LocalTabNavigator.current
-        PageBackNavWidget(){
-          //  navigator.current = MainTab(mainViewModel)
+        PageBackNavWidget {
+            mainViewModel.setScreenNav(
+                Pair(
+                    Screens.CART.toPath(),
+                    Screens.MAIN_TAB.toPath()
+                )
+            )
         }
     }
 

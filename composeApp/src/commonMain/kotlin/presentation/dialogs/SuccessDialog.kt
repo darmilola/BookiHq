@@ -42,13 +42,13 @@ fun SuccessDialog(dialogTitle: String, actionTitle: String, onConfirmation: () -
         mutableStateOf(false)
     }
     if (shouldDismiss.value) return
-    Dialog( properties = DialogProperties(usePlatformDefaultWidth = false), onDismissRequest = {
+    Dialog(properties = DialogProperties(usePlatformDefaultWidth = false), onDismissRequest = {
         shouldDismiss.value = true
     }) {
         Surface(
             shape = RoundedCornerShape(10.dp),
             color = Colors.lighterPrimaryColor,
-            modifier = Modifier.fillMaxWidth(0.40f).fillMaxHeight(0.45f)
+            modifier = Modifier.fillMaxWidth(0.90f).height(230.dp)
         ) {
             SuccessDialogContent(dialogTitle,actionTitle, onConfirmation = {
                 onConfirmation()
@@ -75,7 +75,7 @@ fun SuccessDialogContent(dialogTitle: String, actionTitle: String,
                 val modifier = Modifier
                     .padding(top = 2.dp)
                     .size(80.dp)
-                ImageComponent(imageModifier = modifier, imageRes = "drawable/success_icon.png", colorFilter = ColorFilter.tint(color = Color.White))
+                ImageComponent(imageModifier = modifier, imageRes = "drawable/success_icon.png")
             }
 
             Box(modifier = Modifier.fillMaxWidth().weight(1.8f)) {
@@ -119,7 +119,7 @@ fun SuccessDialogContent(dialogTitle: String, actionTitle: String,
 
                 }
             }
-            Box(modifier = Modifier.fillMaxWidth().weight(1.5f), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.fillMaxWidth().height(55.dp), contentAlignment = Alignment.Center) {
                 SuccessDialogButtonContent(actionTitle, onConfirmation = {
                     onConfirmation()
                 })
@@ -134,7 +134,7 @@ fun SuccessDialogContent(dialogTitle: String, actionTitle: String,
 @Composable
 fun SuccessDialogButtonContent(actionTitle: String, onConfirmation: () -> Unit){
     val buttonStyle = Modifier
-        .fillMaxWidth(0.40f)
+        .fillMaxWidth()
         .height(50.dp)
 
     Row (horizontalArrangement = Arrangement.Center,
