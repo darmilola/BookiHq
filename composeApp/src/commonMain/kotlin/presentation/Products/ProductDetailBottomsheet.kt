@@ -124,10 +124,8 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             CartIncrementDecrementWidget(orderItem,isFromCart = isViewedFromCart,onItemCountChanged = {
-                                itemCount.value = it.itemCount
-                            }, onItemRemovedFromCart = {
-
-                            })
+                                orderItem.itemCount = it.itemCount
+                            }, onItemRemovedFromCart = {})
                         }
 
                         ButtonComponent(

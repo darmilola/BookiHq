@@ -337,7 +337,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                         snackBarType = SnackBarType.SUCCESS,
                         stackedSnackBarHostState,
                         onActionClick = {})
-                }
+                     }
                     showProductDetailBottomSheet = false
 
                 },onRemoveFromCart = {})
@@ -351,8 +351,8 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
             ) {
                 items(popularProducts.size) {
                     HomeProductItem(popularProducts[it],onProductClickListener = { it2 ->
-                        showProductDetailBottomSheet = true
                         selectedProduct.value = it2
+                        showProductDetailBottomSheet = true
                     })
                 }
             }

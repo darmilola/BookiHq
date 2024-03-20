@@ -401,8 +401,8 @@ fun SearchContent(searchQuery: String, productResourceListEnvelopeViewModel: Res
                                 HomeProductItem(
                                     productUIModel.productList[it],
                                     onProductClickListener = { it2 ->
-                                        showProductDetailBottomSheet = true
                                         selectedProduct.value = it2
+                                        showProductDetailBottomSheet = true
                                     })
                               }
                         }

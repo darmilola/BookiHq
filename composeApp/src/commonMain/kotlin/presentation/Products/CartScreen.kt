@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -152,12 +153,12 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
     private fun PopulateCartItemList(mainViewModel: MainViewModel,stackedSnackBarHostState: StackedSnakbarHostState){
 
         val cartItems = mainViewModel.unSavedOrders.collectAsState()
-        val selectedProduct = remember { mutableStateOf(OrderItem()) }
+        val selectedItem = remember { mutableStateOf(OrderItem()) }
         var showProductDetailBottomSheet by remember { mutableStateOf(false) }
         var orderItemUIModel by remember {
             mutableStateOf(
                 OrderItemUIModel(
-                    selectedProduct.value,
+                    selectedItem.value,
                     cartItems.value
                 )
             )
@@ -168,7 +169,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
             ProductDetailBottomSheet(mainViewModel,isViewedFromCart = true,
                 cartItem = orderItemUIModel.selectedItem!!,
                 onDismiss = { showProductDetailBottomSheet = false },
-                onRemoveFromCart = {isRemoved ->
+                onRemoveFromCart = { isRemoved ->
                     showProductDetailBottomSheet = false
                     if(isRemoved){
                         ShowSnackBar(title = "Product Removed",
@@ -183,14 +184,15 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
                 })
         }
 
-        LazyColumn(modifier = Modifier.height((180 * cartItems.value.size).dp)) {
+        LazyColumn(modifier = Modifier.height((180 * cartItems.value.size).dp), userScrollEnabled = false) {
             items(orderItemUIModel.itemList) {item ->
                 CartItem(item,onProductClickListener = {
-                    selectedProduct.value = it
+                    println(it.toString())
+                    selectedItem.value = it
                     showProductDetailBottomSheet = true
                 }, onItemCountChanged = {
-                    selectedProduct.value = it
-                    orderItemUIModel = orderItemUIModel.copy(selectedItem = selectedProduct.value,
+                    selectedItem.value = it
+                    orderItemUIModel = orderItemUIModel.copy(selectedItem = selectedItem.value,
                         itemList = mainViewModel.unSavedOrders.value.map { it2 ->
                             if(it2.itemReference == it.itemReference) {
                                 it2.copy(
@@ -202,11 +204,11 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
                                     itemCount = it2.itemCount
                                 )
                             }
-                        })
+                        }.toMutableStateList())
 
                 }, onItemRemovedFromCart = {
                     orderItemUIModel.itemList.toMutableList().remove(it)
-                    mainViewModel.setCurrentUnsavedOrders(orderItemUIModel.itemList.toMutableList())
+                    mainViewModel.setCurrentUnsavedOrders(orderItemUIModel.itemList)
                 })
                 StraightLine()
             }

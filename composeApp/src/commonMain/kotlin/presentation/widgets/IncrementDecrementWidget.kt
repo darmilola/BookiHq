@@ -111,7 +111,7 @@ fun IncrementDecrementWidget(){
 
 
 @Composable
-fun CartIncrementDecrementWidget(orderItem: OrderItem,isFromCart: Boolean = false, onItemCountChanged:(OrderItem) -> Unit, onItemRemovedFromCart: (OrderItem) -> Unit){
+fun CartIncrementDecrementWidget(orderItem: OrderItem, isFromCart: Boolean = false, onItemCountChanged:(OrderItem) -> Unit, onItemRemovedFromCart: (OrderItem) -> Unit){
     var counter by remember { mutableStateOf(orderItem.itemCount) }
     val decrementBorderColor: Color = if(counter == 1) {
         if (isFromCart){
