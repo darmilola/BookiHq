@@ -160,12 +160,12 @@ fun CartIncrementDecrementWidget(orderItem: OrderItem, isFromCart: Boolean = fal
         ) {
 
             ImageComponent(imageModifier = Modifier.padding(12.dp).fillMaxSize()
-                .clickable { if(counter > 1){
+                .clickable { if(counter > 1) {
                     counter -= 1
                     orderItem.itemCount = counter
                     onItemCountChanged(orderItem)
                   }
-                 else if (counter == 1 && isFromCart){
+                 else if (isFromCart){
                      onItemRemovedFromCart(orderItem)
                  }
                }, imageRes = decrementImgRes, colorFilter = ColorFilter.tint(color = decrementImgTint))
@@ -203,7 +203,11 @@ fun CartIncrementDecrementWidget(orderItem: OrderItem, isFromCart: Boolean = fal
         ) {
 
             ImageComponent(imageModifier = Modifier.padding(12.dp).fillMaxSize()
-                .clickable { counter += 1 }, imageRes = "drawable/add_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+                .clickable {
+                    counter += 1
+                    orderItem.itemCount = counter
+                    onItemCountChanged(orderItem)
+               }, imageRes = "drawable/add_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
         }
 
     }

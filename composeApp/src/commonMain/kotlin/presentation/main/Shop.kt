@@ -228,6 +228,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                     },
                     backgroundColor = Color.White,
                     floatingActionButton = {
+
                         AttachShoppingCartImage("drawable/shopping_cart.png",mainViewModel)
                     }
                 )
@@ -244,6 +245,8 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                 .size(30.dp)
                 .clip(CircleShape)
                 .background(color = Color(color = 0xFFFF5080))
+
+        if (cartSize.size > 0) {
 
             Box(
                 Modifier
@@ -264,7 +267,6 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                     imageRes = iconRes,
                     colorFilter = ColorFilter.tint(color = Color.White)
                 )
-                if (cartSize.size > 0) {
                     Box(
                         modifier = indicatorModifier,
                         contentAlignment = Alignment.Center
@@ -376,7 +378,7 @@ fun SearchContent(searchQuery: String, productResourceListEnvelopeViewModel: Res
                         var showProductDetailBottomSheet by remember { mutableStateOf(false) }
                         if (showProductDetailBottomSheet) {
                             ProductDetailBottomSheet(mainViewModel,isViewedFromCart = false, OrderItem(itemProduct = selectedProduct.value),onDismiss = {
-                            isAddToCart -> if (isAddToCart){
+                            isAddToCart,item -> if (isAddToCart){
                                 ShowSnackBar(title = "Successful",
                                     description = "Your Product has been successfully Added to Cart",
                                     actionLabel = "",

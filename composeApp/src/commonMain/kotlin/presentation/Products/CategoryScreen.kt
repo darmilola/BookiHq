@@ -75,7 +75,7 @@ fun CategoryScreen(productCategory: ProductCategory,
 
                 if (showProductDetailBottomSheet) {
                     ProductDetailBottomSheet(mainViewModel,isViewedFromCart = false, OrderItem(itemProduct = selectedProduct.value), onDismiss = {
-                            isAddToCart -> if (isAddToCart){
+                            isAddToCart, item -> if (isAddToCart){
                             ShowSnackBar(title = "Successful",
                             description = "Your Product has been successfully Added to Cart",
                             actionLabel = "",
@@ -141,18 +141,19 @@ fun CategoryScreen(productCategory: ProductCategory,
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, cartItem: OrderItem, onDismiss: (isAddToCart: Boolean) -> Unit, onRemoveFromCart: (Boolean) -> Unit) {
+fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, cartItem: OrderItem, onDismiss: (isAddToCart: Boolean, OrderItem) -> Unit, onRemoveFromCart: (OrderItem) -> Unit) {
     val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var mutableCartItem = cartItem
     ModalBottomSheet(
         modifier = Modifier.padding(top = 20.dp),
-        onDismissRequest = { onDismiss(false) },
+        onDismissRequest = { onDismiss(false, mutableCartItem) },
         sheetState = modalBottomSheetState,
         shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
         containerColor = Color(0xFFF3F3F3),
         dragHandle = {},
     ) {
        ProductDetailContent(mainViewModel,isViewedFromCart,cartItem, onAddToCart = {
-           onDismiss(it)
+           onDismiss(it,cartItem)
        }, onRemoveFromCart = {
            onRemoveFromCart(it)
        })

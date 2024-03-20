@@ -330,7 +330,7 @@ fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, isRightSelection: Boo
 
 
 @Composable
-fun RadioToggleButton(shape: Shape,title: String, actionLabel: ArrayList<String>, gridCount: Int = 2) {
+fun RadioToggleButton(shape: Shape,title: String, actionLabel: ArrayList<String>, gridCount: Int = 2, onCheckedChangedListener:(Int)-> Unit) {
 
     var checkedId by remember { mutableStateOf(0) }
 
@@ -370,7 +370,10 @@ fun RadioToggleButton(shape: Shape,title: String, actionLabel: ArrayList<String>
                     IconToggleButton(
                         checked = checkedId == it,
                         onCheckedChange = { it2 ->
-                            if (it2) checkedId = it
+                            if (it2){
+                                checkedId = it
+                                onCheckedChangedListener(checkedId)
+                            }
                         }
                     ) {
                         Row(

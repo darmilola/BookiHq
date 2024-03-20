@@ -23,10 +23,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import presentation.components.ButtonComponent
+import presentation.viewmodels.CartViewModel
+import presentation.viewmodels.MainViewModel
 import presentations.components.TextComponent
 
 @Composable
-fun CheckOutSummaryWidget() {
+fun CheckOutSummaryWidget(cartViewModel: CartViewModel, mainViewModel: MainViewModel) {
     val columnModifier = Modifier
         .padding(start = 10.dp, bottom = 10.dp, end = 10.dp)
         .height(200.dp)
@@ -53,7 +55,7 @@ fun CheckOutSummaryWidget() {
                  textModifier = Modifier.fillMaxWidth(0.50f)
              )
              TextComponent(
-                 text = "$150,000",
+                 text = "$"+cartViewModel.subtotal.value,
                  fontSize = 18,
                  fontFamily = GGSansSemiBold,
                  textStyle = MaterialTheme.typography.h6,
@@ -112,7 +114,7 @@ fun CheckOutSummaryWidget() {
                 textModifier = Modifier.fillMaxWidth(0.50f)
             )
             TextComponent(
-                text = "$185,900",
+                text = "$"+cartViewModel.total.value,
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
                 textStyle = MaterialTheme.typography.h6,

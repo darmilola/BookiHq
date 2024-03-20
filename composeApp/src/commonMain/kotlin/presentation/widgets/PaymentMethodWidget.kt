@@ -7,11 +7,18 @@ import androidx.compose.ui.unit.dp
 import presentation.components.RadioToggleButton
 
 @Composable
-fun PaymentMethodWidget() {
+fun PaymentMethodWidget(onCardPaymentSelectedListener:() -> Unit, onCashSelectedListener:() -> Unit) {
     val toggleLabelList: ArrayList<String> = arrayListOf()
     toggleLabelList.add("Credit/Debit Card")
     toggleLabelList.add("Cash On Delivery")
 
-    RadioToggleButton(shape = RoundedCornerShape(27.dp), actionLabel = toggleLabelList, title = "Payment Method", gridCount = 1)
+    RadioToggleButton(shape = RoundedCornerShape(27.dp), actionLabel = toggleLabelList, title = "Payment Method", gridCount = 1, onCheckedChangedListener = {
+        checkedId -> if (checkedId == 0){
+            onCardPaymentSelectedListener()
+        }
+        else{
+            onCashSelectedListener()
+        }
+    })
 
 }

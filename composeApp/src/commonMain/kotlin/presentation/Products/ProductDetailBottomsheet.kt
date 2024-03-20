@@ -59,32 +59,28 @@ import kotlin.random.Random
 
 @Composable
 fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, cartItem: OrderItem, onAddToCart: (Boolean) -> Unit,
-                         onRemoveFromCart: (Boolean) -> Unit) {
+                         onRemoveFromCart: (OrderItem) -> Unit) {
+    println(cartItem.toString())
 
-    LaunchedEffect(Unit, block = {
-        if (mainViewModel.currentOrderReference.value == -1) {
-            val orderReference =
-                Random.nextInt(ValuesLimit.MIN_VALUE.toValue(), ValuesLimit.MAX_VALUE.toValue())
+  if (mainViewModel.currentOrderReference.value == -1) {
+            val orderReference = (ValuesLimit.MIN_VALUE.toValue() ..ValuesLimit.MAX_VALUE.toValue()).random()
             mainViewModel.setCurrentOrderReference(orderReference)
+    }
 
-        }
-    })
     val orderReference = mainViewModel.currentOrderReference.value
-    val itemReference = (0..100000000).random()
+    val itemReference = (ValuesLimit.MIN_VALUE.toValue() ..ValuesLimit.MAX_VALUE.toValue()).random()
     val currentOrder = mainViewModel.unSavedOrders.value
-    val itemCount = remember { mutableStateOf(1) }
-    val orderItem: OrderItem
+    val orderItem = remember { mutableStateOf(OrderItem()) }
 
     if (isViewedFromCart){
-        orderItem = cartItem
+        orderItem.value = cartItem
     }
     else {
-        orderItem = OrderItem()
-        orderItem.orderReference = orderReference
-        orderItem.itemReference = itemReference
-        orderItem.itemCount = itemCount.value
-        orderItem.itemProduct = cartItem.itemProduct
-        orderItem.productId = cartItem.itemProduct?.productId!!
+        orderItem.value = OrderItem()
+        orderItem.value.orderReference = orderReference
+        orderItem.value.itemReference = itemReference
+        orderItem.value.itemProduct = cartItem.itemProduct
+        orderItem.value.productId = cartItem.itemProduct?.productId!!
     }
 
 
@@ -104,30 +100,19 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
                 val buttonStyle2 = Modifier
                     .padding(bottom = 10.dp, start = 10.dp, end = 10.dp, top = 4.dp)
                     .fillMaxWidth()
-                    .height(45.dp)
+                    .height(50.dp)
 
                 val bgStyle = Modifier
                     .padding(bottom = 10.dp)
                     .fillMaxWidth()
                     .fillMaxHeight()
 
-                if (isViewedFromCart){
-
+                if (isViewedFromCart) {
                     Row(
                         modifier = bgStyle,
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(0.50f),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            CartIncrementDecrementWidget(orderItem,isFromCart = isViewedFromCart,onItemCountChanged = {
-                                orderItem.itemCount = it.itemCount
-                            }, onItemRemovedFromCart = {})
-                        }
-
                         ButtonComponent(
                             modifier = buttonStyle2,
                             buttonText = "Remove From Cart",
@@ -138,9 +123,7 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
                             style = TextStyle(),
                             borderStroke = null
                         ) {
-                            currentOrder.remove(orderItem)
-                            mainViewModel.setCurrentUnsavedOrders(currentOrder)
-                            onRemoveFromCart(true)
+                            onRemoveFromCart(cartItem)
                         }
                     }
 
@@ -157,8 +140,8 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            CartIncrementDecrementWidget(orderItem,onItemCountChanged = {
-                                itemCount.value = it.itemCount
+                            CartIncrementDecrementWidget(orderItem.value,onItemCountChanged = {
+                                orderItem.value = it
                             }, onItemRemovedFromCart = {})
                         }
 
@@ -172,7 +155,7 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
                             style = TextStyle(),
                             borderStroke = null
                         ) {
-                            currentOrder.add(orderItem)
+                            currentOrder.add(orderItem.value)
                             mainViewModel.setCurrentUnsavedOrders(currentOrder)
                             onAddToCart(true)
 

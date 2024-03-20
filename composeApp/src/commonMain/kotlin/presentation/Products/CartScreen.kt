@@ -33,11 +33,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
+import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.viewModelFactory
+import domain.Models.DeliveryLocation
 import domain.Models.OrderItem
 import domain.Models.OrderItemUIModel
+import domain.Models.PaymentMethod
 import domain.Models.Screens
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import presentation.components.StraightLine
+import presentation.viewmodels.CartViewModel
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.CheckOutSummaryWidget
 import presentation.widgets.ProductDeliveryAddressWidget
 import presentation.widgets.PageBackNavWidget
@@ -46,9 +55,15 @@ import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
+import utils.calculateCheckoutSubTotal
+import utils.calculateTotal
 
 
-class CartScreen(private val mainViewModel: MainViewModel) : Tab {
+class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
+
+    private val cartPresenter: CartPresenter by inject()
+    private var uiStateViewModel: UIStateViewModel? = null
+    private var cartViewModel: CartViewModel? = null
 
     override val options: TabOptions
         @Composable
@@ -70,12 +85,45 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
             maxStack = 5,
             animation = StackedSnackbarAnimation.Bounce
         )
+        val creatingOrderProgress = remember { mutableStateOf(false) }
+        val creatingOrderSuccess = remember { mutableStateOf(false) }
+        val creatingOrderFailed = remember { mutableStateOf(false) }
+
+
+        if (uiStateViewModel == null) {
+            uiStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+        if(cartViewModel == null) {
+            cartViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    CartViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+        val cartItems = mainViewModel.unSavedOrders.collectAsState()
+
+        val subtotal = calculateCheckoutSubTotal(cartItems.value)
+        val total = calculateTotal(subtotal, cartViewModel!!.deliveryFee.value)
+        cartViewModel!!.setTotal(total)
+        cartViewModel!!.setSubTotal(subtotal)
+
+
+
+        /*  val paymentMethod = remember { mutableStateOf(PaymentMethod.CARD_PAYMENT.toPath()) }
+            val deliveryLocation = remember { mutableStateOf(DeliveryLocation.HOME_DELIVERY.toPath()) }
+            val totalAmount = remember { mutableStateOf(0) }
+            val deliveryFee = remember { mutableStateOf(0) }*/
 
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {},
             content = {
-
                 val rowModifier = Modifier
                     .fillMaxWidth()
                     .height(60.dp)
@@ -111,7 +159,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
                                 .fillMaxHeight(),
                             contentAlignment = Alignment.Center
                         ) {
-                            CartScreenTitle()
+                            CartScreenTitle(cartItems.value.size)
                         }
 
                         Box(
@@ -128,7 +176,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
 
                     Column(
                         modifier = Modifier
-                            .padding(top = 10.dp, end = 0.dp)
+                            .padding(top = 10.dp, end = 0.dp, bottom = 50.dp)
                             .fillMaxWidth()
                             .fillMaxHeight()
                             .verticalScroll(rememberScrollState())
@@ -136,11 +184,24 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
                     ) {
 
                         PopulateCartItemList(mainViewModel,stackedSnackBarHostState)
-                        ProductDeliveryAddressWidget(mainViewModel)
+                        ProductDeliveryAddressWidget(mainViewModel,
+                            cartViewModel!!, onHomeSelectedListener = {
+
+                                  cartViewModel!!.setDeliveryLocation(DeliveryLocation.HOME_DELIVERY.toPath())
+
+                            }, onPickupSelectedListener = {
+
+                                cartViewModel!!.setDeliveryLocation(DeliveryLocation.PICKUP.toPath())
+
+                            })
                         StraightLine()
-                        PaymentMethodWidget()
+                        PaymentMethodWidget(onCashSelectedListener = {
+                             cartViewModel!!.setPaymentMethod(PaymentMethod.PAYMENT_ON_DELIVERY.toPath())
+                        }, onCardPaymentSelectedListener = {
+                            cartViewModel!!.setPaymentMethod(PaymentMethod.CARD_PAYMENT.toPath())
+                        })
                         StraightLine()
-                        CheckOutSummaryWidget()
+                        CheckOutSummaryWidget(cartViewModel!!,mainViewModel)
 
                     }
 
@@ -153,13 +214,18 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
     private fun PopulateCartItemList(mainViewModel: MainViewModel,stackedSnackBarHostState: StackedSnakbarHostState){
 
         val cartItems = mainViewModel.unSavedOrders.collectAsState()
+
+        if (cartItems.value.isNotEmpty()){
+
+
+        val cartList = cartItems.value
         val selectedItem = remember { mutableStateOf(OrderItem()) }
         var showProductDetailBottomSheet by remember { mutableStateOf(false) }
         var orderItemUIModel by remember {
             mutableStateOf(
                 OrderItemUIModel(
                     selectedItem.value,
-                    cartItems.value
+                    cartList
                 )
             )
         }
@@ -168,10 +234,12 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
         if (showProductDetailBottomSheet) {
             ProductDetailBottomSheet(mainViewModel,isViewedFromCart = true,
                 cartItem = orderItemUIModel.selectedItem!!,
-                onDismiss = { showProductDetailBottomSheet = false },
-                onRemoveFromCart = { isRemoved ->
+                onDismiss = { isAddToCart, item -> showProductDetailBottomSheet = false },
+                onRemoveFromCart = { orderItem ->
                     showProductDetailBottomSheet = false
-                    if(isRemoved){
+                    orderItemUIModel.itemList.remove(orderItem)
+                    orderItemUIModel = orderItemUIModel.copy(selectedItem = OrderItem(), itemList = orderItemUIModel.itemList)
+                    mainViewModel.setCurrentUnsavedOrders(orderItemUIModel.itemList)
                         ShowSnackBar(title = "Product Removed",
                             description = "Product has been Removed from Cart",
                             actionLabel = "",
@@ -179,41 +247,58 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
                             snackBarType = SnackBarType.SUCCESS,
                             stackedSnackBarHostState,
                             onActionClick = {})
-                    }
+                     })
+                }
 
-                })
-        }
 
-        LazyColumn(modifier = Modifier.height((180 * cartItems.value.size).dp), userScrollEnabled = false) {
-            items(orderItemUIModel.itemList) {item ->
-                CartItem(item,onProductClickListener = {
-                    println(it.toString())
-                    selectedItem.value = it
-                    showProductDetailBottomSheet = true
-                }, onItemCountChanged = {
-                    selectedItem.value = it
-                    orderItemUIModel = orderItemUIModel.copy(selectedItem = selectedItem.value,
-                        itemList = mainViewModel.unSavedOrders.value.map { it2 ->
-                            if(it2.itemReference == it.itemReference) {
-                                it2.copy(
-                                    itemCount = it.itemCount
-                                )
-                            }
-                            else{
-                                it2.copy(
-                                    itemCount = it2.itemCount
-                                )
-                            }
-                        }.toMutableStateList())
+            LazyColumn(
+                modifier = Modifier.height((180 * cartItems.value.size).dp),
+                userScrollEnabled = false
+            ) {
+                items(key = { it -> it.itemReference}, items = orderItemUIModel.itemList) { item ->
+                    CartItem(item, onProductClickListener = {
+                        orderItemUIModel = orderItemUIModel.copy(
+                            selectedItem = it,
+                            itemList = mainViewModel.unSavedOrders.value
+                        )
+                        showProductDetailBottomSheet = true
+                    }, onItemCountChanged = {
+                        orderItemUIModel = orderItemUIModel.copy(selectedItem = it,
+                            itemList = mainViewModel.unSavedOrders.value.map { it2 ->
+                                if (it2.itemReference == it.itemReference) {
+                                    it2.copy(
+                                        itemCount = it.itemCount
+                                    )
+                                } else {
+                                    it2.copy(
+                                        itemCount = it2.itemCount
+                                    )
+                                }
+                            }.toMutableStateList()
+                        )
+                        mainViewModel.setCurrentUnsavedOrders(orderItemUIModel.itemList)
 
-                }, onItemRemovedFromCart = {
-                    orderItemUIModel.itemList.toMutableList().remove(it)
-                    mainViewModel.setCurrentUnsavedOrders(orderItemUIModel.itemList)
-                })
-                StraightLine()
+                    }, onItemRemovedFromCart = {
+                        orderItemUIModel.itemList.remove(it)
+                        orderItemUIModel = orderItemUIModel.copy(
+                            selectedItem = OrderItem(),
+                            itemList = orderItemUIModel.itemList
+                        )
+                        ShowSnackBar(title = "Product Removed",
+                            description = "Product has been Removed from Cart",
+                            actionLabel = "",
+                            duration = StackedSnackbarDuration.Short,
+                            snackBarType = SnackBarType.SUCCESS,
+                            stackedSnackBarHostState,
+                            onActionClick = {})
+                        mainViewModel.setCurrentUnsavedOrders(orderItemUIModel.itemList)
+                    })
+                    StraightLine()
+                }
             }
         }
     }
+
 
     @Composable
     fun leftTopBarItem(mainViewModel: MainViewModel) {
@@ -229,9 +314,9 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
 
 
     @Composable
-    fun CartScreenTitle(){
+    fun CartScreenTitle(itemCount: Int){
             TextComponent(
-                text = "Cart(10)",
+                text = "Cart($itemCount)",
                 fontSize = 20,
                 fontFamily = GGSansSemiBold,
                 textStyle = TextStyle(),

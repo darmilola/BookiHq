@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,13 +27,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Models.DeliveryLocation
 import presentation.components.ToggleButton
+import presentation.viewmodels.CartViewModel
 import presentation.viewmodels.MainViewModel
 import presentations.components.TextComponent
 
 @Composable
-fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel) {
-    var deliveryType by remember { mutableStateOf(0) }
+fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel,cartViewModel: CartViewModel,
+                                 onPickupSelectedListener:() -> Unit, onHomeSelectedListener:() -> Unit){
+
+    val deliveryLocation =  remember { mutableStateOf(cartViewModel.deliveryLocation.value) }
     val columnModifier = Modifier
         .padding(start = 10.dp, bottom = 10.dp, top = 15.dp, end = 10.dp)
         .wrapContentHeight()
@@ -54,13 +59,15 @@ fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel) {
 
         Row(modifier = Modifier.fillMaxWidth()) {
             ToggleButton(shape = CircleShape, onLeftClicked = {
-                deliveryType = 0
+                deliveryLocation.value = DeliveryLocation.HOME_DELIVERY.toPath()
+                onHomeSelectedListener()
             }, onRightClicked = {
-                deliveryType = 1
+                deliveryLocation.value = DeliveryLocation.PICKUP.toPath()
+                onPickupSelectedListener()
             }, leftText = "Home", rightText = "Pick Up")
         }
 
-       if(deliveryType == 0) {
+       if(deliveryLocation.value == DeliveryLocation.HOME_DELIVERY.toPath()) {
             HomeDeliveryWidget(mainViewModel = mainViewModel)
        }
         else{

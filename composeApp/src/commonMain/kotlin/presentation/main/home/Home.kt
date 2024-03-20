@@ -329,7 +329,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
 
             if (showProductDetailBottomSheet) {
                 ProductDetailBottomSheet(mainViewModel,isViewedFromCart = false, OrderItem(itemProduct = selectedProduct.value), onDismiss = {
-                        isAddToCart -> if (isAddToCart){
+                        isAddToCart,item -> if (isAddToCart){
                     ShowSnackBar(title = "Successful",
                         description = "Your Product has been successfully Added to Cart",
                         actionLabel = "",
@@ -340,7 +340,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                      }
                     showProductDetailBottomSheet = false
 
-                },onRemoveFromCart = {})
+                }, onRemoveFromCart = {})
             }
 
             LazyColumn(
