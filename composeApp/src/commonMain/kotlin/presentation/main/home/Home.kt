@@ -50,6 +50,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Models.Appointment
 import domain.Models.OrderItem
 import domain.Models.Product
 import domain.Models.VendorRecommendation
@@ -122,21 +123,6 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                 .padding(top = 5.dp)
                 .fillMaxSize()
 
-            val appointmentList = ArrayList<AppointmentItem>()
-
-            val appointmentItem1 = AppointmentItem(appointmentType = 1)
-            val appointmentItem2 = AppointmentItem(appointmentType = 2)
-            val appointmentItem3 = AppointmentItem(appointmentType = 3)
-
-            appointmentList.add(appointmentItem1)
-            appointmentList.add(appointmentItem2)
-            appointmentList.add(appointmentItem3)
-            appointmentList.add(appointmentItem1)
-            appointmentList.add(appointmentItem2)
-            appointmentList.add(appointmentItem3)
-            appointmentList.add(appointmentItem1)
-            appointmentList.add(appointmentItem2)
-
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {},
@@ -179,7 +165,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                         }
                         AttachAppointments()
                         RecentAppointmentScreen(
-                            appointmentList = appointmentList
+                            appointmentList = recentAppointments
                         )
                     }
                 }
@@ -436,10 +422,16 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
     }
 
     @Composable
-    fun RecentAppointmentScreen(appointmentList: List<AppointmentItem>) {
-        LazyColumn(modifier = Modifier.fillMaxWidth().height(getAppointmentViewHeight(appointmentList).dp), userScrollEnabled = false) {
-            items(appointmentList) {item ->
-                NewAppointmentWidget(itemType = item.appointmentType)
+    fun RecentAppointmentScreen(appointmentList: List<Appointment>?) {
+        if (appointmentList != null) {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth()
+                    .height(getAppointmentViewHeight(appointmentList).dp), userScrollEnabled = false
+            ) {
+                items(key = { it -> it.appointmentId!!}, items =  appointmentList) { item ->
+                    NewAppointmentWidget(item)
+                }
+
             }
         }
     }

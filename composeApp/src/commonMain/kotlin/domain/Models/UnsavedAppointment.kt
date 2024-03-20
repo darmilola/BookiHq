@@ -8,4 +8,4 @@ data class UnsavedAppointment(val bookingId: Int = -1, var isHomeService: Boolea
                               var serviceTypeId: Int? = -1, var appointmentTime: ServiceTime? = null,
                               var appointmentDate: LocalDate? = null, var isRecommendedAppointment: Boolean = false,
                               var recommendationId: Int? = null, var serviceTypeSpecialist: ServiceTypeSpecialist? = null,
-                              var serviceTypeItem: ServiceTypeItem? = null, var services: Services? = null)
+                              var serviceTypeItem: ServiceTypeItem? = null, var services: Services? = null, val serviceStatus: String = ServiceStatus.Pending.toPath())

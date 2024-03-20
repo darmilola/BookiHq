@@ -1,11 +1,12 @@
 package utils
 
+import domain.Models.Appointment
 import domain.Models.AppointmentItem
 import domain.Models.Product
 import domain.Models.UnsavedAppointment
 
 fun getAppointmentViewHeight(
-        itemList: List<AppointmentItem>
+        itemList: List<Appointment>
     ): Int {
         val itemCount = itemList.size
 

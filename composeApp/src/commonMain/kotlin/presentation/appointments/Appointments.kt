@@ -81,7 +81,7 @@ class AppointmentsTab(private val mainViewModel: MainViewModel) : Tab, Appointme
                     appointmentList.add(appointmentItem1)
                     appointmentList.add(appointmentItem2)
 
-                    PopulateAppointmentScreen(appointmentList = appointmentList, mainViewModel = mainViewModel)
+                //    PopulateAppointmentScreen(appointmentList = appointmentList, mainViewModel = mainViewModel)
 
                 }
 
@@ -89,14 +89,14 @@ class AppointmentsTab(private val mainViewModel: MainViewModel) : Tab, Appointme
         }
 
 
-    @Composable
+   /* @Composable
     fun PopulateAppointmentScreen(appointmentList: List<AppointmentItem>, mainViewModel: MainViewModel) {
         LazyColumn(modifier = Modifier.fillMaxWidth().height(getAppointmentViewHeight(appointmentList).dp), userScrollEnabled = true) {
             items(appointmentList) {item ->
                 NewAppointmentWidget()
             }
         }
-    }
+    }*/
 
     override fun showError() {
         TODO("Not yet implemented")

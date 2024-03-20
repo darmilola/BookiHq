@@ -16,6 +16,7 @@ fun getUnSavedAppointment(unsavedAppointments: SnapshotStateList<UnsavedAppointm
         val request = CreateAppointmentRequest(userId = currentUser.userId!!, vendorId = currentVendor.vendorId!!, serviceId = item.serviceId,
             serviceTypeId = item.serviceTypeId!!, specialistId = item.serviceTypeSpecialist?.specialistId!!, recommendationId = item.recommendationId,
             appointmentTime = item.appointmentTime?.id!!, appointmentDate = item.appointmentDate.toString(), serviceLocation = if (item.isHomeService) ServiceLocation.Home.toPath() else ServiceLocation.Spa.toPath(),
+            serviceStatus = item.serviceStatus,
             isRecommendedAppointment = item.isRecommendedAppointment)
         appointmentRequestList.add(request)
     }

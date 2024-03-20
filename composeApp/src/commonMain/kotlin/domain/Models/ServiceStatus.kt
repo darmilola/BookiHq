@@ -2,18 +2,18 @@ package domain.Models
 
 enum class ServiceStatus {
     Pending,
-    Ongoing,
+    POSTPONED,
     Done;
 
     fun toPath() = when (this) {
         Pending -> "pending"
-        Ongoing -> "ongoing"
+        POSTPONED -> "postponed"
         Done -> "done"
     }
 
     fun toEventPropertyName() = when (this) {
         Pending -> "pending"
-        Ongoing -> "ongoing"
+        POSTPONED -> "postponed"
         Done -> "done"
     }
 }

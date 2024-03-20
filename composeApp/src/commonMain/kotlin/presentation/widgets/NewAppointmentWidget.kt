@@ -39,16 +39,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Models.Appointment
 import domain.Models.Reviewer
+import domain.Models.ServiceLocation
+import domain.Models.ServiceStatus
+import domain.Models.SpecialistInfo
 import domain.Models.SpecialistReviews
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.format
+import kotlinx.datetime.format.DayOfWeekNames
+import kotlinx.datetime.format.MonthNames
+import kotlinx.datetime.format.char
 import presentation.dialogs.PostponeDialog
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun NewAppointmentWidget(itemType: Int = 0) {
+fun NewAppointmentWidget(appointment: Appointment) {
 
-
+    val appointmentStatus = appointment.serviceStatus
     val menuItems = arrayListOf<String>()
     val openPostponeDialog = remember { mutableStateOf(false) }
 
@@ -65,13 +74,11 @@ fun NewAppointmentWidget(itemType: Int = 0) {
 
     var menuItem = ""
 
-    menuItem = when (itemType) {
-        1 -> {
+    menuItem = when (appointmentStatus) {
+        ServiceStatus.Pending.toPath() -> {
             "Postpone"
         }
-        4 -> {
-            "Join Now"
-        }
+
         else -> {
             "Delete"
         }
@@ -79,31 +86,29 @@ fun NewAppointmentWidget(itemType: Int = 0) {
 
 
     var iconRes = "drawable/schedule.png"
-    var statusText = ""
+    var statusText = "Pending"
     var statusColor: Color = Colors.primaryColor
     var serviceTitle: String = "Haircut is the Service Name"
 
 
 
-    when (itemType) {
-        1 -> {
+    when (appointmentStatus) {
+        ServiceStatus.Pending.toPath() -> {
             iconRes = "drawable/schedule.png"
             statusText = "Pending"
             statusColor = Colors.primaryColor
         }
-        2 -> {
+        ServiceStatus.POSTPONED.toPath() -> {
             iconRes = "drawable/appointment_postponed.png"
             statusText = "Postponed"
             statusColor = Colors.pinkColor
         }
-        3 -> {
+        ServiceStatus.Done.toPath() -> {
             iconRes = "drawable/appointment_done.png"
             statusText = "Done"
             statusColor = Colors.greenColor
         }
     }
-
-
 
 
     val boxBgModifier =
@@ -123,8 +128,8 @@ fun NewAppointmentWidget(itemType: Int = 0) {
                 horizontalAlignment = Alignment.Start,
                 modifier = columnModifier
             ) {
-                AttachAppointmentHeader(statusText, iconRes, statusColor)
-                AttachAppointmentContent()
+                AttachAppointmentHeader(statusText, iconRes, statusColor, appointment)
+                AttachAppointmentContent(appointment)
             }
         }
 }
@@ -132,7 +137,7 @@ fun NewAppointmentWidget(itemType: Int = 0) {
 
 
 @Composable
-fun AttachAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color) {
+fun AttachAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment) {
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
@@ -144,10 +149,10 @@ fun AttachAppointmentHeader(statusText: String, statusDrawableRes: String, statu
             modifier = Modifier.fillMaxWidth(0.70f).height(60.dp)
         ) {
             Box(modifier = Modifier.fillMaxWidth(0.08f).fillMaxHeight(), contentAlignment = Alignment.Center) {
-                Box(modifier = Modifier.size(6.dp).clip(CircleShape).background(color = Colors.pinkColor)){}
+                Box(modifier = Modifier.size(6.dp).clip(CircleShape).background(color = statusColor)){}
             }
             TextComponent(
-                text = "Family Therapy Lorep Ipsum",
+                text = appointment.services?.serviceTitle.toString(),
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
                 textStyle = TextStyle(),
@@ -194,13 +199,24 @@ fun AttachAppointmentStatus(status: String, statusColor: Color){
 }
 
 @Composable
-fun AttachAppointmentContent() {
+fun AttachAppointmentContent(appointment: Appointment) {
+
+    val appointmentDateFormat =  LocalDate.Format {
+        dayOfWeek(DayOfWeekNames.ENGLISH_FULL)
+        chars(", ")
+        monthName(MonthNames.ENGLISH_ABBREVIATED)
+        char(' ')
+        dayOfMonth()
+    }
+    val appointmentDate = LocalDate.parse(appointment.appointmentDate.toString()).format(appointmentDateFormat)
+    val appointmentTime = appointment.serviceTime?.time
+
     val columnModifier = Modifier
         .padding(start = 15.dp, end = 10.dp)
         .fillMaxWidth()
     Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
         TextComponent(
-            text = "Sample Booked Service Type",
+            text = appointment.serviceTypeItem?.title.toString(),
             fontSize = 16,
             fontFamily = GGSansSemiBold,
             textStyle = MaterialTheme.typography.h6,
@@ -225,7 +241,7 @@ fun AttachAppointmentContent() {
                 ) {
                     Box(modifier = Modifier.wrapContentWidth().fillMaxHeight(), contentAlignment = Alignment.CenterStart) {
                         TextComponent(
-                            text = "5:00pm Thursday, June 15",
+                            text = appointmentTime.toString()+" "+appointmentDate,
                             textModifier = Modifier.wrapContentSize()
                                 .padding(start = 5.dp),
                             fontSize = 15,
@@ -241,7 +257,7 @@ fun AttachAppointmentContent() {
                     }
                     Box(modifier = Modifier.wrapContentWidth().fillMaxHeight(), contentAlignment = Alignment.CenterStart) {
                         TextComponent(
-                            text = "At The Spa",
+                            text = if(appointment.serviceLocation == ServiceLocation.Spa.toPath()) "At The Spa" else "Home Service",
                             textModifier = Modifier.wrapContentSize(),
                             fontSize = 14,
                             fontFamily = GGSansRegular,
@@ -253,7 +269,7 @@ fun AttachAppointmentContent() {
                     }
 
                 }
-                TherapistDisplayItem()
+                TherapistDisplayItem(appointment.specialistInfo!!)
             }
         }
 
@@ -261,7 +277,8 @@ fun AttachAppointmentContent() {
 }
 
 @Composable
-fun TherapistDisplayItem() {
+fun TherapistDisplayItem(specialistInfo: SpecialistInfo) {
+    val profileInfo = specialistInfo.profileInfo
     val rowModifier = Modifier
         .fillMaxWidth().height(45.dp)
 
@@ -287,10 +304,10 @@ fun TherapistDisplayItem() {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = iconTextBoxModifier
             ) {
-                TherapistProfileImage(profileImageUrl = "drawable/user_icon.png")
+                TherapistProfileImage(profileImageUrl = profileInfo?.profileImageUrl!!, isAsync = true)
                 Box(modifier = Modifier.wrapContentWidth().fillMaxHeight(), contentAlignment = Alignment.CenterStart) {
                     TextComponent(
-                        text = "Helena MCain",
+                        text = profileInfo.firstname+ " "+profileInfo.lastname,
                         fontSize = 15,
                         fontFamily = GGSansRegular,
                         textStyle = MaterialTheme.typography.h6,
@@ -310,7 +327,7 @@ fun TherapistDisplayItem() {
                         .height(24.dp)) {
                     ImageComponent(imageModifier = Modifier.size(10.dp).padding(bottom = 2.dp), imageRes = "drawable/star_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
                     TextComponent(
-                        text = "4.50",
+                        text = specialistInfo.rating.toString(),
                         fontSize = 12,
                         fontFamily = GGSansRegular,
                         textStyle = MaterialTheme.typography.h6,

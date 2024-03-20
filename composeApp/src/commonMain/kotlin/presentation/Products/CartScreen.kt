@@ -23,7 +23,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,12 +43,23 @@ import domain.Models.OrderItem
 import domain.Models.OrderItemUIModel
 import domain.Models.PaymentMethod
 import domain.Models.Screens
+import domain.Models.ServiceTypeSpecialist
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import presentation.Bookings.BookingContract
+import presentation.Bookings.BookingPresenter
+import presentation.Bookings.BookingScreenHandler
 import presentation.components.StraightLine
+import presentation.dialogs.ErrorDialog
+import presentation.dialogs.LoadingDialog
+import presentation.dialogs.SuccessDialog
+import presentation.viewmodels.AsyncUIStates
+import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.CartViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.UIStates
 import presentation.widgets.CheckOutSummaryWidget
 import presentation.widgets.ProductDeliveryAddressWidget
 import presentation.widgets.PageBackNavWidget
@@ -88,6 +101,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
         val creatingOrderProgress = remember { mutableStateOf(false) }
         val creatingOrderSuccess = remember { mutableStateOf(false) }
         val creatingOrderFailed = remember { mutableStateOf(false) }
+        val coroutineScope = rememberCoroutineScope()
 
 
         if (uiStateViewModel == null) {
@@ -115,15 +129,68 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
 
 
 
-        /*  val paymentMethod = remember { mutableStateOf(PaymentMethod.CARD_PAYMENT.toPath()) }
-            val deliveryLocation = remember { mutableStateOf(DeliveryLocation.HOME_DELIVERY.toPath()) }
-            val totalAmount = remember { mutableStateOf(0) }
-            val deliveryFee = remember { mutableStateOf(0) }*/
+
 
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {},
             content = {
+
+                // View Contract Handler Initialisation
+                val handler = CreateOrderScreenHandler(
+                    cartPresenter,
+                    onCreateOrderStarted = {
+                        creatingOrderProgress.value = true
+                    },
+                    onCreateOrderSuccess = {
+                        creatingOrderProgress.value = false
+                        creatingOrderSuccess.value = true
+                    },
+                    onCreateOrderFailed = {
+                        creatingOrderProgress.value = false
+                        creatingOrderFailed.value = true
+                    })
+                handler.init()
+
+
+                if (creatingOrderProgress.value) {
+                    Box(modifier = Modifier.fillMaxWidth(0.90f)) {
+                        LoadingDialog("Creating Order...")
+                    }
+                }
+                else if (creatingOrderSuccess.value){
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        SuccessDialog("Creating Order Successful", actionTitle = "Done", onConfirmation = {
+                            mainViewModel.clearUnsavedOrders()
+                            mainViewModel.clearCurrentOrderReference()
+                            coroutineScope.launch {
+                                mainViewModel.setScreenNav(
+                                    Pair(
+                                        Screens.CART.toPath(),
+                                        Screens.MAIN_TAB.toPath()
+                                    )
+                                )
+                            }
+                        })
+                    }
+                }
+                else if (creatingOrderFailed.value){
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        ErrorDialog("Creating Appointment Failed", actionTitle = "Retry", onConfirmation = {
+                            val orderItemList = mainViewModel.unSavedOrders.value
+                            val vendorId = mainViewModel.connectedVendor.value.vendorId
+                            val userId = mainViewModel.currentUserInfo.value.userId
+                            val orderReference = mainViewModel.currentOrderReference.value
+                            val deliveryLocation = cartViewModel!!.deliveryLocation.value
+                            val paymentMethod = cartViewModel!!.paymentMethod.value
+
+                            cartPresenter.createOrder(orderItemList,vendorId!!,userId!!,orderReference,deliveryLocation,paymentMethod)
+
+                        })
+                    }
+                }
+
+
                 val rowModifier = Modifier
                     .fillMaxWidth()
                     .height(60.dp)
@@ -201,7 +268,18 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
                             cartViewModel!!.setPaymentMethod(PaymentMethod.CARD_PAYMENT.toPath())
                         })
                         StraightLine()
-                        CheckOutSummaryWidget(cartViewModel!!,mainViewModel)
+                        CheckOutSummaryWidget(cartViewModel!!, onCreateOrderStarted = {
+
+                             val orderItemList = mainViewModel.unSavedOrders.value
+                             val vendorId = mainViewModel.connectedVendor.value.vendorId
+                             val userId = mainViewModel.currentUserInfo.value.userId
+                             val orderReference = mainViewModel.currentOrderReference.value
+                             val deliveryLocation = cartViewModel!!.deliveryLocation.value
+                             val paymentMethod = cartViewModel!!.paymentMethod.value
+
+                             cartPresenter.createOrder(orderItemList,vendorId!!,userId!!,orderReference,deliveryLocation,paymentMethod)
+
+                        })
 
                     }
 
@@ -331,4 +409,37 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
     fun rightTopBarItem() {}
 
 }
+
+class CreateOrderScreenHandler(
+    private val cartPresenter: CartPresenter,
+    private val onCreateOrderStarted: () -> Unit,
+    private val onCreateOrderSuccess: () -> Unit,
+    private val onCreateOrderFailed: () -> Unit
+) : CartContract.View {
+    fun init() {
+        cartPresenter.registerUIContract(this)
+    }
+
+
+    override fun showLce(uiState: AsyncUIStates, message: String) {
+        uiState.let {
+            when {
+                it.isLoading -> {
+                    onCreateOrderStarted()
+                }
+                it.isSuccess -> {
+                   onCreateOrderSuccess()
+                }
+                it.isFailed -> {
+                    onCreateOrderFailed()
+                }
+
+            }
+        }
+    }
+}
+
+
+
+
 

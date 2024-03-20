@@ -28,7 +28,7 @@ import presentation.viewmodels.MainViewModel
 import presentations.components.TextComponent
 
 @Composable
-fun CheckOutSummaryWidget(cartViewModel: CartViewModel, mainViewModel: MainViewModel) {
+fun CheckOutSummaryWidget(cartViewModel: CartViewModel, onCreateOrderStarted:() -> Unit) {
     val columnModifier = Modifier
         .padding(start = 10.dp, bottom = 10.dp, end = 10.dp)
         .height(200.dp)
@@ -128,7 +128,9 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel, mainViewModel: MainViewM
             )
         }
 
-        ButtonComponent(modifier = buttonStyle, buttonText = "Proceed To CheckOut", borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Colors.primaryColor, style = TextStyle()){}
+        ButtonComponent(modifier = buttonStyle, buttonText = "Proceed To CheckOut", borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Colors.primaryColor, style = TextStyle()){
+                onCreateOrderStarted()
+        }
 
     }
 

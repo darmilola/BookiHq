@@ -109,24 +109,24 @@ class PendingAppointmentsTab(private val mainViewModel: MainViewModel) : Tab {
                     appointmentList.add(appointmentItem1)
                     appointmentList.add(appointmentItem2)
 
-                    PopulateAppointmentScreen(
+                   /* PopulateAppointmentScreen(
                         appointmentList = appointmentList,
                         mainViewModel = mainViewModel
-                    )
+                    )*/
 
                 }
 
             }
 
 
-    @Composable
+   /* @Composable
     fun PopulateAppointmentScreen(appointmentList: List<AppointmentItem>, mainViewModel: MainViewModel) {
         LazyColumn(modifier = Modifier.fillMaxWidth().height(getAppointmentViewHeight(appointmentList).dp).padding(top = 20.dp), userScrollEnabled = true) {
             items(appointmentList) {item ->
                 AppointmentWidget(itemType = item.appointmentType)
             }
         }
-    }
+    }*/
 
     @Composable
     fun BookingTitle(){

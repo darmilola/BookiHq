@@ -1,5 +1,6 @@
 package domain.bookings
 
+import domain.Models.ServiceStatus
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -18,6 +19,7 @@ data class CreateAppointmentRequest(@SerialName("user_id") val userId: Int,
                                 @SerialName("appointmentTime") val appointmentTime: Int,
                                 @SerialName("appointmentDate") val appointmentDate: String,
                                 @SerialName("serviceLocation") val serviceLocation: String,
+                                @SerialName("serviceStatus") val serviceStatus: String,
                                 @SerialName("isRecommendedAppointment") val isRecommendedAppointment: Boolean)
 
 @Serializable

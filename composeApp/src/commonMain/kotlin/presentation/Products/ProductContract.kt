@@ -2,6 +2,7 @@ package presentation.Products
 
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import domain.Models.FavoriteProduct
+import domain.Models.OrderItem
 import domain.Models.Product
 import domain.Models.ProductCategory
 import domain.Models.ResourceListEnvelope
@@ -55,7 +56,7 @@ class CartContract {
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
-        abstract fun createOrder(vendorId: Int,userId: Int,orderReference: Int,deliveryMethod: String,paymentMethod: String,orderItems: ArrayList<OrderItemRequest>)
+        abstract fun createOrder(orderItemList: SnapshotStateList<OrderItem>, vendorId: Int, userId: Int, orderReference: Int, deliveryMethod: String, paymentMethod: String)
 
     }
 }

@@ -1,7 +1,8 @@
 package presentation.Products
 
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.badoo.reaktive.single.subscribe
-import domain.Products.OrderItemRequest
+import domain.Models.OrderItem
 import domain.Products.ProductRepositoryImpl
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
@@ -22,18 +23,19 @@ class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
     }
 
     override fun createOrder(
+        orderItemList: SnapshotStateList<OrderItem>,
         vendorId: Int,
         userId: Int,
         orderReference: Int,
         deliveryMethod: String,
-        paymentMethod: String,
-        orderItems: ArrayList<OrderItemRequest>
+        paymentMethod: String
     ) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showLce(AsyncUIStates(isLoading = true))
-                    productRepositoryImpl.getProductCategories(vendorId, userId)
+                    val orderItems = getUnSavedOrders(orderItemList,userId,orderReference)
+                    productRepositoryImpl.createOrder(vendorId,userId,orderReference,deliveryMethod,paymentMethod,orderItems)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
