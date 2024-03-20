@@ -29,6 +29,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,16 +46,48 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Models.OrderItem
 import domain.Models.Product
+import domain.Models.ValuesLimit
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
-import org.jetbrains.compose.resources.ExperimentalResourceApi
+import presentation.viewmodels.MainViewModel
 import presentation.widgets.CartIncrementDecrementWidget
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
+import kotlin.random.Random
 
 @Composable
-fun ProductDetailContent(product: Product) {
+fun ProductDetailContent(product: Product, mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, cartItem: OrderItem? = null, onAddToCart: (Boolean) -> Unit,
+                         onRemoveFromCart: (Boolean) -> Unit) {
+
+    LaunchedEffect(Unit, block = {
+        if (mainViewModel.currentOrderReference.value == -1) {
+            val orderReference =
+                Random.nextInt(ValuesLimit.MIN_VALUE.toValue(), ValuesLimit.MAX_VALUE.toValue())
+            mainViewModel.setCurrentOrderReference(orderReference)
+
+        }
+    })
+    val orderReference = mainViewModel.currentOrderReference.value
+    val currentOrder = mainViewModel.unSavedOrders.value
+    val itemCount = remember { mutableStateOf(1) }
+    var orderItem = OrderItem()
+
+    if (isViewedFromCart){
+        if (cartItem != null){
+            orderItem = cartItem
+        }
+    }
+    else {
+        orderItem = OrderItem()
+        orderItem.orderReference = orderReference
+        orderItem.itemCount = itemCount.value
+        orderItem.itemProduct = product
+        orderItem.productId = product.productId
+    }
+
+
     Scaffold(
         content = {
             ProductBottomSheetContent(product)
@@ -78,16 +111,75 @@ fun ProductDetailContent(product: Product) {
                     .fillMaxWidth()
                     .fillMaxHeight()
 
+                if (isViewedFromCart){
 
-                Row (modifier = bgStyle,
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically) {
-                    Row(modifier = Modifier.fillMaxWidth(0.50f),
+                    Row(
+                        modifier = bgStyle,
                         horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically) {
-                        CartIncrementDecrementWidget()
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(0.50f),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            CartIncrementDecrementWidget(orderItem,isFromCart = isViewedFromCart,onItemCountChanged = {
+                                itemCount.value = it
+                            }, onItemRemovedFromCart = {
+
+                            })
+                        }
+
+                        ButtonComponent(
+                            modifier = buttonStyle2,
+                            buttonText = "Remove From Cart",
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Colors.pinkColor),
+                            fontSize = 16,
+                            shape = RoundedCornerShape(15.dp),
+                            textColor = Color(color = 0xFFFFFFFF),
+                            style = TextStyle(),
+                            borderStroke = null
+                        ) {
+                            currentOrder.remove(orderItem)
+                            mainViewModel.setCurrentUnsavedOrders(currentOrder)
+                            onRemoveFromCart(true)
+                        }
                     }
-                    ButtonComponent(modifier = buttonStyle2, buttonText = "Add to Cart", colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 16, shape = RoundedCornerShape(15.dp), textColor = Color(color = 0xFFFFFFFF), style = TextStyle(), borderStroke = null){}
+
+                }
+
+                else {
+                    Row(
+                        modifier = bgStyle,
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(0.50f),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            CartIncrementDecrementWidget(orderItem,onItemCountChanged = {
+                                itemCount.value = it
+                            }, onItemRemovedFromCart = {})
+                        }
+
+                        ButtonComponent(
+                            modifier = buttonStyle2,
+                            buttonText = "Add to Cart",
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
+                            fontSize = 16,
+                            shape = RoundedCornerShape(15.dp),
+                            textColor = Color(color = 0xFFFFFFFF),
+                            style = TextStyle(),
+                            borderStroke = null
+                        ) {
+                            currentOrder.add(orderItem)
+                            mainViewModel.setCurrentUnsavedOrders(currentOrder)
+                            onAddToCart(true)
+
+                        }
+                    }
                 }
 
             }
@@ -102,7 +194,6 @@ fun ProductBottomSheetContent(product: Product) {
 
     var currentTabScreen by remember { mutableStateOf(0) }
     val reviewText = if (product.productReviews?.isNotEmpty() == true) "Reviews"  else "No Reviews"
-
 
     val boxModifier =
         Modifier
@@ -369,38 +460,6 @@ fun AttachScrollingProductImages(product: Product){
             }
 
         }
-    }
-
-}
-
-@Composable
-fun attachCancelIcon() {
-    Box(
-        Modifier
-            .clip(CircleShape)
-            .size(45.dp)
-            .background(color = Color(color = 0xA9E8E8E8)),
-        contentAlignment = Alignment.Center
-    ) {
-        val modifier = Modifier
-            .size(25.dp)
-        ImageComponent(imageModifier = modifier, imageRes = "drawable/cancel_icon.png", colorFilter = ColorFilter.tint(color = Colors.darkPrimary))
-    }
-
-}
-
-@Composable
-fun attachShareIcon() {
-    Box(
-        Modifier
-            .clip(CircleShape)
-            .size(45.dp)
-            .background(color = Color(color = 0xA9E8E8E8)),
-        contentAlignment = Alignment.Center
-    ) {
-        val modifier = Modifier
-            .size(25.dp)
-        ImageComponent(imageModifier = modifier, imageRes = "drawable/export_icon.png", colorFilter = ColorFilter.tint(color = Colors.darkPrimary))
     }
 
 }

@@ -1,6 +1,8 @@
 package presentation.main.home
 
 import GGSansRegular
+import StackedSnackbarHost
+import StackedSnakbarHostState
 import domain.Models.AppointmentItem
 import domain.Models.BusinessStatusAdsPage
 import theme.styles.Colors
@@ -29,6 +31,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,6 +61,7 @@ import org.koin.core.component.KoinComponent
 import presentation.components.StraightLine
 import presentation.Products.ProductDetailBottomSheet
 import presentation.Products.HomeProductItem
+import presentation.Products.SearchBar
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
 import utils.getAppointmentViewHeight
@@ -66,8 +70,11 @@ import presentation.widgets.BusinessStatusWidgetUpdated
 import presentation.widgets.HomeServicesWidget
 import presentation.widgets.NewAppointmentWidget
 import presentation.widgets.RecommendedServiceItem
+import presentation.widgets.ShowSnackBar
+import presentation.widgets.SnackBarType
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
+import rememberStackedSnackbarHostState
 import utils.getPopularProductViewHeight
 
 class HomeTab(private val homePageViewModel: HomePageViewModel,
@@ -97,6 +104,12 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
          val popularProducts = homePageViewModel.homePageInfo.value.homepageModel.popularProducts
          val recentAppointments = homePageViewModel.homePageInfo.value.homepageModel.recentAppointment
          val vendorRecommendations = homePageViewModel.homePageInfo.value.homepageModel.recommendationRecommendations
+
+        val stackedSnackBarHostState = rememberStackedSnackbarHostState(
+            maxStack = 5,
+            animation = StackedSnackbarAnimation.Bounce
+        )
+
         if (userInfo != null) {
             mainViewModel.setUserInfo(userInfo)
         }
@@ -123,6 +136,10 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
             appointmentList.add(appointmentItem1)
             appointmentList.add(appointmentItem2)
 
+        Scaffold(
+            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
+            topBar = {},
+            content = {
 
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -131,7 +148,6 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
             ) {
                 Column(
                     Modifier
-                        .padding(bottom = 70.dp)
                         .fillMaxSize()
                         .background(color = Color.White)
 
@@ -158,7 +174,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                         PopularProducts()
 
                         if (popularProducts != null) {
-                            PopularProductScreen(popularProducts)
+                            PopularProductScreen(popularProducts,mainViewModel, stackedSnackBarHostState)
                         }
                         AttachAppointments()
                         RecentAppointmentScreen(
@@ -167,7 +183,8 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                     }
                 }
             }
-        }
+        })
+    }
 
 
 
@@ -302,17 +319,27 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
 
 
     @Composable
-    fun PopularProductScreen(popularProducts: List<Product>) {
+    fun PopularProductScreen(popularProducts: List<Product>, mainViewModel: MainViewModel, stackedSnackBarHostState: StackedSnakbarHostState) {
 
         Column {
 
-            var showProductBottomSheet by remember { mutableStateOf(false) }
+            var showProductDetailBottomSheet by remember { mutableStateOf(false) }
             val selectedProduct  = remember { mutableStateOf(Product()) }
 
-            if (showProductBottomSheet) {
-                ProductDetailBottomSheet(selectedProduct.value) {
-                    showProductBottomSheet = false
+            if (showProductDetailBottomSheet) {
+                ProductDetailBottomSheet(selectedProduct.value,mainViewModel, onDismiss = {
+                        isAddToCart -> if (isAddToCart){
+                    ShowSnackBar(title = "Successful",
+                        description = "Your Product has been successfully Added to Cart",
+                        actionLabel = "",
+                        duration = StackedSnackbarDuration.Short,
+                        snackBarType = SnackBarType.SUCCESS,
+                        stackedSnackBarHostState,
+                        onActionClick = {})
                 }
+                    showProductDetailBottomSheet = false
+
+                },onRemoveFromCart = {})
             }
 
             LazyColumn(
@@ -323,7 +350,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
             ) {
                 items(popularProducts.size) {
                     HomeProductItem(popularProducts[it],onProductClickListener = { it2 ->
-                        showProductBottomSheet = true
+                        showProductDetailBottomSheet = true
                         selectedProduct.value = it2
                     })
                 }
@@ -353,11 +380,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
 
         Box(modifier = boxBgModifier) {
             var showProductBottomSheet by remember { mutableStateOf(false) }
-            if (showProductBottomSheet) {
-                ProductDetailBottomSheet(Product()) {
-                    showProductBottomSheet = false
-                }
-            }
+
 
 
             Box(contentAlignment = Alignment.BottomCenter, modifier = boxModifier) {

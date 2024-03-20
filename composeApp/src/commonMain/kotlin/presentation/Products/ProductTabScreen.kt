@@ -12,9 +12,8 @@ import presentation.viewmodels.ProductTabViewModel
 @Composable
 fun ProductTabScreen(product: Product, currentPosition: Int = 0) {
 
-    val viewModel: ProductTabViewModel = ProductTabViewModel()
+    val viewModel = ProductTabViewModel()
     viewModel.changeScreen(currentPosition)
-    val productTabScreenData = viewModel.productTabScreenData ?: return
     val state = viewModel.productTabScreenData!!.screenType
 
     AnimatedContent(targetState = state) { targetState ->

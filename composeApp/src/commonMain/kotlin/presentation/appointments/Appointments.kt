@@ -57,7 +57,6 @@ class AppointmentsTab(private val mainViewModel: MainViewModel) : Tab, Appointme
             ) {
                 Column(
                     Modifier
-                        .padding(bottom = 85.dp)
                         .fillMaxHeight()
                         .fillMaxWidth()
                         .background(color = Color.White)

@@ -127,14 +127,15 @@ class MainTab(private val mainViewModel: MainViewModel,private val homePageViewM
                         }
                     },
                     content = {
-                        CurrentTab()
+                        Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(bottom = 70.dp)) {
+                            CurrentTab()
+                        }
                     },
                     backgroundColor = Color.White,
                     bottomBar = {
                         BottomNavigation(
                             modifier = Modifier
-                                .padding(bottom = 25.dp)
-                                .height(40.dp), backgroundColor = Color.Transparent,
+                                .height(80.dp), backgroundColor = Color.Transparent,
                             elevation = 0.dp
                         )
                         {

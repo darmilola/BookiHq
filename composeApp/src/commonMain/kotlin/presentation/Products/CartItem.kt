@@ -29,12 +29,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Models.OrderItem
 import presentation.widgets.CartIncrementDecrementWidget
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun CartItem(onProductClickListener: () -> Unit) {
+fun CartItem(orderItem: OrderItem, onProductClickListener: (OrderItem) -> Unit) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 10.dp, bottom = 10.dp)
         .height(160.dp)
@@ -42,8 +43,10 @@ fun CartItem(onProductClickListener: () -> Unit) {
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CartItemImage()
-            CartItemDetail {}
+            CartItemImage(orderItem.itemProduct?.productImages!![0].imageUrl)
+            CartItemDetail(orderItem) {
+
+            }
         }
     }
 
@@ -51,7 +54,7 @@ fun CartItem(onProductClickListener: () -> Unit) {
 
 
 @Composable
-fun CartItemImage() {
+fun CartItemImage(imageUrl: String) {
     val imageModifier =
         Modifier
             .fillMaxHeight()
@@ -82,7 +85,8 @@ fun CartItemImage() {
 
 
 @Composable
-fun CartItemDetail(onProductClickListener: () -> Unit){
+fun CartItemDetail(orderItem: OrderItem, onProductClickListener: () -> Unit) {
+    val orderedProduct = orderItem.itemProduct
     val columnModifier = Modifier
         .padding(start = 10.dp, end = 10.dp)
         .fillMaxHeight()
@@ -98,7 +102,7 @@ fun CartItemDetail(onProductClickListener: () -> Unit){
                 .wrapContentHeight()
 
             TextComponent(
-                text = "Bloom Rose Oil And Argan Oil is For Sale",
+                text = orderedProduct?.productName!!,
                 fontSize = 16,
                 fontFamily = GGSansSemiBold,
                 textStyle = MaterialTheme.typography.h6,
@@ -110,13 +114,17 @@ fun CartItemDetail(onProductClickListener: () -> Unit){
                 overflow = TextOverflow.Ellipsis,
                 textModifier = modifier
             )
-            CartProductPriceInfoContent()
-            CartIncrementDecrementWidget()
+            CartProductPriceInfoContent(orderItem)
+            CartIncrementDecrementWidget(orderItem,isFromCart = true,onItemCountChanged = {
+
+            }, onItemRemovedFromCart = {
+
+            })
         }
     }
 
 @Composable
-fun CartProductPriceInfoContent() {
+fun CartProductPriceInfoContent(orderItem: OrderItem) {
     Row(
         modifier = Modifier
             .height(40.dp)

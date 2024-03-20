@@ -5,6 +5,7 @@ import com.badoo.reaktive.single.toSingle
 import domain.Models.ListDataResponse
 import domain.Models.Product
 import domain.Models.ProductCategoryResponse
+import domain.Models.ServerResponse
 import domain.Models.ServiceSpecialistsResponse
 import domain.bookings.GetSpecialistsRequest
 import io.ktor.client.HttpClient
@@ -47,5 +48,15 @@ open class ProductNetworkService(private val apiService: HttpClient) {
             contentType(ContentType.Application.Json)
             setBody(searchProductRequest)
         }.body<ListDataResponse<Product>>().toSingle()
+
+    suspend fun createOrder(createOrderRequest: CreateOrderRequest) =
+        apiService.post {
+            url("/api/v1/orders/create")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(createOrderRequest)
+        }.body<ServerResponse>().toSingle()
 
 }

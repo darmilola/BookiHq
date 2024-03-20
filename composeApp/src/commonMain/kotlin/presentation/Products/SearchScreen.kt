@@ -29,6 +29,7 @@ import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.UIStateViewModel
 
+/*
 @Composable
 fun SearchScreen(productCategories: ArrayList<ProductCategory>, productResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Product>,
                   uiStateViewModel: UIStateViewModel, productPresenter: ProductPresenter, mainViewModel: MainViewModel
@@ -98,4 +99,4 @@ fun SearchScreen(productCategories: ArrayList<ProductCategory>, productResourceL
         }
 
     }
-}
+}*/

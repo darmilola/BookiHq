@@ -67,7 +67,7 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
     @Composable
     override fun Content() {
         val columnModifier = Modifier
-            .padding(start = 20.dp, end = 20.dp, bottom = 70.dp)
+            .padding(start = 20.dp, end = 20.dp)
             .fillMaxHeight()
             .fillMaxWidth()
 
@@ -278,7 +278,7 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
                     .height(210.dp)
                     .padding(start = 40.dp, end = 40.dp)
                     .fillMaxWidth()) {}
-        }
+            }
 
     }
 }

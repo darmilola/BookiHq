@@ -1,9 +1,16 @@
 package presentation.Products
 
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import domain.Models.FavoriteProduct
 import domain.Models.Product
 import domain.Models.ProductCategory
 import domain.Models.ResourceListEnvelope
+import domain.Models.UnsavedAppointment
+import domain.Models.User
+import domain.Models.Vendor
+import domain.Products.OrderItemRequest
+import presentation.Bookings.BookingContract
+import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.UIStates
 
 class CategoryContract {
@@ -35,6 +42,20 @@ class ProductContract {
         abstract fun getMoreProducts(vendorId: Int, categoryId: Int, nextPage: Int = 1)
         abstract fun searchProducts(vendorId: Int, searchQuery: String)
         abstract fun searchMoreProducts(vendorId: Int, searchQuery: String, nextPage: Int = 1)
+
+    }
+}
+
+
+class CartContract {
+    interface View {
+        fun showLce(uiState: AsyncUIStates, message: String = "")
+
+    }
+
+    abstract class Presenter {
+        abstract fun registerUIContract(view: View?)
+        abstract fun createOrder(vendorId: Int,userId: Int,orderReference: Int,deliveryMethod: String,paymentMethod: String,orderItems: ArrayList<OrderItemRequest>)
 
     }
 }

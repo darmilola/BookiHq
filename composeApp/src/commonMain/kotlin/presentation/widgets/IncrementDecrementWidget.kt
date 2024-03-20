@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import domain.Models.OrderItem
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
@@ -110,13 +111,36 @@ fun IncrementDecrementWidget(){
 
 
 @Composable
-fun CartIncrementDecrementWidget(){
-    var counter by remember { mutableStateOf(1) }
-
-    val decrementBorderColor: Color = if(counter == 1) Color(0x80CCCCCC) else Colors.primaryColor
-    val decrementBg: Color = if(counter == 1) Color(0x20CCCCCC) else Colors.lightPrimaryColor
+fun CartIncrementDecrementWidget(orderItem: OrderItem,isFromCart: Boolean = false, onItemCountChanged:(Int) -> Unit, onItemRemovedFromCart: (OrderItem) -> Unit){
+    var counter by remember { mutableStateOf(orderItem.itemCount) }
+    val decrementBorderColor: Color = if(counter == 1) {
+        if (isFromCart){
+            Colors.pinkColor
+        }else {
+            Color(0x80CCCCCC)
+        }
+    } else {
+        Colors.primaryColor
+    }
+    val decrementBg: Color = if(counter == 1) {
+        if (isFromCart){
+            Colors.lightPinkColor
+        }else {
+            Color(0x20CCCCCC)
+        }
+    } else {
+        Colors.lightPrimaryColor
+    }
     val decrementImgRes: String = if(counter == 1) "drawable/remove_icon.png" else "drawable/minus_icon.png"
-    val decrementImgTint: Color = if(counter == 1) Color(0x80CCCCCC) else Colors.primaryColor
+    val decrementImgTint: Color = if(counter == 1) {
+        if (isFromCart){
+            Colors.pinkColor
+        }else {
+            Color(0x80CCCCCC)
+        }
+    } else {
+        Colors.primaryColor
+    }
     val decrementBorderWidth: Int = if(counter == 1) 1 else 2
 
     Row(
@@ -136,7 +160,14 @@ fun CartIncrementDecrementWidget(){
         ) {
 
             ImageComponent(imageModifier = Modifier.padding(12.dp).fillMaxSize()
-                .clickable { if(counter > 1)counter -= 1 }, imageRes = decrementImgRes, colorFilter = ColorFilter.tint(color = decrementImgTint))
+                .clickable { if(counter > 1){
+                    counter -= 1
+                    onItemCountChanged(counter)
+                  }
+                 else if (counter == 1 && isFromCart){
+                     onItemRemovedFromCart(orderItem)
+                 }
+               }, imageRes = decrementImgRes, colorFilter = ColorFilter.tint(color = decrementImgTint))
         }
 
         Row(

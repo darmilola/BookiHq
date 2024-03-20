@@ -3,6 +3,7 @@ package presentation.viewmodels
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
+import domain.Models.OrderItem
 import domain.Models.VendorRecommendation
 import domain.Models.Services
 import domain.Models.UnsavedAppointment
@@ -19,6 +20,8 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
     private var _vendorRecommendation =  savedStateHandle.getStateFlow("vendorRecommendation", VendorRecommendation())
     private var _currentUnsavedAppointments =  savedStateHandle.getStateFlow("currentUnsavedAppointments", SnapshotStateList<UnsavedAppointment>())
+    private var _currentUnsavedOrders =  savedStateHandle.getStateFlow("currentUnsavedOrders", SnapshotStateList<OrderItem>())
+    private var _currentOrderReference =  savedStateHandle.getStateFlow("currentOrderReference", -1)
     private var _mainUiState =  savedStateHandle.getStateFlow("mainUiState", AsyncUIStates())
 
     val screenTitle: StateFlow<String>
@@ -29,6 +32,12 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
 
     val unSavedAppointments: StateFlow<SnapshotStateList<UnsavedAppointment>>
         get() = _currentUnsavedAppointments
+
+    val unSavedOrders: StateFlow<SnapshotStateList<OrderItem>>
+        get() = _currentUnsavedOrders
+
+    val currentOrderReference: StateFlow<Int>
+        get() = _currentOrderReference
 
     val connectedVendor: StateFlow<Vendor>
         get() = _connectedVendor
@@ -71,8 +80,25 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     fun setCurrentUnsavedAppointments(unsavedAppointments: MutableList<UnsavedAppointment>) {
         savedStateHandle["currentUnsavedAppointments"] = unsavedAppointments
     }
+
+    fun setCurrentUnsavedOrders(orderItems: MutableList<OrderItem>) {
+        savedStateHandle["currentUnsavedOrders"] = orderItems
+    }
+
+    fun setCurrentOrderReference(orderReference: Int) {
+        savedStateHandle["currentOrderReference"] = orderReference
+    }
+
     fun clearUnsavedAppointments() {
         savedStateHandle["currentUnsavedAppointments"] = SnapshotStateList<UnsavedAppointment>()
+    }
+
+    fun clearCurrentOrderReference() {
+        savedStateHandle["currentOrderReference"] = -1
+    }
+
+    fun clearUnsavedOrders() {
+        savedStateHandle["currentUnsavedOrders"] = SnapshotStateList<OrderItem>()
     }
 
     fun removeLastAppointment() {

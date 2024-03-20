@@ -1,5 +1,6 @@
 package presentation.Products
 
+import StackedSnakbarHostState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import domain.Models.OrderItem
 import domain.Models.Product
 import domain.Models.ProductCategory
 import domain.Models.ProductItemUIModel
@@ -41,13 +43,15 @@ import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.UIStateViewModel
+import presentation.widgets.ShowSnackBar
+import presentation.widgets.SnackBarType
 import theme.Colors
 import utils.getPopularProductViewHeight
 
 @Composable
 fun CategoryScreen(productCategory: ProductCategory,
                    productResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Product>,
-                   uiStateViewModel: UIStateViewModel, productPresenter: ProductPresenter, mainViewModel: MainViewModel) {
+                   uiStateViewModel: UIStateViewModel, productPresenter: ProductPresenter, mainViewModel: MainViewModel,stackedSnackBarHostState: StackedSnakbarHostState) {
 
     val connectedVendor: Vendor = mainViewModel.connectedVendor.value
     val loadMoreState = productResourceListEnvelopeViewModel.isLoadingMore.collectAsState()
@@ -69,11 +73,24 @@ fun CategoryScreen(productCategory: ProductCategory,
 
     var showProductDetailBottomSheet by remember { mutableStateOf(false) }
 
-            if (showProductDetailBottomSheet) {
-                ProductDetailBottomSheet(selectedProduct.value) {
-                    showProductDetailBottomSheet = false
+                if (showProductDetailBottomSheet) {
+                    ProductDetailBottomSheet(selectedProduct.value,mainViewModel, onDismiss = {
+                            isAddToCart -> if (isAddToCart){
+                        ShowSnackBar(title = "Successful",
+                            description = "Your Product has been successfully Added to Cart",
+                            actionLabel = "",
+                            duration = StackedSnackbarDuration.Short,
+                            snackBarType = SnackBarType.SUCCESS,
+                            stackedSnackBarHostState,
+                            onActionClick = {})
+                    }
+                        showProductDetailBottomSheet = false
+
+                    }, onRemoveFromCart = {})
                 }
-            }
+
+
+
 
             LazyColumn(
                 modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(
@@ -124,16 +141,20 @@ fun CategoryScreen(productCategory: ProductCategory,
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductDetailBottomSheet(product: Product,onDismiss: () -> Unit) {
+fun ProductDetailBottomSheet(product: Product, mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, cartItem: OrderItem? = null, onDismiss: (isAddToCart: Boolean) -> Unit, onRemoveFromCart: (Boolean) -> Unit) {
     val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ModalBottomSheet(
         modifier = Modifier.padding(top = 20.dp),
-        onDismissRequest = { onDismiss() },
+        onDismissRequest = { onDismiss(false) },
         sheetState = modalBottomSheetState,
         shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
         containerColor = Color(0xFFF3F3F3),
         dragHandle = {},
     ) {
-       ProductDetailContent(product)
+       ProductDetailContent(product,mainViewModel,isViewedFromCart,cartItem, onAddToCart = {
+           onDismiss(it)
+       }, onRemoveFromCart = {
+           onRemoveFromCart(it)
+       })
     }
 }

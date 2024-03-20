@@ -62,7 +62,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
     override fun Content() {
 
         val columnModifier = Modifier
-            .padding(top = 5.dp, bottom = 100.dp)
+            .padding(top = 5.dp)
             .fillMaxHeight()
             .verticalScroll(rememberScrollState())
             .fillMaxWidth()

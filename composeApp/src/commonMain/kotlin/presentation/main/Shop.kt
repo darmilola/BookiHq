@@ -2,6 +2,8 @@ package presentation.main
 
 import GGSansRegular
 import GGSansSemiBold
+import StackedSnackbarHost
+import StackedSnakbarHostState
 import androidx.compose.foundation.BorderStroke
 import theme.styles.Colors
 import androidx.compose.foundation.background
@@ -77,8 +79,11 @@ import presentation.viewmodels.ProductViewModel
 import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentation.viewmodels.UIStates
+import presentation.widgets.ShowSnackBar
+import presentation.widgets.SnackBarType
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
+import rememberStackedSnackbarHostState
 import utils.getPopularProductViewHeight
 
 
@@ -118,6 +123,11 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
         val isUserSearching = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
+
+        val stackedSnackBarHostState = rememberStackedSnackbarHostState(
+            maxStack = 5,
+            animation = StackedSnackbarAnimation.Bounce
+        )
 
         if (categoryUIStateViewModel == null) {
             categoryUIStateViewModel = kmpViewModel(
@@ -178,51 +188,55 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
             productCategories = productViewModel!!.productCategories.value
 
-            Scaffold(
-                topBar = {
-                    SearchBar( onValueChange = {
-                        productResourceListEnvelopeViewModel!!.clearData(mutableListOf<Product>())
-                        isUserSearching.value = true
-                        if(it.isNotEmpty()) {
-                            searchQuery.value = it
-                            if (!productResourceListEnvelopeViewModel!!.isSearching.value) {
-                                productPresenter.searchProducts(
-                                    mainViewModel.connectedVendor.value.vendorId!!,
-                                    it
-                                )
+                 Scaffold(
+                    snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
+                    topBar = {
+                        SearchBar(onValueChange = {
+                            productResourceListEnvelopeViewModel!!.clearData(mutableListOf<Product>())
+                            isUserSearching.value = true
+                            if (it.isNotEmpty()) {
+                                searchQuery.value = it
+                                if (!productResourceListEnvelopeViewModel!!.isSearching.value) {
+                                    productPresenter.searchProducts(
+                                        mainViewModel.connectedVendor.value.vendorId!!,
+                                        it
+                                    )
+                                }
                             }
+                        }, onBackPressed = {
+                            productResourceListEnvelopeViewModel!!.clearData(mutableListOf<Product>())
+                            isUserSearching.value = false
+                        })
+                    },
+                    content = {
+                        if (!isUserSearching.value) {
+                            productResourceListEnvelopeViewModel!!.clearData(mutableListOf<Product>())
+                            ProductContent(
+                                productCategories!!,
+                                productResourceListEnvelopeViewModel!!, productUIStateViewModel!!,
+                                productPresenter, mainViewModel,stackedSnackBarHostState
+                            )
+                        } else {
+                            productResourceListEnvelopeViewModel!!.clearData(mutableListOf<Product>())
+                            SearchContent(
+                                searchQuery.value,
+                                productResourceListEnvelopeViewModel!!, productUIStateViewModel!!,
+                                productPresenter, mainViewModel,stackedSnackBarHostState
+                            )
                         }
-                    }, onBackPressed = {
-                        productResourceListEnvelopeViewModel!!.clearData(mutableListOf<Product>())
-                        isUserSearching.value = false
-                    })
-                },
-                content = {
-                    if (!isUserSearching.value) {
-                        productResourceListEnvelopeViewModel!!.clearData(mutableListOf<Product>())
-                        ProductContent(
-                            productCategories!!,
-                            productResourceListEnvelopeViewModel!!, productUIStateViewModel!!,
-                            productPresenter, mainViewModel
-                        )
-                    } else{
-                        productResourceListEnvelopeViewModel!!.clearData(mutableListOf<Product>())
-                        SearchContent(
-                            searchQuery.value,
-                            productResourceListEnvelopeViewModel!!, productUIStateViewModel!!,
-                            productPresenter, mainViewModel)
+                    },
+                    backgroundColor = Color.White,
+                    floatingActionButton = {
+                        AttachShoppingCartImage("drawable/shopping_cart.png",mainViewModel)
                     }
-                },
-                backgroundColor = Color.White,
-                floatingActionButton = {
-                    AttachShoppingCartImage("drawable/shopping_cart.png")
-                }
-            )
-        }
+                )
+            }
     }
 
         @Composable
-        fun AttachShoppingCartImage(iconRes: String) {
+        fun AttachShoppingCartImage(iconRes: String, mainViewModel: MainViewModel) {
+            val currentOrders = mainViewModel.unSavedOrders.collectAsState()
+            val cartSize = currentOrders.value
             val indicatorModifier = Modifier
                 .padding(end = 15.dp, bottom = 20.dp)
                 .background(color = Color.Transparent)
@@ -232,7 +246,6 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
             Box(
                 Modifier
-                    .padding(bottom = 70.dp)
                     .clip(CircleShape)
                     .size(70.dp)
                     .clickable {
@@ -240,7 +253,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                             Pair(Screens.MAIN_TAB.toPath(), Screens.CART.toPath())
                         )
                     }
-                    .background(color = Colors.darkPrimary),
+                    .background(color = Colors.primaryColor),
                 contentAlignment = Alignment.Center
             ) {
                 val modifier = Modifier
@@ -250,20 +263,21 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                     imageRes = iconRes,
                     colorFilter = ColorFilter.tint(color = Color.White)
                 )
-
-                Box(
-                    modifier = indicatorModifier,
-                    contentAlignment = Alignment.Center
-                ) {
-                    TextComponent(
-                        text = "5",
-                        fontSize = 17,
-                        fontFamily = GGSansRegular,
-                        textStyle = MaterialTheme.typography.h6,
-                        textColor = Color.White,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.ExtraBold
-                    )
+                if (cartSize.size > 0) {
+                    Box(
+                        modifier = indicatorModifier,
+                        contentAlignment = Alignment.Center
+                    ) {
+                        TextComponent(
+                            text = cartSize.size.toString(),
+                            fontSize = 17,
+                            fontFamily = GGSansRegular,
+                            textStyle = MaterialTheme.typography.h6,
+                            textColor = Color.White,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                    }
                 }
             }
         }
@@ -271,7 +285,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
         @Composable
         fun ProductContent(productCategories: ArrayList<ProductCategory>,productResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Product>,
-                           uiStateViewModel: UIStateViewModel, productPresenter: ProductPresenter, mainViewModel: MainViewModel) {
+                           uiStateViewModel: UIStateViewModel, productPresenter: ProductPresenter, mainViewModel: MainViewModel,stackedSnackBarHostState: StackedSnakbarHostState) {
             val columnModifier = Modifier
                 .padding(top = 5.dp)
                 .fillMaxHeight()
@@ -283,14 +297,13 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
             ) {
                 Row(
                     Modifier
-                        .padding(bottom = 85.dp)
                         .fillMaxHeight()
                         .fillMaxWidth()
                         .background(color = Color.White),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     TabScreen(productCategories,productResourceListEnvelopeViewModel,
-                        uiStateViewModel,productPresenter,mainViewModel)
+                        uiStateViewModel,productPresenter,mainViewModel,stackedSnackBarHostState)
                 }
 
             }
@@ -300,15 +313,9 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
 @Composable
 fun SearchContent(searchQuery: String, productResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Product>,
-                   uiStateViewModel: UIStateViewModel, productPresenter: ProductPresenter, mainViewModel: MainViewModel) {
-
-    val connectedVendor: Vendor = mainViewModel.connectedVendor.value
+                   uiStateViewModel: UIStateViewModel, productPresenter: ProductPresenter, mainViewModel: MainViewModel, stackedSnackBarHostState: StackedSnakbarHostState) {
     val loadMoreState = productResourceListEnvelopeViewModel.isLoadingMore.collectAsState()
     val productList = productResourceListEnvelopeViewModel.resources.collectAsState()
-    val totalProductsCount = productResourceListEnvelopeViewModel.totalItemCount.collectAsState()
-    val displayedProductsCount =
-        productResourceListEnvelopeViewModel.displayedItemCount.collectAsState()
-    val lastIndex = productList.value.size.minus(1)
     val selectedProduct = remember { mutableStateOf(Product()) }
     val productUIState = uiStateViewModel.uiData.collectAsState()
     var productUIModel by remember {
@@ -359,7 +366,6 @@ fun SearchContent(searchQuery: String, productResourceListEnvelopeViewModel: Res
             ) {
                 Row(
                     Modifier
-                        .padding(bottom = 85.dp)
                         .fillMaxHeight()
                         .fillMaxWidth()
                         .background(color = Color.White),
@@ -368,12 +374,22 @@ fun SearchContent(searchQuery: String, productResourceListEnvelopeViewModel: Res
                     Column {
                         var showProductDetailBottomSheet by remember { mutableStateOf(false) }
                         if (showProductDetailBottomSheet) {
-                            ProductDetailBottomSheet(selectedProduct.value) {
+                            ProductDetailBottomSheet(selectedProduct.value,mainViewModel, onDismiss = {
+                            isAddToCart -> if (isAddToCart){
+                                ShowSnackBar(title = "Successful",
+                                    description = "Your Product has been successfully Added to Cart",
+                                    actionLabel = "",
+                                    duration = StackedSnackbarDuration.Short,
+                                    snackBarType = SnackBarType.SUCCESS,
+                                    stackedSnackBarHostState,
+                                    onActionClick = {})
+                                   }
                                 showProductDetailBottomSheet = false
-                            }
+
+                            },onRemoveFromCart = {})
                         }
                         LazyColumn(
-                            modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(
+                            modifier = Modifier.fillMaxWidth().height(
                                 getPopularProductViewHeight(productUIModel.productList).dp
                             ),
                             contentPadding = PaddingValues(top = 6.dp, bottom = 6.dp),
@@ -403,7 +419,7 @@ fun SearchContent(searchQuery: String, productResourceListEnvelopeViewModel: Res
         @Composable
         fun TabScreen(productCategories: ArrayList<ProductCategory>,
                       productResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Product>,
-                      uiStateViewModel: UIStateViewModel, productPresenter: ProductPresenter, mainViewModel: MainViewModel) {
+                      uiStateViewModel: UIStateViewModel, productPresenter: ProductPresenter, mainViewModel: MainViewModel,stackedSnackBarHostState: StackedSnakbarHostState) {
 
             var tabIndex by remember { mutableStateOf(0) }
             val productUIState = uiStateViewModel.uiData.collectAsState()
@@ -474,7 +490,7 @@ fun SearchContent(searchQuery: String, productResourceListEnvelopeViewModel: Res
                         CategoryScreen(
                             productCategories[tabIndex],
                             productResourceListEnvelopeViewModel,
-                            uiStateViewModel, productPresenter, mainViewModel = mainViewModel
+                            uiStateViewModel, productPresenter, mainViewModel = mainViewModel,stackedSnackBarHostState
                         )
                     }
                 }
