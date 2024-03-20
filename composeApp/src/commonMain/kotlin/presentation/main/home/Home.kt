@@ -50,6 +50,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Models.OrderItem
 import domain.Models.Product
 import domain.Models.VendorRecommendation
 import domain.Models.RecommendationType
@@ -327,7 +328,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
             val selectedProduct  = remember { mutableStateOf(Product()) }
 
             if (showProductDetailBottomSheet) {
-                ProductDetailBottomSheet(selectedProduct.value,mainViewModel, onDismiss = {
+                ProductDetailBottomSheet(mainViewModel,isViewedFromCart = false, OrderItem(itemProduct = selectedProduct.value), onDismiss = {
                         isAddToCart -> if (isAddToCart){
                     ShowSnackBar(title = "Successful",
                         description = "Your Product has been successfully Added to Cart",

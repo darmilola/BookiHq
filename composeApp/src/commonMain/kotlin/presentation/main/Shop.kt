@@ -54,6 +54,7 @@ import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.FavoriteProduct
+import domain.Models.OrderItem
 import domain.Models.Product
 import domain.Models.ProductCategory
 import domain.Models.ProductItemUIModel
@@ -374,7 +375,7 @@ fun SearchContent(searchQuery: String, productResourceListEnvelopeViewModel: Res
                     Column {
                         var showProductDetailBottomSheet by remember { mutableStateOf(false) }
                         if (showProductDetailBottomSheet) {
-                            ProductDetailBottomSheet(selectedProduct.value,mainViewModel, onDismiss = {
+                            ProductDetailBottomSheet(mainViewModel,isViewedFromCart = false, OrderItem(itemProduct = selectedProduct.value),onDismiss = {
                             isAddToCart -> if (isAddToCart){
                                 ShowSnackBar(title = "Successful",
                                     description = "Your Product has been successfully Added to Cart",

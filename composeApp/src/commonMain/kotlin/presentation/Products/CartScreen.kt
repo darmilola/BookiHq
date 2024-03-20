@@ -19,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,14 +30,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import domain.Models.OrderItem
-import domain.Models.Product
+import domain.Models.OrderItemUIModel
 import domain.Models.Screens
 import presentation.components.StraightLine
-import presentation.main.MainTab
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.CheckOutSummaryWidget
 import presentation.widgets.ProductDeliveryAddressWidget
@@ -70,8 +69,6 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
             maxStack = 5,
             animation = StackedSnackbarAnimation.Bounce
         )
-
-        val cartList = mainViewModel.unSavedOrders.value
 
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
@@ -137,7 +134,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
                             .weight(1f, false)
                     ) {
 
-                        PopulateCartItemList(cartList,stackedSnackBarHostState)
+                        PopulateCartItemList(mainViewModel,stackedSnackBarHostState)
                         ProductDeliveryAddressWidget(mainViewModel)
                         StraightLine()
                         PaymentMethodWidget()
@@ -152,13 +149,24 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
     }
 
     @Composable
-    private fun PopulateCartItemList(cartItems: List<OrderItem>, stackedSnackBarHostState: StackedSnakbarHostState){
+    private fun PopulateCartItemList(mainViewModel: MainViewModel,stackedSnackBarHostState: StackedSnakbarHostState){
 
+        val cartItems = mainViewModel.unSavedOrders.collectAsState()
         val selectedProduct = remember { mutableStateOf(OrderItem()) }
         var showProductDetailBottomSheet by remember { mutableStateOf(false) }
+        var orderItemUIModel by remember {
+            mutableStateOf(
+                OrderItemUIModel(
+                    selectedProduct.value,
+                    cartItems.value
+                )
+            )
+        }
+
+
         if (showProductDetailBottomSheet) {
-            ProductDetailBottomSheet(selectedProduct.value.itemProduct!!,mainViewModel,isViewedFromCart = true,
-                cartItem = selectedProduct.value,
+            ProductDetailBottomSheet(mainViewModel,isViewedFromCart = true,
+                cartItem = orderItemUIModel.selectedItem!!,
                 onDismiss = { showProductDetailBottomSheet = false },
                 onRemoveFromCart = {isRemoved ->
                     showProductDetailBottomSheet = false
@@ -175,11 +183,30 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab {
                 })
         }
 
-        LazyColumn(modifier = Modifier.height((180 * cartItems.size).dp)) {
-            items(cartItems) {item ->
+        LazyColumn(modifier = Modifier.height((180 * cartItems.value.size).dp)) {
+            items(orderItemUIModel.itemList) {item ->
                 CartItem(item,onProductClickListener = {
                     selectedProduct.value = it
                     showProductDetailBottomSheet = true
+                }, onItemCountChanged = {
+                    selectedProduct.value = it
+                    orderItemUIModel = orderItemUIModel.copy(selectedItem = selectedProduct.value,
+                        itemList = mainViewModel.unSavedOrders.value.map { it2 ->
+                            if(it2.itemReference == it.itemReference) {
+                                it2.copy(
+                                    itemCount = it.itemCount
+                                )
+                            }
+                            else{
+                                it2.copy(
+                                    itemCount = it2.itemCount
+                                )
+                            }
+                        })
+
+                }, onItemRemovedFromCart = {
+                    orderItemUIModel.itemList.toMutableList().remove(it)
+                    mainViewModel.setCurrentUnsavedOrders(orderItemUIModel.itemList.toMutableList())
                 })
                 StraightLine()
             }

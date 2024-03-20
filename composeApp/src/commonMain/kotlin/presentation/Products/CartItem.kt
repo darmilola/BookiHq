@@ -35,18 +35,23 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun CartItem(orderItem: OrderItem, onProductClickListener: (OrderItem) -> Unit) {
+fun CartItem(orderItem: OrderItem, onProductClickListener: (OrderItem) -> Unit, onItemCountChanged:(OrderItem) -> Unit, onItemRemovedFromCart: (OrderItem) -> Unit) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 10.dp, bottom = 10.dp)
+        .clickable {
+            onProductClickListener(orderItem)
+        }
         .height(160.dp)
         Row(modifier = columnModifier,
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
             CartItemImage(orderItem.itemProduct?.productImages!![0].imageUrl)
-            CartItemDetail(orderItem) {
-
-            }
+            CartItemDetail(orderItem, onItemCountChanged = {
+                 onItemCountChanged(it)
+            }, onItemRemovedFromCart = {
+                 onItemRemovedFromCart(it)
+            })
         }
     }
 
@@ -76,7 +81,8 @@ fun CartItemImage(imageUrl: String) {
         ) {
             ImageComponent(
                 imageModifier = imageModifier,
-                imageRes = "drawable/woman2.jpg",
+                imageRes = imageUrl,
+                isAsync = true,
                 contentScale = ContentScale.Crop
             )
         }
@@ -85,7 +91,7 @@ fun CartItemImage(imageUrl: String) {
 
 
 @Composable
-fun CartItemDetail(orderItem: OrderItem, onProductClickListener: () -> Unit) {
+fun CartItemDetail(orderItem: OrderItem,onItemCountChanged:(OrderItem) -> Unit, onItemRemovedFromCart: (OrderItem) -> Unit) {
     val orderedProduct = orderItem.itemProduct
     val columnModifier = Modifier
         .padding(start = 10.dp, end = 10.dp)
@@ -116,15 +122,17 @@ fun CartItemDetail(orderItem: OrderItem, onProductClickListener: () -> Unit) {
             )
             CartProductPriceInfoContent(orderItem)
             CartIncrementDecrementWidget(orderItem,isFromCart = true,onItemCountChanged = {
-
+                onItemCountChanged(it)
             }, onItemRemovedFromCart = {
-
+                onItemRemovedFromCart(it)
             })
         }
     }
 
 @Composable
 fun CartProductPriceInfoContent(orderItem: OrderItem) {
+    val product = orderItem.itemProduct
+    val price = if(product?.isDiscounted == true) product.discount else product?.productPrice
     Row(
         modifier = Modifier
             .height(40.dp)
@@ -132,7 +140,7 @@ fun CartProductPriceInfoContent(orderItem: OrderItem) {
             .fillMaxHeight(),
     ) {
         TextComponent(
-            text = "$670,000",
+            text = "$$price",
             fontSize = 16,
             fontFamily = GGSansSemiBold,
             textStyle = MaterialTheme.typography.h6,
@@ -145,19 +153,22 @@ fun CartProductPriceInfoContent(orderItem: OrderItem) {
             textModifier = Modifier
                 .wrapContentSize())
 
-        TextComponent(
-            text = "$67,000",
-            fontSize = 14,
-            textStyle = TextStyle(textDecoration = TextDecoration.LineThrough),
-            textColor = Color.LightGray,
-            fontFamily = GGSansSemiBold,
-            textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Medium,
-            lineHeight = 20,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            textModifier = Modifier
-                .wrapContentSize().padding(start = 10.dp))
+        if (product?.isDiscounted == true) {
+            TextComponent(
+                text = "$"+product.productPrice,
+                fontSize = 14,
+                textStyle = TextStyle(textDecoration = TextDecoration.LineThrough),
+                textColor = Color.LightGray,
+                fontFamily = GGSansSemiBold,
+                textAlign = TextAlign.Left,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 20,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                textModifier = Modifier
+                    .wrapContentSize().padding(start = 10.dp)
+            )
+        }
 
     }
 }

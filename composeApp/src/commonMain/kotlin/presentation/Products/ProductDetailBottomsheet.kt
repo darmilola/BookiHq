@@ -58,7 +58,7 @@ import presentations.components.TextComponent
 import kotlin.random.Random
 
 @Composable
-fun ProductDetailContent(product: Product, mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, cartItem: OrderItem? = null, onAddToCart: (Boolean) -> Unit,
+fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, cartItem: OrderItem, onAddToCart: (Boolean) -> Unit,
                          onRemoveFromCart: (Boolean) -> Unit) {
 
     LaunchedEffect(Unit, block = {
@@ -70,27 +70,27 @@ fun ProductDetailContent(product: Product, mainViewModel: MainViewModel, isViewe
         }
     })
     val orderReference = mainViewModel.currentOrderReference.value
+    val itemReference = (0..100000000).random()
     val currentOrder = mainViewModel.unSavedOrders.value
     val itemCount = remember { mutableStateOf(1) }
-    var orderItem = OrderItem()
+    val orderItem: OrderItem
 
     if (isViewedFromCart){
-        if (cartItem != null){
-            orderItem = cartItem
-        }
+        orderItem = cartItem
     }
     else {
         orderItem = OrderItem()
         orderItem.orderReference = orderReference
+        orderItem.itemReference = itemReference
         orderItem.itemCount = itemCount.value
-        orderItem.itemProduct = product
-        orderItem.productId = product.productId
+        orderItem.itemProduct = cartItem.itemProduct
+        orderItem.productId = cartItem.itemProduct?.productId!!
     }
 
 
     Scaffold(
         content = {
-            ProductBottomSheetContent(product)
+            ProductBottomSheetContent(cartItem.itemProduct!!)
         },
         backgroundColor = Color.White,
         bottomBar = {
@@ -124,7 +124,7 @@ fun ProductDetailContent(product: Product, mainViewModel: MainViewModel, isViewe
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             CartIncrementDecrementWidget(orderItem,isFromCart = isViewedFromCart,onItemCountChanged = {
-                                itemCount.value = it
+                                itemCount.value = it.itemCount
                             }, onItemRemovedFromCart = {
 
                             })
@@ -160,7 +160,7 @@ fun ProductDetailContent(product: Product, mainViewModel: MainViewModel, isViewe
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             CartIncrementDecrementWidget(orderItem,onItemCountChanged = {
-                                itemCount.value = it
+                                itemCount.value = it.itemCount
                             }, onItemRemovedFromCart = {})
                         }
 

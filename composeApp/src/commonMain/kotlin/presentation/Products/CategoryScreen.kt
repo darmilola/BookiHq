@@ -74,9 +74,9 @@ fun CategoryScreen(productCategory: ProductCategory,
     var showProductDetailBottomSheet by remember { mutableStateOf(false) }
 
                 if (showProductDetailBottomSheet) {
-                    ProductDetailBottomSheet(selectedProduct.value,mainViewModel, onDismiss = {
+                    ProductDetailBottomSheet(mainViewModel,isViewedFromCart = false, OrderItem(itemProduct = selectedProduct.value), onDismiss = {
                             isAddToCart -> if (isAddToCart){
-                        ShowSnackBar(title = "Successful",
+                            ShowSnackBar(title = "Successful",
                             description = "Your Product has been successfully Added to Cart",
                             actionLabel = "",
                             duration = StackedSnackbarDuration.Short,
@@ -141,7 +141,7 @@ fun CategoryScreen(productCategory: ProductCategory,
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductDetailBottomSheet(product: Product, mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, cartItem: OrderItem? = null, onDismiss: (isAddToCart: Boolean) -> Unit, onRemoveFromCart: (Boolean) -> Unit) {
+fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, cartItem: OrderItem, onDismiss: (isAddToCart: Boolean) -> Unit, onRemoveFromCart: (Boolean) -> Unit) {
     val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ModalBottomSheet(
         modifier = Modifier.padding(top = 20.dp),
@@ -151,7 +151,7 @@ fun ProductDetailBottomSheet(product: Product, mainViewModel: MainViewModel, isV
         containerColor = Color(0xFFF3F3F3),
         dragHandle = {},
     ) {
-       ProductDetailContent(product,mainViewModel,isViewedFromCart,cartItem, onAddToCart = {
+       ProductDetailContent(mainViewModel,isViewedFromCart,cartItem, onAddToCart = {
            onDismiss(it)
        }, onRemoveFromCart = {
            onRemoveFromCart(it)
