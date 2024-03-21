@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import domain.Models.OrderItem
+import kotlinx.datetime.LocalDate
 import presentation.Products.ProductDetailContent
 import presentation.components.ButtonComponent
 import presentation.viewmodels.MainViewModel
@@ -67,8 +68,7 @@ fun PostponeServiceBottomSheetContent(onDismissRequest: () -> Unit,
             Box(modifier = Modifier.fillMaxWidth().height(90.dp).background(color = Colors.primaryColor), contentAlignment = Alignment.Center) {
                 TitleWidget(title = "Postpone Service", textColor = Color.White)
             }
-            NewDateContent()
-            AvailableTimeContent()
+          //  NewDateContent()
             buttonContent(onDismissRequest = {
                 onDismissRequest()
             }, onConfirmation = {
@@ -78,33 +78,6 @@ fun PostponeServiceBottomSheetContent(onDismissRequest: () -> Unit,
     }
 
 }
-
-@Composable
-fun AvailableTimeContent() {
-    Column(
-        modifier = Modifier
-            .padding(top = 5.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
-            .fillMaxWidth()
-            .height(270.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment  = Alignment.CenterHorizontally,
-    ) {
-
-        TextComponent(
-            text = "Available Time",
-            fontSize = 18,
-            fontFamily = GGSansSemiBold,
-            textStyle = TextStyle(),
-            textColor = Colors.darkPrimary,
-            textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Black,
-            textModifier = Modifier.fillMaxWidth().padding(start = 10.dp)
-        )
-
-        TimeGrid(onWorkHourClickListener = {})
-    }
-}
-
 
 @Composable
 fun buttonContent(onDismissRequest: () -> Unit,
@@ -130,7 +103,7 @@ fun buttonContent(onDismissRequest: () -> Unit,
 
 
 @Composable
-fun NewDateContent() {
+fun NewDateContent(onDateSelected: (LocalDate) -> Unit) {
     Column(
         modifier = Modifier
             .padding(top = 20.dp, start = 10.dp, end = 10.dp)
@@ -150,7 +123,9 @@ fun NewDateContent() {
             textModifier = Modifier.fillMaxWidth().padding(start = 10.dp)
         )
 
-        BookingCalendar(modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 20.dp)){}
+        BookingCalendar(modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 20.dp)){
+            onDateSelected(it)
+        }
     }
 }
 

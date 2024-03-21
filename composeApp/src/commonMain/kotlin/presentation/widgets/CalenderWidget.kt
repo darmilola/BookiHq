@@ -50,14 +50,16 @@ import presentations.components.TextComponent
 
 @Composable
 fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 10.dp),bookingViewModel: BookingViewModel? = null, onDateSelected: (LocalDate) -> Unit) {
+    val dataSource = CalendarDataSource()
+    val calendarUiModel = dataSource.getDate(lastSelectedDate = dataSource.today)
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
+
+    // date selected on appointment booking process
     val unsavedAppointmentDate = bookingViewModel?.currentAppointmentBooking?.value?.appointmentDate
 
     Column(modifier = modifier) {
-        val dataSource = CalendarDataSource()
         // get CalendarUiModel from CalendarDataSource, and the lastSelectedDate is Today.
-        val calendarUiModel = dataSource.getDate(lastSelectedDate = dataSource.today)
         var selectedUIModel by remember { mutableStateOf(calendarUiModel) }
         var initialVisibleDates by remember { mutableStateOf(5) }
 
@@ -70,7 +72,7 @@ fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 
               onDateSelected(selectedUIModel.selectedDate.date)
             }
         else{
-             onDateSelected(calendarUiModel.selectedDate.date)
+            // onDateSelected(calendarUiModel.selectedDate.date)
          }
 
         CalenderHeader(selectedUIModel, onPrevClickListener = { startDate ->
@@ -86,6 +88,7 @@ fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 
                 }
             })
         CalenderContent(selectedUIModel, onDateClickListener = { it ->
+            println(it.toString())
             selectedUIModel = selectedUIModel.copy(
                 selectedDate = it,
                 visibleDates = selectedUIModel.visibleDates.map { it2 ->

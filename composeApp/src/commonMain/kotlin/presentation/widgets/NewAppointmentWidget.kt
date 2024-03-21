@@ -46,12 +46,14 @@ import kotlinx.datetime.format
 import kotlinx.datetime.format.DayOfWeekNames
 import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.char
+import presentation.appointments.AppointmentPresenter
 import presentation.dialogs.PostponeDialog
+import presentation.viewmodels.PostponementViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun NewAppointmentWidget(appointment: Appointment) {
+fun NewAppointmentWidget(appointment: Appointment, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null) {
 
     val appointmentStatus = appointment.serviceStatus
     val menuItems = arrayListOf<String>()
@@ -115,7 +117,7 @@ fun NewAppointmentWidget(appointment: Appointment) {
                 horizontalAlignment = Alignment.Start,
                 modifier = columnModifier
             ) {
-                AttachAppointmentHeader(statusText, iconRes, statusColor, appointment, menuItems)
+                AttachAppointmentHeader(statusText, iconRes, statusColor, appointment, menuItems, appointmentPresenter, postponementViewModel)
                 AttachAppointmentContent(appointment)
             }
         }
@@ -124,17 +126,20 @@ fun NewAppointmentWidget(appointment: Appointment) {
 
 
 @Composable
-fun AttachAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment, menuItems: ArrayList<String>) {
+fun AttachAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment, menuItems: ArrayList<String>, presenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null) {
     val expandedMenuItem = remember { mutableStateOf(false) }
     val openPostponeDialog = remember { mutableStateOf(false) }
 
     when {
         openPostponeDialog.value -> {
-            PostponeDialog(onDismissRequest = {
-                openPostponeDialog.value = false
-            }, onConfirmation = {
-
-            })
+            if (presenter != null && postponementViewModel != null) {
+                postponementViewModel.setCurrentAppointment(appointment)
+                PostponeDialog(appointment,presenter, postponementViewModel, onDismissRequest = {
+                    openPostponeDialog.value = false
+                }, onConfirmation = {
+                    openPostponeDialog.value = false
+                })
+            }
         }
     }
 
@@ -197,6 +202,9 @@ fun AttachAppointmentHeader(statusText: String, statusDrawableRes: String, statu
                         onClick = {
                             if (title == "Postpone"){
                                 openPostponeDialog.value = true
+                            }
+                            else if (title == "Delete"){
+                                presenter?.deleteAppointment(appointment.appointmentId!!)
                             }
                         }) {
                         SubtitleTextWidget(text = title, fontSize = 16)

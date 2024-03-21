@@ -51,7 +51,6 @@ class ProductContract {
 class CartContract {
     interface View {
         fun showLce(uiState: AsyncUIStates, message: String = "")
-
     }
 
     abstract class Presenter {

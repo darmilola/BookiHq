@@ -46,16 +46,16 @@ fun AppointmentWidget(itemType: Int = 0) {
     val menuItems = arrayListOf<String>()
     val openPostponeDialog = remember { mutableStateOf(false) }
 
-    when{
-        openPostponeDialog.value -> {
+
+       /* openPostponeDialog.value -> {
             PostponeDialog(onConfirmation = {
               openPostponeDialog.value = false
             }, onDismissRequest = {
                 openPostponeDialog.value = false
             })
-        }
+        }*/
 
-    }
+
 
     var menuItem = ""
 

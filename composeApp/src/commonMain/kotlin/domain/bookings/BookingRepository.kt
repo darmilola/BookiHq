@@ -13,8 +13,5 @@ interface BookingRepository {
         serviceTypeId: Int,
         selectedDate: String): Single<ServiceSpecialistsResponse>
     suspend fun createAppointment(appointmentRequests: ArrayList<CreateAppointmentRequest>): Single<ServerResponse>
-    suspend fun postponeAppointment(appointment: Appointment, appointmentTime: Int, appointmentDate: String): Single<ServerResponse>
-    suspend fun deleteAppointment(appointmentId: Int): Single<ServerResponse>
-    suspend fun getTherapistAvailability(specialistId: Int, selectedDate: String): Single<SpecialistAvailabilityResponse>
 }
 
