@@ -25,6 +25,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -72,9 +74,8 @@ fun NewAppointmentWidget(appointment: Appointment) {
 
     }
 
-    var menuItem = ""
-
-    menuItem = when (appointmentStatus) {
+    var actionItem = ""
+     actionItem = when (appointmentStatus) {
         ServiceStatus.Pending.toPath() -> {
             "Postpone"
         }
@@ -84,11 +85,15 @@ fun NewAppointmentWidget(appointment: Appointment) {
         }
     }
 
+    menuItems.add(actionItem)
+    if (appointmentStatus == ServiceStatus.Done.toPath()){
+        menuItems.add("Add Specialist Review")
+    }
+
 
     var iconRes = "drawable/schedule.png"
     var statusText = "Pending"
     var statusColor: Color = Colors.primaryColor
-    var serviceTitle: String = "Haircut is the Service Name"
 
 
 
@@ -128,7 +133,7 @@ fun NewAppointmentWidget(appointment: Appointment) {
                 horizontalAlignment = Alignment.Start,
                 modifier = columnModifier
             ) {
-                AttachAppointmentHeader(statusText, iconRes, statusColor, appointment)
+                AttachAppointmentHeader(statusText, iconRes, statusColor, appointment, menuItems)
                 AttachAppointmentContent(appointment)
             }
         }
@@ -137,7 +142,7 @@ fun NewAppointmentWidget(appointment: Appointment) {
 
 
 @Composable
-fun AttachAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment) {
+fun AttachAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment, menuItems: ArrayList<String>) {
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
@@ -172,6 +177,36 @@ fun AttachAppointmentHeader(statusText: String, statusDrawableRes: String, statu
         ) {
             ImageComponent(imageModifier = Modifier.size(20.dp).padding(bottom = 2.dp), imageRes = statusDrawableRes, colorFilter = ColorFilter.tint(color = statusColor))
             AttachAppointmentStatus(statusText, statusColor)
+            Row(modifier = Modifier
+                .fillMaxSize(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                val expandedMenuItem = remember { mutableStateOf(false) }
+                presentation.main.AttachIcon(
+                    iconRes = "drawable/overflow_menu.png",
+                    iconSize = 25,
+                    iconTint = Colors.primaryColor
+                ) {
+                    expandedMenuItem.value = true
+                }
+
+                DropdownMenu(
+                    expanded = expandedMenuItem.value,
+                    onDismissRequest = { expandedMenuItem.value = false },
+                    modifier = Modifier
+                        .fillMaxWidth(0.40f)
+                        .background(Color.White)
+                ) {
+                    menuItems.forEachIndexed { index, title ->
+                        DropdownMenuItem(
+                            onClick = {}) {
+                            SubtitleTextWidget(text = title, fontSize = 20)
+                        }
+                    }
+                }
+
+            }
         }
     }
 }

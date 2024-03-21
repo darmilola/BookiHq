@@ -13,3 +13,8 @@ data class Appointment(
     @SerialName("recommendation_id") val recommendationId: Int? = -1, @SerialName("specialist") val specialistInfo: SpecialistInfo? = null,
     @SerialName("service_type") val serviceTypeItem: ServiceTypeItem? = null, @SerialName("service") val services: Services? = null,
     @SerialName("time") val serviceTime: ServiceTime? = null, val isSelected: Boolean = false)
+
+data class AppointmentItemUIModel(
+    val selectedAppointment: Appointment?,
+    val appointmentList: List<Appointment>
+)

@@ -1,20 +1,20 @@
 package presentation.appointments
 
+import domain.Models.Appointment
+import domain.Models.ResourceListEnvelope
+import presentation.viewmodels.UIStates
+
 interface AppointmentContract {
     interface View {
-        fun showError()
-        fun showLce(
-            loadingVisible: Boolean = false,
-            contentVisible: Boolean = false,
-            emptyVisible: Boolean = false,
-            errorVisible: Boolean = false
-        )
-        fun showAppointment()
-
+        fun showLce(uiState: UIStates, message: String = "")
+        fun showAppointments(appointments: ResourceListEnvelope<Appointment>?)
+        fun onLoadMoreAppointmentStarted(isSuccess: Boolean = false)
+        fun onLoadMoreAppointmentEnded(isSuccess: Boolean = false)
     }
 
-    interface Presenter {
-        fun onAppointmentPostponed(isPostponed: Boolean)
-        fun start()
+    abstract class Presenter {
+        abstract fun registerUIContract(view: View?)
+        abstract fun getUserAppointments(userId: Int)
+        abstract fun getMoreAppointments(userId: Int, nextPage: Int = 1)
     }
 }

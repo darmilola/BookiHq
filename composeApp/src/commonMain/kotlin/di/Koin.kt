@@ -16,6 +16,7 @@ import presentation.Bookings.BookingModule
 import presentation.Products.ProductModule
 import presentation.UserProfile.ConnectVendor.ConnectVendorModule
 import presentation.UserProfile.ProfileModule
+import presentation.appointments.AppointmentModule
 import presentation.authentication.AuthenticationModule.AuthenticationModule
 import presentation.main.home.HomepageModule
 
@@ -29,6 +30,7 @@ fun initKoin(){
         modules(ProfileModule.ProfileModule)
         modules(BookingModule.BookingModule)
         modules(ProductModule.ProductModule)
+        modules(AppointmentModule.AppointmentModule)
     }
 }
 
