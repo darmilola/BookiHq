@@ -17,14 +17,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonColors
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.MaterialTheme
@@ -42,11 +38,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.Appointment
-import domain.Models.Reviewer
 import domain.Models.ServiceLocation
 import domain.Models.ServiceStatus
 import domain.Models.SpecialistInfo
-import domain.Models.SpecialistReviews
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DayOfWeekNames
@@ -61,18 +55,6 @@ fun NewAppointmentWidget(appointment: Appointment) {
 
     val appointmentStatus = appointment.serviceStatus
     val menuItems = arrayListOf<String>()
-    val openPostponeDialog = remember { mutableStateOf(false) }
-
-    when{
-        openPostponeDialog.value -> {
-            PostponeDialog(onConfirmation = {
-                openPostponeDialog.value = false
-            }, onDismissRequest = {
-                openPostponeDialog.value = false
-            })
-        }
-
-    }
 
     var actionItem = ""
      actionItem = when (appointmentStatus) {
@@ -87,7 +69,7 @@ fun NewAppointmentWidget(appointment: Appointment) {
 
     menuItems.add(actionItem)
     if (appointmentStatus == ServiceStatus.Done.toPath()){
-        menuItems.add("Add Specialist Review")
+        menuItems.add("Add Review")
     }
 
 
@@ -143,10 +125,23 @@ fun NewAppointmentWidget(appointment: Appointment) {
 
 @Composable
 fun AttachAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment, menuItems: ArrayList<String>) {
+    val expandedMenuItem = remember { mutableStateOf(false) }
+    val openPostponeDialog = remember { mutableStateOf(false) }
+
+    when {
+        openPostponeDialog.value -> {
+            PostponeDialog(onDismissRequest = {
+                openPostponeDialog.value = false
+            }, onConfirmation = {
+
+            })
+        }
+    }
+
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp, top = 15.dp)
+        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 5.dp, top = 15.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.Start,
@@ -173,7 +168,7 @@ fun AttachAppointmentHeader(statusText: String, statusDrawableRes: String, statu
         Row(
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().padding(end = 10.dp)
+            modifier = Modifier.fillMaxWidth()
         ) {
             ImageComponent(imageModifier = Modifier.size(20.dp).padding(bottom = 2.dp), imageRes = statusDrawableRes, colorFilter = ColorFilter.tint(color = statusColor))
             AttachAppointmentStatus(statusText, statusColor)
@@ -182,30 +177,31 @@ fun AttachAppointmentHeader(statusText: String, statusDrawableRes: String, statu
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val expandedMenuItem = remember { mutableStateOf(false) }
-                presentation.main.AttachIcon(
+                AttachIcon(
                     iconRes = "drawable/overflow_menu.png",
                     iconSize = 25,
-                    iconTint = Colors.primaryColor
+                    iconTint = statusColor
                 ) {
                     expandedMenuItem.value = true
                 }
-
-                DropdownMenu(
-                    expanded = expandedMenuItem.value,
-                    onDismissRequest = { expandedMenuItem.value = false },
-                    modifier = Modifier
-                        .fillMaxWidth(0.40f)
-                        .background(Color.White)
-                ) {
-                    menuItems.forEachIndexed { index, title ->
-                        DropdownMenuItem(
-                            onClick = {}) {
-                            SubtitleTextWidget(text = title, fontSize = 20)
-                        }
+            }
+            DropdownMenu(
+                expanded = expandedMenuItem.value,
+                onDismissRequest = { expandedMenuItem.value = false },
+                modifier = Modifier
+                    .fillMaxWidth(0.40f)
+                    .background(Color.White)
+            ) {
+                menuItems.forEachIndexed { index, title ->
+                    DropdownMenuItem(
+                        onClick = {
+                            if (title == "Postpone"){
+                                openPostponeDialog.value = true
+                            }
+                        }) {
+                        SubtitleTextWidget(text = title, fontSize = 16)
                     }
                 }
-
             }
         }
     }

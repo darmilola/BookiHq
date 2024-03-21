@@ -28,9 +28,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import presentation.components.ButtonComponent
+import presentation.widgets.AvailableTimeContent
 import presentation.widgets.BookingCalendar
+import presentation.widgets.NewDateContent
 import presentation.widgets.TimeGrid
 import presentation.widgets.TitleWidget
+import presentation.widgets.buttonContent
 import presentations.components.TextComponent
 
 @Composable
@@ -42,113 +45,25 @@ fun PostponeDialog(onDismissRequest: () -> Unit,
             color = Colors.lighterPrimaryColor,
             modifier = Modifier.fillMaxWidth(0.90f)
         ) {
-            dialogContent(onDismissRequest = {
-                onDismissRequest()
-            }, onConfirmation = {
-                onConfirmation()
-            })
-        }
+               Card(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = 15.dp, border = BorderStroke((0.5).dp, color = Colors.primaryColor)
+                ) {
+                    Column(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
+
+                        Box(modifier = Modifier.fillMaxWidth().height(90.dp).background(color = Colors.primaryColor), contentAlignment = Alignment.Center) {
+                            TitleWidget(title = "Postpone Service", textColor = Color.White)
+                        }
+                        NewDateContent()
+                        AvailableTimeContent()
+                        buttonContent(onDismissRequest = {
+                            onDismissRequest()
+                        }, onConfirmation = {
+                            onConfirmation()
+                        })
+                    }
+                }
+
+            }
     }
 }
-
-@Composable
-fun dialogContent(onDismissRequest: () -> Unit,
-                  onConfirmation: () -> Unit){
-
-    Card(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
-        shape = RoundedCornerShape(10.dp),
-        elevation = 15.dp, border = BorderStroke((0.5).dp, color = Colors.primaryColor)
-    ) {
-        Column(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
-
-       Box(modifier = Modifier.fillMaxWidth().height(90.dp).background(color = Colors.primaryColor), contentAlignment = Alignment.Center) {
-           TitleWidget(title = "Postpone Service", textColor = Color.White)
-       }
-       NewDateContent()
-       AvailableTimeContent()
-       buttonContent(onDismissRequest = {
-            onDismissRequest()
-       }, onConfirmation = {
-            onConfirmation()
-       })
-    }
-    }
-
-}
-
-@Composable
-fun AvailableTimeContent() {
-    Column(
-        modifier = Modifier
-            .padding(top = 5.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
-            .fillMaxWidth()
-            .height(270.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment  = Alignment.CenterHorizontally,
-    ) {
-
-        TextComponent(
-            text = "Available Time",
-            fontSize = 18,
-            fontFamily = GGSansSemiBold,
-            textStyle = TextStyle(),
-            textColor = Colors.darkPrimary,
-            textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Black,
-            textModifier = Modifier.fillMaxWidth().padding(start = 10.dp)
-        )
-
-        TimeGrid(onWorkHourClickListener = {})
-    }
-}
-
-
-@Composable
-fun buttonContent(onDismissRequest: () -> Unit,
-                  onConfirmation: () -> Unit){
-    val buttonStyle = Modifier
-        .fillMaxWidth(0.50f)
-        .height(50.dp)
-
-    val buttonStyle2 = Modifier
-        .padding(start = 10.dp)
-        .fillMaxWidth()
-        .height(50.dp)
-    Row (horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 30.dp, start = 20.dp, end = 20.dp)) {
-        ButtonComponent(modifier = buttonStyle, buttonText = "Cancel", borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Colors.primaryColor, style = TextStyle()){
-             onDismissRequest()
-        }
-        ButtonComponent(modifier = buttonStyle2, buttonText = "Save", colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Color(color = 0xFFFFFFFF), style = TextStyle(), borderStroke = null){
-             onConfirmation()
-        }
-    }
-}
-
-
-@Composable
-fun NewDateContent() {
-    Column(
-        modifier = Modifier
-            .padding(top = 20.dp, start = 10.dp, end = 10.dp)
-            .height(200.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment  = Alignment.CenterHorizontally,
-    ) {
-
-        TextComponent(
-            text = "New Date",
-            fontSize = 18,
-            fontFamily = GGSansSemiBold,
-            textStyle = TextStyle(),
-            textColor = Colors.darkPrimary,
-            textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Black,
-            textModifier = Modifier.fillMaxWidth().padding(start = 10.dp)
-        )
-
-        BookingCalendar(modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 20.dp)){}
-    }
-}
-
-

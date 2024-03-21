@@ -4,8 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ServiceTime(@SerialName("id") val id: Int? = null, @SerialName("vendor_id") val vendorId: Int? = null,
-                       @SerialName("specialist_id") val specialistId: Int? = null,
+data class ServiceTime(@SerialName("id") val id: Int? = null, @SerialName("specialist_id") val specialistId: Int? = null,
                        @SerialName("time") val time: String? = null, var isAvailable: Boolean = true, val isSelected: Boolean = false)
 
 data class AvailableTimeUIModel(

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
@@ -65,8 +66,7 @@ class AppointmentsTab(private val mainViewModel: MainViewModel) : Tab, KoinCompo
     private var uiStateViewModel: UIStateViewModel? = null
     private var currentUser: User? = null
     private var currentVendor: Vendor? = null
-    private var appointmentResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Appointment>? =
-        null
+    private var appointmentResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Appointment>? = null
 
 
     @OptIn(ExperimentalResourceApi::class)
@@ -171,8 +171,8 @@ class AppointmentsTab(private val mainViewModel: MainViewModel) : Tab, KoinCompo
                 ) {
 
                     LazyColumn(modifier = Modifier.fillMaxWidth().height(getAppointmentViewHeight(appointmentUIModel.appointmentList).dp), userScrollEnabled = true) {
-                        items(appointmentUIModel.appointmentList.size) {it ->
-                            NewAppointmentWidget(appointmentUIModel.appointmentList[it])
+                        itemsIndexed(items =  appointmentUIModel.appointmentList) {it,item ->
+                            NewAppointmentWidget(item)
                             if (it == lastIndex && loadMoreState.value) {
                                 Box(
                                     modifier = Modifier.fillMaxWidth().height(60.dp),
