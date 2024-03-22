@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.Composable
@@ -113,14 +114,14 @@ class ConsultationScreen(private val mainViewModel: MainViewModel) : Tab {
 
         val buttonStyle2 = Modifier
             .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
-            .fillMaxWidth()
-            .height(50.dp)
+            .fillMaxWidth(0.90f)
+            .height(45.dp)
 
 
         Row (modifier = bgStyle,
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,) {
-            ButtonComponent(modifier = buttonStyle2, buttonText = "Continue", colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Color(color = 0xFFFFFFFF), style = TextStyle(), borderStroke = null){
+            ButtonComponent(modifier = buttonStyle2, buttonText = "Continue", colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = CircleShape, textColor = Color(color = 0xFFFFFFFF), style = TextStyle(), borderStroke = null){
                 coroutineScope.launch {
                     if(currentPage == 0){
                         pagerState.animateScrollToPage(1)

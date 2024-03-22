@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -120,7 +121,7 @@ fun ConsultLocationToggle(){
             textModifier = Modifier
                 .fillMaxWidth().padding(start = 15.dp)
         )
-        ToggleButton(shape = RoundedCornerShape(10.dp), leftText = "Virtual", rightText = "In Person", onLeftClicked = {}, onRightClicked = {})
+        ToggleButton(shape = CircleShape, leftText = "Virtual", rightText = "In Person", onLeftClicked = {}, onRightClicked = {})
     }
 
 }

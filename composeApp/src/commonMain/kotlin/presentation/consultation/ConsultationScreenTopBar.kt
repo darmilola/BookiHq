@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import domain.Models.Screens
 import kotlinx.coroutines.launch
 import presentation.main.MainTab
 import presentation.viewmodels.MainViewModel
@@ -102,7 +103,7 @@ fun leftTopBarItem(pagerState: PagerState, mainViewModel: MainViewModel) {
                     pagerState.animateScrollToPage(0)
                 }
                 else -> {
-                    //navigator.current = MainTab(mainViewModel = mainViewModel)
+                    mainViewModel.setScreenNav(Pair(Screens.CONSULTATION.toPath(), Screens.MAIN_TAB.toPath()))
                 }
             }
         }

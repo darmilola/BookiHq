@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import domain.Models.Screens
 import presentation.components.ButtonComponent
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.ActionItemComponent
@@ -117,8 +118,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
             .height(45.dp)
 
         ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke(1.dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor =  Color.DarkGray, style = style){
-               // mainViewModel.setId(9)
-               // mainViewModel.setFromId(0)
+
         }
 
     }
@@ -140,6 +140,18 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                 horizontalAlignment = Alignment.Start,
                 modifier = columnModifier
             ) {
+
+                ActionItemComponent(
+                    modifier = actionStyle,
+                    buttonText = "Therapist Dashboard",
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                    fontSize = 20,
+                    textColor = Colors.darkPrimary,
+                    style = TextStyle(),
+                    iconRes = "drawable/dashboard_icon.png",
+                    isDestructiveAction = false, onClick = {
+                        mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.THERAPIST_DASHBOARD.toPath()))
+                    })
 
                 ActionItemComponent(
                     modifier = actionStyle,

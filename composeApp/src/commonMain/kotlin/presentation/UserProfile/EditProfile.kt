@@ -352,7 +352,7 @@ private fun AttachBackIcon(mainViewModel: MainViewModel) {
                     mainViewModel.setScreenNav(Pair(Screens.EDIT_PROFILE.toPath(), Screens.CART.toPath()))
                 }
                 else -> {
-                  // navigator.current = MainTab(mainViewModel)
+
                 }
             }
         }

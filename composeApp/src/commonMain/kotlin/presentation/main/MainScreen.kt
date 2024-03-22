@@ -34,6 +34,7 @@ import presentation.consultation.ConsultationScreen
 import presentation.consultation.VirtualConsultationRoom
 import presentation.dialogs.LoadingDialog
 import presentation.main.home.HomepagePresenter
+import presentation.therapist.TherapistDashboardTab
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.UIStateViewModel
@@ -123,13 +124,13 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
                 Screens.PENDING_APPOINTMENT.toPath() -> {
                     it.current = PendingAppointmentsTab(mainViewModel!!)
                 }
+                Screens.THERAPIST_DASHBOARD.toPath() -> {
+                    it.current = TherapistDashboardTab(mainViewModel!!)
+                }
             }
 
             Scaffold(
-                topBar = {},
-                content = {
-                    CurrentTab()
-                })
+                content = { CurrentTab() })
 
         }
 
