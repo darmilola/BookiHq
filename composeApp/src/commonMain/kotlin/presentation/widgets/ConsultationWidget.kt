@@ -81,12 +81,11 @@ fun ConsultationWidget(onCreateSessionClick:() -> Unit) {
                 val buttonStyle = Modifier
                     .padding(bottom = 10.dp, top = 10.dp, start = 20.dp, end = 20.dp)
                     .fillMaxWidth()
-                    .clickable {
-                        onCreateSessionClick()
-                    }
                     .height(50.dp)
 
-                   RightIconButtonComponent(modifier = buttonStyle, buttonText = "Book Consultation", borderStroke = BorderStroke(0.8.dp, Colors.darkPrimary), colors = ButtonDefaults.buttonColors(backgroundColor = Colors.lightPrimaryColor), fontSize = 16, shape = CircleShape, textColor = Colors.darkPrimary, style = MaterialTheme.typography.h4, iconRes = "drawable/forward_arrow.png",  colorFilter = ColorFilter.tint(color = Colors.darkPrimary)){}
+                   RightIconButtonComponent(modifier = buttonStyle, buttonText = "Book Consultation", borderStroke = BorderStroke(0.8.dp, Colors.darkPrimary), colors = ButtonDefaults.buttonColors(backgroundColor = Colors.lightPrimaryColor), fontSize = 16, shape = CircleShape, textColor = Colors.darkPrimary, style = MaterialTheme.typography.h4, iconRes = "drawable/forward_arrow.png",  colorFilter = ColorFilter.tint(color = Colors.darkPrimary)){
+                       onCreateSessionClick()
+                   }
             }
         }
     }
