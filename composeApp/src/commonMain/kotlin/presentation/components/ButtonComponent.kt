@@ -133,6 +133,68 @@ public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStr
 }
 
 
+
+@Composable
+public fun RightIconButtonComponent(modifier: Modifier, buttonText: String, borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, iconSize: Int = 28, colorFilter: ColorFilter? = null, onClick: (() -> Unit)? = null) {
+    val rowModifier = Modifier
+        .fillMaxWidth()
+
+
+    Button(
+        onClick = {
+            if (onClick != null) {
+                onClick()
+            }
+        },
+        border = borderStroke,
+        shape = shape,
+        modifier = modifier,
+        colors = colors,
+        elevation = ButtonDefaults.elevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp,
+            disabledElevation = 0.dp
+        )
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.Top,
+            modifier = rowModifier
+        ) {
+
+            val iconModifier = Modifier
+                .padding(top = 5.dp)
+                .size(iconSize.dp)
+
+            val iconBoxModifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+
+            val textModifier = Modifier
+                .padding(top = 7.dp, end = 5.dp)
+                .fillMaxHeight()
+                .fillMaxWidth(0.90f)
+            TextComponent(
+                text = buttonText,
+                fontSize = fontSize,
+                textStyle = style,
+                textColor = textColor,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                textModifier = textModifier
+            )
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.Top,
+                modifier = iconBoxModifier
+            ) {
+                ImageComponent(imageModifier = iconModifier, imageRes = iconRes, colorFilter = colorFilter)
+            }
+        }
+    }
+}
+
+
 @Composable
 fun GradientButton(
     modifier: Modifier, buttonText: String, borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, gradient : Brush, onClick: ()-> Unit) {

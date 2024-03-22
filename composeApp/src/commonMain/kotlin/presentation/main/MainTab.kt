@@ -224,7 +224,7 @@ class MainTab(private val mainViewModel: MainViewModel,private val homePageViewM
         else if(tabNavigator.current is ConsultTab && currentTabId == 2){
             imageStr  = selectedImage
             imageTint = Colors.primaryColor
-            screenTitle = "Consultation"
+            screenTitle = "Meet With Therapist"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
         }
