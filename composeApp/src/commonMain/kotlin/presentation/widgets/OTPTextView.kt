@@ -86,10 +86,10 @@ private fun CharView(
        Box(modifier = Modifier
            .width(70.dp)
            .height(75.dp)
-           .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(15.dp))
+           .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(10.dp))
            .border(
-               2.dp, when {
-                   isFocused -> Colors.primaryColor
+               (1.8).dp, when {
+                   isFocused -> Colors.darkPrimary
                    else -> Color.Transparent
                }, RoundedCornerShape(15.dp)
            ), contentAlignment = Alignment.Center) {
@@ -98,7 +98,7 @@ private fun CharView(
                color = if (isFocused) {
                    Color.LightGray
                } else {
-                   Color.DarkGray
+                   Colors.darkPrimary
                },
                textAlign = TextAlign.Center
            )

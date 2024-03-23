@@ -1,4 +1,4 @@
-package presentation.main
+package presentation.main.account
 
 
 import GGSansSemiBold
@@ -223,6 +223,18 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                     style = TextStyle(),
                     iconRes = "drawable/terms.png",
                     isDestructiveAction = false)
+
+                ActionItemComponent(
+                    modifier = actionStyle,
+                    buttonText = "Join a Spa",
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                    fontSize = 20,
+                    textColor = Colors.darkPrimary,
+                    style = TextStyle(),
+                    iconRes = "drawable/join.png",
+                    isDestructiveAction = false, onClick = {
+                        mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.JOIN_SPA.toPath()))
+                    })
 
                 Divider(color = Color(color = 0x90C8C8C8), thickness = 1.dp, modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 10.dp))
 

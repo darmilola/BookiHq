@@ -86,23 +86,28 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
             .fillMaxHeight()
             .fillMaxWidth()
 
-            Column(
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start,
-                modifier = columnModifier
-            ) {
-                ConsultDescYour()
-                ConsultDescSchedule()
-                ScheduledConsultationList()
-                Sessions()
-                ConsultationSessionList(onCreateSessionClick = {
-                    mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.CONSULTATION.toPath()))
-                })
+        Column(
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start,
+            modifier = columnModifier
+        ) {
+            ConsultDescYour()
+            ConsultDescSchedule()
+            ScheduledConsultationList()
+            Sessions()
+            ConsultationSessionList(onCreateSessionClick = {
+                mainViewModel.setScreenNav(
+                    Pair(
+                        Screens.MAIN_TAB.toPath(),
+                        Screens.CONSULTATION.toPath()
+                    )
+                )
+            })
 
 
-
-            }
         }
+    }
+}
 
 
     @Composable
@@ -188,176 +193,6 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
 
     }
 
-
-    @Composable
-    fun TherapistText() {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight(),
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-
-            Column(
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .padding(end = 10.dp)
-                    .wrapContentHeight(),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start,
-            ) {
-
-                TextComponent(
-                    text = "Top Therapist",
-                    fontSize = 32,
-                    fontFamily = GGSansSemiBold,
-                    textStyle = TextStyle(),
-                    textColor = Colors.darkPrimary,
-                    textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Bold,
-                    lineHeight = 40
-                )
-            }
-
-            AttachImageStacks()
-
-        }
-
-    }
-
-    @Composable
-    fun GradientLock() {
-        Box(
-            modifier = Modifier
-                .width(200.dp)
-                .padding(top = 10.dp)
-                .height(3.dp)
-                .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            Colors.darkPrimary,
-                            Colors.primaryColor,
-                            Colors.lightPrimaryColor
-                        )
-                    )
-                )
-        ) {
-        }
-    }
-
-
- /*   @Composable
-    fun AttachActionButtons() {
-        val buttonStyle2 = Modifier
-            .fillMaxWidth()
-            .height(55.dp)
-        Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-            ButtonComponent(
-                modifier = buttonStyle2,
-                buttonText = "Get Started",
-                borderStroke = BorderStroke(1.dp, Colors.primaryColor),
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-                fontSize = 18,
-                shape = CircleShape,
-                textColor = Colors.primaryColor,
-                style = TextStyle()
-            ) {
-                mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.CONSULTATION.toPath()))
-            }
-        }
-    }*/
-
-
-
-    @Composable
-    fun ConsultTherapistImages(){
-        Box(
-           modifier =  Modifier
-                .fillMaxWidth()
-                .height(350.dp)
-                .background(color = Color.White, shape = RoundedCornerShape(12.dp)),
-            contentAlignment = Alignment.Center
-        ){
-            Box(
-                Modifier
-                    .padding(start = 40.dp, bottom = 25.dp)
-                    .fillMaxWidth()
-                    .height(130.dp)
-                    .background(color = Color(0xFBFBFB), shape = RoundedCornerShape(12.dp)),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                val modifier = Modifier
-                    .rotate(-25f)
-                    .width(120.dp)
-                    .clip(shape = RoundedCornerShape(17.dp))
-                    .height(130.dp)
-                ImageComponent(imageModifier = modifier, imageRes = "drawable/therap1.jpg")
-            }
-
-            Box(
-                Modifier
-                    .padding(bottom = 80.dp)
-                    .fillMaxWidth()
-                    .height(130.dp)
-                    .background(color = Color(0xFBFBFB), shape = RoundedCornerShape(12.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                val modifier = Modifier
-                    .width(125.dp)
-                    .clip(shape = RoundedCornerShape(17.dp))
-                    .height(130.dp)
-                ImageComponent(imageModifier = modifier, imageRes = "drawable/doctor.jpg")
-            }
-
-            Box(
-                Modifier
-                    .padding(end = 40.dp)
-                    .fillMaxWidth()
-                    .height(130.dp)
-                    .background(color = Color(0xFBFBFB), shape = RoundedCornerShape(12.dp)),
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                val modifier = Modifier
-                    .rotate(20f)
-                    .width(120.dp)
-                    .clip(shape = RoundedCornerShape(17.dp))
-                    .height(130.dp)
-                ImageComponent(imageModifier = modifier, imageRes = "drawable/1.jpg")
-            }
-            AttachCircle()
-        }
-
-    }
-    @Composable
-    fun AttachCircle() {
-        Box(
-            Modifier
-                .graphicsLayer {
-                    this.transformOrigin = TransformOrigin(0.5f, 0.5f)
-                    this.rotationX = 105f
-                    this.rotationY = 150f
-                    this.rotationZ = 0f
-                }
-                .padding(start = 40.dp, end = 40.dp)
-                .height(210.dp)
-                .fillMaxWidth()
-                .drawWithContent {
-                    clipRect(top = 180f) {
-                        this@drawWithContent.drawContent()
-                    }
-                }
-        ) {
-            Box(
-                Modifier
-                    .border(width = (0.5).dp, color = Colors.primaryColor, shape = RoundedCornerShape(50))
-                    .height(210.dp)
-                    .padding(start = 40.dp, end = 40.dp)
-                    .fillMaxWidth()) {}
-            }
-
-    }
-}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

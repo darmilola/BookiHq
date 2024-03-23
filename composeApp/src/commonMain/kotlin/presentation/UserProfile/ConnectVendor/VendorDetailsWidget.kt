@@ -133,6 +133,9 @@ fun InfoPageLeftTopBarItem(mainViewModel: MainViewModel?) {
             Screens.CART.toPath() -> {
                 mainViewModel.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.CART.toPath()))
             }
+            Screens.JOIN_SPA.toPath() -> {
+                mainViewModel.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.JOIN_SPA.toPath()))
+            }
             else -> {
                 // navigator.current = MainTab(mainViewModel)
             }
