@@ -61,6 +61,7 @@ import theme.styles.Colors
 class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
     private val appointmentPresenter: AppointmentPresenter by inject()
+    private val therapistPresenter: TherapistPresenter by inject()
     private var uiStateViewModel: UIStateViewModel? = null
     private var postponementViewModel: PostponementViewModel? = null
     private var appointmentResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Appointment>? = null
@@ -178,7 +179,7 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
                 when(tabIndex){
                     0 -> TherapistAppointment(mainViewModel, uiStateViewModel!!, postponementViewModel!!, appointmentResourceListEnvelopeViewModel, appointmentPresenter)
                     1 -> TherapistAvailability()
-                    2 -> TherapistReviews()
+                    2 -> TherapistReviews(mainViewModel, therapistPresenter)
                     3 -> TherapistVendors()
                 }
 

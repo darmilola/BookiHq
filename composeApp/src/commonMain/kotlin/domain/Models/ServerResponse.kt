@@ -17,6 +17,10 @@ data class ServiceSpecialistsResponse(@SerialName("status") val status: String =
 
 
 @Serializable
+data class SpecialistReviewsResponse(@SerialName("status") val status: String = "", @SerialName("reviews") val reviews: List<SpecialistReviews>)
+
+
+@Serializable
 data class ProductCategoryResponse(@SerialName("status") val status: String = "",
                                    @SerialName("categories") val productCategories: List<ProductCategory>,
                                    @SerialName("favoriteProducts") val favoriteProducts: List<FavoriteProduct>)

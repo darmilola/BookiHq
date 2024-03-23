@@ -3,6 +3,7 @@ package domain.specialist
 import com.badoo.reaktive.single.toSingle
 import domain.Models.ServerResponse
 import domain.Models.SpecialistReviews
+import domain.Models.SpecialistReviewsResponse
 import domain.Profile.DeleteProfileRequest
 import domain.Profile.UpdateProfileRequest
 import io.ktor.client.HttpClient
@@ -23,6 +24,6 @@ open class SpecialistNetworkService(private val apiService: HttpClient) {
             }*/
             contentType(ContentType.Application.Json)
             setBody(getReviewsRequest)
-        }.body<List<SpecialistReviews>>().toSingle()
+        }.body<SpecialistReviewsResponse>().toSingle()
 
 }

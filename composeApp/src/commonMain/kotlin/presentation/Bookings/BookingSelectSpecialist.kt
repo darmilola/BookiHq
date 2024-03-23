@@ -41,11 +41,13 @@ import androidx.compose.ui.unit.dp
 import domain.Models.ServiceTypeSpecialist
 import domain.Models.ServiceTypeTherapistUIModel
 import domain.Models.ServiceTime
+import domain.Models.SpecialistReviews
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.AttachTherapistWidget
+import presentation.widgets.SpecialistReviewScreen
 import presentation.widgets.SpecialistReviewsWidget
 import presentation.widgets.TimeGrid
 import presentations.components.TextComponent
@@ -245,63 +247,7 @@ fun AttachServiceReviews(serviceTypeSpecialist: ServiceTypeSpecialist){
             .padding(bottom = 5.dp, start = 15.dp, top = 20.dp)
             .fillMaxWidth())
 
-    val pagerState = rememberPagerState(pageCount = {
-        specialistReviews?.size!!
-    })
-
-    val boxModifier =
-        Modifier
-            .padding(bottom = 20.dp, top = 20.dp, start = 15.dp)
-            .fillMaxHeight()
-            .fillMaxWidth()
-
-    val boxBgModifier =
-        Modifier
-            .padding(bottom = 10.dp, top = 10.dp, start = 15.dp)
-            .fillMaxHeight()
-            .fillMaxWidth()
-            .border(border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(topStart = 7.dp, bottomStart = 7.dp))
-
-
-    Box(modifier = boxBgModifier) {
-
-        Box(contentAlignment = Alignment.BottomCenter, modifier = boxModifier) {
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.fillMaxSize()
-            ) { page ->
-                SpecialistReviewsWidget(specialistReviews!![page])
-            }
-            Row(
-                Modifier
-                    .wrapContentHeight()
-                    .fillMaxWidth()
-                    .padding(bottom = 4.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                repeat(pagerState.pageCount) { iteration ->
-                    var color = Color.LightGray
-                    var width = 0
-                    if (pagerState.currentPage == iteration) {
-                        color = Colors.primaryColor
-                        width = 20
-                    } else {
-                        color = Color.LightGray
-                        width = 20
-                    }
-                    Box(
-                        modifier = Modifier
-                            .padding(2.dp)
-                            .clip(CircleShape)
-                            .background(color)
-                            .height(3.dp)
-                            .width(width.dp)
-                    )
-                }
-
-            }
-        }
-    }
+   SpecialistReviewScreen(specialistReviews!!)
 
 }
 

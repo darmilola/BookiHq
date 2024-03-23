@@ -100,7 +100,7 @@ fun TherapistAppointment(mainViewModel: MainViewModel,uiStateViewModel: UIStateV
                         isSelected = it2.appointmentId == selectedAppointment.value.appointmentId
                     )
                 })
-       }
+         }
 
     Scaffold(
         snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
