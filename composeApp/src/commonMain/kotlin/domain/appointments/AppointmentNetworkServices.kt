@@ -57,4 +57,14 @@ open class AppointmentNetworkService(private val apiService: HttpClient) {
             setBody(getSpecialistAvailabilityRequest)
         }.body<SpecialistAvailabilityResponse>().toSingle()
 
+    suspend fun getSpecialistAppointments(getSpecialistAppointmentRequest: GetSpecialistAppointmentRequest, nextPage: Int = 1) =
+        apiService.post {
+            url("/api/v1/specialist/appointments/get?page=$nextPage")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(getSpecialistAppointmentRequest)
+        }.body<ListDataResponse<Appointment>>().toSingle()
+
 }

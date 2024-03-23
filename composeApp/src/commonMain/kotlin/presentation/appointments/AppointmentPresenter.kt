@@ -78,6 +78,62 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
         }
     }
 
+    override fun getSpecialistAppointments(specialistId: Int) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    contractView?.showLce(UIStates(loadingVisible = true))
+                    appointmentRepositoryImpl.getSpecialistAppointments(specialistId)
+                        .subscribe(
+                            onSuccess = { result ->
+                                if (result.status == "success"){
+                                    contractView?.showLce(UIStates(contentVisible = true))
+                                    contractView?.showAppointments(result.listItem)
+                                }
+                                else{
+                                    contractView?.showLce(UIStates(errorOccurred = true))
+                                }
+                            },
+                            onError = {
+                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true)) }
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.showLce(UIStates(errorOccurred = true))
+            }
+        }
+    }
+
+    override fun getMoreSpecialistAppointments(specialistId: Int, nextPage: Int) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    contractView?.onLoadMoreAppointmentStarted(true)
+                    appointmentRepositoryImpl.getSpecialistAppointments(specialistId, nextPage)
+                        .subscribe(
+                            onSuccess = { result ->
+                                if (result.status == "success"){
+                                    contractView?.onLoadMoreAppointmentEnded(true)
+                                    contractView?.showAppointments(result.listItem)
+                                }
+                                else{
+                                    contractView?.onLoadMoreAppointmentEnded(false)
+                                }
+                            },
+                            onError = {
+                                it.message?.let { it1 -> contractView?.onLoadMoreAppointmentEnded(false) }
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.onLoadMoreAppointmentEnded(false)
+            }
+        }
+    }
+
     override fun postponeAppointment(
         appointment: Appointment,
         newAppointmentTime: Int,

@@ -38,14 +38,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.Appointment
-import domain.Models.ServiceLocation
 import domain.Models.ServiceStatus
 import domain.Models.SpecialistInfo
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.format
-import kotlinx.datetime.format.DayOfWeekNames
-import kotlinx.datetime.format.MonthNames
-import kotlinx.datetime.format.char
 import presentation.appointments.AppointmentPresenter
 import presentation.dialogs.PostponeDialog
 import presentation.viewmodels.PostponementViewModel
@@ -239,87 +233,16 @@ fun AttachAppointmentStatus(status: String, statusColor: Color){
 
 @Composable
 fun AttachAppointmentContent(appointment: Appointment) {
-
-    val appointmentDateFormat =  LocalDate.Format {
-        dayOfWeek(DayOfWeekNames.ENGLISH_FULL)
-        chars(", ")
-        monthName(MonthNames.ENGLISH_ABBREVIATED)
-        char(' ')
-        dayOfMonth()
-    }
-    val appointmentDate = LocalDate.parse(appointment.appointmentDate.toString()).format(appointmentDateFormat)
-    val appointmentTime = appointment.serviceTime?.time
-
-    val columnModifier = Modifier
-        .padding(start = 15.dp, end = 10.dp)
-        .fillMaxWidth()
-    Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
-        TextComponent(
-            text = appointment.serviceTypeItem?.title.toString(),
-            fontSize = 16,
-            fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Colors.darkPrimary,
-            textAlign = TextAlign.Start,
-            fontWeight = FontWeight.Bold,
-            textModifier = Modifier
-                .fillMaxWidth().padding(start = 5.dp))
-
-
-        Row(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
-            Column(modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(top = 5.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally) {
-
-                val rowModifier = Modifier
-                    .fillMaxWidth().height(25.dp)
-                Row(
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.Top,
-                    modifier = rowModifier
-                ) {
-                    Box(modifier = Modifier.wrapContentWidth().fillMaxHeight(), contentAlignment = Alignment.CenterStart) {
-                        TextComponent(
-                            text = appointmentTime.toString()+" "+appointmentDate,
-                            textModifier = Modifier.wrapContentSize()
-                                .padding(start = 5.dp),
-                            fontSize = 15,
-                            fontFamily = GGSansRegular,
-                            textStyle = MaterialTheme.typography.h6,
-                            textColor = Colors.serviceLightGray,
-                            textAlign = TextAlign.Start,
-                            fontWeight = FontWeight.Bold,
-                        )
-                    }
-                    Box(modifier = Modifier.width(25.dp).fillMaxHeight().padding(start = 10.dp, end = 10.dp), contentAlignment = Alignment.Center) {
-                        Box(modifier = Modifier.size(6.dp).clip(CircleShape).background(color = Colors.serviceLightGray)){}
-                    }
-                    Box(modifier = Modifier.wrapContentWidth().fillMaxHeight(), contentAlignment = Alignment.CenterStart) {
-                        TextComponent(
-                            text = if(appointment.serviceLocation == ServiceLocation.Spa.toPath()) "At The Spa" else "Home Service",
-                            textModifier = Modifier.wrapContentSize(),
-                            fontSize = 14,
-                            fontFamily = GGSansRegular,
-                            textStyle = MaterialTheme.typography.h6,
-                            textColor = Colors.serviceLightGray,
-                            textAlign = TextAlign.Start,
-                            fontWeight = FontWeight.Bold,
-                        )
-                    }
-
-                }
-                TherapistDisplayItem(appointment.specialistInfo!!)
-            }
-        }
-
-    }
+          AppointmentInfoWidget(appointment)
 }
+
+
 
 @Composable
 fun TherapistDisplayItem(specialistInfo: SpecialistInfo) {
     val profileInfo = specialistInfo.profileInfo
     val rowModifier = Modifier
-        .fillMaxWidth().height(45.dp)
+        .fillMaxWidth().height(40.dp)
 
     Box(modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.CenterStart)

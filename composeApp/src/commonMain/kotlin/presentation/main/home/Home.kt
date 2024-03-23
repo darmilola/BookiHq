@@ -103,6 +103,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
          val vendorInfo = homePageViewModel.homePageInfo.value.homepageModel.vendorInfo
          val vendorStatus = homePageViewModel.homePageInfo.value.homepageModel.vendorStatus
          val vendorServices = homePageViewModel.homePageInfo.value.homepageModel.vendorServices
+         val specialistInfo = homePageViewModel.homePageInfo.value.homepageModel.specialistInfo
          val popularProducts = homePageViewModel.homePageInfo.value.homepageModel.popularProducts
          val recentAppointments = homePageViewModel.homePageInfo.value.homepageModel.recentAppointment
          val vendorRecommendations = homePageViewModel.homePageInfo.value.homepageModel.recommendationRecommendations
@@ -118,7 +119,9 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
         if (vendorInfo != null) {
             mainViewModel.setConnectedVendor(vendorInfo)
         }
-
+        if (specialistInfo != null) {
+            mainViewModel.setSpecialistInfo(specialistInfo)
+        }
             val columnModifier = Modifier
                 .padding(top = 5.dp)
                 .fillMaxSize()

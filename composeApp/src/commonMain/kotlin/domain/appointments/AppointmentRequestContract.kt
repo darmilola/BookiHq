@@ -7,6 +7,9 @@ import kotlinx.serialization.Serializable
 data class GetAppointmentRequest(@SerialName("user_id") val userId: Int)
 
 @Serializable
+data class GetSpecialistAppointmentRequest(@SerialName("specialist_id") val specialistId: Int)
+
+@Serializable
 data class PostponeAppointmentRequest(@SerialName("user_id") val userId: Int,
                                       @SerialName("vendor_id") val vendorId: Int,
                                       @SerialName("service_id") val serviceId: Int,

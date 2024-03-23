@@ -10,9 +10,9 @@ data class Appointment(
     @SerialName("consultationMedium") val consultationMedium: String = ConsultationMedium.Spa.toPath(), @SerialName("service_id") val serviceId: Int = -1,
     @SerialName("specialist_id") val specialistId: Int = -1, @SerialName("service_type_id") val serviceTypeId: Int? = -1, @SerialName("appointmentTime") val appointmentTime: Int? = -1,
     @SerialName("appointmentDate") val appointmentDate: String? = null, @SerialName("isRecommendedAppointment") val isRecommendedAppointment: Boolean = false,
-    @SerialName("recommendation_id") val recommendationId: Int? = -1, @SerialName("specialist") val specialistInfo: SpecialistInfo? = null,
-    @SerialName("service_type") val serviceTypeItem: ServiceTypeItem? = null, @SerialName("service") val services: Services? = null,
-    @SerialName("time") val serviceTime: ServiceTime? = null, val isSelected: Boolean = false)
+    @SerialName("recommendation_id") val recommendationId: Int? = -1, @SerialName("specialist_info") val specialistInfo: SpecialistInfo? = null,
+    @SerialName("service_type") val serviceTypeItem: ServiceTypeItem? = null, @SerialName("service") val services: Services? = null, @SerialName("time") val serviceTime: ServiceTime? = null,
+    @SerialName("vendor") val vendor: Vendor? = null, @SerialName("customer_info") val customerInfo: User? = null, val isSelected: Boolean = false)
 
 data class AppointmentItemUIModel(
     val selectedAppointment: Appointment?,

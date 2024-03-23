@@ -6,6 +6,7 @@ import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Models.OrderItem
 import domain.Models.VendorRecommendation
 import domain.Models.Services
+import domain.Models.SpecialistInfo
 import domain.Models.UnsavedAppointment
 import domain.Models.User
 import domain.Models.Vendor
@@ -16,6 +17,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     private var _screenTitle = savedStateHandle.getStateFlow("screenTitle","")
     private var _connectedVendor =  savedStateHandle.getStateFlow("connectedVendor", Vendor())
     private var _currentUserInfo =  savedStateHandle.getStateFlow("userInfo", User())
+    private var _currentSpecialistInfo =  savedStateHandle.getStateFlow("specialistInfo", SpecialistInfo())
     private var _screenNav =  savedStateHandle.getStateFlow("screenNav", Pair(-1,-1))
     private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
     private var _vendorRecommendation =  savedStateHandle.getStateFlow("vendorRecommendation", VendorRecommendation())
@@ -48,6 +50,10 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     val currentUserInfo: StateFlow<User>
         get() = _currentUserInfo
 
+    val currentSpecialistInfo: StateFlow<SpecialistInfo>
+        get() = _currentSpecialistInfo
+
+
     val screenNav: StateFlow<Pair<Int,Int>>
         get() = _screenNav
     val mainUIState: StateFlow<AsyncUIStates>
@@ -67,6 +73,10 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
 
     fun setUserInfo(user: User) {
         savedStateHandle["userInfo"] = user
+    }
+
+    fun setSpecialistInfo(specialistInfo: SpecialistInfo) {
+        savedStateHandle["specialistInfo"] = specialistInfo
     }
 
     fun setSelectedService(selectedService: Services) {

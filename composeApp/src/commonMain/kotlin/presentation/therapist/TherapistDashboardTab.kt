@@ -32,6 +32,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
+import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.viewModelFactory
+import domain.Models.Appointment
 import domain.Models.Product
 import domain.Models.ProductCategory
 import domain.Models.User
@@ -39,12 +43,15 @@ import domain.Models.Vendor
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import presentation.Products.CategoryScreen
 import presentation.Products.ProductPresenter
 import presentation.Products.SearchBar
+import presentation.appointments.AppointmentPresenter
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.main.SearchContent
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.PostponementViewModel
 import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentations.components.TextComponent
@@ -53,8 +60,10 @@ import theme.styles.Colors
 
 class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
-    private var currentUser: User? = null
-    private var currentVendor: Vendor?  = null
+    private val appointmentPresenter: AppointmentPresenter by inject()
+    private var uiStateViewModel: UIStateViewModel? = null
+    private var postponementViewModel: PostponementViewModel? = null
+    private var appointmentResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Appointment>? = null
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -75,6 +84,33 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
 
     @Composable
     override fun Content() {
+
+        if (uiStateViewModel == null) {
+            uiStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+
+        }
+
+        if (postponementViewModel == null) {
+            postponementViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    PostponementViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+
+        }
+
+
+        if (appointmentResourceListEnvelopeViewModel == null) {
+            appointmentResourceListEnvelopeViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    ResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
+                })
+        }
+
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -137,11 +173,11 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
                 }
             }
             Box(
-                modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(bottom = 20.dp),
                 contentAlignment = Alignment.Center
             ) {
                 when(tabIndex){
-                    0 -> TherapistAppointment()
+                    0 -> TherapistAppointment(mainViewModel, uiStateViewModel!!, postponementViewModel!!, appointmentResourceListEnvelopeViewModel, appointmentPresenter)
                     1 -> TherapistAvailability()
                     2 -> TherapistReviews()
                     3 -> TherapistVendors()
