@@ -42,24 +42,67 @@ import presentations.components.TextComponent
 
 @Composable
 fun TimeGrid(availableTimes: List<ServiceTime>? = arrayListOf(), selectedTime: ServiceTime? = null, onWorkHourClickListener: (ServiceTime) -> Unit) {
-    var workHourUIModel by remember {  mutableStateOf( AvailableTimeUIModel(selectedTime = ServiceTime(), availableTimes!!))}
-    workHourUIModel = if (selectedTime != null){
+    var workHourUIModel by remember {
+        mutableStateOf(
+            AvailableTimeUIModel(
+                selectedTime = ServiceTime(),
+                availableTimes!!
+            )
+        )
+    }
+    workHourUIModel = if (selectedTime != null) {
         AvailableTimeUIModel(selectedTime, visibleTime = availableTimes!!)
+    } else {
+        AvailableTimeUIModel(ServiceTime(), availableTimes!!)
     }
-    else{
-         AvailableTimeUIModel(ServiceTime(),availableTimes!!)
-    }
 
 
+    Column(modifier = Modifier.fillMaxWidth()) {
 
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = Modifier.fillMaxWidth().height(250.dp),
-        contentPadding = PaddingValues(3.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp),
-        horizontalArrangement = Arrangement.spacedBy(2.dp)
-    ) {
-        items(workHourUIModel.visibleTime.size) { i ->
+        Row(modifier = Modifier.fillMaxWidth().height(20.dp)) {
+
+            TextComponent(
+                text = "Morning",
+                fontSize = 15,
+                fontFamily = GGSansSemiBold,
+                textStyle = MaterialTheme.typography.h6,
+                textColor = Color.Gray,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                lineHeight = 30,
+                textModifier = Modifier.weight(1f))
+
+            TextComponent(
+                text = "Afternoon",
+                fontSize = 15,
+                fontFamily = GGSansSemiBold,
+                textStyle = MaterialTheme.typography.h6,
+                textColor = Color.Gray,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                lineHeight = 30,
+                textModifier = Modifier.weight(1f))
+
+            TextComponent(
+                text = "Evening",
+                fontSize = 15,
+                fontFamily = GGSansSemiBold,
+                textStyle = MaterialTheme.typography.h6,
+                textColor = Color.Gray,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                lineHeight = 30,
+                textModifier = Modifier.weight(1f))
+
+        }
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            modifier = Modifier.fillMaxWidth().height(250.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            items(workHourUIModel.visibleTime.size) { i ->
                 TimeItem(workHourUIModel.visibleTime[i], onWorkHourClickListener = { it ->
                     onWorkHourClickListener(it)
                     workHourUIModel = workHourUIModel.copy(
@@ -71,7 +114,8 @@ fun TimeGrid(availableTimes: List<ServiceTime>? = arrayListOf(), selectedTime: S
                         }
 
                     )
-              })
+                })
+            }
         }
     }
 }
@@ -86,21 +130,27 @@ fun TimeItem(availableTime: ServiceTime, onWorkHourClickListener: (ServiceTime) 
     } else {
         Color.Gray
     }
+    val showSelectIcon = remember { mutableStateOf(false) }
+
+    showSelectIcon.value = availableTime.isSelected
 
     Row(
         modifier = Modifier
-            .padding(start = 5.dp, end = 5.dp, top = 15.dp)
+            .padding(start = 3.dp, end = 3.dp, top = 10.dp)
             .fillMaxWidth()
             .clickable {
                 if (availableTime.isAvailable) {
                     onWorkHourClickListener(availableTime)
                 }
             }
-            .border(border = BorderStroke((1.5).dp, color), shape = RoundedCornerShape(7.dp))
-            .height(45.dp),
+            .border(border = BorderStroke((1.5).dp, color), shape = RoundedCornerShape(6.dp))
+            .height(40.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        if(showSelectIcon.value){
+            ImageComponent(imageModifier = Modifier.size(20.dp), imageRes = "drawable/check_mark_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+        }
         TextComponent(
             text = availableTime.time!!+" PM",
             fontSize = 15,
@@ -111,5 +161,6 @@ fun TimeItem(availableTime: ServiceTime, onWorkHourClickListener: (ServiceTime) 
             fontWeight = FontWeight.Bold,
             lineHeight = 30,
             textModifier = Modifier.padding(start = 5.dp))
+
     }
 }

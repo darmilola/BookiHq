@@ -178,7 +178,7 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
             ) {
                 when(tabIndex){
                     0 -> TherapistAppointment(mainViewModel, uiStateViewModel!!, postponementViewModel!!, appointmentResourceListEnvelopeViewModel, appointmentPresenter)
-                    1 -> TherapistAvailability()
+                    1 -> TherapistAvailability(mainViewModel, therapistPresenter)
                     2 -> TherapistReviews(mainViewModel, therapistPresenter)
                     3 -> TherapistVendors()
                 }

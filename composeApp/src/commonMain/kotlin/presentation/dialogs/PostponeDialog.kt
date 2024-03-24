@@ -132,7 +132,7 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
                                     textColor = Colors.darkPrimary,
                                     textAlign = TextAlign.Left,
                                     fontWeight = FontWeight.Black,
-                                    textModifier = Modifier.fillMaxWidth().padding(start = 10.dp)
+                                    textModifier = Modifier.fillMaxWidth().padding(start = 10.dp, bottom = 20.dp)
                                 )
 
                                 TimeGrid(displayTimes.value,onWorkHourClickListener = {
