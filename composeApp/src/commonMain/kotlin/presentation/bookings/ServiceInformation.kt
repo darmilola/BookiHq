@@ -1,4 +1,4 @@
-package presentation.Bookings
+package presentation.bookings
 
 import GGSansRegular
 import theme.styles.Colors

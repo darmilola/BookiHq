@@ -23,8 +23,8 @@ import domain.Models.PlatformNavigator
 import domain.Models.Screens
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import presentation.Bookings.BookingScreen
-import presentation.Bookings.PendingAppointmentsTab
+import presentation.bookings.BookingScreen
+import presentation.bookings.PendingAppointmentsTab
 import presentation.Products.CartScreen
 import presentation.UserProfile.EditProfile
 import presentation.UserProfile.ConnectVendor.ConnectPageTab

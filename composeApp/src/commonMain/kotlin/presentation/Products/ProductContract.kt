@@ -6,11 +6,6 @@ import domain.Models.OrderItem
 import domain.Models.Product
 import domain.Models.ProductCategory
 import domain.Models.ResourceListEnvelope
-import domain.Models.UnsavedAppointment
-import domain.Models.User
-import domain.Models.Vendor
-import domain.Products.OrderItemRequest
-import presentation.Bookings.BookingContract
 import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.UIStates
 

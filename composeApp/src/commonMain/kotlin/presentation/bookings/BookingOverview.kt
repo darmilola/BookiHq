@@ -1,4 +1,4 @@
-package presentation.Bookings
+package presentation.bookings
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +15,6 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,7 +25,6 @@ import presentation.components.ButtonComponent
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.UIStateViewModel
-import presentation.viewmodels.UIStates
 import presentation.widgets.UnsavedAppointmentWidget
 import theme.styles.Colors
 import utils.getUnSavedAppointmentViewHeight

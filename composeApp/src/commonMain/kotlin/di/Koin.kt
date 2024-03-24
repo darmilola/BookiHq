@@ -12,7 +12,7 @@ import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.context.stopKoin
-import presentation.Bookings.BookingModule
+import presentation.bookings.BookingModule
 import presentation.Products.ProductModule
 import presentation.UserProfile.ConnectVendor.ConnectVendorModule
 import presentation.UserProfile.ProfileModule

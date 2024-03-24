@@ -1,16 +1,10 @@
-package presentation.Bookings
+package presentation.bookings
 
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import com.badoo.reaktive.single.Single
-import domain.Models.Appointment
-import domain.Models.HomePageResponse
-import domain.Models.ServerResponse
 import domain.Models.ServiceTypeSpecialist
-import domain.Models.SpecialistAvailabilityResponse
 import domain.Models.UnsavedAppointment
 import domain.Models.User
 import domain.Models.Vendor
-import domain.bookings.CreateAppointmentRequest
 import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.UIStates
 

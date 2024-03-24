@@ -1,4 +1,4 @@
-package presentation.Bookings
+package presentation.bookings
 
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.badoo.reaktive.single.subscribe
@@ -6,8 +6,6 @@ import domain.Models.UnsavedAppointment
 import domain.Models.User
 import domain.Models.Vendor
 import domain.bookings.BookingRepositoryImpl
-import domain.bookings.CreateAppointmentRequest
-import infrastructure.authentication.AuthenticationRepositoryImpl
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +13,6 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import presentation.authentication.AuthenticationContract
 import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.UIStates
 

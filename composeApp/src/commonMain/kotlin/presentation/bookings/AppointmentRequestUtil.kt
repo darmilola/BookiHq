@@ -1,4 +1,4 @@
-package presentation.Bookings
+package presentation.bookings
 
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import domain.Models.ServiceLocation
@@ -6,8 +6,6 @@ import domain.Models.UnsavedAppointment
 import domain.Models.User
 import domain.Models.Vendor
 import domain.bookings.CreateAppointmentRequest
-import kotlinx.serialization.SerialName
-import presentation.viewmodels.MainViewModel
 
 fun getUnSavedAppointment(unsavedAppointments: SnapshotStateList<UnsavedAppointment>, currentUser: User, currentVendor: Vendor): ArrayList<CreateAppointmentRequest> {
     val appointmentRequestList = arrayListOf<CreateAppointmentRequest>()

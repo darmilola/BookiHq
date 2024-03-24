@@ -30,7 +30,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.preat.peekaboo.image.picker.SelectionMode
@@ -48,10 +47,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
-import presentation.Bookings.BookingScreen
-import presentation.Products.CartScreen
 import presentation.dialogs.LoadingDialog
-import presentation.main.MainTab
 import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.UIStateViewModel
