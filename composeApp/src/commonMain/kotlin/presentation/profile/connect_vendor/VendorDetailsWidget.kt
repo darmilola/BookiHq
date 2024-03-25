@@ -53,7 +53,7 @@ fun ConnectBusinessTitle(mainViewModel: MainViewModel?){
                 .fillMaxWidth()
                 .fillMaxHeight(),
                 contentAlignment = Alignment.CenterStart) {
-                leftTopBarItem(mainViewModel)
+                leftTopBarItem(mainViewModel!!)
             }
 
             Box(modifier =  Modifier.weight(3.0f)
@@ -116,8 +116,10 @@ fun BusinessInfoTitle(mainViewModel: MainViewModel?){
 
 
 @Composable
-fun leftTopBarItem(mainViewModel: MainViewModel?) {
-    PageBackNavWidget {}
+fun leftTopBarItem(mainViewModel: MainViewModel) {
+    PageBackNavWidget {
+        mainViewModel.setScreenNav(Pair(Screens.CONNECT_VENDOR_PAGE.toPath(), Screens.MAIN_TAB.toPath()))
+    }
 }
 
 
@@ -147,5 +149,5 @@ fun InfoPageLeftTopBarItem(mainViewModel: MainViewModel?) {
 
 @Composable
 fun SwitchTitle(){
-    TitleWidget(title = "Switch ConnectVendor", textColor = Colors.primaryColor)
+    TitleWidget(title = "Switch Vendor", textColor = Colors.primaryColor)
 }

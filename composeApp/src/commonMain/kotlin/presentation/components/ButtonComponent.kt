@@ -133,6 +133,68 @@ public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStr
 }
 
 
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+public fun bottomSheetIconButtonComponent(modifier: Modifier, buttonText: String, borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, iconSize: Int = 28, colorFilter: ColorFilter? = null, onClick: (() -> Unit)? = null) {
+    val rowModifier = Modifier
+        .fillMaxWidth()
+
+
+    Button(
+        onClick = {
+            if (onClick != null) {
+                onClick()
+            }
+        },
+        border = borderStroke,
+        shape = shape,
+        modifier = modifier,
+        colors = colors,
+        elevation = ButtonDefaults.elevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp,
+            disabledElevation = 0.dp
+        )
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = rowModifier
+        ) {
+
+            val iconModifier = Modifier
+                .padding(top = 5.dp)
+                .size(iconSize.dp)
+
+            val iconBoxModifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(0.10f)
+
+            val textModifier = Modifier
+                .padding(end = 15.dp)
+                .wrapContentHeight()
+                .fillMaxWidth(0.90f)
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.Top,
+                modifier = iconBoxModifier
+            ) {
+                ImageComponent(imageModifier = iconModifier, imageRes = iconRes, colorFilter = colorFilter)
+            }
+            TextComponent(
+                text = buttonText,
+                fontSize = fontSize,
+                textStyle = style,
+                textColor = textColor,
+                textAlign = TextAlign.Left,
+                fontWeight = FontWeight.Bold,
+                textModifier = textModifier
+            )
+        }
+    }
+}
+
+
 
 @Composable
 public fun RightIconButtonComponent(modifier: Modifier, buttonText: String, borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, iconSize: Int = 28, colorFilter: ColorFilter? = null, onClick: (() -> Unit)? = null) {

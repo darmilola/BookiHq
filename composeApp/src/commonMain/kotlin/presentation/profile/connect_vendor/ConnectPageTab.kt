@@ -36,6 +36,7 @@ import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
+import domain.Models.OrderItem
 import domain.Models.PlatformNavigator
 import domain.Models.Screens
 import domain.Models.Vendor
@@ -43,6 +44,7 @@ import domain.Models.VendorItemUIModel
 import domain.Models.getVendorListItemViewHeight
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import presentation.Products.ProductDetailBottomSheet
 import presentation.Products.SearchBar
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
@@ -50,9 +52,12 @@ import presentation.viewmodels.ConnectPageViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.UIStateViewModel
+import presentation.widgets.ShowSnackBar
+import presentation.widgets.SnackBarType
+import presentation.widgets.SwitchVendorBottomSheetContent
 import theme.Colors
 
-class ConnectPageTab(private val mainViewModel: MainViewModel, val platformNavigator: PlatformNavigator? = null) : Tab, KoinComponent {
+class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: PlatformNavigator? = null) : Tab, KoinComponent {
 
     private val preferenceSettings: Settings = Settings()
     private val connectVendorPresenter: ConnectVendorPresenter by inject()
@@ -78,8 +83,6 @@ class ConnectPageTab(private val mainViewModel: MainViewModel, val platformNavig
 
     @Composable
     override fun Content() {
-
-        val navigator = LocalNavigator.currentOrThrow
         val contentVisible = remember { mutableStateOf(false) }
         val contentLoading = remember { mutableStateOf(false) }
         val errorVisible = remember { mutableStateOf(false) }
@@ -151,17 +154,32 @@ class ConnectPageTab(private val mainViewModel: MainViewModel, val platformNavig
             })
         handler.init()
 
+        var showSwitchReasonBottomSheet by remember { mutableStateOf(false) }
+
+        if (showSwitchReasonBottomSheet) {
+            SwitchVendorBottomSheetContent(onConfirmation = {
+                mainViewModel.setScreenNav(Pair(Screens.CONNECT_VENDOR_PAGE.toPath(), Screens.VENDOR_INFO.toPath()))
+            },
+                onDismissRequest = {
+
+                })
+        }
+
+
+
         Scaffold(
             topBar = {
                 Column(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally) {
-                    ConnectVendorHeader(title = "Switch Vendor")
+                    ConnectVendorHeader(mainViewModel)
                     SearchBar(placeholderText = "search @vendor", onValueChange = {
                         vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                         searchQuery.value = it
                         connectVendorPresenter.searchVendor(countryId,cityId, searchQuery = it)
-                    }, onBackPressed = {})
+                    }, onBackPressed = {
+
+                    })
                 }
             },
             content = {
@@ -188,7 +206,7 @@ class ConnectPageTab(private val mainViewModel: MainViewModel, val platformNavig
                     ) {
                         items(vendorUIModel.vendorsList.size) { i ->
                             ConnectBusinessItemComponent(vendor = vendorUIModel.vendorsList[i]) {
-                                mainViewModel.setScreenNav(Pair(Screens.CONNECT_VENDOR_PAGE.toPath(), Screens.VENDOR_INFO.toPath()))
+                                showSwitchReasonBottomSheet = true
                             }
                             if (i == lastIndex && loadMoreState.value) {
                                 Box(

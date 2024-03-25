@@ -72,7 +72,9 @@ fun ConnectBusinessTitle(title: String){
             Box(modifier =  Modifier.weight(1.0f)
                 .fillMaxWidth()
                 .fillMaxHeight(),
-                contentAlignment = Alignment.CenterStart) {}
+                contentAlignment = Alignment.CenterStart) {
+
+            }
 
             Box(modifier =  Modifier.weight(3.0f)
                 .fillMaxWidth()

@@ -476,7 +476,7 @@ fun SearchContent(searchQuery: String, productResourceListEnvelopeViewModel: Res
                 }
                 Box(
                     modifier = Modifier.fillMaxWidth().fillMaxHeight(),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.TopStart
                 ) {
                     if (productUIState.value.loadingVisible) {
                         //Content Loading
