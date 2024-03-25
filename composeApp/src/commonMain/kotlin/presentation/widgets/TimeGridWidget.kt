@@ -124,6 +124,12 @@ fun TimeGrid(availableTimes: List<ServiceTime>? = arrayListOf(), selectedTime: S
 
 @Composable
 fun TimeItem(availableTime: ServiceTime, onWorkHourClickListener: (ServiceTime) -> Unit) {
+    val meridian = if (availableTime.isAm){
+        "am"
+    }
+    else{
+        "pm"
+    }
     val color: Color = if(availableTime.isSelected){
         Colors.primaryColor
     } else if (!availableTime.isAvailable){
@@ -153,7 +159,7 @@ fun TimeItem(availableTime: ServiceTime, onWorkHourClickListener: (ServiceTime) 
             ImageComponent(imageModifier = Modifier.size(20.dp), imageRes = "drawable/check_mark_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
         }
         TextComponent(
-            text = availableTime.time!!+" PM",
+            text = availableTime.time!!+" "+meridian,
             fontSize = 15,
             fontFamily = GGSansSemiBold,
             textStyle = MaterialTheme.typography.h6,

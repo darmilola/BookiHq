@@ -48,7 +48,7 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
         val newSelectedDate = postponementViewModel.selectedDate.collectAsState()
         val newSelectedTime = postponementViewModel.selectedTime.collectAsState()
         val specialistAppointment = postponementViewModel.therapistBookedTimes.value
-        val timeOffs = postponementViewModel.therapistTimeOffs.value
+        val timeOffs = postponementViewModel.therapistTimeOffs.collectAsState()
         val specialistId = postponementViewModel.currentAppointment.value.specialistId
         val isNewDateSelected = remember { mutableStateOf(true) }
 
@@ -64,7 +64,7 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
         val normalisedTimeOffTimes = arrayListOf<ServiceTime>()
         val bookedTimes = arrayListOf<ServiceTime>()
         val displayTimes = remember { mutableStateOf(arrayListOf<ServiceTime>()) }
-        for (item in timeOffs){
+        for (item in timeOffs.value){
             normalisedTimeOffTimes.add(item.timeOffTime!!)
         }
 
@@ -142,7 +142,7 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
 
                                 TimeGrid(displayTimes.value,onWorkHourClickListener = {
                                     postponementViewModel.setNewSelectedTime(it)
-                                    postponementViewModel.clearServiceTimes()
+                                   // postponementViewModel.clearServiceTimes()
                                 })
                             }
                         }

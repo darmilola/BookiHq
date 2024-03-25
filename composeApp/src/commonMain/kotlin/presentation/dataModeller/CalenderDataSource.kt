@@ -14,7 +14,7 @@ import kotlinx.datetime.toLocalDateTime
 
 class CalendarDataSource {
 
-    val currentMoment: Instant = Clock.System.now()
+    private val currentMoment: Instant = Clock.System.now()
     val today: LocalDate = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault()).date
 
     fun getDate(startDate: LocalDate = today, lastSelectedDate: LocalDate): CalendarUiModel {

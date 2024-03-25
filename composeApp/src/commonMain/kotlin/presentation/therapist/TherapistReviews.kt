@@ -28,7 +28,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import domain.Models.Appointment
+import domain.Models.ServiceTime
 import domain.Models.SpecialistReviews
+import domain.Models.TimeOffs
 import presentation.appointments.AppointmentPresenter
 import presentation.appointments.AppointmentsHandler
 import presentation.components.ButtonComponent
@@ -37,6 +39,7 @@ import presentation.dialogs.LoadingDialog
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
 import presentation.viewmodels.ResourceListEnvelopeViewModel
+import presentation.viewmodels.TherapistViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
@@ -47,11 +50,10 @@ import theme.Colors
 import utils.getAppointmentViewHeight
 
 @Composable
-fun TherapistReviews(mainViewModel: MainViewModel, therapistPresenter: TherapistPresenter){
-    val isLoading = remember { mutableStateOf(false) }
-    val isContentVisible = remember { mutableStateOf(false) }
-    val isErrorOccurred = remember { mutableStateOf(false) }
-    val reviews = remember { mutableStateOf(listOf<SpecialistReviews>()) }
+fun TherapistReviews(mainViewModel: MainViewModel, therapistPresenter: TherapistPresenter, therapistViewModel: TherapistViewModel,
+                     uiStateViewModel: UIStateViewModel){
+    val uiState = uiStateViewModel.uiData.collectAsState()
+    val reviews = therapistViewModel.therapistReviews.collectAsState()
 
     val stackedSnackBarHostState = rememberStackedSnackbarHostState(
         maxStack = 5,
@@ -59,32 +61,16 @@ fun TherapistReviews(mainViewModel: MainViewModel, therapistPresenter: Therapist
     )
 
     LaunchedEffect(Unit, block = {
-        therapistPresenter.getTherapistReviews(3)
+        if (reviews.value.isEmpty()) {
+            therapistPresenter.getTherapistReviews(3)
+        }
     })
-
-
 
     Scaffold(
         snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
         topBar = {},
         content = {
-            val handler = TherapistHandler(therapistPresenter,
-                onReviewsReady = {
-                     reviews.value = it
-                },
-                onErrorVisible = {
-                     isLoading.value = false
-                     isErrorOccurred.value = true
-                },
-                onContentVisible = {
-                     isLoading.value = false
-                     isContentVisible.value = true
-                }, onPageLoading = {
-                      isLoading.value = true
-                })
-            handler.init()
-
-            if (isLoading.value) {
+            if (uiState.value.loadingVisible) {
                 // Content Loading
                 Box(
                     modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -94,11 +80,11 @@ fun TherapistReviews(mainViewModel: MainViewModel, therapistPresenter: Therapist
                 ) {
                     IndeterminateCircularProgressBar()
                 }
-            } else if (isErrorOccurred.value) {
+            } else if (uiState.value.errorOccurred) {
 
                 // Error Occurred display reload
 
-            } else if (isContentVisible.value) {
+            } else if (uiState.value.contentVisible) {
                    Column(
                         Modifier
                             .fillMaxHeight(0.30f)

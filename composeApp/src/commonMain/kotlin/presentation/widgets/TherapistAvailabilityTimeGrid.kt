@@ -35,7 +35,9 @@ import theme.styles.Colors
 
 
 @Composable
-fun TherapistAvailabilityTimeGrid(availableTimes: List<ServiceTime>? = arrayListOf(), selectedTime: ServiceTime? = null, onWorkHourClickListener: (ServiceTime) -> Unit) {
+fun TherapistAvailabilityTimeGrid(availableTimes: List<ServiceTime>? = arrayListOf(), onWorkHourUnAvailable: (ServiceTime) -> Unit,
+                                  onWorkHourAvailable: (ServiceTime) -> Unit) {
+
     var workHourUIModel by remember {
         mutableStateOf(
             AvailableTimeUIModel(
@@ -44,12 +46,8 @@ fun TherapistAvailabilityTimeGrid(availableTimes: List<ServiceTime>? = arrayList
             )
         )
     }
-    workHourUIModel = if (selectedTime != null) {
-        AvailableTimeUIModel(selectedTime, visibleTime = availableTimes!!)
-    } else {
-        AvailableTimeUIModel(ServiceTime(), availableTimes!!)
-    }
 
+    AvailableTimeUIModel(ServiceTime(), availableTimes!!)
 
     Column(modifier = Modifier.fillMaxWidth()) {
 
@@ -92,23 +90,40 @@ fun TherapistAvailabilityTimeGrid(availableTimes: List<ServiceTime>? = arrayList
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
-            modifier = Modifier.fillMaxWidth().height(270.dp),
+            modifier = Modifier.fillMaxWidth().height(300.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp),
             userScrollEnabled = false,
             horizontalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             items(workHourUIModel.visibleTime.size) { i ->
-                TherapistTimeItem(workHourUIModel.visibleTime[i], onWorkHourClickListener = { it ->
-                    onWorkHourClickListener(it)
+                TherapistTimeItem(workHourUIModel.visibleTime[i], onAvailableWorkHourClickListener = { it ->
                     workHourUIModel = workHourUIModel.copy(
-                        selectedTime = it,
+                        selectedTime =  it,
                         visibleTime = workHourUIModel.visibleTime.map { it2 ->
-                            it2.copy(
-                                isSelected = it2.id == it.id
-                            )
+                            val isAvailable =  if(it2.id == it.id){
+                                false
+                            }
+                            else{
+                                it2.isAvailable
+                            }
+                            it2.copy(isAvailable = isAvailable)
                         }
-
                     )
+                    onWorkHourUnAvailable(it)
+                }, onUnAvailableWorkHourClickListener = {
+                    workHourUIModel = workHourUIModel.copy(
+                        selectedTime =  it,
+                        visibleTime = workHourUIModel.visibleTime.map { it2 ->
+                            val isAvailable =  if(it2.id == it.id){
+                                true
+                            }
+                            else{
+                                it2.isAvailable
+                            }
+                            it2.copy(isAvailable = isAvailable)
+                        }
+                    )
+                    onWorkHourAvailable(it)
                 })
             }
         }
@@ -117,17 +132,27 @@ fun TherapistAvailabilityTimeGrid(availableTimes: List<ServiceTime>? = arrayList
 
 
 @Composable
-fun TherapistTimeItem(availableTime: ServiceTime, onWorkHourClickListener: (ServiceTime) -> Unit) {
-    val color: Color = if(availableTime.isSelected){
-        Colors.primaryColor
-    } else if (!availableTime.isAvailable){
-        Color.LightGray
-    } else {
-        Color.Gray
+fun TherapistTimeItem(availableTime: ServiceTime, onAvailableWorkHourClickListener: (ServiceTime) -> Unit,
+                      onUnAvailableWorkHourClickListener: (ServiceTime) -> Unit) {
+    val meridian = if (availableTime.isAm){
+          "am"
     }
-    val showSelectIcon = remember { mutableStateOf(false) }
+    else{
+        "pm"
+    }
+    val color: Color = if (availableTime.isAvailable){
+        Colors.primaryColor
+    } else {
+        Colors.pinkColor
+    }
 
-    showSelectIcon.value = availableTime.isSelected
+    val iconRes = if(availableTime.isAvailable){
+        "drawable/check_mark_icon.png"
+    }
+    else{
+        "drawable/cancel_icon.png"
+    }
+
 
     Row(
         modifier = Modifier
@@ -135,7 +160,10 @@ fun TherapistTimeItem(availableTime: ServiceTime, onWorkHourClickListener: (Serv
             .fillMaxWidth()
             .clickable {
                 if (availableTime.isAvailable) {
-                    onWorkHourClickListener(availableTime)
+                    onAvailableWorkHourClickListener(availableTime)
+                }
+                else{
+                    onUnAvailableWorkHourClickListener(availableTime)
                 }
             }
             .border(border = BorderStroke((1.5).dp, color), shape = RoundedCornerShape(6.dp))
@@ -143,11 +171,9 @@ fun TherapistTimeItem(availableTime: ServiceTime, onWorkHourClickListener: (Serv
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if(showSelectIcon.value){
-            ImageComponent(imageModifier = Modifier.size(20.dp), imageRes = "drawable/check_mark_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
-        }
+        ImageComponent(imageModifier = Modifier.size(20.dp), imageRes = iconRes, colorFilter = ColorFilter.tint(color = color))
         TextComponent(
-            text = availableTime.time!!+" PM",
+            text = availableTime.time!!+" "+meridian,
             fontSize = 15,
             fontFamily = GGSansSemiBold,
             textStyle = MaterialTheme.typography.h6,

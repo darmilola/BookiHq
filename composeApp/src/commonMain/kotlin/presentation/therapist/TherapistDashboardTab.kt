@@ -38,6 +38,8 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.Appointment
 import domain.Models.Product
 import domain.Models.ProductCategory
+import domain.Models.ServiceTime
+import domain.Models.TimeOffs
 import domain.Models.User
 import domain.Models.Vendor
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -53,7 +55,9 @@ import presentation.main.SearchContent
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
 import presentation.viewmodels.ResourceListEnvelopeViewModel
+import presentation.viewmodels.TherapistViewModel
 import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.UIStates
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
@@ -63,6 +67,7 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
     private val appointmentPresenter: AppointmentPresenter by inject()
     private val therapistPresenter: TherapistPresenter by inject()
     private var uiStateViewModel: UIStateViewModel? = null
+    private var therapistViewModel: TherapistViewModel? = null
     private var postponementViewModel: PostponementViewModel? = null
     private var appointmentResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Appointment>? = null
 
@@ -103,6 +108,14 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
             )
         }
 
+        if (therapistViewModel == null) {
+            therapistViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    TherapistViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
 
         if (appointmentResourceListEnvelopeViewModel == null) {
             appointmentResourceListEnvelopeViewModel = kmpViewModel(
@@ -110,6 +123,26 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
                     ResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
                 })
         }
+
+        val handler = TherapistHandler(therapistPresenter,
+            onReviewsReady = {
+                therapistViewModel!!.setTherapistReviews(it)
+             },
+            onErrorVisible = {
+                uiStateViewModel!!.switchState(UIStates(errorOccurred = true))
+            },
+            onContentVisible = {
+                uiStateViewModel!!.switchState(UIStates(contentVisible = true))
+            }, onPageLoading = {
+                uiStateViewModel!!.switchState(UIStates(loadingVisible = true))
+            }, onTherapistAvailabilityReady = {
+                 availableTimes: List<ServiceTime>,
+                    bookedTimes: List<Appointment>,
+                    timeOffs: List<TimeOffs> ->
+                therapistViewModel!!.setTherapistAvailableTimes(availableTimes)
+                therapistViewModel!!.setTherapistTimeOffs(timeOffs)
+            })
+        handler.init()
 
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
@@ -178,8 +211,8 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
             ) {
                 when(tabIndex){
                     0 -> TherapistAppointment(mainViewModel, uiStateViewModel!!, postponementViewModel!!, appointmentResourceListEnvelopeViewModel, appointmentPresenter)
-                    1 -> TherapistAvailability(mainViewModel, therapistPresenter)
-                    2 -> TherapistReviews(mainViewModel, therapistPresenter)
+                    1 -> TherapistAvailability(mainViewModel, therapistPresenter, therapistViewModel!!, uiStateViewModel!!)
+                    2 -> TherapistReviews(mainViewModel, therapistPresenter, therapistViewModel!!, uiStateViewModel!!)
                     3 -> TherapistVendors()
                 }
 
