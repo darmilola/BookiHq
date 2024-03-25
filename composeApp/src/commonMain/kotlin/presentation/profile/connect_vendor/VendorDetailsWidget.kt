@@ -1,4 +1,4 @@
-package presentation.UserProfile.ConnectVendor
+package presentation.profile.connect_vendor
 
 import theme.styles.Colors
 import androidx.compose.foundation.layout.Arrangement
@@ -14,9 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import domain.Models.Screens
-import presentation.main.MainTab
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget
@@ -24,7 +22,7 @@ import presentation.widgets.TitleWidget
 
 
 @Composable
-fun SwitchVendorHeader(mainViewModel: MainViewModel? = null){
+fun ConnectVendorHeader(mainViewModel: MainViewModel? = null){
     Column(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
@@ -135,6 +133,9 @@ fun InfoPageLeftTopBarItem(mainViewModel: MainViewModel?) {
             }
             Screens.JOIN_SPA.toPath() -> {
                 mainViewModel.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.JOIN_SPA.toPath()))
+            }
+            Screens.CONNECT_VENDOR_PAGE.toPath() -> {
+                mainViewModel.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.CONNECT_VENDOR_PAGE.toPath()))
             }
             else -> {
                 // navigator.current = MainTab(mainViewModel)

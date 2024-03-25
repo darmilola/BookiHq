@@ -1,4 +1,4 @@
-package presentation.UserProfile
+package presentation.profile
 
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module

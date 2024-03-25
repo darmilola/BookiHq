@@ -1,4 +1,4 @@
-package presentation.UserProfile.ConnectVendor
+package presentation.profile.connect_vendor
 
 
 import GGSansRegular

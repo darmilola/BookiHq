@@ -20,7 +20,7 @@ import domain.Models.AuthSSOScreenNav
 import domain.Models.User
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import presentation.UserProfile.ConnectVendor.ConnectPage
+import presentation.profile.connect_vendor.ConnectPage
 import presentation.dialogs.LoadingDialog
 import presentation.main.MainScreen
 import presentation.viewmodels.AuthenticationViewModel

@@ -1,4 +1,4 @@
-package presentation.UserProfile.ConnectVendor
+package presentation.profile.connect_vendor
 
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -13,7 +13,7 @@ class ConnectedVendorDetailsPage(private val mainViewModel: MainViewModel) : Tab
     override val options: TabOptions
         @Composable
         get() {
-            val title = "ConnectVendor Info"
+            val title = "Switch Vendor"
 
             return remember {
                 TabOptions(
@@ -31,8 +31,9 @@ class ConnectedVendorDetailsPage(private val mainViewModel: MainViewModel) : Tab
                 BusinessInfoTitle(mainViewModel = mainViewModel)
             },
             content = {
-                val navigator = LocalTabNavigator.current
-                BusinessInfoContent(connectedVendor, isUserAuthenticated = true){}
+                BusinessInfoContent(connectedVendor, isUserAuthenticated = true){
+
+                }
             },
             backgroundColor = Color.Transparent,
         )

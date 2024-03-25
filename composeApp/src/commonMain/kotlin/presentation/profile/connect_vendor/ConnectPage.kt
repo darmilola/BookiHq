@@ -1,4 +1,4 @@
-package presentation.UserProfile.ConnectVendor
+package presentation.profile.connect_vendor
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -36,7 +36,6 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import domain.Models.PlatformNavigator
-import domain.Models.Product
 import domain.Models.ResourceListEnvelope
 import domain.Models.Vendor
 import domain.Models.VendorItemUIModel
@@ -53,7 +52,7 @@ import presentation.viewmodels.UIStates
 import theme.Colors
 
 
-open class ConnectPage(val  platformNavigator: PlatformNavigator? = null) : Screen, KoinComponent {
+open class ConnectPage(val platformNavigator: PlatformNavigator? = null) : Screen, KoinComponent {
 
     private val preferenceSettings: Settings = Settings()
     private val connectVendorPresenter: ConnectVendorPresenter by inject()
@@ -146,7 +145,7 @@ open class ConnectPage(val  platformNavigator: PlatformNavigator? = null) : Scre
                     Column(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally) {
-                        SwitchVendorHeader()
+                        ConnectVendorHeader(title = "Connect Vendor")
                         SearchBar(placeholderText = "search @vendor", onValueChange = {
                             vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                             searchQuery.value = it

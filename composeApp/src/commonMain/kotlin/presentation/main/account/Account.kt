@@ -162,7 +162,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                     style = TextStyle(),
                     iconRes = "drawable/shopping_basket.png",
                     isDestructiveAction = false, onClick = {
-                       // mainViewModel.setId(5)
+
                     })
 
 
@@ -175,7 +175,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                     style = TextStyle(),
                     iconRes = "drawable/switch.png",
                     isDestructiveAction = false, onClick = {
-                       // mainViewModel.setId(6)
+                        mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.CONNECT_VENDOR_PAGE.toPath()))
                     })
 
 

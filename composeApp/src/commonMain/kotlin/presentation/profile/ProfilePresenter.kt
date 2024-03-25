@@ -1,4 +1,4 @@
-package presentation.UserProfile
+package presentation.profile
 
 import domain.Profile.ProfileRepositoryImpl
 import io.ktor.client.HttpClient
@@ -8,9 +8,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import presentation.viewmodels.UIStates
 import com.badoo.reaktive.single.subscribe
-import domain.Models.User
 import presentation.viewmodels.AsyncUIStates
 
 

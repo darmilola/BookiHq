@@ -1,8 +1,6 @@
-package presentation.UserProfile
+package presentation.profile
 
-import domain.Models.User
 import presentation.viewmodels.AsyncUIStates
-import presentation.viewmodels.UIStates
 
 class ProfileContract {
     interface View {

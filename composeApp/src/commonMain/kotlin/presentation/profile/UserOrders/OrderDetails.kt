@@ -1,4 +1,4 @@
-package presentation.UserProfile.UserOrders
+package presentation.profile.UserOrders
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

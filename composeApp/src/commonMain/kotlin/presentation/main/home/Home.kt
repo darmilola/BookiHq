@@ -50,6 +50,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.set
 import domain.Models.Appointment
 import domain.Models.OrderItem
 import domain.Models.Product
@@ -81,6 +83,7 @@ import utils.getPopularProductViewHeight
 
 class HomeTab(private val homePageViewModel: HomePageViewModel,
               private val mainViewModel: MainViewModel) : Tab, KoinComponent {
+    private val preferenceSettings: Settings = Settings()
   @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
         @Composable
@@ -115,6 +118,8 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
 
         if (userInfo != null) {
             mainViewModel.setUserInfo(userInfo)
+            setCityId(userInfo.cityId!!)
+            setCountryId(userInfo.countryId!!)
         }
         if (vendorInfo != null) {
             mainViewModel.setConnectedVendor(vendorInfo)
@@ -496,4 +501,13 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
             .size(16.dp)
         ImageComponent(imageModifier = modifier, imageRes = "drawable/location_icon_filled.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
     }
+
+    private fun setCityId(cityId: Int) {
+        preferenceSettings["cityId"] = cityId
+    }
+
+    private fun setCountryId(countryId: Int) {
+        preferenceSettings["countryId"] = countryId
+    }
+
 }

@@ -300,7 +300,6 @@ class HomePageHandler(
     }
 
     override fun showHome(homePageResponse: HomePageResponse) {
-        println("My Response"+ homePageResponse)
         homePageViewModel.setHomePageInfo(homePageResponse)
     }
 }

@@ -1,4 +1,4 @@
-package presentation.UserProfile.ConnectVendor
+package presentation.profile.connect_vendor
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -76,7 +76,7 @@ class VendorInfoPage(val vendor: Vendor, val  platformNavigator: PlatformNavigat
 
         if (pageLoading.value) {
             Box(modifier = Modifier.fillMaxWidth(0.90f)) {
-                LoadingDialog("Connecting ConnectVendor")
+                LoadingDialog("Connecting Vendor")
             }
         }
         else if (vendorConnected.value){
@@ -92,7 +92,7 @@ class VendorInfoPage(val vendor: Vendor, val  platformNavigator: PlatformNavigat
                 BusinessInfoTitle()
             },
             content = {
-                BusinessInfoContent(vendor) {
+                BusinessInfoContent(vendor, isUserAuthenticated = true) {
                     if (userEmail.isNotEmpty()) {
                         connectVendorPresenter.connectVendor(userEmail, vendor.vendorId!!)
                     }

@@ -1,4 +1,4 @@
-package presentation.UserProfile.ConnectVendor
+package presentation.profile.connect_vendor
 
 import GGSansRegular
 import theme.styles.Colors
@@ -40,11 +40,11 @@ import presentations.components.TextComponent
 
 
 @Composable
-fun SwitchVendorHeader(){
+fun ConnectVendorHeader(title: String){
     Column(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
            verticalArrangement = Arrangement.Center,
            horizontalAlignment = Alignment.CenterHorizontally) {
-        ConnectBusinessTitle()
+        ConnectBusinessTitle(title)
         ConnectBusinessDescription()
     }
 }
@@ -52,7 +52,7 @@ fun SwitchVendorHeader(){
 
 
 @Composable
-fun ConnectBusinessTitle(){
+fun ConnectBusinessTitle(title: String){
     val rowModifier = Modifier
         .fillMaxWidth()
         .height(40.dp)
@@ -78,7 +78,7 @@ fun ConnectBusinessTitle(){
                 .fillMaxWidth()
                 .fillMaxHeight(),
                 contentAlignment = Alignment.Center) {
-                ConnectTitle()
+                ConnectTitle(title)
             }
 
             Box(modifier =  Modifier.weight(1.0f)
@@ -159,8 +159,8 @@ fun leftTopBarItem() {
 }
 
 @Composable
-fun ConnectTitle(){
-    TitleWidget(title = "Connect ConnectVendor", textColor = Colors.primaryColor)
+fun ConnectTitle(title: String){
+    TitleWidget(title = title, textColor = Colors.primaryColor)
 }
 
 
@@ -353,8 +353,6 @@ fun BusinessInfoContent(vendor: Vendor,isUserAuthenticated: Boolean = false, onC
                     }
                 }
 
-                if (!isUserAuthenticated) {
-
                     val buttonStyle = Modifier
                         .fillMaxWidth()
                         .padding(top = 25.dp)
@@ -366,19 +364,21 @@ fun BusinessInfoContent(vendor: Vendor,isUserAuthenticated: Boolean = false, onC
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        ButtonComponent(
-                            modifier = buttonStyle,
-                            buttonText = "Connect",
-                            borderStroke = null,
-                            colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
-                            fontSize = 18,
-                            shape = CircleShape,
-                            textColor = Color.White,
-                            style = TextStyle()
-                        ) {
-                            onConnectedListener()
+                        if (isUserAuthenticated) {
+
+                            ButtonComponent(
+                                modifier = buttonStyle,
+                                buttonText = "Connect",
+                                borderStroke = null,
+                                colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
+                                fontSize = 18,
+                                shape = CircleShape,
+                                textColor = Color.White,
+                                style = TextStyle()
+                            ) {
+                                onConnectedListener()
+                            }
                         }
-                    }
                 }
             }
         }

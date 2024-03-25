@@ -1,4 +1,4 @@
-package presentation.UserProfile.UserOrders
+package presentation.profile.UserOrders
 
 import GGSansRegular
 import theme.styles.Colors

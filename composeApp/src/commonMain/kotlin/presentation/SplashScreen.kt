@@ -20,7 +20,7 @@ import com.russhwolf.settings.Settings
 import di.initKoin
 import presentation.components.SplashScreenBackground
 import kotlinx.coroutines.delay
-import presentation.UserProfile.ConnectVendor.ConnectPage
+import presentation.profile.connect_vendor.ConnectPage
 import presentation.authentication.WelcomeScreen
 import presentation.main.MainScreen
 import presentation.widgets.SplashScreenWidget

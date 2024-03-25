@@ -26,10 +26,10 @@ import org.koin.core.component.inject
 import presentation.bookings.BookingScreen
 import presentation.bookings.PendingAppointmentsTab
 import presentation.Products.CartScreen
-import presentation.UserProfile.EditProfile
-import presentation.UserProfile.ConnectVendor.ConnectPageTab
-import presentation.UserProfile.ConnectVendor.ConnectedVendorDetailsPage
-import presentation.UserProfile.UserOrders.UserOrders
+import presentation.profile.EditProfile
+import presentation.profile.connect_vendor.ConnectPageTab
+import presentation.profile.connect_vendor.ConnectedVendorDetailsPage
+import presentation.profile.UserOrders.UserOrders
 import presentation.consultation.ConsultationScreen
 import presentation.consultation.VirtualConsultationRoom
 import presentation.dialogs.LoadingDialog
@@ -111,7 +111,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
                     it.current = UserOrders(mainViewModel!!)
                 }
                 Screens.CONNECT_VENDOR_PAGE.toPath() -> {
-                    it.current = ConnectPageTab(mainViewModel!!)
+                    it.current = ConnectPageTab(mainViewModel!!, platformNavigator)
                 }
                 Screens.CONSULTATION_ROOM.toPath() -> {
                     it.current = VirtualConsultationRoom(mainViewModel!!)
@@ -135,15 +135,12 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
 
             Scaffold(
                 content = { CurrentTab() })
-
         }
-
     }
 
     fun setImageUploadResponse(imageUrl: String) {
         preferenceSettings["imageUrl"] = imageUrl
     }
-
    fun setImageUploadProcessing(isDone: Boolean = false) {
         preferenceSettings["imageUploadProcessing"] = isDone
     }

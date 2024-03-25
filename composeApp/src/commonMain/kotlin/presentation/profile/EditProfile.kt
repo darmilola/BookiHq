@@ -1,4 +1,4 @@
-package presentation.UserProfile
+package presentation.profile
 
 import StackedSnackbarHost
 import StackedSnakbarHostState

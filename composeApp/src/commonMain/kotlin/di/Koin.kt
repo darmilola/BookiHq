@@ -14,8 +14,8 @@ import kotlinx.serialization.json.Json
 import org.koin.core.context.stopKoin
 import presentation.bookings.BookingModule
 import presentation.Products.ProductModule
-import presentation.UserProfile.ConnectVendor.ConnectVendorModule
-import presentation.UserProfile.ProfileModule
+import presentation.profile.connect_vendor.ConnectVendorModule
+import presentation.profile.ProfileModule
 import presentation.appointments.AppointmentModule
 import presentation.authentication.AuthenticationModule.AuthenticationModule
 import presentation.main.home.HomepageModule

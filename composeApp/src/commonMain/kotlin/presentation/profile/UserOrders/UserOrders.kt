@@ -1,4 +1,4 @@
-package presentation.UserProfile.UserOrders
+package presentation.profile.UserOrders
 
 import theme.styles.Colors
 import androidx.compose.foundation.background
@@ -23,7 +23,6 @@ import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import presentation.consultation.rightTopBarItem
-import presentation.main.MainTab
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget
