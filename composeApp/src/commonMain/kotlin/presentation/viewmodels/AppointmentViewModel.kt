@@ -4,6 +4,7 @@ import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Models.Appointment
 import domain.Models.ServiceTime
+import domain.Models.TimeOffs
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.LocalDate
 import presentation.dataModeller.CalendarDataSource
@@ -12,6 +13,7 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
 
     private var _therapistAvailableTimes = savedStateHandle.getStateFlow("therapistAvailableTimes", arrayListOf<ServiceTime>())
     private var _therapistBookedTimes = savedStateHandle.getStateFlow("therapistBookedAppointment", arrayListOf<Appointment>())
+    private var _therapistTimeOffs = savedStateHandle.getStateFlow("therapistTimeOffs", arrayListOf<TimeOffs>())
     private var _currentAppointment = savedStateHandle.getStateFlow("currentAppointment",Appointment())
     private var _postponementViewUIState = savedStateHandle.getStateFlow("postponementViewUIState", AsyncUIStates())
     private var _newSelectedDate = savedStateHandle.getStateFlow("newSelectedDate", CalendarDataSource().today)
@@ -23,6 +25,9 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
 
     val therapistBookedTimes: StateFlow<List<Appointment>>
         get() = _therapistBookedTimes
+
+    val therapistTimeOffs: StateFlow<List<TimeOffs>>
+        get() = _therapistTimeOffs
 
     val currentAppointment: StateFlow<Appointment>
         get() = _currentAppointment
@@ -39,6 +44,11 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
     fun setTherapistAvailableTimes(availableTimes: List<ServiceTime>) {
         savedStateHandle["therapistAvailableTimes"] = availableTimes
     }
+
+    fun setTherapistTimeOffs(timeOffs: List<TimeOffs>) {
+        savedStateHandle["therapistTimeOffs"] = timeOffs
+    }
+
 
     fun setCurrentAppointment(currentAppointment: Appointment) {
         savedStateHandle["currentAppointment"] = currentAppointment

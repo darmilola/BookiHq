@@ -29,5 +29,6 @@ data class ProductCategoryResponse(@SerialName("status") val status: String = ""
 
 @Serializable
 data class SpecialistAvailabilityResponse(@SerialName("status") val status: String = "",
-                                   @SerialName("availability") val availableTimes: List<ServiceTime>,
-                                   @SerialName("bookings") val bookedAppointment: List<Appointment>)
+                                          @SerialName("availability") val platformTimes: List<ServiceTime>,
+                                          @SerialName("timeOffs") val timeOffs: List<TimeOffs>,
+                                          @SerialName("bookings") val bookedAppointment: List<Appointment>)

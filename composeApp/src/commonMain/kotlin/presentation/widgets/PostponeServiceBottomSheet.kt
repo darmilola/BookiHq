@@ -89,7 +89,7 @@ fun buttonContent(onDismissRequest: () -> Unit,
     val buttonStyle2 = Modifier
         .padding(start = 10.dp)
         .fillMaxWidth()
-        .height(50.dp)
+        .height(45.dp)
     Row (horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 30.dp, start = 20.dp, end = 20.dp)) {
         ButtonComponent(modifier = buttonStyle, buttonText = "Cancel", borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Colors.primaryColor, style = TextStyle()){

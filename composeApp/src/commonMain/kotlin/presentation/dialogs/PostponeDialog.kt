@@ -48,6 +48,7 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
         val newSelectedDate = postponementViewModel.selectedDate.collectAsState()
         val newSelectedTime = postponementViewModel.selectedTime.collectAsState()
         val specialistAppointment = postponementViewModel.therapistBookedTimes.value
+        val timeOffs = postponementViewModel.therapistTimeOffs.value
         val specialistId = postponementViewModel.currentAppointment.value.specialistId
         val isNewDateSelected = remember { mutableStateOf(true) }
 
@@ -59,17 +60,22 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
             isNewDateSelected.value = false
         }
 
-
         val normalisedBookedTimes = arrayListOf<ServiceTime>()
-        val normalisedTherapistTimes = arrayListOf<ServiceTime>()
+        val normalisedTimeOffTimes = arrayListOf<ServiceTime>()
+        val bookedTimes = arrayListOf<ServiceTime>()
         val displayTimes = remember { mutableStateOf(arrayListOf<ServiceTime>()) }
+        for (item in timeOffs){
+            normalisedTimeOffTimes.add(item.timeOffTime!!)
+        }
+
+        val normalisedTherapistTimes = arrayListOf<ServiceTime>()
         for (item in specialistAppointment) {
             normalisedBookedTimes.add(item.serviceTime!!)
         }
 
         if (serviceTimes.value.isNotEmpty()) {
             serviceTimes.value.map { it ->
-                if (it in normalisedBookedTimes) {
+                if (it in normalisedBookedTimes || it in normalisedTimeOffTimes) {
                     val bookedTime = serviceTimes.value.find { it2 ->
                         it.id == it2.id
                     }?.copy(isAvailable = false)
@@ -99,7 +105,6 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
                             TitleWidget(title = "Postpone Service", textColor = Color.White)
                         }
                         NewDateContent(onDateSelected = {
-                           println(it.toString())
                            postponementViewModel.setNewSelectedDate(it)
                            postponementViewModel.clearServiceTimes()
                            isNewDateSelected.value = true

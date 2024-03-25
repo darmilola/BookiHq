@@ -201,7 +201,7 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showTherapistAvailability(result.availableTimes, result.bookedAppointment)
+                                    contractView?.showTherapistAvailability(result.platformTimes, result.bookedAppointment, result.timeOffs)
                                     contractView?.showAsyncLce(AsyncUIStates(isSuccess = true))
                                 }
                                 else{
