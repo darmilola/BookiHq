@@ -1,6 +1,8 @@
 package presentation.therapist
 
+import com.badoo.reaktive.single.Single
 import com.badoo.reaktive.single.subscribe
+import domain.Models.ServerResponse
 import domain.appointments.AppointmentRepositoryImpl
 import domain.specialist.SpecialistRepositoryImpl
 import io.ktor.client.HttpClient
@@ -75,6 +77,64 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
                 result.dispose()
             } catch(e: Exception) {
                 contractView?.showLce(UIStates(errorOccurred = true))
+            }
+        }
+    }
+
+    override fun addTimeOff(specialistId: Int, timeId: Int, date: String) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    contractView?.showAsyncLce(AsyncUIStates(isLoading = true))
+                    specialistRepositoryImpl.addTimeOff(specialistId, timeId, date)
+                        .subscribe(
+                            onSuccess = { result ->
+                                if (result.status == "success"){
+                                    contractView?.showAsyncLce(AsyncUIStates(isSuccess = true))
+                                }
+                                else{
+                                    contractView?.showAsyncLce(AsyncUIStates(isFailed = true))
+                                }
+                            },
+                            onError = {
+                                it.message?.let { it1 -> contractView?.showAsyncLce(AsyncUIStates(isFailed = true)) }
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.showAsyncLce(AsyncUIStates(isFailed = true))
+            }
+        }
+    }
+
+    override fun removeTimeOff(
+        specialistId: Int,
+        timeId: Int,
+        date: String
+    ) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    contractView?.showAsyncLce(AsyncUIStates(isLoading = true))
+                    specialistRepositoryImpl.removeTimeOff(specialistId, timeId, date)
+                        .subscribe(
+                            onSuccess = { result ->
+                                if (result.status == "success"){
+                                    contractView?.showAsyncLce(AsyncUIStates(isSuccess = true))
+                                }
+                                else{
+                                    contractView?.showAsyncLce(AsyncUIStates(isFailed = true))
+                                }
+                            },
+                            onError = {
+                                it.message?.let { it1 -> contractView?.showAsyncLce(AsyncUIStates(isFailed = true)) }
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.showAsyncLce(AsyncUIStates(isFailed = true))
             }
         }
     }

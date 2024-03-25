@@ -38,4 +38,24 @@ open class SpecialistNetworkService(private val apiService: HttpClient) {
             setBody(getSpecialistAvailabilityRequest)
         }.body<SpecialistAvailabilityResponse>().toSingle()
 
+    suspend fun addTimeOff(timeOffRequest: TimeOffRequest) =
+        apiService.post {
+            url("/api/v1/specialist/off/add")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(timeOffRequest)
+        }.body<ServerResponse>().toSingle()
+
+    suspend fun removeTimeOff(timeOffRequest: TimeOffRequest) =
+        apiService.post {
+            url("/api/v1/specialist/off/remove")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(timeOffRequest)
+        }.body<ServerResponse>().toSingle()
+
 }

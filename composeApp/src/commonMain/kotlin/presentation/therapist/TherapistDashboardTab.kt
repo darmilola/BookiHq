@@ -52,6 +52,7 @@ import presentation.Products.SearchBar
 import presentation.appointments.AppointmentPresenter
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.main.SearchContent
+import presentation.viewmodels.AsyncUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
 import presentation.viewmodels.ResourceListEnvelopeViewModel
@@ -67,6 +68,7 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
     private val appointmentPresenter: AppointmentPresenter by inject()
     private val therapistPresenter: TherapistPresenter by inject()
     private var uiStateViewModel: UIStateViewModel? = null
+    private var asyncUiStateViewModel: AsyncUIStateViewModel? = null
     private var therapistViewModel: TherapistViewModel? = null
     private var postponementViewModel: PostponementViewModel? = null
     private var appointmentResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Appointment>? = null
@@ -95,6 +97,15 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
             uiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+
+        }
+
+        if (asyncUiStateViewModel == null) {
+            asyncUiStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    AsyncUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
 
@@ -141,6 +152,15 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
                     timeOffs: List<TimeOffs> ->
                 therapistViewModel!!.setTherapistAvailableTimes(availableTimes)
                 therapistViewModel!!.setTherapistTimeOffs(timeOffs)
+            },
+            onAsyncLoading = {
+                asyncUiStateViewModel!!.switchState(UIStates(loadingVisible = true))
+            },
+            onAsyncSuccess = {
+                asyncUiStateViewModel!!.switchState(UIStates(contentVisible = true))
+            },
+            onAsyncFailed = {
+                asyncUiStateViewModel!!.switchState(UIStates(errorOccurred = true))
             })
         handler.init()
 
@@ -211,7 +231,7 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
             ) {
                 when(tabIndex){
                     0 -> TherapistAppointment(mainViewModel, uiStateViewModel!!, postponementViewModel!!, appointmentResourceListEnvelopeViewModel, appointmentPresenter)
-                    1 -> TherapistAvailability(mainViewModel, therapistPresenter, therapistViewModel!!, uiStateViewModel!!)
+                    1 -> TherapistAvailability(mainViewModel, therapistPresenter, therapistViewModel!!, uiStateViewModel!!, asyncUiStateViewModel!!)
                     2 -> TherapistReviews(mainViewModel, therapistPresenter, therapistViewModel!!, uiStateViewModel!!)
                     3 -> TherapistVendors()
                 }

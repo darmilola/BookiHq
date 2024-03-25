@@ -28,4 +28,22 @@ class SpecialistRepositoryImpl(apiService: HttpClient): SpecialistRepository {
         return specialistNetworkService.getSpecialistAvailability(param)
     }
 
+    override suspend fun addTimeOff(
+        specialistId: Int,
+        timeId: Int,
+        date: String
+    ): Single<ServerResponse> {
+        val param = TimeOffRequest(specialistId, timeId, date)
+        return specialistNetworkService.addTimeOff(param)
+    }
+
+    override suspend fun removeTimeOff(
+        specialistId: Int,
+        timeId: Int,
+        date: String
+    ): Single<ServerResponse> {
+        val param = TimeOffRequest(specialistId, timeId, date)
+        return specialistNetworkService.removeTimeOff(param)
+    }
+
 }

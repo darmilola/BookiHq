@@ -1,7 +1,9 @@
 package presentation.therapist
 
+import com.badoo.reaktive.single.Single
 import domain.Models.Appointment
 import domain.Models.ResourceListEnvelope
+import domain.Models.ServerResponse
 import domain.Models.ServiceTime
 import domain.Models.SpecialistReviews
 import domain.Models.TimeOffs
@@ -20,5 +22,7 @@ interface TherapistContract {
         abstract fun registerUIContract(view: View?)
         abstract fun getTherapistReviews(specialistId: Int)
         abstract fun getTherapistAvailability(specialistId: Int, selectedDate: String)
+        abstract fun addTimeOff(specialistId: Int, timeId: Int, date: String)
+        abstract fun removeTimeOff(specialistId: Int, timeId: Int, date: String)
     }
 }

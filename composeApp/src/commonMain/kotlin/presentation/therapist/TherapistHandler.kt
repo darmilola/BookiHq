@@ -15,6 +15,9 @@ import presentation.viewmodels.UIStates
 class TherapistHandler(
     private val therapistPresenter: TherapistPresenter,
     private val onPageLoading: () -> Unit,
+    private val onAsyncLoading: () -> Unit,
+    private val onAsyncSuccess: () -> Unit,
+    private val onAsyncFailed: () -> Unit,
     private val onContentVisible: () -> Unit,
     private val onReviewsReady: (List<SpecialistReviews>) -> Unit,
     private val onErrorVisible: () -> Unit,
@@ -41,7 +44,26 @@ class TherapistHandler(
         }
     }
 
-    override fun showAsyncLce(uiState: AsyncUIStates, message: String) {}
+    override fun showAsyncLce(uiState: AsyncUIStates, message: String) {
+        uiState.let {
+            when{
+                it.isLoading-> {
+                    onAsyncLoading()
+                }
+
+                it.isSuccess -> {
+                    onAsyncSuccess()
+                }
+
+                it.isFailed-> {
+                    onAsyncFailed()
+                }
+                it.isDone -> {
+                    onAsyncFailed()
+                }
+            }
+        }
+    }
 
     override fun showReviews(reviews: List<SpecialistReviews>) {
         onReviewsReady(reviews)
