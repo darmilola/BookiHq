@@ -2,6 +2,7 @@ package presentation.viewmodels
 
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
+import domain.Models.ServiceTime
 import domain.Models.ServiceTypeItem
 import domain.Models.ServiceTypeSpecialist
 import domain.Models.UnsavedAppointment
@@ -11,6 +12,7 @@ import kotlinx.datetime.LocalDate
 class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
     private var _specialists =  savedStateHandle.getStateFlow("specialists", arrayListOf<ServiceTypeSpecialist>())
+    private var _serviceTimes =  savedStateHandle.getStateFlow("serviceTimes", arrayListOf<ServiceTime>())
     private var _selectedServiceType =  savedStateHandle.getStateFlow("selectedServiceType", ServiceTypeItem())
     private var _currentBookingId =  savedStateHandle.getStateFlow("currentBookingId", -1)
     private var _selectedDate =  savedStateHandle.getStateFlow("selectedDate", LocalDate.parse("2024-03-30"))
@@ -18,6 +20,8 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
 
     val serviceSpecialists: StateFlow<List<ServiceTypeSpecialist>>
         get() = _specialists
+    val serviceTime: StateFlow<List<ServiceTime>>
+        get() = _serviceTimes
     val selectedServiceType: StateFlow<ServiceTypeItem>
         get() = _selectedServiceType
 
@@ -29,6 +33,10 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
 
     fun setSpecialists(serviceSpecialists: List<ServiceTypeSpecialist>) {
         savedStateHandle["specialists"] = serviceSpecialists
+    }
+
+    fun setServiceTimes(serviceTime: List<ServiceTime>) {
+        savedStateHandle["serviceTimes"] = serviceTime
     }
 
     val currentAppointmentBooking: StateFlow<UnsavedAppointment>

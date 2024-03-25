@@ -119,7 +119,7 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
                                 modifier = Modifier
                                     .padding(top = 5.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
                                     .fillMaxWidth()
-                                    .height(270.dp),
+                                    .height(320.dp),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment  = Alignment.CenterHorizontally,
                             ) {

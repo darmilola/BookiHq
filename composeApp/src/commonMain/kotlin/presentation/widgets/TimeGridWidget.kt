@@ -98,8 +98,9 @@ fun TimeGrid(availableTimes: List<ServiceTime>? = arrayListOf(), selectedTime: S
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
-            modifier = Modifier.fillMaxWidth().height(250.dp),
+            modifier = Modifier.fillMaxWidth().height(270.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp),
+            userScrollEnabled = false,
             horizontalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             items(workHourUIModel.visibleTime.size) { i ->

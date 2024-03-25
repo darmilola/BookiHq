@@ -13,7 +13,8 @@ data class AuthenticationResponse(@SerialName("status") val status: String = "",
 data class HomePageResponse(@SerialName("status") val status: String = "", @SerialName("homePage") val homepageModel: HomepageModel = HomepageModel())
 
 @Serializable
-data class ServiceSpecialistsResponse(@SerialName("status") val status: String = "", @SerialName("specialist") val serviceSpecialists: List<ServiceTypeSpecialist>)
+data class ServiceSpecialistsResponse(@SerialName("status") val status: String = "", @SerialName("specialist") val serviceSpecialists: List<ServiceTypeSpecialist>,
+                                      @SerialName("platformAvailability") val platformAvailability: List<ServiceTime>)
 
 
 @Serializable

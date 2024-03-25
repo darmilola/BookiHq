@@ -48,8 +48,9 @@ fun BookingSelectSpecialist(mainViewModel: MainViewModel, uiStateViewModel: UISt
                             bookingPresenter: BookingPresenter) {
 
     val therapists = bookingViewModel.serviceSpecialists.collectAsState()
+    val serviceTimes = bookingViewModel.serviceTime.collectAsState()
     LaunchedEffect(Unit, block = {
-        if (therapists.value.isEmpty() || (bookingViewModel.currentBookingId.value != bookingViewModel.currentAppointmentBooking.value.bookingId)) {
+        if (therapists.value.isEmpty() || serviceTimes.value.isEmpty() || (bookingViewModel.currentBookingId.value != bookingViewModel.currentAppointmentBooking.value.bookingId)) {
             bookingPresenter.getServiceTherapists(
                 bookingViewModel.selectedServiceType.value.categoryId,
                 bookingViewModel.selectedDate.value.toString()
@@ -114,13 +115,19 @@ fun BookingSelectSpecialist(mainViewModel: MainViewModel, uiStateViewModel: UISt
 fun AvailableTimeContent(serviceTypeSpecialist: ServiceTypeSpecialist, bookingViewModel: BookingViewModel, onWorkHourClickListener: (ServiceTime) -> Unit) {
 
     val unSavedTime = bookingViewModel.currentAppointmentBooking.value.appointmentTime
-    val availableTime = serviceTypeSpecialist.specialistInfo?.availableTimes
+    val serviceTime = bookingViewModel.serviceTime.value
+    val timeOffs = serviceTypeSpecialist.timeOffs
     val normalisedBookedTimes = arrayListOf<ServiceTime>()
+    val normalisedTimeOffTimes = arrayListOf<ServiceTime>()
     val bookedTimes = arrayListOf<ServiceTime>()
     val displayTimes = remember { mutableStateOf(arrayListOf<ServiceTime>()) }
     for (item in serviceTypeSpecialist.specialistInfo?.bookedTimes!!){
         normalisedBookedTimes.add(item.serviceTime!!)
     }
+    for (item in timeOffs!!){
+        normalisedTimeOffTimes.add(item.timeOffTime!!)
+    }
+
 
     Column(
         modifier = Modifier
@@ -140,14 +147,13 @@ fun AvailableTimeContent(serviceTypeSpecialist: ServiceTypeSpecialist, bookingVi
             fontWeight = FontWeight.Black,
             lineHeight = 30,
             textModifier = Modifier
-                .fillMaxWidth().padding(start = 10.dp))
+                .fillMaxWidth().padding(start = 10.dp, bottom = 20.dp))
 
-        availableTime!!.map { it ->
-            if (it in normalisedBookedTimes){
-                val bookedTime =  availableTime.find { it2 ->
+        serviceTime.map { it ->
+            if (it in normalisedBookedTimes || it in normalisedTimeOffTimes){
+                val bookedTime =  serviceTime.find { it2 ->
                     it.id == it2.id
                 }?.copy(isAvailable = false)
-
                 bookedTimes.add(bookedTime!!)
             }
             else{
@@ -220,7 +226,6 @@ fun TherapistContent(bookingViewModel: BookingViewModel, specialists: List<Servi
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AttachServiceReviews(serviceTypeSpecialist: ServiceTypeSpecialist){
     val specialistReviews = serviceTypeSpecialist.specialistInfo?.specialistReviews
@@ -234,7 +239,7 @@ fun AttachServiceReviews(serviceTypeSpecialist: ServiceTypeSpecialist){
         fontWeight = FontWeight.Black,
         lineHeight = 30,
         textModifier = Modifier
-            .padding(bottom = 5.dp, start = 15.dp, top = 20.dp)
+            .padding(bottom = 5.dp, start = 15.dp, top = 10.dp)
             .fillMaxWidth())
 
    SpecialistReviewScreen(specialistReviews!!)

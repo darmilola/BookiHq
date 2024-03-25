@@ -39,6 +39,7 @@ import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.Screens
+import domain.Models.ServiceTime
 import domain.Models.ServiceTypeSpecialist
 import domain.Models.Services
 import presentation.components.ButtonComponent
@@ -404,8 +405,10 @@ class BookingScreenHandler(
         }
     }
 
-    override fun showTherapists(serviceSpecialists: List<ServiceTypeSpecialist>) {
+    override fun showTherapists(serviceSpecialists: List<ServiceTypeSpecialist>, serviceTimes: List<ServiceTime>) {
         bookingViewModel.setSpecialists(serviceSpecialists)
+        println(serviceTimes.toString())
+        bookingViewModel.setServiceTimes(serviceTimes)
     }
 
     override fun showUnsavedAppointment() {

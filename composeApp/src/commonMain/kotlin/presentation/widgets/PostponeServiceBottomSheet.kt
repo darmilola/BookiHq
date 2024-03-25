@@ -84,7 +84,7 @@ fun buttonContent(onDismissRequest: () -> Unit,
                   onConfirmation: () -> Unit){
     val buttonStyle = Modifier
         .fillMaxWidth(0.50f)
-        .height(50.dp)
+        .height(45.dp)
 
     val buttonStyle2 = Modifier
         .padding(start = 10.dp)

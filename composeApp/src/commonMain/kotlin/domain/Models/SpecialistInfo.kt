@@ -8,7 +8,7 @@ data class SpecialistInfo(@SerialName("id") val id: Int? = null, @SerialName("sp
                           @SerialName("rating") val rating: Double? = null, @SerialName("vendor_id") val vendorId: Int? = null,
                           @SerialName("isAvailable") val isAvailable: Boolean? = null, @SerialName("isAvailableForHomeService") val isAvailableForHomeService: Boolean? = false,
                           @SerialName("rateCount") val rateCount: Int? = null, @SerialName("profile_info") val profileInfo: User? = null,
-                          @SerialName("available_times") val availableTimes: List<ServiceTime>? = null, @SerialName("booked_times") val bookedTimes: List<BookedTimes>? = null,
+                          @SerialName("booked_times") val bookedTimes: List<BookedTimes>? = arrayListOf(),
                           @SerialName("specialist_reviews") val specialistReviews: List<SpecialistReviews>? = arrayListOf(), val isSelected: Boolean = false)
 
 
