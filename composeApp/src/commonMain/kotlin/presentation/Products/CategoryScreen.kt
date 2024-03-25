@@ -143,7 +143,7 @@ fun CategoryScreen(productCategory: ProductCategory,
 @Composable
 fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, cartItem: OrderItem, onDismiss: (isAddToCart: Boolean, OrderItem) -> Unit, onRemoveFromCart: (OrderItem) -> Unit) {
     val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var mutableCartItem = cartItem
+    val mutableCartItem = cartItem
     ModalBottomSheet(
         modifier = Modifier.padding(top = 20.dp),
         onDismissRequest = { onDismiss(false, mutableCartItem) },

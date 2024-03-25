@@ -54,6 +54,7 @@ import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
+import presentation.widgets.SwitchVendorBottomSheet
 import presentation.widgets.SwitchVendorBottomSheetContent
 import theme.Colors
 
@@ -157,13 +158,13 @@ class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: Pl
         var showSwitchReasonBottomSheet by remember { mutableStateOf(false) }
 
         if (showSwitchReasonBottomSheet) {
-            SwitchVendorBottomSheetContent(onConfirmation = {
-                mainViewModel.setScreenNav(Pair(Screens.CONNECT_VENDOR_PAGE.toPath(), Screens.VENDOR_INFO.toPath()))
-            },
-                onDismissRequest = {
+            SwitchVendorBottomSheet(onDismiss = {
+                  showSwitchReasonBottomSheet = false
+            }, onConfirmation = {
 
-                })
-        }
+            })
+
+          }
 
 
 
