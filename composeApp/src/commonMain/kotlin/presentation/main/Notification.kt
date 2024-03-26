@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material.DropdownMenu
@@ -29,6 +31,7 @@ import org.jetbrains.compose.resources.painterResource
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
@@ -75,7 +78,6 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
             ) {
                 Column(
                     Modifier
-                        .padding(bottom = 85.dp)
                         .fillMaxHeight()
                         .fillMaxWidth()
                         .background(color = Color.White)
@@ -138,41 +140,61 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
 
         Card(
             modifier = Modifier
-                .padding(end = 10.dp, top = 5.dp, bottom = 5.dp)
+                .padding(end = 10.dp, top = 10.dp, bottom = 5.dp)
                 .background(color = Color.White)
-                .height(100.dp)
+                .height(120.dp)
                 .fillMaxWidth(),
             border = null
         ) {
-            Row(
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment  = Alignment.Start,
                 modifier = Modifier
+                    .fillMaxHeight()
                     .fillMaxWidth()
-                    .fillMaxHeight(0.90f)
-                    .background(color = Color.White)
             ) {
-                    Row(modifier = Modifier
+                Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.90f)
+                        .background(color = Color.White),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Row(
+                        modifier = Modifier
                             .background(color = Color.White)
-                            .fillMaxWidth(0.20f).padding(bottom = 20.dp)
+                            .fillMaxWidth(0.25f)
                             .fillMaxHeight(),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        ImageComponent(imageModifier = Modifier.size(30.dp), imageRes = imageRes, colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+                        Box(modifier = Modifier.fillMaxSize(0.80f).background(color = Colors.lighterPrimaryColor).clip(RoundedCornerShape(15.dp)),contentAlignment = Alignment.Center){
+                            ImageComponent(
+                                imageModifier = Modifier.size(24.dp),
+                                imageRes = imageRes,
+                                colorFilter = ColorFilter.tint(color = Colors.primaryColor)
+                            )
+                        }
+
                     }
 
-                Row(
-                    modifier = Modifier
-                        .background(color = Color.White)
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                ) {
+                    Row(
+                        modifier = Modifier
+                            .background(color = Color.White)
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                    ) {
 
-                    AttachNotificationText(isUnseen = true)
+                        AttachNotificationText(isUnseen = true)
 
+                    }
                 }
-            }
-            Box (modifier = Modifier.fillMaxWidth().fillMaxHeight().background(color = Color.White), contentAlignment = Alignment.BottomCenter){
-                StraightLine()
+                Box(
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                        .background(color = Color.White), contentAlignment = Alignment.BottomCenter
+                ) {
+                    StraightLine()
+                }
             }
 
         }
@@ -183,115 +205,55 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
 
     @Composable
     fun AttachNotificationText(isUnseen: Boolean = false) {
-        val rowModifier = Modifier
-            .padding(end = 10.dp)
-            .fillMaxHeight()
-            .fillMaxWidth()
 
-        val indicatorModifier = Modifier
-            .padding(top = 5.dp)
-            .background(color = Color.Transparent)
-            .size(9.dp)
-            .background(
-                color = Colors.pinkColor,
-                shape = RoundedCornerShape(5.dp))
-
-
-            Column(
+           Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment  = Alignment.CenterHorizontally,
-                modifier = rowModifier
+                modifier = Modifier
+                    .padding(end = 10.dp)
+                    .fillMaxHeight()
+                    .fillMaxWidth()
             ) {
 
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.40f),
+                        .wrapContentHeight(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(0.80f)
-                            .fillMaxHeight(),
-                        horizontalArrangement = Arrangement.Start,
-                        verticalAlignment = Alignment.Bottom
-                    ) {
-
-                        TextComponent(
-                            text = "3h ago",
-                            fontSize = 16,
-                            fontFamily = GGSansRegular,
-                            textStyle = TextStyle(),
-                            textColor = Color.Gray,
-                            textAlign = TextAlign.Left,
-                            fontWeight = FontWeight.Black,
-                            lineHeight = 23,
-                            overflow = TextOverflow.Ellipsis,
-                            textModifier = Modifier.fillMaxWidth().wrapContentHeight()
-                        )
-                    }
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(),
-                        horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        Box(modifier = indicatorModifier, contentAlignment = Alignment.TopEnd) {}
-
-                        val expandedMenuItem = remember { mutableStateOf(false) }
-                        AttachIcon(iconRes = "drawable/overflow_menu.png", iconSize = 25, iconTint = Color.Gray){
-                            expandedMenuItem.value = true
-                        }
-
-                        val menuItems = arrayListOf<String>()
-                        menuItems.add("Delete")
-
-                        DropdownMenu(
-                            expanded = expandedMenuItem.value,
-                            onDismissRequest = { expandedMenuItem.value = false },
-                            modifier = Modifier
-                                .fillMaxWidth(0.40f)
-                                .background(Color.White)
-                        ) {
-                            menuItems.forEachIndexed { index, title ->
-                                DropdownMenuItem(
-                                    onClick = {
-                                    }) {
-                                    SubtitleTextWidget(text = title, fontSize = 20)
-                                }
-                            }
-                        }
-
-                    }
-
-
-                }
-
-                Row(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+                        .wrapContentHeight().padding(end = 10.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start
                 ) {
-
 
                     TextComponent(
-                        text = "Lorem ipsum dolor sit amet, consect adipiscing elit.",
-                        fontSize = 18,
+                        text = "Lorem ipsum dolor sit amet, consect adipiscing elit sit amet, consect adipiscing elit sit. consect adipiscing elit sit.",
+                        fontSize = 16,
                         fontFamily = GGSansRegular,
                         textStyle = TextStyle(),
                         textColor = Color.DarkGray,
                         textAlign = TextAlign.Left,
-                        fontWeight = FontWeight.Black,
+                        maxLines = 3,
+                        fontWeight = FontWeight.SemiBold,
                         lineHeight = 23,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                        overflow = TextOverflow.Ellipsis)
+
+                    TextComponent(
+                        text = "Jan 2, 9:45 AM",
+                        fontSize = 14,
+                        fontFamily = GGSansRegular,
+                        textStyle = TextStyle(),
+                        textColor = Color.Gray,
+                        textAlign = TextAlign.Left,
+                        fontWeight = FontWeight.Medium,
+                        lineHeight = 23,
+                        overflow = TextOverflow.Ellipsis,
+                        textModifier = Modifier.fillMaxWidth().wrapContentHeight().padding(top = 10.dp)) }
+
                 }
 
             }
