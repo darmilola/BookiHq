@@ -6,7 +6,7 @@ enum class CountryList {
 
     fun toPath() = when (this) {
         NIGERIA -> "Nigeria"
-        SOUTH_AFRICA -> "South Africa"
+        SOUTH_AFRICA -> "SouthAfrica"
     }
 
     fun getId() = when (this) {

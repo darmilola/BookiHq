@@ -40,9 +40,8 @@ import com.russhwolf.settings.set
 import domain.Models.CountryList
 import domain.Models.PlatformNavigator
 import domain.Models.Screens
+import domain.Models.getCityList
 import domain.Models.getCountries
-import domain.Models.getNGCityList
-import domain.Models.getSACityList
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.components.ButtonComponent
@@ -248,8 +247,6 @@ fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: Platform
                 country.value = it
             })
             AttachCityDropDownWidget(
-                selectedCountry = country.value!!,
-                selectedCity = city.value!!,
                 onMenuItemClick = {
                     city.value = it
                 })
@@ -309,28 +306,15 @@ fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: Platform
 @Composable
 fun AttachCountryDropDownWidget(selectedCountry: Int = -1, onMenuItemClick : (Int) -> Unit) {
     val countryList = getCountries().values.toList()
-
     DropDownWidget(menuItems = countryList, selectedIndex = selectedCountry, placeHolderText = "Country of Residence", onMenuItemClick = {
         onMenuItemClick(it)
     })
 }
 
 @Composable
-fun AttachCityDropDownWidget(selectedCountry: Int = -1,selectedCity: Int = -1, onMenuItemClick : (Int) -> Unit) {
-    val SACity = getSACityList().values.toList()
-    val NGCity = getNGCityList().values.toList()
-    val cityList: List<String> = when (selectedCountry) {
-        CountryList.SOUTH_AFRICA.getId() -> {
-            SACity
-        }
-        CountryList.NIGERIA.getId() -> {
-            NGCity
-        }
-        else -> {
-            listOf()
-        }
-    }
-    DropDownWidget(menuItems = cityList, selectedIndex = selectedCity, iconRes = "drawable/urban_icon.png", placeHolderText = "City", onMenuItemClick = {
+fun AttachCityDropDownWidget(userCountry: String = "", onMenuItemClick : (Int) -> Unit) {
+    val locations = getCityList(userCountry)
+    DropDownWidget(menuItems = locations.values.toList(), iconRes = "drawable/urban_icon.png", placeHolderText = "City", onMenuItemClick = {
         onMenuItemClick(it)
     })
 }
