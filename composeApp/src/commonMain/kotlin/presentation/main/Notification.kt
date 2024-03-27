@@ -168,7 +168,7 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Box(modifier = Modifier.fillMaxSize(0.80f).background(color = Colors.lighterPrimaryColor).clip(RoundedCornerShape(15.dp)),contentAlignment = Alignment.Center){
+                        Box(modifier = Modifier.fillMaxSize(0.70f).background(color = Colors.lighterPrimaryColor, shape = RoundedCornerShape(15.dp)),contentAlignment = Alignment.Center){
                             ImageComponent(
                                 imageModifier = Modifier.size(24.dp),
                                 imageRes = imageRes,
