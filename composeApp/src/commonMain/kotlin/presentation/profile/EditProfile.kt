@@ -269,7 +269,8 @@ fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: Platform
                 style = TextStyle(),
                 borderStroke = null
             ) {
-                if (!InputValidator(inputList).isValidInput() || country.value == -1 || city.value == -1) {
+                platformNavigator?.getUserLocation()
+               /* if (!InputValidator(inputList).isValidInput() || country.value == -1 || city.value == -1) {
                     ShowSnackBar(title = "Input Required",
                         description = "Please provide the required info",
                         actionLabel = "",
@@ -293,7 +294,7 @@ fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: Platform
                         profileImageUrl = profileImageUrl.value!!
                     )
 
-                }
+                }*/
             }
         }
     }

@@ -9,23 +9,37 @@
 /* Begin PBXBuildFile section */
 		058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557BA273AAA24004C7B11 /* Assets.xcassets */; };
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
-		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		594DCA802B95A1CB00991A2B /* Auth0 in Frameworks */ = {isa = PBXBuildFile; productRef = 594DCA7F2B95A1CB00991A2B /* Auth0 */; };
 		594DCA822B95A58600991A2B /* Auth0.plist in Resources */ = {isa = PBXBuildFile; fileRef = 594DCA812B95A58600991A2B /* Auth0.plist */; };
+		5955C07D2BB5B0FC002DDE7C /* ZazzyAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C07C2BB5B0FC002DDE7C /* ZazzyAppDelegate.swift */; };
+		5955C07F2BB5B123002DDE7C /* ZazzyAppSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C07E2BB5B123002DDE7C /* ZazzyAppSceneDelegate.swift */; };
+		5955C0812BB5B220002DDE7C /* UiSetupApplicationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C0802BB5B220002DDE7C /* UiSetupApplicationService.swift */; };
+		5955C0832BB5B236002DDE7C /* ApplicationStateServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C0822BB5B236002DDE7C /* ApplicationStateServices.swift */; };
+		5955C0852BB5B2B7002DDE7C /* UiWindow+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C0842BB5B2B7002DDE7C /* UiWindow+Ext.swift */; };
+		5955C0872BB5B324002DDE7C /* ApplicationServiceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C0862BB5B324002DDE7C /* ApplicationServiceManager.swift */; };
+		5955C0892BB5B420002DDE7C /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C0882BB5B420002DDE7C /* Coordinator.swift */; };
+		5955C08B2BB5B4AE002DDE7C /* ZazzyNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C08A2BB5B4AE002DDE7C /* ZazzyNavigationController.swift */; };
 		59CF0B752B9B5EE000A1E7E5 /* Cloudinary in Frameworks */ = {isa = PBXBuildFile; productRef = 59CF0B742B9B5EE000A1E7E5 /* Cloudinary */; };
-		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
+		7555FF83242A565900829871 /* AppStartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* AppStartViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		058557BA273AAA24004C7B11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
 		594DCA812B95A58600991A2B /* Auth0.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Auth0.plist; sourceTree = "<group>"; };
+		5955C07C2BB5B0FC002DDE7C /* ZazzyAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZazzyAppDelegate.swift; sourceTree = "<group>"; };
+		5955C07E2BB5B123002DDE7C /* ZazzyAppSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZazzyAppSceneDelegate.swift; sourceTree = "<group>"; };
+		5955C0802BB5B220002DDE7C /* UiSetupApplicationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiSetupApplicationService.swift; sourceTree = "<group>"; };
+		5955C0822BB5B236002DDE7C /* ApplicationStateServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationStateServices.swift; sourceTree = "<group>"; };
+		5955C0842BB5B2B7002DDE7C /* UiWindow+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UiWindow+Ext.swift"; sourceTree = "<group>"; };
+		5955C0862BB5B324002DDE7C /* ApplicationServiceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationServiceManager.swift; sourceTree = "<group>"; };
+		5955C0882BB5B420002DDE7C /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
+		5955C08A2BB5B4AE002DDE7C /* ZazzyNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZazzyNavigationController.swift; sourceTree = "<group>"; };
 		59E3DBD92B10856400FDD23C /* ggsans_bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ggsans_bold.ttf; sourceTree = "<group>"; };
 		59E3DBDA2B10856400FDD23C /* ggsans_regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ggsans_regular.ttf; sourceTree = "<group>"; };
 		59E3DBDB2B10856400FDD23C /* ggsans_semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ggsans_semibold.ttf; sourceTree = "<group>"; };
 		7555FF7B242A565900829871 /* Zazzy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zazzy.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		7555FF82242A565900829871 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		7555FF82242A565900829871 /* AppStartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartViewController.swift; sourceTree = "<group>"; };
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AB3632DC29227652001CCB65 /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -83,11 +97,18 @@
 				59E3DBDB2B10856400FDD23C /* ggsans_semibold.ttf */,
 				5969EB792B0E58370076CFE6 /* Colors */,
 				058557BA273AAA24004C7B11 /* Assets.xcassets */,
-				7555FF82242A565900829871 /* ContentView.swift */,
+				7555FF82242A565900829871 /* AppStartViewController.swift */,
 				7555FF8C242A565B00829871 /* Info.plist */,
-				2152FB032600AC8F00CF470E /* iOSApp.swift */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
 				594DCA812B95A58600991A2B /* Auth0.plist */,
+				5955C07C2BB5B0FC002DDE7C /* ZazzyAppDelegate.swift */,
+				5955C07E2BB5B123002DDE7C /* ZazzyAppSceneDelegate.swift */,
+				5955C0802BB5B220002DDE7C /* UiSetupApplicationService.swift */,
+				5955C0822BB5B236002DDE7C /* ApplicationStateServices.swift */,
+				5955C0842BB5B2B7002DDE7C /* UiWindow+Ext.swift */,
+				5955C0862BB5B324002DDE7C /* ApplicationServiceManager.swift */,
+				5955C0882BB5B420002DDE7C /* Coordinator.swift */,
+				5955C08A2BB5B4AE002DDE7C /* ZazzyNavigationController.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -198,8 +219,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
-				7555FF83242A565900829871 /* ContentView.swift in Sources */,
+				5955C08B2BB5B4AE002DDE7C /* ZazzyNavigationController.swift in Sources */,
+				5955C07F2BB5B123002DDE7C /* ZazzyAppSceneDelegate.swift in Sources */,
+				5955C0872BB5B324002DDE7C /* ApplicationServiceManager.swift in Sources */,
+				5955C0832BB5B236002DDE7C /* ApplicationStateServices.swift in Sources */,
+				7555FF83242A565900829871 /* AppStartViewController.swift in Sources */,
+				5955C0852BB5B2B7002DDE7C /* UiWindow+Ext.swift in Sources */,
+				5955C07D2BB5B0FC002DDE7C /* ZazzyAppDelegate.swift in Sources */,
+				5955C0812BB5B220002DDE7C /* UiSetupApplicationService.swift in Sources */,
+				5955C0892BB5B420002DDE7C /* Coordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

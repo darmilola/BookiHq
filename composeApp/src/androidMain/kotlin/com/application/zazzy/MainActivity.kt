@@ -121,4 +121,8 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
 
     }
 
+    override fun getUserLocation() {
+        println("Android Location")
     }
+
+}

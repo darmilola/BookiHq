@@ -8,22 +8,33 @@ import domain.Models.AuthSSOScreenNav
 import domain.Models.AuthenticationAction
 import domain.Models.AuthenticationStatus
 import domain.Models.PlatformNavigator
+import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.ObjCClass
 import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.useContents
 import kotlinx.cinterop.usePinned
+import objcnames.classes.Protocol
+import platform.CoreLocation.CLLocation
 import platform.Foundation.NSData
 import platform.Foundation.create
+import platform.CoreLocation.CLLocationManager
+import platform.CoreLocation.CLLocationManagerDelegateProtocol
+import platform.Foundation.NSError
 import platform.UIKit.UIViewController
+import platform.darwin.NSObject
+import platform.darwin.NSUInteger
 import presentation.SplashScreen
 import presentation.authentication.AuthenticationScreen
 import presentation.main.MainScreen
 
 
-class MainViewController: PlatformNavigator {
+class MainViewController: PlatformNavigator{
 
     private var onLoginEvent: ((connectionType: String) -> Unit)? = null
     private var onSignupEvent: ((connectionType: String) -> Unit)? = null
     private var onLogoutEvent: ((connectionType: String) -> Unit)? = null
+    private var onLocationEvent: (() -> Unit)? = null
     private var onUploadImageEvent: ((data: NSData) -> Unit)? = null
     private val preferenceSettings: Settings = Settings()
     private val authScreen = AuthenticationScreen(currentPosition = AuthSSOScreenNav.AUTH_LOGIN.toPath(), platformNavigator = this)
@@ -31,7 +42,8 @@ class MainViewController: PlatformNavigator {
     fun MainViewController(onLoginEvent:(connectionType: String) -> Unit,
                            onLogoutEvent:(connectionType: String) -> Unit,
                            onSignupEvent: ((connectionType: String) -> Unit)?,
-                           onUploadImageEvent: (data: NSData) -> Unit): UIViewController {
+                           onUploadImageEvent: (data: NSData) -> Unit,
+                           onLocationEvent: () -> Unit): UIViewController {
 
             val view = ComposeUIViewController {
                 Navigator(SplashScreen(this)) { navigator ->
@@ -43,6 +55,7 @@ class MainViewController: PlatformNavigator {
             this.onLogoutEvent = onLogoutEvent
             this.onSignupEvent = onSignupEvent
             this.onUploadImageEvent = onUploadImageEvent
+            this.onLocationEvent = onLocationEvent
             return view
     }
 
@@ -119,4 +132,28 @@ class MainViewController: PlatformNavigator {
             it(data)
         }
     }
+
+
+    override fun getUserLocation() {
+       onLocationEvent?.let {
+           it()
+       }
+    }
+
+   /* @OptIn(ExperimentalForeignApi::class)
+    override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>) {
+        didUpdateLocations.firstOrNull()?.let {
+            val location = it as CLLocation
+            location.coordinate.useContents {
+                onLocationUpdate?.invoke(Location(latitude.toInt(), longitude.toInt()))
+            }
+        }
+    }
+
+    override fun locationManager(manager: CLLocationManager, didFailWithError: NSError) {
+            onLocationUpdate?.invoke(null)
+    }*/
 }
+
+
+
