@@ -37,6 +37,7 @@ import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
+import dev.jordond.compass.Place
 import domain.Models.CountryList
 import domain.Models.PlatformNavigator
 import domain.Models.Screens
@@ -60,9 +61,7 @@ import presentations.widgets.InputWidget
 import rememberStackedSnackbarHostState
 import utils.InputValidator
 
-class EditProfile(private val mainViewModel: MainViewModel, val  platformNavigator: PlatformNavigator? = null) : Tab, KoinComponent {
-
-    private val preferenceSettings: Settings = Settings()
+class EditProfile(private val mainViewModel: MainViewModel, val  platformNavigator: PlatformNavigator? = null,val preferenceSettings: Settings) : Tab, KoinComponent {
     private val profilePresenter: ProfilePresenter by inject()
     private var uiStateViewModel: UIStateViewModel? = null
     override val options: TabOptions
@@ -83,8 +82,26 @@ class EditProfile(private val mainViewModel: MainViewModel, val  platformNavigat
         val isLoading = remember { mutableStateOf(false) }
         val isDone = remember { mutableStateOf(false) }
         val isSuccess = remember { mutableStateOf(false) }
+        val latitude = remember { mutableStateOf(0.0) }
+        val longitude = remember { mutableStateOf(0.0) }
+        val country = remember { mutableStateOf("") }
 
-        val handler: ProfileHandler = ProfileHandler(profilePresenter,
+        preferenceSettings as ObservableSettings
+
+        preferenceSettings.addDoubleListener("latitude",0.0) {
+                value: Double -> latitude.value = value
+        }
+        preferenceSettings.addDoubleListener("longitude",0.0) {
+                value: Double -> longitude.value = value
+        }
+
+        if (latitude.value != 0.0 && longitude.value != 0.0){
+            println("here 1")
+            profilePresenter.getUserLocation(latitude.value, longitude.value)
+        }
+
+
+        val handler = ProfileHandler(profilePresenter,
             isLoading = {
                 isLoading.value = true
                 isSuccess.value = false
@@ -97,6 +114,9 @@ class EditProfile(private val mainViewModel: MainViewModel, val  platformNavigat
                 isLoading.value = false
                 isSuccess.value = true
                 isDone.value = true
+            },
+            onUserLocationReady = {
+               country.value = it.country.toString()
             })
         handler.init()
 
@@ -111,11 +131,11 @@ class EditProfile(private val mainViewModel: MainViewModel, val  platformNavigat
 
             if (isLoading.value) {
                 Box(modifier = Modifier.fillMaxWidth(0.80f)) {
-                    LoadingDialog("Saving Profile...")
+                    LoadingDialog("Auth Profile...")
                 }
             } else if (isSuccess.value) {
                 ShowSnackBar(title = "Success!",
-                    description = "You have successfully updated your profile",
+                    description = "You Location is ${country.value}",
                     actionLabel = "",
                     duration = StackedSnackbarDuration.Short,
                     snackBarType = SnackBarType.SUCCESS,
@@ -269,32 +289,8 @@ fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: Platform
                 style = TextStyle(),
                 borderStroke = null
             ) {
+                preferenceSettings.clear()
                 platformNavigator?.getUserLocation()
-               /* if (!InputValidator(inputList).isValidInput() || country.value == -1 || city.value == -1) {
-                    ShowSnackBar(title = "Input Required",
-                        description = "Please provide the required info",
-                        actionLabel = "",
-                        duration = StackedSnackbarDuration.Short,
-                        snackBarType = SnackBarType.ERROR,
-                        onActionClick = {},
-                        stackedSnackBarHostState = stackedSnackBarHostState
-                    )
-                } else {
-                    preferenceSettings["countryId"] = country.value
-                    preferenceSettings["cityId"] = city.value
-                    profilePresenter.updateProfile(
-                        firstname.value!!,
-                        lastname.value!!,
-                        userEmail = userEmail!!,
-                        address = address.value!!,
-                        contactPhone = contactPhone.value!!,
-                        countryId = country.value!!,
-                        cityId = city.value!!,
-                        gender = gender.value!!,
-                        profileImageUrl = profileImageUrl.value!!
-                    )
-
-                }*/
             }
         }
     }
@@ -358,6 +354,7 @@ fun PageTitle(){
 
 class ProfileHandler(
     private val profilePresenter: ProfilePresenter,
+    private val onUserLocationReady:(Place)-> Unit,
     private val isLoading: () -> Unit,
     private val isDone: () -> Unit,
     private val isSuccess: () -> Unit,
@@ -368,6 +365,9 @@ class ProfileHandler(
     override fun onProfileDeleted() {}
 
     override fun onProfileUpdated() {}
+    override fun showUserLocation(place: Place) {
+        onUserLocationReady(place)
+    }
 
     override fun showLce(asyncUIStates: AsyncUIStates, message: String) {
         asyncUIStates.let {

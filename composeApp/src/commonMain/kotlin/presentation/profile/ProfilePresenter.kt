@@ -85,4 +85,32 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
             }
         }
     }
+
+    override fun getUserLocation(lat: Double, lng: Double) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    contractView?.showLce(AsyncUIStates(isLoading = true))
+                    profileRepositoryImpl.reverseGeocode(lat, lng)
+                        .subscribe(
+                            onSuccess = { result ->
+                                if (result?.country?.isNotEmpty() == true){
+                                    contractView?.showLce(AsyncUIStates(isSuccess = true))
+                                    contractView?.showUserLocation(result)
+                                }
+                                else{
+                                    contractView?.showLce(AsyncUIStates(isDone = true))
+                                }
+                            },
+                            onError = {
+                                it.message?.let { it1 -> contractView?.showLce(AsyncUIStates(isDone = true)) }
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.showLce(AsyncUIStates(isDone =  true))
+            }
+        }
+    }
 }

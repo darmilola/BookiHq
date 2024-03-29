@@ -15,6 +15,7 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
+import dev.jordond.compass.Place
 import domain.Models.Auth0ConnectionResponse
 import domain.Models.AuthSSOScreenNav
 import domain.Models.User
@@ -23,6 +24,7 @@ import org.koin.core.component.inject
 import presentation.profile.connect_vendor.ConnectPage
 import presentation.dialogs.LoadingDialog
 import presentation.main.MainScreen
+import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.AuthenticationViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentation.viewmodels.UIStates
@@ -80,7 +82,10 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
         )
 
         // View Contract Handler Initialisation
-        val handler = AuthenticationScreenHandler(authenticationViewModel!!,authenticationPresenter
+        val handler = AuthenticationScreenHandler(authenticationViewModel!!,authenticationPresenter,
+            onUserLocationReady = {
+
+            }
             ,preferenceSettings,
             onPageLoading = {
                 contentLoading.value = true
@@ -115,7 +120,7 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
                 isAuthEmailAssigned.value = false
                 userNavigation = true
                 userNavigationPosition = AuthSSOScreenNav.CONNECT_VENDOR.toPath()
-            })
+            }, isLoading = {}, isSuccess = {}, isFailed = {})
         handler.init()
 
         //Main Service Content Arena
@@ -137,7 +142,7 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
         }
 
         if (isAuthEmailAssigned.value && auth0UserEmail.isNotEmpty() && currentPosition == AuthSSOScreenNav.AUTH_LOGIN.toPath()) {
-            authenticationPresenter.ValidateUserProfile(auth0UserEmail)
+            authenticationPresenter.validateUserProfile(auth0UserEmail)
         }
         if(!userNavigation) {
             AuthenticationScreenCompose(currentPosition = currentPosition)
@@ -209,13 +214,17 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
 class AuthenticationScreenHandler(
     private val authenticationViewModel: AuthenticationViewModel,
     private val authenticationPresenter: AuthenticationPresenter,
+    private val onUserLocationReady: (Place) -> Unit,
     private val preferenceSettings: Settings,
     private val onPageLoading: () -> Unit,
     private val onContentVisible: () -> Unit,
     private val onErrorVisible: () -> Unit,
     private val enterPlatform: (userEmail: String) -> Unit,
     private val completeProfile: (userEmail: String) -> Unit,
-    private val connectVendor: (userEmail: String) -> Unit
+    private val connectVendor: (userEmail: String) -> Unit,
+    private val isLoading:() -> Unit,
+    private val isSuccess:() -> Unit,
+    private val isFailed:() -> Unit
 ) : AuthenticationContract.View {
     fun init() {
         authenticationPresenter.registerUIContract(this)
@@ -239,6 +248,24 @@ class AuthenticationScreenHandler(
         }
     }
 
+    override fun showAsyncLce(uiState: AsyncUIStates, message: String) {
+        uiState.let {
+            when{
+                it.isLoading -> {
+                    isLoading()
+                }
+
+                it.isSuccess -> {
+                    isSuccess()
+                }
+
+                it.isFailed -> {
+                    isFailed()
+                }
+            }
+        }
+    }
+
 
     override fun onAuth0Started() {
         preferenceSettings.clear()
@@ -255,6 +282,10 @@ class AuthenticationScreenHandler(
 
     override fun goToCompleteProfile(userEmail: String) {
         completeProfile(userEmail)
+    }
+
+    override fun showUserLocation(place: Place) {
+        onUserLocationReady(place)
     }
 
     override fun goToConnectVendor(userEmail: String) {

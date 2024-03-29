@@ -1,6 +1,10 @@
 package domain.Profile
 
+import applications.location.createGeocoder
 import com.badoo.reaktive.single.Single
+import com.badoo.reaktive.single.toSingle
+import dev.jordond.compass.Place
+import dev.jordond.compass.geocoder.Geocoder
 import domain.Models.AuthenticationResponse
 import domain.Models.ServerResponse
 import infrastructure.authentication.AuthenticationNetworkService
@@ -11,6 +15,8 @@ import io.ktor.client.HttpClient
 class ProfileRepositoryImpl(apiService: HttpClient): ProfileRepository {
 
     private val profileNetworkService: ProfileNetworkService = ProfileNetworkService(apiService)
+    private val geocoder: Geocoder = createGeocoder()
+
     override suspend fun updateProfile(
         firstname: String,
         lastname: String,
@@ -29,6 +35,10 @@ class ProfileRepositoryImpl(apiService: HttpClient): ProfileRepository {
     override suspend fun deleteProfile(userEmail: String): Single<ServerResponse> {
         val param = DeleteProfileRequest(userEmail)
         return profileNetworkService.deleteProfile(param)
+    }
+
+    override suspend fun reverseGeocode(lat: Double, lng: Double): Single<Place?> {
+        return geocoder.reverse(lat, lng).getFirstOrNull().toSingle()
     }
 
 }

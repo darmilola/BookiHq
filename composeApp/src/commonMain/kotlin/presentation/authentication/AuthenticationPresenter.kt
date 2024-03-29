@@ -10,7 +10,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import presentation.viewmodels.UIStates
 import com.badoo.reaktive.single.subscribe
+import dev.jordond.compass.Place
 import domain.Models.User
+import presentation.viewmodels.AsyncUIStates
 
 
 class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Presenter() {
@@ -57,7 +59,7 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
         }
     }
 
-    override fun ValidateUserProfile(userEmail: String) {
+    override fun validateUserProfile(userEmail: String) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
@@ -82,6 +84,34 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                 result.dispose()
             } catch(e: Exception) {
                 contractView?.showLce(UIStates(errorOccurred = true))
+            }
+        }
+    }
+
+    override fun getUserLocation(lat: Double, lng: Double) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    contractView?.showAsyncLce(AsyncUIStates(isLoading = true))
+                    authenticationRepositoryImpl.reverseGeocode(lat, lng)
+                        .subscribe(
+                            onSuccess = { result ->
+                                if (result?.country?.isNotEmpty() == true){
+                                    contractView?.showAsyncLce(AsyncUIStates(isSuccess = true))
+                                    contractView?.showUserLocation(result)
+                                }
+                                else{
+                                    contractView?.showAsyncLce(AsyncUIStates(isFailed = true))
+                                }
+                            },
+                            onError = {
+                                it.message?.let { it1 -> contractView?.showAsyncLce(AsyncUIStates(isFailed = true)) }
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.showAsyncLce(AsyncUIStates(isFailed = true))
             }
         }
     }

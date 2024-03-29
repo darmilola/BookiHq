@@ -1,6 +1,9 @@
 package presentation.authentication
 
+import com.badoo.reaktive.single.Single
+import dev.jordond.compass.Place
 import domain.Models.User
+import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.UIStates
 
 class AuthenticationContract {
@@ -17,6 +20,8 @@ class AuthenticationContract {
         fun goToMainScreen(userEmail: String)
 
         fun goToCompleteProfile(userEmail: String)
+
+        fun showUserLocation(place: Place)
 
         fun goToConnectVendor(userEmail: String)
 
@@ -43,13 +48,15 @@ class AuthenticationContract {
         abstract fun showPasswordAllowedCharTooltip()
 
         fun showLce(uiState: UIStates, message: String = "")
+        fun showAsyncLce(uiState: AsyncUIStates, message: String = "")
     }
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
         abstract fun startAuth0()
         abstract fun endAuth0()
-        abstract fun ValidateUserProfile(userEmail: String)
+        abstract fun validateUserProfile(userEmail: String)
+        abstract fun getUserLocation(lat: Double, lng: Double)
         abstract fun completeProfile(firstname: String, lastname: String, userEmail: String, address: String,
                                      contactPhone: String,   countryId: Int,
                                      cityId: Int, gender: String, profileImageUrl: String)

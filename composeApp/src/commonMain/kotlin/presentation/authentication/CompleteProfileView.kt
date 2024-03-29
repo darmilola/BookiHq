@@ -200,7 +200,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter,userEmail: 
                     style = TextStyle(),
                     borderStroke = null
                 ) {
-                    if (!InputValidator(inputList).isValidInput() || countryId.value == -1 || city.value == -1) {
+                    if (!InputValidator(inputList).isValidInput()) {
                         ShowSnackBar(title = "Input Required", description = "Please provide the required info", actionLabel = "", duration = StackedSnackbarDuration.Short, snackBarType = SnackBarType.ERROR,
                                 onActionClick = {}, stackedSnackBarHostState = stackedSnackBarHostState)
                     } else if (profileImageUrl.value == placeHolderImage) {

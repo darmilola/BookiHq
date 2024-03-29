@@ -54,6 +54,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
 
    userEmail = preferenceSettings["userEmail", ""] // User Email Retrieved After Authentication to populate the System
    val imageUploading = remember { mutableStateOf(false) }
+   val locationRequestAllowed = remember { mutableStateOf(false) }
 
     if (mainViewModel == null) {
         mainViewModel = kmpViewModel(
@@ -68,9 +69,19 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
                 value: Boolean -> imageUploading.value = value
         }
 
+        preferenceSettings.addBooleanListener("locationRequestAllowed",false) {
+                value: Boolean -> locationRequestAllowed.value = value
+        }
+
          if(imageUploading.value) {
             Box(modifier = Modifier.fillMaxWidth(0.80f)) {
                 LoadingDialog("Uploading...")
+            }
+        }
+
+        if(locationRequestAllowed.value) {
+            Box(modifier = Modifier.fillMaxWidth(0.80f)) {
+                LoadingDialog("Fetching Location...")
             }
         }
 
@@ -117,7 +128,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
                     it.current = VirtualConsultationRoom(mainViewModel!!)
                 }
                 Screens.EDIT_PROFILE.toPath() -> {
-                    it.current = EditProfile(mainViewModel!!, platformNavigator)
+                    it.current = EditProfile(mainViewModel!!, platformNavigator, preferenceSettings)
                 }
                 Screens.VENDOR_INFO.toPath() -> {
                     it.current = ConnectedVendorDetailsPage(mainViewModel!!)
@@ -143,6 +154,15 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
     }
    fun setImageUploadProcessing(isDone: Boolean = false) {
         preferenceSettings["imageUploadProcessing"] = isDone
+    }
+
+    fun setLocationRequestAllowed(isAllowed: Boolean) {
+        preferenceSettings["locationRequestAllowed"] = isAllowed
+    }
+
+    fun setLocationResponse(latitude: Double, longitude: Double) {
+        preferenceSettings["latitude"] = latitude
+        preferenceSettings["longitude"] = longitude
     }
 
     private fun showDefaultTab(mainViewModel: MainViewModel, homePageViewModel: HomePageViewModel,

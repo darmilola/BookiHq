@@ -1,6 +1,8 @@
 package infrastructure.authentication
 
 import com.badoo.reaktive.single.Single
+import dev.jordond.compass.Location
+import dev.jordond.compass.Place
 import domain.Models.AuthenticationResponse
 import domain.Models.ListDataResponse
 import domain.Models.ServerResponse
@@ -18,7 +20,7 @@ interface AuthenticationRepository {
         gender: String,
         profileImageUrl: String
     ): Single<ServerResponse>
-
+    suspend fun reverseGeocode(lat: Double, lng: Double): Single<Place?>
     suspend fun validateUserProfile(userEmail: String): Single<AuthenticationResponse>
 
 }

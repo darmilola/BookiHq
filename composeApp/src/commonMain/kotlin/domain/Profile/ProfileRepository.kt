@@ -1,6 +1,7 @@
 package domain.Profile
 
 import com.badoo.reaktive.single.Single
+import dev.jordond.compass.Place
 import domain.Models.AuthenticationResponse
 import domain.Models.ServerResponse
 
@@ -18,6 +19,7 @@ interface ProfileRepository {
     ): Single<ServerResponse>
 
     suspend fun deleteProfile(userEmail: String): Single<ServerResponse>
+    suspend fun reverseGeocode(lat: Double, lng: Double): Single<Place?>
 }
 
 

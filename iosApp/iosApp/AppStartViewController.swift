@@ -12,6 +12,7 @@ import CloudKit
 class AppStartViewController: UIViewController  {
     
     var locationManager: CLLocationManager?
+    var mainController: MainViewController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,9 +28,10 @@ class AppStartViewController: UIViewController  {
     }
     
     private func handleLoadData() {
+        mainController = getMainController()
         locationManager = CLLocationManager()
         locationManager?.delegate = self
-        let appStartView = UIHostingController(rootView: AppStartView(locationManager: locationManager!))
+        let appStartView = UIHostingController(rootView: AppStartView(locationManager: locationManager!, mainController: mainController!))
         showNextScreen(nextViewController: appStartView)
     }
     
@@ -40,12 +42,16 @@ class AppStartViewController: UIViewController  {
             self.navigationController?.pushViewController(nextViewController!, animated: true)
         })
     }
+    
+    func getMainController() -> MainViewController {
+        return MainViewController()
+    }
 }
     
     struct AppStartView: UIViewControllerRepresentable {
         var locationManager: CLLocationManager
+        var mainController: MainViewController
         func makeUIViewController(context: Context) -> UIViewController {
-            var mainController = getMainController()
             return mainController.MainViewController(
                 onLoginEvent: { connectionType in
                     Auth0
@@ -127,15 +133,14 @@ class AppStartViewController: UIViewController  {
         
         func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
         
-        func getMainController() -> MainViewController {
-            return MainViewController()
-        }
     }
 
     
  extension AppStartViewController: CLLocationManagerDelegate{
         public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
             guard let location = locations.last else { return }
+            mainController!.onLocationRequestAllowed(isAllowed: false)
+            mainController!.onLocationResponse(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
             print("Latitude: \(location.coordinate.latitude), Longitude: \(location.coordinate.longitude)")
         }
         
@@ -149,6 +154,7 @@ class AppStartViewController: UIViewController  {
                 print("When user select option Dont't Allow")
             case .authorizedWhenInUse:
                 print("When user select option Allow While Using App or Allow Once")
+                mainController!.onLocationRequestAllowed(isAllowed: true)
             default:
                 print("default")
             }

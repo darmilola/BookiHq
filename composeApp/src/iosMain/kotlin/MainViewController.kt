@@ -85,6 +85,15 @@ class MainViewController: PlatformNavigator{
         mainScreen.setImageUploadResponse(imageUrl)
     }
 
+    fun onLocationResponse(latitude: Double, longitude: Double) {
+        mainScreen.setLocationResponse(latitude, longitude)
+    }
+
+    fun onLocationRequestAllowed(isAllowed: Boolean) {
+        mainScreen.setLocationRequestAllowed(isAllowed)
+    }
+
+
     fun onImageUploadProcessing(isDone: Boolean) {
         authScreen.setImageUploadProcessing(isDone)
         mainScreen.setImageUploadProcessing(isDone)
@@ -139,20 +148,6 @@ class MainViewController: PlatformNavigator{
            it()
        }
     }
-
-   /* @OptIn(ExperimentalForeignApi::class)
-    override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>) {
-        didUpdateLocations.firstOrNull()?.let {
-            val location = it as CLLocation
-            location.coordinate.useContents {
-                onLocationUpdate?.invoke(Location(latitude.toInt(), longitude.toInt()))
-            }
-        }
-    }
-
-    override fun locationManager(manager: CLLocationManager, didFailWithError: NSError) {
-            onLocationUpdate?.invoke(null)
-    }*/
 }
 
 

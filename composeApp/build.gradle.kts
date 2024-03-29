@@ -48,6 +48,7 @@ kotlin {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
             val voyagerVersion = "1.0.0-rc10"
+            val compassVersion = "1.0.0"
 
             // Navigator
             implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
@@ -125,6 +126,12 @@ kotlin {
 
             //datetime
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0-RC.2")
+
+            // Geolocation
+            implementation("dev.jordond.compass:compass-geolocation:0.1.7")
+            implementation("dev.jordond.compass:compass-geolocation-mobile:0.1.7")
+            implementation("dev.jordond.compass:compass-geocoder:0.1.7")
+            implementation("dev.jordond.compass:compass-geocoder-mobile:0.1.7")
 
         }
 

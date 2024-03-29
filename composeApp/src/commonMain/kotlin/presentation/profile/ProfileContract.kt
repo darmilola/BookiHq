@@ -1,5 +1,6 @@
 package presentation.profile
 
+import dev.jordond.compass.Place
 import presentation.viewmodels.AsyncUIStates
 
 class ProfileContract {
@@ -7,6 +8,7 @@ class ProfileContract {
         fun onProfileDeleted()
 
         fun onProfileUpdated()
+        fun showUserLocation(place: Place)
 
         fun showLce(asyncUIStates: AsyncUIStates, message: String = "")
     }
@@ -18,6 +20,7 @@ class ProfileContract {
                                    cityId: Int, gender: String, profileImageUrl: String)
 
         abstract fun deleteProfile(userEmail: String)
+        abstract fun getUserLocation(lat: Double, lng: Double)
 
     }
 }
