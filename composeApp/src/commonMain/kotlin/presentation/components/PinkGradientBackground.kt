@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun SplashScreenBackground() {
@@ -31,8 +32,8 @@ fun SplashScreenBackground() {
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            Colors.primaryColor,
-                            Colors.primaryColor
+                            Color.White,
+                            Color.White
                         )
                     )
                 )

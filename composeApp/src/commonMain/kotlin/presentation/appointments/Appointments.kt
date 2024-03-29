@@ -273,6 +273,7 @@ class AppointmentsTab(private val mainViewModel: MainViewModel) : Tab, KoinCompo
 
                             LazyColumn(
                                 modifier = Modifier.fillMaxWidth()
+                                    .padding(bottom = 50.dp)
                                     .height(getAppointmentViewHeight(appointmentUIModel.appointmentList).dp),
                                 userScrollEnabled = true
                             ) {

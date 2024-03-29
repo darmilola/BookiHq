@@ -24,8 +24,9 @@ class ZazzyAppSceneDelegate: UIResponder, UIWindowSceneDelegate{
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {
             let navigationController = UINavigationController(rootViewController: AppStartViewController())
+            navigationController.setNavigationBarHidden(true, animated: true)
             let window = UIWindow(windowScene: windowScene)
-            window.backgroundColor = .yellow
+            window.backgroundColor = ZazzyApp.Colors.white
             self.window = window
             window.rootViewController = navigationController
             window.makeKeyAndVisible()

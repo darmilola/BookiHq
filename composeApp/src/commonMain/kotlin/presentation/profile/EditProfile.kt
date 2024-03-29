@@ -184,7 +184,7 @@ fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: Platform
 
     val topLayoutModifier =
         Modifier
-            .padding(top = 50.dp, start = 5.dp, end = 5.dp, bottom = 20.dp)
+            .padding(start = 5.dp, end = 5.dp)
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
             .fillMaxHeight()

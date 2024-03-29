@@ -19,6 +19,9 @@
 		5955C0872BB5B324002DDE7C /* ApplicationServiceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C0862BB5B324002DDE7C /* ApplicationServiceManager.swift */; };
 		5955C0892BB5B420002DDE7C /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C0882BB5B420002DDE7C /* Coordinator.swift */; };
 		5955C08B2BB5B4AE002DDE7C /* ZazzyNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C08A2BB5B4AE002DDE7C /* ZazzyNavigationController.swift */; };
+		5975F9852BB6C28A0026F9B5 /* ZazzyApp+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5975F9842BB6C28A0026F9B5 /* ZazzyApp+Colors.swift */; };
+		5975F9872BB6C30F0026F9B5 /* ZazzyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5975F9862BB6C30F0026F9B5 /* ZazzyApp.swift */; };
+		5975F9892BB6C3850026F9B5 /* UiColor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5975F9882BB6C3850026F9B5 /* UiColor+Ext.swift */; };
 		59CF0B752B9B5EE000A1E7E5 /* Cloudinary in Frameworks */ = {isa = PBXBuildFile; productRef = 59CF0B742B9B5EE000A1E7E5 /* Cloudinary */; };
 		7555FF83242A565900829871 /* AppStartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* AppStartViewController.swift */; };
 /* End PBXBuildFile section */
@@ -35,6 +38,9 @@
 		5955C0862BB5B324002DDE7C /* ApplicationServiceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationServiceManager.swift; sourceTree = "<group>"; };
 		5955C0882BB5B420002DDE7C /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		5955C08A2BB5B4AE002DDE7C /* ZazzyNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZazzyNavigationController.swift; sourceTree = "<group>"; };
+		5975F9842BB6C28A0026F9B5 /* ZazzyApp+Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ZazzyApp+Colors.swift"; sourceTree = "<group>"; };
+		5975F9862BB6C30F0026F9B5 /* ZazzyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZazzyApp.swift; sourceTree = "<group>"; };
+		5975F9882BB6C3850026F9B5 /* UiColor+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UiColor+Ext.swift"; sourceTree = "<group>"; };
 		59E3DBD92B10856400FDD23C /* ggsans_bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ggsans_bold.ttf; sourceTree = "<group>"; };
 		59E3DBDA2B10856400FDD23C /* ggsans_regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ggsans_regular.ttf; sourceTree = "<group>"; };
 		59E3DBDB2B10856400FDD23C /* ggsans_semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ggsans_semibold.ttf; sourceTree = "<group>"; };
@@ -109,6 +115,9 @@
 				5955C0862BB5B324002DDE7C /* ApplicationServiceManager.swift */,
 				5955C0882BB5B420002DDE7C /* Coordinator.swift */,
 				5955C08A2BB5B4AE002DDE7C /* ZazzyNavigationController.swift */,
+				5975F9842BB6C28A0026F9B5 /* ZazzyApp+Colors.swift */,
+				5975F9862BB6C30F0026F9B5 /* ZazzyApp.swift */,
+				5975F9882BB6C3850026F9B5 /* UiColor+Ext.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -220,6 +229,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				5955C08B2BB5B4AE002DDE7C /* ZazzyNavigationController.swift in Sources */,
+				5975F9892BB6C3850026F9B5 /* UiColor+Ext.swift in Sources */,
+				5975F9852BB6C28A0026F9B5 /* ZazzyApp+Colors.swift in Sources */,
+				5975F9872BB6C30F0026F9B5 /* ZazzyApp.swift in Sources */,
 				5955C07F2BB5B123002DDE7C /* ZazzyAppSceneDelegate.swift in Sources */,
 				5955C0872BB5B324002DDE7C /* ApplicationServiceManager.swift in Sources */,
 				5955C0832BB5B236002DDE7C /* ApplicationStateServices.swift in Sources */,

@@ -147,11 +147,9 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
                         .background(color = Color.White)
 
                 ) {
-                    Column(
-                        Modifier
+                    Column(Modifier
                             .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                    ) {
+                            .verticalScroll(rememberScrollState())) {
                         if (vendorInfo != null) {
                             AttachBusinessName(vendorInfo)
                         }

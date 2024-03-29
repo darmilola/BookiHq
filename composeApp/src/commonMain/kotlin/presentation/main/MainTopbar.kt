@@ -43,7 +43,7 @@ import presentations.components.ImageComponent
 fun MainTopBar(mainViewModel: MainViewModel, isBottomNavSelected: Boolean = false, homePageViewModel: HomePageViewModel,onNotificationTabSelected:() -> Unit) {
 
     val rowModifier = Modifier
-        .padding(top = 55.dp, end = 0.dp)
+        .padding(end = 0.dp)
         .height(50.dp)
         .background(color = Color.Transparent)
 

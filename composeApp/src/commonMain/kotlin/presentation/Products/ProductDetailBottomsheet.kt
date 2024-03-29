@@ -91,12 +91,11 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
         backgroundColor = Color.White,
         bottomBar = {
             BottomNavigation(modifier = Modifier
-                .padding(top = 10.dp)
+                .padding(top = 10.dp, bottom = 30.dp)
                 .height(80.dp), backgroundColor = Color.Transparent,
                 elevation = 0.dp
             )
             {
-
                 val buttonStyle2 = Modifier
                     .padding(bottom = 10.dp, start = 10.dp, end = 10.dp, top = 4.dp)
                     .fillMaxWidth()

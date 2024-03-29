@@ -328,7 +328,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
             Modifier
                 .padding(top = 5.dp)
                 .background(color = Color.White)
-                .fillMaxHeight(0.85f)
+                .fillMaxHeight(0.90f)
                 .fillMaxWidth()
 
         // AnimationEffect

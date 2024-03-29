@@ -34,7 +34,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator) {
    val  modifier =
         Modifier.fillMaxWidth()
             .fillMaxHeight()
-            .background(color = Color(color = 0xFFF43569))
+            .background(color = Color.White)
     val navigator = LocalNavigator.currentOrThrow
         // AnimationEffect
         Box(modifier = modifier, contentAlignment = Alignment.Center) {

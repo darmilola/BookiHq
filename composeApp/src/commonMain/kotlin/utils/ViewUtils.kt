@@ -10,7 +10,7 @@ fun getAppointmentViewHeight(
     ): Int {
         val itemCount = itemList.size
 
-        return itemCount * 190
+        return itemCount * 200
     }
 
 

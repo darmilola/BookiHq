@@ -15,7 +15,7 @@ class AppStartViewController: UIViewController  {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = ZazzyApp.Colors.white
     }
     
     
@@ -35,6 +35,7 @@ class AppStartViewController: UIViewController  {
     
     func showNextScreen(nextViewController: UIViewController?) {
         guard let viewController = nextViewController else { return }
+        viewController.view.backgroundColor = ZazzyApp.Colors.white
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
             self.navigationController?.pushViewController(nextViewController!, animated: true)
         })

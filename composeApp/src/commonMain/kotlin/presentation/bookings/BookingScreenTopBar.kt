@@ -51,7 +51,6 @@ fun BookingScreenTopBar(pagerState: PagerState, mainViewModel: MainViewModel, bo
     stepList.add("Overview")
 
     val colModifier = Modifier
-        .padding(top = 40.dp, end = 0.dp)
         .fillMaxWidth()
         .height(140.dp)
 

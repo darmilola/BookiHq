@@ -40,18 +40,17 @@ import presentations.components.TextComponent
 @Composable
 fun SignUpLogin(platformNavigator: PlatformNavigator) {
 
-    val  rootModifier =
+    val rootModifier =
         Modifier.fillMaxWidth()
             .fillMaxHeight(0.95f)
-            .background(color = Color(color = 0xFFFBFBFB))
+            .background(color = Color.White)
 
 
         val topLayoutModifier =
             Modifier
-                .padding(top = 40.dp)
                 .fillMaxWidth()
                 .fillMaxHeight(0.87f)
-                .background(color = Color(color = 0xFFFBFBFB))
+                .background(color = Color.White)
 
 
         Column(modifier = rootModifier) {
@@ -118,14 +117,14 @@ fun attachAuthenticationButton(platformNavigator: PlatformNavigator) {
             modifier = columnModifier
         ) {
 
-            IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Email", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/email_icon.png",  colorFilter = ColorFilter.tint(color = Color.Gray)){
+            IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Email", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/email_icon.png",  colorFilter = ColorFilter.tint(color = Color.Gray)){
                     platformNavigator.startAuth0Login(Auth0ConnectionType.EMAIL.toPath())
             }
-            IconButtonComponent(modifier = buttonStyle, buttonText = "Connect with Google", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/google_icon.png"){
+            IconButtonComponent(modifier = buttonStyle, buttonText = "Connect with Google", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/google_icon.png"){
                 platformNavigator.startAuth0Login(Auth0ConnectionType.GOOGLE.toPath())
             }
 
-            IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with X", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color(color = 0xFFFBFBFB)), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/x_logo.png",  colorFilter = ColorFilter.tint(color = Color.Gray)){
+            IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with X", borderStroke = BorderStroke(0.8.dp, Color.LightGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 16, shape = RoundedCornerShape(28.dp), textColor = Color.Gray, style = MaterialTheme.typography.h4, iconRes = "drawable/x_logo.png",  colorFilter = ColorFilter.tint(color = Color.Gray)){
                 platformNavigator.startAuth0Login(Auth0ConnectionType.TWITTER.toPath())
 
             }

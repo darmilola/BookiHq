@@ -374,7 +374,6 @@ fun SearchContent(searchQuery: String, productResourceListEnvelopeViewModel: Res
                         .background(color = Color.White),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Column {
                         var showProductDetailBottomSheet by remember { mutableStateOf(false) }
                         if (showProductDetailBottomSheet) {
                             ProductDetailBottomSheet(mainViewModel,isViewedFromCart = false, OrderItem(itemProduct = selectedProduct.value),onDismiss = {
@@ -408,7 +407,6 @@ fun SearchContent(searchQuery: String, productResourceListEnvelopeViewModel: Res
                                     })
                               }
                         }
-                    }
                 }
 
             }

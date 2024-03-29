@@ -158,7 +158,7 @@ open class ConnectPage(val platformNavigator: PlatformNavigator? = null) : Scree
                         //Content Loading
                         Box(
                             modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                                .padding(top = 40.dp, start = 50.dp, end = 50.dp)
+                                .padding(start = 50.dp, end = 50.dp)
                                 .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
                             contentAlignment = Alignment.Center
                         ) {
@@ -170,7 +170,7 @@ open class ConnectPage(val platformNavigator: PlatformNavigator? = null) : Scree
 
                     } else if (contentVisible.value) {
                         LazyColumn(
-                            modifier = Modifier.padding(top = 10.dp, bottom = 40.dp).fillMaxWidth()
+                            modifier = Modifier.padding(top = 10.dp).fillMaxWidth()
                                 .height(getVendorListItemViewHeight(vendorUIModel.vendorsList).dp),
                             contentPadding = PaddingValues(6.dp),
                             verticalArrangement = Arrangement.spacedBy(5.dp), userScrollEnabled = true
