@@ -45,9 +45,7 @@ fun InputWidget(iconRes: String, placeholderText: String,defaultValue: String = 
         borderStroke =  BorderStroke(2.dp, color  = Colors.primaryColor)
     }
 
-    var ismPasswordField by remember { mutableStateOf(isPasswordField) }
-
-
+    var isMPasswordField by remember { mutableStateOf(isPasswordField) }
 
     val modifier  = Modifier
         .padding(end = 10.dp, start = 10.dp, top = 20.dp)
@@ -94,7 +92,7 @@ fun InputWidget(iconRes: String, placeholderText: String,defaultValue: String = 
                     BorderStroke(2.dp, color = Color.Transparent)
                 }
             },
-            isPasswordField = ismPasswordField,
+            isPasswordField = isMPasswordField,
             placeholderTextSize = 16f,
             maxLines = maxLines
         )
@@ -106,8 +104,8 @@ fun InputWidget(iconRes: String, placeholderText: String,defaultValue: String = 
                 ImageComponent(
                     imageModifier = Modifier
                         .size(iconSize.dp).clickable {
-                            ismPasswordField = !ismPasswordField
-                            passwordIconRes = if(ismPasswordField){
+                            isMPasswordField = !isMPasswordField
+                            passwordIconRes = if(isMPasswordField){
                                 "drawable/not_visible.png"
                             } else{
                                 "drawable/visible.png"

@@ -126,26 +126,30 @@ class EditProfile(private val mainViewModel: MainViewModel, val  platformNavigat
         )
 
         Scaffold(
-            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState)  }
-        ) {
-
-            if (isLoading.value) {
-                Box(modifier = Modifier.fillMaxWidth(0.80f)) {
-                    LoadingDialog("Auth Profile...")
+            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
+            topBar = {},
+            content = {
+                if (isLoading.value) {
+                    Box(modifier = Modifier.fillMaxWidth(0.80f)) {
+                        LoadingDialog("Auth Profile...")
+                    }
+                } else if (isSuccess.value) {
+                    ShowSnackBar(title = "Success!",
+                        description = "You Location is ${country.value}",
+                        actionLabel = "",
+                        duration = StackedSnackbarDuration.Short,
+                        snackBarType = SnackBarType.SUCCESS,
+                        stackedSnackBarHostState,
+                        onActionClick = {})
+                    isSuccess.value = false
                 }
-            } else if (isSuccess.value) {
-                ShowSnackBar(title = "Success!",
-                    description = "You Location is ${country.value}",
-                    actionLabel = "",
-                    duration = StackedSnackbarDuration.Short,
-                    snackBarType = SnackBarType.SUCCESS,
-                    stackedSnackBarHostState,
-                    onActionClick = {})
-                isSuccess.value = false
-            }
 
-            EditProfileCompose(mainViewModel, platformNavigator, profilePresenter, stackedSnackBarHostState)
-        }
+                EditProfileCompose(
+                    mainViewModel,
+                    platformNavigator,
+                    profilePresenter,
+                    stackedSnackBarHostState)
+            })
     }
 }
 
@@ -247,7 +251,6 @@ fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: Platform
                 iconRes = "drawable/address.png",
                 placeholderText = "Address",
                 iconSize = 28,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 isPasswordField = false,
                 defaultValue = userInfo.address!!
             ) {
@@ -257,7 +260,6 @@ fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: Platform
                 iconRes = "drawable/phone_icon.png",
                 placeholderText = "Contact Phone",
                 iconSize = 28,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 isPasswordField = false,
                 defaultValue = userInfo.contactPhone!!
             ) {

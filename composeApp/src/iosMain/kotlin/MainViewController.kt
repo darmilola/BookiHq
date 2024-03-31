@@ -1,4 +1,6 @@
 
+import androidx.compose.ui.uikit.ComposeUIViewControllerConfiguration
+import androidx.compose.ui.uikit.OnFocusBehavior
 import androidx.compose.ui.window.ComposeUIViewController
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
@@ -29,7 +31,7 @@ import presentation.authentication.AuthenticationScreen
 import presentation.main.MainScreen
 
 
-class MainViewController: PlatformNavigator{
+class MainViewController: PlatformNavigator {
 
     private var onLoginEvent: ((connectionType: String) -> Unit)? = null
     private var onSignupEvent: ((connectionType: String) -> Unit)? = null
@@ -45,7 +47,8 @@ class MainViewController: PlatformNavigator{
                            onUploadImageEvent: (data: NSData) -> Unit,
                            onLocationEvent: () -> Unit): UIViewController {
 
-            val view = ComposeUIViewController {
+            val view = ComposeUIViewController(configure = {
+                onFocusBehavior = OnFocusBehavior. DoNothing }) {
                 Navigator(SplashScreen(this)) { navigator ->
                     SlideTransition(navigator)
 

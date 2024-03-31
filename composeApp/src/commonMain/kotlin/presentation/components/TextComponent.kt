@@ -109,12 +109,12 @@ fun TextFieldComponent(text: String, readOnly: Boolean = false, modifier: Modifi
     disabledIndicatorColor = Color.Transparent
 ), isSingleLine: Boolean = false, isPasswordField: Boolean = false, isReadOnly: Boolean = false, placeholderText: String, onFocusChange: (Boolean) -> Unit, placeholderTextSize: Float = 18f, maxLines: Int = 1) {
 
-    val interactionSource = remember { MutableInteractionSource() }
+ /*   val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
-    onFocusChange(isFocused)
+    onFocusChange(isFocused)*/
     val visualTransformation: VisualTransformation = if (isPasswordField) PasswordVisualTransformation() else VisualTransformation.None
 
-    BasicTextField(value = text, modifier = modifier, textStyle = textStyle, readOnly = isReadOnly, singleLine = isSingleLine, keyboardOptions = keyboardOptions, visualTransformation = visualTransformation, onValueChange = onValueChange, interactionSource = interactionSource, maxLines = maxLines, decorationBox = { innerTextField ->
+    BasicTextField(value = text, modifier = modifier, textStyle = textStyle, readOnly = isReadOnly, singleLine = isSingleLine, keyboardOptions = keyboardOptions, visualTransformation = visualTransformation, onValueChange = onValueChange,/* interactionSource = interactionSource,*/ maxLines = maxLines, decorationBox = { innerTextField ->
         Row(modifier = Modifier.fillMaxWidth()) {
             if (text.isEmpty()) {
                 PlaceholderTextComponent(placeholderText, textColor = Color.Gray, textSize = placeholderTextSize)
