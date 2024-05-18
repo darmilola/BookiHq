@@ -39,7 +39,9 @@ class MainViewController: PlatformNavigator {
     private var onLocationEvent: (() -> Unit)? = null
     private var onUploadImageEvent: ((data: NSData) -> Unit)? = null
     private val preferenceSettings: Settings = Settings()
+    //Handles All Screens Used For Authentication
     private val authScreen = AuthenticationScreen(currentPosition = AuthSSOScreenNav.AUTH_LOGIN.toPath(), platformNavigator = this)
+    //Handles All Other Screens in the System
     private val mainScreen = MainScreen(platformNavigator = this)
     fun MainViewController(onLoginEvent:(connectionType: String) -> Unit,
                            onLogoutEvent:(connectionType: String) -> Unit,
