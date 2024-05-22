@@ -38,6 +38,7 @@ import domain.Models.ResourceListEnvelope
 import domain.Models.ServiceTime
 import domain.Models.User
 import domain.Models.Vendor
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -74,7 +75,7 @@ class AppointmentsTab(private val mainViewModel: MainViewModel) : Tab, KoinCompo
         @Composable
         get() {
             val title = "Bookings"
-            val icon = painterResource("calender_icon_semi.png")
+            val icon = painterResource(DrawableResource("drawable/calender_icon_semi.png"))
 
             return remember {
                 TabOptions(

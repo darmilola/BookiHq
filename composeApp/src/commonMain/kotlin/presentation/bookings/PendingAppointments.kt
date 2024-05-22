@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import presentation.viewmodels.MainViewModel
@@ -33,7 +34,7 @@ class PendingAppointmentsTab(private val mainViewModel: MainViewModel) : Tab {
         @Composable
         get() {
             val title = "Bookings"
-            val icon = painterResource("calender_icon_semi.png")
+            val icon = painterResource(DrawableResource("calender_icon_semi.png"))
 
             return remember {
                 TabOptions(

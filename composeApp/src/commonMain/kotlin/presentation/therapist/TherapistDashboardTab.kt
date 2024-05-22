@@ -42,6 +42,7 @@ import domain.Models.ServiceTime
 import domain.Models.TimeOffs
 import domain.Models.User
 import domain.Models.Vendor
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -78,7 +79,7 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
         @Composable
         get() {
             val title = "Therapist Dashboard"
-            val icon = painterResource("drawable/dashboard_icon.png")
+            val icon = painterResource(DrawableResource("drawable/dashboard_icon.png"))
 
             return remember {
                 TabOptions(

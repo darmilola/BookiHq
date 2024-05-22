@@ -62,6 +62,7 @@ import domain.Models.ResourceListEnvelope
 import domain.Models.Screens
 import domain.Models.User
 import domain.Models.Vendor
+import org.jetbrains.compose.resources.DrawableResource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.Products.SearchBar
@@ -105,7 +106,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
         @Composable
         get() {
             val title = "Products"
-            val icon = painterResource("drawable/shop_icon.png")
+            val icon = painterResource(DrawableResource("drawable/shop_icon.png"))
 
             return remember {
                 TabOptions(

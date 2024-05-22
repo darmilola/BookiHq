@@ -48,7 +48,7 @@ fun BusinessStatusWidget(adsPageList: List<BusinessStatusAdsPage>, adsPageProgre
             }, onProgress = {
                  currentPageProgress = it
             })
-            adsPageList[currentPage].statusWidget.GetStatusWidget("drawable/sale$currentPage.jpg")
+            adsPageList[currentPage].statusWidget.getImageStatusWidget("drawable/sale$currentPage.jpg")
         }
 
         LaunchedEffect(key1 = isRestart) {

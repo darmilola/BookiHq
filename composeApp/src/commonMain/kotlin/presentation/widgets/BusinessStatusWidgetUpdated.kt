@@ -1,17 +1,14 @@
 package presentation.widgets
 
 import domain.Models.BusinessStatusAdsPage
-import domain.Models.BusinessStatusAdsProgress
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,10 +27,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import presentations.components.ImageComponent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -112,10 +107,10 @@ private fun LoadBusinessStatus(currentPage: Int, totalPage: Int,adsPageList: Lis
         if(currentPageInView >= totalPage || currentPageInView < 0){
             currentPageInView = 0
             onNextPage(currentPageInView)
-            adsPageList[currentPageInView].statusWidget.GetStatusWidget (adsPageList[currentPageInView].imageUrl)
+            adsPageList[currentPageInView].statusWidget.getImageStatusWidget (adsPageList[currentPageInView].imageUrl)
         }
         else{
-            adsPageList[currentPageInView].statusWidget.GetStatusWidget (adsPageList[currentPageInView].imageUrl)
+            adsPageList[currentPageInView].statusWidget.getImageStatusWidget (adsPageList[currentPageInView].imageUrl)
             onNextPage(currentPageInView)
         }
 }

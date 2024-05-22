@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import domain.Models.Screens
+import org.jetbrains.compose.resources.DrawableResource
 import presentation.components.ButtonComponent
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.ActionItemComponent
@@ -48,7 +49,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
         @Composable
         get() {
             val title = "Profile"
-            val icon = painterResource("profile_icon.png")
+            val icon = painterResource(DrawableResource("profile_icon.png"))
 
             return remember {
                 TabOptions(

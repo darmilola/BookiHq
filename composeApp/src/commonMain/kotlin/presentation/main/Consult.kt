@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import domain.Models.RecommendationType
 import domain.Models.Screens
 import domain.Models.VendorRecommendation
+import org.jetbrains.compose.resources.DrawableResource
 import presentation.components.ButtonComponent
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.AttachImageStacks
@@ -67,7 +68,7 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
         @Composable
         get() {
             val title = "Consult"
-            val icon = painterResource("drawable/video_icon.png")
+            val icon = painterResource(DrawableResource("drawable/video_icon.png"))
 
             return remember {
                 TabOptions(

@@ -133,6 +133,9 @@ kotlin {
             implementation("dev.jordond.compass:compass-geocoder:0.1.7")
             implementation("dev.jordond.compass:compass-geocoder-mobile:0.1.7")
 
+            //media player
+            implementation("network.chaintech:compose-multiplatform-media-player:1.0.5")
+
         }
 
         iosMain.dependencies {

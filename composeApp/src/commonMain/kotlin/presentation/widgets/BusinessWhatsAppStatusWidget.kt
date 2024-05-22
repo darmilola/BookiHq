@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -103,10 +101,12 @@ private fun LoadBusinessStatus(currentPage: Int, totalPage: Int, adsPageList: Li
         currentPageInView = 0
         onNextPage(currentPageInView)
         //adsPageList[currentPageInView].statusWidget.GetStatusWidget (adsPageList[currentPageInView].imageUrl)
-        adsPageList[currentPageInView].statusWidget.GetStatusWidget ("https://cdn.pixabay.com/photo/2024/03/31/06/16/bird-8666099_1280.jpg")
+        //adsPageList[currentPageInView].statusWidget.getImageStatusWidget ("https://cdn.pixabay.com/photo/2024/03/31/06/16/bird-8666099_1280.jpg")
+        adsPageList[currentPageInView].statusWidget.getVideoStatusWidget ("https://videos.pexels.com/video-files/3755680/3755680-uhd_2160_4096_25fps.mp4")
     }
     else{
-        adsPageList[currentPageInView].statusWidget.GetStatusWidget ("https://cdn.pixabay.com/photo/2024/03/31/06/16/bird-8666099_1280.jpg")
+        adsPageList[currentPageInView].statusWidget.getVideoStatusWidget ("https://videos.pexels.com/video-files/3755680/3755680-uhd_2160_4096_25fps.mp4")
+        // adsPageList[currentPageInView].statusWidget.getImageStatusWidget ("https://cdn.pixabay.com/photo/2024/03/31/06/16/bird-8666099_1280.jpg")
         //adsPageList[currentPageInView].statusWidget.GetStatusWidget (adsPageList[currentPageInView].imageUrl)
         onNextPage(currentPageInView)
     }

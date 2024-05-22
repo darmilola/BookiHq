@@ -39,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.DrawableResource
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.SubtitleTextWidget
 import presentations.components.ImageComponent
@@ -51,7 +52,7 @@ class NotificationTab(private val mainViewModel: MainViewModel) : Tab {
         @Composable
         get() {
             val title = "Notifications"
-            val icon = painterResource("drawable/notification.png")
+            val icon = painterResource(DrawableResource("drawable/notification.png"))
 
             return remember {
                 TabOptions(
