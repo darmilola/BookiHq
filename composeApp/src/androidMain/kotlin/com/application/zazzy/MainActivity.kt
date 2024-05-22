@@ -15,6 +15,7 @@ import domain.Models.AuthSSOScreenNav
 import domain.Models.AuthenticationAction
 import domain.Models.PlatformNavigator
 import presentation.SplashScreen
+import presentation.TestWidgetScreen
 import presentation.authentication.AuthenticationScreen
 import presentation.main.MainScreen
 
@@ -27,10 +28,11 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth0ConnectionResponse = intent.getParcelableExtra("authResponse")
-        enableEdgeToEdge()
+       // enableEdgeToEdge()
         if(auth0ConnectionResponse == null){
             setContent {
-                Navigator(SplashScreen(this))
+                //Navigator(SplashScreen(this))
+                Navigator(TestWidgetScreen(this))
             }
         }
 

@@ -7,33 +7,25 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import domain.Models.RecommendationType
-import domain.Models.VendorRecommendation
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import theme.styles.Colors
@@ -43,15 +35,15 @@ class BusinessStatusItemWidget {
     fun GetStatusWidget(imageRes: String) {
               Column (
                 modifier = Modifier
-                    .padding(top = 15.dp)
+                    .padding(top = 5.dp)
                     .fillMaxWidth()
-                    .fillMaxHeight(0.80f),
+                    .fillMaxHeight(),
                   horizontalAlignment = Alignment.CenterHorizontally,
                   verticalArrangement = Arrangement.Center
             ) {
-              Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.60f)) {
+              Box(modifier = Modifier.fillMaxSize()) {
                   ImageComponent(
-                      imageModifier = Modifier.aspectRatio(ratio = 1f).fillMaxSize(),
+                      imageModifier = Modifier.fillMaxSize(),
                       imageRes = imageRes,
                       contentScale = ContentScale.Crop,
                       isAsync = true
@@ -62,44 +54,40 @@ class BusinessStatusItemWidget {
                           .size(50.dp).background(color = Color.White, shape = CircleShape),
                       contentAlignment = Alignment.Center
                   ) {
-                      ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/like_icon.png", colorFilter = ColorFilter.tint(color = Colors.pinkColor))
+                      ImageComponent(imageModifier = Modifier.size(28.dp), imageRes = "drawable/chat_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+                  }
+                  Box(modifier = Modifier
+                              .fillMaxWidth()
+                              .fillMaxHeight(),
+                      contentAlignment = Alignment.BottomCenter
+                  ) {
+
+                 Box(modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                          .background(color = Color(0x90ffffff)),
+                      contentAlignment = Alignment.BottomCenter
+                  ) {
+                      StatusText()
                   }
               }
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
 
-                    Box(
-                        modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                            .background(color = Color.Transparent),
-                        contentAlignment = Alignment.BottomStart
-                    ) {
-                        StatusDescription()
-                    }
-                }
-
-            }
+              }
+           }
         }
 
     @Composable
-    fun StatusDescription() {
-        Column(
+    fun StatusText() {
+        Box(
             modifier = Modifier
                 .padding(top = 15.dp, start = 20.dp, end = 20.dp)
                 .fillMaxWidth()
                 .wrapContentHeight(),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment  = Alignment.Start,
+            contentAlignment = Alignment.BottomCenter
         ) {
             TextComponent(
                 textModifier = Modifier.fillMaxWidth().padding(top = 5.dp, bottom = 10.dp),
                 text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et" +
                         " dolore magna aliqua. Ut enim ad minim",
-                fontSize = 15, fontFamily = GGSansRegular,
+                fontSize = 17, fontFamily = GGSansRegular,
                 textStyle = MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
