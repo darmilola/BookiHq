@@ -8,6 +8,7 @@ import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +30,7 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import kotlinx.coroutines.flow.collectLatest
 import presentations.components.ImageComponent
+import theme.Colors
 
 @OptIn(UnstableApi::class) @Composable
 actual fun VideoPlayer(modifier: Modifier, url: String) {
@@ -142,12 +144,10 @@ fun ShowPlayerViewUI(exoPlayer: ExoPlayer) {
             contentAlignment = Alignment.Center
         ) {
             if (isShowingMediaBufferingLayer.value) {
-                    ImageComponent(
-                        imageModifier = Modifier
-                            .size(70.dp),
-                        imageRes = "drawable/loading.gif",
-                        colorFilter = ColorFilter.tint(color = Color(color = 0x90004659))
-                    )
+                CircularProgressIndicator(
+                    modifier = Modifier.size(80.dp),
+                    color = Color(color = 0x90004659),
+                    strokeWidth = 4.dp)
                 }
             }
         }

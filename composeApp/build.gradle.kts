@@ -66,8 +66,7 @@ kotlin {
 
             // Transitions
             implementation("cafe.adriel.voyager:voyager-transitions:$voyagerVersion")
-
-            // compose multiplatform
+            
             implementation("dev.icerock.moko:mvvm-compose:0.16.1") // api mvvm-core, getViewModel for Compose Multiplatform
             implementation("dev.icerock.moko:mvvm-flow-compose:0.16.1") // api mvvm-flow, binding extensions for Compose Multiplatform
             implementation("dev.icerock.moko:mvvm-livedata-compose:0.16.1") // api mvvm-livedata, binding extensions for Compose Multiplatform
