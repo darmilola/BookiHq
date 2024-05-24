@@ -61,7 +61,6 @@ import domain.Models.Screens
 import domain.Models.Services
 import domain.Models.Vendor
 import domain.Models.VendorStatusModel
-import org.jetbrains.compose.resources.DrawableResource
 import org.koin.core.component.KoinComponent
 import presentation.components.StraightLine
 import presentation.Products.ProductDetailBottomSheet
@@ -90,7 +89,7 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
         @Composable
         get() {
             val title = "Home"
-            val icon = painterResource(DrawableResource("drawable/home_icon.png"))
+            val icon = painterResource("drawable/home_icon.png")
 
             return remember {
                 TabOptions(

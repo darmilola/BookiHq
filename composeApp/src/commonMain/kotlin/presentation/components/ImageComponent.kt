@@ -6,7 +6,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import com.seiko.imageloader.rememberImagePainter
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -25,7 +24,7 @@ public fun ImageComponent(imageModifier: Modifier, imageRes: String, colorFilter
     }
     else {
         Image(
-            painter = painterResource(DrawableResource(imageRes)),
+            painter = painterResource(imageRes),
             contentDescription = "ConnectVendor Logo",
             contentScale = contentScale,
             modifier = imageModifier,
@@ -39,7 +38,7 @@ public fun ImageComponent(imageModifier: Modifier, imageRes: String, colorFilter
 @Composable
 public fun ProfileImageComponent(imageModifier: Modifier, imageRes: String, colorFilter: ColorFilter? = null) {
     Image(
-        painter = painterResource(DrawableResource(imageRes)),
+        painter = painterResource(imageRes),
         contentDescription = "An Image Component",
         contentScale = ContentScale.FillHeight,
         modifier = imageModifier,

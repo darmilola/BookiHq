@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import domain.Models.Screens
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import presentation.components.RightIconButtonComponent
@@ -56,7 +55,7 @@ class JoinASpa(private val mainViewModel: MainViewModel) : Tab {
         @Composable
         get() {
             val title = "Join A Spa"
-            val icon = painterResource(DrawableResource("profile_icon.png"))
+            val icon = painterResource("profile_icon.png")
 
             return remember {
                 TabOptions(

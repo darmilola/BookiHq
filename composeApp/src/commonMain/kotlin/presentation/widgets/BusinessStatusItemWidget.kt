@@ -23,8 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import chaintech.videoplayer.model.PlayerConfig
-import chaintech.videoplayer.ui.VideoPlayerView
+import applications.videoplayer.VideoPlayer
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import theme.styles.Colors
@@ -47,14 +46,6 @@ class BusinessStatusItemWidget {
                       contentScale = ContentScale.Crop,
                       isAsync = true
                   )
-                  Box(
-                      modifier = Modifier
-                          .padding(10.dp)
-                          .size(50.dp).background(color = Color.White, shape = CircleShape),
-                      contentAlignment = Alignment.Center
-                  ) {
-                      ImageComponent(imageModifier = Modifier.size(28.dp), imageRes = "drawable/chat_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
-                  }
                   Box(modifier = Modifier
                               .fillMaxWidth()
                               .fillMaxHeight(),
@@ -67,8 +58,7 @@ class BusinessStatusItemWidget {
                   ) {
                       StatusText()
                   }
-                 }
-
+                }
               }
            }
         }
@@ -84,37 +74,16 @@ class BusinessStatusItemWidget {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.85f)) {
                 // Video Playback
-                VideoPlayerView(
-                    modifier = Modifier.fillMaxSize(),
-                    url = videoUrl,
-                    playerConfig = PlayerConfig(showDuration = false, autoHideControl = true)
-                )
-                Box(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .size(50.dp).background(color = Color.White, shape = CircleShape),
+                VideoPlayer(modifier = Modifier.fillMaxSize(), url = videoUrl)
+            }
+            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(),
                     contentAlignment = Alignment.Center
                 ) {
-                    ImageComponent(imageModifier = Modifier.size(28.dp), imageRes = "drawable/chat_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+                    StatusText()
                 }
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
-                    contentAlignment = Alignment.BottomCenter
-                ) {
-
-                    Box(modifier = Modifier.fillMaxWidth().wrapContentHeight()
-                        .background(color = Color(0x90ffffff)),
-                        contentAlignment = Alignment.BottomCenter
-                    ) {
-                        StatusText()
-                    }
-                }
-
-            }
-        }
+           }
     }
 
 
@@ -123,7 +92,7 @@ class BusinessStatusItemWidget {
     fun StatusText() {
         Box(
             modifier = Modifier
-                .padding(top = 15.dp, start = 20.dp, end = 20.dp)
+                .padding(top = 10.dp, start = 20.dp, end = 20.dp)
                 .fillMaxWidth()
                 .wrapContentHeight(),
             contentAlignment = Alignment.BottomCenter

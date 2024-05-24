@@ -29,7 +29,6 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import domain.Models.HomePageResponse
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -54,7 +53,7 @@ class MainTab(private val mainViewModel: MainViewModel,private val homePageViewM
         @Composable
         get() {
             val title = "Main"
-            val icon = painterResource(DrawableResource("drawable/home_icon.png"))
+            val icon = painterResource("drawable/home_icon.png")
 
             return remember {
                 TabOptions(

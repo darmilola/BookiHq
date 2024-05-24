@@ -38,6 +38,11 @@ kotlin {
             implementation ("com.cloudinary:cloudinary-android:2.5.0")
             //Auth0
             implementation ("com.auth0.android:auth0:2.+")
+
+            implementation("androidx.media3:media3-exoplayer:1.1.0")
+            implementation("androidx.media3:media3-exoplayer-dash:1.1.0")
+            implementation("androidx.media3:media3-ui:1.1.0")
+
         }
 
         commonMain.dependencies {
@@ -133,8 +138,6 @@ kotlin {
             implementation("dev.jordond.compass:compass-geocoder:0.1.7")
             implementation("dev.jordond.compass:compass-geocoder-mobile:0.1.7")
 
-            //media player
-            implementation("network.chaintech:compose-multiplatform-media-player:1.0.5")
 
         }
 

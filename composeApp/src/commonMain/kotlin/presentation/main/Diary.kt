@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.jetbrains.compose.resources.DrawableResource
 import presentation.viewmodels.MainViewModel
 
 class DiaryTab(private val mainViewModel: MainViewModel) : Tab {
@@ -27,7 +26,7 @@ class DiaryTab(private val mainViewModel: MainViewModel) : Tab {
         @Composable
         get() {
             val title = "Diary"
-            val icon = painterResource(DrawableResource("task.png"))
+            val icon = painterResource("task.png")
 
             return remember {
                 TabOptions(

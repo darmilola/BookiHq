@@ -33,7 +33,7 @@ import theme.styles.Colors
 @Composable
 fun BusinessWhatsAppStatusWidget(adsPageList: List<BusinessStatusAdsPage>) {
     val pagerState = rememberPagerState(pageCount = {
-        10
+        1
     })
     var currentImageId by remember { mutableStateOf(0) }
     var isRestart by remember { mutableStateOf(false) }
@@ -44,15 +44,15 @@ fun BusinessWhatsAppStatusWidget(adsPageList: List<BusinessStatusAdsPage>) {
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally) {
         Row(Modifier
-            .height(30.dp)
+            .height(10.dp)
             .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Bottom
         ) {
             repeat(adsPageList.size) { iteration ->
                 val color = if (pagerState.currentPage == iteration) Colors.primaryColor else Colors.primaryColor.copy(alpha = 0.2f)
                 Box(modifier = Modifier
-                        .padding(4.dp)
+                        .padding(start = 4.dp, end = 4.dp, top = 4.dp)
                         .clip(CircleShape)
                         .background(color)
                         .height(2.dp)
@@ -102,10 +102,10 @@ private fun LoadBusinessStatus(currentPage: Int, totalPage: Int, adsPageList: Li
         onNextPage(currentPageInView)
         //adsPageList[currentPageInView].statusWidget.GetStatusWidget (adsPageList[currentPageInView].imageUrl)
         //adsPageList[currentPageInView].statusWidget.getImageStatusWidget ("https://cdn.pixabay.com/photo/2024/03/31/06/16/bird-8666099_1280.jpg")
-        adsPageList[currentPageInView].statusWidget.getVideoStatusWidget ("https://videos.pexels.com/video-files/3755680/3755680-uhd_2160_4096_25fps.mp4")
+        adsPageList[currentPageInView].statusWidget.getVideoStatusWidget ("https://s3.eu-central-1.wasabisys.com/in-files/2348102853533/mp4-13e00425a49ca6db8fb32c2a36eb8276-942100-0222b8efc37e.mp4")
     }
     else{
-        adsPageList[currentPageInView].statusWidget.getVideoStatusWidget ("https://videos.pexels.com/video-files/3755680/3755680-uhd_2160_4096_25fps.mp4")
+        adsPageList[currentPageInView].statusWidget.getVideoStatusWidget ("https://s3.eu-central-1.wasabisys.com/in-files/2348102853533/mp4-13e00425a49ca6db8fb32c2a36eb8276-942100-0222b8efc37e.mp4")
         // adsPageList[currentPageInView].statusWidget.getImageStatusWidget ("https://cdn.pixabay.com/photo/2024/03/31/06/16/bird-8666099_1280.jpg")
         //adsPageList[currentPageInView].statusWidget.GetStatusWidget (adsPageList[currentPageInView].imageUrl)
         onNextPage(currentPageInView)
