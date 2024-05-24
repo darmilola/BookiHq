@@ -3,8 +3,7 @@ package presentation.main.home
 import GGSansRegular
 import StackedSnackbarHost
 import StackedSnakbarHostState
-import domain.Models.AppointmentItem
-import domain.Models.BusinessStatusAdsPage
+import domain.Models.BusinessWhatsAppStatusPage
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -65,7 +64,6 @@ import org.koin.core.component.KoinComponent
 import presentation.components.StraightLine
 import presentation.Products.ProductDetailBottomSheet
 import presentation.Products.HomeProductItem
-import presentation.Products.SearchBar
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
 import utils.getAppointmentViewHeight
@@ -469,11 +467,11 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
         }
 
     @Composable
-    fun GetBusinessPageList(statusList: List<VendorStatusModel>) : List<BusinessStatusAdsPage> {
-         val adsList: ArrayList<BusinessStatusAdsPage> = arrayListOf()
+    fun GetBusinessPageList(statusList: List<VendorStatusModel>) : List<BusinessWhatsAppStatusPage> {
+         val adsList: ArrayList<BusinessWhatsAppStatusPage> = arrayListOf()
          val imageWidget = BusinessStatusItemWidget()
         for (item in statusList){
-            val statusAdsPage = BusinessStatusAdsPage(statusWidget = imageWidget, imageUrl = item.imageUrl)
+            val statusAdsPage = BusinessWhatsAppStatusPage(statusWidget = imageWidget, imageUrl = item.imageUrl)
             adsList.add(statusAdsPage)
          }
          return adsList

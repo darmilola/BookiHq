@@ -1,6 +1,6 @@
 package presentation.widgets
 
-import domain.Models.BusinessStatusAdsPage
+import domain.Models.BusinessWhatsAppStatusPage
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun BusinessStatusWidgetUpdated(adsPageList: List<BusinessStatusAdsPage>) {
+fun BusinessStatusWidgetUpdated(adsPageList: List<BusinessWhatsAppStatusPage>) {
     val pagerState = rememberPagerState(pageCount = {
         adsPageList.size
     })
@@ -50,7 +50,7 @@ fun BusinessStatusWidgetUpdated(adsPageList: List<BusinessStatusAdsPage>) {
             modifier = Modifier.fillMaxWidth().fillMaxHeight(0.60f)
         ) { page ->
             Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().background(color = Color.Transparent)) {
-                LoadBusinessStatus(currentPage = currentImageId, totalPage = adsPageList.size, adsPageList){
+                LoadStatusView(currentPage = currentImageId, totalPage = adsPageList.size, adsPageList){
                     currentImageId = it
                 }
 
@@ -100,7 +100,7 @@ fun BusinessStatusWidgetUpdated(adsPageList: List<BusinessStatusAdsPage>) {
 
 
 @Composable
-private fun LoadBusinessStatus(currentPage: Int, totalPage: Int,adsPageList: List<BusinessStatusAdsPage>, onNextPage: (page: Int) -> Unit){
+private fun LoadStatusView(currentPage: Int, totalPage: Int, adsPageList: List<BusinessWhatsAppStatusPage>, onNextPage: (page: Int) -> Unit){
 
     var currentPageInView = currentPage
 

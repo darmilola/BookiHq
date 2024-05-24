@@ -31,42 +31,35 @@ import theme.styles.Colors
 class BusinessStatusItemWidget {
     @Composable
     fun getImageStatusWidget(imageUrl: String) {
-              Column (
-                modifier = Modifier
-                    .padding(top = 5.dp)
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
-                  horizontalAlignment = Alignment.CenterHorizontally,
-                  verticalArrangement = Arrangement.Center
+        Column(
+            modifier = Modifier
+                .padding(top = 5.dp)
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.85f)) {
+                ImageComponent(
+                    imageModifier = Modifier.fillMaxSize(),
+                    imageRes = imageUrl,
+                    contentScale = ContentScale.Crop,
+                    isAsync = true
+                )
+            }
+            Box(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                contentAlignment = Alignment.Center
             ) {
-              Box(modifier = Modifier.fillMaxSize()) {
-                  ImageComponent(
-                      imageModifier = Modifier.fillMaxSize(),
-                      imageRes = imageUrl,
-                      contentScale = ContentScale.Crop,
-                      isAsync = true
-                  )
-                  Box(modifier = Modifier
-                              .fillMaxWidth()
-                              .fillMaxHeight(),
-                      contentAlignment = Alignment.BottomCenter
-                  ) {
-
-                 Box(modifier = Modifier.fillMaxWidth().wrapContentHeight()
-                          .background(color = Color(0x90ffffff)),
-                      contentAlignment = Alignment.BottomCenter
-                  ) {
-                      StatusText()
-                  }
-                }
-              }
-           }
+                StatusText()
+            }
         }
+    }
 
 
     @Composable
     fun getVideoStatusWidget(videoUrl: String) {
-        Column (
+        Column(
             modifier = Modifier
                 .padding(top = 5.dp)
                 .fillMaxWidth()
@@ -78,24 +71,24 @@ class BusinessStatusItemWidget {
                 // Video Playback
                 VideoPlayer(modifier = Modifier.fillMaxSize(), url = videoUrl)
             }
-            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    StatusText()
-                }
-           }
+            Box(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                StatusText()
+            }
+        }
     }
-
 
 
     @Composable
     fun StatusText() {
         Box(
             modifier = Modifier
-                .padding(top = 10.dp, start = 20.dp, end = 20.dp)
+                .padding(start = 20.dp, end = 20.dp)
                 .fillMaxWidth()
                 .wrapContentHeight(),
-            contentAlignment = Alignment.BottomCenter
+            contentAlignment = Alignment.Center
         ) {
             TextComponent(
                 textModifier = Modifier.fillMaxWidth().padding(top = 5.dp, bottom = 10.dp),
@@ -108,11 +101,13 @@ class BusinessStatusItemWidget {
                 fontWeight = FontWeight.ExtraBold,
                 lineHeight = 23,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis)
+                overflow = TextOverflow.Ellipsis
+            )
 
         }
 
     }
-
 }
+
+
 

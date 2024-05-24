@@ -1,6 +1,6 @@
 package presentation.widgets
 
-import domain.Models.BusinessStatusAdsPage
+import domain.Models.BusinessWhatsAppStatusPage
 import domain.Models.BusinessStatusAdsProgress
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun BusinessStatusWidget(adsPageList: List<BusinessStatusAdsPage>, adsPageProgress: List<BusinessStatusAdsProgress>) {
+fun BusinessStatusWidget(adsPageList: List<BusinessWhatsAppStatusPage>, adsPageProgress: List<BusinessStatusAdsProgress>) {
     val pagerState = rememberPagerState(pageCount = {
         adsPageList.size
     })
@@ -41,7 +41,7 @@ fun BusinessStatusWidget(adsPageList: List<BusinessStatusAdsPage>, adsPageProgre
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { page ->
-            LoadBusinessStatus(currentPage = currentPage, pagerState.pageCount, onNextPage = {
+            LoadStatusView(currentPage = currentPage, pagerState.pageCount, onNextPage = {
                   currentPage = it
                   isRestart = true
 
@@ -71,7 +71,7 @@ fun BusinessStatusWidget(adsPageList: List<BusinessStatusAdsPage>, adsPageProgre
 }
 
 @Composable
-private fun LoadBusinessStatus(currentPage: Int, totalPage: Int, onNextPage: (page: Int) -> Unit, onProgress: (progress: Float) -> Unit){
+private fun LoadStatusView(currentPage: Int, totalPage: Int, onNextPage: (page: Int) -> Unit, onProgress: (progress: Float) -> Unit){
 
     var currentTime by remember { mutableStateOf(0f) }
     var currentPageInView by remember { mutableStateOf(0) }
