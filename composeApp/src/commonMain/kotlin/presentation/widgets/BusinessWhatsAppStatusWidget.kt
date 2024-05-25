@@ -31,7 +31,7 @@ import theme.styles.Colors
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun BusinessWhatsAppStatusWidget(whatsAppStatusList: List<VendorStatusModel>) {
+fun BusinessWhatsAppStatusWidget(whatsAppStatusList: List<VendorStatusModel>, onStatusViewChanged: (Boolean) -> Unit) {
     val pagerState = rememberPagerState(pageCount = {
         whatsAppStatusList.size
     })
@@ -65,9 +65,7 @@ fun BusinessWhatsAppStatusWidget(whatsAppStatusList: List<VendorStatusModel>) {
         ) { page ->
             val currentStatus = whatsAppStatusList[page]
             Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().background(color = Color.Transparent)) {
-                LoadStatusView(currentPage = currentImageId, totalPage = whatsAppStatusList.size, statusModel = currentStatus) {
-                    currentImageId = it
-                }
+                LoadStatusView(statusModel = currentStatus, onStatusViewChanged)
             }
         }
     }
@@ -94,15 +92,13 @@ fun BusinessWhatsAppStatusWidget(whatsAppStatusList: List<VendorStatusModel>) {
 
 
 @Composable
-private fun LoadStatusView(currentPage: Int, totalPage: Int, statusModel: VendorStatusModel, onNextPage: (page: Int) -> Unit) {
+private fun LoadStatusView(statusModel: VendorStatusModel, onStatusViewChanged: (Boolean) -> Unit) {
 
     if(statusModel.statusType == 0){
-        //onNextPage(currentPageInView)
-        BusinessStatusItemWidget().getImageStatusWidget ("https://cdn.pixabay.com/photo/2024/03/31/06/16/bird-8666099_1280.jpg")
+        BusinessStatusItemWidget().getImageStatusWidget ("https://cdn.pixabay.com/photo/2024/03/31/06/16/bird-8666099_1280.jpg", vendorStatusModel = statusModel, onStatusViewChanged)
     }
     else{
-        BusinessStatusItemWidget().getVideoStatusWidget ("https://s3.eu-central-1.wasabisys.com/in-files/2348102853533/mp4-0f677c282efef29cec333154a2401188-94e000-0222b4323187.mp4")
-       // onNextPage(currentPageInView)
+        BusinessStatusItemWidget().getVideoStatusWidget ("https://s3.eu-central-1.wasabisys.com/in-files/2348102853533/mp4-0f677c282efef29cec333154a2401188-94e000-0222b4323187.mp4", vendorStatusModel = statusModel, onStatusViewChanged)
     }
 }
 

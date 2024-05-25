@@ -46,7 +46,7 @@ fun ReplyWidget(iconRes: String, placeholderText: String, defaultValue: String =
     }
 
     val modifier  = Modifier
-        .padding(end = 10.dp, start = 10.dp, top = 20.dp)
+        .padding(end = 10.dp, start = 10.dp)
         .fillMaxWidth()
         .height(viewHeight.dp)
         .border(border = if (isFocused.value) BorderStroke(1.dp, color = Colors.primaryColor) else  BorderStroke(2.dp, color = Color.Transparent), shape = CircleShape)

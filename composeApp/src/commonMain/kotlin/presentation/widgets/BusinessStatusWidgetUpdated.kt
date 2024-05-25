@@ -107,10 +107,10 @@ private fun LoadStatusView(currentPage: Int, totalPage: Int, adsPageList: List<B
         if(currentPageInView >= totalPage || currentPageInView < 0){
             currentPageInView = 0
             onNextPage(currentPageInView)
-            adsPageList[currentPageInView].statusWidget.getImageStatusWidget (adsPageList[currentPageInView].imageUrl)
+          // adsPageList[currentPageInView].statusWidget.getImageStatusWidget (adsPageList[currentPageInView].imageUrl)
         }
         else{
-            adsPageList[currentPageInView].statusWidget.getImageStatusWidget (adsPageList[currentPageInView].imageUrl)
+           // adsPageList[currentPageInView].statusWidget.getImageStatusWidget (adsPageList[currentPageInView].imageUrl)
             onNextPage(currentPageInView)
         }
 }

@@ -1,5 +1,9 @@
 package presentation
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -52,31 +56,18 @@ fun TestWidgetCompose(platformNavigator: PlatformNavigator) {
     statusList.add(statusModel6)
 
     val isStatusExpanded = remember { mutableStateOf(false) }
-    val imageRes = if(isStatusExpanded.value) "drawable/collapse_icon.png"  else "drawable/expand_icon.png"
+
+    val heightChange: Float by animateFloatAsState(targetValue = if (isStatusExpanded.value) 0.80f else 0.60f,
+        animationSpec = tween(durationMillis = 600, easing = LinearOutSlowInEasing))
+
     val modifier =
         Modifier.fillMaxWidth()
-            .fillMaxHeight(if (isStatusExpanded.value) 0.80f else 0.60f)
+            .fillMaxHeight(heightChange)
             .background(color = Color.White)
     Box(modifier = modifier, contentAlignment = Alignment.TopCenter) {
-        BusinessWhatsAppStatusWidget(statusList)
-        Box(modifier = Modifier.fillMaxWidth().height(80.dp).padding(end = 10.dp, top = 20.dp), contentAlignment = Alignment.TopEnd) {
-            AttachExpandCollapseIcon(imageRes = imageRes) {
-                isStatusExpanded.value = !isStatusExpanded.value
-            }
-        }
-    }
-}
-
-@Composable
-fun AttachExpandCollapseIcon(imageRes: String, onClick:() -> Unit) {
-    Box(modifier = Modifier.size(40.dp).background(color = Color.White, shape = CircleShape), contentAlignment = Alignment.Center) {
-        val modifier = Modifier
-            .padding(top = 2.dp)
-            .clickable {
-                onClick()
-            }
-            .size(20.dp)
-        ImageComponent(imageModifier = modifier, imageRes = imageRes, colorFilter = ColorFilter.tint(color = Colors.darkPrimary))
+        BusinessWhatsAppStatusWidget(statusList, onStatusViewChanged = {
+            isStatusViewExpanded -> isStatusExpanded.value = isStatusViewExpanded
+        })
     }
 }
 
