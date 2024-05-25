@@ -121,7 +121,7 @@ class BusinessStatusItemWidget {
                 .fillMaxWidth()
                 .fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top
         ) {
             Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(if(isStatusExpanded.value) 0.70f else 0.85f)) {
                 // Video Playback
