@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import applications.videoplayer.VideoPlayer
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
+import presentations.widgets.InputWidget
 import theme.styles.Colors
 
 class BusinessStatusItemWidget {
@@ -39,7 +41,7 @@ class BusinessStatusItemWidget {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.85f)) {
+            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.70f)) {
                 ImageComponent(
                     imageModifier = Modifier.fillMaxSize(),
                     imageRes = imageUrl,
@@ -48,10 +50,17 @@ class BusinessStatusItemWidget {
                 )
             }
             Box(
-                modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                modifier = Modifier.fillMaxWidth().height(50.dp),
                 contentAlignment = Alignment.Center
             ) {
                 StatusText()
+            }
+            ReplyWidget(
+                iconRes = "drawable/send_icon.png",
+                placeholderText = "Reply",
+                iconSize = 28
+            ) {
+
             }
         }
     }
