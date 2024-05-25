@@ -101,7 +101,7 @@ private fun LoadStatusView(currentPage: Int, totalPage: Int, statusModel: Vendor
         BusinessStatusItemWidget().getImageStatusWidget ("https://cdn.pixabay.com/photo/2024/03/31/06/16/bird-8666099_1280.jpg")
     }
     else{
-        BusinessStatusItemWidget().getVideoStatusWidget ("https://s3.eu-central-1.wasabisys.com/in-files/2348102853533/mp4-13e00425a49ca6db8fb32c2a36eb8276-942100-0222b8efc37e.mp4")
+        BusinessStatusItemWidget().getVideoStatusWidget ("https://s3.eu-central-1.wasabisys.com/in-files/2348102853533/mp4-0f677c282efef29cec333154a2401188-94e000-0222b4323187.mp4")
        // onNextPage(currentPageInView)
     }
 }
