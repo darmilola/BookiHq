@@ -137,6 +137,9 @@ kotlin {
             implementation("dev.jordond.compass:compass-geocoder:0.1.7")
             implementation("dev.jordond.compass:compass-geocoder-mobile:0.1.7")
 
+            // Item Loading Placeholder
+            implementation("com.eygraber:compose-placeholder-material3:1.0.8")
+
 
         }
 

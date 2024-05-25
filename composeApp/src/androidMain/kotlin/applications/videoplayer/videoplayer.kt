@@ -28,12 +28,16 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
+import com.eygraber.compose.placeholder.PlaceholderHighlight
+import com.eygraber.compose.placeholder.material3.fade
+import com.eygraber.compose.placeholder.material3.placeholder
+import domain.Models.VideoStatusViewMeta
 import kotlinx.coroutines.flow.collectLatest
 import presentations.components.ImageComponent
 import theme.Colors
 
 @OptIn(UnstableApi::class) @Composable
-actual fun VideoPlayer(modifier: Modifier, url: String) {
+actual fun VideoPlayer(modifier: Modifier, url: String, videoStatusViewMeta: VideoStatusViewMeta) {
     // Get the current context
     val context = LocalContext.current
 
@@ -44,9 +48,9 @@ actual fun VideoPlayer(modifier: Modifier, url: String) {
         MediaItem.fromUri(url)
     }
     exoPlayer.videoScalingMode = C.VIDEO_SCALING_MODE_DEFAULT
-    exoPlayer.playWhenReady = true
-    exoPlayer.prepare()
-
+    if (videoStatusViewMeta.currentPage == videoStatusViewMeta.settledPage) {
+        exoPlayer.playWhenReady = true
+    }
 
     LaunchedEffect(mediaSource) {
         exoPlayer.setMediaItem(mediaSource)
@@ -139,6 +143,7 @@ fun ShowPlayerViewUI(exoPlayer: ExoPlayer) {
         val modifier = Modifier
             .background(color = bgColor)
             .fillMaxSize()
+
         Box(
             modifier = modifier.clickable(interactionSource = interactionSource, indication = null, onClick = {}),
             contentAlignment = Alignment.Center

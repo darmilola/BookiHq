@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,7 +31,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import applications.videoplayer.VideoPlayer
+import com.eygraber.compose.placeholder.PlaceholderHighlight
+import com.eygraber.compose.placeholder.material3.fade
+import com.eygraber.compose.placeholder.material3.placeholder
 import domain.Models.VendorStatusModel
+import domain.Models.VideoStatusViewMeta
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import presentations.widgets.InputWidget
@@ -104,11 +110,10 @@ class BusinessStatusItemWidget {
 
 
     @Composable
-    fun getVideoStatusWidget(videoUrl: String, vendorStatusModel: VendorStatusModel, onStatusViewChanged: (Boolean) -> Unit) {
+    fun getVideoStatusWidget(videoUrl: String, vendorStatusModel: VendorStatusModel,videoStatusViewMeta: VideoStatusViewMeta, onStatusViewChanged: (Boolean) -> Unit) {
 
         val isStatusExpanded = remember { mutableStateOf(false) }
         val imageRes = if(isStatusExpanded.value) "drawable/collapse_icon.png"  else "drawable/expand_icon.png"
-
 
         Column(
             modifier = Modifier
@@ -120,7 +125,7 @@ class BusinessStatusItemWidget {
         ) {
             Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(if(isStatusExpanded.value) 0.70f else 0.85f)) {
                 // Video Playback
-                VideoPlayer(modifier = Modifier.fillMaxSize(), url = videoUrl)
+                VideoPlayer(modifier = Modifier.fillMaxSize(), url = videoUrl, videoStatusViewMeta = videoStatusViewMeta)
                 Box(modifier = Modifier.fillMaxWidth().height(80.dp).padding(end = 10.dp, top = 10.dp), contentAlignment = Alignment.TopEnd) {
                     AttachExpandCollapseIcon(imageRes = imageRes) {
                         isStatusExpanded.value = !isStatusExpanded.value

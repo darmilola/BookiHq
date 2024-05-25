@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import domain.Models.VendorStatusModel
+import domain.Models.VideoStatusViewMeta
 import kotlinx.coroutines.launch
 import theme.styles.Colors
 
@@ -35,70 +36,72 @@ fun BusinessWhatsAppStatusWidget(whatsAppStatusList: List<VendorStatusModel>, on
     val pagerState = rememberPagerState(pageCount = {
         whatsAppStatusList.size
     })
-    var currentImageId by remember { mutableStateOf(0) }
-    var isRestart by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier
-        .fillMaxHeight()
-        .fillMaxWidth(),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally) {
-        Row(Modifier
-            .height(10.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxHeight()
             .fillMaxWidth(),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            Modifier
+                .height(10.dp)
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Bottom
         ) {
             repeat(whatsAppStatusList.size) { iteration ->
-                val color = if (pagerState.currentPage == iteration) Colors.darkPrimary else Colors.darkPrimary.copy(alpha = 0.2f)
-                Box(modifier = Modifier
+                val color =
+                    if (pagerState.currentPage == iteration) Colors.darkPrimary else Colors.darkPrimary.copy(
+                        alpha = 0.2f
+                    )
+                Box(
+                    modifier = Modifier
                         .padding(start = 4.dp, end = 4.dp, top = 4.dp)
                         .clip(CircleShape)
                         .background(color)
                         .height(2.dp)
-                        .weight(1f, fill = true))
+                        .weight(1f, fill = true)
+                )
             }
         }
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
-        ) { page ->
-            val currentStatus = whatsAppStatusList[page]
-            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().background(color = Color.Transparent)) {
-                LoadStatusView(statusModel = currentStatus, onStatusViewChanged)
-            }
+        ) { currentPage ->
+            val currentStatus = whatsAppStatusList[currentPage]
+                Box(
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                        .background(color = Color.Transparent)
+                ) {
+                    LoadStatusView(
+                        statusModel = currentStatus,
+                        currentPage = currentPage,
+                        settledPage = pagerState.settledPage,
+                        onStatusViewChanged = onStatusViewChanged
+                    )
+                }
+
         }
+
     }
-
-
-    LaunchedEffect(key1 = isRestart) {
-        launch {   // animate scrolls to page
-            with(pagerState) {
-                scrollToPage(page = currentImageId)
-            }
-        }
-    }
-
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.collect { page ->
-            currentImageId = page //manual scrolls to page and fling animate
-            isRestart = false
-        }
-    }
-
 }
 
 
 
 
 @Composable
-private fun LoadStatusView(statusModel: VendorStatusModel, onStatusViewChanged: (Boolean) -> Unit) {
-
+private fun LoadStatusView(statusModel: VendorStatusModel, currentPage: Int, settledPage: Int, onStatusViewChanged: (Boolean) -> Unit) {
     if(statusModel.statusType == 0){
+        onStatusViewChanged(false)
         BusinessStatusItemWidget().getImageStatusWidget ("https://cdn.pixabay.com/photo/2024/03/31/06/16/bird-8666099_1280.jpg", vendorStatusModel = statusModel, onStatusViewChanged)
     }
     else{
-        BusinessStatusItemWidget().getVideoStatusWidget ("https://s3.eu-central-1.wasabisys.com/in-files/2348102853533/mp4-0f677c282efef29cec333154a2401188-94e000-0222b4323187.mp4", vendorStatusModel = statusModel, onStatusViewChanged)
+        val videoStatusViewMeta = VideoStatusViewMeta(currentPage = currentPage, settledPage = settledPage)
+        onStatusViewChanged(false)
+        BusinessStatusItemWidget().getVideoStatusWidget ("https://s3.eu-central-1.wasabisys.com/in-files/2348102853533/mp4-0f677c282efef29cec333154a2401188-94e000-0222b4323187.mp4", vendorStatusModel = statusModel,
+            videoStatusViewMeta = videoStatusViewMeta, onStatusViewChanged)
     }
 }
 

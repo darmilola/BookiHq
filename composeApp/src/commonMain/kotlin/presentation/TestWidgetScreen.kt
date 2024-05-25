@@ -41,9 +41,9 @@ import theme.styles.Colors
 fun TestWidgetCompose(platformNavigator: PlatformNavigator) {
 
     val statusList = arrayListOf<VendorStatusModel>()
-    val statusModel1 = VendorStatusModel(statusType = 0)
-    val statusModel2 = VendorStatusModel(statusType = 1)
-    val statusModel3 = VendorStatusModel(statusType = 0)
+    val statusModel1 = VendorStatusModel(statusId = 5, statusType = 1)
+    val statusModel2 = VendorStatusModel(statusId = 6, statusType = 1)
+    val statusModel3 = VendorStatusModel(statusId = 7, statusType = 0)
     val statusModel4 = VendorStatusModel(statusType = 1)
     val statusModel5 = VendorStatusModel(statusType = 0)
     val statusModel6 = VendorStatusModel(statusType = 1)
