@@ -38,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
@@ -53,6 +54,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import applications.device.ScreenSizeInfo
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
@@ -90,16 +92,20 @@ import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
+import utils.calculateHomePageScreenHeight
+import utils.getPercentViewHeight
 import utils.getPopularProductViewHeight
+import utils.getServicesViewHeight
 
 class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
     private val preferenceSettings: Settings = Settings()
     private var homePageViewModel: HomePageViewModel? = null
     private var uiStateViewModel: UIStateViewModel? = null
-    var userHomeInfo: HomepageInfo? = null
+    private var userHomeInfo: HomepageInfo? = null
     private val homepagePresenter: HomepagePresenter by inject()
     private var userEmail: String = ""
+    private var homeScreenHeight = 0
 
   @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -121,8 +127,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
     @Composable
     override fun Content() {
-        var isContentLoaded = remember { mutableStateOf(true) }
-        userEmail = preferenceSettings["userEmail", ""] // User Email Retrieved After Authentication to populate the System
+        userEmail = preferenceSettings["userEmail", ""]
 
         if (uiStateViewModel == null) {
             uiStateViewModel = kmpViewModel(
@@ -142,11 +147,13 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
         }
 
         val uiState = homePageViewModel!!.homePageUIState.collectAsState()
+        val isContentLoaded = remember { mutableStateOf(true) }
 
         val handler = HomePageHandler(uiStateViewModel!!, homepagePresenter,
             onPageLoading = {
                 homePageViewModel!!.setHomePageUIState(AsyncUIStates(isLoading = true))
             }, onHomeInfoAvailable = {
+                homeScreenHeight = calculateHomePageScreenHeight(homepageInfo = it)
                 userHomeInfo = it
                 isContentLoaded.value = true
                 homePageViewModel!!.setHomePageUIState(
@@ -155,9 +162,9 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                         isDone = true
                     )
                 )
-            }
-
-            , onErrorVisible = {
+                println(it)
+            }, onErrorVisible = {
+                println("Error")
                 homePageViewModel!!.setHomePageUIState(
                     AsyncUIStates(
                         isSuccess = false,
@@ -183,6 +190,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
             if (isContentLoaded.value) {
 
+                println("Calculated Screen height $homeScreenHeight")
                 val userInfo = userHomeInfo!!.userInfo
                 val vendorInfo = userHomeInfo!!.vendorInfo
                 val vendorStatus = userHomeInfo!!.vendorStatus
@@ -208,9 +216,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                 if (specialistInfo != null) {
                     //mainViewModel.setSpecialistInfo(specialistInfo)
                 }
-                val columnModifier = Modifier
-                    .padding(top = 5.dp)
-                    .fillMaxSize()
 
                 // Main Service Content Arena
 
@@ -218,24 +223,17 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                     snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
                     topBar = {},
                     content = {
-
-                        Column(
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = columnModifier
-                        ) {
-                            Column(
-                                Modifier
-                                    .fillMaxSize()
-                                    .background(color = Color.White)
-
-                            ) {
-                                Column(
+                               Column(
                                     Modifier
-                                        .fillMaxSize()
+                                        .verticalScroll(state = rememberScrollState())
+                                        .height(homeScreenHeight.dp)
+                                        .padding(top = 5.dp)
+                                        .background(color = Color.White)
+                                        .fillMaxWidth()
+
                                 ) {
-                                    if (vendorStatus != null) {
-                                        BusinessStatusDisplay(vendorStatus)
+                                 if (vendorStatus != null) {
+                                        BusinessStatusDisplay(vendorStatus, onViewHeightReady = {})
                                     }
                                     AttachOurServices()
                                     if (vendorServices != null) {
@@ -246,43 +244,36 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                                     }
 
                                     PopularProducts()
-
                                     if (popularProducts != null) {
                                         PopularProductScreen(
                                             popularProducts,
                                             mainViewModel,
-                                            stackedSnackBarHostState
-                                        )
+                                            stackedSnackBarHostState)
                                     }
                                     AttachAppointments()
-                                    RecentAppointmentScreen(
-                                        appointmentList = recentAppointments
-                                    )
+                                    RecentAppointmentScreen(appointmentList = recentAppointments)
                                 }
-                            }
-                        }
                     })
             }
         }
     }
 
-
-
     @Composable
     fun ServiceGridScreen(vendorServices: List<Services>) {
+        val viewHeight = getServicesViewHeight(vendorServices)
         LazyVerticalGrid(
             columns = GridCells.Fixed(4),
-            modifier = Modifier.fillMaxWidth().height(280.dp),
+            modifier = Modifier.fillMaxWidth().height(viewHeight.dp),
             contentPadding = PaddingValues(5.dp),
             verticalArrangement = Arrangement.Center,
             horizontalArrangement = Arrangement.Center,
             userScrollEnabled = false
         ) {
             items(vendorServices.size) {
-                   HomeServicesWidget(vendorServices[it], mainViewModel)
-                 }
+                HomeServicesWidget(vendorServices[it], mainViewModel)
             }
         }
+     }
 
 @Composable
     fun AttachOurServices(){
@@ -312,32 +303,35 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
     }
 
     @Composable
-    fun RecommendedSessions(recommendations: List<VendorRecommendation>){
-        val rowModifier = Modifier
-            .padding(start = 10.dp, top = 10.dp)
-            .fillMaxWidth()
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = rowModifier
-            ) {
-                TextComponent(
-                    text = "Recommendation",
-                    textModifier = Modifier.fillMaxWidth(0.35f),
-                    fontSize = 16,
-                    fontFamily = GGSansRegular,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Colors.darkPrimary,
-                    textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.ExtraBold,
-                    lineHeight = 30,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                StraightLine()
-            }
-             RecommendedAppointmentList(recommendations)
-      }
+    fun RecommendedSessions(recommendations: List<VendorRecommendation>) {
+        Column(modifier = Modifier.fillMaxWidth().height(450.dp)) {
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(start = 10.dp, top = 10.dp)
+                .height(40.dp)
+                .fillMaxWidth()
+        ) {
+            TextComponent(
+                text = "Recommendation",
+                textModifier = Modifier.fillMaxWidth(0.35f),
+                fontSize = 16,
+                fontFamily = GGSansRegular,
+                textStyle = MaterialTheme.typography.h6,
+                textColor = Colors.darkPrimary,
+                textAlign = TextAlign.Left,
+                fontWeight = FontWeight.ExtraBold,
+                lineHeight = 30,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+            StraightLine()
+        }
+        RecommendedAppointmentList(recommendations)
+    }
+
+    }
 
 
     @Composable
@@ -422,8 +416,10 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                 }, onRemoveFromCart = {})
             }
 
+            val viewHeight = getPopularProductViewHeight(popularProducts)
+
             LazyColumn(
-                modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(getPopularProductViewHeight(popularProducts).dp),
+                modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(viewHeight.dp),
                 contentPadding = PaddingValues(top = 6.dp, bottom = 6.dp),
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 userScrollEnabled = false
@@ -448,8 +444,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
         val boxModifier =
             Modifier
                 .background(color = Color.White)
-                .height(410.dp)
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(start = 5.dp)
 
         val boxBgModifier =
@@ -460,7 +455,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
         Box(modifier = boxBgModifier) {
             var showProductBottomSheet by remember { mutableStateOf(false) }
-
 
 
             Box(contentAlignment = Alignment.BottomCenter, modifier = boxModifier) {
@@ -517,9 +511,10 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
     @Composable
     fun RecentAppointmentScreen(appointmentList: List<Appointment>?) {
         if (appointmentList != null) {
+            val viewHeight = getAppointmentViewHeight(appointmentList)
             LazyColumn(
                 modifier = Modifier.fillMaxWidth()
-                    .height(getAppointmentViewHeight(appointmentList).dp), userScrollEnabled = false
+                    .height(viewHeight.dp), userScrollEnabled = false
             ) {
                 items(key = { it -> it.appointmentId!!}, items =  appointmentList) { item ->
                     NewAppointmentWidget(item)
@@ -558,20 +553,8 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
             onHomeInfoAvailable(homePageInfo)
         }
     }
-
     @Composable
-    fun GetBusinessPageList(statusList: List<VendorStatusModel>) : List<BusinessWhatsAppStatusPage> {
-         val adsList: ArrayList<BusinessWhatsAppStatusPage> = arrayListOf()
-         val imageWidget = BusinessStatusItemWidget()
-        for (item in statusList){
-            val statusAdsPage = BusinessWhatsAppStatusPage(statusWidget = imageWidget, imageUrl = item.imageUrl)
-            adsList.add(statusAdsPage)
-         }
-         return adsList
-    }
-
-    @Composable
-    fun BusinessStatusDisplay(statusList: List<VendorStatusModel>) {
+    fun BusinessStatusDisplay(statusList: List<VendorStatusModel>, onViewHeightReady: (Int) -> Unit?) {
         val statusList = arrayListOf<VendorStatusModel>()
         val statusModel1 = VendorStatusModel(statusId = 5, statusType = 1)
         val statusModel2 = VendorStatusModel(statusId = 6, statusType = 1)
@@ -588,14 +571,20 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
         statusList.add(statusModel6)
 
         val isStatusExpanded = remember { mutableStateOf(false) }
+        val screenSizeInfo = ScreenSizeInfo()
 
         val heightChange: Float by animateFloatAsState(targetValue = if (isStatusExpanded.value) 0.80f else 0.60f,
             animationSpec = tween(durationMillis = 600, easing = LinearOutSlowInEasing)
         )
 
+        val viewHeight = getPercentViewHeight(screenSizeInfo.heightDp, percentChange = if (isStatusExpanded.value) 80 else 60)
+        onViewHeightReady(viewHeight)
+
+        println("Status view height $viewHeight")
+
         val modifier =
             Modifier.fillMaxWidth()
-                .fillMaxHeight(heightChange)
+                .height(viewHeight.dp)
                 .background(color = Color.White)
         Box(modifier = modifier, contentAlignment = Alignment.TopCenter) {
             BusinessWhatsAppStatusWidget(statusList, onStatusViewChanged = {

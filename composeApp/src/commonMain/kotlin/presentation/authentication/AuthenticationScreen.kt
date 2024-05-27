@@ -36,7 +36,6 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
     private val preferenceSettings: Settings = Settings()
     private val authenticationPresenter : AuthenticationPresenter by inject()
     private var uiStateViewModel: UIStateViewModel? = null
-    private var userNavigation = false
     private var userNavigationPosition = AuthSSOScreenNav.AUTH_LOGIN.toPath()
     private var authenticationViewModel: AuthenticationViewModel? = null
     private var auth0UserEmail = ""
@@ -49,6 +48,7 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
         val errorVisible = remember { mutableStateOf(false) }
         val imageUploading = remember { mutableStateOf(false) }
         val isAuthEmailAssigned = remember { mutableStateOf(false) }
+        var userNavigation = remember { mutableStateOf(false) }
 
         // for Ios Auth0
         preferenceSettings as ObservableSettings
@@ -103,13 +103,13 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
             enterPlatform = {
                 preferenceSettings["userEmail"] = it
                 preferenceSettings["isVendorConnected"] = true
-                userNavigation = true
-                isAuthEmailAssigned.value = false
+                userNavigation.value = true
+                //isAuthEmailAssigned.value = false
                 userNavigationPosition = AuthSSOScreenNav.MAIN.toPath()
             },
             completeProfile = {
                 preferenceSettings.clear()
-                userNavigation = true
+                userNavigation.value = true
                 isAuthEmailAssigned.value = false
                 userNavigationPosition = AuthSSOScreenNav.COMPLETE_PROFILE.toPath()
             },
@@ -118,7 +118,7 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
                 preferenceSettings["userEmail"] = it
                 preferenceSettings["isVendorConnected"] = false
                 isAuthEmailAssigned.value = false
-                userNavigation = true
+                userNavigation.value = true
                 userNavigationPosition = AuthSSOScreenNav.CONNECT_VENDOR.toPath()
             }, isLoading = {}, isSuccess = {}, isFailed = {})
         handler.init()
@@ -144,19 +144,19 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
         if (isAuthEmailAssigned.value && auth0UserEmail.isNotEmpty() && currentPosition == AuthSSOScreenNav.AUTH_LOGIN.toPath()) {
             authenticationPresenter.validateUserProfile(auth0UserEmail)
         }
-        if(!userNavigation) {
+        if(!userNavigation.value) {
             AuthenticationScreenCompose(currentPosition = currentPosition)
         }
-        else if(userNavigation && userNavigationPosition == AuthSSOScreenNav.COMPLETE_PROFILE.toPath()){
+        else if(userNavigation.value && userNavigationPosition == AuthSSOScreenNav.COMPLETE_PROFILE.toPath()){
             currentPosition =  AuthSSOScreenNav.COMPLETE_PROFILE.toPath()
             AuthenticationScreenCompose(currentPosition = userNavigationPosition, userEmail = auth0UserEmail)
         }
-        else if(userNavigation && userNavigationPosition == AuthSSOScreenNav.CONNECT_VENDOR.toPath()){
+        else if(userNavigation.value && userNavigationPosition == AuthSSOScreenNav.CONNECT_VENDOR.toPath()){
             currentPosition =  AuthSSOScreenNav.CONNECT_VENDOR.toPath()
             val navigator = LocalNavigator.current
             navigator?.replaceAll(ConnectPage(platformNavigator))
         }
-        else if(userNavigation && userNavigationPosition == AuthSSOScreenNav.MAIN.toPath()){
+        else if(userNavigation.value && userNavigationPosition == AuthSSOScreenNav.MAIN.toPath()){
             currentPosition =  AuthSSOScreenNav.MAIN.toPath()
             val navigator = LocalNavigator.current
             navigator?.replaceAll(MainScreen(platformNavigator = platformNavigator))
