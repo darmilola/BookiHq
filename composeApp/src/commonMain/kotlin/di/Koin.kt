@@ -40,7 +40,7 @@ private val KtorModule = module {
     single {
         httpClient {
             defaultRequest {
-                host =  "devprocess-dd1566e93331.herokuapp.com"
+                host =  "zazzyapi.onrender.com"
                 url {
                     protocol = URLProtocol.HTTPS
                 }

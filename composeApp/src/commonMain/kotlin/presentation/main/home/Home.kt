@@ -3,6 +3,9 @@ package presentation.main.home
 import GGSansRegular
 import StackedSnackbarHost
 import StackedSnakbarHostState
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import domain.Models.BusinessWhatsAppStatusPage
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -17,7 +20,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,10 +30,13 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.navigator.tab.Tab
@@ -44,44 +49,58 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
+import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import domain.Models.Appointment
+import domain.Models.HomepageInfo
 import domain.Models.OrderItem
 import domain.Models.Product
 import domain.Models.VendorRecommendation
 import domain.Models.RecommendationType
 import domain.Models.Screens
 import domain.Models.Services
-import domain.Models.Vendor
 import domain.Models.VendorStatusModel
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import presentation.components.StraightLine
 import presentation.Products.ProductDetailBottomSheet
 import presentation.Products.HomeProductItem
+import presentation.components.IndeterminateCircularProgressBar
+import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.UIStates
 import utils.getAppointmentViewHeight
 import presentation.widgets.BusinessStatusItemWidget
 import presentation.widgets.BusinessStatusWidgetUpdated
+import presentation.widgets.BusinessWhatsAppStatusWidget
 import presentation.widgets.HomeServicesWidget
 import presentation.widgets.NewAppointmentWidget
 import presentation.widgets.RecommendedServiceItem
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
-import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import utils.getPopularProductViewHeight
 
-class HomeTab(private val homePageViewModel: HomePageViewModel,
-              private val mainViewModel: MainViewModel) : Tab, KoinComponent {
+class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
+
     private val preferenceSettings: Settings = Settings()
+    private var homePageViewModel: HomePageViewModel? = null
+    private var uiStateViewModel: UIStateViewModel? = null
+    var userHomeInfo: HomepageInfo? = null
+    private val homepagePresenter: HomepagePresenter by inject()
+    private var userEmail: String = ""
+
   @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
         @Composable
@@ -98,83 +117,153 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
             }
         }
 
+
+
     @Composable
     override fun Content() {
-         val userInfo = homePageViewModel.homePageInfo.value.homepageModel.userInfo
-         val vendorInfo = homePageViewModel.homePageInfo.value.homepageModel.vendorInfo
-         val vendorStatus = homePageViewModel.homePageInfo.value.homepageModel.vendorStatus
-         val vendorServices = homePageViewModel.homePageInfo.value.homepageModel.vendorServices
-         val specialistInfo = homePageViewModel.homePageInfo.value.homepageModel.specialistInfo
-         val popularProducts = homePageViewModel.homePageInfo.value.homepageModel.popularProducts
-         val recentAppointments = homePageViewModel.homePageInfo.value.homepageModel.recentAppointment
-         val vendorRecommendations = homePageViewModel.homePageInfo.value.homepageModel.recommendationRecommendations
+        var isContentLoaded = remember { mutableStateOf(true) }
+        userEmail = preferenceSettings["userEmail", ""] // User Email Retrieved After Authentication to populate the System
 
-        val stackedSnackBarHostState = rememberStackedSnackbarHostState(
-            maxStack = 5,
-            animation = StackedSnackbarAnimation.Bounce
-        )
-
-        if (userInfo != null) {
-            mainViewModel.setUserInfo(userInfo)
-            setCityId(userInfo.cityId!!)
-            setCountryId(userInfo.countryId!!)
+        if (uiStateViewModel == null) {
+            uiStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
         }
-        if (vendorInfo != null) {
-            mainViewModel.setConnectedVendor(vendorInfo)
+
+        if (homePageViewModel == null) {
+            homePageViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    HomePageViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+            homepagePresenter.getUserHomepage(userEmail)
         }
-        if (specialistInfo != null) {
-            mainViewModel.setSpecialistInfo(specialistInfo)
-        }
-            val columnModifier = Modifier
-                .padding(top = 5.dp)
-                .fillMaxSize()
 
-        Scaffold(
-            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
-            topBar = {},
-            content = {
+        val uiState = homePageViewModel!!.homePageUIState.collectAsState()
 
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = columnModifier
-            ) {
-                Column(
-                    Modifier
-                        .fillMaxSize()
-                        .background(color = Color.White)
-
-                ) {
-                    Column(Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())) {
-                        if (vendorInfo != null) {
-                            AttachBusinessName(vendorInfo)
-                        }
-                        if (vendorStatus != null) {
-                            BusinessStatusDisplay(vendorStatus)
-                        }
-                        AttachOurServices()
-                        if (vendorServices != null) {
-                            ServiceGridScreen(vendorServices)
-                        }
-                        if (vendorRecommendations != null) {
-                            RecommendedSessions(vendorRecommendations)
-                        }
-
-                        PopularProducts()
-
-                        if (popularProducts != null) {
-                            PopularProductScreen(popularProducts,mainViewModel, stackedSnackBarHostState)
-                        }
-                        AttachAppointments()
-                        RecentAppointmentScreen(
-                            appointmentList = recentAppointments
-                        )
-                    }
-                }
+        val handler = HomePageHandler(uiStateViewModel!!, homepagePresenter,
+            onPageLoading = {
+                homePageViewModel!!.setHomePageUIState(AsyncUIStates(isLoading = true))
+            }, onHomeInfoAvailable = {
+                userHomeInfo = it
+                isContentLoaded.value = true
+                homePageViewModel!!.setHomePageUIState(
+                    AsyncUIStates(
+                        isSuccess = true,
+                        isDone = true
+                    )
+                )
             }
-        })
+
+            , onErrorVisible = {
+                homePageViewModel!!.setHomePageUIState(
+                    AsyncUIStates(
+                        isSuccess = false,
+                        isDone = true
+                    )
+                )
+            })
+        handler.init()
+
+        if (uiState.value.isLoading) {
+            //Content Loading
+            Box(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                    .padding(top = 40.dp, start = 50.dp, end = 50.dp)
+                    .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                IndeterminateCircularProgressBar()
+            }
+        } else if (uiState.value.isDone && !uiState.value.isSuccess) {
+            //Error Occurred display reload
+        } else if (uiState.value.isDone && uiState.value.isSuccess) {
+
+            if (isContentLoaded.value) {
+
+                val userInfo = userHomeInfo!!.userInfo
+                val vendorInfo = userHomeInfo!!.vendorInfo
+                val vendorStatus = userHomeInfo!!.vendorStatus
+                val specialistInfo = userHomeInfo!!.specialistInfo
+                val popularProducts = userHomeInfo!!.popularProducts
+                val recentAppointments = userHomeInfo!!.recentAppointment
+                val vendorServices = userHomeInfo!!.vendorServices
+                val vendorRecommendations = userHomeInfo!!.recommendationRecommendations
+
+                val stackedSnackBarHostState = rememberStackedSnackbarHostState(
+                    maxStack = 5,
+                    animation = StackedSnackbarAnimation.Bounce
+                )
+
+                if (userInfo != null) {
+                    //mainViewModel.setUserInfo(userInfo)
+                    setCityId(userInfo.cityId!!)
+                    setCountryId(userInfo.countryId!!)
+                }
+                if (vendorInfo != null) {
+                    //mainViewModel.setConnectedVendor(vendorInfo)
+                }
+                if (specialistInfo != null) {
+                    //mainViewModel.setSpecialistInfo(specialistInfo)
+                }
+                val columnModifier = Modifier
+                    .padding(top = 5.dp)
+                    .fillMaxSize()
+
+                // Main Service Content Arena
+
+                Scaffold(
+                    snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
+                    topBar = {},
+                    content = {
+
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = columnModifier
+                        ) {
+                            Column(
+                                Modifier
+                                    .fillMaxSize()
+                                    .background(color = Color.White)
+
+                            ) {
+                                Column(
+                                    Modifier
+                                        .fillMaxSize()
+                                ) {
+                                    if (vendorStatus != null) {
+                                        BusinessStatusDisplay(vendorStatus)
+                                    }
+                                    AttachOurServices()
+                                    if (vendorServices != null) {
+                                        ServiceGridScreen(vendorServices)
+                                    }
+                                    if (vendorRecommendations != null) {
+                                        RecommendedSessions(vendorRecommendations)
+                                    }
+
+                                    PopularProducts()
+
+                                    if (popularProducts != null) {
+                                        PopularProductScreen(
+                                            popularProducts,
+                                            mainViewModel,
+                                            stackedSnackBarHostState
+                                        )
+                                    }
+                                    AttachAppointments()
+                                    RecentAppointmentScreen(
+                                        appointmentList = recentAppointments
+                                    )
+                                }
+                            }
+                        }
+                    })
+            }
+        }
     }
 
 
@@ -440,31 +529,35 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
         }
     }
 
-    @Composable
-    fun AttachBusinessName(vendor: Vendor){
-        val rowModifier = Modifier
-            .padding(start = 10.dp)
-            .fillMaxWidth()
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = rowModifier,
-            ) {
-                val modifier = Modifier.padding(start = 3.dp)
-                AttachLocationIcon()
-                TextComponent(
-                    text = vendor.businessName,
-                    fontSize = 16,
-                    fontFamily = GGSansRegular,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.DarkGray,
-                    textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.ExtraBold,
-                    lineHeight = 30,
-                    textModifier = modifier
-                )
+
+    class HomePageHandler(
+        private val uiStateViewModel: UIStateViewModel,
+        private val homepagePresenter: HomepagePresenter,
+        private val onPageLoading: () -> Unit,
+        private val onHomeInfoAvailable: (HomepageInfo) -> Unit,
+        private val onErrorVisible: () -> Unit
+    ) : HomepageContract.View {
+        fun init() {
+            homepagePresenter.registerUIContract(this)
+        }
+
+        override fun showLce(uiState: UIStates, message: String) {
+            uiStateViewModel.switchState(uiState)
+            uiState.let {
+                when {
+                    it.loadingVisible -> {
+                        onPageLoading()
+                    }
+                    it.errorOccurred -> {
+                        onErrorVisible()
+                    }
+                }
             }
         }
+        override fun showHome(homePageInfo: HomepageInfo) {
+            onHomeInfoAvailable(homePageInfo)
+        }
+    }
 
     @Composable
     fun GetBusinessPageList(statusList: List<VendorStatusModel>) : List<BusinessWhatsAppStatusPage> {
@@ -479,25 +572,37 @@ class HomeTab(private val homePageViewModel: HomePageViewModel,
 
     @Composable
     fun BusinessStatusDisplay(statusList: List<VendorStatusModel>) {
-        val boxBgModifier =
-            Modifier
-                .fillMaxHeight(0.50f)
-                .fillMaxWidth()
+        val statusList = arrayListOf<VendorStatusModel>()
+        val statusModel1 = VendorStatusModel(statusId = 5, statusType = 1)
+        val statusModel2 = VendorStatusModel(statusId = 6, statusType = 1)
+        val statusModel3 = VendorStatusModel(statusId = 7, statusType = 0)
+        val statusModel4 = VendorStatusModel(statusType = 1)
+        val statusModel5 = VendorStatusModel(statusType = 0)
+        val statusModel6 = VendorStatusModel(statusType = 1)
 
-        Box(modifier = boxBgModifier) {
-            val businessPageList = GetBusinessPageList(statusList)
-            BusinessStatusWidgetUpdated(businessPageList)
+        statusList.add(statusModel1)
+        statusList.add(statusModel2)
+        statusList.add(statusModel3)
+        statusList.add(statusModel4)
+        statusList.add(statusModel5)
+        statusList.add(statusModel6)
+
+        val isStatusExpanded = remember { mutableStateOf(false) }
+
+        val heightChange: Float by animateFloatAsState(targetValue = if (isStatusExpanded.value) 0.80f else 0.60f,
+            animationSpec = tween(durationMillis = 600, easing = LinearOutSlowInEasing)
+        )
+
+        val modifier =
+            Modifier.fillMaxWidth()
+                .fillMaxHeight(heightChange)
+                .background(color = Color.White)
+        Box(modifier = modifier, contentAlignment = Alignment.TopCenter) {
+            BusinessWhatsAppStatusWidget(statusList, onStatusViewChanged = {
+                    isStatusViewExpanded -> isStatusExpanded.value = isStatusViewExpanded
+            })
         }
     }
-
-
-    @Composable
-    fun AttachLocationIcon() {
-        val modifier = Modifier
-            .size(16.dp)
-        ImageComponent(imageModifier = modifier, imageRes = "drawable/location_icon_filled.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
-    }
-
     private fun setCityId(cityId: Int) {
         preferenceSettings["cityId"] = cityId
     }

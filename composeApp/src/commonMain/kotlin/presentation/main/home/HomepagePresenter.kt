@@ -38,22 +38,21 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
                         .subscribe(
                             onSuccess = { response ->
                                 if (response.status == "success") {
-                                    println(response)
-                                    contractView?.showLce(UIStates(contentVisible = true))
-                                    contractView?.showHome(response)
+                                    contractView?.showHome(response.homepageInfo)
                                 }
                                 else{
                                     contractView?.showLce(UIStates(errorOccurred = true, errorMessage = "Unknown"))
                                 }
                             },
                             onError = {
-                                println(it.message)
+                                println("Error ${it.message}")
                                 contractView?.showLce(UIStates(errorOccurred = true, errorMessage = it.message.toString()))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
+                println("Error2 $e")
                 contractView?.showLce(UIStates(errorOccurred = true, errorMessage = e.message.toString()))
             }
         }

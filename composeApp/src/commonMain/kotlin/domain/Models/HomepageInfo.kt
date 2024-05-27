@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class HomepageModel (
+data class HomepageInfo (
     @SerialName("user_info") val userInfo: User? = null,
     @SerialName("vendor_info") val vendorInfo: Vendor? = null,
     @SerialName("specialist_info") val specialistInfo: SpecialistInfo? = null,

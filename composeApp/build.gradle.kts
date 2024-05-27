@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    id("kotlin-parcelize")
     kotlin("plugin.serialization") version "1.9.21"
 }
 
@@ -139,6 +140,9 @@ kotlin {
 
             // Item Loading Placeholder
             implementation("com.eygraber:compose-placeholder-material3:1.0.8")
+
+            //savedState
+            api("io.github.hoc081098:kmp-viewmodel-savedstate:0.7.1")
 
 
         }

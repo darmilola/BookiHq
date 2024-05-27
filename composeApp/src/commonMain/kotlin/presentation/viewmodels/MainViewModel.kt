@@ -11,20 +11,23 @@ import domain.Models.UnsavedAppointment
 import domain.Models.User
 import domain.Models.Vendor
 import kotlinx.coroutines.flow.StateFlow
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import com.hoc081098.kmp.viewmodel.wrapper.wrap
 
 class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
-    private var _screenTitle = savedStateHandle.getStateFlow("screenTitle","")
-    private var _connectedVendor =  savedStateHandle.getStateFlow("connectedVendor", Vendor())
-    private var _currentUserInfo =  savedStateHandle.getStateFlow("userInfo", User())
-    private var _currentSpecialistInfo =  savedStateHandle.getStateFlow("specialistInfo", SpecialistInfo())
-    private var _screenNav =  savedStateHandle.getStateFlow("screenNav", Pair(-1,-1))
-    private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
-    private var _vendorRecommendation =  savedStateHandle.getStateFlow("vendorRecommendation", VendorRecommendation())
-    private var _currentUnsavedAppointments =  savedStateHandle.getStateFlow("currentUnsavedAppointments", SnapshotStateList<UnsavedAppointment>())
-    private var _currentUnsavedOrders =  savedStateHandle.getStateFlow("currentUnsavedOrders", SnapshotStateList<OrderItem>())
-    private var _currentOrderReference =  savedStateHandle.getStateFlow("currentOrderReference", -1)
-    private var _mainUiState =  savedStateHandle.getStateFlow("mainUiState", AsyncUIStates())
+    private var _screenTitle = savedStateHandle.getStateFlow("screenTitle","Home").wrap()
+    private var _connectedVendor =  savedStateHandle.getStateFlow("connectedVendor", Vendor()).wrap()
+    private var _currentUserInfo =  savedStateHandle.getStateFlow("userInfo", User()).wrap()
+    private var _currentSpecialistInfo =  savedStateHandle.getStateFlow("specialistInfo", SpecialistInfo()).wrap()
+    private var _screenNav =  savedStateHandle.getStateFlow("screenNav", Pair(-1,-1)).wrap()
+    private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services()).wrap()
+    private var _vendorRecommendation =  savedStateHandle.getStateFlow("vendorRecommendation", VendorRecommendation()).wrap()
+    private var _currentUnsavedAppointments =  savedStateHandle.getStateFlow("currentUnsavedAppointments", SnapshotStateList<UnsavedAppointment>()).wrap()
+    private var _currentUnsavedOrders =  savedStateHandle.getStateFlow("currentUnsavedOrders", SnapshotStateList<OrderItem>()).wrap()
+    private var _currentOrderReference =  savedStateHandle.getStateFlow("currentOrderReference", -1).wrap()
+    private var _mainUiState =  savedStateHandle.getStateFlow("mainUiState", AsyncUIStates()).wrap()
 
     val screenTitle: StateFlow<String>
         get() = _screenTitle

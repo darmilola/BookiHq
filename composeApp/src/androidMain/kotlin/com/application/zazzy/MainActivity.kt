@@ -28,11 +28,11 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth0ConnectionResponse = intent.getParcelableExtra("authResponse")
-       // enableEdgeToEdge()
+        //enableEdgeToEdge()
         if(auth0ConnectionResponse == null){
             setContent {
-                //Navigator(SplashScreen(this))
-                Navigator(TestWidgetScreen(this))
+                Navigator(SplashScreen(this))
+              //  Navigator(TestWidgetScreen(this))
             }
         }
 

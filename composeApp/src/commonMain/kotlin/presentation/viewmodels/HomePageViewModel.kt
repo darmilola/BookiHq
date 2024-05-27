@@ -2,22 +2,22 @@ package presentation.viewmodels
 
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
-import domain.Models.HomePageResponse
+import domain.Models.HomepageInfo
 import kotlinx.coroutines.flow.StateFlow
 
 class HomePageViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
-        private var _homePageInfo =  savedStateHandle.getStateFlow("homePageInfo",HomePageResponse())
+        private var _homePageInfo =  savedStateHandle.getStateFlow("homePageInfo",HomepageInfo())
         private var _homePageUiState =  savedStateHandle.getStateFlow("homePageUiState", AsyncUIStates())
 
-        val homePageInfo: StateFlow<HomePageResponse>
+        val homePageInfo: StateFlow<HomepageInfo>
             get() = _homePageInfo
 
        val homePageUIState: StateFlow<AsyncUIStates>
          get() = _homePageUiState
 
-        fun setHomePageInfo(homePageResponse: HomePageResponse) {
-            savedStateHandle["homePageInfo"] = homePageResponse
+        fun setHomePageInfo(homepageInfo: HomepageInfo) {
+            savedStateHandle["homePageInfo"] = homepageInfo
         }
 
       fun setHomePageUIState(asyncUIStates: AsyncUIStates) {

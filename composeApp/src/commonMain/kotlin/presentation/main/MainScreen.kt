@@ -44,15 +44,9 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
 
     private var mainViewModel: MainViewModel? = null
     private val preferenceSettings: Settings = Settings()
-    private val homepagePresenter: HomepagePresenter by inject()
-    private var uiStateViewModel: UIStateViewModel? = null
-    private var homePageViewModel: HomePageViewModel? = null
-    private var userEmail: String = ""
-
     @Composable
     override fun Content() {
 
-   userEmail = preferenceSettings["userEmail", ""] // User Email Retrieved After Authentication to populate the System
    val imageUploading = remember { mutableStateOf(false) }
    val locationRequestAllowed = remember { mutableStateOf(false) }
 
@@ -85,29 +79,13 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
             }
         }
 
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
-                factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
-                },
-            )
-        }
-
-        if (homePageViewModel == null) {
-            homePageViewModel = kmpViewModel(
-                factory = viewModelFactory {
-                    HomePageViewModel(savedStateHandle = createSavedStateHandle())
-                },
-            )
-            homepagePresenter.getUserHomepage(userEmail)
-        }
 
         val screenNav: State<Pair<Int, Int>>? = mainViewModel?.screenNav?.collectAsState()
 
-        TabNavigator(showDefaultTab(mainViewModel!!, homePageViewModel!!, uiStateViewModel!!, homepagePresenter)) {
+        TabNavigator(showDefaultTab(mainViewModel!!)) {
             when (screenNav?.value?.second) {
                 Screens.MAIN_TAB.toPath() -> {
-                    it.current = MainTab(mainViewModel!!, homePageViewModel!!, uiStateViewModel!!, homepagePresenter)
+                    it.current = MainTab(mainViewModel!!)
                 }
                 Screens.BOOKING.toPath() -> {
                     it.current = BookingScreen(mainViewModel!!)
@@ -165,9 +143,8 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
         preferenceSettings["longitude"] = longitude
     }
 
-    private fun showDefaultTab(mainViewModel: MainViewModel, homePageViewModel: HomePageViewModel,
-                               uiStateViewModel: UIStateViewModel, homepagePresenter: HomepagePresenter): MainTab {
-        return  MainTab(mainViewModel, homePageViewModel, uiStateViewModel, homepagePresenter)
+    private fun showDefaultTab(mainViewModel: MainViewModel): MainTab {
+        return  MainTab(mainViewModel)
     }
 
 }
