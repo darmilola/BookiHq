@@ -6,7 +6,6 @@ import StackedSnakbarHostState
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import domain.Models.BusinessWhatsAppStatusPage
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -35,10 +34,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
@@ -82,8 +79,6 @@ import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentation.viewmodels.UIStates
 import utils.getAppointmentViewHeight
-import presentation.widgets.BusinessStatusItemWidget
-import presentation.widgets.BusinessStatusWidgetUpdated
 import presentation.widgets.BusinessWhatsAppStatusWidget
 import presentation.widgets.HomeServicesWidget
 import presentation.widgets.NewAppointmentWidget
@@ -93,7 +88,7 @@ import presentation.widgets.SnackBarType
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import utils.calculateHomePageScreenHeight
-import utils.getPercentViewHeight
+import utils.getPercentOfScreenHeight
 import utils.getPopularProductViewHeight
 import utils.getServicesViewHeight
 
@@ -105,7 +100,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
     private var userHomeInfo: HomepageInfo? = null
     private val homepagePresenter: HomepagePresenter by inject()
     private var userEmail: String = ""
-    private var homeScreenHeight = 0
 
   @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -128,6 +122,12 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
     @Composable
     override fun Content() {
         userEmail = preferenceSettings["userEmail", ""]
+        var homeScreenHeight = remember { mutableStateOf(0) }
+
+        val screenSizeInfo = ScreenSizeInfo()
+
+        val heightAtExpanded = getPercentOfScreenHeight(screenSizeInfo.heightDp, percentChange = 80)
+        val heightAtCollapsed = getPercentOfScreenHeight(screenSizeInfo.heightDp, percentChange = 60)
 
         if (uiStateViewModel == null) {
             uiStateViewModel = kmpViewModel(
@@ -153,7 +153,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
             onPageLoading = {
                 homePageViewModel!!.setHomePageUIState(AsyncUIStates(isLoading = true))
             }, onHomeInfoAvailable = {
-                homeScreenHeight = calculateHomePageScreenHeight(homepageInfo = it)
+                homeScreenHeight.value = calculateHomePageScreenHeight(homepageInfo = it)
                 userHomeInfo = it
                 isContentLoaded.value = true
                 homePageViewModel!!.setHomePageUIState(
@@ -189,8 +189,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
         } else if (uiState.value.isDone && uiState.value.isSuccess) {
 
             if (isContentLoaded.value) {
-
-                println("Calculated Screen height $homeScreenHeight")
                 val userInfo = userHomeInfo!!.userInfo
                 val vendorInfo = userHomeInfo!!.vendorInfo
                 val vendorStatus = userHomeInfo!!.vendorStatus
@@ -226,14 +224,17 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                                Column(
                                     Modifier
                                         .verticalScroll(state = rememberScrollState())
-                                        .height(homeScreenHeight.dp)
+                                        .height(homeScreenHeight.value.dp)
                                         .padding(top = 5.dp)
                                         .background(color = Color.White)
                                         .fillMaxWidth()
 
                                 ) {
                                  if (vendorStatus != null) {
-                                        BusinessStatusDisplay(vendorStatus, onViewHeightReady = {})
+                                        BusinessStatusDisplay(vendorStatus, onViewHeightChanged = {
+                                             newHeight: Int, isStatusExpanded: Boolean ->
+
+                                        })
                                     }
                                     AttachOurServices()
                                     if (vendorServices != null) {
@@ -554,8 +555,8 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
         }
     }
     @Composable
-    fun BusinessStatusDisplay(statusList: List<VendorStatusModel>, onViewHeightReady: (Int) -> Unit?) {
-        val statusList = arrayListOf<VendorStatusModel>()
+    fun BusinessStatusDisplay(statusList: List<VendorStatusModel>, onViewHeightChanged: (Int, Boolean) -> Unit?) {
+        /*val statusList = arrayListOf<VendorStatusModel>()
         val statusModel1 = VendorStatusModel(statusId = 5, statusType = 1)
         val statusModel2 = VendorStatusModel(statusId = 6, statusType = 1)
         val statusModel3 = VendorStatusModel(statusId = 7, statusType = 0)
@@ -568,23 +569,22 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
         statusList.add(statusModel3)
         statusList.add(statusModel4)
         statusList.add(statusModel5)
-        statusList.add(statusModel6)
+        statusList.add(statusModel6)*/
 
         val isStatusExpanded = remember { mutableStateOf(false) }
         val screenSizeInfo = ScreenSizeInfo()
 
-        val heightChange: Float by animateFloatAsState(targetValue = if (isStatusExpanded.value) 0.80f else 0.60f,
+        val heightAtExpanded = getPercentOfScreenHeight(screenSizeInfo.heightDp, percentChange = 80)
+        val heightAtCollapsed = getPercentOfScreenHeight(screenSizeInfo.heightDp, percentChange = 60)
+
+        val heightChange: Float by animateFloatAsState(targetValue = if (isStatusExpanded.value) heightAtExpanded.toFloat() else heightAtCollapsed.toFloat(),
             animationSpec = tween(durationMillis = 600, easing = LinearOutSlowInEasing)
         )
-
-        val viewHeight = getPercentViewHeight(screenSizeInfo.heightDp, percentChange = if (isStatusExpanded.value) 80 else 60)
-        onViewHeightReady(viewHeight)
-
-        println("Status view height $viewHeight")
-
+        val viewHeight =  if (isStatusExpanded.value) heightAtExpanded else heightAtCollapsed
+        onViewHeightChanged(viewHeight, isStatusExpanded.value)
         val modifier =
             Modifier.fillMaxWidth()
-                .height(viewHeight.dp)
+                .height(heightChange.dp)
                 .background(color = Color.White)
         Box(modifier = modifier, contentAlignment = Alignment.TopCenter) {
             BusinessWhatsAppStatusWidget(statusList, onStatusViewChanged = {

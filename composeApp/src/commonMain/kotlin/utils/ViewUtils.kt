@@ -2,7 +2,6 @@ package utils
 
 import androidx.compose.ui.unit.Dp
 import domain.Models.Appointment
-import domain.Models.AppointmentItem
 import domain.Models.HomepageInfo
 import domain.Models.Product
 import domain.Models.Services
@@ -42,15 +41,13 @@ fun getServicesViewHeight(
     return lineCount * 140
 }
 
-fun getPercentViewHeight(
+fun getPercentOfScreenHeight(
     screenHeight: Dp,
     percentChange: Int
 ): Int {
-    println(percentChange.toDouble().div(100.0))
     val screenHeightChange = (percentChange.toDouble().div(100.0)) * screenHeight.value
     return screenHeightChange.toInt()
 }
-
 
 fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo): Int{
     val serviceCount = homepageInfo.vendorServices!!.size
@@ -60,9 +57,9 @@ fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo): Int{
 
 
     val servicesHeight = serviceCount * 140
-    val recommendationsHeight = 410
-    val recentAppointmentHeight = recentAppointmentCount * 200
-    val popularProductsHeight = popularProductsCount * 225
+    val recommendationsHeight = 400
+    val recentAppointmentHeight = recentAppointmentCount * 180
+    val popularProductsHeight = popularProductsCount * 220
 
     return servicesHeight + recentAppointmentHeight + recommendationsHeight + popularProductsHeight
 }
