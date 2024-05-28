@@ -49,6 +49,12 @@ class BusinessStatusItemWidget {
 
         val isStatusExpanded = remember { mutableStateOf(false) }
         val imageRes = if(isStatusExpanded.value) "drawable/collapse_icon.png"  else "drawable/expand_icon.png"
+        val mediaViewHeight = if (vendorStatusModel.statusImage?.caption!!.isEmpty()){
+               1f
+        }
+        else {
+             0.85f
+        }
 
         Column(
             modifier = Modifier
@@ -56,9 +62,9 @@ class BusinessStatusItemWidget {
                 .fillMaxWidth()
                 .fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top
         ) {
-            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(if(isStatusExpanded.value) 0.70f else 0.85f)) {
+            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(mediaViewHeight)) {
                 ImageComponent(
                     imageModifier = Modifier.fillMaxSize(),
                     imageRes = imageUrl,
@@ -72,26 +78,18 @@ class BusinessStatusItemWidget {
                     }
                 }
             }
-            Column(modifier = Modifier.fillMaxSize()) {
-                Box(
-                    modifier = Modifier.fillMaxWidth().fillMaxHeight(if(isStatusExpanded.value) 0.5f else 1f).padding(top = 5.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    ImageStatusCaption(vendorStatusModel.statusImage!!)
-                }
-                Box(
-                    modifier = Modifier.fillMaxWidth().fillMaxHeight(if(isStatusExpanded.value) 1f else 0f),
-                    contentAlignment = Alignment.Center
-                ) {
-                    ReplyWidget(
-                        iconRes = "drawable/send_icon.png",
-                        placeholderText = "Reply",
-                        iconSize = 28
+            if (vendorStatusModel.statusImage?.caption!!.isNotEmpty()) {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                            .fillMaxHeight(if (isStatusExpanded.value) 0.5f else 1f)
+                            .padding(top = 5.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-
+                        ImageStatusCaption(vendorStatusModel.statusImage)
                     }
-                }
 
+                }
             }
         }
     }
@@ -116,6 +114,13 @@ class BusinessStatusItemWidget {
 
         val isStatusExpanded = remember { mutableStateOf(false) }
         val imageRes = if(isStatusExpanded.value) "drawable/collapse_icon.png"  else "drawable/expand_icon.png"
+        val mediaViewHeight = if (vendorStatusModel.statusVideo?.caption!!.isEmpty()){
+            1f
+        }
+        else {
+            0.85f
+        }
+
 
         Column(
             modifier = Modifier
@@ -125,32 +130,31 @@ class BusinessStatusItemWidget {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(if(isStatusExpanded.value) 0.70f else 0.85f)) {
+            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(mediaViewHeight)) {
                 // Video Playback
-                VideoPlayer(modifier = Modifier.fillMaxSize(), url = videoUrl, videoStatusViewMeta = videoStatusViewMeta)
-                Box(modifier = Modifier.fillMaxWidth().height(80.dp).padding(end = 10.dp, top = 10.dp), contentAlignment = Alignment.TopEnd) {
+                VideoPlayer(
+                    modifier = Modifier.fillMaxSize(),
+                    url = videoUrl,
+                    videoStatusViewMeta = videoStatusViewMeta
+                )
+                Box(
+                    modifier = Modifier.fillMaxWidth().height(80.dp)
+                        .padding(end = 10.dp, top = 10.dp), contentAlignment = Alignment.TopEnd
+                ) {
                     AttachExpandCollapseIcon(imageRes = imageRes) {
                         isStatusExpanded.value = !isStatusExpanded.value
                         onStatusViewChanged(isStatusExpanded.value)
                     }
                 }
             }
-            Box(
-                modifier = Modifier.fillMaxWidth().fillMaxHeight(if(isStatusExpanded.value) 0.5f else 1f).padding(top = 5.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                VideoStatusCaption(videoModel = vendorStatusModel.statusVideo!!)
-            }
-            Box(
-                modifier = Modifier.fillMaxWidth().fillMaxHeight(if(isStatusExpanded.value) 1f else 0f),
-                contentAlignment = Alignment.Center
-            ) {
-                ReplyWidget(
-                    iconRes = "drawable/send_icon.png",
-                    placeholderText = "Reply",
-                    iconSize = 28
+            if (vendorStatusModel.statusVideo?.caption!!.isNotEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                        .fillMaxHeight(if (isStatusExpanded.value) 0.5f else 1f)
+                        .padding(top = 5.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-
+                    VideoStatusCaption(videoModel = vendorStatusModel.statusVideo)
                 }
             }
         }

@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,6 +32,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -47,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -72,6 +75,7 @@ import org.koin.core.component.inject
 import presentation.components.StraightLine
 import presentation.Products.ProductDetailBottomSheet
 import presentation.Products.HomeProductItem
+import presentation.components.FloatingActionButton
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.HomePageViewModel
@@ -145,6 +149,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
         val uiState = homePageViewModel!!.homePageUIState.collectAsState()
         val isContentLoaded = remember { mutableStateOf(true) }
+        val isStatusViewExpanded = remember { mutableStateOf(false) }
 
         val handler = HomePageHandler(uiStateViewModel!!, homepagePresenter,
             onPageLoading = {
@@ -217,6 +222,21 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                 Scaffold(
                     snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
                     topBar = {},
+                    floatingActionButton = {
+                        if (isStatusViewExpanded.value) {
+
+                            val buttonStyle = Modifier
+                                .padding(bottom = 60.dp)
+                                .clip(CircleShape)
+                                .size(60.dp)
+                            FloatingActionButton(
+                                modifier = buttonStyle,
+                                colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
+                                iconRes = "drawable/send_icon.png",
+                                colorFilter = ColorFilter.tint(color = Color.White)
+                            )
+                        }
+                    },
                     content = {
                                Column(
                                     Modifier
@@ -229,7 +249,11 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                                 ) {
                                  if (vendorStatus != null) {
                                         BusinessStatusDisplay(vendorWhatsAppStatus, onViewHeightChanged = {
-                                             newHeight: Int, isStatusExpanded: Boolean -> })
+                                             newHeight: Int, isStatusExpanded: Boolean ->
+                                             isStatusViewExpanded.value = isStatusExpanded
+
+
+                                        })
                                     }
                                     AttachOurServices()
                                     if (vendorServices != null) {
@@ -249,7 +273,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                                     AttachAppointments()
                                     RecentAppointmentScreen(appointmentList = recentAppointments)
                                 }
-                    })
+                           })
             }
         }
     }
@@ -555,7 +579,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
         val screenSizeInfo = ScreenSizeInfo()
 
         val heightAtExpanded = getPercentOfScreenHeight(screenSizeInfo.heightDp, percentChange = 90)
-        val heightAtCollapsed = getPercentOfScreenHeight(screenSizeInfo.heightDp, percentChange = 60)
+        val heightAtCollapsed = getPercentOfScreenHeight(screenSizeInfo.heightDp, percentChange = 70)
 
         val heightChange: Float by animateFloatAsState(targetValue = if (isStatusExpanded.value) heightAtExpanded.toFloat() else heightAtCollapsed.toFloat(),
             animationSpec = tween(durationMillis = 600, easing = LinearOutSlowInEasing)

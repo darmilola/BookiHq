@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -71,14 +72,12 @@ public fun ButtonComponent(modifier: Modifier, buttonText: String, borderStroke:
 }
 
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, iconSize: Int = 28, colorFilter: ColorFilter? = null, onClick: (() -> Unit)? = null) {
     val rowModifier = Modifier
         .fillMaxWidth()
 
-
-        Button(
+          Button(
                 onClick = {
                     if (onClick != null) {
                         onClick()
@@ -133,12 +132,47 @@ public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStr
 }
 
 
+
+@Composable
+ fun FloatingActionButton(modifier: Modifier, colors: ButtonColors, iconRes: String, iconSize: Int = 32, colorFilter: ColorFilter? = null, onClick: (() -> Unit)? = null) {
+
+     Button(
+        onClick = {
+            if (onClick != null) {
+                onClick()
+            }
+        },
+        modifier = modifier,
+        colors = colors,
+        elevation = ButtonDefaults.elevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp,
+            disabledElevation = 0.dp
+        )
+    ) {
+           val iconModifier = Modifier
+                .padding(top = 5.dp)
+                .size(iconSize.dp)
+
+             val iconBoxModifier = Modifier
+                 .clip(CircleShape)
+                .fillMaxSize()
+
+            Box(
+               contentAlignment = Alignment.Center,
+                modifier = iconBoxModifier
+            ) {
+                ImageComponent(imageModifier = iconModifier, imageRes = iconRes, colorFilter = colorFilter)
+            }
+    }
+}
+
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 public fun bottomSheetIconButtonComponent(modifier: Modifier, buttonText: String, borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, iconSize: Int = 28, colorFilter: ColorFilter? = null, onClick: (() -> Unit)? = null) {
     val rowModifier = Modifier
         .fillMaxWidth()
-
 
     Button(
         onClick = {
@@ -200,7 +234,6 @@ public fun bottomSheetIconButtonComponent(modifier: Modifier, buttonText: String
 public fun RightIconButtonComponent(modifier: Modifier, buttonText: String, borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, iconSize: Int = 28, colorFilter: ColorFilter? = null, onClick: (() -> Unit)? = null) {
     val rowModifier = Modifier
         .fillMaxWidth()
-
 
     Button(
         onClick = {
