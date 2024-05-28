@@ -10,7 +10,8 @@ data class ServerResponse(@SerialName("status") val status: String = "", @Serial
 data class AuthenticationResponse(@SerialName("status") val status: String = "",  @SerialName("data") val userInfo: User = User())
 
 @Serializable
-data class HomePageResponse(@SerialName("status") val status: String = "", @SerialName("homePage") val homepageInfo: HomepageInfo = HomepageInfo())
+data class HomePageResponse(@SerialName("status") val status: String = "", @SerialName("homePage") val homepageInfo: HomepageInfo = HomepageInfo(),
+                            @SerialName("vendorStatus") val vendorStatus: List<VendorStatusModel> = arrayListOf())
 
 @Serializable
 data class ServiceSpecialistsResponse(@SerialName("status") val status: String = "", @SerialName("specialist") val serviceSpecialists: List<ServiceTypeSpecialist>,

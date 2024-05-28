@@ -34,6 +34,8 @@ import applications.videoplayer.VideoPlayer
 import com.eygraber.compose.placeholder.PlaceholderHighlight
 import com.eygraber.compose.placeholder.material3.fade
 import com.eygraber.compose.placeholder.material3.placeholder
+import domain.Models.StatusImageModel
+import domain.Models.StatusVideoModel
 import domain.Models.VendorStatusModel
 import domain.Models.VideoStatusViewMeta
 import presentations.components.ImageComponent
@@ -75,10 +77,10 @@ class BusinessStatusItemWidget {
                     modifier = Modifier.fillMaxWidth().fillMaxHeight(if(isStatusExpanded.value) 0.5f else 1f).padding(top = 5.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    StatusText()
+                    ImageStatusCaption(vendorStatusModel.statusImage!!)
                 }
                 Box(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight(if(isStatusExpanded.value) 1f else 0f),
                     contentAlignment = Alignment.Center
                 ) {
                     ReplyWidget(
@@ -137,21 +139,26 @@ class BusinessStatusItemWidget {
                 modifier = Modifier.fillMaxWidth().fillMaxHeight(if(isStatusExpanded.value) 0.5f else 1f).padding(top = 5.dp),
                 contentAlignment = Alignment.Center
             ) {
-                StatusText()
+                VideoStatusCaption(videoModel = vendorStatusModel.statusVideo!!)
             }
-            ReplyWidget(
-                iconRes = "drawable/send_icon.png",
-                placeholderText = "Reply",
-                iconSize = 28
+            Box(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(if(isStatusExpanded.value) 1f else 0f),
+                contentAlignment = Alignment.Center
             ) {
+                ReplyWidget(
+                    iconRes = "drawable/send_icon.png",
+                    placeholderText = "Reply",
+                    iconSize = 28
+                ) {
 
+                }
             }
         }
     }
 
 
     @Composable
-    fun StatusText() {
+    fun StatusText(vendorStatusModel: VendorStatusModel) {
         Box(
             modifier = Modifier
                 .padding(start = 20.dp, end = 20.dp)
@@ -174,6 +181,56 @@ class BusinessStatusItemWidget {
 
         }
 
+    }
+
+    @Composable
+    fun ImageStatusCaption(imageModel: StatusImageModel) {
+        Box(
+            modifier = Modifier
+                .padding(start = 20.dp, end = 20.dp)
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            contentAlignment = Alignment.Center
+        ) {
+            TextComponent(
+                textModifier = Modifier.wrapContentSize(),
+                text = imageModel.caption,
+                fontSize = 17, fontFamily = GGSansRegular,
+                textStyle = MaterialTheme.typography.h6,
+                textColor = Colors.darkPrimary,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.ExtraBold,
+                lineHeight = 23,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+
+        }
+    }
+
+    @Composable
+    fun VideoStatusCaption(videoModel: StatusVideoModel) {
+        Box(
+            modifier = Modifier
+                .padding(start = 20.dp, end = 20.dp)
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            contentAlignment = Alignment.Center
+        ) {
+            TextComponent(
+                textModifier = Modifier.wrapContentSize(),
+                text = videoModel.caption,
+                fontSize = 17, fontFamily = GGSansRegular,
+                textStyle = MaterialTheme.typography.h6,
+                textColor = Colors.darkPrimary,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.ExtraBold,
+                lineHeight = 23,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+
+        }
     }
 }
 

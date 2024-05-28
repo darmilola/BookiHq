@@ -98,6 +98,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
     private var homePageViewModel: HomePageViewModel? = null
     private var uiStateViewModel: UIStateViewModel? = null
     private var userHomeInfo: HomepageInfo? = null
+    private var vendorStatus: List<VendorStatusModel>? = null
     private val homepagePresenter: HomepagePresenter by inject()
     private var userEmail: String = ""
 
@@ -122,12 +123,8 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
     @Composable
     override fun Content() {
         userEmail = preferenceSettings["userEmail", ""]
-        var homeScreenHeight = remember { mutableStateOf(0) }
-
+        val homeScreenHeight = remember { mutableStateOf(0) }
         val screenSizeInfo = ScreenSizeInfo()
-
-        val heightAtExpanded = getPercentOfScreenHeight(screenSizeInfo.heightDp, percentChange = 80)
-        val heightAtCollapsed = getPercentOfScreenHeight(screenSizeInfo.heightDp, percentChange = 60)
 
         if (uiStateViewModel == null) {
             uiStateViewModel = kmpViewModel(
@@ -153,8 +150,10 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
             onPageLoading = {
                 homePageViewModel!!.setHomePageUIState(AsyncUIStates(isLoading = true))
             }, onHomeInfoAvailable = {
-                homeScreenHeight.value = calculateHomePageScreenHeight(homepageInfo = it)
-                userHomeInfo = it
+                homePageInfo, vendorStatus ->
+                homeScreenHeight.value = calculateHomePageScreenHeight(homepageInfo = homePageInfo, screenSizeInfo = screenSizeInfo, isStatusExpanded = false)
+                userHomeInfo = homePageInfo
+                this.vendorStatus = vendorStatus
                 isContentLoaded.value = true
                 homePageViewModel!!.setHomePageUIState(
                     AsyncUIStates(
@@ -162,9 +161,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                         isDone = true
                     )
                 )
-                println(it)
             }, onErrorVisible = {
-                println("Error")
                 homePageViewModel!!.setHomePageUIState(
                     AsyncUIStates(
                         isSuccess = false,
@@ -191,12 +188,12 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
             if (isContentLoaded.value) {
                 val userInfo = userHomeInfo!!.userInfo
                 val vendorInfo = userHomeInfo!!.vendorInfo
-                val vendorStatus = userHomeInfo!!.vendorStatus
                 val specialistInfo = userHomeInfo!!.specialistInfo
                 val popularProducts = userHomeInfo!!.popularProducts
                 val recentAppointments = userHomeInfo!!.recentAppointment
                 val vendorServices = userHomeInfo!!.vendorServices
                 val vendorRecommendations = userHomeInfo!!.recommendationRecommendations
+                val vendorWhatsAppStatus = vendorStatus!!
 
                 val stackedSnackBarHostState = rememberStackedSnackbarHostState(
                     maxStack = 5,
@@ -231,10 +228,8 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
                                 ) {
                                  if (vendorStatus != null) {
-                                        BusinessStatusDisplay(vendorStatus, onViewHeightChanged = {
-                                             newHeight: Int, isStatusExpanded: Boolean ->
-
-                                        })
+                                        BusinessStatusDisplay(vendorWhatsAppStatus, onViewHeightChanged = {
+                                             newHeight: Int, isStatusExpanded: Boolean -> })
                                     }
                                     AttachOurServices()
                                     if (vendorServices != null) {
@@ -530,7 +525,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
         private val uiStateViewModel: UIStateViewModel,
         private val homepagePresenter: HomepagePresenter,
         private val onPageLoading: () -> Unit,
-        private val onHomeInfoAvailable: (HomepageInfo) -> Unit,
+        private val onHomeInfoAvailable: (HomepageInfo, List<VendorStatusModel>) -> Unit,
         private val onErrorVisible: () -> Unit
     ) : HomepageContract.View {
         fun init() {
@@ -550,31 +545,16 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                 }
             }
         }
-        override fun showHome(homePageInfo: HomepageInfo) {
-            onHomeInfoAvailable(homePageInfo)
+        override fun showHome(homePageInfo: HomepageInfo, vendorStatus: List<VendorStatusModel>) {
+            onHomeInfoAvailable(homePageInfo, vendorStatus)
         }
     }
     @Composable
-    fun BusinessStatusDisplay(statusList: List<VendorStatusModel>, onViewHeightChanged: (Int, Boolean) -> Unit?) {
-        /*val statusList = arrayListOf<VendorStatusModel>()
-        val statusModel1 = VendorStatusModel(statusId = 5, statusType = 1)
-        val statusModel2 = VendorStatusModel(statusId = 6, statusType = 1)
-        val statusModel3 = VendorStatusModel(statusId = 7, statusType = 0)
-        val statusModel4 = VendorStatusModel(statusType = 1)
-        val statusModel5 = VendorStatusModel(statusType = 0)
-        val statusModel6 = VendorStatusModel(statusType = 1)
-
-        statusList.add(statusModel1)
-        statusList.add(statusModel2)
-        statusList.add(statusModel3)
-        statusList.add(statusModel4)
-        statusList.add(statusModel5)
-        statusList.add(statusModel6)*/
-
+    fun BusinessStatusDisplay(statusList: List<VendorStatusModel>, onViewHeightChanged: (Int, Boolean) -> Unit) {
         val isStatusExpanded = remember { mutableStateOf(false) }
         val screenSizeInfo = ScreenSizeInfo()
 
-        val heightAtExpanded = getPercentOfScreenHeight(screenSizeInfo.heightDp, percentChange = 80)
+        val heightAtExpanded = getPercentOfScreenHeight(screenSizeInfo.heightDp, percentChange = 90)
         val heightAtCollapsed = getPercentOfScreenHeight(screenSizeInfo.heightDp, percentChange = 60)
 
         val heightChange: Float by animateFloatAsState(targetValue = if (isStatusExpanded.value) heightAtExpanded.toFloat() else heightAtCollapsed.toFloat(),

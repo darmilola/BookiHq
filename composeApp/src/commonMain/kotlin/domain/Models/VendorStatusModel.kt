@@ -4,6 +4,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 @Serializable
 data class VendorStatusModel(
-    @SerialName("id") val statusId: Int = -1, @SerialName("vendor_id") val vendorId: Int = -1,
-    @SerialName("image_url") val imageUrl: String = "", @SerialName("statusText") val statusText: String = "",
-    @SerialName("statusType") val statusType: Int = 0)
+    @SerialName("id") val statusId: String = "", @SerialName("timeStamp") val timeStamp: Long = -1,
+    @SerialName("image") val statusImage: StatusImageModel? = null,
+    @SerialName("video") val statusVideo: StatusVideoModel? = null, var statusType: Int = 0)

@@ -31,6 +31,8 @@ import com.russhwolf.settings.Settings
 import di.initKoin
 import domain.Models.BusinessWhatsAppStatusPage
 import domain.Models.PlatformNavigator
+import domain.Models.StatusImageModel
+import domain.Models.StatusVideoModel
 import domain.Models.VendorStatusModel
 import presentation.widgets.BusinessStatusItemWidget
 import presentation.widgets.BusinessWhatsAppStatusWidget
@@ -41,24 +43,26 @@ import theme.styles.Colors
 fun TestWidgetCompose(platformNavigator: PlatformNavigator) {
 
     val statusList = arrayListOf<VendorStatusModel>()
-    val statusModel1 = VendorStatusModel(statusId = 5, statusType = 1)
-    val statusModel2 = VendorStatusModel(statusId = 6, statusType = 1)
-    val statusModel3 = VendorStatusModel(statusId = 7, statusType = 0)
-    val statusModel4 = VendorStatusModel(statusType = 1)
-    val statusModel5 = VendorStatusModel(statusType = 0)
-    val statusModel6 = VendorStatusModel(statusType = 1)
+    val statusModel1 = VendorStatusModel(statusId = "", statusType = 1, statusImage = StatusImageModel())
+    val statusModel2 = VendorStatusModel(statusId = "", statusType = 1, statusImage = StatusImageModel())
+    val statusModel3 = VendorStatusModel(statusId = "", statusType = 0, statusVideo = StatusVideoModel())
+
 
     statusList.add(statusModel1)
     statusList.add(statusModel2)
     statusList.add(statusModel3)
-    statusList.add(statusModel4)
-    statusList.add(statusModel5)
-    statusList.add(statusModel6)
+
 
     val isStatusExpanded = remember { mutableStateOf(false) }
 
     val heightChange: Float by animateFloatAsState(targetValue = if (isStatusExpanded.value) 0.80f else 0.60f,
         animationSpec = tween(durationMillis = 600, easing = LinearOutSlowInEasing))
+
+
+   // if (isStatusExpanded.value) {
+        println("Change $isStatusExpanded $heightChange")
+    //}
+
 
     val modifier =
         Modifier.fillMaxWidth()

@@ -82,7 +82,9 @@ fun BusinessWhatsAppStatusWidget(whatsAppStatusList: List<VendorStatusModel>, on
                         onStatusViewChanged = onStatusViewChanged
                     )
                 }
-
+            if (pagerState.isScrollInProgress){
+                onStatusViewChanged(false)
+            }
         }
 
     }
@@ -93,14 +95,12 @@ fun BusinessWhatsAppStatusWidget(whatsAppStatusList: List<VendorStatusModel>, on
 
 @Composable
 private fun LoadStatusView(statusModel: VendorStatusModel, currentPage: Int, settledPage: Int, onStatusViewChanged: (Boolean) -> Unit) {
-    if(statusModel.statusType == 0){
-        onStatusViewChanged(false)
-        BusinessStatusItemWidget().getImageStatusWidget ("https://cdn.pixabay.com/photo/2024/03/31/06/16/bird-8666099_1280.jpg", vendorStatusModel = statusModel, onStatusViewChanged)
+    if(statusModel.statusImage != null ){
+        BusinessStatusItemWidget().getImageStatusWidget (statusModel.statusImage.imageUrl, vendorStatusModel = statusModel, onStatusViewChanged)
     }
-    else{
+    else if (statusModel.statusVideo != null){
         val videoStatusViewMeta = VideoStatusViewMeta(currentPage = currentPage, settledPage = settledPage)
-        onStatusViewChanged(false)
-        BusinessStatusItemWidget().getVideoStatusWidget ("https://s3.eu-central-1.wasabisys.com/in-files/2348102853533/mp4-0f677c282efef29cec333154a2401188-94e000-0222b4323187.mp4", vendorStatusModel = statusModel,
+        BusinessStatusItemWidget().getVideoStatusWidget (statusModel.statusVideo.videoUrl, vendorStatusModel = statusModel,
             videoStatusViewMeta = videoStatusViewMeta, onStatusViewChanged)
     }
 }

@@ -34,11 +34,11 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showLce(UIStates(loadingVisible = true))
-                    homeRepositoryImpl.getUserHomePage(userEmail)
+                    homeRepositoryImpl.getUserHomePage(userEmail, "2348111343996")
                         .subscribe(
                             onSuccess = { response ->
                                 if (response.status == "success") {
-                                    contractView?.showHome(response.homepageInfo)
+                                    contractView?.showHome(response.homepageInfo, response.vendorStatus)
                                 }
                                 else{
                                     contractView?.showLce(UIStates(errorOccurred = true, errorMessage = "Unknown"))

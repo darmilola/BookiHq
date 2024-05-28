@@ -1,9 +1,11 @@
 package utils
 
 import androidx.compose.ui.unit.Dp
+import applications.device.ScreenSizeInfo
 import domain.Models.Appointment
 import domain.Models.HomepageInfo
 import domain.Models.Product
+import domain.Models.ScreenSizeInfo
 import domain.Models.Services
 import domain.Models.UnsavedAppointment
 
@@ -49,11 +51,15 @@ fun getPercentOfScreenHeight(
     return screenHeightChange.toInt()
 }
 
-fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo): Int{
+fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo, screenSizeInfo: ScreenSizeInfo, isStatusExpanded: Boolean = false): Int{
     val serviceCount = homepageInfo.vendorServices!!.size
     val recommendationsCount = homepageInfo.recommendationRecommendations!!.size
     val recentAppointmentCount = homepageInfo.recentAppointment!!.size
     val popularProductsCount = homepageInfo.popularProducts!!.size
+
+    val heightAtExpanded = getPercentOfScreenHeight(screenSizeInfo.heightDp, percentChange = 80)
+    val heightAtCollapsed = getPercentOfScreenHeight(screenSizeInfo.heightDp, percentChange = 60)
+    val statusViewHeight = if (isStatusExpanded) heightAtExpanded else heightAtCollapsed
 
 
     val servicesHeight = serviceCount * 140
