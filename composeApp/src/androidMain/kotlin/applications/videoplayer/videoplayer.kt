@@ -129,9 +129,7 @@ fun ShowPlayerViewUI(exoPlayer: ExoPlayer) {
                     if (exoPlayer.isPlaying && !isShowingMediaBufferingLayer.value) {
                         exoPlayer.pause()
                     }
-                }
-                is PressInteraction.Release -> {
-                    if (!exoPlayer.isPlaying && !isShowingMediaBufferingLayer.value) {
+                    else{
                         exoPlayer.play()
                     }
                 }

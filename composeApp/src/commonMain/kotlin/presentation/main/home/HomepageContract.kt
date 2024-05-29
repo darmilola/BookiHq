@@ -7,7 +7,7 @@ import presentation.viewmodels.UIStates
 class HomepageContract {
     interface View {
         fun showLce(uiState: UIStates, message: String = "")
-        fun showHome(homePageInfo: HomepageInfo, vendorStatus: List<VendorStatusModel>)
+        fun showHome(homePageInfo: HomepageInfo, vendorStatus: ArrayList<VendorStatusModel>)
     }
 
     abstract class Presenter {

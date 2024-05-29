@@ -1,6 +1,7 @@
 package presentation.bookings
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,10 +11,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,40 +32,43 @@ import presentation.widgets.UnsavedAppointmentWidget
 import theme.styles.Colors
 import utils.getUnSavedAppointmentViewHeight
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
  fun BookingOverview(mainViewModel: MainViewModel, uiStateViewModel: UIStateViewModel,
                      bookingViewModel: BookingViewModel,
                      bookingPresenter: BookingPresenter, onAddMoreServiceClicked:() -> Unit, onLastItemRemoved: () -> Unit) {
 
        val currentBooking: UnsavedAppointment = bookingViewModel.currentAppointmentBooking.value
-       var unsavedAppointments = remember {  mainViewModel.unSavedAppointments.value }
+       var unsavedAppointments = remember {  mutableStateOf(mainViewModel.unSavedAppointments.value) }
 
 
-    LaunchedEffect(Unit, block = {
-        if (unsavedAppointments.isNotEmpty()) {
-            val editedBooking = unsavedAppointments.find {
+
+        if (unsavedAppointments.value.isNotEmpty()) {
+            val editedBooking = unsavedAppointments.value.find {
                 it.bookingId == currentBooking.bookingId
             }
             if (editedBooking != null) {
-                val editedIndex = unsavedAppointments.indexOf(editedBooking)
-                unsavedAppointments.removeAt(editedIndex)
-                unsavedAppointments.add(currentBooking)
-                mainViewModel.setCurrentUnsavedAppointments(unsavedAppointments)
+                val editedIndex = unsavedAppointments.value.indexOf(editedBooking)
+                unsavedAppointments.value.removeAt(editedIndex)
+                unsavedAppointments.value.add(currentBooking)
+                mainViewModel.setCurrentUnsavedAppointments(unsavedAppointments.value)
             } else {
                 if (currentBooking.serviceId != -1 && currentBooking.serviceTypeId != -1) {
-                    unsavedAppointments.add(currentBooking)
-                    mainViewModel.setCurrentUnsavedAppointments(unsavedAppointments)
+                    unsavedAppointments.value.add(currentBooking)
+                    mainViewModel.setCurrentUnsavedAppointments(unsavedAppointments.value)
                 }
             }
         } else {
             if (currentBooking.serviceId != -1 && currentBooking.serviceTypeId != -1) {
-                unsavedAppointments.add(currentBooking)
-                mainViewModel.setCurrentUnsavedAppointments(unsavedAppointments)
+                unsavedAppointments.value.add(currentBooking)
+                mainViewModel.setCurrentUnsavedAppointments(unsavedAppointments.value)
             }
         }
         bookingPresenter.getUnSavedAppointment()
-        unsavedAppointments = mainViewModel.unSavedAppointments.value
-    })
+        unsavedAppointments.value = mainViewModel.unSavedAppointments.value
+
+        println("Unsaved $unsavedAppointments")
+
 
     val columnModifier = Modifier
             .padding(top = 5.dp, bottom = 30.dp)
@@ -77,19 +83,19 @@ import utils.getUnSavedAppointmentViewHeight
 
            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.90f), contentAlignment = Alignment.TopStart) {
                PopulateAppointmentScreen(
-                   appointmentList = unsavedAppointments, onRemoveItem = { it ->
-                       unsavedAppointments.remove(it)
-                       mainViewModel.setCurrentUnsavedAppointments(unsavedAppointments)
-                       if (unsavedAppointments.size == 0){
+                   appointmentList = unsavedAppointments.value, onRemoveItem = { it ->
+                       unsavedAppointments.value.remove(it)
+                       mainViewModel.setCurrentUnsavedAppointments(unsavedAppointments.value)
+                       if (unsavedAppointments.value.size == 0){
                            onLastItemRemoved()
                        }
                        else{
-                           bookingViewModel.setCurrentBooking(unsavedAppointments.last())
-                           bookingViewModel.setSelectedServiceType(unsavedAppointments.last().serviceTypeItem!!)
-                           bookingViewModel.setSelectedDay(unsavedAppointments.last().day)
-                           bookingViewModel.setSelectedMonth(unsavedAppointments.last().month)
-                           bookingViewModel.setSelectedYear(unsavedAppointments.last().year)
-                           mainViewModel.setSelectedService(unsavedAppointments.last().services!!)
+                           bookingViewModel.setCurrentBooking(unsavedAppointments.value.last())
+                           bookingViewModel.setSelectedServiceType(unsavedAppointments.value.last().serviceTypeItem!!)
+                           bookingViewModel.setSelectedDay(unsavedAppointments.value.last().day)
+                           bookingViewModel.setSelectedMonth(unsavedAppointments.value.last().month)
+                           bookingViewModel.setSelectedYear(unsavedAppointments.value.last().year)
+                           mainViewModel.setSelectedService(unsavedAppointments.value.last().services!!)
                            bookingPresenter.getUnSavedAppointment()
                        }
                    }

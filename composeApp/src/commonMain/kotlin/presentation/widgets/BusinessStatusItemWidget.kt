@@ -147,7 +147,7 @@ class BusinessStatusItemWidget {
                     }
                 }
             }
-            if (vendorStatusModel.statusVideo?.caption!!.isNotEmpty()) {
+            if (vendorStatusModel.statusVideo.caption.isNotEmpty()) {
                 Box(
                     modifier = Modifier.fillMaxWidth()
                         .fillMaxHeight(if (isStatusExpanded.value) 0.5f else 1f)

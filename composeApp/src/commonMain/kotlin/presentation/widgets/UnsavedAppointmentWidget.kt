@@ -94,7 +94,7 @@ fun UnsavedAppointmentHeader(serviceTitle: String, amount: Int, onRemoveItem: ()
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth(0.70f).height(60.dp)
+            modifier = Modifier.fillMaxWidth(0.60f).height(60.dp)
         ) {
             Box(modifier = Modifier.fillMaxWidth(0.08f).fillMaxHeight(), contentAlignment = Alignment.Center) {
                 Box(modifier = Modifier.size(6.dp).clip(CircleShape).background(color = Colors.pinkColor)){}
@@ -114,9 +114,9 @@ fun UnsavedAppointmentHeader(serviceTitle: String, amount: Int, onRemoveItem: ()
                     .fillMaxWidth())
         }
         Row(
-            horizontalArrangement = Arrangement.Start,
+            horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth(0.80f).padding(end = 10.dp)
+            modifier = Modifier.fillMaxWidth(0.85f).padding(end = 10.dp)
         ) {
             ImageComponent(imageModifier = Modifier.size(20.dp).padding(bottom = 2.dp), imageRes = "drawable/dollar_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
             TextComponent(
@@ -293,28 +293,8 @@ fun UnsavedTherapistDisplayItem(serviceTypeSpecialist: ServiceTypeSpecialist) {
                         overflow = TextOverflow.Ellipsis,
                         textModifier = Modifier.wrapContentSize().padding(start = 10.dp, end = 10.dp))
                 }
-                Row(horizontalArrangement = Arrangement.Center,
-                    verticalAlignment  = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(start = 5.dp)
-                        .width(60.dp)
-                        .border(BorderStroke(1.dp, Colors.primaryColor), shape = RoundedCornerShape(5.dp))
-                        .height(24.dp)) {
-                    ImageComponent(imageModifier = Modifier.size(10.dp).padding(bottom = 2.dp), imageRes = "drawable/star_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
-                    TextComponent(
-                        text = serviceTypeSpecialist.specialistInfo.rating.toString(),
-                        fontSize = 12,
-                        fontFamily = GGSansRegular,
-                        textStyle = MaterialTheme.typography.h6,
-                        textColor = Colors.primaryColor,
-                        textAlign = TextAlign.Left,
-                        fontWeight = FontWeight.Medium,
-                        textModifier = Modifier.padding(start = 3.dp))
-                }
 
             }
-
-
         }
     }
 }

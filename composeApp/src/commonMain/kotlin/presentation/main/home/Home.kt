@@ -101,8 +101,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
     private val preferenceSettings: Settings = Settings()
     private var homePageViewModel: HomePageViewModel? = null
     private var uiStateViewModel: UIStateViewModel? = null
-    private var userHomeInfo: HomepageInfo? = null
-    private var vendorStatus: List<VendorStatusModel>? = null
     private val homepagePresenter: HomepagePresenter by inject()
     private var userEmail: String = ""
 
@@ -126,8 +124,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
     @Composable
     override fun Content() {
-        userEmail = preferenceSettings["userEmail", ""]
-        val homeScreenHeight = remember { mutableStateOf(0) }
+        userEmail = "devprocess0@gmail.com"//preferenceSettings["userEmail", ""]
         val screenSizeInfo = ScreenSizeInfo()
 
         if (uiStateViewModel == null) {
@@ -144,40 +141,44 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                     HomePageViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
+
+            val handler = HomePageHandler(uiStateViewModel!!, homepagePresenter,
+                onPageLoading = {
+                    homePageViewModel!!.setHomePageUIState(AsyncUIStates(isLoading = true))
+                }, onHomeInfoAvailable = {
+                        homePageInfo, vendorStatus ->
+                    val viewHeight = calculateHomePageScreenHeight(homepageInfo = homePageInfo, screenSizeInfo = screenSizeInfo, isStatusExpanded = false)
+                    homePageViewModel!!.setHomePageViewHeight(viewHeight)
+                    homePageViewModel!!.setHomePageUIState(
+                        AsyncUIStates(
+                            isSuccess = true,
+                            isDone = true
+                        )
+                    )
+                    homePageViewModel!!.setHomePageInfo(homePageInfo)
+                    homePageViewModel!!.setVendorStatus(vendorStatus)
+                }, onErrorVisible = {
+                    homePageViewModel!!.setHomePageUIState(
+                        AsyncUIStates(
+                            isSuccess = false,
+                            isDone = true
+                        )
+                    )
+                })
+            handler.init()
+
             homepagePresenter.getUserHomepage(userEmail)
         }
 
         val uiState = homePageViewModel!!.homePageUIState.collectAsState()
-        val isContentLoaded = remember { mutableStateOf(true) }
+        val homepageInfo = homePageViewModel!!.homePageInfo.collectAsState()
+        val mVendorStatus = homePageViewModel!!.vendorStatus.collectAsState()
+        val homePageViewHeight = homePageViewModel!!.homePageViewHeight.collectAsState()
         val isStatusViewExpanded = remember { mutableStateOf(false) }
 
-        val handler = HomePageHandler(uiStateViewModel!!, homepagePresenter,
-            onPageLoading = {
-                homePageViewModel!!.setHomePageUIState(AsyncUIStates(isLoading = true))
-            }, onHomeInfoAvailable = {
-                homePageInfo, vendorStatus ->
-                homeScreenHeight.value = calculateHomePageScreenHeight(homepageInfo = homePageInfo, screenSizeInfo = screenSizeInfo, isStatusExpanded = false)
-                userHomeInfo = homePageInfo
-                this.vendorStatus = vendorStatus
-                isContentLoaded.value = true
-                homePageViewModel!!.setHomePageUIState(
-                    AsyncUIStates(
-                        isSuccess = true,
-                        isDone = true
-                    )
-                )
-            }, onErrorVisible = {
-                homePageViewModel!!.setHomePageUIState(
-                    AsyncUIStates(
-                        isSuccess = false,
-                        isDone = true
-                    )
-                )
-            })
-        handler.init()
+
 
         if (uiState.value.isLoading) {
-            //Content Loading
             Box(
                 modifier = Modifier.fillMaxWidth().fillMaxHeight()
                     .padding(top = 40.dp, start = 50.dp, end = 50.dp)
@@ -187,37 +188,21 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                 IndeterminateCircularProgressBar()
             }
         } else if (uiState.value.isDone && !uiState.value.isSuccess) {
-            //Error Occurred display reload
-        } else if (uiState.value.isDone && uiState.value.isSuccess) {
 
-            if (isContentLoaded.value) {
-                val userInfo = userHomeInfo!!.userInfo
-                val vendorInfo = userHomeInfo!!.vendorInfo
-                val specialistInfo = userHomeInfo!!.specialistInfo
-                val popularProducts = userHomeInfo!!.popularProducts
-                val recentAppointments = userHomeInfo!!.recentAppointment
-                val vendorServices = userHomeInfo!!.vendorServices
-                val vendorRecommendations = userHomeInfo!!.recommendationRecommendations
-                val vendorWhatsAppStatus = vendorStatus!!
+
+            //Error Occurred display reload
+
+
+        } else if (uiState.value.isDone && uiState.value.isSuccess) {
+                val popularProducts = homepageInfo.value.popularProducts
+                val recentAppointments = homepageInfo.value.recentAppointment
+                val vendorServices = homepageInfo.value.vendorServices
+                val vendorRecommendations = homepageInfo.value.recommendationRecommendations
 
                 val stackedSnackBarHostState = rememberStackedSnackbarHostState(
                     maxStack = 5,
                     animation = StackedSnackbarAnimation.Bounce
                 )
-
-                if (userInfo != null) {
-                    //mainViewModel.setUserInfo(userInfo)
-                    setCityId(userInfo.cityId!!)
-                    setCountryId(userInfo.countryId!!)
-                }
-                if (vendorInfo != null) {
-                    //mainViewModel.setConnectedVendor(vendorInfo)
-                }
-                if (specialistInfo != null) {
-                    //mainViewModel.setSpecialistInfo(specialistInfo)
-                }
-
-                // Main Service Content Arena
 
                 Scaffold(
                     snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
@@ -241,20 +226,16 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                                Column(
                                     Modifier
                                         .verticalScroll(state = rememberScrollState())
-                                        .height(homeScreenHeight.value.dp)
+                                        .height(homePageViewHeight.value.dp)
                                         .padding(top = 5.dp)
                                         .background(color = Color.White)
                                         .fillMaxWidth()
 
                                 ) {
-                                 if (vendorStatus != null) {
-                                        BusinessStatusDisplay(vendorWhatsAppStatus, onViewHeightChanged = {
+                                     BusinessStatusDisplay(mVendorStatus.value, onViewHeightChanged = {
                                              newHeight: Int, isStatusExpanded: Boolean ->
-                                             isStatusViewExpanded.value = isStatusExpanded
+                                             isStatusViewExpanded.value = isStatusExpanded })
 
-
-                                        })
-                                    }
                                     AttachOurServices()
                                     if (vendorServices != null) {
                                         ServiceGridScreen(vendorServices)
@@ -273,8 +254,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                                     AttachAppointments()
                                     RecentAppointmentScreen(appointmentList = recentAppointments)
                                 }
-                           })
-            }
+                     })
         }
     }
 
@@ -488,7 +468,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                             RecommendationType.Services.toPath() -> {
                                 mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.BOOKING.toPath()))
                                 mainViewModel.setSelectedService(it.serviceTypeItem?.serviceDetails!!)
-                                mainViewModel.setVendorRecommendation(it)
+                                //mainViewModel.setVendorRecommendation(it)
                             }
                             RecommendationType.Products.toPath() -> {
                                 showProductBottomSheet = true
@@ -549,7 +529,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
         private val uiStateViewModel: UIStateViewModel,
         private val homepagePresenter: HomepagePresenter,
         private val onPageLoading: () -> Unit,
-        private val onHomeInfoAvailable: (HomepageInfo, List<VendorStatusModel>) -> Unit,
+        private val onHomeInfoAvailable: (HomepageInfo, ArrayList<VendorStatusModel>) -> Unit,
         private val onErrorVisible: () -> Unit
     ) : HomepageContract.View {
         fun init() {
@@ -569,7 +549,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                 }
             }
         }
-        override fun showHome(homePageInfo: HomepageInfo, vendorStatus: List<VendorStatusModel>) {
+        override fun showHome(homePageInfo: HomepageInfo, vendorStatus: ArrayList<VendorStatusModel>) {
             onHomeInfoAvailable(homePageInfo, vendorStatus)
         }
     }
@@ -596,12 +576,4 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
             })
         }
     }
-    private fun setCityId(cityId: Int) {
-        preferenceSettings["cityId"] = cityId
-    }
-
-    private fun setCountryId(countryId: Int) {
-        preferenceSettings["countryId"] = countryId
-    }
-
 }

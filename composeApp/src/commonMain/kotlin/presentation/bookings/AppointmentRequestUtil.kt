@@ -7,7 +7,7 @@ import domain.Models.User
 import domain.Models.Vendor
 import domain.bookings.CreateAppointmentRequest
 
-fun getUnSavedAppointment(unsavedAppointments: SnapshotStateList<UnsavedAppointment>, currentUser: User, currentVendor: Vendor): ArrayList<CreateAppointmentRequest> {
+fun getUnSavedAppointment(unsavedAppointments: ArrayList<UnsavedAppointment>, currentUser: User, currentVendor: Vendor): ArrayList<CreateAppointmentRequest> {
     val appointmentRequestList = arrayListOf<CreateAppointmentRequest>()
 
     for (item in unsavedAppointments){

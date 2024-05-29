@@ -57,7 +57,7 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
         }
     }
 
-    override fun createAppointment(unsavedAppointments: SnapshotStateList<UnsavedAppointment>, currentUser: User, currentVendor: Vendor) {
+    override fun createAppointment(unsavedAppointments: ArrayList<UnsavedAppointment>, currentUser: User, currentVendor: Vendor) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {

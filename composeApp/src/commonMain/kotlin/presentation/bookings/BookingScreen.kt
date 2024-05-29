@@ -341,11 +341,19 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                 when (page) {
                     0 -> BookingSelectServices(mainViewModel, bookingViewModel,services)
                     1 -> BookingSelectSpecialist(mainViewModel,uiStateViewModel,bookingViewModel,bookingPresenter)
-                    2 -> BookingOverview(mainViewModel,uiStateViewModel,bookingViewModel,bookingPresenter, onAddMoreServiceClicked = {
-                         onAddMoreServiceClicked()
-                    }, onLastItemRemoved = {
-                         onLastItemRemoved()
-                    })
+                    2 -> if(page == pagerState.targetPage) {
+                        BookingOverview(
+                            mainViewModel,
+                            uiStateViewModel,
+                            bookingViewModel,
+                            bookingPresenter,
+                            onAddMoreServiceClicked = {
+                                onAddMoreServiceClicked()
+                            },
+                            onLastItemRemoved = {
+                                onLastItemRemoved()
+                            })
+                    }
                 }
             }
 

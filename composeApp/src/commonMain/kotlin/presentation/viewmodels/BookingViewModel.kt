@@ -86,7 +86,6 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
     fun clearCurrentBooking(){
         savedStateHandle["selectedServiceType"] = ServiceTypeItem()
         savedStateHandle["currentAppointmentBooking"] = UnsavedAppointment(-1)
-        savedStateHandle["selectedDate"] = LocalDate.parse("2024-03-30")
         savedStateHandle["specialists"] = arrayListOf<ServiceTypeSpecialist>()
     }
 

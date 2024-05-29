@@ -1,9 +1,11 @@
 package domain.Models
 
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Serializable
+@Serializable @Parcelize
 data class Vendor(
     @SerialName("id")
     val vendorId: Int? = null,
@@ -38,7 +40,7 @@ data class Vendor(
     @SerialName("password")
     val password: String = "",
     var isSelected: Boolean = false
-)
+): Parcelable
 
 data class VendorItemUIModel(
     val selectedVendor: Vendor,
