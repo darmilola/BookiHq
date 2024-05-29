@@ -34,9 +34,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import applications.date.getDay
+import applications.date.getMonth
+import applications.date.getYear
 import domain.Models.ServiceTypeItem
 import domain.Models.Services
 import domain.Models.UnsavedAppointment
+import kotlinx.datetime.LocalDate
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.BookingCalendar
@@ -66,6 +70,12 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
     val currentBooking =  if (savedBooking.bookingId != -1) savedBooking else UnsavedAppointment(currentBookingId)
     currentBooking.services = services
     currentBooking.serviceId = services.serviceId
+
+    currentBooking.year = getYear()
+    currentBooking.month = getMonth()
+    currentBooking.day = getDay()
+
+
     bookingViewModel.setCurrentBooking(currentBooking)
 
     val stackedSnackBarHostState = rememberStackedSnackbarHostState(
@@ -135,10 +145,14 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
             })
             BookingCalendar(bookingViewModel = bookingViewModel) {
                 bookingViewModel.undoSpecialist()
-                currentBooking.appointmentDate = it
+                currentBooking.day = it.dayOfMonth
+                currentBooking.month = it.monthNumber
+                currentBooking.year = it.year
                 currentBooking.serviceTypeSpecialist = null
                 bookingViewModel.setCurrentBooking(currentBooking)
-                bookingViewModel.setSelectedDate(it)
+                bookingViewModel.setSelectedDay(it.dayOfMonth)
+                bookingViewModel.setSelectedMonth(it.monthNumber)
+                bookingViewModel.setSelectedYear(it.year)
             }
         }
     }

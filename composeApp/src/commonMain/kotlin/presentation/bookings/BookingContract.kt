@@ -20,7 +20,7 @@ class BookingContract {
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
         abstract fun getUnSavedAppointment()
-        abstract fun getServiceTherapists(serviceTypeId: Int, selectedDate: String)
+        abstract fun getServiceTherapists(serviceTypeId: Int, day: Int, month: Int, year: Int)
         abstract fun createAppointment(unsavedAppointments: SnapshotStateList<UnsavedAppointment>, currentUser: User, currentVendor: Vendor)
     }
 }

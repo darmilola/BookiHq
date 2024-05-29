@@ -29,12 +29,12 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
         contractView?.showUnsavedAppointment()
     }
 
-    override fun getServiceTherapists(serviceTypeId: Int, selectedDate: String) {
+    override fun getServiceTherapists(serviceTypeId: Int, day: Int, month: Int, year: Int) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showLce(UIStates(loadingVisible = true))
-                    bookingRepositoryImpl.getServiceTherapist(serviceTypeId, selectedDate)
+                    bookingRepositoryImpl.getServiceTherapist(serviceTypeId, day, month, year)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){

@@ -24,7 +24,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "ComposeApp"
+            baseName = "ZazzyApp"
             isStatic = true
         }
     }
@@ -96,6 +96,8 @@ kotlin {
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
             implementation("io.ktor:ktor-client-content-negotiation:2.3.8")
             implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.8")
+            implementation("org.jetbrains.kotlin:kotlin-android-extensions-runtime:1.2.31")
+
 
             //reactiveX
             implementation ("com.badoo.reaktive:reaktive:2.1.0-beta01")

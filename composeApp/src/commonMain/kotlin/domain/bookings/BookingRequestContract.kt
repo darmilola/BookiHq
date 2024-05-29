@@ -7,7 +7,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class GetSpecialistsRequest(@SerialName("serviceTypeId") val serviceTypeId: Int,
-                                 @SerialName("selectedDate") val selectedDate: String)
+                                 @SerialName("day") val day: Int,
+                                 @SerialName("month") val month: Int,
+                                 @SerialName("year") val year: Int)
 
 @Serializable
 data class CreateAppointmentRequest(@SerialName("user_id") val userId: Int,
@@ -17,7 +19,9 @@ data class CreateAppointmentRequest(@SerialName("user_id") val userId: Int,
                                 @SerialName("specialist_id") val specialistId: Int,
                                 @SerialName("recommendation_id") val recommendationId: Int?,
                                 @SerialName("appointmentTime") val appointmentTime: Int,
-                                @SerialName("appointmentDate") val appointmentDate: String,
+                                @SerialName("day") val day: Int,
+                                @SerialName("month") val month: Int,
+                                @SerialName("year") val year: Int,
                                 @SerialName("serviceLocation") val serviceLocation: String,
                                 @SerialName("serviceStatus") val serviceStatus: String,
                                 @SerialName("isRecommendedAppointment") val isRecommendedAppointment: Boolean)

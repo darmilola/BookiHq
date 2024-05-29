@@ -62,8 +62,8 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator) {
 
  private fun authenticateSplashScreen(settings: Settings, onAuthenticated :() -> Unit,
                                       onConnectVendor :() -> Unit, onWelcome :() -> Unit){
-     val userEmail = settings.getString("userEmail", "")
-     val isVendorConnected = settings.getBoolean("isVendorConnected", false)
+     val userEmail = "devprocess0@gmail.com"//settings.getString("userEmail", "")
+     val isVendorConnected = true//settings.getBoolean("isVendorConnected", false)
 
      if (userEmail.isNotEmpty() && isVendorConnected){
          onAuthenticated()

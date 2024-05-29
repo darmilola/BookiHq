@@ -11,7 +11,9 @@ import domain.Models.SpecialistAvailabilityResponse
 interface BookingRepository {
     suspend fun getServiceTherapist(
         serviceTypeId: Int,
-        selectedDate: String): Single<ServiceSpecialistsResponse>
+        day: Int,
+        month: Int,
+        year: Int): Single<ServiceSpecialistsResponse>
     suspend fun createAppointment(appointmentRequests: ArrayList<CreateAppointmentRequest>): Single<ServerResponse>
 }
 

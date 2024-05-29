@@ -56,14 +56,23 @@ fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 
     val listState = rememberLazyListState()
 
     // date selected on appointment booking process
-    val unsavedAppointmentDate = bookingViewModel?.currentAppointmentBooking?.value?.appointmentDate
+
+    val unsavedAppointment = bookingViewModel?.currentAppointmentBooking?.value
 
     Column(modifier = modifier) {
         // get CalendarUiModel from CalendarDataSource, and the lastSelectedDate is Today.
         var selectedUIModel by remember { mutableStateOf(calendarUiModel) }
         var initialVisibleDates by remember { mutableStateOf(5) }
+        println("Unsaved $unsavedAppointment")
 
-        if (unsavedAppointmentDate != null) {
+        if (unsavedAppointment!!.bookingId != -1) {
+            // date selected on appointment booking process
+            val unsavedAppointmentDay = bookingViewModel.currentAppointmentBooking.value.day
+            val unsavedAppointmentMonth = bookingViewModel.currentAppointmentBooking.value.month
+            val unsavedAppointmentYear = bookingViewModel.currentAppointmentBooking.value.year
+
+            val unsavedAppointmentDate = LocalDate(unsavedAppointmentYear, unsavedAppointmentMonth, unsavedAppointmentDay)
+
                selectedUIModel = selectedUIModel.copy(selectedDate = Date(date = unsavedAppointmentDate, isSelected = true, isToday = false),visibleDates = selectedUIModel.visibleDates.map { it2 ->
                    it2.copy(
                        isSelected = it2.date == unsavedAppointmentDate

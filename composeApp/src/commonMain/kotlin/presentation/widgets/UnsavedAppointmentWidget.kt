@@ -180,14 +180,18 @@ fun UnsavedAppointmentContent(unsavedAppointment: UnsavedAppointment?) {
         dayOfMonth()
     }
 
-   val appointmentDate = unsavedAppointment?.appointmentDate?.format(appointmentDateFormat)
+    val unsavedAppointmentDay = unsavedAppointment?.day
+    val unsavedAppointmentMonth = unsavedAppointment?.month
+    val unsavedAppointmentYear = unsavedAppointment?.year
+
+   val appointmentDate = LocalDate(dayOfMonth = unsavedAppointmentDay!!, monthNumber = unsavedAppointmentMonth!!, year = unsavedAppointmentYear!!).format(appointmentDateFormat)
 
     val columnModifier = Modifier
         .padding(start = 15.dp, end = 10.dp)
         .fillMaxWidth()
     Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
         TextComponent(
-            text = unsavedAppointment?.serviceTypeItem?.title!!,
+            text = unsavedAppointment.serviceTypeItem?.title!!,
             fontSize = 16,
             fontFamily = GGSansSemiBold,
             textStyle = MaterialTheme.typography.h6,

@@ -86,7 +86,9 @@ import utils.getUnSavedAppointmentViewHeight
                        else{
                            bookingViewModel.setCurrentBooking(unsavedAppointments.last())
                            bookingViewModel.setSelectedServiceType(unsavedAppointments.last().serviceTypeItem!!)
-                           bookingViewModel.setSelectedDate(unsavedAppointments.last().appointmentDate!!)
+                           bookingViewModel.setSelectedDay(unsavedAppointments.last().day)
+                           bookingViewModel.setSelectedMonth(unsavedAppointments.last().month)
+                           bookingViewModel.setSelectedYear(unsavedAppointments.last().year)
                            mainViewModel.setSelectedService(unsavedAppointments.last().services!!)
                            bookingPresenter.getUnSavedAppointment()
                        }

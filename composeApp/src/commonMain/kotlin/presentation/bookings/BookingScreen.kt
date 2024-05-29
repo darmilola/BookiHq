@@ -407,7 +407,6 @@ class BookingScreenHandler(
 
     override fun showTherapists(serviceSpecialists: List<ServiceTypeSpecialist>, serviceTimes: List<ServiceTime>) {
         bookingViewModel.setSpecialists(serviceSpecialists)
-        println(serviceTimes.toString())
         bookingViewModel.setServiceTimes(serviceTimes)
     }
 

@@ -44,8 +44,9 @@ fun AppointmentInfoWidget(appointment: Appointment) {
         char(' ')
         dayOfMonth()
     }
+
     val appointmentDate =
-        LocalDate.parse(appointment.appointmentDate.toString()).format(appointmentDateFormat)
+        LocalDate(dayOfMonth = appointment.appointmentDay!!, monthNumber = appointment.appointmentMonth!!, year = appointment.appointmentYear!!).format(appointmentDateFormat)
     val appointmentTime = appointment.serviceTime?.time
 
     val columnModifier = Modifier

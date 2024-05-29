@@ -50,10 +50,13 @@ fun BookingSelectSpecialist(mainViewModel: MainViewModel, uiStateViewModel: UISt
     val therapists = bookingViewModel.serviceSpecialists.collectAsState()
     val serviceTimes = bookingViewModel.serviceTime.collectAsState()
     LaunchedEffect(Unit, block = {
-        if (therapists.value.isEmpty() || serviceTimes.value.isEmpty() || (bookingViewModel.currentBookingId.value != bookingViewModel.currentAppointmentBooking.value.bookingId)) {
+        if (therapists.value.isEmpty() || serviceTimes.value.isEmpty()
+            || (bookingViewModel.currentBookingId.value != bookingViewModel.currentAppointmentBooking.value.bookingId)) {
             bookingPresenter.getServiceTherapists(
                 bookingViewModel.selectedServiceType.value.categoryId,
-                bookingViewModel.selectedDate.value.toString()
+                day = bookingViewModel.day.value,
+                month = bookingViewModel.month.value,
+                year = bookingViewModel.year.value
             )
         }
     })

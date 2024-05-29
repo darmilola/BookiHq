@@ -15,8 +15,10 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
     private var _serviceTimes =  savedStateHandle.getStateFlow("serviceTimes", arrayListOf<ServiceTime>())
     private var _selectedServiceType =  savedStateHandle.getStateFlow("selectedServiceType", ServiceTypeItem())
     private var _currentBookingId =  savedStateHandle.getStateFlow("currentBookingId", -1)
-    private var _selectedDate =  savedStateHandle.getStateFlow("selectedDate", LocalDate.parse("2024-03-30"))
-    private var _currentAppointmentBooking =  savedStateHandle.getStateFlow("currentAppointmentBooking", UnsavedAppointment(-1))
+    private var _day =  savedStateHandle.getStateFlow("day", -1)
+    private var _month =  savedStateHandle.getStateFlow("month", -1)
+    private var _year =  savedStateHandle.getStateFlow("currentBookingId", -1)
+    private var _currentAppointmentBooking =  savedStateHandle.getStateFlow("currentAppointmentBooking", UnsavedAppointment(bookingId = -1))
 
     val serviceSpecialists: StateFlow<List<ServiceTypeSpecialist>>
         get() = _specialists
@@ -25,8 +27,14 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
     val selectedServiceType: StateFlow<ServiceTypeItem>
         get() = _selectedServiceType
 
-    val selectedDate: StateFlow<LocalDate>
-        get() = _selectedDate
+    val day: StateFlow<Int>
+        get() = _day
+
+    val month: StateFlow<Int>
+        get() = _month
+
+    val year: StateFlow<Int>
+        get() = _year
 
     val currentBookingId: StateFlow<Int>
         get() = _currentBookingId
@@ -46,9 +54,18 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
         savedStateHandle["selectedServiceType"] = selectedServiceType
     }
 
-    fun setSelectedDate(localDate: LocalDate) {
-        savedStateHandle["selectedDate"] = localDate
+    fun setSelectedDay(day: Int) {
+        savedStateHandle["day"] = day
     }
+
+    fun setSelectedMonth(month: Int) {
+        savedStateHandle["month"] = month
+    }
+
+    fun setSelectedYear(year: Int) {
+        savedStateHandle["year"] = year
+    }
+
     fun setCurrentBooking(unsavedAppointment: UnsavedAppointment) {
         savedStateHandle["currentAppointmentBooking"] = unsavedAppointment
     }
