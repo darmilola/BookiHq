@@ -23,7 +23,7 @@ class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
     }
 
     override fun createOrder(
-        orderItemList: SnapshotStateList<OrderItem>,
+        orderItemList: MutableList<OrderItem>,
         vendorId: Int,
         userId: Int,
         orderReference: Int,

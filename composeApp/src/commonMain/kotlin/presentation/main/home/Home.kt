@@ -157,6 +157,8 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                     )
                     homePageViewModel!!.setHomePageInfo(homePageInfo)
                     homePageViewModel!!.setVendorStatus(vendorStatus)
+                    mainViewModel.setConnectedVendor(homePageInfo.vendorInfo!!)
+                    mainViewModel.setUserInfo(homePageInfo.userInfo!!)
                 }, onErrorVisible = {
                     homePageViewModel!!.setHomePageUIState(
                         AsyncUIStates(
@@ -166,7 +168,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                     )
                 })
             handler.init()
-
             homepagePresenter.getUserHomepage(userEmail)
         }
 
@@ -255,7 +256,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                                     RecentAppointmentScreen(appointmentList = recentAppointments)
                                 }
                      })
-        }
+           }
     }
 
     @Composable

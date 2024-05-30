@@ -50,7 +50,7 @@ class CartContract {
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
-        abstract fun createOrder(orderItemList: SnapshotStateList<OrderItem>, vendorId: Int, userId: Int, orderReference: Int, deliveryMethod: String, paymentMethod: String)
+        abstract fun createOrder(orderItemList: MutableList<OrderItem>, vendorId: Int, userId: Int, orderReference: Int, deliveryMethod: String, paymentMethod: String)
 
     }
 }

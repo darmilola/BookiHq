@@ -25,7 +25,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -334,6 +333,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
                         )
                         showProductDetailBottomSheet = true
                     }, onItemCountChanged = {
+                        //val optionsArrayList: ArrayList<OrderItem> = arrayListOf(.options.toTypedArray()
                         orderItemUIModel = orderItemUIModel.copy(selectedItem = it,
                             itemList = mainViewModel.unSavedOrders.value.map { it2 ->
                                 if (it2.itemReference == it.itemReference) {
@@ -345,7 +345,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
                                         itemCount = it2.itemCount
                                     )
                                 }
-                            }.toMutableStateList()
+                            }.toMutableList()
                         )
                         mainViewModel.setCurrentUnsavedOrders(orderItemUIModel.itemList)
 

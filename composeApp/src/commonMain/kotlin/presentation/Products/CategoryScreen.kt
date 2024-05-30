@@ -51,7 +51,7 @@ import utils.getPopularProductViewHeight
 @Composable
 fun CategoryScreen(productCategory: ProductCategory,
                    productResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Product>,
-                   uiStateViewModel: UIStateViewModel, productPresenter: ProductPresenter, mainViewModel: MainViewModel,stackedSnackBarHostState: StackedSnakbarHostState) {
+                   productPresenter: ProductPresenter, mainViewModel: MainViewModel,stackedSnackBarHostState: StackedSnakbarHostState) {
 
     val connectedVendor: Vendor = mainViewModel.connectedVendor.value
     val loadMoreState = productResourceListEnvelopeViewModel.isLoadingMore.collectAsState()

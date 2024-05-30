@@ -1,6 +1,5 @@
 package presentation.main
 
-import GGSansRegular
 import theme.styles.Colors
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.keyframes
@@ -19,12 +18,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -34,35 +30,32 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
-import dev.icerock.moko.mvvm.livedata.compose.observeAsState
-import domain.Models.Vendor
-import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.widgets.EditProfilePictureButton
 import presentation.widgets.TitleWidget
 import presentations.components.ImageComponent
-import presentations.components.TextComponent
 
 @Composable
 fun MainTopBar(mainViewModel: MainViewModel, isBottomNavSelected: Boolean = false, onNotificationTabSelected:() -> Unit) {
 
-    Column(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
+    val userInfo = mainViewModel.currentUserInfo.collectAsState()
+    val connectedVendor = mainViewModel.connectedVendor.collectAsState()
+
+    val topBarHeight = if (userInfo.value.userId != null && connectedVendor.value.vendorId != null) 50 else 0
+    Column(modifier = Modifier.fillMaxWidth().height(topBarHeight.dp), verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally) {
            Box(
                modifier = Modifier
                    .padding(end = 0.dp)
-                   .height(50.dp)
-                   .background(color = Color.Transparent)
+                   .fillMaxHeight()
+                   .background(color = Color.White)
            ) {
                centerTopBarItem(mainViewModel)
                rightTopBarItem(mainViewModel, isBottomNavSelected = isBottomNavSelected) {
                    onNotificationTabSelected()
                }
            }
-          AttachBusinessName(mainViewModel)
        }
 }
 
@@ -78,48 +71,6 @@ fun leftTopBarItem() {
                WelcomeToProfile()
            }
         }
-
-
-
-@Composable
-fun AttachBusinessName(mainViewModel: MainViewModel){
-
-    val screenTitle: State<String> =  mainViewModel.screenTitle.collectAsState()
-    val shouldDisplay = screenTitle.value == "Home"
-    val height = if (shouldDisplay) 25.dp else 0.dp
-
-    val rowModifier = Modifier
-        .padding(start = 10.dp)
-        .height(height)
-        .fillMaxWidth()
-    Row(
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = rowModifier,
-    ) {
-        val modifier = Modifier.padding(start = 3.dp)
-        AttachLocationIcon()
-        TextComponent(
-            text = "The Business Name is Here",
-            fontSize = 16,
-            fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color.DarkGray,
-            textAlign = TextAlign.Left,
-            fontWeight = FontWeight.ExtraBold,
-            lineHeight = 25,
-            textModifier = modifier
-        )
-    }
-}
-
-@Composable
-fun AttachLocationIcon() {
-    val modifier = Modifier
-        .size(16.dp)
-    ImageComponent(imageModifier = modifier, imageRes = "drawable/location_icon_filled.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
-}
-
 
 @Composable
 fun WelcomeToProfile() {
@@ -166,7 +117,7 @@ fun WelcomeToProfile() {
 
 @Composable
 fun BusinessImage(businessImageUrl: String, onBusinessImageClicked: () -> Unit) {
-    Box(Modifier.size(50.dp), contentAlignment = Alignment.Center) {
+    Box(Modifier.size(40.dp), contentAlignment = Alignment.Center) {
         Box(
             Modifier
                 .size(35.dp)
@@ -250,14 +201,14 @@ fun centerTopBarItem(mainViewModel: MainViewModel) {
         .fillMaxWidth()
         .fillMaxHeight()
 
-    val screenTitle: State<String> =  mainViewModel.screenTitle.collectAsState()
+    val screenTitle =  mainViewModel.screenTitle.collectAsState()
 
     Box(modifier = rowModifier,
         contentAlignment = Alignment.Center
     ) {
-        val shouldDisplay = screenTitle.value == "Home"
+        val isHomePage = screenTitle.value == "Home"
         AnimatedVisibility(
-                visible = !shouldDisplay,
+                visible = !isHomePage,
                 enter = fadeIn(animationSpec = keyframes {
                     this.durationMillis = 0
                 }),
@@ -268,7 +219,7 @@ fun centerTopBarItem(mainViewModel: MainViewModel) {
                 TitleWidget(textColor = Colors.primaryColor, title = screenTitle.value)
             }
             AnimatedVisibility(
-                visible = shouldDisplay,
+                visible = isHomePage,
                 enter = fadeIn(animationSpec = keyframes {
                     this.durationMillis = 0
                 }),

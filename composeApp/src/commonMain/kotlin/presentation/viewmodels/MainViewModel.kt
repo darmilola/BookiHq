@@ -25,7 +25,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
     private var _vendorRecommendation =  savedStateHandle.getStateFlow("vendorRecommendation", VendorRecommendation())
     private var _currentUnsavedAppointments =  savedStateHandle.getStateFlow("currentUnsavedAppointments", ArrayList<UnsavedAppointment>())
-    private var _currentUnsavedOrders =  savedStateHandle.getStateFlow("currentUnsavedOrders", SnapshotStateList<OrderItem>())
+    private var _currentUnsavedOrders =  savedStateHandle.getStateFlow("currentUnsavedOrders", mutableListOf<OrderItem>())
     private var _currentOrderReference =  savedStateHandle.getStateFlow("currentOrderReference", -1)
     private var _mainUiState =  savedStateHandle.getStateFlow("mainUiState", AsyncUIStates())
 
@@ -38,7 +38,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     val unSavedAppointments: StateFlow<ArrayList<UnsavedAppointment>>
         get() = _currentUnsavedAppointments
 
-    val unSavedOrders: StateFlow<SnapshotStateList<OrderItem>>
+    val unSavedOrders: StateFlow<MutableList<OrderItem>>
         get() = _currentUnsavedOrders
 
     val currentOrderReference: StateFlow<Int>
@@ -94,7 +94,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
         savedStateHandle["currentUnsavedAppointments"] = unsavedAppointments
     }
 
-    fun setCurrentUnsavedOrders(orderItems: SnapshotStateList<OrderItem>) {
+    fun setCurrentUnsavedOrders(orderItems: MutableList<OrderItem>) {
         savedStateHandle["currentUnsavedOrders"] = orderItems
     }
 

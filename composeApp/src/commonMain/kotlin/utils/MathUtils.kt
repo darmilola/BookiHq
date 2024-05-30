@@ -9,7 +9,7 @@ fun calculateDiscount(price: Int, discount: Int): Int {
     return (ratioDecrease * 100).toInt()
 }
 
-fun calculateCheckoutSubTotal(orderItems: SnapshotStateList<OrderItem>): Int {
+fun calculateCheckoutSubTotal(orderItems: MutableList<OrderItem>): Int {
    var subtotal: Int = 0
   for (item in orderItems){
       val price = if (item.itemProduct?.isDiscounted!!) item.itemProduct?.discount else item.itemProduct?.productPrice

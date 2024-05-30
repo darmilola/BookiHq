@@ -9,7 +9,7 @@ import domain.Models.Vendor
 import domain.Products.OrderItemRequest
 import domain.bookings.CreateAppointmentRequest
 
-fun getUnSavedOrders(unsavedOrders: SnapshotStateList<OrderItem>, userId: Int, orderReference: Int): ArrayList<OrderItemRequest> {
+fun getUnSavedOrders(unsavedOrders: MutableList<OrderItem>, userId: Int, orderReference: Int): ArrayList<OrderItemRequest> {
     val orderRequestList = arrayListOf<OrderItemRequest>()
 
     for (item in unsavedOrders){

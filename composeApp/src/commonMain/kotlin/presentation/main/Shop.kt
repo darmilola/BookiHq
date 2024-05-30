@@ -4,7 +4,6 @@ import GGSansRegular
 import GGSansSemiBold
 import StackedSnackbarHost
 import StackedSnakbarHostState
-import androidx.compose.foundation.BorderStroke
 import theme.styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,11 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
@@ -47,7 +43,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
@@ -71,10 +66,9 @@ import presentation.Products.CategoryPresenter
 import presentation.Products.HomeProductItem
 import presentation.Products.ProductContract
 import presentation.Products.ProductDetailBottomSheet
-import presentation.Products.ProductItem
 import presentation.Products.ProductPresenter
-import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
+import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ProductViewModel
 import presentation.viewmodels.ResourceListEnvelopeViewModel
@@ -122,21 +116,10 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
         currentUser = mainViewModel.currentUserInfo.value
         currentVendor = mainViewModel.connectedVendor.value
 
-        val isUserSearching = remember { mutableStateOf(false) }
-        val searchQuery = remember { mutableStateOf("") }
-
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
             animation = StackedSnackbarAnimation.Bounce
         )
-
-        if (categoryUIStateViewModel == null) {
-            categoryUIStateViewModel = kmpViewModel(
-                factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
-                },
-            )
-        }
 
         if (productUIStateViewModel == null) {
             productUIStateViewModel = kmpViewModel(
@@ -151,7 +134,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                 factory = viewModelFactory {
                     ResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
                 })
-          }
+        }
 
         if (productViewModel == null) {
             productViewModel = kmpViewModel(
@@ -159,20 +142,84 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                     ProductViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
-            categoryPresenter.getProductCategory(currentVendor!!.vendorId!!, currentUser!!.userId!!)
+
+        if (categoryUIStateViewModel == null) {
+            categoryUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+            val categoryHandler = ShopCategoryHandler(categoryUIStateViewModel!!,
+                onPageLoading = {
+                    productViewModel!!.setCategoryUIState(AsyncUIStates(isLoading = true))
+
+                },
+                onProductCategoryAvailable = {
+                productCategories, favoriteProducts ->
+                     productViewModel!!.setProductCategories(productCategories)
+                     productViewModel!!.setFavoriteProducts(favoriteProducts)
+                     productViewModel!!.setCategoryUIState(AsyncUIStates(isSuccess = true, isDone = true))
+                 },
+                onErrorVisible = {
+                  productViewModel!!.setCategoryUIState(AsyncUIStates(isSuccess = false, isDone = true))
+                }, categoryPresenter)
+               categoryHandler.init()
+         }
+
+
+            val productHandler = ShopProductsHandler(
+                productUIStateViewModel!!, productPresenter,
+                onPageLoading = {
+                    productViewModel!!.setProductUIState(AsyncUIStates(isLoading = true))
+                },
+                onProductAvailable = {
+                    products: ResourceListEnvelope<Product>?, isFromSearch: Boolean ->
+                    productViewModel!!.setProductUIState(AsyncUIStates(isDone = true, isSuccess = true))
+                 if (isFromSearch){
+                    productResourceListEnvelopeViewModel!!.setResources(products?.resources)
+                    products?.prevPageUrl?.let { productResourceListEnvelopeViewModel!!.setPrevPageUrl(it) }
+                    products?.nextPageUrl?.let { productResourceListEnvelopeViewModel!!.setNextPageUrl(it) }
+                    products?.currentPage?.let { productResourceListEnvelopeViewModel!!.setCurrentPage(it) }
+                    products?.totalItemCount?.let { productResourceListEnvelopeViewModel!!.setTotalItemCount(it) }
+                    products?.displayedItemCount?.let { productResourceListEnvelopeViewModel!!.setDisplayedItemCount(it) }
+                }
+                else if (productResourceListEnvelopeViewModel!!.resources.value.isNotEmpty()) {
+                    val productList = productResourceListEnvelopeViewModel!!.resources.value
+                    productList.addAll(products?.resources!!)
+                    productResourceListEnvelopeViewModel!!.setResources(productList)
+                    products.prevPageUrl?.let { productResourceListEnvelopeViewModel!!.setPrevPageUrl(it) }
+                    products.nextPageUrl?.let { productResourceListEnvelopeViewModel!!.setNextPageUrl(it) }
+                    products.currentPage?.let { productResourceListEnvelopeViewModel!!.setCurrentPage(it) }
+                    products.totalItemCount?.let { productResourceListEnvelopeViewModel!!.setTotalItemCount(it) }
+                    products.displayedItemCount?.let { productResourceListEnvelopeViewModel!!.setDisplayedItemCount(it) }
+                } else {
+                    productResourceListEnvelopeViewModel!!.setResources(products?.resources)
+                    products?.prevPageUrl?.let { productResourceListEnvelopeViewModel!!.setPrevPageUrl(it) }
+                    products?.nextPageUrl?.let { productResourceListEnvelopeViewModel!!.setNextPageUrl(it) }
+                    products?.currentPage?.let { productResourceListEnvelopeViewModel!!.setCurrentPage(it) }
+                    products?.totalItemCount?.let { productResourceListEnvelopeViewModel!!.setTotalItemCount(it) }
+                    products?.displayedItemCount?.let { productResourceListEnvelopeViewModel!!.setDisplayedItemCount(it) }
+                }
+                }, onErrorVisible = {
+                    productViewModel!!.setProductUIState(AsyncUIStates(isSuccess = false, isDone = true))
+                }, onLoadMoreProduct = {
+                    isLoadMore -> productResourceListEnvelopeViewModel!!.setLoadingMore(isLoadMore)
+                })
+              productHandler.init()
+              categoryPresenter.getProductCategory(currentVendor!!.vendorId!!, currentUser!!.userId!!)
         }
 
-        val categoryUIState = categoryUIStateViewModel!!.uiData.collectAsState()
 
-        val categoryHandler = ShopCategoryHandler(productViewModel!!, categoryUIStateViewModel!!, categoryPresenter)
-        categoryHandler.init()
-
-       val productHandler = ShopProductsHandler(productResourceListEnvelopeViewModel!!, productUIStateViewModel!!, productPresenter)
-        productHandler.init()
+        val categoryUIState = productViewModel!!.categoryUiState.collectAsState()
+        val productUIState = productViewModel!!.productUiState.collectAsState()
+        val isUserSearching = remember { mutableStateOf(false) }
+        val searchQuery = remember { mutableStateOf("") }
 
 
-        if (categoryUIState.value.loadingVisible) {
-            //Content Loading
+        if (categoryUIState.value.isLoading) {
+
+            // Product Category is Loading
+
             Box(
                 modifier = Modifier.fillMaxWidth().fillMaxHeight()
                     .padding(top = 40.dp, start = 50.dp, end = 50.dp)
@@ -181,11 +228,11 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
             ) {
                 IndeterminateCircularProgressBar()
             }
-        } else if (categoryUIState.value.errorOccurred) {
+        } else if (categoryUIState.value.isDone && !categoryUIState.value.isSuccess) {
 
-            //Error Occurred display reload
+            // Error Occurred display reload
 
-        } else if (categoryUIState.value.contentVisible) {
+        } else if (categoryUIState.value.isDone && categoryUIState.value.isSuccess) {
 
             productCategories = productViewModel!!.productCategories.value
 
@@ -214,16 +261,12 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                             productResourceListEnvelopeViewModel!!.clearData(mutableListOf<Product>())
                             ProductContent(
                                 productCategories!!,
-                                productResourceListEnvelopeViewModel!!, productUIStateViewModel!!,
+                                productResourceListEnvelopeViewModel!!, productViewModel!!,
                                 productPresenter, mainViewModel,stackedSnackBarHostState
                             )
                         } else {
                             productResourceListEnvelopeViewModel!!.clearData(mutableListOf<Product>())
-                            SearchContent(
-                                searchQuery.value,
-                                productResourceListEnvelopeViewModel!!, productUIStateViewModel!!,
-                                productPresenter, mainViewModel,stackedSnackBarHostState
-                            )
+                            SearchContent(productResourceListEnvelopeViewModel!!, productViewModel!!, mainViewModel,stackedSnackBarHostState)
                         }
                     },
                     backgroundColor = Color.White,
@@ -288,7 +331,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
         @Composable
         fun ProductContent(productCategories: ArrayList<ProductCategory>,productResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Product>,
-                           uiStateViewModel: UIStateViewModel, productPresenter: ProductPresenter, mainViewModel: MainViewModel,stackedSnackBarHostState: StackedSnakbarHostState) {
+                           productViewModel: ProductViewModel, productPresenter: ProductPresenter, mainViewModel: MainViewModel,stackedSnackBarHostState: StackedSnakbarHostState) {
             val columnModifier = Modifier
                 .padding(top = 5.dp)
                 .fillMaxHeight()
@@ -306,7 +349,7 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     TabScreen(productCategories,productResourceListEnvelopeViewModel,
-                        uiStateViewModel,productPresenter,mainViewModel,stackedSnackBarHostState)
+                        productViewModel,productPresenter,mainViewModel,stackedSnackBarHostState)
                 }
 
             }
@@ -315,12 +358,12 @@ class ShopTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
 
 @Composable
-fun SearchContent(searchQuery: String, productResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Product>,
-                   uiStateViewModel: UIStateViewModel, productPresenter: ProductPresenter, mainViewModel: MainViewModel, stackedSnackBarHostState: StackedSnakbarHostState) {
+fun SearchContent(productResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Product>,
+                  productViewModel: ProductViewModel, mainViewModel: MainViewModel, stackedSnackBarHostState: StackedSnakbarHostState) {
     val loadMoreState = productResourceListEnvelopeViewModel.isLoadingMore.collectAsState()
     val productList = productResourceListEnvelopeViewModel.resources.collectAsState()
     val selectedProduct = remember { mutableStateOf(Product()) }
-    val productUIState = uiStateViewModel.uiData.collectAsState()
+    val productUIState = productViewModel.productUiState.collectAsState()
     var productUIModel by remember {
         mutableStateOf(
             ProductItemUIModel(
@@ -343,7 +386,7 @@ fun SearchContent(searchQuery: String, productResourceListEnvelopeViewModel: Res
         modifier = Modifier.fillMaxWidth().fillMaxHeight(),
         contentAlignment = Alignment.Center
     ) {
-        if (productUIState.value.loadingVisible) {
+        if (productUIState.value.isLoading) {
             productResourceListEnvelopeViewModel.setIsSearching(true)
             Box(
                 modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -353,10 +396,10 @@ fun SearchContent(searchQuery: String, productResourceListEnvelopeViewModel: Res
             ) {
                 IndeterminateCircularProgressBar()
             }
-        } else if (productUIState.value.errorOccurred) {
+        } else if (productUIState.value.isDone && !productUIState.value.isSuccess) {
             productResourceListEnvelopeViewModel.setIsSearching(false)
             // Error Occurred display reload
-        } else if (productUIState.value.contentVisible) {
+        } else if (productUIState.value.isDone && productUIState.value.isSuccess) {
             productResourceListEnvelopeViewModel.setIsSearching(false)
             val columnModifier = Modifier
                 .padding(top = 5.dp)
@@ -414,20 +457,17 @@ fun SearchContent(searchQuery: String, productResourceListEnvelopeViewModel: Res
     }
 }
 
-
-
-
         @Composable
         fun TabScreen(productCategories: ArrayList<ProductCategory>,
                       productResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Product>,
-                      uiStateViewModel: UIStateViewModel, productPresenter: ProductPresenter, mainViewModel: MainViewModel,stackedSnackBarHostState: StackedSnakbarHostState) {
+                      productViewModel: ProductViewModel, productPresenter: ProductPresenter, mainViewModel: MainViewModel,stackedSnackBarHostState: StackedSnakbarHostState) {
 
             var tabIndex by remember { mutableStateOf(0) }
-            val productUIState = uiStateViewModel.uiData.collectAsState()
+            val productUIState = productViewModel.productUiState.collectAsState()
 
         LaunchedEffect(Unit, block = {
             if(productCategories.isNotEmpty()){
-                productResourceListEnvelopeViewModel.clearData(mutableListOf<Product>())
+                productResourceListEnvelopeViewModel.clearData(mutableListOf())
                 productPresenter.getProducts(mainViewModel.connectedVendor.value.vendorId!!, productCategories[tabIndex].categoryId!!)
                }
             })
@@ -476,7 +516,7 @@ fun SearchContent(searchQuery: String, productResourceListEnvelopeViewModel: Res
                     modifier = Modifier.fillMaxWidth().fillMaxHeight(),
                     contentAlignment = Alignment.TopStart
                 ) {
-                    if (productUIState.value.loadingVisible) {
+                    if (productUIState.value.isLoading) {
                         //Content Loading
                         Box(
                             modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -485,13 +525,15 @@ fun SearchContent(searchQuery: String, productResourceListEnvelopeViewModel: Res
                         ) {
                             IndeterminateCircularProgressBar()
                         }
-                    } else if (productUIState.value.errorOccurred) {
+                    } else if (productUIState.value.isDone && !productUIState.value.isSuccess) {
                         // Error Occurred display reload
-                    } else if (productUIState.value.contentVisible) {
+
+
+                    } else if (productUIState.value.isDone && productUIState.value.isSuccess) {
+
                         CategoryScreen(
                             productCategories[tabIndex],
-                            productResourceListEnvelopeViewModel,
-                            uiStateViewModel, productPresenter, mainViewModel = mainViewModel,stackedSnackBarHostState
+                            productResourceListEnvelopeViewModel, productPresenter, mainViewModel = mainViewModel,stackedSnackBarHostState
                         )
                     }
                 }
@@ -501,9 +543,11 @@ fun SearchContent(searchQuery: String, productResourceListEnvelopeViewModel: Res
 
 
 class ShopCategoryHandler(
-    private val productViewModel: ProductViewModel,
     private val uiStateViewModel: UIStateViewModel,
-    private val categoryPresenter: CategoryPresenter,
+    private val onPageLoading: () -> Unit,
+    private val onProductCategoryAvailable: (productCategories: List<ProductCategory>, favoriteProducts: List<FavoriteProduct>) -> Unit,
+    private val onErrorVisible: () -> Unit,
+    private val categoryPresenter: CategoryPresenter
 ) : CategoryContract.View {
     fun init() {
         categoryPresenter.registerUIContract(this)
@@ -511,22 +555,34 @@ class ShopCategoryHandler(
 
     override fun showLce(uiState: UIStates, message: String) {
         uiStateViewModel.switchState(uiState)
+        uiState.let {
+            when {
+                it.loadingVisible -> {
+                    onPageLoading()
+                }
+                it.errorOccurred -> {
+                    onErrorVisible()
+                }
+            }
+        }
     }
     override fun showProductCategories(
         productCategories: List<ProductCategory>,
         favoriteProducts: List<FavoriteProduct>
     ) {
-        productViewModel.setProductCategories(productCategories)
-        productViewModel.setFavoriteProducts(favoriteProducts)
+        onProductCategoryAvailable(productCategories, favoriteProducts)
     }
 }
 
 
 
 class ShopProductsHandler(
-    private val productResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Product>,
     private val uiStateViewModel: UIStateViewModel,
     private val productPresenter: ProductPresenter,
+    private val onPageLoading: () -> Unit,
+    private val onProductAvailable: (products: ResourceListEnvelope<Product>?, isFromSearch: Boolean) -> Unit,
+    private val onLoadMoreProduct: (isLoadMore: Boolean) -> Unit,
+    private val onErrorVisible: () -> Unit
 ) : ProductContract.View {
     fun init() {
         productPresenter.registerUIContract(this)
@@ -534,43 +590,28 @@ class ShopProductsHandler(
 
     override fun showLce(uiState: UIStates, message: String) {
         uiStateViewModel.switchState(uiState)
+        uiState.let {
+            when {
+                it.loadingVisible -> {
+                    onPageLoading()
+                }
+                it.errorOccurred -> {
+                    onErrorVisible()
+                }
+            }
+        }
     }
 
-
     override fun showProducts(products: ResourceListEnvelope<Product>?, isFromSearch: Boolean) {
-        if (isFromSearch){
-            productResourceListEnvelopeViewModel.setResources(products?.resources)
-            products?.prevPageUrl?.let { productResourceListEnvelopeViewModel.setPrevPageUrl(it) }
-            products?.nextPageUrl?.let { productResourceListEnvelopeViewModel.setNextPageUrl(it) }
-            products?.currentPage?.let { productResourceListEnvelopeViewModel.setCurrentPage(it) }
-            products?.totalItemCount?.let { productResourceListEnvelopeViewModel.setTotalItemCount(it) }
-            products?.displayedItemCount?.let { productResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
-        }
-       else if (productResourceListEnvelopeViewModel.resources.value.isNotEmpty()) {
-            val productList = productResourceListEnvelopeViewModel.resources.value
-            productList.addAll(products?.resources!!)
-            productResourceListEnvelopeViewModel.setResources(productList)
-            products.prevPageUrl?.let { productResourceListEnvelopeViewModel.setPrevPageUrl(it) }
-            products.nextPageUrl?.let { productResourceListEnvelopeViewModel.setNextPageUrl(it) }
-            products.currentPage?.let { productResourceListEnvelopeViewModel.setCurrentPage(it) }
-            products.totalItemCount?.let { productResourceListEnvelopeViewModel.setTotalItemCount(it) }
-            products.displayedItemCount?.let { productResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
-        } else {
-            productResourceListEnvelopeViewModel.setResources(products?.resources)
-            products?.prevPageUrl?.let { productResourceListEnvelopeViewModel.setPrevPageUrl(it) }
-            products?.nextPageUrl?.let { productResourceListEnvelopeViewModel.setNextPageUrl(it) }
-            products?.currentPage?.let { productResourceListEnvelopeViewModel.setCurrentPage(it) }
-            products?.totalItemCount?.let { productResourceListEnvelopeViewModel.setTotalItemCount(it) }
-            products?.displayedItemCount?.let { productResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
-        }
+        onProductAvailable(products, isFromSearch)
     }
 
     override fun onLoadMoreProductStarted(isSuccess: Boolean) {
-        productResourceListEnvelopeViewModel.setLoadingMore(true)
+        onLoadMoreProduct(isSuccess)
     }
 
     override fun onLoadMoreProductEnded(isSuccess: Boolean) {
-        productResourceListEnvelopeViewModel.setLoadingMore(false)
+        onLoadMoreProduct(isSuccess)
     }
 
 }

@@ -3,7 +3,6 @@ package presentation.viewmodels
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Models.FavoriteProduct
-import domain.Models.HomePageResponse
 import domain.Models.ProductCategory
 import kotlinx.coroutines.flow.StateFlow
 
@@ -11,13 +10,17 @@ class ProductViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
 
     private var _productCategories =  savedStateHandle.getStateFlow("productCategories", arrayListOf<ProductCategory>())
     private var _favoriteProducts =  savedStateHandle.getStateFlow("favoriteProducts", arrayListOf<FavoriteProduct>())
-    private var _shopUiState =  savedStateHandle.getStateFlow("shopUiState", AsyncUIStates())
+    private var _categoryUiState =  savedStateHandle.getStateFlow("categoryUiState", AsyncUIStates())
+    private var _productUiState =  savedStateHandle.getStateFlow("productUiState", AsyncUIStates())
 
     val productCategories: StateFlow<ArrayList<ProductCategory>>
         get() = _productCategories
 
-    val shopUiState: StateFlow<AsyncUIStates>
-        get() = _shopUiState
+    val categoryUiState: StateFlow<AsyncUIStates>
+        get() = _categoryUiState
+
+    val productUiState: StateFlow<AsyncUIStates>
+        get() = _productUiState
 
     val favoriteProducts: StateFlow<List<FavoriteProduct>>
         get() = _favoriteProducts
@@ -30,7 +33,11 @@ class ProductViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
         savedStateHandle["favoriteProducts"] = favorites
     }
 
-    fun setShopUIState(asyncUIStates: AsyncUIStates) {
-        savedStateHandle["shopUiState"] = asyncUIStates
+    fun setCategoryUIState(asyncUIStates: AsyncUIStates) {
+        savedStateHandle["categoryUiState"] = asyncUIStates
+    }
+
+    fun setProductUIState(asyncUIStates: AsyncUIStates) {
+        savedStateHandle["productUiState"] = asyncUIStates
     }
 }

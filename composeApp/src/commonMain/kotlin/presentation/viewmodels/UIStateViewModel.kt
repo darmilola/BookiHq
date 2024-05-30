@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class UIStateViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
-    private var _uiState = savedStateHandle.getStateFlow("uiState", UIStates()).wrap()
+    private var _uiState = savedStateHandle.getStateFlow("uiState", UIStates())
     val uiData: StateFlow<UIStates>
         get() = _uiState
 
@@ -22,7 +22,7 @@ class UIStateViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
 
 class AsyncUIStateViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
-    private var _uiState = savedStateHandle.getStateFlow("uiState", UIStates()).wrap()
+    private var _uiState = savedStateHandle.getStateFlow("uiState", UIStates())
     val uiData: StateFlow<UIStates>
         get() = _uiState
 

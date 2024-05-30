@@ -179,7 +179,7 @@ class BusinessStatusItemWidget {
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.ExtraBold,
                 lineHeight = 23,
-                maxLines = 2,
+                maxLines = 3,
                 overflow = TextOverflow.Ellipsis
             )
 
@@ -205,7 +205,7 @@ class BusinessStatusItemWidget {
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.ExtraBold,
                 lineHeight = 23,
-                maxLines = 2,
+                maxLines = 3,
                 overflow = TextOverflow.Ellipsis
             )
 
@@ -230,7 +230,7 @@ class BusinessStatusItemWidget {
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.ExtraBold,
                 lineHeight = 23,
-                maxLines = 2,
+                maxLines = 3,
                 overflow = TextOverflow.Ellipsis
             )
 

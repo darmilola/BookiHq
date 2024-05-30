@@ -117,9 +117,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
             .background(color = Color.Transparent)
             .height(45.dp)
 
-        ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke(1.dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor =  Color.DarkGray, style = style){
-
-        }
+        ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke(1.dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor =  Color.DarkGray, style = style){}
 
     }
 
@@ -143,15 +141,15 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
 
                 ActionItemComponent(
                     modifier = actionStyle,
-                    buttonText = "Therapist Dashboard",
+                    buttonText = "Talk With A Therapist",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
                     textColor = Colors.darkPrimary,
                     style = TextStyle(),
-                    iconRes = "drawable/dashboard_icon.png",
+                    iconRes = "drawable/video_chat.png",
                     isDestructiveAction = false, onClick = {
-                        mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.THERAPIST_DASHBOARD.toPath()))
                     })
+
 
                 ActionItemComponent(
                     modifier = actionStyle,
@@ -162,7 +160,6 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                     style = TextStyle(),
                     iconRes = "drawable/shopping_basket.png",
                     isDestructiveAction = false, onClick = {
-
                     })
 
 
@@ -181,7 +178,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
 
                 ActionItemComponent(
                     modifier = actionStyle,
-                    buttonText = "Invite Friends",
+                    buttonText = "Invite A Friend",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
                     textColor = Colors.darkPrimary,
@@ -193,36 +190,17 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
 
                 Divider(color = Color(color = 0x90C8C8C8), thickness = 1.dp, modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 10.dp))
 
-
                 ActionItemComponent(
                     modifier = actionStyle,
-                    buttonText = "FAQs",
+                    buttonText = "Dashboard",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
                     textColor = Colors.darkPrimary,
                     style = TextStyle(),
-                    iconRes = "drawable/faq.png",
-                    isDestructiveAction = false)
-
-                ActionItemComponent(
-                    modifier = actionStyle,
-                    buttonText = "Help & Support",
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                    fontSize = 20,
-                    textColor = Colors.darkPrimary,
-                    style = TextStyle(),
-                    iconRes = "drawable/support.png",
-                    isDestructiveAction = false)
-
-                ActionItemComponent(
-                    modifier = actionStyle,
-                    buttonText = "Terms And Condition",
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                    fontSize = 20,
-                    textColor = Colors.darkPrimary,
-                    style = TextStyle(),
-                    iconRes = "drawable/terms.png",
-                    isDestructiveAction = false)
+                    iconRes = "drawable/dashboard_icon.png",
+                    isDestructiveAction = false, onClick = {
+                        mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.THERAPIST_DASHBOARD.toPath()))
+                    })
 
                 ActionItemComponent(
                     modifier = actionStyle,
@@ -235,6 +213,16 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                     isDestructiveAction = false, onClick = {
                         mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.JOIN_SPA.toPath()))
                     })
+
+                ActionItemComponent(
+                    modifier = actionStyle,
+                    buttonText = "Help & Support",
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                    fontSize = 20,
+                    textColor = Colors.darkPrimary,
+                    style = TextStyle(),
+                    iconRes = "drawable/support.png",
+                    isDestructiveAction = false)
 
                 Divider(color = Color(color = 0x90C8C8C8), thickness = 1.dp, modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 10.dp))
 
