@@ -39,7 +39,7 @@ class AppointmentsHandler(
     override fun showAppointments(appointments: AppointmentResourceListEnvelope) {
         if (appointmentResourceListEnvelopeViewModel.resources.value.isNotEmpty()) {
             val appointmentList = appointmentResourceListEnvelopeViewModel.resources.value
-            appointmentList.addAll(appointments?.resources!!)
+            appointmentList.addAll(appointments.resources!!)
             appointmentResourceListEnvelopeViewModel.setResources(appointmentList)
             appointments.prevPageUrl?.let { appointmentResourceListEnvelopeViewModel.setPrevPageUrl(it) }
             appointments.nextPageUrl?.let { appointmentResourceListEnvelopeViewModel.setNextPageUrl(it) }
@@ -47,7 +47,7 @@ class AppointmentsHandler(
             appointments.totalItemCount?.let { appointmentResourceListEnvelopeViewModel.setTotalItemCount(it) }
             appointments.displayedItemCount?.let { appointmentResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
         } else {
-            appointmentResourceListEnvelopeViewModel.setResources(appointments?.resources)
+            appointmentResourceListEnvelopeViewModel.setResources(appointments.resources)
             appointments?.prevPageUrl?.let { appointmentResourceListEnvelopeViewModel.setPrevPageUrl(it) }
             appointments?.nextPageUrl?.let { appointmentResourceListEnvelopeViewModel.setNextPageUrl(it) }
             appointments?.currentPage?.let { appointmentResourceListEnvelopeViewModel.setCurrentPage(it) }

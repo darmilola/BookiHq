@@ -166,8 +166,6 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {},
             content = {
-
-
                 val handler = AppointmentsHandler(
                     appointmentResourceListEnvelopeViewModel!!,
                     uiStateViewModel!!,
@@ -195,8 +193,6 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                     }
                 )
                 handler.init()
-
-
 
                 if (uiState.value.loadingVisible) {
                     //Content Loading

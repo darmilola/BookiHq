@@ -57,15 +57,14 @@ fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 
 
     // date selected on appointment booking process
 
-    val unsavedAppointment = bookingViewModel?.currentAppointmentBooking?.value
+
 
     Column(modifier = modifier) {
         // get CalendarUiModel from CalendarDataSource, and the lastSelectedDate is Today.
         var selectedUIModel by remember { mutableStateOf(calendarUiModel) }
         var initialVisibleDates by remember { mutableStateOf(5) }
-        println("Unsaved $unsavedAppointment")
 
-        if (unsavedAppointment!!.bookingId != -1) {
+        if (bookingViewModel != null) {
             // date selected on appointment booking process
             val unsavedAppointmentDay = bookingViewModel.currentAppointmentBooking.value.day
             val unsavedAppointmentMonth = bookingViewModel.currentAppointmentBooking.value.month
@@ -97,7 +96,6 @@ fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 
                 }
             })
         CalenderContent(selectedUIModel, onDateClickListener = { it ->
-            println(it.toString())
             selectedUIModel = selectedUIModel.copy(
                 selectedDate = it,
                 visibleDates = selectedUIModel.visibleDates.map { it2 ->

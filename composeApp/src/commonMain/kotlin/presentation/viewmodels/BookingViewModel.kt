@@ -17,7 +17,7 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
     private var _currentBookingId =  savedStateHandle.getStateFlow("currentBookingId", -1)
     private var _day =  savedStateHandle.getStateFlow("day", -1)
     private var _month =  savedStateHandle.getStateFlow("month", -1)
-    private var _year =  savedStateHandle.getStateFlow("currentBookingId", -1)
+    private var _year =  savedStateHandle.getStateFlow("year", -1)
     private var _currentAppointmentBooking =  savedStateHandle.getStateFlow("currentAppointmentBooking", UnsavedAppointment(bookingId = -1))
 
     val serviceSpecialists: StateFlow<List<ServiceTypeSpecialist>>

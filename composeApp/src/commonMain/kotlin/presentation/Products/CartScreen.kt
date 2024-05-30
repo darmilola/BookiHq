@@ -121,8 +121,6 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
 
 
 
-
-
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {},
@@ -150,7 +148,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
                         LoadingDialog("Creating Order...")
                     }
                 }
-                else if (creatingOrderSuccess.value){
+                else if (creatingOrderSuccess.value) {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         SuccessDialog("Creating Order Successful", actionTitle = "Done", onConfirmation = {
                             mainViewModel.clearUnsavedOrders()
@@ -189,7 +187,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
                     .padding(start = 15.dp)
 
                 val colModifier = Modifier
-                    .padding(top = 40.dp, end = 0.dp)
+                    .padding(top = 10.dp, end = 0.dp)
                     .fillMaxSize()
 
                 Column(
@@ -235,7 +233,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
 
                     Column(
                         modifier = Modifier
-                            .padding(top = 10.dp, end = 0.dp, bottom = 50.dp)
+                            .padding(end = 0.dp, bottom = 50.dp)
                             .fillMaxWidth()
                             .fillMaxHeight()
                             .verticalScroll(rememberScrollState())
@@ -281,7 +279,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
     }
 
     @Composable
-    private fun PopulateCartItemList(mainViewModel: MainViewModel,stackedSnackBarHostState: StackedSnakbarHostState){
+    private fun PopulateCartItemList(mainViewModel: MainViewModel,stackedSnackBarHostState: StackedSnakbarHostState) {
 
         val cartItems = mainViewModel.unSavedOrders.collectAsState()
 

@@ -16,7 +16,9 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
     private var _therapistTimeOffs = savedStateHandle.getStateFlow("therapistTimeOffs", arrayListOf<TimeOffs>())
     private var _currentAppointment = savedStateHandle.getStateFlow("currentAppointment",Appointment())
     private var _postponementViewUIState = savedStateHandle.getStateFlow("postponementViewUIState", AsyncUIStates())
-    private var _newSelectedDate = savedStateHandle.getStateFlow("newSelectedDate", CalendarDataSource().today)
+    private var _day =  savedStateHandle.getStateFlow("day", -1)
+    private var _month =  savedStateHandle.getStateFlow("month", -1)
+    private var _year =  savedStateHandle.getStateFlow("year", -1)
     private var _newSelectedTime = savedStateHandle.getStateFlow("newSelectedTime", ServiceTime())
 
 
@@ -35,9 +37,14 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
     val postponementViewUIState: StateFlow<AsyncUIStates>
         get() = _postponementViewUIState
 
-    val selectedDate: StateFlow<LocalDate>
-        get() = _newSelectedDate
+    val day: StateFlow<Int>
+        get() = _day
 
+    val month: StateFlow<Int>
+        get() = _month
+
+    val year: StateFlow<Int>
+        get() = _year
     val selectedTime: StateFlow<ServiceTime>
         get() = _newSelectedTime
 
@@ -62,18 +69,30 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
         savedStateHandle["postponementViewUIState"] = asyncUIStates
     }
 
-    fun setNewSelectedDate(localDate: LocalDate) {
-        savedStateHandle["newSelectedDate"] = localDate
-    }
-
     fun clearServiceTimes() {
         savedStateHandle["therapistAvailableTimes"] = arrayListOf<ServiceTime>()
     }
 
+    fun setSelectedDay(day: Int) {
+        savedStateHandle["day"] = day
+    }
+
+    fun setSelectedMonth(month: Int) {
+        savedStateHandle["month"] = month
+    }
+
+    fun setSelectedYear(year: Int) {
+        savedStateHandle["year"] = year
+    }
+
+
     fun clearPostponementSelection(){
         savedStateHandle["newSelectedTime"] = ServiceTime()
         savedStateHandle["therapistAvailableTimes"] = arrayListOf<ServiceTime>()
-        savedStateHandle["newSelectedDate"] = CalendarDataSource().today
+        savedStateHandle["day"] = CalendarDataSource().today.dayOfMonth
+        savedStateHandle["month"] = CalendarDataSource().today.monthNumber
+        savedStateHandle["year"] = CalendarDataSource().today.year
+
     }
 
     fun setNewSelectedTime(serviceTime: ServiceTime) {

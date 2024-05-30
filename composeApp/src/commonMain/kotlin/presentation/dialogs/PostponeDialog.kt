@@ -104,11 +104,13 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
                         Box(modifier = Modifier.fillMaxWidth().height(90.dp).background(color = Colors.primaryColor), contentAlignment = Alignment.Center) {
                             TitleWidget(title = "Postpone Service", textColor = Color.White)
                         }
+
                         NewDateContent(onDateSelected = {
-                           postponementViewModel.setNewSelectedDate(it)
+                           postponementViewModel.setSelectedDay(it.dayOfMonth)
+                           postponementViewModel.setSelectedYear(it.year)
+                            postponementViewModel.setSelectedMonth(it.monthNumber)
                            postponementViewModel.clearServiceTimes()
                            isNewDateSelected.value = true
-
                         })
 
                         if (uiState.value.isLoading) {
@@ -119,7 +121,7 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
                                 IndeterminateCircularProgressBar()
                             }
                         }
-                        else if (uiState.value.isSuccess){
+                        else if (uiState.value.isSuccess) {
                             Column(
                                 modifier = Modifier
                                     .padding(top = 5.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
