@@ -2,6 +2,7 @@ package domain.appointments
 
 import com.badoo.reaktive.single.toSingle
 import domain.Models.Appointment
+import domain.Models.AppointmentListDataResponse
 import domain.Models.ListDataResponse
 import domain.Models.Product
 import domain.Models.ServerResponse
@@ -25,7 +26,7 @@ open class AppointmentNetworkService(private val apiService: HttpClient) {
             }*/
             contentType(ContentType.Application.Json)
             setBody(getAppointmentRequest)
-        }.body<ListDataResponse<Appointment>>().toSingle()
+        }.body<AppointmentListDataResponse>().toSingle()
 
     suspend fun postponeAppointment(postponeAppointmentRequest: PostponeAppointmentRequest) =
         apiService.post {
@@ -65,6 +66,6 @@ open class AppointmentNetworkService(private val apiService: HttpClient) {
             }*/
             contentType(ContentType.Application.Json)
             setBody(getSpecialistAppointmentRequest)
-        }.body<ListDataResponse<Appointment>>().toSingle()
+        }.body<AppointmentListDataResponse>().toSingle()
 
 }

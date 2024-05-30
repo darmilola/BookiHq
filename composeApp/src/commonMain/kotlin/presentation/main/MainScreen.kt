@@ -20,6 +20,7 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import domain.Models.PlatformNavigator
+import domain.Models.Product
 import domain.Models.Screens
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -38,6 +39,8 @@ import presentation.main.home.HomepagePresenter
 import presentation.therapist.TherapistDashboardTab
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.ProductViewModel
+import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.UIStateViewModel
 
 class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, KoinComponent {
@@ -57,6 +60,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
             },
         )
       }
+
         preferenceSettings as ObservableSettings
 
         preferenceSettings.addBooleanListener("imageUploadProcessing",false) {

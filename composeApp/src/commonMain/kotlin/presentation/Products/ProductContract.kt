@@ -5,6 +5,7 @@ import domain.Models.FavoriteProduct
 import domain.Models.OrderItem
 import domain.Models.Product
 import domain.Models.ProductCategory
+import domain.Models.ProductResourceListEnvelope
 import domain.Models.ResourceListEnvelope
 import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.UIStates
@@ -27,7 +28,7 @@ class CategoryContract {
 class ProductContract {
     interface View {
         fun showLce(uiState: UIStates, message: String = "")
-        fun showProducts(products: ResourceListEnvelope<Product>?, isFromSearch: Boolean = false)
+        fun showProducts(products: ProductResourceListEnvelope?, isFromSearch: Boolean = false)
         fun onLoadMoreProductStarted(isSuccess: Boolean = false)
         fun onLoadMoreProductEnded(isSuccess: Boolean = false)
     }

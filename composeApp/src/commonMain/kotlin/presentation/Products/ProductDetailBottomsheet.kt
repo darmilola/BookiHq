@@ -29,7 +29,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,13 +55,10 @@ import presentation.viewmodels.MainViewModel
 import presentation.widgets.CartIncrementDecrementWidget
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
-import kotlin.random.Random
 
 @Composable
-fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, cartItem: OrderItem, onAddToCart: (Boolean) -> Unit,
+fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, selectedProduct: OrderItem, onAddToCart: (Boolean) -> Unit,
                          onRemoveFromCart: (OrderItem) -> Unit) {
-    println(cartItem.toString())
-
   if (mainViewModel.currentOrderReference.value == -1) {
             val orderReference = (ValuesLimit.MIN_VALUE.toValue() ..ValuesLimit.MAX_VALUE.toValue()).random()
             mainViewModel.setCurrentOrderReference(orderReference)
@@ -69,24 +66,24 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
 
     val orderReference = mainViewModel.currentOrderReference.value
     val itemReference = (ValuesLimit.MIN_VALUE.toValue() ..ValuesLimit.MAX_VALUE.toValue()).random()
-    val currentOrder = mainViewModel.unSavedOrders.value
+    val currentOrder = mainViewModel.unSavedOrders.collectAsState()
     val orderItem = remember { mutableStateOf(OrderItem()) }
 
     if (isViewedFromCart){
-        orderItem.value = cartItem
+        orderItem.value = selectedProduct
     }
     else {
         orderItem.value = OrderItem()
         orderItem.value.orderReference = orderReference
         orderItem.value.itemReference = itemReference
-        orderItem.value.itemProduct = cartItem.itemProduct
-        orderItem.value.productId = cartItem.itemProduct?.productId!!
+        orderItem.value.itemProduct = selectedProduct.itemProduct
+        orderItem.value.productId = selectedProduct.itemProduct?.productId!!
     }
 
 
     Scaffold(
         content = {
-            ProductBottomSheetContent(cartItem.itemProduct!!)
+            ProductBottomSheetContent(selectedProduct.itemProduct!!)
         },
         backgroundColor = Color.White,
         bottomBar = {
@@ -122,7 +119,7 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
                             style = TextStyle(),
                             borderStroke = null
                         ) {
-                            onRemoveFromCart(cartItem)
+                            onRemoveFromCart(selectedProduct)
                         }
                     }
 
@@ -154,8 +151,8 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
                             style = TextStyle(),
                             borderStroke = null
                         ) {
-                            currentOrder.add(orderItem.value)
-                            mainViewModel.setCurrentUnsavedOrders(currentOrder)
+                            currentOrder.value.add(orderItem.value)
+                            mainViewModel.setCurrentUnsavedOrders(currentOrder.value)
                             onAddToCart(true)
 
                         }

@@ -10,5 +10,5 @@ data class OrderItem(@SerialName("orderReference") var orderReference: Int = -1,
 
 data class OrderItemUIModel(
     val selectedItem: OrderItem?,
-    val itemList: MutableList<OrderItem>
+    val itemList: ArrayList<OrderItem>
 )

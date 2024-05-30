@@ -45,6 +45,7 @@ import org.koin.core.component.inject
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.dialogs.LoadingDialog
+import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
@@ -58,15 +59,14 @@ import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
 import theme.Colors
 
-class AppointmentsTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
+class AppointmentsTab(private val mainViewModel: MainViewModel,
+                      private var appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel) : Tab, KoinComponent {
 
     private val appointmentPresenter: AppointmentPresenter by inject()
     private var uiStateViewModel: UIStateViewModel? = null
     private var postponementViewModel: PostponementViewModel? = null
     private var currentUser: User? = null
     private var currentVendor: Vendor? = null
-    private var appointmentResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Appointment>? =
-        null
 
 
     @OptIn(ExperimentalResourceApi::class)
@@ -123,14 +123,12 @@ class AppointmentsTab(private val mainViewModel: MainViewModel) : Tab, KoinCompo
 
         }
 
-
-        if (appointmentResourceListEnvelopeViewModel == null) {
-            appointmentResourceListEnvelopeViewModel = kmpViewModel(
-                factory = viewModelFactory {
-                    ResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
-                })
+        if (appointmentResourceListEnvelopeViewModel!!.resources.value.isNotEmpty()){
+            uiStateViewModel!!.switchState(UIStates(contentVisible = true))
+        }else {
             appointmentPresenter.getUserAppointments(currentUser?.userId!!)
         }
+
 
         val loadMoreState =
             appointmentResourceListEnvelopeViewModel?.isLoadingMore?.collectAsState()

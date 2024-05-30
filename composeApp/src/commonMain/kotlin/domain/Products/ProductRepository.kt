@@ -4,6 +4,7 @@ import com.badoo.reaktive.single.Single
 import domain.Models.ListDataResponse
 import domain.Models.Product
 import domain.Models.ProductCategoryResponse
+import domain.Models.ProductListDataResponse
 import domain.Models.ServerResponse
 import domain.Models.ServiceSpecialistsResponse
 import domain.Models.Vendor
@@ -15,7 +16,7 @@ interface ProductRepository {
         vendorId: Int,
         userId: Int): Single<ProductCategoryResponse>
 
-    suspend fun getProductsInCategory(vendorId: Int, categoryId: Int, nextPage: Int = 1): Single<ListDataResponse<Product>>
-    suspend fun searchProducts(vendorId: Int, searchQuery: String, nextPage: Int = 1): Single<ListDataResponse<Product>>
+    suspend fun getProductsInCategory(vendorId: Int, categoryId: Int, nextPage: Int = 1): Single<ProductListDataResponse>
+    suspend fun searchProducts(vendorId: Int, searchQuery: String, nextPage: Int = 1): Single<ProductListDataResponse>
     suspend fun createOrder(vendorId: Int,userId: Int,orderReference: Int,deliveryMethod: String,paymentMethod: String,orderItems: ArrayList<OrderItemRequest>): Single<ServerResponse>
 }

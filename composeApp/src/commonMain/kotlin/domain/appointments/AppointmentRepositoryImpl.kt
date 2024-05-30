@@ -2,6 +2,8 @@ package domain.appointments
 
 import com.badoo.reaktive.single.Single
 import domain.Models.Appointment
+import domain.Models.AppointmentListDataResponse
+import domain.Models.AppointmentResourceListEnvelope
 import domain.Models.ListDataResponse
 import domain.Models.ServerResponse
 import domain.Models.ServiceStatus
@@ -14,7 +16,7 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
     override suspend fun getAppointments(
         userId: Int,
         nextPage: Int
-    ): Single<ListDataResponse<Appointment>> {
+    ): Single<AppointmentListDataResponse> {
         val param = GetAppointmentRequest(userId)
         return appointmentNetworkService.getAppointments(param, nextPage)
     }
@@ -22,7 +24,7 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
     override suspend fun getSpecialistAppointments(
         specialistId: Int,
         nextPage: Int
-    ): Single<ListDataResponse<Appointment>> {
+    ): Single<AppointmentListDataResponse> {
         val param = GetSpecialistAppointmentRequest(specialistId)
         return appointmentNetworkService.getSpecialistAppointments(param, nextPage)
     }

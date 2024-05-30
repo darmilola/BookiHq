@@ -4,6 +4,7 @@ import com.badoo.reaktive.single.Single
 import domain.Models.ListDataResponse
 import domain.Models.Product
 import domain.Models.ProductCategoryResponse
+import domain.Models.ProductListDataResponse
 import domain.Models.ServerResponse
 import domain.Models.ServiceSpecialistsResponse
 import domain.bookings.BookingNetworkService
@@ -26,7 +27,7 @@ class ProductRepositoryImpl(apiService: HttpClient): ProductRepository {
         vendorId: Int,
         categoryId: Int,
         nextPage: Int
-    ): Single<ListDataResponse<Product>> {
+    ): Single<ProductListDataResponse> {
         val param = GetProductsInCategoryRequest(vendorId, categoryId)
         return productNetworkService.getProductInCategory(param,nextPage)
     }
@@ -35,7 +36,7 @@ class ProductRepositoryImpl(apiService: HttpClient): ProductRepository {
         vendorId: Int,
         searchQuery: String,
         nextPage: Int
-    ): Single<ListDataResponse<Product>> {
+    ): Single<ProductListDataResponse> {
         val param = SearchProductRequest(vendorId, searchQuery)
         return productNetworkService.searchProduct(param,nextPage)
     }

@@ -52,6 +52,7 @@ import presentation.Products.SearchBar
 import presentation.appointments.AppointmentPresenter
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.main.SearchContent
+import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.AsyncUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
@@ -71,7 +72,7 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
     private var asyncUiStateViewModel: AsyncUIStateViewModel? = null
     private var therapistViewModel: TherapistViewModel? = null
     private var postponementViewModel: PostponementViewModel? = null
-    private var appointmentResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Appointment>? = null
+    private var appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel? = null
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -131,7 +132,7 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
         if (appointmentResourceListEnvelopeViewModel == null) {
             appointmentResourceListEnvelopeViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
+                    AppointmentResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
                 })
         }
 

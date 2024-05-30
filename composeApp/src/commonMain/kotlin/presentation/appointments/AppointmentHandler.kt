@@ -1,9 +1,11 @@
 package presentation.appointments
 
 import domain.Models.Appointment
+import domain.Models.AppointmentResourceListEnvelope
 import domain.Models.ResourceListEnvelope
 import domain.Models.ServiceTime
 import domain.Models.TimeOffs
+import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.PostponementViewModel
 import presentation.viewmodels.ResourceListEnvelopeViewModel
@@ -12,7 +14,7 @@ import presentation.viewmodels.UIStates
 
 
 class AppointmentsHandler(
-    private val appointmentResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Appointment>,
+    private val appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel,
     private val uiStateViewModel: UIStateViewModel,
     private val postponementViewModel: PostponementViewModel,
     private val appointmentPresenter: AppointmentPresenter,
@@ -34,7 +36,7 @@ class AppointmentsHandler(
         postponementViewModel.setPostponementViewUIState(uiState)
     }
 
-    override fun showAppointments(appointments: ResourceListEnvelope<Appointment>?) {
+    override fun showAppointments(appointments: AppointmentResourceListEnvelope) {
         if (appointmentResourceListEnvelopeViewModel.resources.value.isNotEmpty()) {
             val appointmentList = appointmentResourceListEnvelopeViewModel.resources.value
             appointmentList.addAll(appointments?.resources!!)

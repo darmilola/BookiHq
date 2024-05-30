@@ -31,7 +31,12 @@ import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
+import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.viewModelFactory
+import domain.Models.Appointment
 import domain.Models.HomepageInfo
+import domain.Models.Product
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -41,9 +46,13 @@ import presentation.main.account.AccountTab
 import presentation.main.home.HomeTab
 import presentation.main.home.HomepageContract
 import presentation.main.home.HomepagePresenter
+import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.ProductResourceListEnvelopeViewModel
+import presentation.viewmodels.ProductViewModel
+import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentation.viewmodels.UIStates
 import presentations.components.ImageComponent
@@ -51,7 +60,12 @@ import presentations.components.TextComponent
 
 class MainTab(private val mainViewModel: MainViewModel): Tab, KoinComponent {
 
-   @OptIn(ExperimentalResourceApi::class)
+
+    private var homePageViewModel: HomePageViewModel? = null
+    private var productViewModel: ProductViewModel? = null
+    private var productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel? = null
+    private var appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel? = null
+@OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
         @Composable
         get() {
@@ -69,13 +83,44 @@ class MainTab(private val mainViewModel: MainViewModel): Tab, KoinComponent {
     @Composable
     override fun Content() {
 
-           var isBottomNavSelected by remember { mutableStateOf(true) }
-           val userInfo = mainViewModel.currentUserInfo.collectAsState()
-           val connectedVendor = mainViewModel.connectedVendor.collectAsState()
+        if (homePageViewModel == null) {
+            homePageViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    HomePageViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
 
-           val bottomNavHeight = if (userInfo.value.userId != null && connectedVendor.value.vendorId != null) 60 else 0
+        if (productViewModel == null) {
+            productViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    ProductViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
 
-           TabNavigator(showDefaultTab(mainViewModel)) {
+        if (productResourceListEnvelopeViewModel == null) {
+            productResourceListEnvelopeViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    ProductResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
+                })
+        }
+
+        if (appointmentResourceListEnvelopeViewModel == null) {
+            appointmentResourceListEnvelopeViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    AppointmentResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
+                })
+        }
+
+        var isBottomNavSelected by remember { mutableStateOf(true) }
+            val userInfo = mainViewModel.currentUserInfo.collectAsState()
+            val connectedVendor = mainViewModel.connectedVendor.collectAsState()
+
+            val bottomNavHeight =
+                if (userInfo.value.userId != null && connectedVendor.value.vendorId != null) 60 else 0
+
+            TabNavigator(showDefaultTab(mainViewModel, homePageViewModel!!)) {
                 Scaffold(
                     topBar = {
                         MainTopBar(
@@ -93,11 +138,13 @@ class MainTab(private val mainViewModel: MainViewModel): Tab, KoinComponent {
                     backgroundColor = Color.White,
                     bottomBar = {
                         BottomNavigation(
-                            modifier = Modifier.height(bottomNavHeight.dp), backgroundColor = Color.White,
-                            elevation = 0.dp)
+                            modifier = Modifier.height(bottomNavHeight.dp),
+                            backgroundColor = Color.White,
+                            elevation = 0.dp
+                        )
                         {
                             TabNavigationItem(
-                                HomeTab(mainViewModel),
+                                HomeTab(mainViewModel = mainViewModel, homePageViewModel = homePageViewModel!!),
                                 selectedImage = "drawable/home_icon.png",
                                 unselectedImage = "drawable/home_outline.png",
                                 labelText = "Home",
@@ -109,7 +156,7 @@ class MainTab(private val mainViewModel: MainViewModel): Tab, KoinComponent {
                                 isBottomNavSelected = true
                             }
                             TabNavigationItem(
-                                ShopTab(mainViewModel),
+                                ShopTab(mainViewModel,productViewModel!!, productResourceListEnvelopeViewModel!!),
                                 selectedImage = "drawable/shopping_basket.png",
                                 unselectedImage = "drawable/shopping_basket_outline.png",
                                 labelText = "Shop",
@@ -121,7 +168,7 @@ class MainTab(private val mainViewModel: MainViewModel): Tab, KoinComponent {
                                 isBottomNavSelected = true
                             }
                             TabNavigationItem(
-                                AppointmentsTab(mainViewModel),
+                                AppointmentsTab(mainViewModel, appointmentResourceListEnvelopeViewModel!!),
                                 selectedImage = "drawable/appointment_icon.png",
                                 unselectedImage = "drawable/appointment_outline.png",
                                 labelText = "History",
@@ -151,9 +198,10 @@ class MainTab(private val mainViewModel: MainViewModel): Tab, KoinComponent {
         }
 
 
-    private fun showDefaultTab(mainViewModel: MainViewModel): HomeTab {
 
-        return  HomeTab(mainViewModel)
+    private fun showDefaultTab(mainViewModel: MainViewModel, homePageViewModel: HomePageViewModel): HomeTab {
+
+        return  HomeTab(mainViewModel, homePageViewModel)
     }
     @Composable
     private fun RowScope.TabNavigationItem(tab: Tab, selectedImage: String, unselectedImage: String, imageSize: Int = 30, labelText: String ,currentTabId: Int = 0, tabNavigator: TabNavigator, mainViewModel: MainViewModel, onBottomNavSelected:() -> Unit) {

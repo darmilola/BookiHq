@@ -14,6 +14,9 @@ import kotlinx.coroutines.flow.StateFlow
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.wrapper.wrap
+import domain.Models.HomepageInfo
+import domain.Models.Product
+import domain.Models.VendorStatusModel
 
 class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
@@ -25,9 +28,12 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
     private var _vendorRecommendation =  savedStateHandle.getStateFlow("vendorRecommendation", VendorRecommendation())
     private var _currentUnsavedAppointments =  savedStateHandle.getStateFlow("currentUnsavedAppointments", ArrayList<UnsavedAppointment>())
-    private var _currentUnsavedOrders =  savedStateHandle.getStateFlow("currentUnsavedOrders", mutableListOf<OrderItem>())
+    private var _currentUnsavedOrders =  savedStateHandle.getStateFlow("currentUnsavedOrders", ArrayList<OrderItem>())
     private var _currentOrderReference =  savedStateHandle.getStateFlow("currentOrderReference", -1)
     private var _mainUiState =  savedStateHandle.getStateFlow("mainUiState", AsyncUIStates())
+    private var _homePageInfo =  savedStateHandle.getStateFlow("homePageInfo", HomepageInfo())
+    private var _vendorStatus =  savedStateHandle.getStateFlow("vendorStatus", arrayListOf<VendorStatusModel>())
+    private var _homePageViewHeight =  savedStateHandle.getStateFlow("homePageViewHeight",0)
 
     val screenTitle: StateFlow<String>
         get() = _screenTitle
@@ -38,7 +44,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     val unSavedAppointments: StateFlow<ArrayList<UnsavedAppointment>>
         get() = _currentUnsavedAppointments
 
-    val unSavedOrders: StateFlow<MutableList<OrderItem>>
+    val unSavedOrders: StateFlow<ArrayList<OrderItem>>
         get() = _currentUnsavedOrders
 
     val currentOrderReference: StateFlow<Int>
@@ -46,6 +52,9 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
 
     val connectedVendor: StateFlow<Vendor>
         get() = _connectedVendor
+
+    val homePageViewHeight: StateFlow<Int>
+        get() = _homePageViewHeight
 
     val vendorRecommendation: StateFlow<VendorRecommendation>
         get() = _vendorRecommendation
@@ -61,6 +70,12 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
         get() = _screenNav
     val mainUIState: StateFlow<AsyncUIStates>
         get() = _mainUiState
+
+    val homePageInfo: StateFlow<HomepageInfo>
+        get() = _homePageInfo
+
+    val vendorStatus: StateFlow<ArrayList<VendorStatusModel>>
+        get() = _vendorStatus
 
     fun setTitle(newTitle: String) {
         savedStateHandle["screenTitle"] = newTitle
@@ -90,11 +105,15 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
         savedStateHandle["vendorRecommendation"] = vendorRecommendation
     }
 
+    fun setHomePageViewHeight(viewHeight: Int) {
+        savedStateHandle["homePageViewHeight"] = viewHeight
+    }
+
     fun setCurrentUnsavedAppointments(unsavedAppointments: ArrayList<UnsavedAppointment>) {
         savedStateHandle["currentUnsavedAppointments"] = unsavedAppointments
     }
 
-    fun setCurrentUnsavedOrders(orderItems: MutableList<OrderItem>) {
+    fun setCurrentUnsavedOrders(orderItems: ArrayList<OrderItem>) {
         savedStateHandle["currentUnsavedOrders"] = orderItems
     }
 
@@ -111,7 +130,15 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     }
 
     fun clearUnsavedOrders() {
-        savedStateHandle["currentUnsavedOrders"] = SnapshotStateList<OrderItem>()
+        savedStateHandle["currentUnsavedOrders"] = ArrayList<OrderItem>()
+    }
+
+    fun setHomePageInfo(homepageInfo: HomepageInfo) {
+        savedStateHandle["homePageInfo"] = homepageInfo
+    }
+
+    fun setVendorStatus(vendorStatus: ArrayList<VendorStatusModel>) {
+        savedStateHandle["vendorStatus"] = vendorStatus
     }
 
     fun removeLastAppointment() {

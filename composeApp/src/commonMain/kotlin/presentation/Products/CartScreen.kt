@@ -303,7 +303,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
 
         if (showProductDetailBottomSheet) {
             ProductDetailBottomSheet(mainViewModel,isViewedFromCart = true,
-                cartItem = orderItemUIModel.selectedItem!!,
+                selectedProduct = orderItemUIModel.selectedItem!!,
                 onDismiss = { isAddToCart, item -> showProductDetailBottomSheet = false },
                 onRemoveFromCart = { orderItem ->
                     showProductDetailBottomSheet = false
@@ -333,9 +333,9 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
                         )
                         showProductDetailBottomSheet = true
                     }, onItemCountChanged = {
-                        //val optionsArrayList: ArrayList<OrderItem> = arrayListOf(.options.toTypedArray()
+                        // Increase Order Item Count
                         orderItemUIModel = orderItemUIModel.copy(selectedItem = it,
-                            itemList = mainViewModel.unSavedOrders.value.map { it2 ->
+                            itemList = ArrayList(mainViewModel.unSavedOrders.value.map { it2 ->
                                 if (it2.itemReference == it.itemReference) {
                                     it2.copy(
                                         itemCount = it.itemCount
@@ -345,8 +345,8 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
                                         itemCount = it2.itemCount
                                     )
                                 }
-                            }.toMutableList()
-                        )
+                            }
+                        ))
                         mainViewModel.setCurrentUnsavedOrders(orderItemUIModel.itemList)
 
                     }, onItemRemovedFromCart = {

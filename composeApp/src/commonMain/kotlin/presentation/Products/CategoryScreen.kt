@@ -2,18 +2,13 @@ package presentation.Products
 
 import StackedSnakbarHostState
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
@@ -21,7 +16,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,12 +31,11 @@ import domain.Models.Product
 import domain.Models.ProductCategory
 import domain.Models.ProductItemUIModel
 import domain.Models.Vendor
-import domain.Models.VendorItemUIModel
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.ProductResourceListEnvelopeViewModel
 import presentation.viewmodels.ResourceListEnvelopeViewModel
-import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import theme.Colors
@@ -50,8 +43,8 @@ import utils.getPopularProductViewHeight
 
 @Composable
 fun CategoryScreen(productCategory: ProductCategory,
-                   productResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Product>,
-                   productPresenter: ProductPresenter, mainViewModel: MainViewModel,stackedSnackBarHostState: StackedSnakbarHostState) {
+                   productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel,
+                   productPresenter: ProductPresenter, mainViewModel: MainViewModel, onCartChanged: () -> Unit) {
 
     val connectedVendor: Vendor = mainViewModel.connectedVendor.value
     val loadMoreState = productResourceListEnvelopeViewModel.isLoadingMore.collectAsState()
@@ -72,18 +65,11 @@ fun CategoryScreen(productCategory: ProductCategory,
        }
 
     var showProductDetailBottomSheet by remember { mutableStateOf(false) }
-
-                if (showProductDetailBottomSheet) {
+         if (showProductDetailBottomSheet) {
                     ProductDetailBottomSheet(mainViewModel,isViewedFromCart = false, OrderItem(itemProduct = selectedProduct.value), onDismiss = {
                             isAddToCart, item -> if (isAddToCart){
-                            ShowSnackBar(title = "Successful",
-                            description = "Your Product has been successfully Added to Cart",
-                            actionLabel = "",
-                            duration = StackedSnackbarDuration.Short,
-                            snackBarType = SnackBarType.SUCCESS,
-                            stackedSnackBarHostState,
-                            onActionClick = {})
-                    }
+                            onCartChanged()
+                         }
                         showProductDetailBottomSheet = false
 
                     }, onRemoveFromCart = {})
@@ -91,8 +77,7 @@ fun CategoryScreen(productCategory: ProductCategory,
 
 
 
-
-            LazyColumn(
+       LazyColumn(
                 modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(
                     getPopularProductViewHeight(productUIModel.productList).dp),
                 contentPadding = PaddingValues(top = 6.dp, bottom = 6.dp),
@@ -141,19 +126,18 @@ fun CategoryScreen(productCategory: ProductCategory,
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, cartItem: OrderItem, onDismiss: (isAddToCart: Boolean, OrderItem) -> Unit, onRemoveFromCart: (OrderItem) -> Unit) {
+fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, selectedProduct: OrderItem, onDismiss: (isAddToCart: Boolean, OrderItem) -> Unit, onRemoveFromCart: (OrderItem) -> Unit) {
     val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val mutableCartItem = cartItem
     ModalBottomSheet(
         modifier = Modifier.padding(top = 20.dp),
-        onDismissRequest = { onDismiss(false, mutableCartItem) },
+        onDismissRequest = { onDismiss(false, selectedProduct) },
         sheetState = modalBottomSheetState,
         shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
         containerColor = Color(0xFFF3F3F3),
         dragHandle = {},
     ) {
-       ProductDetailContent(mainViewModel,isViewedFromCart,cartItem, onAddToCart = {
-           onDismiss(it,cartItem)
+       ProductDetailContent(mainViewModel,isViewedFromCart,selectedProduct, onAddToCart = {
+           onDismiss(it,selectedProduct)
        }, onRemoveFromCart = {
            onRemoveFromCart(it)
        })

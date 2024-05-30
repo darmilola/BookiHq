@@ -96,10 +96,8 @@ import utils.getPercentOfScreenHeight
 import utils.getPopularProductViewHeight
 import utils.getServicesViewHeight
 
-class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
+class HomeTab(private val mainViewModel: MainViewModel, private val homePageViewModel: HomePageViewModel) : Tab, KoinComponent {
 
-    private val preferenceSettings: Settings = Settings()
-    private var homePageViewModel: HomePageViewModel? = null
     private var uiStateViewModel: UIStateViewModel? = null
     private val homepagePresenter: HomepagePresenter by inject()
     private var userEmail: String = ""
@@ -133,14 +131,6 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                     UIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
-        }
-
-        if (homePageViewModel == null) {
-            homePageViewModel = kmpViewModel(
-                factory = viewModelFactory {
-                    HomePageViewModel(savedStateHandle = createSavedStateHandle())
-                },
-            )
 
             val handler = HomePageHandler(uiStateViewModel!!, homepagePresenter,
                 onPageLoading = {
@@ -148,15 +138,15 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                 }, onHomeInfoAvailable = {
                         homePageInfo, vendorStatus ->
                     val viewHeight = calculateHomePageScreenHeight(homepageInfo = homePageInfo, screenSizeInfo = screenSizeInfo, isStatusExpanded = false)
-                    homePageViewModel!!.setHomePageViewHeight(viewHeight)
+                    homePageViewModel.setHomePageViewHeight(viewHeight)
                     homePageViewModel!!.setHomePageUIState(
                         AsyncUIStates(
                             isSuccess = true,
                             isDone = true
                         )
                     )
-                    homePageViewModel!!.setHomePageInfo(homePageInfo)
-                    homePageViewModel!!.setVendorStatus(vendorStatus)
+                    homePageViewModel.setHomePageInfo(homePageInfo)
+                    homePageViewModel.setVendorStatus(vendorStatus)
                     mainViewModel.setConnectedVendor(homePageInfo.vendorInfo!!)
                     mainViewModel.setUserInfo(homePageInfo.userInfo!!)
                 }, onErrorVisible = {
@@ -168,15 +158,19 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                     )
                 })
             handler.init()
-            homepagePresenter.getUserHomepage(userEmail)
+            if (homePageViewModel.homePageInfo.value.userInfo != null){
+                homePageViewModel!!.setHomePageUIState(AsyncUIStates(isSuccess = true, isDone = true))
+            }else {
+                homepagePresenter.getUserHomepage(userEmail)
+            }
+
         }
 
         val uiState = homePageViewModel!!.homePageUIState.collectAsState()
-        val homepageInfo = homePageViewModel!!.homePageInfo.collectAsState()
-        val mVendorStatus = homePageViewModel!!.vendorStatus.collectAsState()
-        val homePageViewHeight = homePageViewModel!!.homePageViewHeight.collectAsState()
+        val homepageInfo = homePageViewModel.homePageInfo.collectAsState()
+        val mVendorStatus = homePageViewModel.vendorStatus.collectAsState()
+        val homePageViewHeight = homePageViewModel.homePageViewHeight.collectAsState()
         val isStatusViewExpanded = remember { mutableStateOf(false) }
-
 
 
         if (uiState.value.isLoading) {
@@ -223,7 +217,7 @@ class HomeTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                             )
                         }
                     },
-                    content = {
+                     content = {
                                Column(
                                     Modifier
                                         .verticalScroll(state = rememberScrollState())

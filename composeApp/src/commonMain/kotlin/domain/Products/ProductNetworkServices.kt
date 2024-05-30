@@ -5,6 +5,7 @@ import com.badoo.reaktive.single.toSingle
 import domain.Models.ListDataResponse
 import domain.Models.Product
 import domain.Models.ProductCategoryResponse
+import domain.Models.ProductListDataResponse
 import domain.Models.ServerResponse
 import domain.Models.ServiceSpecialistsResponse
 import domain.bookings.GetSpecialistsRequest
@@ -37,7 +38,7 @@ open class ProductNetworkService(private val apiService: HttpClient) {
             }*/
             contentType(ContentType.Application.Json)
             setBody(getProductsInCategoryRequest)
-        }.body<ListDataResponse<Product>>().toSingle()
+        }.body<ProductListDataResponse>().toSingle()
 
     suspend fun searchProduct(searchProductRequest: SearchProductRequest, nextPage: Int = 1) =
         apiService.post {
@@ -47,7 +48,7 @@ open class ProductNetworkService(private val apiService: HttpClient) {
             }*/
             contentType(ContentType.Application.Json)
             setBody(searchProductRequest)
-        }.body<ListDataResponse<Product>>().toSingle()
+        }.body<ProductListDataResponse>().toSingle()
 
     suspend fun createOrder(createOrderRequest: CreateOrderRequest) =
         apiService.post {

@@ -35,6 +35,7 @@ import presentation.appointments.AppointmentsHandler
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.dialogs.LoadingDialog
+import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
 import presentation.viewmodels.ResourceListEnvelopeViewModel
@@ -49,7 +50,7 @@ import utils.getAppointmentViewHeight
 
 @Composable
 fun TherapistAppointment(mainViewModel: MainViewModel,uiStateViewModel: UIStateViewModel, postponementViewModel: PostponementViewModel,
-                         appointmentResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Appointment>?, appointmentPresenter: AppointmentPresenter) {
+                         appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel?, appointmentPresenter: AppointmentPresenter) {
 
     val currentUser = mainViewModel.currentUserInfo.value
     val specialistInfo = mainViewModel.currentSpecialistInfo.value
