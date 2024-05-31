@@ -7,10 +7,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable @Parcelize
 data class SpecialistInfo(@SerialName("id") val id: Int? = null, @SerialName("specialist_id") val specialistId: Int? = null,
-                          @SerialName("rating") val rating: Double? = null, @SerialName("vendor_id") val vendorId: Int? = null,
-                          @SerialName("isAvailable") val isAvailable: Boolean? = null, @SerialName("isAvailableForHomeService") val isAvailableForHomeService: Boolean? = false,
-                          @SerialName("rateCount") val rateCount: Int? = null, @SerialName("profile_info") val profileInfo: User? = null,
+                          @SerialName("rating") val rating: Double? = null, @SerialName("isAvailable") val isAvailable: Boolean? = false,
+                          @SerialName("isAvailableForHomeService") val isAvailableForHomeService: Boolean? = false,
+                          @SerialName("rateCount") val rateCount: Int? = 0, @SerialName("rateSum") val rateSum: Int? = 0, @SerialName("profile_info") val profileInfo: User? = null,
                           @SerialName("booked_times") val bookedTimes: List<BookedTimes>? = arrayListOf(),
+                          @SerialName("time_offs") val timeOffs: List<TimeOffs>? = arrayListOf(), @SerialName("available_times") val availableTimes: List<ServiceTime>? = arrayListOf(),
                           @SerialName("specialist_reviews") val specialistReviews: List<SpecialistReviews>? = arrayListOf(), val isSelected: Boolean = false): Parcelable
 
 

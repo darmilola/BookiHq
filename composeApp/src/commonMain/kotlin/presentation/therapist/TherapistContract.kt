@@ -21,7 +21,7 @@ interface TherapistContract {
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
         abstract fun getTherapistReviews(specialistId: Int)
-        abstract fun getTherapistAvailability(specialistId: Int, selectedDate: String)
+        abstract fun getTherapistAvailability(specialistId: Int, day: Int, month: Int, year: Int)
         abstract fun addTimeOff(specialistId: Int, timeId: Int, date: String)
         abstract fun removeTimeOff(specialistId: Int, timeId: Int, date: String)
     }

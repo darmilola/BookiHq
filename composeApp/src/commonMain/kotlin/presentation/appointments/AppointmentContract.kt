@@ -30,8 +30,8 @@ interface AppointmentContract {
         abstract fun getMoreAppointments(userId: Int, nextPage: Int = 1)
         abstract fun getSpecialistAppointments(specialistId: Int)
         abstract fun getMoreSpecialistAppointments(specialistId: Int, nextPage: Int = 1)
-        abstract fun postponeAppointment(appointment: Appointment, newAppointmentTime: Int, newAppointmentDate: String)
+        abstract fun postponeAppointment(appointment: Appointment, newAppointmentTime: Int,  day: Int, month: Int, year: Int)
         abstract fun deleteAppointment(appointmentId: Int)
-        abstract fun getTherapistAvailability(specialistId: Int, selectedDate: String)
+        abstract fun getTherapistAvailability(specialistId: Int, day: Int, month: Int, year: Int)
     }
 }

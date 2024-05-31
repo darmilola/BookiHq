@@ -134,7 +134,7 @@ fun TherapistAvailabilityTimeGrid(availableTimes: List<ServiceTime>? = arrayList
 @Composable
 fun TherapistTimeItem(availableTime: ServiceTime, onAvailableWorkHourClickListener: (ServiceTime) -> Unit,
                       onUnAvailableWorkHourClickListener: (ServiceTime) -> Unit) {
-    val meridian = if (availableTime.isAm){
+    val meridian = if (availableTime.platformTime?.isAm!!){
           "am"
     }
     else{
@@ -173,7 +173,7 @@ fun TherapistTimeItem(availableTime: ServiceTime, onAvailableWorkHourClickListen
     ) {
         ImageComponent(imageModifier = Modifier.size(20.dp), imageRes = iconRes, colorFilter = ColorFilter.tint(color = color))
         TextComponent(
-            text = availableTime.time!!+" "+meridian,
+            text = availableTime.platformTime.time!!+" "+meridian,
             fontSize = 15,
             fontFamily = GGSansSemiBold,
             textStyle = MaterialTheme.typography.h6,

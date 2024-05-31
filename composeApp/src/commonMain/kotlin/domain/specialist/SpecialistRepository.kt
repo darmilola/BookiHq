@@ -9,7 +9,7 @@ import domain.Models.SpecialistReviewsResponse
 interface SpecialistRepository {
 
     suspend fun getReviews(specialistId: Int): Single<SpecialistReviewsResponse>
-    suspend fun getTherapistAvailability(specialistId: Int, selectedDate: String): Single<SpecialistAvailabilityResponse>
+    suspend fun getTherapistAvailability(specialistId: Int, day: Int, month: Int, year: Int): Single<SpecialistAvailabilityResponse>
     suspend fun addTimeOff(specialistId: Int, timeId: Int, date: String): Single<ServerResponse>
     suspend fun removeTimeOff(specialistId: Int, timeId: Int, date: String): Single<ServerResponse>
 }

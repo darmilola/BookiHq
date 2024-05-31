@@ -12,7 +12,7 @@ import domain.Models.SpecialistAvailabilityResponse
 interface AppointmentRepository {
     suspend fun getAppointments(userId: Int, nextPage: Int = 1): Single<AppointmentListDataResponse>
     suspend fun getSpecialistAppointments(specialistId: Int, nextPage: Int = 1): Single<AppointmentListDataResponse>
-    suspend fun postponeAppointment(appointment: Appointment, appointmentTime: Int, appointmentDate: String): Single<ServerResponse>
+    suspend fun postponeAppointment(appointment: Appointment, appointmentTime: Int,  day: Int, month: Int, year: Int): Single<ServerResponse>
     suspend fun deleteAppointment(appointmentId: Int): Single<ServerResponse>
-    suspend fun getTherapistAvailability(specialistId: Int, selectedDate: String): Single<SpecialistAvailabilityResponse>
+    suspend fun getTherapistAvailability(specialistId: Int, day: Int, month: Int, year: Int): Single<SpecialistAvailabilityResponse>
 }

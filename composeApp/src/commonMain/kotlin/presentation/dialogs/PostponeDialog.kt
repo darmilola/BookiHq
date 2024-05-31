@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import domain.Models.Appointment
+import domain.Models.PlatformTime
 import domain.Models.ServiceTime
 import presentation.appointments.AppointmentPresenter
 import presentation.components.IndeterminateCircularProgressBar
@@ -45,9 +46,11 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
 
         val uiState = postponementViewModel.postponementViewUIState.collectAsState()
         val serviceTimes = postponementViewModel.therapistAvailableTimes.collectAsState()
-        val newSelectedDate = postponementViewModel.selectedDate.collectAsState()
+        val newSelectedDay = postponementViewModel.day.collectAsState()
+        val newSelectedMonth = postponementViewModel.month.collectAsState()
+        val newSelectedYear = postponementViewModel.year.collectAsState()
         val newSelectedTime = postponementViewModel.selectedTime.collectAsState()
-        val specialistAppointment = postponementViewModel.therapistBookedTimes.value
+        val therapistBookedTimes = postponementViewModel.therapistBookedTimes.value
         val timeOffs = postponementViewModel.therapistTimeOffs.collectAsState()
         val specialistId = postponementViewModel.currentAppointment.value.specialistId
         val isNewDateSelected = remember { mutableStateOf(true) }
@@ -55,33 +58,37 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
         if (isNewDateSelected.value) {
             appointmentPresenter.getTherapistAvailability(
                 specialistId,
-                selectedDate = newSelectedDate.value.toString()
+                day = newSelectedDay.value,
+                month = newSelectedMonth.value,
+                year = newSelectedYear.value
             )
             isNewDateSelected.value = false
         }
 
-        val normalisedBookedTimes = arrayListOf<ServiceTime>()
-        val normalisedTimeOffTimes = arrayListOf<ServiceTime>()
+
+        val normalisedBookedTimes = arrayListOf<PlatformTime>()
+        val normalisedTimeOffTimes = arrayListOf<PlatformTime>()
         val bookedTimes = arrayListOf<ServiceTime>()
         val displayTimes = remember { mutableStateOf(arrayListOf<ServiceTime>()) }
         for (item in timeOffs.value){
-            normalisedTimeOffTimes.add(item.timeOffTime!!)
+            normalisedTimeOffTimes.add(item.timeOffTime?.platformTime!!)
         }
 
         val normalisedTherapistTimes = arrayListOf<ServiceTime>()
-        for (item in specialistAppointment) {
-            normalisedBookedTimes.add(item.serviceTime!!)
+        for (item in therapistBookedTimes) {
+            normalisedBookedTimes.add(item.serviceTime?.platformTime!!)
         }
 
         if (serviceTimes.value.isNotEmpty()) {
             serviceTimes.value.map { it ->
-                if (it in normalisedBookedTimes || it in normalisedTimeOffTimes) {
+                if (it.platformTime in normalisedBookedTimes || it.platformTime in normalisedTimeOffTimes) {
                     val bookedTime = serviceTimes.value.find { it2 ->
                         it.id == it2.id
                     }?.copy(isAvailable = false)
                     normalisedTherapistTimes.add(bookedTime!!)
                 } else {
-                    normalisedTherapistTimes.add(it)
+                    val isAvailableTime =  it.copy(isAvailable = true)
+                    normalisedTherapistTimes.add(isAvailableTime)
                 }
             }
          }
@@ -108,7 +115,7 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
                         NewDateContent(onDateSelected = {
                            postponementViewModel.setSelectedDay(it.dayOfMonth)
                            postponementViewModel.setSelectedYear(it.year)
-                            postponementViewModel.setSelectedMonth(it.monthNumber)
+                           postponementViewModel.setSelectedMonth(it.monthNumber)
                            postponementViewModel.clearServiceTimes()
                            isNewDateSelected.value = true
                         })
@@ -160,7 +167,9 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
                                 appointmentPresenter.postponeAppointment(
                                     appointment,
                                     newSelectedTime.value.id!!,
-                                    newSelectedDate.value.toString()
+                                    day = newSelectedDay.value,
+                                    month = newSelectedMonth.value,
+                                    year = newSelectedYear.value
                                 )
                               postponementViewModel.clearPostponementSelection()
                               onConfirmation()

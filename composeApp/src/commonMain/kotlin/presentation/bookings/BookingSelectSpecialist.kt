@@ -2,7 +2,6 @@ package presentation.bookings
 
 import GGSansSemiBold
 import theme.styles.Colors
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,6 +29,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import domain.Models.PlatformTime
 import domain.Models.ServiceTypeSpecialist
 import domain.Models.ServiceTypeTherapistUIModel
 import domain.Models.ServiceTime
@@ -48,9 +48,8 @@ fun BookingSelectSpecialist(mainViewModel: MainViewModel, uiStateViewModel: UISt
                             bookingPresenter: BookingPresenter) {
 
     val therapists = bookingViewModel.serviceSpecialists.collectAsState()
-    val serviceTimes = bookingViewModel.serviceTime.collectAsState()
     LaunchedEffect(Unit, block = {
-        if (therapists.value.isEmpty() || serviceTimes.value.isEmpty()
+        if (therapists.value.isEmpty()
             || (bookingViewModel.currentBookingId.value != bookingViewModel.currentAppointmentBooking.value.bookingId)) {
             bookingPresenter.getServiceTherapists(
                 bookingViewModel.selectedServiceType.value.categoryId,
@@ -93,6 +92,7 @@ fun BookingSelectSpecialist(mainViewModel: MainViewModel, uiStateViewModel: UISt
                  selectedTherapist.value = it
                  currentBooking.serviceTypeSpecialist = it
                  bookingViewModel.setCurrentBooking(currentBooking)
+                 bookingViewModel.setServiceTimes(it.specialistInfo?.availableTimes!!)
              })
             if(selectedTherapist.value.id != null) {
                 currentBooking.appointmentTime = null
@@ -118,17 +118,20 @@ fun BookingSelectSpecialist(mainViewModel: MainViewModel, uiStateViewModel: UISt
 fun AvailableTimeContent(serviceTypeSpecialist: ServiceTypeSpecialist, bookingViewModel: BookingViewModel, onWorkHourClickListener: (ServiceTime) -> Unit) {
 
     val unSavedTime = bookingViewModel.currentAppointmentBooking.value.appointmentTime
-    val serviceTime = bookingViewModel.serviceTime.value
-    val timeOffs = serviceTypeSpecialist.timeOffs
-    val normalisedBookedTimes = arrayListOf<ServiceTime>()
-    val normalisedTimeOffTimes = arrayListOf<ServiceTime>()
-    val bookedTimes = arrayListOf<ServiceTime>()
+    val availableWorkHour = serviceTypeSpecialist.specialistInfo?.availableTimes
+    val timeOffs = serviceTypeSpecialist.specialistInfo?.timeOffs
+    val normalisedBookedTimes = arrayListOf<PlatformTime>()
+    val normalisedTimeOffTimes = arrayListOf<PlatformTime>()
+    val normalisedBookingTimes = arrayListOf<ServiceTime>()
     val displayTimes = remember { mutableStateOf(arrayListOf<ServiceTime>()) }
-    for (item in serviceTypeSpecialist.specialistInfo?.bookedTimes!!){
-        normalisedBookedTimes.add(item.serviceTime!!)
+
+
+    for (item in serviceTypeSpecialist.specialistInfo?.bookedTimes!!) {
+        normalisedBookedTimes.add(item.serviceTime?.platformTime!!)
     }
-    for (item in timeOffs!!){
-        normalisedTimeOffTimes.add(item.timeOffTime!!)
+
+    for (item in timeOffs!!) {
+        normalisedTimeOffTimes.add(item.timeOffTime?.platformTime!!)
     }
 
 
@@ -152,24 +155,24 @@ fun AvailableTimeContent(serviceTypeSpecialist: ServiceTypeSpecialist, bookingVi
             textModifier = Modifier
                 .fillMaxWidth().padding(start = 10.dp, bottom = 20.dp))
 
-        serviceTime.map { it ->
-            if (it in normalisedBookedTimes || it in normalisedTimeOffTimes){
-                val bookedTime =  serviceTime.find { it2 ->
+        availableWorkHour!!.map { it ->
+            if (it.platformTime in normalisedBookedTimes || it.platformTime in normalisedTimeOffTimes){
+                val normalisedTime =  availableWorkHour.find { it2 ->
                     it.id == it2.id
                 }?.copy(isAvailable = false)
-                bookedTimes.add(bookedTime!!)
+                normalisedBookingTimes.add(normalisedTime!!)
             }
             else{
-                bookedTimes.add(it)
+                val isAvailableTime =  it.copy(isAvailable = true)
+                normalisedBookingTimes.add(isAvailableTime)
             }
         }
-         displayTimes.value = bookedTimes
-
-         TimeGrid(displayTimes.value,selectedTime = unSavedTime, onWorkHourClickListener = {
-             onWorkHourClickListener(it)
-         })
-
-
+         displayTimes.value = normalisedBookingTimes
+         if (displayTimes.value.isNotEmpty()) {
+             TimeGrid(displayTimes.value, selectedTime = unSavedTime, onWorkHourClickListener = {
+                 onWorkHourClickListener(it)
+             })
+         }
     }
 }
 

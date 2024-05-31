@@ -21,10 +21,8 @@ class SpecialistRepositoryImpl(apiService: HttpClient): SpecialistRepository {
     }
 
     override suspend fun getTherapistAvailability(
-        specialistId: Int,
-        selectedDate: String
-    ): Single<SpecialistAvailabilityResponse> {
-        val param = GetSpecialistAvailabilityRequest(specialistId, selectedDate)
+        specialistId: Int, day: Int, month: Int, year: Int): Single<SpecialistAvailabilityResponse> {
+        val param = GetSpecialistAvailabilityRequest(specialistId, day, month, year)
         return specialistNetworkService.getSpecialistAvailability(param)
     }
 

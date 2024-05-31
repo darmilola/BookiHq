@@ -1,9 +1,6 @@
 package presentation.therapist
 
-import com.badoo.reaktive.single.Single
 import com.badoo.reaktive.single.subscribe
-import domain.Models.ServerResponse
-import domain.appointments.AppointmentRepositoryImpl
 import domain.specialist.SpecialistRepositoryImpl
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
@@ -12,7 +9,6 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import presentation.appointments.AppointmentContract
 import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.UIStates
 
@@ -53,16 +49,16 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
         }
     }
 
-    override fun getTherapistAvailability(specialistId: Int, selectedDate: String) {
+    override fun getTherapistAvailability(specialistId: Int, day: Int, month: Int, year: Int) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showLce(UIStates(loadingVisible = true))
-                    specialistRepositoryImpl.getTherapistAvailability(specialistId, selectedDate)
+                    specialistRepositoryImpl.getTherapistAvailability(specialistId, day, month, year)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showTherapistAvailability(result.platformTimes, result.bookedAppointment, result.timeOffs)
+                                    contractView?.showTherapistAvailability(result.serviceTimes, result.bookedAppointment, result.timeOffs)
                                     contractView?.showLce(UIStates(contentVisible = true))
                                 }
                                 else{

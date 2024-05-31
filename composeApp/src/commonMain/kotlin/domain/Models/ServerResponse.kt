@@ -14,8 +14,7 @@ data class HomePageResponse(@SerialName("status") val status: String = "", @Seri
                             @SerialName("vendorStatus") val vendorStatus: ArrayList<VendorStatusModel> = arrayListOf())
 
 @Serializable
-data class ServiceSpecialistsResponse(@SerialName("status") val status: String = "", @SerialName("specialist") val serviceSpecialists: List<ServiceTypeSpecialist>,
-                                      @SerialName("platformAvailability") val platformAvailability: List<ServiceTime>)
+data class ServiceSpecialistsResponse(@SerialName("status") val status: String = "", @SerialName("specialist") val serviceSpecialists: List<ServiceTypeSpecialist>)
 
 
 @Serializable
@@ -30,6 +29,6 @@ data class ProductCategoryResponse(@SerialName("status") val status: String = ""
 
 @Serializable
 data class SpecialistAvailabilityResponse(@SerialName("status") val status: String = "",
-                                          @SerialName("availability") val platformTimes: List<ServiceTime>,
+                                          @SerialName("availability") val serviceTimes: List<ServiceTime>,
                                           @SerialName("timeOffs") val timeOffs: List<TimeOffs>,
                                           @SerialName("bookings") val bookedAppointment: List<Appointment>)

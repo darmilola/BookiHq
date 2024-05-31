@@ -13,7 +13,7 @@ class BookingContract {
     interface View {
         fun showLce(uiState: UIStates, message: String = "")
         fun showBookingLce(uiState: AsyncUIStates, message: String = "")
-        fun showTherapists(serviceSpecialists: List<ServiceTypeSpecialist>, serviceTimes: List<ServiceTime>)
+        fun showTherapists(serviceSpecialists: List<ServiceTypeSpecialist>)
         fun showUnsavedAppointment()
     }
 

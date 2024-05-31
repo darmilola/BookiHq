@@ -340,7 +340,9 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
             ) { page ->
                 when (page) {
                     0 -> BookingSelectServices(mainViewModel, bookingViewModel,services)
-                    1 -> BookingSelectSpecialist(mainViewModel,uiStateViewModel,bookingViewModel,bookingPresenter)
+                    1 -> if(page == pagerState.targetPage) {
+                        BookingSelectSpecialist(mainViewModel,uiStateViewModel,bookingViewModel,bookingPresenter)
+                    }
                     2 -> if(page == pagerState.targetPage) {
                         BookingOverview(
                             mainViewModel,
@@ -413,9 +415,8 @@ class BookingScreenHandler(
         }
     }
 
-    override fun showTherapists(serviceSpecialists: List<ServiceTypeSpecialist>, serviceTimes: List<ServiceTime>) {
+    override fun showTherapists(serviceSpecialists: List<ServiceTypeSpecialist>) {
         bookingViewModel.setSpecialists(serviceSpecialists)
-        bookingViewModel.setServiceTimes(serviceTimes)
     }
 
     override fun showUnsavedAppointment() {

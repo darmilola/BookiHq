@@ -137,13 +137,15 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
     override fun postponeAppointment(
         appointment: Appointment,
         newAppointmentTime: Int,
-        newAppointmentDate: String
+        day: Int,
+        month: Int,
+        year: Int
     ) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.onPostponeAppointmentStarted()
-                    appointmentRepositoryImpl.postponeAppointment(appointment, newAppointmentTime, newAppointmentDate)
+                    appointmentRepositoryImpl.postponeAppointment(appointment, newAppointmentTime, day,month,year)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
@@ -192,16 +194,16 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
         }
     }
 
-    override fun getTherapistAvailability(specialistId: Int, selectedDate: String) {
+    override fun getTherapistAvailability(specialistId: Int, day: Int, month: Int, year: Int) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showAsyncLce(AsyncUIStates(isLoading = true))
-                    appointmentRepositoryImpl.getTherapistAvailability(specialistId, selectedDate)
+                    appointmentRepositoryImpl.getTherapistAvailability(specialistId, day, month, year)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showTherapistAvailability(result.platformTimes, result.bookedAppointment, result.timeOffs)
+                                    contractView?.showTherapistAvailability(result.serviceTimes, result.bookedAppointment, result.timeOffs)
                                     contractView?.showAsyncLce(AsyncUIStates(isSuccess = true))
                                 }
                                 else{

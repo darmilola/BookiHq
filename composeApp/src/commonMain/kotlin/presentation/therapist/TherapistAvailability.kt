@@ -21,6 +21,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import domain.Models.PlatformTime
 import domain.Models.ServiceTime
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.AsyncUIStateViewModel
@@ -59,23 +60,25 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
 
     if (isNewDateSelected.value) {
         therapistPresenter.getTherapistAvailability(
-            3,
-            selectedDate = newSelectedDate.value.toString()
+            specialistInfo.specialistId!!,
+            day = newSelectedDate.value.dayOfMonth,
+            month = newSelectedDate.value.monthNumber,
+            year = newSelectedDate.value.year
         )
         isNewDateSelected.value = false
     }
 
 
-    val normalisedTimeOff = arrayListOf<ServiceTime>()
+    val normalisedTimeOff = arrayListOf<PlatformTime>()
     val displayTimes = remember { mutableStateOf(arrayListOf<ServiceTime>()) }
     for (item in timeOffs.value){
-        normalisedTimeOff.add(item.timeOffTime!!)
+        normalisedTimeOff.add(item.timeOffTime?.platformTime!!)
     }
     val normalisedTherapistTimes = arrayListOf<ServiceTime>()
 
     if (serviceTimes.value.isNotEmpty()) {
         serviceTimes.value.map { it ->
-            if (it in normalisedTimeOff) {
+            if (it.platformTime in normalisedTimeOff) {
                 val timeOffTime = serviceTimes.value.find { it2 ->
                     it.id == it2.id
                 }?.copy(isAvailable = false)

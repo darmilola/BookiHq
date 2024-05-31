@@ -32,12 +32,14 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
     override suspend fun postponeAppointment(
         appointment: Appointment,
         appointmentTime: Int,
-        appointmentDate: String
+        day: Int,
+        month: Int,
+        year: Int
     ): Single<ServerResponse> {
 
         val param = PostponeAppointmentRequest(userId = appointment.userId!!, vendorId = appointment.vendorId, serviceId = appointment.serviceId,
             serviceTypeId = appointment.serviceTypeId!!, specialistId = appointment.specialistId, recommendationId = appointment.recommendationId, appointmentTime = appointmentTime,
-            appointmentDate = appointmentDate, serviceLocation = appointment.serviceLocation, serviceStatus = ServiceStatus.Pending.toPath(),
+            day = day, month = month, year = year, serviceLocation = appointment.serviceLocation, serviceStatus = ServiceStatus.Pending.toPath(),
             isRecommendedAppointment = appointment.isRecommendedAppointment, appointmentId = appointment.appointmentId!!)
         return appointmentNetworkService.postponeAppointment(param)
     }
@@ -49,9 +51,9 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
 
     override suspend fun getTherapistAvailability(
         specialistId: Int,
-        selectedDate: String
+        day: Int, month: Int, year: Int
     ): Single<SpecialistAvailabilityResponse> {
-        val param = GetSpecialistAvailabilityRequest(specialistId, selectedDate)
+        val param = GetSpecialistAvailabilityRequest(specialistId, day, month, year)
         return appointmentNetworkService.getSpecialistAvailability(param)
     }
 
