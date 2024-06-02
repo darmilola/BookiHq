@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import domain.Models.PlatformTime
-import domain.Models.ServiceTime
+import domain.Models.AvailableTime
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.AsyncUIStateViewModel
 import presentation.viewmodels.MainViewModel
@@ -44,7 +44,7 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
 
     val uiState = uiStateViewModel.uiData.collectAsState()
     val asyncState = asyncUIStateViewModel.uiData.collectAsState()
-    val serviceTimes = therapistViewModel.therapistAvailableTimes.collectAsState()
+    val availableTimes = therapistViewModel.therapistAvailableTimes.collectAsState()
     val timeOffs = therapistViewModel.therapistTimeOffs.collectAsState()
     val newSelectedDate = therapistViewModel.selectedDate.collectAsState()
     val newTimeOffs = therapistViewModel.addedTimeOffs.collectAsState()
@@ -70,16 +70,16 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
 
 
     val normalisedTimeOff = arrayListOf<PlatformTime>()
-    val displayTimes = remember { mutableStateOf(arrayListOf<ServiceTime>()) }
+    val displayTimes = remember { mutableStateOf(arrayListOf<AvailableTime>()) }
     for (item in timeOffs.value){
-        normalisedTimeOff.add(item.timeOffTime?.platformTime!!)
+        normalisedTimeOff.add(item.timeOffTime?.vendorTime?.platformTime!!)
     }
-    val normalisedTherapistTimes = arrayListOf<ServiceTime>()
+    val normalisedTherapistTimes = arrayListOf<AvailableTime>()
 
-    if (serviceTimes.value.isNotEmpty()) {
-        serviceTimes.value.map { it ->
-            if (it.platformTime in normalisedTimeOff) {
-                val timeOffTime = serviceTimes.value.find { it2 ->
+    if (availableTimes.value.isNotEmpty()) {
+        availableTimes.value.map { it ->
+            if (it.vendorTime?.platformTime in normalisedTimeOff) {
+                val timeOffTime = availableTimes.value.find { it2 ->
                     it.id == it2.id
                 }?.copy(isAvailable = false)
                 normalisedTherapistTimes.add(timeOffTime!!)

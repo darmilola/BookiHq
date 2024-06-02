@@ -1,7 +1,5 @@
 package presentation.bookings
 
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import domain.Models.ServiceTime
 import domain.Models.ServiceTypeSpecialist
 import domain.Models.UnsavedAppointment
 import domain.Models.User

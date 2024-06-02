@@ -29,7 +29,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import domain.Models.Appointment
 import domain.Models.PlatformTime
-import domain.Models.ServiceTime
+import domain.Models.AvailableTime
 import presentation.appointments.AppointmentPresenter
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.PostponementViewModel
@@ -45,7 +45,7 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
     Dialog( properties = DialogProperties(usePlatformDefaultWidth = false), onDismissRequest = { onDismissRequest() }) {
 
         val uiState = postponementViewModel.postponementViewUIState.collectAsState()
-        val serviceTimes = postponementViewModel.therapistAvailableTimes.collectAsState()
+        val availableTime = postponementViewModel.therapistAvailableTimes.collectAsState()
         val newSelectedDay = postponementViewModel.day.collectAsState()
         val newSelectedMonth = postponementViewModel.month.collectAsState()
         val newSelectedYear = postponementViewModel.year.collectAsState()
@@ -68,21 +68,21 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
 
         val normalisedBookedTimes = arrayListOf<PlatformTime>()
         val normalisedTimeOffTimes = arrayListOf<PlatformTime>()
-        val bookedTimes = arrayListOf<ServiceTime>()
-        val displayTimes = remember { mutableStateOf(arrayListOf<ServiceTime>()) }
+        val bookedTimes = arrayListOf<AvailableTime>()
+        val displayTimes = remember { mutableStateOf(arrayListOf<AvailableTime>()) }
         for (item in timeOffs.value){
-            normalisedTimeOffTimes.add(item.timeOffTime?.platformTime!!)
+            normalisedTimeOffTimes.add(item.timeOffTime?.vendorTime?.platformTime!!)
         }
 
-        val normalisedTherapistTimes = arrayListOf<ServiceTime>()
+        val normalisedTherapistTimes = arrayListOf<AvailableTime>()
         for (item in therapistBookedTimes) {
-            normalisedBookedTimes.add(item.serviceTime?.platformTime!!)
+            normalisedBookedTimes.add(item.platformTime!!)
         }
 
-        if (serviceTimes.value.isNotEmpty()) {
-            serviceTimes.value.map { it ->
-                if (it.platformTime in normalisedBookedTimes || it.platformTime in normalisedTimeOffTimes) {
-                    val bookedTime = serviceTimes.value.find { it2 ->
+        if (availableTime.value.isNotEmpty()) {
+            availableTime.value.map { it ->
+                if (it.vendorTime?.platformTime in normalisedBookedTimes || it.vendorTime?.platformTime in normalisedTimeOffTimes) {
+                    val bookedTime = availableTime.value.find { it2 ->
                         it.id == it2.id
                     }?.copy(isAvailable = false)
                     normalisedTherapistTimes.add(bookedTime!!)

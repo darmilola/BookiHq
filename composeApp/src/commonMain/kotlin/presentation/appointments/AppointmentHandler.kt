@@ -2,13 +2,11 @@ package presentation.appointments
 
 import domain.Models.Appointment
 import domain.Models.AppointmentResourceListEnvelope
-import domain.Models.ResourceListEnvelope
-import domain.Models.ServiceTime
+import domain.Models.AvailableTime
 import domain.Models.TimeOffs
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.PostponementViewModel
-import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentation.viewmodels.UIStates
 
@@ -57,7 +55,7 @@ class AppointmentsHandler(
     }
 
     override fun showTherapistAvailability(
-        availableTimes: List<ServiceTime>,
+        availableTimes: List<AvailableTime>,
         bookedAppointment: List<Appointment>,
         timeOffs: List<TimeOffs>
     ) {

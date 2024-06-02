@@ -6,4 +6,4 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable @Parcelize
-data class BookedTimes(@SerialName("time") val serviceTime: ServiceTime? = null): Parcelable
+data class BookedTimes(@SerialName("time") val platformTime: PlatformTime? = null): Parcelable

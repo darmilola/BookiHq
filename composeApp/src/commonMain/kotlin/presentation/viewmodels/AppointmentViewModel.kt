@@ -3,15 +3,14 @@ package presentation.viewmodels
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Models.Appointment
-import domain.Models.ServiceTime
+import domain.Models.AvailableTime
 import domain.Models.TimeOffs
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.datetime.LocalDate
 import presentation.dataModeller.CalendarDataSource
 
 class PostponementViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
-    private var _therapistAvailableTimes = savedStateHandle.getStateFlow("therapistAvailableTimes", arrayListOf<ServiceTime>())
+    private var _therapistAvailableTimes = savedStateHandle.getStateFlow("therapistAvailableTimes", arrayListOf<AvailableTime>())
     private var _therapistBookedTimes = savedStateHandle.getStateFlow("therapistBookedAppointment", arrayListOf<Appointment>())
     private var _therapistTimeOffs = savedStateHandle.getStateFlow("therapistTimeOffs", arrayListOf<TimeOffs>())
     private var _currentAppointment = savedStateHandle.getStateFlow("currentAppointment",Appointment())
@@ -19,10 +18,10 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
     private var _day =  savedStateHandle.getStateFlow("day", -1)
     private var _month =  savedStateHandle.getStateFlow("month", -1)
     private var _year =  savedStateHandle.getStateFlow("year", -1)
-    private var _newSelectedTime = savedStateHandle.getStateFlow("newSelectedTime", ServiceTime())
+    private var _newSelectedTime = savedStateHandle.getStateFlow("newSelectedTime", AvailableTime())
 
 
-    val therapistAvailableTimes: StateFlow<List<ServiceTime>>
+    val therapistAvailableTimes: StateFlow<List<AvailableTime>>
         get() = _therapistAvailableTimes
 
     val therapistBookedTimes: StateFlow<List<Appointment>>
@@ -45,10 +44,10 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
 
     val year: StateFlow<Int>
         get() = _year
-    val selectedTime: StateFlow<ServiceTime>
+    val selectedTime: StateFlow<AvailableTime>
         get() = _newSelectedTime
 
-    fun setTherapistAvailableTimes(availableTimes: List<ServiceTime>) {
+    fun setTherapistAvailableTimes(availableTimes: List<AvailableTime>) {
         savedStateHandle["therapistAvailableTimes"] = availableTimes
     }
 
@@ -70,7 +69,7 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
     }
 
     fun clearServiceTimes() {
-        savedStateHandle["therapistAvailableTimes"] = arrayListOf<ServiceTime>()
+        savedStateHandle["therapistAvailableTimes"] = arrayListOf<AvailableTime>()
     }
 
     fun setSelectedDay(day: Int) {
@@ -87,16 +86,16 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
 
 
     fun clearPostponementSelection(){
-        savedStateHandle["newSelectedTime"] = ServiceTime()
-        savedStateHandle["therapistAvailableTimes"] = arrayListOf<ServiceTime>()
+        savedStateHandle["newSelectedTime"] = AvailableTime()
+        savedStateHandle["therapistAvailableTimes"] = arrayListOf<AvailableTime>()
         savedStateHandle["day"] = CalendarDataSource().today.dayOfMonth
         savedStateHandle["month"] = CalendarDataSource().today.monthNumber
         savedStateHandle["year"] = CalendarDataSource().today.year
 
     }
 
-    fun setNewSelectedTime(serviceTime: ServiceTime) {
-        savedStateHandle["newSelectedTime"] = serviceTime
+    fun setNewSelectedTime(availableTime: AvailableTime) {
+        savedStateHandle["newSelectedTime"] = availableTime
     }
 
 }

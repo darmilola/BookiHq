@@ -14,7 +14,7 @@ data class Appointment(
     @SerialName("day") val appointmentDay: Int? = -1, @SerialName("month") val appointmentMonth: Int? = -1,
     @SerialName("year") val appointmentYear: Int? = -1, @SerialName("isRecommendedAppointment") val isRecommendedAppointment: Boolean = false,
     @SerialName("recommendation_id") val recommendationId: Int? = -1, @SerialName("specialist_info") val specialistInfo: SpecialistInfo? = null,
-    @SerialName("service_type") val serviceTypeItem: ServiceTypeItem? = null, @SerialName("service") val services: Services? = null, @SerialName("time") val serviceTime: ServiceTime? = null,
+    @SerialName("service_type") val serviceTypeItem: ServiceTypeItem? = null, @SerialName("service") val services: Services? = null, @SerialName("time") val platformTime: PlatformTime? = null,
     @SerialName("vendor") val vendor: Vendor? = null, @SerialName("customer_info") val customerInfo: User? = null, val isSelected: Boolean = false): Parcelable
 
 data class AppointmentItemUIModel(

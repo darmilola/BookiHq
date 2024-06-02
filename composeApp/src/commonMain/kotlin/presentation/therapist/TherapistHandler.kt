@@ -1,15 +1,10 @@
 package presentation.therapist
 
 import domain.Models.Appointment
-import domain.Models.ServiceTime
+import domain.Models.AvailableTime
 import domain.Models.SpecialistReviews
 import domain.Models.TimeOffs
-import presentation.appointments.AppointmentContract
-import presentation.appointments.AppointmentPresenter
 import presentation.viewmodels.AsyncUIStates
-import presentation.viewmodels.PostponementViewModel
-import presentation.viewmodels.ResourceListEnvelopeViewModel
-import presentation.viewmodels.UIStateViewModel
 import presentation.viewmodels.UIStates
 
 class TherapistHandler(
@@ -21,7 +16,7 @@ class TherapistHandler(
     private val onContentVisible: () -> Unit,
     private val onReviewsReady: (List<SpecialistReviews>) -> Unit,
     private val onErrorVisible: () -> Unit,
-    private val onTherapistAvailabilityReady: (availableTimes: List<ServiceTime>, bookedAppointment: List<Appointment>, timeOffs: List<TimeOffs>) -> Unit) : TherapistContract.View {
+    private val onTherapistAvailabilityReady: (availableTimes: List<AvailableTime>, bookedAppointment: List<Appointment>, timeOffs: List<TimeOffs>) -> Unit) : TherapistContract.View {
     fun init() {
         therapistPresenter.registerUIContract(this)
     }
@@ -70,7 +65,7 @@ class TherapistHandler(
     }
 
     override fun showTherapistAvailability(
-        availableTimes: List<ServiceTime>,
+        availableTimes: List<AvailableTime>,
         bookedAppointment: List<Appointment>,
         timeOffs: List<TimeOffs>
     ) {

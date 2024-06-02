@@ -17,8 +17,6 @@ import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,27 +34,17 @@ import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.Appointment
-import domain.Models.Product
-import domain.Models.ProductCategory
-import domain.Models.ServiceTime
+import domain.Models.AvailableTime
 import domain.Models.TimeOffs
-import domain.Models.User
-import domain.Models.Vendor
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import presentation.Products.CategoryScreen
-import presentation.Products.ProductPresenter
-import presentation.Products.SearchBar
 import presentation.appointments.AppointmentPresenter
-import presentation.components.IndeterminateCircularProgressBar
-import presentation.main.SearchContent
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.AsyncUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
-import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.TherapistViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentation.viewmodels.UIStates
@@ -148,7 +136,7 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
             }, onPageLoading = {
                 uiStateViewModel!!.switchState(UIStates(loadingVisible = true))
             }, onTherapistAvailabilityReady = {
-                 availableTimes: List<ServiceTime>,
+                    availableTimes: List<AvailableTime>,
                     bookedTimes: List<Appointment>,
                     timeOffs: List<TimeOffs> ->
                 therapistViewModel!!.setTherapistAvailableTimes(availableTimes)

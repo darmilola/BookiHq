@@ -2,8 +2,7 @@ package presentation.appointments
 
 import domain.Models.Appointment
 import domain.Models.AppointmentResourceListEnvelope
-import domain.Models.ResourceListEnvelope
-import domain.Models.ServiceTime
+import domain.Models.AvailableTime
 import domain.Models.TimeOffs
 import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.UIStates
@@ -13,7 +12,7 @@ interface AppointmentContract {
         fun showLce(uiState: UIStates, message: String = "")
         fun showAsyncLce(uiState: AsyncUIStates, message: String = "")
         fun showAppointments(appointments: AppointmentResourceListEnvelope)
-        fun showTherapistAvailability(availableTimes: List<ServiceTime>, bookedAppointment: List<Appointment>, timeOffs: List<TimeOffs>)
+        fun showTherapistAvailability(availableTimes: List<AvailableTime>, bookedAppointment: List<Appointment>, timeOffs: List<TimeOffs>)
         fun onLoadMoreAppointmentStarted(isSuccess: Boolean = false)
         fun onLoadMoreAppointmentEnded(isSuccess: Boolean = false)
         fun  onPostponeAppointmentStarted()

@@ -28,26 +28,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import domain.Models.AvailableTimeUIModel
-import domain.Models.ServiceTime
+import domain.Models.AvailableTime
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import theme.styles.Colors
 
 
 @Composable
-fun TherapistAvailabilityTimeGrid(availableTimes: List<ServiceTime>? = arrayListOf(), onWorkHourUnAvailable: (ServiceTime) -> Unit,
-                                  onWorkHourAvailable: (ServiceTime) -> Unit) {
+fun TherapistAvailabilityTimeGrid(availableTimes: List<AvailableTime>? = arrayListOf(), onWorkHourUnAvailable: (AvailableTime) -> Unit,
+                                  onWorkHourAvailable: (AvailableTime) -> Unit) {
 
     var workHourUIModel by remember {
         mutableStateOf(
             AvailableTimeUIModel(
-                selectedTime = ServiceTime(),
+                selectedTime = AvailableTime(),
                 availableTimes!!
             )
         )
     }
 
-    AvailableTimeUIModel(ServiceTime(), availableTimes!!)
+    AvailableTimeUIModel(AvailableTime(), availableTimes!!)
 
     Column(modifier = Modifier.fillMaxWidth()) {
 
@@ -132,9 +132,9 @@ fun TherapistAvailabilityTimeGrid(availableTimes: List<ServiceTime>? = arrayList
 
 
 @Composable
-fun TherapistTimeItem(availableTime: ServiceTime, onAvailableWorkHourClickListener: (ServiceTime) -> Unit,
-                      onUnAvailableWorkHourClickListener: (ServiceTime) -> Unit) {
-    val meridian = if (availableTime.platformTime?.isAm!!){
+fun TherapistTimeItem(availableTime: AvailableTime, onAvailableWorkHourClickListener: (AvailableTime) -> Unit,
+                      onUnAvailableWorkHourClickListener: (AvailableTime) -> Unit) {
+    val meridian = if (availableTime.vendorTime?.platformTime?.isAm!!){
           "am"
     }
     else{
@@ -173,7 +173,7 @@ fun TherapistTimeItem(availableTime: ServiceTime, onAvailableWorkHourClickListen
     ) {
         ImageComponent(imageModifier = Modifier.size(20.dp), imageRes = iconRes, colorFilter = ColorFilter.tint(color = color))
         TextComponent(
-            text = availableTime.platformTime.time!!+" "+meridian,
+            text = availableTime.vendorTime.platformTime.time!!+" "+meridian,
             fontSize = 15,
             fontFamily = GGSansSemiBold,
             textStyle = MaterialTheme.typography.h6,

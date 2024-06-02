@@ -47,7 +47,7 @@ fun AppointmentInfoWidget(appointment: Appointment) {
 
     val appointmentDate =
         LocalDate(dayOfMonth = appointment.appointmentDay!!, monthNumber = appointment.appointmentMonth!!, year = appointment.appointmentYear!!).format(appointmentDateFormat)
-    val appointmentTime = appointment.serviceTime?.time
+    val appointmentTime = appointment.platformTime?.time
 
     val columnModifier = Modifier
         .padding(start = 15.dp, end = 10.dp)

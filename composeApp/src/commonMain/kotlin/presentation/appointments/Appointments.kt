@@ -34,8 +34,6 @@ import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.Appointment
 import domain.Models.AppointmentItemUIModel
-import domain.Models.ResourceListEnvelope
-import domain.Models.ServiceTime
 import domain.Models.User
 import domain.Models.Vendor
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -46,10 +44,8 @@ import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.dialogs.LoadingDialog
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
-import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
-import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentation.viewmodels.UIStates
 import utils.getAppointmentViewHeight

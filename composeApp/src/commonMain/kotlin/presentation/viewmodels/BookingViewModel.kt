@@ -2,17 +2,16 @@ package presentation.viewmodels
 
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
-import domain.Models.ServiceTime
+import domain.Models.AvailableTime
 import domain.Models.ServiceTypeItem
 import domain.Models.ServiceTypeSpecialist
 import domain.Models.UnsavedAppointment
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.datetime.LocalDate
 
 class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
     private var _specialists =  savedStateHandle.getStateFlow("specialists", arrayListOf<ServiceTypeSpecialist>())
-    private var _serviceTimes =  savedStateHandle.getStateFlow("serviceTimes", arrayListOf<ServiceTime>())
+    private var _availableTimes =  savedStateHandle.getStateFlow("serviceTimes", arrayListOf<AvailableTime>())
     private var _selectedServiceType =  savedStateHandle.getStateFlow("selectedServiceType", ServiceTypeItem())
     private var _currentBookingId =  savedStateHandle.getStateFlow("currentBookingId", -1)
     private var _day =  savedStateHandle.getStateFlow("day", -1)
@@ -22,8 +21,8 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
 
     val serviceSpecialists: StateFlow<List<ServiceTypeSpecialist>>
         get() = _specialists
-    val serviceTime: StateFlow<List<ServiceTime>>
-        get() = _serviceTimes
+    val availableTime: StateFlow<List<AvailableTime>>
+        get() = _availableTimes
     val selectedServiceType: StateFlow<ServiceTypeItem>
         get() = _selectedServiceType
 
@@ -43,8 +42,8 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
         savedStateHandle["specialists"] = serviceSpecialists
     }
 
-    fun setServiceTimes(serviceTime: List<ServiceTime>) {
-        savedStateHandle["serviceTimes"] = serviceTime
+    fun setServiceTimes(availableTime: List<AvailableTime>) {
+        savedStateHandle["serviceTimes"] = availableTime
     }
 
     val currentAppointmentBooking: StateFlow<UnsavedAppointment>

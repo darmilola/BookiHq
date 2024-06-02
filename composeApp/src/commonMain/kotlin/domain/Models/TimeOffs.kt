@@ -13,4 +13,4 @@ data class TimeOffs(@SerialName("id") val id: Int? = null, @SerialName("speciali
 
 @Serializable @Parcelize
 data class TimeOffObject(@SerialName("id") val id: Int? = null, @SerialName("time_id") val timeId: Int? = null,
-                         @SerialName("platform_time") val platformTime: PlatformTime? = null): Parcelable
+                         @SerialName("vendor_time") val vendorTime: VendorTime? = null): Parcelable

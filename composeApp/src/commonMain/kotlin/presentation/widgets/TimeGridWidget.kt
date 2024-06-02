@@ -1,27 +1,22 @@
 package presentation.widgets
 
-import GGSansRegular
 import GGSansSemiBold
-import presentation.dataModeller.WorkingHoursDataSource
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,22 +25,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import domain.Models.AvailableTimeUIModel
-import domain.Models.ServiceTime
+import domain.Models.AvailableTime
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun TimeGrid(availableTimes: List<ServiceTime>? = arrayListOf(), selectedTime: ServiceTime? = null, onWorkHourClickListener: (ServiceTime) -> Unit) {
+fun TimeGrid(availableTimes: List<AvailableTime>? = arrayListOf(), selectedTime: AvailableTime? = null, onWorkHourClickListener: (AvailableTime) -> Unit) {
     var workHourUIModel by remember {
         mutableStateOf(
             AvailableTimeUIModel(
-                selectedTime = ServiceTime(),
+                selectedTime = AvailableTime(),
                 availableTimes!!
             )
         )
@@ -53,7 +46,7 @@ fun TimeGrid(availableTimes: List<ServiceTime>? = arrayListOf(), selectedTime: S
     workHourUIModel = if (selectedTime != null) {
         AvailableTimeUIModel(selectedTime, visibleTime = availableTimes!!)
     } else {
-        AvailableTimeUIModel(ServiceTime(), availableTimes!!)
+        AvailableTimeUIModel(AvailableTime(), availableTimes!!)
     }
 
 
@@ -123,8 +116,8 @@ fun TimeGrid(availableTimes: List<ServiceTime>? = arrayListOf(), selectedTime: S
 
 
 @Composable
-fun TimeItem(availableTime: ServiceTime, onWorkHourClickListener: (ServiceTime) -> Unit) {
-    val meridian = if (availableTime.platformTime?.isAm!!){
+fun TimeItem(availableTime: AvailableTime, onWorkHourClickListener: (AvailableTime) -> Unit) {
+    val meridian = if (availableTime.vendorTime?.platformTime?.isAm!!){
         "am"
     }
     else{
@@ -159,7 +152,7 @@ fun TimeItem(availableTime: ServiceTime, onWorkHourClickListener: (ServiceTime) 
             ImageComponent(imageModifier = Modifier.size(20.dp), imageRes = "drawable/check_mark_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
         }
         TextComponent(
-            text = availableTime.platformTime.time!!+" "+meridian,
+            text = availableTime.vendorTime.platformTime.time!!+" "+meridian,
             fontSize = 15,
             fontFamily = GGSansSemiBold,
             textStyle = MaterialTheme.typography.h6,

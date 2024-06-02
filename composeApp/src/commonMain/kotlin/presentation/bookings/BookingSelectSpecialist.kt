@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import domain.Models.PlatformTime
 import domain.Models.ServiceTypeSpecialist
 import domain.Models.ServiceTypeTherapistUIModel
-import domain.Models.ServiceTime
+import domain.Models.AvailableTime
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
@@ -115,23 +115,23 @@ fun BookingSelectSpecialist(mainViewModel: MainViewModel, uiStateViewModel: UISt
 
 
 @Composable
-fun AvailableTimeContent(serviceTypeSpecialist: ServiceTypeSpecialist, bookingViewModel: BookingViewModel, onWorkHourClickListener: (ServiceTime) -> Unit) {
+fun AvailableTimeContent(serviceTypeSpecialist: ServiceTypeSpecialist, bookingViewModel: BookingViewModel, onWorkHourClickListener: (AvailableTime) -> Unit) {
 
     val unSavedTime = bookingViewModel.currentAppointmentBooking.value.appointmentTime
     val availableWorkHour = serviceTypeSpecialist.specialistInfo?.availableTimes
     val timeOffs = serviceTypeSpecialist.specialistInfo?.timeOffs
     val normalisedBookedTimes = arrayListOf<PlatformTime>()
     val normalisedTimeOffTimes = arrayListOf<PlatformTime>()
-    val normalisedBookingTimes = arrayListOf<ServiceTime>()
-    val displayTimes = remember { mutableStateOf(arrayListOf<ServiceTime>()) }
+    val normalisedBookingTimes = arrayListOf<AvailableTime>()
+    val displayTimes = remember { mutableStateOf(arrayListOf<AvailableTime>()) }
 
 
     for (item in serviceTypeSpecialist.specialistInfo?.bookedTimes!!) {
-        normalisedBookedTimes.add(item.serviceTime?.platformTime!!)
+        normalisedBookedTimes.add(item.platformTime!!)
     }
 
     for (item in timeOffs!!) {
-        normalisedTimeOffTimes.add(item.timeOffTime?.platformTime!!)
+        normalisedTimeOffTimes.add(item.timeOffTime?.vendorTime?.platformTime!!)
     }
 
 
@@ -156,7 +156,7 @@ fun AvailableTimeContent(serviceTypeSpecialist: ServiceTypeSpecialist, bookingVi
                 .fillMaxWidth().padding(start = 10.dp, bottom = 20.dp))
 
         availableWorkHour!!.map { it ->
-            if (it.platformTime in normalisedBookedTimes || it.platformTime in normalisedTimeOffTimes){
+            if (it.vendorTime?.platformTime in normalisedBookedTimes || it.vendorTime?.platformTime in normalisedTimeOffTimes){
                 val normalisedTime =  availableWorkHour.find { it2 ->
                     it.id == it2.id
                 }?.copy(isAvailable = false)

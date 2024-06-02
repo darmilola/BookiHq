@@ -3,7 +3,7 @@ package presentation.viewmodels
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Models.Appointment
-import domain.Models.ServiceTime
+import domain.Models.AvailableTime
 import domain.Models.SpecialistReviews
 import domain.Models.TimeOffs
 import kotlinx.coroutines.flow.StateFlow
@@ -12,16 +12,16 @@ import presentation.dataModeller.CalendarDataSource
 
 class TherapistViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
-    private var _therapistAvailableTimes = savedStateHandle.getStateFlow("therapistAvailableTimes", arrayListOf<ServiceTime>())
+    private var _therapistAvailableTimes = savedStateHandle.getStateFlow("therapistAvailableTimes", arrayListOf<AvailableTime>())
     private var _therapistTimeOffs = savedStateHandle.getStateFlow("therapistTimeOffs", arrayListOf<TimeOffs>())
     private var _therapistReviews = savedStateHandle.getStateFlow("therapistReviews", arrayListOf<SpecialistReviews>())
     private var _therapistAvailabilityViewUIState = savedStateHandle.getStateFlow("therapistAvailabilityViewUIState", AsyncUIStates())
     private var _newSelectedDate = savedStateHandle.getStateFlow("newSelectedDate", CalendarDataSource().today)
-    private var _newSelectedTime = savedStateHandle.getStateFlow("newSelectedTime", ServiceTime())
-    private var _addedTimeOffs = savedStateHandle.getStateFlow("addedTimeOffs", arrayListOf<ServiceTime>())
+    private var _newSelectedTime = savedStateHandle.getStateFlow("newSelectedTime", AvailableTime())
+    private var _addedTimeOffs = savedStateHandle.getStateFlow("addedTimeOffs", arrayListOf<AvailableTime>())
 
 
-    val therapistAvailableTimes: StateFlow<List<ServiceTime>>
+    val therapistAvailableTimes: StateFlow<List<AvailableTime>>
         get() = _therapistAvailableTimes
 
 
@@ -34,16 +34,16 @@ class TherapistViewModel(private val savedStateHandle: SavedStateHandle): ViewMo
     val therapistAvailabilityViewUIState: StateFlow<AsyncUIStates>
         get() = _therapistAvailabilityViewUIState
 
-    val addedTimeOffs: StateFlow<ArrayList<ServiceTime>>
+    val addedTimeOffs: StateFlow<ArrayList<AvailableTime>>
         get() = _addedTimeOffs
 
     val selectedDate: StateFlow<LocalDate>
         get() = _newSelectedDate
 
-    val selectedTime: StateFlow<ServiceTime>
+    val selectedTime: StateFlow<AvailableTime>
         get() = _newSelectedTime
 
-    fun setTherapistAvailableTimes(availableTimes: List<ServiceTime>) {
+    fun setTherapistAvailableTimes(availableTimes: List<AvailableTime>) {
         savedStateHandle["therapistAvailableTimes"] = availableTimes
     }
 
@@ -51,8 +51,8 @@ class TherapistViewModel(private val savedStateHandle: SavedStateHandle): ViewMo
         savedStateHandle["therapistReviews"] = specialistReviews
     }
 
-    fun setAddedTimeOffs(serviceTimes: List<ServiceTime>) {
-        savedStateHandle["addedTimeOffs"] = serviceTimes
+    fun setAddedTimeOffs(availableTimes: List<AvailableTime>) {
+        savedStateHandle["addedTimeOffs"] = availableTimes
     }
 
 
@@ -72,17 +72,17 @@ class TherapistViewModel(private val savedStateHandle: SavedStateHandle): ViewMo
     }
 
     fun clearServiceTimes() {
-        savedStateHandle["therapistAvailableTimes"] = arrayListOf<ServiceTime>()
+        savedStateHandle["therapistAvailableTimes"] = arrayListOf<AvailableTime>()
     }
 
     fun clearAvailabilityViewSelection(){
-        savedStateHandle["newSelectedTime"] = ServiceTime()
-        savedStateHandle["therapistAvailableTimes"] = arrayListOf<ServiceTime>()
+        savedStateHandle["newSelectedTime"] = AvailableTime()
+        savedStateHandle["therapistAvailableTimes"] = arrayListOf<AvailableTime>()
         savedStateHandle["newSelectedDate"] = CalendarDataSource().today
     }
 
-    fun setNewSelectedTime(serviceTime: ServiceTime) {
-        savedStateHandle["newSelectedTime"] = serviceTime
+    fun setNewSelectedTime(availableTime: AvailableTime) {
+        savedStateHandle["newSelectedTime"] = availableTime
     }
 
 }

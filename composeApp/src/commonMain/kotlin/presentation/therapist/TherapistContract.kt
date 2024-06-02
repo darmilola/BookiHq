@@ -1,10 +1,7 @@
 package presentation.therapist
 
-import com.badoo.reaktive.single.Single
 import domain.Models.Appointment
-import domain.Models.ResourceListEnvelope
-import domain.Models.ServerResponse
-import domain.Models.ServiceTime
+import domain.Models.AvailableTime
 import domain.Models.SpecialistReviews
 import domain.Models.TimeOffs
 import presentation.viewmodels.AsyncUIStates
@@ -15,7 +12,7 @@ interface TherapistContract {
         fun showLce(uiState: UIStates, message: String = "")
         fun showAsyncLce(uiState: AsyncUIStates, message: String = "")
         fun showReviews(reviews: List<SpecialistReviews>)
-        fun showTherapistAvailability(availableTimes: List<ServiceTime>, bookedAppointment: List<Appointment>, timeOffs: List<TimeOffs>)
+        fun showTherapistAvailability(availableTimes: List<AvailableTime>, bookedAppointment: List<Appointment>, timeOffs: List<TimeOffs>)
     }
 
     abstract class Presenter {

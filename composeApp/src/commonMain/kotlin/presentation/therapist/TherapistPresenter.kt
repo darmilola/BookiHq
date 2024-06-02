@@ -58,7 +58,7 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showTherapistAvailability(result.serviceTimes, result.bookedAppointment, result.timeOffs)
+                                    contractView?.showTherapistAvailability(result.availableTimes, result.bookedAppointment, result.timeOffs)
                                     contractView?.showLce(UIStates(contentVisible = true))
                                 }
                                 else{

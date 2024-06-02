@@ -11,7 +11,7 @@ data class SpecialistInfo(@SerialName("id") val id: Int? = null, @SerialName("sp
                           @SerialName("isAvailableForHomeService") val isAvailableForHomeService: Boolean? = false,
                           @SerialName("rateCount") val rateCount: Int? = 0, @SerialName("rateSum") val rateSum: Int? = 0, @SerialName("profile_info") val profileInfo: User? = null,
                           @SerialName("booked_times") val bookedTimes: List<BookedTimes>? = arrayListOf(),
-                          @SerialName("time_offs") val timeOffs: List<TimeOffs>? = arrayListOf(), @SerialName("available_times") val availableTimes: List<ServiceTime>? = arrayListOf(),
+                          @SerialName("time_offs") val timeOffs: List<TimeOffs>? = arrayListOf(), @SerialName("available_times") val availableTimes: List<AvailableTime>? = arrayListOf(),
                           @SerialName("specialist_reviews") val specialistReviews: List<SpecialistReviews>? = arrayListOf(), val isSelected: Boolean = false): Parcelable
 
 
