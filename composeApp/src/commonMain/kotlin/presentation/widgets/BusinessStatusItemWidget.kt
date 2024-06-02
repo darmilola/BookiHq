@@ -1,6 +1,7 @@
 package presentation.widgets
 
 import GGSansRegular
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,11 +15,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,21 +31,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import applications.videoplayer.VideoPlayer
-import com.eygraber.compose.placeholder.PlaceholderHighlight
-import com.eygraber.compose.placeholder.material3.fade
-import com.eygraber.compose.placeholder.material3.placeholder
 import domain.Models.StatusImageModel
 import domain.Models.StatusVideoModel
 import domain.Models.VendorStatusModel
 import domain.Models.VideoStatusViewMeta
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
-import presentations.widgets.InputWidget
 import theme.styles.Colors
 
 class BusinessStatusItemWidget {
+    @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun getImageStatusWidget(imageUrl: String, vendorStatusModel: VendorStatusModel, onStatusViewChanged: (Boolean) -> Unit) {
+    fun getImageStatusWidget(imageUrl: String, vendorStatusModel: VendorStatusModel, onStatusViewChanged: (Boolean) -> Unit,
+                             onWidthGreaterThanHeight: (Boolean) -> Unit, pagerState: PagerState) {
 
         val isStatusExpanded = remember { mutableStateOf(false) }
         val imageRes = if(isStatusExpanded.value) "drawable/collapse_icon.png"  else "drawable/expand_icon.png"
@@ -54,6 +52,16 @@ class BusinessStatusItemWidget {
         }
         else {
              0.85f
+        }
+        if (pagerState.currentPage == pagerState.settledPage) {
+          if (vendorStatusModel.statusImage.width > vendorStatusModel.statusImage.height){
+               onWidthGreaterThanHeight(true)
+            }
+        }
+        else {
+            if (pagerState.currentPage == pagerState.settledPage) {
+                onWidthGreaterThanHeight(false)
+            }
         }
 
         Column(
@@ -109,8 +117,10 @@ class BusinessStatusItemWidget {
     }
 
 
+    @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun getVideoStatusWidget(videoUrl: String, vendorStatusModel: VendorStatusModel,videoStatusViewMeta: VideoStatusViewMeta, onStatusViewChanged: (Boolean) -> Unit) {
+    fun getVideoStatusWidget(videoUrl: String, vendorStatusModel: VendorStatusModel, videoStatusViewMeta: VideoStatusViewMeta, onStatusViewChanged: (Boolean) -> Unit,
+                             onWidthGreaterThanHeight: (Boolean) -> Unit, pagerState: PagerState) {
 
         val isStatusExpanded = remember { mutableStateOf(false) }
         val imageRes = if(isStatusExpanded.value) "drawable/collapse_icon.png"  else "drawable/expand_icon.png"
@@ -119,6 +129,16 @@ class BusinessStatusItemWidget {
         }
         else {
             0.85f
+        }
+        if (vendorStatusModel.statusVideo.width > vendorStatusModel.statusVideo.height){
+          if (pagerState.currentPage == pagerState.settledPage) {
+              onWidthGreaterThanHeight(true)
+          }
+        }
+        else{
+            if (pagerState.currentPage == pagerState.settledPage) {
+                onWidthGreaterThanHeight(false)
+            }
         }
 
 

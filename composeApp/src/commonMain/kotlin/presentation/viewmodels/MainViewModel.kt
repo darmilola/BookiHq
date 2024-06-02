@@ -1,6 +1,5 @@
 package presentation.viewmodels
 
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Models.OrderItem
@@ -11,11 +10,7 @@ import domain.Models.UnsavedAppointment
 import domain.Models.User
 import domain.Models.Vendor
 import kotlinx.coroutines.flow.StateFlow
-import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
-import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
-import com.hoc081098.kmp.viewmodel.wrapper.wrap
 import domain.Models.HomepageInfo
-import domain.Models.Product
 import domain.Models.VendorStatusModel
 
 class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
@@ -23,6 +18,12 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     private var _screenTitle = savedStateHandle.getStateFlow("screenTitle","Home")
     private var _connectedVendor =  savedStateHandle.getStateFlow("connectedVendor", Vendor())
     private var _currentUserInfo =  savedStateHandle.getStateFlow("userInfo", User())
+    private var _currentUserId =  savedStateHandle.getStateFlow("currentUserId", -1)
+    private var _currentVendorId =  savedStateHandle.getStateFlow("currentVendorId", -1)
+    private var _currentUserFirstname =  savedStateHandle.getStateFlow("currentUserFirstname", "")
+    private var _currentUserEmail =  savedStateHandle.getStateFlow("currentUserEmail", "")
+    private var _currentVendorEmail =  savedStateHandle.getStateFlow("currentVendorEmail", "")
+    private var _currentVendorLogoUrl =  savedStateHandle.getStateFlow("currentVendorLogoUrl", "")
     private var _currentSpecialistInfo =  savedStateHandle.getStateFlow("specialistInfo", SpecialistInfo())
     private var _screenNav =  savedStateHandle.getStateFlow("screenNav", Pair(-1,-1))
     private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
@@ -50,11 +51,26 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     val currentOrderReference: StateFlow<Int>
         get() = _currentOrderReference
 
+    val userFirstname: StateFlow<String>
+        get() = _currentUserFirstname
+
     val connectedVendor: StateFlow<Vendor>
         get() = _connectedVendor
 
     val homePageViewHeight: StateFlow<Int>
         get() = _homePageViewHeight
+
+    val userEmail: StateFlow<String>
+        get() = _currentUserEmail
+    val vendorEmail: StateFlow<String>
+        get() = _currentVendorEmail
+    val vendorLogoUrl: StateFlow<String>
+        get() = _currentVendorLogoUrl
+    val userId: StateFlow<Int>
+        get() = _currentUserId
+
+    val vendorId: StateFlow<Int>
+        get() = _currentVendorId
 
     val vendorRecommendation: StateFlow<VendorRecommendation>
         get() = _vendorRecommendation
@@ -87,6 +103,27 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
 
     fun setConnectedVendor(vendor: Vendor) {
         savedStateHandle["connectedVendor"] = vendor
+    }
+
+    fun setUserId(userId: Int) {
+        savedStateHandle["currentUserId"] = userId
+    }
+
+    fun setVendorId(vendorId: Int) {
+        savedStateHandle["currentVendorId"] = vendorId
+    }
+
+    fun setUserFirstname(userFirstname: String) {
+        savedStateHandle["currentUserFirstname"] = userFirstname
+    }
+    fun setUserEmail(userEmail: String) {
+        savedStateHandle["currentUserEmail"] = userEmail
+    }
+    fun setVendorEmail(vendorEmail: String) {
+        savedStateHandle["currentVendorEmail"] = vendorEmail
+    }
+    fun setVendorBusinessLogoUrl(vendorLogoUrl: String) {
+        savedStateHandle["currentVendorLogoUrl"] = vendorLogoUrl
     }
 
     fun setUserInfo(user: User) {

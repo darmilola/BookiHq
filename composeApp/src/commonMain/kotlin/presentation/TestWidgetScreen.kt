@@ -64,7 +64,7 @@ fun TestWidgetCompose(platformNavigator: PlatformNavigator) {
     //}
 
 
-    val modifier =
+    /*val modifier =
         Modifier.fillMaxWidth()
             .fillMaxHeight(heightChange)
             .background(color = Color.White)
@@ -72,7 +72,7 @@ fun TestWidgetCompose(platformNavigator: PlatformNavigator) {
         BusinessWhatsAppStatusWidget(statusList, onStatusViewChanged = {
             isStatusViewExpanded -> isStatusExpanded.value = isStatusViewExpanded
         })
-    }
+    }*/
 }
 
 

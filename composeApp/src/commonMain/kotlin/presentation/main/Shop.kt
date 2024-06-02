@@ -1,9 +1,8 @@
 package presentation.main
 
 import GGSansRegular
-import GGSansSemiBold
 import StackedSnackbarHost
-import StackedSnakbarHostState
+import androidx.compose.foundation.BorderStroke
 import theme.styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -34,50 +32,38 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
-import androidx.compose.material.ScrollableTabRow
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
-import domain.Models.FavoriteProduct
 import domain.Models.OrderItem
 import domain.Models.Product
-import domain.Models.ProductCategory
 import domain.Models.ProductItemUIModel
 import domain.Models.ProductResourceListEnvelope
-import domain.Models.ResourceListEnvelope
 import domain.Models.Screens
-import domain.Models.User
-import domain.Models.Vendor
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.Products.SearchBar
-import presentation.Products.CategoryScreen
-import presentation.Products.CategoryContract
-import presentation.Products.CategoryPresenter
 import presentation.Products.HomeProductItem
 import presentation.Products.ProductContract
 import presentation.Products.ProductDetailBottomSheet
 import presentation.Products.ProductPresenter
+import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ProductResourceListEnvelopeViewModel
 import presentation.viewmodels.ProductViewModel
-import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentation.viewmodels.UIStates
-import presentation.widgets.ShowSnackBar
-import presentation.widgets.SnackBarType
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
@@ -88,13 +74,8 @@ class ShopTab(private val mainViewModel: MainViewModel,
               private val productViewModel: ProductViewModel,
               private val productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel) : Tab, KoinComponent {
 
-    private val categoryPresenter: CategoryPresenter by inject()
     private val productPresenter: ProductPresenter by inject()
-    private var categoryUIStateViewModel: UIStateViewModel? = null
     private var productUIStateViewModel: UIStateViewModel? = null
-    private var currentUser: User? = null
-    private var currentVendor: Vendor?  = null
-    private var productCategories: ArrayList<ProductCategory>? = null
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -115,8 +96,10 @@ class ShopTab(private val mainViewModel: MainViewModel,
 
     @Composable
     override fun Content() {
-        currentUser = mainViewModel.currentUserInfo.value
-        currentVendor = mainViewModel.connectedVendor.value
+        val userId = mainViewModel.userId.collectAsState()
+        val vendorId = mainViewModel.vendorId.collectAsState()
+        val onCartChanged = remember { mutableStateOf(false) }
+        val searchQuery = remember { mutableStateOf("") }
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -131,394 +114,277 @@ class ShopTab(private val mainViewModel: MainViewModel,
             )
         }
 
-        if (categoryUIStateViewModel == null) {
-            categoryUIStateViewModel = kmpViewModel(
-                factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
-                },
-            )
-            val categoryHandler = ShopCategoryHandler(categoryUIStateViewModel!!,
-                onPageLoading = {
-                    productViewModel.setCategoryUIState(AsyncUIStates(isLoading = true))
 
-                },
-                onProductCategoryAvailable = { productCategories, favoriteProducts ->
-                    productViewModel.setProductCategories(productCategories)
-                    productViewModel.setFavoriteProducts(favoriteProducts)
-                    productViewModel!!.setCategoryUIState(
-                        AsyncUIStates(
-                            isSuccess = true,
-                            isDone = true
-                        )
-                    )
-                },
-                onErrorVisible = {
-                    productViewModel!!.setCategoryUIState(
-                        AsyncUIStates(
-                            isSuccess = false,
-                            isDone = true
-                        )
-                    )
-                }, categoryPresenter
-            )
-            categoryHandler.init()
-
-            val productHandler = ShopProductsHandler(
-                productUIStateViewModel!!, productPresenter,
-                onPageLoading = {
-                    productViewModel!!.setProductUIState(AsyncUIStates(isLoading = true))
-                },
-                onProductAvailable = { products: ProductResourceListEnvelope?, isFromSearch: Boolean ->
-                    productViewModel!!.setProductUIState(
-                        AsyncUIStates(
-                            isDone = true,
-                            isSuccess = true
-                        )
-                    )
-                    if (isFromSearch) {
-                        productResourceListEnvelopeViewModel!!.setResources(products?.resources)
-                        products?.prevPageUrl?.let {
-                            productResourceListEnvelopeViewModel!!.setPrevPageUrl(
-                                it
-                            )
-                        }
-                        products?.nextPageUrl?.let {
-                            productResourceListEnvelopeViewModel!!.setNextPageUrl(
-                                it
-                            )
-                        }
-                        products?.currentPage?.let {
-                            productResourceListEnvelopeViewModel!!.setCurrentPage(
-                                it
-                            )
-                        }
-                        products?.totalItemCount?.let {
-                            productResourceListEnvelopeViewModel!!.setTotalItemCount(
-                                it
-                            )
-                        }
-                        products?.displayedItemCount?.let {
-                            productResourceListEnvelopeViewModel!!.setDisplayedItemCount(
-                                it
-                            )
-                        }
-                    } else if (productResourceListEnvelopeViewModel!!.resources.value.isNotEmpty()) {
-                        val productList = productResourceListEnvelopeViewModel!!.resources.value
-                        productList.addAll(products?.resources!!)
-                        productResourceListEnvelopeViewModel!!.setResources(productList)
-                        products.prevPageUrl?.let {
-                            productResourceListEnvelopeViewModel!!.setPrevPageUrl(
-                                it
-                            )
-                        }
-                        products.nextPageUrl?.let {
-                            productResourceListEnvelopeViewModel!!.setNextPageUrl(
-                                it
-                            )
-                        }
-                        products.currentPage?.let {
-                            productResourceListEnvelopeViewModel!!.setCurrentPage(
-                                it
-                            )
-                        }
-                        products.totalItemCount?.let {
-                            productResourceListEnvelopeViewModel!!.setTotalItemCount(
-                                it
-                            )
-                        }
-                        products.displayedItemCount?.let {
-                            productResourceListEnvelopeViewModel!!.setDisplayedItemCount(
-                                it
-                            )
-                        }
-                    } else {
-                        productResourceListEnvelopeViewModel!!.setResources(products?.resources)
-                        products?.prevPageUrl?.let {
-                            productResourceListEnvelopeViewModel!!.setPrevPageUrl(
-                                it
-                            )
-                        }
-                        products?.nextPageUrl?.let {
-                            productResourceListEnvelopeViewModel!!.setNextPageUrl(
-                                it
-                            )
-                        }
-                        products?.currentPage?.let {
-                            productResourceListEnvelopeViewModel!!.setCurrentPage(
-                                it
-                            )
-                        }
-                        products?.totalItemCount?.let {
-                            productResourceListEnvelopeViewModel!!.setTotalItemCount(
-                                it
-                            )
-                        }
-                        products?.displayedItemCount?.let {
-                            productResourceListEnvelopeViewModel!!.setDisplayedItemCount(
-                                it
-                            )
-                        }
-                    }
-                }, onErrorVisible = {
-                    productViewModel!!.setProductUIState(
-                        AsyncUIStates(
-                            isSuccess = false,
-                            isDone = true
-                        )
-                    )
-                }, onLoadMoreProduct = { isLoadMore ->
-                    productResourceListEnvelopeViewModel!!.setLoadingMore(isLoadMore)
-                })
-            productHandler.init()
-            if (productViewModel.productCategories.value.isNotEmpty()){
-                productViewModel!!.setCategoryUIState(
-                    AsyncUIStates(
-                        isSuccess = true,
-                        isDone = true
-                    )
+        if (productResourceListEnvelopeViewModel.resources.value.isNotEmpty()){
+            productViewModel.setProductUIState(
+                AsyncUIStates(
+                    isDone = true,
+                    isSuccess = true
                 )
-            }else {
-                categoryPresenter.getProductCategory(currentVendor!!.vendorId!!, currentUser!!.userId!!)
-            }
-
-            if (productViewModel.productCategories.value.isNotEmpty()){
-                productViewModel!!.setCategoryUIState(
-                    AsyncUIStates(
-                        isSuccess = true,
-                        isDone = true
-                    )
-                )
-            }else {
-                categoryPresenter.getProductCategory(currentVendor!!.vendorId!!, currentUser!!.userId!!)
-            }
+            )
+        }else {
+            if (userId.value != -1 && vendorId.value != -1) {}
         }
 
-
-
-        val categoryUIState = productViewModel!!.categoryUiState.collectAsState()
-        val isUserSearching = remember { mutableStateOf(false) }
-        val searchQuery = remember { mutableStateOf("") }
-        val orderCount = mainViewModel.unSavedOrders.collectAsState()
-        val onCartChanged = remember { mutableStateOf(false) }
-        println("Count ${orderCount.value.size}")
-
-
-        if (categoryUIState.value.isLoading) {
-
-            // Product Category is Loading
-
-            Box(
-                modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                    .padding(top = 40.dp, start = 50.dp, end = 50.dp)
-                    .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                IndeterminateCircularProgressBar()
-            }
-        } else if (categoryUIState.value.isDone && !categoryUIState.value.isSuccess) {
-
-            // Error Occurred display reload
-
-        } else if (categoryUIState.value.isDone && categoryUIState.value.isSuccess) {
-
-            productCategories = productViewModel!!.productCategories.value
-
-                 Scaffold(
-                    snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
-                    topBar = {
-                        SearchBar(onValueChange = {
-                            productResourceListEnvelopeViewModel!!.clearData(mutableListOf<Product>())
-                            isUserSearching.value = true
-                            if (it.isNotEmpty()) {
-                                searchQuery.value = it
-                                if (!productResourceListEnvelopeViewModel!!.isSearching.value) {
-                                    productPresenter.searchProducts(
-                                        mainViewModel.connectedVendor.value.vendorId!!,
-                                        it
-                                    )
-                                }
-                            }
-                        }, onBackPressed = {
-                            productResourceListEnvelopeViewModel!!.clearData(mutableListOf<Product>())
-                            isUserSearching.value = false
-                        })
-                    },
-                    content = {
-                        if (!isUserSearching.value) {
-                            productResourceListEnvelopeViewModel!!.clearData(mutableListOf<Product>())
-                            ProductContent(
-                                productCategories!!,
-                                productResourceListEnvelopeViewModel!!, productViewModel!!,
-                                productPresenter, mainViewModel, onCartChanged = {
-                                   onCartChanged.value = true
-                                }
-                            )
-                        } else {
-                            productResourceListEnvelopeViewModel!!.clearData(mutableListOf<Product>())
-                            SearchContent(productResourceListEnvelopeViewModel!!, productViewModel!!, mainViewModel, onCartChanged = {
-                                onCartChanged.value = true
-                            })
-                        }
-                    },
-                    backgroundColor = Color.White,
-                    floatingActionButton = {
-                        var cartSize = mainViewModel.unSavedOrders.value.size
-                        if (onCartChanged.value){
-                            cartSize = mainViewModel.unSavedOrders.value.size
-                        }
-                        val cartContainer = if (cartSize > 0) 140 else 0
-                        Box(modifier = Modifier.size(cartContainer.dp)
-                            .padding(bottom = 40.dp), contentAlignment = Alignment.CenterEnd) {
-                            AttachShoppingCartImage("drawable/shopping_cart.png", mainViewModel)
-                        }
-                    }
-                )
-            }
-    }
-
-        @Composable
-        fun AttachShoppingCartImage(iconRes: String, mainViewModel: MainViewModel) {
-            val currentOrders = mainViewModel.unSavedOrders.collectAsState()
-
-            val indicatorModifier = Modifier
-                .padding(end = 15.dp, bottom = 20.dp)
-                .background(color = Color.Transparent)
-                .size(30.dp)
-                .clip(CircleShape)
-                .background(color = Color(color = 0xFFFF5080))
-
-                Box(
-                    Modifier
-                        .clip(CircleShape)
-                        .size(70.dp)
-                        .clickable {
-                            mainViewModel.setScreenNav(
-                                Pair(Screens.MAIN_TAB.toPath(), Screens.CART.toPath())
-                            )
-                        }
-                        .background(color = Colors.primaryColor),
-                    contentAlignment = Alignment.Center
-                ) {
-                    val modifier = Modifier
-                        .size(40.dp)
-                    ImageComponent(
-                        imageModifier = modifier,
-                        imageRes = iconRes,
-                        colorFilter = ColorFilter.tint(color = Color.White)
+        val productHandler = ShopProductsHandler(
+            productUIStateViewModel!!, productPresenter,
+            onPageLoading = {
+                productViewModel!!.setProductUIState(AsyncUIStates(isLoading = true))
+            },
+            onProductAvailable = { products: ProductResourceListEnvelope?, isFromSearch: Boolean ->
+                productViewModel!!.setProductUIState(
+                    AsyncUIStates(
+                        isDone = true,
+                        isSuccess = true
                     )
-                    Box(
-                        modifier = indicatorModifier,
-                        contentAlignment = Alignment.Center
-                    ) {
-                        TextComponent(
-                            text = currentOrders.value.size.toString(),
-                            fontSize = 17,
-                            fontFamily = GGSansRegular,
-                            textStyle = MaterialTheme.typography.h6,
-                            textColor = Color.White,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.ExtraBold
+                )
+                if (isFromSearch && productResourceListEnvelopeViewModel!!.resources.value.isEmpty()) {
+                    // New Search Created
+                    productResourceListEnvelopeViewModel!!.setResources(products?.resources)
+                    products?.prevPageUrl?.let {
+                        productResourceListEnvelopeViewModel!!.setPrevPageUrl(
+                            it
                         )
                     }
-            }
-        }
-
-
-        @Composable
-        fun ProductContent(productCategories: ArrayList<ProductCategory>,productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel,
-                           productViewModel: ProductViewModel, productPresenter: ProductPresenter, mainViewModel: MainViewModel, onCartChanged: () -> Unit) {
-            val columnModifier = Modifier
-                .padding(top = 5.dp)
-                .fillMaxHeight()
-                .fillMaxWidth()
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = columnModifier
-            ) {
-                Row(
-                    Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth()
-                        .background(color = Color.White),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    TabScreen(productCategories,productResourceListEnvelopeViewModel,
-                        productViewModel,productPresenter,mainViewModel,onCartChanged)
+                    products?.nextPageUrl?.let {
+                        productResourceListEnvelopeViewModel!!.setNextPageUrl(
+                            it
+                        )
+                    }
+                    products?.currentPage?.let {
+                        productResourceListEnvelopeViewModel!!.setCurrentPage(
+                            it
+                        )
+                    }
+                    products?.totalItemCount?.let {
+                        productResourceListEnvelopeViewModel!!.setTotalItemCount(
+                            it
+                        )
+                    }
+                    products?.displayedItemCount?.let {
+                        productResourceListEnvelopeViewModel!!.setDisplayedItemCount(
+                            it
+                        )
+                    }
                 }
+                // Add more from search
+                else if (productResourceListEnvelopeViewModel!!.resources.value.isNotEmpty()) {
+                    val productList = productResourceListEnvelopeViewModel!!.resources.value
+                    productList.addAll(products?.resources!!)
+                    productResourceListEnvelopeViewModel!!.setResources(productList)
+                    products.prevPageUrl?.let {
+                        productResourceListEnvelopeViewModel!!.setPrevPageUrl(
+                            it
+                        )
+                    }
+                    products.nextPageUrl?.let {
+                        productResourceListEnvelopeViewModel!!.setNextPageUrl(
+                            it
+                        )
+                    }
+                    products.currentPage?.let {
+                        productResourceListEnvelopeViewModel!!.setCurrentPage(
+                            it
+                        )
+                    }
+                    products.totalItemCount?.let {
+                        productResourceListEnvelopeViewModel!!.setTotalItemCount(
+                            it
+                        )
+                    }
+                    products.displayedItemCount?.let {
+                        productResourceListEnvelopeViewModel!!.setDisplayedItemCount(
+                            it
+                        )
+                    }
+                }
+            }, onErrorVisible = {
+                productViewModel!!.setProductUIState(
+                    AsyncUIStates(
+                        isSuccess = false,
+                        isDone = true
+                    )
+                )
+            }, onSearchMoreProductStarted = { isLoadMore ->
+                productResourceListEnvelopeViewModel.setLoadingMore(true)
+            }, onSearchMoreProductEnded = {
+                productResourceListEnvelopeViewModel.setLoadingMore(false)
+            })
+        productHandler.init()
 
+        Scaffold(
+            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
+            topBar = {
+                SearchBar(onValueChange = {
+                    if (it.isNotEmpty()) {
+                        if (!productResourceListEnvelopeViewModel!!.isSearching.value) {
+                            if (it.isNotEmpty()) {
+                                productResourceListEnvelopeViewModel.clearData(mutableListOf())
+                                searchQuery.value = it
+                                productPresenter.searchProducts(
+                                    mainViewModel.vendorId.value,
+                                    it
+                                )
+                            }
+                        }
+                    }
+                }, onBackPressed = {})
+            },
+            content = {
+                SearchProductContent(
+                    productResourceListEnvelopeViewModel = productResourceListEnvelopeViewModel,
+                    productViewModel = productViewModel,
+                    searchQuery = searchQuery.value,
+                    vendorId = vendorId.value,
+                    mainViewModel = mainViewModel,
+                    onCartChanged = {
+                        onCartChanged.value = true
+                    })
+            },
+            backgroundColor = Color.White,
+            floatingActionButton = {
+                var cartSize = mainViewModel.unSavedOrders.value.size
+                if (onCartChanged.value) {
+                    cartSize = mainViewModel.unSavedOrders.value.size
+                }
+                val cartContainer = if (cartSize > 0) 140 else 0
+                Box(
+                    modifier = Modifier.size(cartContainer.dp)
+                        .padding(bottom = 40.dp), contentAlignment = Alignment.CenterEnd
+                ) {
+                    AttachShoppingCartImage("drawable/shopping_cart.png", mainViewModel)
+                }
             }
-        }
-    }
-
-
-@Composable
-fun SearchContent(productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel,
-                  productViewModel: ProductViewModel, mainViewModel: MainViewModel, onCartChanged: () -> Unit) {
-    val loadMoreState = productResourceListEnvelopeViewModel.isLoadingMore.collectAsState()
-    val productList = productResourceListEnvelopeViewModel.resources.collectAsState()
-    val selectedProduct = remember { mutableStateOf(Product()) }
-    val productUIState = productViewModel.productUiState.collectAsState()
-    var productUIModel by remember {
-        mutableStateOf(
-            ProductItemUIModel(
-                selectedProduct.value,
-                productList.value
-            )
         )
     }
 
-    if (!loadMoreState.value) {
-        productUIModel = productUIModel.copy(selectedProduct = selectedProduct.value,
-            productList = productResourceListEnvelopeViewModel.resources.value.map { it2 ->
-                it2.copy(
-                    isSelected = it2.productId == selectedProduct.value.vendorId
-                )
-            })
-    }
+    @Composable
+    fun AttachShoppingCartImage(iconRes: String, mainViewModel: MainViewModel) {
+        val currentOrders = mainViewModel.unSavedOrders.collectAsState()
 
-    Box(
-        modifier = Modifier.fillMaxWidth().fillMaxHeight(),
-        contentAlignment = Alignment.Center
-    ) {
-        if (productUIState.value.isLoading) {
-            productResourceListEnvelopeViewModel.setIsSearching(true)
+        val indicatorModifier = Modifier
+            .padding(end = 15.dp, bottom = 20.dp)
+            .background(color = Color.Transparent)
+            .size(30.dp)
+            .clip(CircleShape)
+            .background(color = Color(color = 0xFFFF5080))
+
+        Box(
+            Modifier
+                .clip(CircleShape)
+                .size(70.dp)
+                .clickable {
+                    mainViewModel.setScreenNav(
+                        Pair(Screens.MAIN_TAB.toPath(), Screens.CART.toPath())
+                    )
+                }
+                .background(color = Colors.primaryColor),
+            contentAlignment = Alignment.Center
+        ) {
+            val modifier = Modifier
+                .size(40.dp)
+            ImageComponent(
+                imageModifier = modifier,
+                imageRes = iconRes,
+                colorFilter = ColorFilter.tint(color = Color.White)
+            )
             Box(
-                modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                    .padding(top = 40.dp, start = 50.dp, end = 50.dp)
-                    .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
+                modifier = indicatorModifier,
                 contentAlignment = Alignment.Center
             ) {
-                IndeterminateCircularProgressBar()
+                TextComponent(
+                    text = currentOrders.value.size.toString(),
+                    fontSize = 17,
+                    fontFamily = GGSansRegular,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Color.White,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.ExtraBold
+                )
             }
-        } else if (productUIState.value.isDone && !productUIState.value.isSuccess) {
-            productResourceListEnvelopeViewModel.setIsSearching(false)
-            // Error Occurred display reload
-        } else if (productUIState.value.isDone && productUIState.value.isSuccess) {
-            productResourceListEnvelopeViewModel.setIsSearching(false)
-            val columnModifier = Modifier
-                .padding(top = 5.dp)
+        }
+    }
+
+
+    @Composable
+    fun SearchProductContent(
+        productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel,
+        searchQuery: String, vendorId: Int,
+        productViewModel: ProductViewModel, mainViewModel: MainViewModel, onCartChanged: () -> Unit
+    ) {
+        val loadMoreState = productResourceListEnvelopeViewModel.isLoadingMore.collectAsState()
+        val productList = productResourceListEnvelopeViewModel.resources.collectAsState()
+        val selectedProduct = remember { mutableStateOf(Product()) }
+        val productUIState = productViewModel.productUiState.collectAsState()
+        val totalProductsCount = productResourceListEnvelopeViewModel.totalItemCount.collectAsState()
+        val displayedProductsCount = productResourceListEnvelopeViewModel.displayedItemCount.collectAsState()
+        val lastIndex = productList.value.size.minus(1)
+        var productUIModel by remember {
+            mutableStateOf(
+                ProductItemUIModel(
+                    selectedProduct.value,
+                    productList.value
+                )
+            )
+        }
+
+        if (!loadMoreState.value) {
+            productUIModel = productUIModel.copy(selectedProduct = selectedProduct.value,
+                productList = productResourceListEnvelopeViewModel.resources.value.map { it2 ->
+                    it2.copy(
+                        isSelected = it2.productId == selectedProduct.value.vendorId
+                    )
+                })
+        }
+
+        Box(
+            modifier = Modifier.fillMaxWidth()
                 .fillMaxHeight()
-                .fillMaxWidth()
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = columnModifier
-            ) {
-                Row(
-                    Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth()
-                        .background(color = Color.White),
-                    horizontalArrangement = Arrangement.Center
+                .padding(bottom = 60.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            if (productUIState.value.isLoading) {
+                productResourceListEnvelopeViewModel.setIsSearching(true)
+                Box(
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                        .padding(top = 40.dp, start = 50.dp, end = 50.dp)
+                        .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
+                    contentAlignment = Alignment.Center
                 ) {
+                    IndeterminateCircularProgressBar()
+                }
+            } else if (productUIState.value.isDone && !productUIState.value.isSuccess) {
+                productResourceListEnvelopeViewModel.setIsSearching(false)
+                // Error Occurred display reload
+            } else if (productUIState.value.isDone && productUIState.value.isSuccess) {
+                productResourceListEnvelopeViewModel.setIsSearching(false)
+                val columnModifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth()
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = columnModifier
+                ) {
+                    Row(
+                        Modifier
+                            .fillMaxHeight()
+                            .fillMaxWidth()
+                            .background(color = Color.White),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
                         var showProductDetailBottomSheet by remember { mutableStateOf(false) }
                         if (showProductDetailBottomSheet) {
-                            ProductDetailBottomSheet(mainViewModel,isViewedFromCart = false, OrderItem(itemProduct = selectedProduct.value),onDismiss = {
-                            isAddToCart,item -> onCartChanged()
-                                showProductDetailBottomSheet = false
+                            ProductDetailBottomSheet(
+                                mainViewModel,
+                                isViewedFromCart = false,
+                                OrderItem(itemProduct = selectedProduct.value),
+                                onDismiss = { isAddToCart, item ->
+                                    onCartChanged()
+                                    showProductDetailBottomSheet = false
 
-                            },onRemoveFromCart = {})
+                                },
+                                onRemoveFromCart = {})
                         }
                         LazyColumn(
                             modifier = Modifier.fillMaxWidth().height(
@@ -535,170 +401,85 @@ fun SearchContent(productResourceListEnvelopeViewModel: ProductResourceListEnvel
                                         selectedProduct.value = it2
                                         showProductDetailBottomSheet = true
                                     })
-                              }
-                        }
-                }
 
-            }
-        }
-    }
-}
+                                if (it == lastIndex && loadMoreState.value) {
+                                    Box(
+                                        modifier = Modifier.fillMaxWidth().height(60.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        IndeterminateCircularProgressBar()
+                                    }
+                                }
+                                else if (it == lastIndex && (displayedProductsCount.value < totalProductsCount.value)) {
+                                    val buttonStyle = Modifier
+                                        .height(60.dp)
+                                        .fillMaxWidth()
+                                        .padding(top = 10.dp, start = 10.dp, end = 10.dp)
 
-        @Composable
-        fun TabScreen(productCategories: ArrayList<ProductCategory>,
-                      productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel,
-                      productViewModel: ProductViewModel, productPresenter: ProductPresenter, mainViewModel: MainViewModel, onCartChanged: () -> Unit) {
-
-            var tabIndex by remember { mutableStateOf(0) }
-            val productUIState = productViewModel.productUiState.collectAsState()
-
-        LaunchedEffect(Unit, block = {
-            if(productCategories.isNotEmpty()){
-                productResourceListEnvelopeViewModel.clearData(mutableListOf())
-                productPresenter.getProducts(mainViewModel.connectedVendor.value.vendorId!!, productCategories[tabIndex].categoryId!!)
-               }
-            })
-
-            Column(modifier = Modifier.fillMaxSize().padding(top = 10.dp)) {
-                ScrollableTabRow(selectedTabIndex = tabIndex,
-                    modifier = Modifier.height(40.dp),
-                    backgroundColor = Color.Transparent,
-                    indicator = { tabPositions ->
-                        Box(
-                            modifier = Modifier
-                                .tabIndicatorOffset(tabPositions[tabIndex])
-                                .height(3.dp)
-                                .padding(start = 30.dp, end = 30.dp)
-                                .clip(RoundedCornerShape(4.dp))
-                                .background(color = Colors.primaryColor)
-                        )
-
-                    },
-                    divider = {}) {
-                    productCategories.forEachIndexed { index, title ->
-                        Tab(text =
-                        {
-                            TextComponent(
-                                text = productCategories[index].categoryTitle.toString(),
-                                fontSize = 16,
-                                fontFamily = GGSansSemiBold,
-                                textStyle = MaterialTheme.typography.h6,
-                                textColor = Colors.darkPrimary,
-                                textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.Bold,
-                                lineHeight = 30
-                            )
-                        },
-                            selected = tabIndex == index,
-                            onClick = {
-                                tabIndex = index
-                                productResourceListEnvelopeViewModel.clearData(mutableListOf<Product>())
-                                productPresenter.getProducts(mainViewModel.connectedVendor.value.vendorId!!, productCategories[tabIndex].categoryId!!)
+                                    ButtonComponent(
+                                        modifier = buttonStyle,
+                                        buttonText = "Show More",
+                                        borderStroke = BorderStroke(1.dp, theme.Colors.primaryColor),
+                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                                        fontSize = 16,
+                                        shape = CircleShape,
+                                        textColor = theme.Colors.primaryColor,
+                                        style = TextStyle()
+                                    ) {
+                                        if (productResourceListEnvelopeViewModel.nextPageUrl.value.isNotEmpty()) {
+                                            productPresenter.searchMoreProducts(vendorId = vendorId, searchQuery = searchQuery,
+                                                nextPage = productResourceListEnvelopeViewModel.currentPage.value + 1)
+                                        }
+                                    }
+                                }
                             }
-
-                        )
-                    }
-                }
-                Box(
-                    modifier = Modifier.fillMaxWidth().fillMaxHeight(),
-                    contentAlignment = Alignment.TopStart
-                ) {
-                    if (productUIState.value.isLoading) {
-                        //Content Loading
-                        Box(
-                            modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                                .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            IndeterminateCircularProgressBar()
                         }
-                    } else if (productUIState.value.isDone && !productUIState.value.isSuccess) {
-                        // Error Occurred display reload
+                    }
 
+                }
+            }
+        }
+    }
 
-                    } else if (productUIState.value.isDone && productUIState.value.isSuccess) {
+    class ShopProductsHandler(
+        private val uiStateViewModel: UIStateViewModel,
+        private val productPresenter: ProductPresenter,
+        private val onPageLoading: () -> Unit,
+        private val onProductAvailable: (products: ProductResourceListEnvelope?, isFromSearch: Boolean) -> Unit,
+        private val onSearchMoreProductStarted: (isLoadMore: Boolean) -> Unit,
+        private val onSearchMoreProductEnded: (isLoadMore: Boolean) -> Unit,
+        private val onErrorVisible: () -> Unit
+    ) : ProductContract.View {
+        fun init() {
+            productPresenter.registerUIContract(this)
+        }
 
-                        CategoryScreen(
-                            productCategories[tabIndex],
-                            productResourceListEnvelopeViewModel, productPresenter, mainViewModel = mainViewModel, onCartChanged
-                        )
+        override fun showLce(uiState: UIStates, message: String) {
+            uiStateViewModel.switchState(uiState)
+            uiState.let {
+                when {
+                    it.loadingVisible -> {
+                        onPageLoading()
+                    }
+
+                    it.errorOccurred -> {
+                        onErrorVisible()
                     }
                 }
             }
         }
 
-
-
-class ShopCategoryHandler(
-    private val uiStateViewModel: UIStateViewModel,
-    private val onPageLoading: () -> Unit,
-    private val onProductCategoryAvailable: (productCategories: List<ProductCategory>, favoriteProducts: List<FavoriteProduct>) -> Unit,
-    private val onErrorVisible: () -> Unit,
-    private val categoryPresenter: CategoryPresenter
-) : CategoryContract.View {
-    fun init() {
-        categoryPresenter.registerUIContract(this)
-    }
-
-    override fun showLce(uiState: UIStates, message: String) {
-        uiStateViewModel.switchState(uiState)
-        uiState.let {
-            when {
-                it.loadingVisible -> {
-                    onPageLoading()
-                }
-                it.errorOccurred -> {
-                    onErrorVisible()
-                }
-            }
+        override fun showProducts(products: ProductResourceListEnvelope?, isFromSearch: Boolean) {
+            onProductAvailable(products, isFromSearch)
         }
-    }
-    override fun showProductCategories(
-        productCategories: List<ProductCategory>,
-        favoriteProducts: List<FavoriteProduct>
-    ) {
-        onProductCategoryAvailable(productCategories, favoriteProducts)
-    }
-}
 
-
-
-class ShopProductsHandler(
-    private val uiStateViewModel: UIStateViewModel,
-    private val productPresenter: ProductPresenter,
-    private val onPageLoading: () -> Unit,
-    private val onProductAvailable: (products: ProductResourceListEnvelope?, isFromSearch: Boolean) -> Unit,
-    private val onLoadMoreProduct: (isLoadMore: Boolean) -> Unit,
-    private val onErrorVisible: () -> Unit
-) : ProductContract.View {
-    fun init() {
-        productPresenter.registerUIContract(this)
-    }
-
-    override fun showLce(uiState: UIStates, message: String) {
-        uiStateViewModel.switchState(uiState)
-        uiState.let {
-            when {
-                it.loadingVisible -> {
-                    onPageLoading()
-                }
-                it.errorOccurred -> {
-                    onErrorVisible()
-                }
-            }
+        override fun onLoadMoreProductStarted(isSuccess: Boolean) {
+            onSearchMoreProductStarted(true)
         }
-    }
 
-    override fun showProducts(products: ProductResourceListEnvelope?, isFromSearch: Boolean) {
-        onProductAvailable(products, isFromSearch)
-    }
+        override fun onLoadMoreProductEnded(isSuccess: Boolean) {
+            onSearchMoreProductEnded(false)
+        }
 
-    override fun onLoadMoreProductStarted(isSuccess: Boolean) {
-        onLoadMoreProduct(isSuccess)
     }
-
-    override fun onLoadMoreProductEnded(isSuccess: Boolean) {
-        onLoadMoreProduct(isSuccess)
-    }
-
 }

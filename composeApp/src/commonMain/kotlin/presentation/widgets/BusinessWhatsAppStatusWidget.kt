@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
@@ -32,7 +33,8 @@ import theme.styles.Colors
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun BusinessWhatsAppStatusWidget(whatsAppStatusList: List<VendorStatusModel>, onStatusViewChanged: (Boolean) -> Unit) {
+fun BusinessWhatsAppStatusWidget(whatsAppStatusList: List<VendorStatusModel>, onStatusViewChanged: (Boolean) -> Unit,
+                                 onWidthGreaterThanHeight: (Boolean) -> Unit) {
     val pagerState = rememberPagerState(pageCount = {
         whatsAppStatusList.size
     })
@@ -79,11 +81,15 @@ fun BusinessWhatsAppStatusWidget(whatsAppStatusList: List<VendorStatusModel>, on
                         statusModel = currentStatus,
                         currentPage = currentPage,
                         settledPage = pagerState.settledPage,
-                        onStatusViewChanged = onStatusViewChanged
+                        onStatusViewChanged = onStatusViewChanged,
+                        onWidthGreaterThanHeight = onWidthGreaterThanHeight,
+                        pagerState = pagerState
                     )
                 }
             if (pagerState.isScrollInProgress){
-                onStatusViewChanged(false)
+                if (pagerState.currentPage == pagerState.settledPage) {
+                    onStatusViewChanged(false)
+                }
             }
         }
 
@@ -93,15 +99,16 @@ fun BusinessWhatsAppStatusWidget(whatsAppStatusList: List<VendorStatusModel>, on
 
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun LoadStatusView(statusModel: VendorStatusModel, currentPage: Int, settledPage: Int, onStatusViewChanged: (Boolean) -> Unit) {
+private fun LoadStatusView(statusModel: VendorStatusModel, currentPage: Int, settledPage: Int, onStatusViewChanged: (Boolean) -> Unit, onWidthGreaterThanHeight: (Boolean) -> Unit, pagerState: PagerState) {
     if(statusModel.statusImage != null ){
-        BusinessStatusItemWidget().getImageStatusWidget (statusModel.statusImage.imageUrl, vendorStatusModel = statusModel, onStatusViewChanged)
+        BusinessStatusItemWidget().getImageStatusWidget (statusModel.statusImage.imageUrl, vendorStatusModel = statusModel, onStatusViewChanged, onWidthGreaterThanHeight, pagerState)
     }
     else if (statusModel.statusVideo != null){
         val videoStatusViewMeta = VideoStatusViewMeta(currentPage = currentPage, settledPage = settledPage)
         BusinessStatusItemWidget().getVideoStatusWidget (statusModel.statusVideo.videoUrl, vendorStatusModel = statusModel,
-            videoStatusViewMeta = videoStatusViewMeta, onStatusViewChanged)
+            videoStatusViewMeta = videoStatusViewMeta, onStatusViewChanged, onWidthGreaterThanHeight, pagerState)
     }
 }
 

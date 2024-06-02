@@ -10,9 +10,8 @@ fun SearchBar(placeholderText: String = "Search Products", onValueChange: (Strin
     val searchIcon = remember { mutableStateOf("drawable/search_icon.png") }
    SearchBarWidget(iconRes = searchIcon.value, placeholderText = placeholderText, iconSize = 26, onBackPressed = {
        searchIcon.value = "drawable/search_icon.png"
-       onBackPressed()
    }){
-        searchIcon.value = "drawable/back_arrow.png"
+        searchIcon.value = "drawable/search_icon.png"
         onValueChange(it)
    }
 

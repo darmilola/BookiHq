@@ -101,6 +101,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
     private var uiStateViewModel: UIStateViewModel? = null
     private val homepagePresenter: HomepagePresenter by inject()
     private var userEmail: String = ""
+    private val preferenceSettings: Settings = Settings()
 
   @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -122,7 +123,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
 
     @Composable
     override fun Content() {
-        userEmail = "devprocess0@gmail.com"//preferenceSettings["userEmail", ""]
+        userEmail = preferenceSettings["userEmail", "devprocess0@gmail.com"]
         val screenSizeInfo = ScreenSizeInfo()
 
         if (uiStateViewModel == null) {
@@ -134,12 +135,12 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
 
             val handler = HomePageHandler(uiStateViewModel!!, homepagePresenter,
                 onPageLoading = {
-                    homePageViewModel!!.setHomePageUIState(AsyncUIStates(isLoading = true))
+                    homePageViewModel.setHomePageUIState(AsyncUIStates(isLoading = true))
                 }, onHomeInfoAvailable = {
                         homePageInfo, vendorStatus ->
                     val viewHeight = calculateHomePageScreenHeight(homepageInfo = homePageInfo, screenSizeInfo = screenSizeInfo, isStatusExpanded = false)
                     homePageViewModel.setHomePageViewHeight(viewHeight)
-                    homePageViewModel!!.setHomePageUIState(
+                    homePageViewModel.setHomePageUIState(
                         AsyncUIStates(
                             isSuccess = true,
                             isDone = true
@@ -148,9 +149,16 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                     homePageViewModel.setHomePageInfo(homePageInfo)
                     homePageViewModel.setVendorStatus(vendorStatus)
                     mainViewModel.setConnectedVendor(homePageInfo.vendorInfo!!)
-                    mainViewModel.setUserInfo(homePageInfo.userInfo!!)
+                    mainViewModel.setUserEmail(homePageInfo.userInfo?.userEmail!!)
+                    mainViewModel.setUserFirstname(homePageInfo.userInfo.firstname!!)
+                    mainViewModel.setUserId(homePageInfo.userInfo.userId!!)
+                    mainViewModel.setVendorEmail(homePageInfo.vendorInfo.businessEmail)
+                    mainViewModel.setVendorId(homePageInfo.vendorInfo.vendorId!!)
+                    mainViewModel.setVendorBusinessLogoUrl(homePageInfo.vendorInfo.businessLogo)
+                    mainViewModel.setUserInfo(homePageInfo.userInfo)
+                    saveAccountInfoFromServer(homePageInfo)
                 }, onErrorVisible = {
-                    homePageViewModel!!.setHomePageUIState(
+                    homePageViewModel.setHomePageUIState(
                         AsyncUIStates(
                             isSuccess = false,
                             isDone = true
@@ -251,6 +259,16 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                                 }
                      })
            }
+    }
+
+    private fun saveAccountInfoFromServer(homePageInfo: HomepageInfo){
+        val preferenceSettings = Settings()
+        preferenceSettings["userEmail"] = homePageInfo.userInfo?.userEmail
+        preferenceSettings["userId"] = homePageInfo.userInfo?.userId
+        preferenceSettings["userFirstname"] = homePageInfo.userInfo?.firstname
+        preferenceSettings["vendorEmail"] = homePageInfo.vendorInfo?.businessEmail
+        preferenceSettings["vendorId"] = homePageInfo.vendorInfo?.vendorId
+        preferenceSettings["vendorBusinessLogoUrl"] = homePageInfo.vendorInfo?.businessLogo
     }
 
     @Composable
@@ -550,11 +568,17 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
     }
     @Composable
     fun BusinessStatusDisplay(statusList: List<VendorStatusModel>, onViewHeightChanged: (Int, Boolean) -> Unit) {
-        val isStatusExpanded = remember { mutableStateOf(false) }
-        val screenSizeInfo = ScreenSizeInfo()
+        val firstElement = statusList[0]
+        var initialNormalDimension = false
 
-        val heightAtExpanded = getPercentOfScreenHeight(screenSizeInfo.heightDp, percentChange = 90)
-        val heightAtCollapsed = getPercentOfScreenHeight(screenSizeInfo.heightDp, percentChange = 70)
+        val isStatusExpanded = remember { mutableStateOf(false) }
+        val isWidthGreaterThanHeight = remember { mutableStateOf(false) }
+        val screenSizeInfo = ScreenSizeInfo()
+        val percentChangeExpanded = if (isWidthGreaterThanHeight.value) 70 else 90
+        val percentChangeCollapsed = if (isWidthGreaterThanHeight.value) 50 else 70
+
+        val heightAtExpanded = getPercentOfScreenHeight(screenSizeInfo.heightDp, percentChange = percentChangeExpanded)
+        val heightAtCollapsed = getPercentOfScreenHeight(screenSizeInfo.heightDp, percentChange = percentChangeCollapsed)
 
         val heightChange: Float by animateFloatAsState(targetValue = if (isStatusExpanded.value) heightAtExpanded.toFloat() else heightAtCollapsed.toFloat(),
             animationSpec = tween(durationMillis = 600, easing = LinearOutSlowInEasing)
@@ -568,6 +592,8 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
         Box(modifier = modifier, contentAlignment = Alignment.TopCenter) {
             BusinessWhatsAppStatusWidget(statusList, onStatusViewChanged = {
                     isStatusViewExpanded -> isStatusExpanded.value = isStatusViewExpanded
+            }, onWidthGreaterThanHeight = {
+                 isWidthGreaterThanHeight.value = it
             })
         }
     }

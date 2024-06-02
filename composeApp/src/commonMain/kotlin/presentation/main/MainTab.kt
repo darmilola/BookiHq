@@ -34,6 +34,9 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
+import com.russhwolf.settings.set
 import domain.Models.Appointment
 import domain.Models.HomepageInfo
 import domain.Models.Product
@@ -83,6 +86,7 @@ class MainTab(private val mainViewModel: MainViewModel): Tab, KoinComponent {
     @Composable
     override fun Content() {
 
+
         if (homePageViewModel == null) {
             homePageViewModel = kmpViewModel(
                 factory = viewModelFactory {
@@ -114,11 +118,11 @@ class MainTab(private val mainViewModel: MainViewModel): Tab, KoinComponent {
         }
 
         var isBottomNavSelected by remember { mutableStateOf(true) }
-            val userInfo = mainViewModel.currentUserInfo.collectAsState()
-            val connectedVendor = mainViewModel.connectedVendor.collectAsState()
+            val userId = mainViewModel.userId.collectAsState()
+            val vendorId = mainViewModel.vendorId.collectAsState()
 
             val bottomNavHeight =
-                if (userInfo.value.userId != null && connectedVendor.value.vendorId != null) 60 else 0
+                if (userId.value != -1 && vendorId.value != -1) 60 else 0
 
             TabNavigator(showDefaultTab(mainViewModel, homePageViewModel!!)) {
                 Scaffold(

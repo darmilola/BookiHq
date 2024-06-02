@@ -39,10 +39,10 @@ import presentations.components.ImageComponent
 @Composable
 fun MainTopBar(mainViewModel: MainViewModel, isBottomNavSelected: Boolean = false, onNotificationTabSelected:() -> Unit) {
 
-    val userInfo = mainViewModel.currentUserInfo.collectAsState()
-    val connectedVendor = mainViewModel.connectedVendor.collectAsState()
+    val userId = mainViewModel.userId.value
+    val vendorId = mainViewModel.vendorId.value
 
-    val topBarHeight = if (userInfo.value.userId != null && connectedVendor.value.vendorId != null) 50 else 0
+    val topBarHeight = if (userId != -1  && vendorId != -1) 50 else 0
     Column(modifier = Modifier.fillMaxWidth().height(topBarHeight.dp), verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
            Box(
@@ -150,9 +150,9 @@ fun BusinessImage(businessImageUrl: String, onBusinessImageClicked: () -> Unit) 
 @Composable
 fun rightTopBarItem(mainViewModel: MainViewModel, isBottomNavSelected: Boolean = false, onNotificationTabSelected:() -> Unit) {
     val tabNavigator = LocalTabNavigator.current
-    var imageRes = ""
+    val heightRatio = if (mainViewModel.userId.value != -1) 1f else 0f
 
-    imageRes = if(isBottomNavSelected){
+    val imageRes = if(isBottomNavSelected){
         "drawable/bell_outline.png"
     }else{
         "drawable/bell_filled.png"

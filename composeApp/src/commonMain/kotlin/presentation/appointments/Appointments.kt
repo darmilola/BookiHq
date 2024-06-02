@@ -32,6 +32,8 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
 import domain.Models.Appointment
 import domain.Models.AppointmentItemUIModel
 import domain.Models.User
@@ -61,8 +63,6 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
     private val appointmentPresenter: AppointmentPresenter by inject()
     private var uiStateViewModel: UIStateViewModel? = null
     private var postponementViewModel: PostponementViewModel? = null
-    private var currentUser: User? = null
-    private var currentVendor: Vendor? = null
 
 
     @OptIn(ExperimentalResourceApi::class)
@@ -84,8 +84,7 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
     @Composable
     override fun Content() {
 
-        currentUser = mainViewModel.currentUserInfo.value
-        currentVendor = mainViewModel.connectedVendor.value
+       val userId = mainViewModel.userId.collectAsState()
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -122,7 +121,9 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
         if (appointmentResourceListEnvelopeViewModel!!.resources.value.isNotEmpty()){
             uiStateViewModel!!.switchState(UIStates(contentVisible = true))
         }else {
-            appointmentPresenter.getUserAppointments(currentUser?.userId!!)
+            if (userId.value != -1) {
+                appointmentPresenter.getUserAppointments(userId.value)
+            }
         }
 
 
@@ -226,7 +227,9 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                             onActionClick = {})
                         postponeAppointmentSuccess.value = false
                         appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                        appointmentPresenter.getUserAppointments(currentUser?.userId!!)
+                        if (userId.value != -1) {
+                            appointmentPresenter.getUserAppointments(userId.value)
+                        }
 
                     }
 
@@ -245,7 +248,9 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                             onActionClick = {})
                         deleteAppointmentSuccess.value = false
                         appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                        appointmentPresenter.getUserAppointments(currentUser?.userId!!)
+                        if (userId.value != -1) {
+                            appointmentPresenter.getUserAppointments(userId.value)
+                        }
 
                     }
 
@@ -297,10 +302,12 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                                             style = TextStyle()
                                         ) {
                                             if (appointmentResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
-                                                appointmentPresenter.getMoreAppointments(
-                                                    currentUser?.userId!!,
-                                                    nextPage = appointmentResourceListEnvelopeViewModel!!.currentPage.value + 1
-                                                )
+                                                if (userId.value != -1) {
+                                                    appointmentPresenter.getMoreAppointments(
+                                                        userId.value,
+                                                        nextPage = appointmentResourceListEnvelopeViewModel!!.currentPage.value + 1
+                                                    )
+                                                }
                                             }
                                         }
                                     }

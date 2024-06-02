@@ -96,7 +96,6 @@ class EditProfile(private val mainViewModel: MainViewModel, val  platformNavigat
         }
 
         if (latitude.value != 0.0 && longitude.value != 0.0){
-            println("here 1")
             profilePresenter.getUserLocation(latitude.value, longitude.value)
         }
 

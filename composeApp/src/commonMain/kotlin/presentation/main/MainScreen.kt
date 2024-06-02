@@ -20,10 +20,8 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import domain.Models.PlatformNavigator
-import domain.Models.Product
 import domain.Models.Screens
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import presentation.bookings.BookingScreen
 import presentation.bookings.PendingAppointmentsTab
 import presentation.Products.CartScreen
@@ -35,20 +33,18 @@ import presentation.consultation.ConsultationScreen
 import presentation.consultation.VirtualConsultationRoom
 import presentation.dialogs.LoadingDialog
 import presentation.main.account.JoinASpa
-import presentation.main.home.HomepagePresenter
 import presentation.therapist.TherapistDashboardTab
-import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.ProductViewModel
-import presentation.viewmodels.ResourceListEnvelopeViewModel
-import presentation.viewmodels.UIStateViewModel
 
 class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, KoinComponent {
 
     private var mainViewModel: MainViewModel? = null
     private val preferenceSettings: Settings = Settings()
+
     @Composable
     override fun Content() {
+
+
 
    val imageUploading = remember { mutableStateOf(false) }
    val locationRequestAllowed = remember { mutableStateOf(false) }
@@ -59,6 +55,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
                 MainViewModel(savedStateHandle = createSavedStateHandle())
             },
         )
+        saveAccountInfoToViewModel(mainViewModel!!)
       }
 
         preferenceSettings as ObservableSettings
@@ -129,6 +126,14 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
             Scaffold(
                 content = { CurrentTab() })
         }
+    }
+    private fun saveAccountInfoToViewModel(mainViewModel: MainViewModel){
+        mainViewModel.setUserEmail(preferenceSettings["userEmail",""])
+        mainViewModel.setUserFirstname(preferenceSettings["userFirstname",""])
+        mainViewModel.setUserId(preferenceSettings["userId",-1])
+        mainViewModel.setVendorEmail(preferenceSettings["vendorEmail",""])
+        mainViewModel.setVendorId(preferenceSettings["vendorId",-1])
+        mainViewModel.setVendorBusinessLogoUrl(preferenceSettings["vendorBusinessLogoUrl",""])
     }
 
     fun setImageUploadResponse(imageUrl: String) {
