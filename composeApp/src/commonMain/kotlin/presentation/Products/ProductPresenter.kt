@@ -20,17 +20,17 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
         contractView = view
     }
 
-    override fun getProducts(vendorId: Int, categoryId: Int) {
+    override fun getProducts(vendorId: Int) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showLce(UIStates(loadingVisible = true))
-                    productRepositoryImpl.getProductsInCategory(vendorId, categoryId)
+                    productRepositoryImpl.getAllProducts(vendorId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     contractView?.showLce(UIStates(contentVisible = true))
-                                    contractView?.showProducts(result.listItem)
+                                    contractView?.showProducts(result.listItem, isFromSearch = false)
                                 }
                                 else{
                                     contractView?.showLce(UIStates(errorOccurred = true))
@@ -48,17 +48,17 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
         }
     }
 
-    override fun getMoreProducts(vendorId: Int, categoryId: Int, nextPage: Int) {
+    override fun getMoreProducts(vendorId: Int, nextPage: Int) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.onLoadMoreProductStarted(true)
-                    productRepositoryImpl.getProductsInCategory(vendorId, categoryId, nextPage)
+                    productRepositoryImpl.getAllProducts(vendorId, nextPage = nextPage)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     contractView?.onLoadMoreProductEnded(true)
-                                    contractView?.showProducts(result.listItem)
+                                    contractView?.showProducts(result.listItem, isFromSearch = false)
                                 }
                                 else{
                                     contractView?.onLoadMoreProductEnded(false)

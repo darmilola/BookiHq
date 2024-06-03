@@ -19,25 +19,14 @@ import io.ktor.http.contentType
 
 open class ProductNetworkService(private val apiService: HttpClient) {
 
-    suspend fun getProductCategories(getProductCategoryRequest: GetProductCategoryRequest) =
+    suspend fun getAllProducts(getAllProductsRequest: GetAllProductsRequest, nextPage: Int = 1) =
         apiService.post {
-            url("/api/v1/products/category/get")
+            url("/api/v1/products/get?page=$nextPage")
             /*headers {
                 append(HttpHeaders.Authorization, "abc123")
             }*/
             contentType(ContentType.Application.Json)
-            setBody(getProductCategoryRequest)
-        }.body<ProductCategoryResponse>().toSingle()
-
-
-    suspend fun getProductInCategory(getProductsInCategoryRequest: GetProductsInCategoryRequest, nextPage: Int = 1) =
-        apiService.post {
-            url("/api/v1/products/category/items/get?page=$nextPage")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
-            contentType(ContentType.Application.Json)
-            setBody(getProductsInCategoryRequest)
+            setBody(getAllProductsRequest)
         }.body<ProductListDataResponse>().toSingle()
 
     suspend fun searchProduct(searchProductRequest: SearchProductRequest, nextPage: Int = 1) =

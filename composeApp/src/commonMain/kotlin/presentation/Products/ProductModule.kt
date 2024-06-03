@@ -5,7 +5,6 @@ import org.koin.dsl.module
 
 object ProductModule {
     val ProductModule = module {
-        singleOf(::CategoryPresenter)
         singleOf(::ProductPresenter)
         singleOf(::CartPresenter)
     }

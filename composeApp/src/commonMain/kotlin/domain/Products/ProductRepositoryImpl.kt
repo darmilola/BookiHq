@@ -15,22 +15,14 @@ import io.ktor.client.HttpClient
 
 class ProductRepositoryImpl(apiService: HttpClient): ProductRepository {
     private val productNetworkService: ProductNetworkService = ProductNetworkService(apiService)
-    override suspend fun getProductCategories(
+    override suspend fun getAllProducts(
         vendorId: Int,
-        userId: Int
-    ): Single<ProductCategoryResponse> {
-        val param = GetProductCategoryRequest(vendorId, userId)
-        return productNetworkService.getProductCategories(param)
-    }
-
-    override suspend fun getProductsInCategory(
-        vendorId: Int,
-        categoryId: Int,
         nextPage: Int
     ): Single<ProductListDataResponse> {
-        val param = GetProductsInCategoryRequest(vendorId, categoryId)
-        return productNetworkService.getProductInCategory(param,nextPage)
+        val param = GetAllProductsRequest(vendorId = vendorId)
+        return productNetworkService.getAllProducts(param,nextPage)
     }
+
 
     override suspend fun searchProducts(
         vendorId: Int,

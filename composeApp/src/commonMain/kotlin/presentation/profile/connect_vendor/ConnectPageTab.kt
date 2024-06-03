@@ -44,7 +44,6 @@ import domain.Models.VendorItemUIModel
 import domain.Models.getVendorListItemViewHeight
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import presentation.Products.ProductDetailBottomSheet
 import presentation.Products.SearchBar
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar

@@ -35,6 +35,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -73,8 +76,8 @@ import domain.Models.VendorStatusModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.components.StraightLine
-import presentation.Products.ProductDetailBottomSheet
 import presentation.Products.HomeProductItem
+import presentation.Products.ProductDetailContent
 import presentation.components.FloatingActionButton
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.AsyncUIStates
@@ -446,6 +449,27 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
             }
         }
     }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, selectedProduct: OrderItem, onDismiss: (isAddToCart: Boolean, OrderItem) -> Unit, onRemoveFromCart: (OrderItem) -> Unit) {
+        val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        ModalBottomSheet(
+            modifier = Modifier.padding(top = 20.dp),
+            onDismissRequest = { onDismiss(false, selectedProduct) },
+            sheetState = modalBottomSheetState,
+            shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
+            containerColor = Color(0xFFF3F3F3),
+            dragHandle = {},
+        ) {
+            ProductDetailContent(mainViewModel,isViewedFromCart,selectedProduct, onAddToCart = {
+                onDismiss(it,selectedProduct)
+            }, onRemoveFromCart = {
+                onRemoveFromCart(it)
+            })
+        }
+    }
+
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable

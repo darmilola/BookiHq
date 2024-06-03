@@ -35,8 +35,8 @@ class ProductContract {
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
-        abstract fun getProducts(vendorId: Int, categoryId: Int)
-        abstract fun getMoreProducts(vendorId: Int, categoryId: Int, nextPage: Int = 1)
+        abstract fun getProducts(vendorId: Int)
+        abstract fun getMoreProducts(vendorId: Int, nextPage: Int = 1)
         abstract fun searchProducts(vendorId: Int, searchQuery: String)
         abstract fun searchMoreProducts(vendorId: Int, searchQuery: String, nextPage: Int = 1)
 
