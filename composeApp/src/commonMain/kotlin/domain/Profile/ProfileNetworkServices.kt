@@ -3,6 +3,7 @@ package domain.Profile
 import com.badoo.reaktive.single.toSingle
 import domain.Models.AuthenticationResponse
 import domain.Models.ServerResponse
+import domain.Models.VendorAvailabilityResponse
 import infrastructure.authentication.CompleteProfileRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -33,5 +34,16 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
             contentType(ContentType.Application.Json)
             setBody(deleteProfileRequest)
         }.body<ServerResponse>().toSingle()
+
+
+    suspend fun getVendorAvailableTimes(getVendorAvailabilityRequest: GetVendorAvailabilityRequest) =
+        apiService.post {
+            url("/api/v1/profile/vendor/availability/get")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(getVendorAvailabilityRequest)
+        }.body<VendorAvailabilityResponse>().toSingle()
 
 }

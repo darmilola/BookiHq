@@ -33,6 +33,7 @@ import presentation.consultation.ConsultationScreen
 import presentation.consultation.VirtualConsultationRoom
 import presentation.dialogs.LoadingDialog
 import presentation.main.account.JoinASpa
+import presentation.profile.TalkWithATherapist
 import presentation.therapist.TherapistDashboardTab
 import presentation.viewmodels.MainViewModel
 
@@ -120,6 +121,9 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
                 }
                 Screens.JOIN_SPA.toPath() -> {
                     it.current = JoinASpa(mainViewModel!!)
+                }
+                Screens.TALK_WITH_A_THERAPIST.toPath() -> {
+                    it.current = TalkWithATherapist(mainViewModel!!)
                 }
             }
 

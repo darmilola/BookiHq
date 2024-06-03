@@ -7,6 +7,7 @@ import dev.jordond.compass.Place
 import dev.jordond.compass.geocoder.Geocoder
 import domain.Models.AuthenticationResponse
 import domain.Models.ServerResponse
+import domain.Models.VendorAvailabilityResponse
 import infrastructure.authentication.AuthenticationNetworkService
 import infrastructure.authentication.AuthenticationRepository
 import infrastructure.authentication.CompleteProfileRequest
@@ -35,6 +36,11 @@ class ProfileRepositoryImpl(apiService: HttpClient): ProfileRepository {
     override suspend fun deleteProfile(userEmail: String): Single<ServerResponse> {
         val param = DeleteProfileRequest(userEmail)
         return profileNetworkService.deleteProfile(param)
+    }
+
+    override suspend fun getVendorAvailableTimes(vendorId: Int): Single<VendorAvailabilityResponse> {
+        val param = GetVendorAvailabilityRequest(vendorId)
+        return profileNetworkService.getVendorAvailableTimes(param)
     }
 
     override suspend fun reverseGeocode(lat: Double, lng: Double): Single<Place?> {

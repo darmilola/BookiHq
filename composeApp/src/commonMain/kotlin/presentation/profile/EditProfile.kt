@@ -108,11 +108,8 @@ class EditProfile(private val mainViewModel: MainViewModel, val  platformNavigat
             }, isDone = {
                 isLoading.value = false
                 isDone.value = true
-                isSuccess.value = false
             }, isSuccess = {
-                isLoading.value = false
                 isSuccess.value = true
-                isDone.value = true
             },
             onUserLocationReady = {
                country.value = it.country.toString()
@@ -126,7 +123,16 @@ class EditProfile(private val mainViewModel: MainViewModel, val  platformNavigat
 
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
-            topBar = {},
+            topBar = {
+                 Box(modifier = Modifier.fillMaxWidth().height(60.dp)) {
+                     Box(modifier = Modifier.fillMaxHeight().fillMaxWidth().padding(start = 10.dp), contentAlignment = Alignment.CenterStart) {
+                         AttachBackIcon(mainViewModel)
+                     }
+                     Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(), contentAlignment = Alignment.Center) {
+                         PageTitle()
+                     }
+                 }
+            },
             content = {
                 if (isLoading.value) {
                     Box(modifier = Modifier.fillMaxWidth(0.80f)) {
@@ -148,6 +154,27 @@ class EditProfile(private val mainViewModel: MainViewModel, val  platformNavigat
                     platformNavigator,
                     profilePresenter,
                     stackedSnackBarHostState)
+            },
+            bottomBar = {
+
+                val buttonStyle = Modifier
+                    .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 10.dp)
+                    .fillMaxWidth()
+                    .height(50.dp)
+
+                ButtonComponent(
+                    modifier = buttonStyle,
+                    buttonText = "Save",
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
+                    fontSize = 18,
+                    shape = CircleShape,
+                    textColor = Color(color = 0xFFFFFFFF),
+                    style = TextStyle(),
+                    borderStroke = null
+                ) {
+                    preferenceSettings.clear()
+                    platformNavigator?.getUserLocation()
+                }
             })
     }
 }
@@ -197,12 +224,9 @@ fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: Platform
         Modifier
             .fillMaxWidth()
             .fillMaxHeight()
+            .padding(top = 50.dp)
             .background(color = Color.White)
 
-    val buttonStyle = Modifier
-        .padding(start = 10.dp, end = 10.dp, top = 10.dp)
-        .fillMaxWidth()
-        .height(50.dp)
 
 
     val topLayoutModifier =
@@ -216,8 +240,6 @@ fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: Platform
 
     Column(modifier = rootModifier) {
         Column(modifier = topLayoutModifier) {
-            AttachBackIcon(mainViewModel)
-            PageTitle()
             AccountProfileImage(
                 profileImageUrl = profileImageUrl.value!!,
                 isAsync = true,
@@ -279,20 +301,6 @@ fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: Platform
             }, onRightClicked = {
 
             }, leftText = "Male", rightText = "Female")
-
-            ButtonComponent(
-                modifier = buttonStyle,
-                buttonText = "Save",
-                colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
-                fontSize = 18,
-                shape = CircleShape,
-                textColor = Color(color = 0xFFFFFFFF),
-                style = TextStyle(),
-                borderStroke = null
-            ) {
-                preferenceSettings.clear()
-                platformNavigator?.getUserLocation()
-            }
         }
     }
    }
@@ -341,7 +349,6 @@ private fun AttachBackIcon(mainViewModel: MainViewModel) {
 @Composable
 fun PageTitle(){
     val rowModifier = Modifier
-        .padding(start = 10.dp, bottom = 10.dp)
         .fillMaxWidth()
         .wrapContentHeight()
     Row(

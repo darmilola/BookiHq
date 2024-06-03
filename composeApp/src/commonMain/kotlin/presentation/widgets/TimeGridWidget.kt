@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,6 +31,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import domain.Models.AvailableTimeUIModel
 import domain.Models.AvailableTime
+import domain.Models.VendorTime
+import domain.Models.VendorTimeUIModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
@@ -51,43 +54,6 @@ fun TimeGrid(availableTimes: List<AvailableTime>? = arrayListOf(), selectedTime:
 
 
     Column(modifier = Modifier.fillMaxWidth()) {
-
-        Row(modifier = Modifier.fillMaxWidth().height(20.dp)) {
-
-            TextComponent(
-                text = "Morning",
-                fontSize = 15,
-                fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.Gray,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                lineHeight = 30,
-                textModifier = Modifier.weight(1f))
-
-            TextComponent(
-                text = "Afternoon",
-                fontSize = 15,
-                fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.Gray,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                lineHeight = 30,
-                textModifier = Modifier.weight(1f))
-
-            TextComponent(
-                text = "Evening",
-                fontSize = 15,
-                fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.Gray,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                lineHeight = 30,
-                textModifier = Modifier.weight(1f))
-
-        }
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
@@ -153,6 +119,100 @@ fun TimeItem(availableTime: AvailableTime, onWorkHourClickListener: (AvailableTi
         }
         TextComponent(
             text = availableTime.vendorTime.platformTime.time!!+" "+meridian,
+            fontSize = 15,
+            fontFamily = GGSansSemiBold,
+            textStyle = MaterialTheme.typography.h6,
+            textColor = color,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+            lineHeight = 30,
+            textModifier = Modifier.padding(start = 5.dp))
+
+    }
+}
+
+
+
+@Composable
+fun VendorTimeGrid(availableTimes: List<VendorTime>? = arrayListOf(), selectedTime: VendorTime? = null, onWorkHourClickListener: (VendorTime) -> Unit) {
+    var workHourUIModel by remember {
+        mutableStateOf(
+            VendorTimeUIModel(
+                selectedTime = VendorTime(),
+                availableTimes!!
+            )
+        )
+    }
+    workHourUIModel = if (selectedTime != null) {
+        VendorTimeUIModel(selectedTime, visibleTime = availableTimes!!)
+    } else {
+        VendorTimeUIModel(VendorTime(), availableTimes!!)
+    }
+
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+            userScrollEnabled = false,
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            items(workHourUIModel.visibleTime.size) { i ->
+                VendorTimeItem(workHourUIModel.visibleTime[i], onWorkHourClickListener = { it ->
+                    onWorkHourClickListener(it)
+                    workHourUIModel = workHourUIModel.copy(
+                        selectedTime = it,
+                        visibleTime = workHourUIModel.visibleTime.map { it2 ->
+                            it2.copy(
+                                isSelected = it2.id == it.id
+                            )
+                        }
+
+                    )
+                })
+            }
+        }
+    }
+}
+
+
+@Composable
+fun VendorTimeItem(vendorTime: VendorTime, onWorkHourClickListener: (VendorTime) -> Unit) {
+    val meridian = if (vendorTime.platformTime?.isAm!!){
+        "am"
+    }
+    else{
+        "pm"
+    }
+    val color: Color = if(vendorTime.isSelected){
+        Colors.primaryColor
+    } else {
+        Color.Gray
+    }
+    val showSelectIcon = remember { mutableStateOf(false) }
+
+    showSelectIcon.value = vendorTime.isSelected
+
+    Row(
+        modifier = Modifier
+            .padding(start = 3.dp, end = 3.dp, top = 10.dp)
+            .fillMaxWidth()
+            .clickable {
+                    onWorkHourClickListener(vendorTime)
+
+            }
+            .border(border = BorderStroke((1.5).dp, color), shape = RoundedCornerShape(6.dp))
+            .height(40.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if(showSelectIcon.value){
+            ImageComponent(imageModifier = Modifier.size(20.dp), imageRes = "drawable/check_mark_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+        }
+        TextComponent(
+            text = vendorTime.platformTime.time!!+" "+meridian,
             fontSize = 15,
             fontFamily = GGSansSemiBold,
             textStyle = MaterialTheme.typography.h6,

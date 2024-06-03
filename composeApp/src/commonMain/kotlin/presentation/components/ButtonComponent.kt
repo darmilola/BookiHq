@@ -151,7 +151,6 @@ public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStr
         )
     ) {
            val iconModifier = Modifier
-                .padding(top = 5.dp)
                 .size(iconSize.dp)
 
              val iconBoxModifier = Modifier

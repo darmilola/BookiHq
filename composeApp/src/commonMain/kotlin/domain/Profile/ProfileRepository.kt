@@ -4,6 +4,7 @@ import com.badoo.reaktive.single.Single
 import dev.jordond.compass.Place
 import domain.Models.AuthenticationResponse
 import domain.Models.ServerResponse
+import domain.Models.VendorAvailabilityResponse
 
 interface ProfileRepository {
     suspend fun updateProfile(
@@ -19,6 +20,7 @@ interface ProfileRepository {
     ): Single<ServerResponse>
 
     suspend fun deleteProfile(userEmail: String): Single<ServerResponse>
+    suspend fun getVendorAvailableTimes(vendorId: Int): Single<VendorAvailabilityResponse>
     suspend fun reverseGeocode(lat: Double, lng: Double): Single<Place?>
 }
 

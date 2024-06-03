@@ -8,4 +8,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Parcelize
 data class VendorTime(@SerialName("id") val id: Int? = null, @SerialName("time_id") val timeId: Int? = null,
-                      @SerialName("platform_time") val platformTime: PlatformTime? = null): Parcelable
+                      @SerialName("platform_time") val platformTime: PlatformTime? = null, val isSelected: Boolean = false): Parcelable
+
+data class VendorTimeUIModel(
+    val selectedTime: VendorTime,
+    val visibleTime: List<VendorTime>)

@@ -13,7 +13,8 @@ enum class Screens {
     VENDOR_INFO,
     JOIN_SPA,
     THERAPIST_DASHBOARD,
-    PENDING_APPOINTMENT;
+    PENDING_APPOINTMENT,
+    TALK_WITH_A_THERAPIST;
     fun toPath() = when (this) {
         MAIN_TAB -> 0
         BOOKING -> 1
@@ -27,5 +28,6 @@ enum class Screens {
         PENDING_APPOINTMENT -> 9
         THERAPIST_DASHBOARD->10
         JOIN_SPA -> 11
+        TALK_WITH_A_THERAPIST -> 12
     }
 }

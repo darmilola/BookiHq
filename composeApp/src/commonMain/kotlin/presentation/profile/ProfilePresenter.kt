@@ -16,10 +16,16 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
 
     private val scope: CoroutineScope = MainScope()
     private var contractView: ProfileContract.View? = null
+    private var videoView: ProfileContract.VideoView? = null
     private val profileRepositoryImpl: ProfileRepositoryImpl = ProfileRepositoryImpl(apiService)
     override fun registerUIContract(view: ProfileContract.View?) {
        contractView = view
     }
+
+    override fun registerTalkWithTherapistContract(view: ProfileContract.VideoView?) {
+        videoView = view
+    }
+
     override fun updateProfile(
         firstname: String,
         lastname: String,
@@ -82,6 +88,38 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                 result.dispose()
             } catch(e: Exception) {
                 contractView?.showLce(AsyncUIStates(isDone = true, isSuccess = false))
+            }
+        }
+    }
+
+    override fun getVendorAvailability(vendorId: Int) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    videoView?.showLce(AsyncUIStates(isLoading = true))
+                    profileRepositoryImpl.getVendorAvailableTimes(vendorId = vendorId)
+                        .subscribe(
+                            onSuccess = { result ->
+                                if (result.status == "success"){
+                                    println("Success ${result.availableTimes}")
+                                    videoView?.showLce(AsyncUIStates(isDone = true, isSuccess = true))
+                                    videoView?.showAvailability(result.availableTimes)
+                                }
+                                else{
+                                    println("Error 1")
+                                    videoView?.showLce(AsyncUIStates(isDone = true, isSuccess = false))
+                                }
+                            },
+                            onError = {
+                                println("Error 2")
+                                it.message?.let { it1 -> videoView?.showLce(AsyncUIStates(isDone = true, isSuccess = false), message = it1) }
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                println("Error 3 ${e.message}")
+                videoView?.showLce(AsyncUIStates(isDone = true, isSuccess = false))
             }
         }
     }

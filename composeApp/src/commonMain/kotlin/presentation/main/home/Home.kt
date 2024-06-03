@@ -220,7 +220,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                             FloatingActionButton(
                                 modifier = buttonStyle,
                                 colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
-                                iconRes = "drawable/send_icon.png",
+                                iconRes = "drawable/new_chat_icon.png",
                                 colorFilter = ColorFilter.tint(color = Color.White)
                             )
                         }
@@ -568,9 +568,6 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
     }
     @Composable
     fun BusinessStatusDisplay(statusList: List<VendorStatusModel>, onViewHeightChanged: (Int, Boolean) -> Unit) {
-        val firstElement = statusList[0]
-        var initialNormalDimension = false
-
         val isStatusExpanded = remember { mutableStateOf(false) }
         val isWidthGreaterThanHeight = remember { mutableStateOf(false) }
         val screenSizeInfo = ScreenSizeInfo()

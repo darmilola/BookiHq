@@ -117,7 +117,9 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
             .background(color = Color.Transparent)
             .height(45.dp)
 
-        ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke(1.dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor =  Color.DarkGray, style = style){}
+        ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke(1.dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor =  Color.DarkGray, style = style){
+            mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.EDIT_PROFILE.toPath()))
+        }
 
     }
 
@@ -148,6 +150,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                     style = TextStyle(),
                     iconRes = "drawable/video_chat.png",
                     isDestructiveAction = false, onClick = {
+                        mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.TALK_WITH_A_THERAPIST.toPath()))
                     })
 
 
