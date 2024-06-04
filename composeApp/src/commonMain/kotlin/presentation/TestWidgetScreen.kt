@@ -36,6 +36,7 @@ import domain.Models.StatusVideoModel
 import domain.Models.VendorStatusModel
 import presentation.widgets.BusinessStatusItemWidget
 import presentation.widgets.BusinessWhatsAppStatusWidget
+import presentation.widgets.MultilineInputWidget
 import presentations.components.ImageComponent
 import theme.styles.Colors
 
@@ -59,20 +60,15 @@ fun TestWidgetCompose(platformNavigator: PlatformNavigator) {
         animationSpec = tween(durationMillis = 600, easing = LinearOutSlowInEasing))
 
 
-   // if (isStatusExpanded.value) {
-        println("Change $isStatusExpanded $heightChange")
-    //}
-
-
-    /*val modifier =
+    val modifier =
         Modifier.fillMaxWidth()
             .fillMaxHeight(heightChange)
             .background(color = Color.White)
     Box(modifier = modifier, contentAlignment = Alignment.TopCenter) {
-        BusinessWhatsAppStatusWidget(statusList, onStatusViewChanged = {
-            isStatusViewExpanded -> isStatusExpanded.value = isStatusViewExpanded
-        })
-    }*/
+        MultilineInputWidget(viewHeight = 200){
+
+        }
+    }
 }
 
 

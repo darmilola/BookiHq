@@ -26,6 +26,7 @@ coroutines = "1.7.3"
 rxkotlin = "3.0.1"
 peekaboo = "0.4.3"
 coreI18n = "1.0.0-alpha01"
+kotlin1922 = "1.9.22"
 
 [libraries]
 httpmime = { module = "org.apache.httpcomponents:httpmime", version.ref = "httpmime" }
@@ -69,3 +70,4 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 cocoaPods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 applePlugin = { id = "org.jetbrains.gradle.apple.applePlugin", version.ref = "apple-plugin" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin1922" }

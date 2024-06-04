@@ -46,6 +46,7 @@ import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.BookingCalendar
+import presentation.widgets.MultilineInputWidget
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
@@ -193,16 +194,20 @@ class TalkWithATherapist(private val mainViewModel: MainViewModel) : Tab,
                                 .padding(top = 10.dp, start = 10.dp, end = 10.dp)
                         ) {
 
+                            TextComponent(
+                                text = "Reason for consultation?",
+                                fontSize = 16,
+                                fontFamily = GGSansSemiBold,
+                                textStyle = TextStyle(),
+                                textColor = Colors.darkPrimary,
+                                textAlign = TextAlign.Left,
+                                fontWeight = FontWeight.Black,
+                                lineHeight = 30,
+                                textModifier = Modifier
+                                    .fillMaxWidth().padding(start = 10.dp)
+                            )
 
-                            InputWidget(
-                                iconRes = "drawable/phone_icon.png",
-                                placeholderText = "Reason for Consultation",
-                                iconSize = 28,
-                                isSingleLine = false,
-                                viewHeight = 210,
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                                isPasswordField = false
-                            ){}
+                            MultilineInputWidget(viewHeight = 200){}
                         }
                     }
                 }

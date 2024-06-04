@@ -134,6 +134,10 @@ class MainViewController: PlatformNavigator {
         }
     }
 
+    override fun startVideoCall(authToken: String) {
+        TODO("Not yet implemented")
+    }
+
     @OptIn(ExperimentalForeignApi::class)
     override fun startImageUpload(imageByteArray: ByteArray) {
         val data = imageByteArray.usePinned {

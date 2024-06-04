@@ -108,13 +108,36 @@ fun PlaceholderTextComponent(placeholderTile: String, textColor: Color = Color.L
     }
 }
 
+
+@Composable
+fun MultilinePlaceholderTextComponent(placeholderTile: String, textColor: Color = Color.LightGray, textSize: Float = 18f) {
+    val textStyle = TextStyle(
+        fontSize = TextUnit(textSize, TextUnitType.Sp),
+        textAlign = TextAlign.Start,
+        fontWeight = FontWeight.Normal
+    )
+
+        TextComponent(
+            text = placeholderTile,
+            fontSize = textSize.toInt(),
+            textStyle = textStyle,
+            textColor = textColor,
+            textAlign = TextAlign.Start,
+            fontWeight = FontWeight.Normal,
+            textModifier = Modifier.wrapContentSize(),
+            letterSpacing = 0
+        )
+}
+
+
+
 @Composable
 fun TextFieldComponent(text: String, readOnly: Boolean = false, modifier: Modifier, textStyle: TextStyle = LocalTextStyle.current, onValueChange: (String) -> Unit, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), color: TextFieldColors = TextFieldDefaults.textFieldColors(
     disabledTextColor = Color.Transparent,
     focusedIndicatorColor = Color.Transparent,
     unfocusedIndicatorColor = Color.Transparent,
     disabledIndicatorColor = Color.Transparent
-), isSingleLine: Boolean = false, isPasswordField: Boolean = false, isReadOnly: Boolean = false, placeholderText: String, onFocusChange: (Boolean) -> Unit, placeholderTextSize: Float = 18f, maxLines: Int = 1,) {
+), isSingleLine: Boolean = false, isPasswordField: Boolean = false, isReadOnly: Boolean = false, placeholderText: String, onFocusChange: (Boolean) -> Unit, placeholderTextSize: Float = 18f, maxLines: Int = 1) {
 
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused = interactionSource.collectIsFocusedAsState()
@@ -133,6 +156,37 @@ fun TextFieldComponent(text: String, readOnly: Boolean = false, modifier: Modifi
             }
         }
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
+            innerTextField()
+        }
+    })
+}
+
+
+@Composable
+fun MultilineTextFieldComponent(text: String, readOnly: Boolean = false, modifier: Modifier, textStyle: TextStyle = LocalTextStyle.current, onValueChange: (String) -> Unit, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), color: TextFieldColors = TextFieldDefaults.textFieldColors(
+    disabledTextColor = Color.Transparent,
+    focusedIndicatorColor = Color.Transparent,
+    unfocusedIndicatorColor = Color.Transparent,
+    disabledIndicatorColor = Color.Transparent
+), isSingleLine: Boolean = false, isPasswordField: Boolean = false, isReadOnly: Boolean = false, placeholderText: String, onFocusChange: (Boolean) -> Unit, placeholderTextSize: Float = 18f, maxLines: Int = 1) {
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused = interactionSource.collectIsFocusedAsState()
+    if (isFocused.value){
+        onFocusChange(true)
+    }else{
+        onFocusChange(false)
+    }
+
+    val visualTransformation: VisualTransformation = if (isPasswordField) PasswordVisualTransformation() else VisualTransformation.None
+
+    BasicTextField(value = text, modifier = modifier, textStyle = textStyle, readOnly = isReadOnly, singleLine = isSingleLine, keyboardOptions = keyboardOptions, visualTransformation = visualTransformation, onValueChange = onValueChange, interactionSource = interactionSource, maxLines = maxLines, decorationBox = { innerTextField ->
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopStart) {
+            if (text.isEmpty()) {
+                MultilinePlaceholderTextComponent(placeholderText, textColor = Color.Gray, textSize = placeholderTextSize)
+            }
+        }
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopStart) {
             innerTextField()
         }
     })

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import applications.auth0.AndroidAuth0ConnectionResponse
 import cafe.adriel.voyager.navigator.Navigator
 import com.cloudinary.android.MediaManager
@@ -15,7 +14,6 @@ import domain.Models.AuthSSOScreenNav
 import domain.Models.AuthenticationAction
 import domain.Models.PlatformNavigator
 import presentation.SplashScreen
-import presentation.TestWidgetScreen
 import presentation.authentication.AuthenticationScreen
 import presentation.main.MainScreen
 
@@ -32,7 +30,8 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
         if(auth0ConnectionResponse == null){
             setContent {
                 Navigator(SplashScreen(this))
-              //  Navigator(TestWidgetScreen(this))
+                //Navigator(TestWidgetScreen(this))
+                //Navigator(VideoCallTab())
             }
         }
 
@@ -80,6 +79,13 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
         val intent = Intent(this, Authentication::class.java)
         intent.putExtra("authAction",AuthenticationAction.LOGOUT.toPath())
         intent.putExtra("connectionType",connectionType)
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+    }
+
+    override fun startVideoCall(authToken: String) {
+        val intent = Intent(this, MeetWithTherapistActivity::class.java)
+        intent.putExtra("authToken","ABC")
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
     }

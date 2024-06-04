@@ -28,7 +28,9 @@ kotlin {
             isStatic = true
         }
     }
-    
+
+
+
     sourceSets {
         
         androidMain.dependencies {
@@ -43,6 +45,8 @@ kotlin {
             implementation("androidx.media3:media3-exoplayer:1.1.0")
             implementation("androidx.media3:media3-exoplayer-dash:1.1.0")
             implementation("androidx.media3:media3-ui:1.1.0")
+           // implementation ("io.dyte:core-android:1.37.0")
+            implementation ("io.dyte:uikit:1.18.0")
 
         }
 
@@ -203,4 +207,3 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.i18n)
 }
-

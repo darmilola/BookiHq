@@ -18,6 +18,7 @@ object Colors {
     val yellowColor: Color = Color(color = 0xFFff8E1B)
     val lightGreenColor: Color = Color(color = 0xFFF1FDDB)
     val lightGray: Color = Color(0x90CCCCCC)
+    val transparentGray: Color = Color(0x3b000000)
     val lightPinkColor: Color = Color(color = 0xFFFEDEF0)
     val lighterPrimaryColor: Color = Color(color = 0xFFE6F8FF)
     val backgroundColor: Color = Color(color = 0xFFF4F5F7)
