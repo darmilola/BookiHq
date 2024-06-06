@@ -16,7 +16,7 @@ class TherapistHandler(
     private val onContentVisible: () -> Unit,
     private val onReviewsReady: (List<SpecialistReviews>) -> Unit,
     private val onErrorVisible: () -> Unit,
-    private val onTherapistAvailabilityReady: (availableTimes: List<AvailableTime>, bookedAppointment: List<Appointment>, timeOffs: List<TimeOffs>) -> Unit) : TherapistContract.View {
+    private val onTherapistAvailabilityReady: (availableTimes: List<AvailableTime>, timeOffs: List<TimeOffs>) -> Unit) : TherapistContract.View {
     fun init() {
         therapistPresenter.registerUIContract(this)
     }
@@ -66,10 +66,9 @@ class TherapistHandler(
 
     override fun showTherapistAvailability(
         availableTimes: List<AvailableTime>,
-        bookedAppointment: List<Appointment>,
         timeOffs: List<TimeOffs>
     ) {
-        onTherapistAvailabilityReady(availableTimes, bookedAppointment, timeOffs)
+        onTherapistAvailabilityReady(availableTimes, timeOffs)
     }
 
 

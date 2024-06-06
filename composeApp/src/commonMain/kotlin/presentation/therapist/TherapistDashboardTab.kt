@@ -137,8 +137,9 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
                 uiStateViewModel!!.switchState(UIStates(loadingVisible = true))
             }, onTherapistAvailabilityReady = {
                     availableTimes: List<AvailableTime>,
-                    bookedTimes: List<Appointment>,
                     timeOffs: List<TimeOffs> ->
+                println("timeOffs $timeOffs")
+                println("available $availableTimes")
                 therapistViewModel!!.setTherapistAvailableTimes(availableTimes)
                 therapistViewModel!!.setTherapistTimeOffs(timeOffs)
             },
@@ -178,7 +179,6 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
         tabItems.add("Appointments")
         tabItems.add("Availability")
         tabItems.add("Reviews")
-        tabItems.add("Vendors")
         var tabIndex by remember { mutableStateOf(0) }
         Column(modifier = Modifier.fillMaxSize()) {
             ScrollableTabRow(selectedTabIndex = tabIndex,
@@ -222,7 +222,6 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
                     0 -> TherapistAppointment(mainViewModel, uiStateViewModel!!, postponementViewModel!!, appointmentResourceListEnvelopeViewModel, appointmentPresenter)
                     1 -> TherapistAvailability(mainViewModel, therapistPresenter, therapistViewModel!!, uiStateViewModel!!, asyncUiStateViewModel!!)
                     2 -> TherapistReviews(mainViewModel, therapistPresenter, therapistViewModel!!, uiStateViewModel!!)
-                    3 -> TherapistVendors()
                 }
 
             }

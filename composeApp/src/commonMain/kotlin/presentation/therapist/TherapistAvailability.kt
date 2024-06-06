@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,9 +22,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
 import domain.Models.PlatformTime
 import domain.Models.AvailableTime
+import domain.Models.VendorTime
 import presentation.components.IndeterminateCircularProgressBar
+import presentation.dataModeller.CalendarDataSource
 import presentation.viewmodels.AsyncUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.TherapistViewModel
@@ -34,6 +39,7 @@ import presentation.widgets.NewDateContent
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import presentation.widgets.TherapistAvailabilityTimeGrid
+import presentation.widgets.TimeGrid
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
@@ -44,53 +50,68 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
 
     val uiState = uiStateViewModel.uiData.collectAsState()
     val asyncState = asyncUIStateViewModel.uiData.collectAsState()
-    val availableTimes = therapistViewModel.therapistAvailableTimes.collectAsState()
-    val timeOffs = therapistViewModel.therapistTimeOffs.collectAsState()
-    val newSelectedDate = therapistViewModel.selectedDate.collectAsState()
+
+    val newSelectedDay = therapistViewModel.day.collectAsState()
+    val newSelectedMonth = therapistViewModel.month.collectAsState()
+    val newSelectedYear = therapistViewModel.year.collectAsState()
     val newTimeOffs = therapistViewModel.addedTimeOffs.collectAsState()
     val specialistInfo = mainViewModel.currentSpecialistInfo.value
     val isNewDateSelected = remember { mutableStateOf(true) }
     val isSaveVisible = remember { mutableStateOf(false) }
     isSaveVisible.value = newTimeOffs.value.isNotEmpty()
+    val preferenceSettings: Settings = Settings()
+    val therapistId = mainViewModel.specialistId.value
+    val currentDate = remember { mutableStateOf(CalendarDataSource().today) }
+    therapistViewModel.setSelectedDay(day = currentDate.value.dayOfMonth)
+    therapistViewModel.setSelectedMonth(month = currentDate.value.monthNumber)
+    therapistViewModel.setSelectedYear(year = currentDate.value.year)
+    therapistViewModel.clearServiceTimes()
+
+    println("Spe ID $therapistId")
+
+
+    val availableWorkHour = therapistViewModel.therapistAvailableTimes.collectAsState()
+    val timeOffs = therapistViewModel.therapistTimeOffs.collectAsState()
+    val normalisedTimeOffTimes = arrayListOf<PlatformTime>()
+    val displayTimes = remember { mutableStateOf(arrayListOf<AvailableTime>()) }
+    val normalisedBookingTimes = arrayListOf<AvailableTime>()
+
+    if (isNewDateSelected.value){
+        therapistPresenter.getTherapistAvailability(therapistId, newSelectedDay.value, newSelectedMonth.value,
+            newSelectedYear.value)
+    }
+
+    println("Time Offs $timeOffs")
+    println("Time $availableWorkHour")
+
+
+    for (item in timeOffs.value) {
+        normalisedTimeOffTimes.add(item.timeOffTime?.vendorTime?.platformTime!!)
+    }
+
+    availableWorkHour.value.map { it ->
+        if (it.vendorTime?.platformTime in normalisedTimeOffTimes){
+            val normalisedTime =  availableWorkHour.value.find { it2 ->
+                it.vendorTime?.id == it2.vendorTime?.id
+            }?.copy(isAvailable = false)
+            normalisedBookingTimes.add(normalisedTime!!)
+        }
+        else{
+            val isAvailableTime =  it.copy(isAvailable = true)
+            normalisedBookingTimes.add(isAvailableTime)
+        }
+    }
+
+
 
     val stackedSnackBarHostState = rememberStackedSnackbarHostState(
         maxStack = 5,
         animation = StackedSnackbarAnimation.Bounce
     )
 
-    if (isNewDateSelected.value) {
-        therapistPresenter.getTherapistAvailability(
-            specialistInfo.specialistId!!,
-            day = newSelectedDate.value.dayOfMonth,
-            month = newSelectedDate.value.monthNumber,
-            year = newSelectedDate.value.year
-        )
-        isNewDateSelected.value = false
-    }
+    displayTimes.value = normalisedBookingTimes
 
 
-    val normalisedTimeOff = arrayListOf<PlatformTime>()
-    val displayTimes = remember { mutableStateOf(arrayListOf<AvailableTime>()) }
-    for (item in timeOffs.value){
-        normalisedTimeOff.add(item.timeOffTime?.vendorTime?.platformTime!!)
-    }
-    val normalisedTherapistTimes = arrayListOf<AvailableTime>()
-
-    if (availableTimes.value.isNotEmpty()) {
-        availableTimes.value.map { it ->
-            if (it.vendorTime?.platformTime in normalisedTimeOff) {
-                val timeOffTime = availableTimes.value.find { it2 ->
-                    it.id == it2.id
-                }?.copy(isAvailable = false)
-                normalisedTherapistTimes.add(timeOffTime!!)
-            } else {
-                normalisedTherapistTimes.add(it)
-            }
-        }
-    }
-    if (normalisedTherapistTimes.isNotEmpty()) {
-        displayTimes.value = normalisedTherapistTimes
-    }
 
     Scaffold(
         snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
@@ -110,10 +131,12 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
                 }
 
                 NewDateContent(onDateSelected = {
-                    therapistViewModel.setNewSelectedDate(it)
+                    currentDate.value = it
+                    therapistViewModel.setSelectedDay(it.dayOfMonth)
+                    therapistViewModel.setSelectedYear(it.year)
+                    therapistViewModel.setSelectedMonth(it.monthNumber)
                     therapistViewModel.clearServiceTimes()
                     isNewDateSelected.value = true
-
                 })
                 if (uiState.value.loadingVisible) {
                     Box(
@@ -124,6 +147,7 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
                     }
                 }
                 else if (uiState.value.contentVisible){
+                    isNewDateSelected.value = false
                     Column(
                         modifier = Modifier
                             .padding(top = 5.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
@@ -154,10 +178,12 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
                         }
 
                         TherapistAvailabilityTimeGrid(displayTimes.value, onWorkHourUnAvailable = {
-                            therapistPresenter.addTimeOff(3, it.id!!, newSelectedDate.value.toString())
+                            therapistPresenter.addTimeOff(specialistId = therapistId, it.id!!, day = newSelectedDay.value, month = newSelectedMonth.value,
+                                year = newSelectedYear.value)
 
                         }, onWorkHourAvailable = {
-                            therapistPresenter.removeTimeOff(3, it.id!!, newSelectedDate.value.toString())
+                            therapistPresenter.removeTimeOff(therapistId, it.id!!,day = newSelectedDay.value, month = newSelectedMonth.value,
+                                year = newSelectedYear.value)
                         })
                     }
                 }

@@ -137,6 +137,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
         mainViewModel.setUserId(preferenceSettings["userId",-1])
         mainViewModel.setVendorEmail(preferenceSettings["vendorEmail",""])
         mainViewModel.setVendorId(preferenceSettings["vendorId",-1])
+        mainViewModel.setSpecialistId(preferenceSettings["specialistId",-1])
         mainViewModel.setVendorBusinessLogoUrl(preferenceSettings["vendorBusinessLogoUrl",""])
     }
 

@@ -159,6 +159,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                     mainViewModel.setVendorId(homePageInfo.vendorInfo.vendorId!!)
                     mainViewModel.setVendorBusinessLogoUrl(homePageInfo.vendorInfo.businessLogo)
                     mainViewModel.setUserInfo(homePageInfo.userInfo)
+                    mainViewModel.setSpecialistId(homePageInfo.specialistInfo?.id!!)
                     saveAccountInfoFromServer(homePageInfo)
                 }, onErrorVisible = {
                     homePageViewModel.setHomePageUIState(
@@ -271,6 +272,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
         preferenceSettings["userFirstname"] = homePageInfo.userInfo?.firstname
         preferenceSettings["vendorEmail"] = homePageInfo.vendorInfo?.businessEmail
         preferenceSettings["vendorId"] = homePageInfo.vendorInfo?.vendorId
+        preferenceSettings["specialistId"] = homePageInfo.specialistInfo?.id
         preferenceSettings["vendorBusinessLogoUrl"] = homePageInfo.vendorInfo?.businessLogo
     }
 

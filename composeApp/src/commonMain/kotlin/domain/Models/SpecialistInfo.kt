@@ -6,7 +6,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable @Parcelize
-data class SpecialistInfo(@SerialName("id") val id: Int? = null, @SerialName("specialist_id") val specialistId: Int? = null,
+data class SpecialistInfo(@SerialName("id") val id: Int? = null, @SerialName("specialist_id") val specialistId: Int? = -1,
                           @SerialName("rating") val rating: Double? = null, @SerialName("isAvailable") val isAvailable: Boolean? = false,
                           @SerialName("isAvailableForHomeService") val isAvailableForHomeService: Boolean? = false,
                           @SerialName("rateCount") val rateCount: Int? = 0, @SerialName("rateSum") val rateSum: Int? = 0, @SerialName("profile_info") val profileInfo: User? = null,

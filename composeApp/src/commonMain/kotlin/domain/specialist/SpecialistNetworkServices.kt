@@ -5,6 +5,7 @@ import domain.Models.ServerResponse
 import domain.Models.SpecialistAvailabilityResponse
 import domain.Models.SpecialistReviews
 import domain.Models.SpecialistReviewsResponse
+import domain.Models.SpecialistTimeAvailabilityResponse
 import domain.Profile.DeleteProfileRequest
 import domain.Profile.UpdateProfileRequest
 import domain.appointments.GetSpecialistAvailabilityRequest
@@ -28,15 +29,15 @@ open class SpecialistNetworkService(private val apiService: HttpClient) {
             setBody(getReviewsRequest)
         }.body<SpecialistReviewsResponse>().toSingle()
 
-    suspend fun getSpecialistAvailability(getSpecialistAvailabilityRequest: GetSpecialistAvailabilityRequest) =
+    suspend fun getSpecialistAvailability(getSpecialistAvailableTimeRequest: GetSpecialistAvailableTimeRequest) =
         apiService.post {
-            url("/api/v1/services/specialist/availability")
+            url("/api/v1/specialist/availability/time/get")
             /*headers {
                 append(HttpHeaders.Authorization, "abc123")
             }*/
             contentType(ContentType.Application.Json)
-            setBody(getSpecialistAvailabilityRequest)
-        }.body<SpecialistAvailabilityResponse>().toSingle()
+            setBody(getSpecialistAvailableTimeRequest)
+        }.body<SpecialistTimeAvailabilityResponse>().toSingle()
 
     suspend fun addTimeOff(timeOffRequest: TimeOffRequest) =
         apiService.post {

@@ -7,8 +7,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable @Parcelize
 data class TimeOffs(@SerialName("id") val id: Int? = null, @SerialName("specialist_id") val specialistId: Int? = null,
-                    @SerialName("time_id") val timeId: Int? = null, @SerialName("day") val day: Int? = null,
-                    @SerialName("month") val month: Int? = null, @SerialName("year") val year: Int? = null,
+                    @SerialName("time_id") val timeId: Int? = null,
                     @SerialName("time_off_time") val timeOffTime: TimeOffObject? = null, val isSelected: Boolean = false): Parcelable
 
 @Serializable @Parcelize

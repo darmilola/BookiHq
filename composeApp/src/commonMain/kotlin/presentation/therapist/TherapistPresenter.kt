@@ -58,7 +58,7 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showTherapistAvailability(result.availableTimes, result.bookedAppointment, result.timeOffs)
+                                    contractView?.showTherapistAvailability(result.availableTimes, result.timeOffs)
                                     contractView?.showLce(UIStates(contentVisible = true))
                                 }
                                 else{
@@ -77,12 +77,14 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
         }
     }
 
-    override fun addTimeOff(specialistId: Int, timeId: Int, date: String) {
+    override fun addTimeOff(specialistId: Int, timeId: Int, day: Int,
+                            month: Int,
+                            year: Int) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showAsyncLce(AsyncUIStates(isLoading = true))
-                    specialistRepositoryImpl.addTimeOff(specialistId, timeId, date)
+                    specialistRepositoryImpl.addTimeOff(specialistId, timeId, day, month, year)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
@@ -107,13 +109,15 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
     override fun removeTimeOff(
         specialistId: Int,
         timeId: Int,
-        date: String
+        day: Int,
+        month: Int,
+        year: Int
     ) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showAsyncLce(AsyncUIStates(isLoading = true))
-                    specialistRepositoryImpl.removeTimeOff(specialistId, timeId, date)
+                    specialistRepositoryImpl.removeTimeOff(specialistId, timeId, day, month, year)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){

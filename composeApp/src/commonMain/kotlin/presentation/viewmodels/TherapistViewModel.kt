@@ -16,9 +16,11 @@ class TherapistViewModel(private val savedStateHandle: SavedStateHandle): ViewMo
     private var _therapistTimeOffs = savedStateHandle.getStateFlow("therapistTimeOffs", arrayListOf<TimeOffs>())
     private var _therapistReviews = savedStateHandle.getStateFlow("therapistReviews", arrayListOf<SpecialistReviews>())
     private var _therapistAvailabilityViewUIState = savedStateHandle.getStateFlow("therapistAvailabilityViewUIState", AsyncUIStates())
-    private var _newSelectedDate = savedStateHandle.getStateFlow("newSelectedDate", CalendarDataSource().today)
     private var _newSelectedTime = savedStateHandle.getStateFlow("newSelectedTime", AvailableTime())
     private var _addedTimeOffs = savedStateHandle.getStateFlow("addedTimeOffs", arrayListOf<AvailableTime>())
+    private var _day =  savedStateHandle.getStateFlow("day", -1)
+    private var _month =  savedStateHandle.getStateFlow("month", -1)
+    private var _year =  savedStateHandle.getStateFlow("year", -1)
 
 
     val therapistAvailableTimes: StateFlow<List<AvailableTime>>
@@ -37,9 +39,14 @@ class TherapistViewModel(private val savedStateHandle: SavedStateHandle): ViewMo
     val addedTimeOffs: StateFlow<ArrayList<AvailableTime>>
         get() = _addedTimeOffs
 
-    val selectedDate: StateFlow<LocalDate>
-        get() = _newSelectedDate
+    val day: StateFlow<Int>
+        get() = _day
 
+    val month: StateFlow<Int>
+        get() = _month
+
+    val year: StateFlow<Int>
+        get() = _year
     val selectedTime: StateFlow<AvailableTime>
         get() = _newSelectedTime
 
@@ -75,10 +82,16 @@ class TherapistViewModel(private val savedStateHandle: SavedStateHandle): ViewMo
         savedStateHandle["therapistAvailableTimes"] = arrayListOf<AvailableTime>()
     }
 
-    fun clearAvailabilityViewSelection(){
-        savedStateHandle["newSelectedTime"] = AvailableTime()
-        savedStateHandle["therapistAvailableTimes"] = arrayListOf<AvailableTime>()
-        savedStateHandle["newSelectedDate"] = CalendarDataSource().today
+    fun setSelectedDay(day: Int) {
+        savedStateHandle["day"] = day
+    }
+
+    fun setSelectedMonth(month: Int) {
+        savedStateHandle["month"] = month
+    }
+
+    fun setSelectedYear(year: Int) {
+        savedStateHandle["year"] = year
     }
 
     fun setNewSelectedTime(availableTime: AvailableTime) {

@@ -5,6 +5,7 @@ import domain.Models.ServerResponse
 import domain.Models.SpecialistAvailabilityResponse
 import domain.Models.SpecialistReviews
 import domain.Models.SpecialistReviewsResponse
+import domain.Models.SpecialistTimeAvailabilityResponse
 import domain.Profile.DeleteProfileRequest
 import domain.Profile.ProfileNetworkService
 import domain.Profile.ProfileRepository
@@ -21,26 +22,31 @@ class SpecialistRepositoryImpl(apiService: HttpClient): SpecialistRepository {
     }
 
     override suspend fun getTherapistAvailability(
-        specialistId: Int, day: Int, month: Int, year: Int): Single<SpecialistAvailabilityResponse> {
-        val param = GetSpecialistAvailabilityRequest(specialistId, day, month, year)
+        specialistId: Int, day: Int, month: Int, year: Int): Single<SpecialistTimeAvailabilityResponse> {
+        val param = GetSpecialistAvailableTimeRequest(specialistId, day, month, year)
         return specialistNetworkService.getSpecialistAvailability(param)
     }
 
     override suspend fun addTimeOff(
         specialistId: Int,
         timeId: Int,
-        date: String
+        day: Int,
+        month: Int,
+        year: Int
     ): Single<ServerResponse> {
-        val param = TimeOffRequest(specialistId, timeId, date)
+        val param = TimeOffRequest(specialistId, timeId, day, year, month)
+        println("Params $param")
         return specialistNetworkService.addTimeOff(param)
     }
 
     override suspend fun removeTimeOff(
         specialistId: Int,
         timeId: Int,
-        date: String
+        day: Int,
+        month: Int,
+        year: Int
     ): Single<ServerResponse> {
-        val param = TimeOffRequest(specialistId, timeId, date)
+        val param = TimeOffRequest(specialistId, timeId, day, year, month)
         return specialistNetworkService.removeTimeOff(param)
     }
 

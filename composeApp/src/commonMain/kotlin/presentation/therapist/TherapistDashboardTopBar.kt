@@ -33,6 +33,7 @@ import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.StepsProgressBar
+import presentation.widgets.TitleWidget
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import theme.styles.Colors
@@ -42,7 +43,7 @@ fun TherapistDashboardTopBar(mainViewModel: MainViewModel) {
 
     val rowModifier = Modifier
         .fillMaxWidth()
-        .padding(top = 40.dp)
+        .padding(top = 10.dp)
         .height(60.dp)
         Row(modifier = rowModifier,
             horizontalArrangement = Arrangement.Start,
@@ -82,13 +83,5 @@ fun leftTopBarItem(mainViewModel: MainViewModel) {
 
 @Composable
 fun DashboardTitle(){
-    TextComponent(
-        text = "Your Dashboard",
-        fontSize = 16,
-        fontFamily = GGSansRegular,
-        textStyle = MaterialTheme.typography.h6,
-        textColor = Color.DarkGray,
-        textAlign = TextAlign.Center,
-        fontWeight = FontWeight.Bold,
-    )
+    TitleWidget(textColor = Colors.primaryColor, title = "Your Dashboard")
 }

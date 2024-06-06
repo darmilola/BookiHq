@@ -49,14 +49,14 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator) {
         }
         LaunchedEffect(key1 = true) {
             delay(3000L)
-            platformNavigator.startVideoCall("MyAuthToken")
-           /* authenticateSplashScreen(preferenceSettings, onAuthenticated = {
+            //platformNavigator.startVideoCall("MyAuthToken")
+            authenticateSplashScreen(preferenceSettings, onAuthenticated = {
                 navigator.replaceAll(MainScreen(platformNavigator = platformNavigator))
             }, onConnectVendor = {
                 navigator.replaceAll(ConnectPage(platformNavigator))
             }, onWelcome = {
                 navigator.replaceAll(WelcomeScreen(platformNavigator))
-            })*/
+            })
 
         }
     }

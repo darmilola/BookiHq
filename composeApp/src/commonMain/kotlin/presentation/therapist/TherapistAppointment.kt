@@ -69,7 +69,7 @@ fun TherapistAppointment(mainViewModel: MainViewModel,uiStateViewModel: UIStateV
     val deleteAppointmentFailed = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit, block = {
-        appointmentPresenter.getSpecialistAppointments(7)
+        appointmentPresenter.getSpecialistAppointments(3)
     })
 
     val loadMoreState =

@@ -19,6 +19,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     private var _connectedVendor =  savedStateHandle.getStateFlow("connectedVendor", Vendor())
     private var _currentUserInfo =  savedStateHandle.getStateFlow("userInfo", User())
     private var _currentUserId =  savedStateHandle.getStateFlow("currentUserId", -1)
+    private var _currentSpecialistId =  savedStateHandle.getStateFlow("currentSpecialistId", -1)
     private var _currentVendorId =  savedStateHandle.getStateFlow("currentVendorId", -1)
     private var _currentUserFirstname =  savedStateHandle.getStateFlow("currentUserFirstname", "")
     private var _currentUserEmail =  savedStateHandle.getStateFlow("currentUserEmail", "")
@@ -69,6 +70,9 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     val userId: StateFlow<Int>
         get() = _currentUserId
 
+    val specialistId: StateFlow<Int>
+        get() = _currentSpecialistId
+
     val vendorId: StateFlow<Int>
         get() = _currentVendorId
 
@@ -111,6 +115,10 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
 
     fun setVendorId(vendorId: Int) {
         savedStateHandle["currentVendorId"] = vendorId
+    }
+
+    fun setSpecialistId(specialistId: Int) {
+        savedStateHandle["currentSpecialistId"] = specialistId
     }
 
     fun setUserFirstname(userFirstname: String) {

@@ -34,5 +34,10 @@ data class SpecialistAvailabilityResponse(@SerialName("status") val status: Stri
                                           @SerialName("bookings") val bookedAppointment: List<Appointment>)
 
 @Serializable
+data class SpecialistTimeAvailabilityResponse(@SerialName("status") val status: String = "",
+                                              @SerialName("availability") val availableTimes: List<AvailableTime>,
+                                              @SerialName("timeOffs") val timeOffs: List<TimeOffs>)
+
+@Serializable
 data class VendorAvailabilityResponse(@SerialName("status") val status: String = "",
                                           @SerialName("availableTimes") val availableTimes: List<VendorTime>)

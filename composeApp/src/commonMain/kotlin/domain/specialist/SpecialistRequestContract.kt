@@ -7,4 +7,10 @@ import kotlinx.serialization.Serializable
 data class GetReviewsRequest(@SerialName("specialist_id") val specialistId: Int)
 @Serializable
 data class TimeOffRequest(@SerialName("specialist_id") val specialistId: Int, @SerialName("time_id") val timeId: Int,
-                          @SerialName("date") val date: String)
+                          @SerialName("day") val day: Int, @SerialName("year") val year: Int, @SerialName("month") val month: Int)
+
+@Serializable
+data class GetSpecialistAvailableTimeRequest(@SerialName("specialist_id") val specialistId: Int,
+                                             @SerialName("day") val day: Int,
+                                             @SerialName("month") val month: Int,
+                                             @SerialName("year") val year: Int)
