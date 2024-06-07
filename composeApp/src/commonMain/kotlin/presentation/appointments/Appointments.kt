@@ -36,6 +36,7 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import domain.Models.Appointment
 import domain.Models.AppointmentItemUIModel
+import domain.Models.PlatformNavigator
 import domain.Models.User
 import domain.Models.Vendor
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -58,7 +59,7 @@ import rememberStackedSnackbarHostState
 import theme.Colors
 
 class AppointmentsTab(private val mainViewModel: MainViewModel,
-                      private var appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel) : Tab, KoinComponent {
+                      private var appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel,private val platformNavigator: PlatformNavigator) : Tab, KoinComponent {
 
     private val appointmentPresenter: AppointmentPresenter by inject()
     private var uiStateViewModel: UIStateViewModel? = null
@@ -98,6 +99,9 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
         val deleteAppointmentProgress = remember { mutableStateOf(false) }
         val deleteAppointmentSuccess = remember { mutableStateOf(false) }
         val deleteAppointmentFailed = remember { mutableStateOf(false) }
+
+        val joinMeetingReady = remember { mutableStateOf(false) }
+        val authToken = remember { mutableStateOf("") }
 
 
         if (uiStateViewModel == null) {
@@ -187,6 +191,12 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                     },
                     onDeleteStarted = {
                        deleteAppointmentProgress.value = true
+                    },
+                    onJoinMeetingTokenReady = {
+                        println("it $it")
+                        platformNavigator.startVideoCall(it)
+                       // joinMeetingReady.value = true
+                        //authToken.value = it
                     }
                 )
                 handler.init()
@@ -206,6 +216,11 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                     //Error Occurred display reload
 
                 } else if (uiState.value.contentVisible) {
+
+                    if (joinMeetingReady.value){
+                        println("Ready")
+                        platformNavigator.startVideoCall(authToken = authToken.value)
+                    }
 
                     val columnModifier = Modifier
                         .padding(top = 5.dp)

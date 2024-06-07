@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.Appointment
+import domain.Models.AppointmentType
 import domain.Models.ServiceStatus
 import domain.Models.SpecialistInfo
 import presentation.appointments.AppointmentPresenter
@@ -50,23 +51,37 @@ import presentations.components.TextComponent
 fun NewAppointmentWidget(appointment: Appointment, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null) {
 
     val appointmentStatus = appointment.serviceStatus
-    val menuItems = arrayListOf<String>()
+    val serviceMenuItems = arrayListOf<String>()
+    val meetingMenuItems = arrayListOf<String>()
 
-    var actionItem = ""
-     actionItem = when (appointmentStatus) {
-        ServiceStatus.Pending.toPath() -> {
-            "Postpone"
+
+    if (appointment.appointmentType == AppointmentType.SERVICE.toPath()) {
+        var actionItem = ""
+        actionItem = when (appointmentStatus) {
+            ServiceStatus.Pending.toPath() -> {
+                "Postpone"
+            }
+
+            else -> {
+                "Delete"
+            }
         }
-
-        else -> {
-            "Delete"
+        serviceMenuItems.add(actionItem)
+        if (appointmentStatus == ServiceStatus.Done.toPath()) {
+            serviceMenuItems.add("Add Review")
         }
     }
 
-    menuItems.add(actionItem)
-    if (appointmentStatus == ServiceStatus.Done.toPath()){
-        menuItems.add("Add Review")
+
+
+    if (appointment.appointmentType == AppointmentType.MEETING.toPath()) {
+        if (appointmentStatus == ServiceStatus.Done.toPath()) {
+            meetingMenuItems.add("Delete")
+        } else {
+            meetingMenuItems.add("Join Meeting")
+        }
     }
+
 
 
     var iconRes = "drawable/schedule.png"
@@ -111,8 +126,28 @@ fun NewAppointmentWidget(appointment: Appointment, appointmentPresenter: Appoint
                 horizontalAlignment = Alignment.Start,
                 modifier = columnModifier
             ) {
-                AttachAppointmentHeader(statusText, iconRes, statusColor, appointment, menuItems, appointmentPresenter, postponementViewModel)
-                AttachAppointmentContent(appointment)
+                if (appointment.appointmentType == AppointmentType.SERVICE.toPath()) {
+                    AttachAppointmentHeader(
+                        statusText,
+                        iconRes,
+                        statusColor,
+                        appointment,
+                        serviceMenuItems,
+                        appointmentPresenter,
+                        postponementViewModel
+                    )
+                    AttachAppointmentContent(appointment)
+                }
+                else{
+                    AttachMeetingAppointmentHeader(statusText,
+                        iconRes,
+                        statusColor,
+                        appointment,
+                        meetingMenuItems,
+                        appointmentPresenter)
+                    AttachAppointmentContent(appointment)
+
+                }
             }
         }
 }
@@ -209,6 +244,84 @@ fun AttachAppointmentHeader(statusText: String, statusDrawableRes: String, statu
     }
 }
 
+
+@Composable
+fun AttachMeetingAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment, menuItems: ArrayList<String>, presenter: AppointmentPresenter? = null) {
+    val expandedMenuItem = remember { mutableStateOf(false) }
+
+    Row(
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 5.dp, top = 15.dp)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(0.70f).height(60.dp)
+        ) {
+            Box(modifier = Modifier.fillMaxWidth(0.08f).fillMaxHeight(), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.size(6.dp).clip(CircleShape).background(color = statusColor)){}
+            }
+            TextComponent(
+                text = "Meeting With Therapist",
+                fontSize = 18,
+                fontFamily = GGSansSemiBold,
+                textStyle = TextStyle(),
+                textColor = Colors.darkPrimary,
+                textAlign = TextAlign.Left,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                lineHeight = 30,
+                textModifier = Modifier
+                    .fillMaxWidth())
+        }
+        Row(
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            ImageComponent(imageModifier = Modifier.size(20.dp).padding(bottom = 2.dp), imageRes = statusDrawableRes, colorFilter = ColorFilter.tint(color = statusColor))
+            AttachAppointmentStatus(statusText, statusColor)
+            Row(modifier = Modifier
+                .fillMaxSize(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AttachIcon(
+                    iconRes = "drawable/overflow_menu.png",
+                    iconSize = 25,
+                    iconTint = statusColor
+                ) {
+                    expandedMenuItem.value = true
+                }
+            }
+            DropdownMenu(
+                expanded = expandedMenuItem.value,
+                onDismissRequest = { expandedMenuItem.value = false },
+                modifier = Modifier
+                    .fillMaxWidth(0.40f)
+                    .background(Color.White)
+            ) {
+                menuItems.forEachIndexed { index, title ->
+                    DropdownMenuItem(
+                        onClick = {
+                            if (title == "Join Meeting"){
+                              presenter?.joinMeeting(customParticipantId = "devprocess@gmail.com",
+                                  presetName = "group_call_host", meetingId = "bbb24d30-4171-4506-875d-7a31bc8de0fa")
+                            }
+                            else if (title == "Delete"){
+                                presenter?.deleteAppointment(appointment.appointmentId!!)
+                            }
+                        }) {
+                        SubtitleTextWidget(text = title, fontSize = 16)
+                    }
+                }
+            }
+        }
+    }
+}
+
 @Composable
 fun AttachAppointmentStatus(status: String, statusColor: Color){
     val rowModifier = Modifier
@@ -233,7 +346,12 @@ fun AttachAppointmentStatus(status: String, statusColor: Color){
 
 @Composable
 fun AttachAppointmentContent(appointment: Appointment) {
-          AppointmentInfoWidget(appointment)
+    if (appointment.appointmentType == AppointmentType.SERVICE.toPath()) {
+        AppointmentInfoWidget(appointment)
+    }
+    else{
+        MeetingInfoWidget(appointment)
+    }
 }
 
 

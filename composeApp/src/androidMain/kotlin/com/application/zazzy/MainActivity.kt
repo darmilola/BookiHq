@@ -85,7 +85,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
 
     override fun startVideoCall(authToken: String) {
         val intent = Intent(this, MeetWithTherapistActivity::class.java)
-        intent.putExtra("authToken","ABC")
+        intent.putExtra("authToken",authToken)
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
     }

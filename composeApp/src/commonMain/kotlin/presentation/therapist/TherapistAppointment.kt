@@ -131,6 +131,9 @@ fun TherapistAppointment(mainViewModel: MainViewModel,uiStateViewModel: UIStateV
                 },
                 onDeleteStarted = {
                     deleteAppointmentProgress.value = true
+                },
+                onJoinMeetingTokenReady = {
+
                 }
             )
             handler.init()

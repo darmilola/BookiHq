@@ -2,6 +2,7 @@ package domain.appointments
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.StringFormat
 
 @Serializable
 data class GetAppointmentRequest(@SerialName("user_id") val userId: Int)
@@ -28,6 +29,11 @@ data class PostponeAppointmentRequest(@SerialName("user_id") val userId: Int,
 
 @Serializable
 data class DeleteAppointmentRequest(@SerialName("appointment_id") val appointmentId: Int)
+
+@Serializable
+data class JoinMeetingRequest(@SerialName("custom_participant_id") val customParticipantId: String,
+                              @SerialName("preset_name") val presetName: String,
+                              @SerialName("meetingId") val meetingId: String)
 
 @Serializable
 data class GetSpecialistAvailabilityRequest(@SerialName("specialist_id") val specialistId: Int, @SerialName("day") val day: Int,

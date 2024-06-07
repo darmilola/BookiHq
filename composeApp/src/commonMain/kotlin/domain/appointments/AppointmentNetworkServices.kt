@@ -3,6 +3,7 @@ package domain.appointments
 import com.badoo.reaktive.single.toSingle
 import domain.Models.Appointment
 import domain.Models.AppointmentListDataResponse
+import domain.Models.JoinMeetingResponse
 import domain.Models.ListDataResponse
 import domain.Models.Product
 import domain.Models.ServerResponse
@@ -46,6 +47,16 @@ open class AppointmentNetworkService(private val apiService: HttpClient) {
             contentType(ContentType.Application.Json)
             setBody(deleteAppointmentRequest)
         }.body<ServerResponse>().toSingle()
+
+    suspend fun joinMeeting(joinMeetingRequest: JoinMeetingRequest) =
+        apiService.post {
+            url("/api/v1/appointment/meeting/join")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(joinMeetingRequest)
+        }.body<JoinMeetingResponse>().toSingle()
 
     suspend fun getSpecialistAvailability(getSpecialistAvailabilityRequest: GetSpecialistAvailabilityRequest) =
         apiService.post {

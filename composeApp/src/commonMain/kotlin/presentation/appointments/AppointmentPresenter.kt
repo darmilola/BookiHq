@@ -194,6 +194,37 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
         }
     }
 
+    override fun joinMeeting(customParticipantId: String, presetName: String, meetingId: String) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    contractView?.showLce(UIStates(loadingVisible = true), message = "Joining Meeting")
+                    appointmentRepositoryImpl.joinMeeting(customParticipantId, presetName, meetingId)
+                        .subscribe(
+                            onSuccess = { result ->
+                                if (result.status == "success"){
+                                    println("Success")
+                                    contractView?.onJoinMeetingHandlerTokenReady(result.token)
+                                }
+                                else{
+                                    println("Error 1")
+                                    contractView?.showLce(UIStates(errorOccurred = true), message = "Error Joining Meeting please try again")
+                                }
+                            },
+                            onError = {
+                                println("Error 2 ${it.message}")
+                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true), message = "Error Joining Meeting please try again")}
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                println("Error 3 ${e.message}")
+                contractView?.showLce(UIStates(errorOccurred = true), message = "Error Joining Meeting please try again")
+            }
+        }
+    }
+
     override fun getTherapistAvailability(specialistId: Int, day: Int, month: Int, year: Int) {
         scope.launch(Dispatchers.Main) {
             try {

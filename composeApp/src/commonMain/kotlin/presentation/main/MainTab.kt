@@ -39,6 +39,7 @@ import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import domain.Models.Appointment
 import domain.Models.HomepageInfo
+import domain.Models.PlatformNavigator
 import domain.Models.Product
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -61,7 +62,7 @@ import presentation.viewmodels.UIStates
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
-class MainTab(private val mainViewModel: MainViewModel): Tab, KoinComponent {
+class MainTab(private val mainViewModel: MainViewModel, private val platformNavigator: PlatformNavigator): Tab, KoinComponent {
 
 
     private var homePageViewModel: HomePageViewModel? = null
@@ -172,7 +173,7 @@ class MainTab(private val mainViewModel: MainViewModel): Tab, KoinComponent {
                                 isBottomNavSelected = true
                             }
                             TabNavigationItem(
-                                AppointmentsTab(mainViewModel, appointmentResourceListEnvelopeViewModel!!),
+                                AppointmentsTab(mainViewModel, appointmentResourceListEnvelopeViewModel!!, platformNavigator = platformNavigator),
                                 selectedImage = "drawable/appointment_icon.png",
                                 unselectedImage = "drawable/appointment_outline.png",
                                 labelText = "History",

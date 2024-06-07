@@ -89,7 +89,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
         TabNavigator(showDefaultTab(mainViewModel!!)) {
             when (screenNav?.value?.second) {
                 Screens.MAIN_TAB.toPath() -> {
-                    it.current = MainTab(mainViewModel!!)
+                    it.current = MainTab(mainViewModel!!, platformNavigator!!)
                 }
                 Screens.BOOKING.toPath() -> {
                     it.current = BookingScreen(mainViewModel!!)
@@ -160,7 +160,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
     }
 
     private fun showDefaultTab(mainViewModel: MainViewModel): MainTab {
-        return  MainTab(mainViewModel)
+        return  MainTab(mainViewModel, platformNavigator!!)
     }
 
 }

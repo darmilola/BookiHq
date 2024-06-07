@@ -131,3 +131,78 @@ fun AppointmentInfoWidget(appointment: Appointment) {
         }
     }
 }
+
+
+
+
+@Composable
+fun MeetingInfoWidget(appointment: Appointment) {
+
+    val appointmentDateFormat = LocalDate.Format {
+        dayOfWeek(DayOfWeekNames.ENGLISH_FULL)
+        chars(", ")
+        monthName(MonthNames.ENGLISH_ABBREVIATED)
+        char(' ')
+        dayOfMonth()
+    }
+
+    val appointmentDate =
+        LocalDate(dayOfMonth = appointment.appointmentDay!!, monthNumber = appointment.appointmentMonth!!, year = appointment.appointmentYear!!).format(appointmentDateFormat)
+    val appointmentTime = appointment.platformTime?.time
+
+    val columnModifier = Modifier
+        .padding(start = 15.dp, end = 10.dp)
+        .fillMaxWidth()
+    Column(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start,
+        modifier = columnModifier
+    ) {
+        TextComponent(
+            text = appointment.meetingDescription.toString(),
+            fontSize = 16,
+            fontFamily = GGSansSemiBold,
+            textStyle = MaterialTheme.typography.h6,
+            textColor = Colors.darkPrimary,
+            textAlign = TextAlign.Start,
+            maxLines = 3,
+            fontWeight = FontWeight.Bold,
+            textModifier = Modifier
+                .fillMaxWidth().padding(start = 5.dp)
+        )
+
+        Row(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
+            Column(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(top = 5.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                val rowModifier = Modifier
+                    .fillMaxWidth().height(25.dp)
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.Top,
+                    modifier = rowModifier
+                ) {
+                    Box(
+                        modifier = Modifier.wrapContentWidth().fillMaxHeight(),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        TextComponent(
+                            text = appointmentTime.toString() + " " + appointmentDate,
+                            textModifier = Modifier.wrapContentSize()
+                                .padding(start = 5.dp),
+                            fontSize = 15,
+                            fontFamily = GGSansRegular,
+                            textStyle = MaterialTheme.typography.h6,
+                            textColor = Colors.serviceLightGray,
+                            textAlign = TextAlign.Start,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}

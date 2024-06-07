@@ -1,8 +1,10 @@
 package presentation.appointments
 
+import com.badoo.reaktive.single.Single
 import domain.Models.Appointment
 import domain.Models.AppointmentResourceListEnvelope
 import domain.Models.AvailableTime
+import domain.Models.JoinMeetingResponse
 import domain.Models.TimeOffs
 import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.UIStates
@@ -21,6 +23,7 @@ interface AppointmentContract {
         fun  onDeleteAppointmentStarted()
         fun  onDeleteAppointmentSuccess()
         fun  onDeleteAppointmentFailed()
+        fun onJoinMeetingHandlerTokenReady(meetingToken: String)
     }
 
     abstract class Presenter {
@@ -31,6 +34,7 @@ interface AppointmentContract {
         abstract fun getMoreSpecialistAppointments(specialistId: Int, nextPage: Int = 1)
         abstract fun postponeAppointment(appointment: Appointment, newAppointmentTime: Int,  day: Int, month: Int, year: Int)
         abstract fun deleteAppointment(appointmentId: Int)
+        abstract fun joinMeeting(customParticipantId: String, presetName: String, meetingId: String)
         abstract fun getTherapistAvailability(specialistId: Int, day: Int, month: Int, year: Int)
     }
 }

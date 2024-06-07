@@ -18,6 +18,7 @@ class AppointmentsHandler(
     private val appointmentPresenter: AppointmentPresenter,
     private val onPostponeAppointment: () -> Unit,
     private val onPostponeDone: () -> Unit,
+    private val onJoinMeetingTokenReady: (meetingToken: String) -> Unit,
     private val onPostponeFailed: () -> Unit,
     private val onDeleteStarted: () -> Unit,
     private val onDeleteSuccess: () -> Unit,
@@ -95,6 +96,11 @@ class AppointmentsHandler(
 
     override fun onDeleteAppointmentFailed() {
         onDeleteFailed()
+    }
+
+    override fun onJoinMeetingHandlerTokenReady(meetingToken: String) {
+        println("token $meetingToken")
+         onJoinMeetingTokenReady(meetingToken)
     }
 
 }

@@ -337,6 +337,9 @@ private fun AttachBackIcon(mainViewModel: MainViewModel) {
                 Screens.CART.toPath() -> {
                     mainViewModel.setScreenNav(Pair(Screens.EDIT_PROFILE.toPath(), Screens.CART.toPath()))
                 }
+                Screens.MAIN_TAB.toPath() -> {
+                    mainViewModel.setScreenNav(Pair(Screens.EDIT_PROFILE.toPath(), Screens.MAIN_TAB.toPath()))
+                }
                 else -> {
 
                 }

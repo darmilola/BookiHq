@@ -4,6 +4,7 @@ import com.badoo.reaktive.single.Single
 import domain.Models.Appointment
 import domain.Models.AppointmentListDataResponse
 import domain.Models.AppointmentResourceListEnvelope
+import domain.Models.JoinMeetingResponse
 import domain.Models.ListDataResponse
 import domain.Models.ServerResponse
 import domain.Models.ServiceStatus
@@ -47,6 +48,15 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
     override suspend fun deleteAppointment(appointmentId: Int): Single<ServerResponse> {
         val param = DeleteAppointmentRequest(appointmentId)
         return appointmentNetworkService.deleteAppointment(param)
+    }
+
+    override suspend fun joinMeeting(
+        customParticipantId: String,
+        presetName: String,
+        meetingId: String
+    ): Single<JoinMeetingResponse> {
+        val param = JoinMeetingRequest(customParticipantId, presetName, meetingId)
+        return appointmentNetworkService.joinMeeting(param)
     }
 
     override suspend fun getTherapistAvailability(

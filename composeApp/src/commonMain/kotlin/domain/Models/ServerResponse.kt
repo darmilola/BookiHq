@@ -7,6 +7,9 @@ import kotlinx.serialization.Serializable
 data class ServerResponse(@SerialName("status") val status: String = "", @SerialName("message") val message: String = "")
 
 @Serializable
+data class JoinMeetingResponse(@SerialName("status") val status: String = "", @SerialName("token") val token: String = "")
+
+@Serializable
 data class AuthenticationResponse(@SerialName("status") val status: String = "",  @SerialName("data") val userInfo: User = User())
 
 @Serializable

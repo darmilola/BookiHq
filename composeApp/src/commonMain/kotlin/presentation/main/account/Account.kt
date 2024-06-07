@@ -118,7 +118,9 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
             .height(45.dp)
 
         ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke(1.dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor =  Color.DarkGray, style = style){
-            mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.EDIT_PROFILE.toPath()))
+           if (mainViewModel.currentUserInfo.value.userId != null){
+               mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.EDIT_PROFILE.toPath()))
+           }
         }
 
     }
