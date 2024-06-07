@@ -1,11 +1,11 @@
-package presentation.profile.UserOrders
+package presentation.Orders.UserOrders
 
 import GGSansRegular
 import GGSansSemiBold
-import theme.styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -35,12 +35,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import domain.Models.CustomerOrder
 import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun OrderDetailList(mainViewModel: MainViewModel) {
+fun OrderDetailList(mainViewModel: MainViewModel, customerOrder: CustomerOrder) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
         .clickable {}
@@ -56,19 +57,11 @@ fun OrderDetailList(mainViewModel: MainViewModel) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                OrderDetailsStatusView()
+                OrderDetailsStatusView(customerOrder)
             }
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(1),
-                modifier = Modifier.padding(top = 10.dp).fillMaxWidth().fillMaxHeight(),
-                contentPadding = PaddingValues(6.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                items(1) {
-                    OrderItemDetail(mainViewModel = mainViewModel)
-                }
+            Box(modifier = Modifier.padding(top = 10.dp).fillMaxWidth().fillMaxHeight(),) {
+                    OrderItemDetail(mainViewModel = mainViewModel, customerOrder)
             }
 
             Row(
@@ -85,14 +78,7 @@ fun OrderDetailList(mainViewModel: MainViewModel) {
 
 
 @Composable
-fun OrderDetailsStatusView(){
-    var showSheet by remember { mutableStateOf(false) }
-
-    if (showSheet) {
-        TrackMyOrderBottomSheet {
-            showSheet = false
-        }
-    }
+fun OrderDetailsStatusView(customerOrder: CustomerOrder){
     val columnModifier = Modifier
         .padding(start = 10.dp, end = 10.dp)
         .wrapContentHeight()
@@ -133,22 +119,6 @@ fun OrderDetailsStatusView(){
                 fontWeight = FontWeight.Black,
                 lineHeight = 35,
                 textModifier = modifier
-            )
-
-            TextComponent(
-                text = "Track My Order",
-                fontSize = 18,
-                fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
-                textColor = Colors.primaryColor,
-                textAlign = TextAlign.Right,
-                fontWeight = FontWeight.Black,
-                lineHeight = 30,
-                textModifier = Modifier
-                    .wrapContentSize().padding(top = 10.dp)
-                    .clickable {
-                        showSheet = true
-                    }
             )
         }
     }

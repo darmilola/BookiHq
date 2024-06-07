@@ -163,6 +163,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                     style = TextStyle(),
                     iconRes = "drawable/shopping_basket.png",
                     isDestructiveAction = false, onClick = {
+                        mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.ORDERS.toPath()))
                     })
 
 

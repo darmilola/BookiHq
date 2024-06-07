@@ -1,4 +1,4 @@
-package presentation.profile.UserOrders
+package presentation.Orders.UserOrders
 
 import theme.styles.Colors
 import androidx.compose.foundation.background
@@ -14,21 +14,33 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
+import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.viewModelFactory
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import presentation.appointments.AppointmentPresenter
 import presentation.consultation.rightTopBarItem
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget
 
-class UserOrders (private val mainViewModel: MainViewModel) : Tab {
+class UserOrders (private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
+    private val appointmentPresenter: AppointmentPresenter by inject()
+    private var uiStateViewModel: UIStateViewModel? = null
 
     override val options: TabOptions
         @Composable
@@ -45,6 +57,18 @@ class UserOrders (private val mainViewModel: MainViewModel) : Tab {
 
     @Composable
     override fun Content() {
+
+        val userId = mainViewModel.userId.collectAsState()
+
+
+        if (uiStateViewModel == null) {
+            uiStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+
+        }
 
         val columnModifier = Modifier
             .padding(top = 5.dp)
@@ -73,7 +97,7 @@ class UserOrders (private val mainViewModel: MainViewModel) : Tab {
                         horizontalArrangement = Arrangement.spacedBy(5.dp)
                     ) {
                         items(10) {
-                            OrderItemList(mainViewModel)
+                         //   OrderItemList(mainViewModel)
                         }
                     }
                 }
@@ -87,16 +111,9 @@ class UserOrders (private val mainViewModel: MainViewModel) : Tab {
 
         val rowModifier = Modifier
             .fillMaxWidth()
+            .padding(start = 10.dp, top = 5.dp)
             .height(40.dp)
 
-        val colModifier = Modifier
-            .padding(top = 35.dp, end = 0.dp, start = 10.dp)
-            .fillMaxWidth()
-            .height(70.dp)
-
-        Column(modifier = colModifier,
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally) {
             Row(modifier = rowModifier,
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically) {
@@ -122,18 +139,16 @@ class UserOrders (private val mainViewModel: MainViewModel) : Tab {
                     rightTopBarItem()
                 }
             }
-        }
     }
 
     @Composable
     fun leftTopBarItem() {
-        val navigator = LocalTabNavigator.current
-        PageBackNavWidget {
-            println("clicked... ")
-           // navigator.current = MainTab(mainViewModel)
-            //mainViewModel.setId(-1)
+        val navigator = LocalNavigator.currentOrThrow
+        PageBackNavWidget() {
+            navigator.pop()
         }
     }
+
 
     @Composable
     fun OrderTitle(){

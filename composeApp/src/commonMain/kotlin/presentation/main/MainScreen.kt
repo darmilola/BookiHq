@@ -22,13 +22,15 @@ import com.russhwolf.settings.set
 import domain.Models.PlatformNavigator
 import domain.Models.Screens
 import org.koin.core.component.KoinComponent
+import presentation.Orders.Orders
+import presentation.Orders.UserOrders.OrderDetails
 import presentation.bookings.BookingScreen
 import presentation.bookings.PendingAppointmentsTab
 import presentation.Products.CartScreen
 import presentation.profile.EditProfile
 import presentation.profile.connect_vendor.ConnectPageTab
 import presentation.profile.connect_vendor.ConnectedVendorDetailsPage
-import presentation.profile.UserOrders.UserOrders
+import presentation.Orders.UserOrders.UserOrders
 import presentation.consultation.ConsultationScreen
 import presentation.consultation.VirtualConsultationRoom
 import presentation.dialogs.LoadingDialog
@@ -99,7 +101,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
                     it.current = CartScreen(mainViewModel!!)
                 }
                 Screens.ORDERS.toPath() -> {
-                    it.current = UserOrders(mainViewModel!!)
+                    it.current = Orders(mainViewModel!!)
                 }
                 Screens.CONNECT_VENDOR_PAGE.toPath() -> {
                     it.current = ConnectPageTab(mainViewModel!!, platformNavigator)

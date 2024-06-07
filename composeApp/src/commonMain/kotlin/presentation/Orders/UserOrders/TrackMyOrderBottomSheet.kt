@@ -1,4 +1,4 @@
-package presentation.profile.UserOrders
+package presentation.Orders.UserOrders
 
 import GGSansRegular
 import theme.styles.Colors
@@ -34,7 +34,7 @@ import presentations.components.TextComponent
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TrackMyOrderBottomSheet(onDismiss: () -> Unit) {
-    val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
     ModalBottomSheet(
         modifier = Modifier.padding(top = 20.dp),
         onDismissRequest = { onDismiss() },

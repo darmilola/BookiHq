@@ -1,4 +1,4 @@
-package presentation.profile.UserOrders
+package presentation.Orders.UserOrders
 
 import GGSansRegular
 import GGSansSemiBold
@@ -19,11 +19,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,19 +35,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import domain.Models.CustomerOrder
+import domain.Models.OrderItem
 import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 
 @Composable
-fun OrderItemDetail(mainViewModel: MainViewModel) {
-    val navigator = LocalNavigator.currentOrThrow
+fun OrderItemDetail(mainViewModel: MainViewModel, customerOrder: CustomerOrder) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
-        .clickable {
-            navigator.push(OrderDetails(mainViewModel))
-        }
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .fillMaxHeight()
         Column(modifier = columnModifier,
@@ -59,15 +55,15 @@ fun OrderItemDetail(mainViewModel: MainViewModel) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                OrderIDView()
+                OrderID(customerOrder.orderReference!!)
             }
             LazyVerticalGrid(
                 columns = GridCells.Fixed(1),
                 modifier = Modifier.fillMaxWidth().height((130 * 3).dp),
                 contentPadding = PaddingValues(6.dp)
             ) {
-                items(3) {
-                   OrderDetailItemComponent {}
+                itemsIndexed(items = customerOrder.orderItems) { it, item ->
+                        OrderProductItemComponent(item)
                 }
             }
             Row(
@@ -100,14 +96,8 @@ fun OrderItemDetail(mainViewModel: MainViewModel) {
         }
     }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun OrderDetailItemComponent(onProductClickListener: () -> Unit) {
-    val modalSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded },
-        skipHalfExpanded = false
-    )
+fun OrderProductItemComponent(orderItem: OrderItem) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 10.dp, bottom = 10.dp)
         .height(110.dp)
@@ -115,15 +105,14 @@ fun OrderDetailItemComponent(onProductClickListener: () -> Unit) {
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Top
         ) {
-            OrderDetailItemImage()
-            OrderDetailItemDetail {}
+            OrderProductItemImage(orderItem)
+            OrderProductItemDescription(orderItem)
         }
     }
 
 
-
 @Composable
-fun OrderDetailItemImage() {
+fun OrderProductItemImage(orderItem: OrderItem) {
     val imageModifier =
         Modifier
             .fillMaxHeight()
@@ -154,7 +143,7 @@ fun OrderDetailItemImage() {
 
 
 @Composable
-fun OrderDetailItemDetail(onProductClickListener: () -> Unit){
+fun OrderProductItemDescription(orderItem: OrderItem){
     val columnModifier = Modifier
         .padding(start = 10.dp, end = 10.dp)
         .fillMaxHeight()
@@ -170,7 +159,7 @@ fun OrderDetailItemDetail(onProductClickListener: () -> Unit){
                 .wrapContentHeight()
 
             TextComponent(
-                text = "Bloom Rose Oil And Argan Oil is For Sale",
+                text = orderItem.itemProduct!!.productDescription,
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
                 textStyle = TextStyle(),
@@ -182,13 +171,13 @@ fun OrderDetailItemDetail(onProductClickListener: () -> Unit){
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-            OrderDetailItemPriceInfoContent()
+            OrderProductItemQty(orderItem)
         }
     }
 
 
 @Composable
-fun OrderDetailItemPriceInfoContent() {
+fun OrderProductItemQty(orderItem: OrderItem) {
     Row(
         modifier = Modifier
             .height(40.dp)
@@ -197,7 +186,7 @@ fun OrderDetailItemPriceInfoContent() {
     ) {
 
         TextComponent(
-            text = "1x",
+            text = orderItem.itemCount.toString()+"x",
             fontSize = 18,
             fontFamily = GGSansSemiBold,
             textStyle = TextStyle(),
@@ -210,7 +199,7 @@ fun OrderDetailItemPriceInfoContent() {
                 .wrapContentSize())
 
         TextComponent(
-            text = "$670,000",
+            text = orderItem.itemProduct!!.productPrice.toString()+"$",
             fontSize = 20,
             fontFamily = GGSansRegular,
             textStyle = TextStyle(),
@@ -225,7 +214,7 @@ fun OrderDetailItemPriceInfoContent() {
 
 
 @Composable
-fun OrderIDView() {
+fun OrderID(orderReference: Int) {
     Row(
         modifier = Modifier
             .height(100.dp)
@@ -248,7 +237,7 @@ fun OrderIDView() {
                     .wrapContentSize())
 
             TextComponent(
-                text = "1000M100521",
+                text = orderReference.toString(),
                 fontSize = 17,
                 fontFamily = GGSansSemiBold,
                 textStyle = MaterialTheme.typography.h6,

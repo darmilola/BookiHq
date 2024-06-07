@@ -12,6 +12,7 @@ import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.context.stopKoin
+import presentation.Orders.OrderModule
 import presentation.bookings.BookingModule
 import presentation.Products.ProductModule
 import presentation.profile.connect_vendor.ConnectVendorModule
@@ -33,6 +34,7 @@ fun initKoin(){
         modules(ProductModule.ProductModule)
         modules(AppointmentModule.AppointmentModule)
         modules(TherapistModule.TherapistModule)
+        modules(OrderModule.OrderModule)
     }
 }
 

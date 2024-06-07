@@ -3,7 +3,9 @@ package utils
 import androidx.compose.ui.unit.Dp
 import applications.device.ScreenSizeInfo
 import domain.Models.Appointment
+import domain.Models.CustomerOrder
 import domain.Models.HomepageInfo
+import domain.Models.OrderItem
 import domain.Models.Product
 import domain.Models.ScreenSizeInfo
 import domain.Models.Services
@@ -16,6 +18,13 @@ fun getAppointmentViewHeight(
 
         return itemCount * 200
     }
+
+fun getOrderViewHeight(
+    itemCount: Int
+): Int{
+
+    return itemCount * 350
+}
 
 
 

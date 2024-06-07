@@ -74,7 +74,7 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
     }
     else {
         orderItem.value = OrderItem()
-        orderItem.value.orderReference = orderReference
+        orderItem.value.orderId = orderReference
         orderItem.value.itemReference = itemReference
         orderItem.value.itemProduct = selectedProduct.itemProduct
         orderItem.value.productId = selectedProduct.itemProduct?.productId!!

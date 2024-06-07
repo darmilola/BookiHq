@@ -1,4 +1,4 @@
-package presentation.profile.UserOrders
+package presentation.Orders.UserOrders
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,15 +16,18 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import domain.Models.CustomerOrder
+import domain.Models.Screens
+import presentation.Orders.Orders
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.PageBackNavWidget
 
-class OrderDetails(private val mainViewModel: MainViewModel) : Tab {
+class OrderDetails(private val mainViewModel: MainViewModel,private val customerOrder: CustomerOrder) : Tab {
 
     override val options: TabOptions
         @Composable
         get() {
-            val title = "Orders"
+            val title = "Order Details"
 
             return remember {
                 TabOptions(
@@ -41,7 +44,7 @@ class OrderDetails(private val mainViewModel: MainViewModel) : Tab {
             .height(70.dp)
 
         val colModifier = Modifier
-            .padding(top = 40.dp, end = 0.dp)
+            .padding(top = 10.dp, start = 10.dp)
             .fillMaxWidth()
             .fillMaxHeight()
 
@@ -63,16 +66,18 @@ class OrderDetails(private val mainViewModel: MainViewModel) : Tab {
                 }
 
             }
-            OrderDetailList(mainViewModel)
+            OrderDetailList(mainViewModel, customerOrder = customerOrder )
         }
     }
 }
 
 @Composable
 fun leftTopBarItem(mainViewModel: MainViewModel) {
-    val navigator = LocalTabNavigator.current
+    val tabNavigator = LocalTabNavigator.current
     PageBackNavWidget {
-        navigator.current = UserOrders(mainViewModel = mainViewModel)
+        tabNavigator.current = Orders(mainViewModel)
+
+       }
+
     }
-}
 

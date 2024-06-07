@@ -1,4 +1,4 @@
-package presentation.profile.UserOrders
+package presentation.Orders.UserOrders
 
 import GGSansRegular
 import theme.styles.Colors
@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -31,17 +33,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import domain.Models.CustomerOrder
+import domain.Models.OrderItem
+import domain.Models.Screens
 import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun OrderItemList(mainViewModel: MainViewModel) {
+fun OrderItemList(mainViewModel: MainViewModel, customerOrder: CustomerOrder) {
     val navigator = LocalTabNavigator.current
     val columnModifier = Modifier
         .padding(start = 10.dp, top = 35.dp, bottom = 10.dp, end = 10.dp)
         .clickable {
-            navigator.current = OrderDetails(mainViewModel)
+            mainViewModel.setScreenNav(Pair(Screens.ORDERS.toPath(), Screens.ORDER_DETAILS.toPath()))
         }
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .height(250.dp)
@@ -62,7 +67,7 @@ fun OrderItemList(mainViewModel: MainViewModel) {
                 ) {
 
                     TextComponent(
-                        text = "Friday, 26 Dec, 2023",
+                        text = customerOrder.orderReference.toString(),
                         fontSize = 18,
                         fontFamily = GGSansRegular,
                         textStyle = TextStyle(),
@@ -72,7 +77,7 @@ fun OrderItemList(mainViewModel: MainViewModel) {
                         textModifier = Modifier.wrapContentHeight().fillMaxWidth(0.50f))
 
                     Box(modifier = Modifier.fillMaxWidth().clickable {
-                          navigator.current = OrderDetails(mainViewModel)
+                          navigator.current = OrderDetails(mainViewModel, customerOrder)
                     },
                         contentAlignment = Alignment.CenterEnd) {
                         ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
@@ -87,8 +92,10 @@ fun OrderItemList(mainViewModel: MainViewModel) {
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                items(10) {
-                    OrderItemImage()
+                itemsIndexed(items = customerOrder.orderItems) { it, item ->
+
+                      OrderItemImage(item)
+
                 }
             }
             Row(
@@ -135,7 +142,7 @@ fun StraightLine() {
 }
 
 @Composable
-fun OrderItemImage() {
+fun OrderItemImage(orderItem: OrderItem) {
     val imageModifier = Modifier
             .height(100.dp)
             .width(100.dp)
@@ -144,7 +151,8 @@ fun OrderItemImage() {
     Box(contentAlignment = Alignment.Center) {
             ImageComponent(
                 imageModifier = imageModifier,
-                imageRes = "drawable/oil.jpg",
+                isAsync = true,
+                imageRes = orderItem.itemProduct?.productImages?.get(0)?.imageUrl!!,
                 contentScale = ContentScale.Crop)
         }
 
