@@ -259,7 +259,7 @@ class TalkWithTherapistHandler(
     private val isLoading: () -> Unit,
     private val isDone: () -> Unit,
     private val isSuccess: () -> Unit,
-) : ProfileContract.VideoView {
+) : ProfileContract.MeetingViewContract {
     fun init() {
         profilePresenter.registerTalkWithTherapistContract(this)
     }
@@ -269,10 +269,6 @@ class TalkWithTherapistHandler(
             when{
                 it.isLoading -> {
                     isLoading()
-                }
-
-                it.isDone -> {
-                    isDone()
                 }
 
                 it.isSuccess -> {

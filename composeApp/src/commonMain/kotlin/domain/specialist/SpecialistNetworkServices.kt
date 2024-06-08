@@ -1,6 +1,7 @@
 package domain.specialist
 
 import com.badoo.reaktive.single.toSingle
+import domain.Models.AppointmentListDataResponse
 import domain.Models.ServerResponse
 import domain.Models.SpecialistAvailabilityResponse
 import domain.Models.SpecialistReviews
@@ -8,6 +9,7 @@ import domain.Models.SpecialistReviewsResponse
 import domain.Models.SpecialistTimeAvailabilityResponse
 import domain.Profile.DeleteProfileRequest
 import domain.Profile.UpdateProfileRequest
+import domain.appointments.GetSpecialistAppointmentRequest
 import domain.appointments.GetSpecialistAvailabilityRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -58,5 +60,15 @@ open class SpecialistNetworkService(private val apiService: HttpClient) {
             contentType(ContentType.Application.Json)
             setBody(timeOffRequest)
         }.body<ServerResponse>().toSingle()
+
+    suspend fun getSpecialistAppointments(getSpecialistAppointmentRequest: GetSpecialistAppointmentRequest, nextPage: Int = 1) =
+        apiService.post {
+            url("/api/v1/specialist/appointments/get?page=$nextPage")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(getSpecialistAppointmentRequest)
+        }.body<AppointmentListDataResponse>().toSingle()
 
 }

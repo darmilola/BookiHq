@@ -1,6 +1,7 @@
 package domain.specialist
 
 import com.badoo.reaktive.single.Single
+import domain.Models.AppointmentListDataResponse
 import domain.Models.ServerResponse
 import domain.Models.SpecialistAvailabilityResponse
 import domain.Models.SpecialistReviews
@@ -14,6 +15,7 @@ interface SpecialistRepository {
     suspend fun addTimeOff(specialistId: Int, timeId: Int, day: Int,
                            month: Int,
                            year: Int): Single<ServerResponse>
+    suspend fun getSpecialistAppointments(specialistId: Int, nextPage: Int = 1): Single<AppointmentListDataResponse>
     suspend fun removeTimeOff(specialistId: Int, timeId: Int, day: Int,
                               month: Int,
                               year: Int): Single<ServerResponse>

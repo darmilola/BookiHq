@@ -25,8 +25,6 @@ interface AppointmentContract {
         abstract fun registerUIContract(view: View?)
         abstract fun getUserAppointments(userId: Int)
         abstract fun getMoreAppointments(userId: Int, nextPage: Int = 1)
-        abstract fun getSpecialistAppointments(specialistId: Int)
-        abstract fun getMoreSpecialistAppointments(specialistId: Int, nextPage: Int = 1)
         abstract fun postponeAppointment(appointment: Appointment, newAppointmentTime: Int,  day: Int, month: Int, year: Int)
         abstract fun deleteAppointment(appointmentId: Int)
         abstract fun joinMeeting(customParticipantId: String, presetName: String, meetingId: String)

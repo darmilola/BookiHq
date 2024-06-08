@@ -1,6 +1,7 @@
 package presentation.therapist
 
 import com.badoo.reaktive.single.subscribe
+import domain.appointments.AppointmentRepositoryImpl
 import domain.specialist.SpecialistRepositoryImpl
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +23,7 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
     }
 
     override fun getTherapistReviews(specialistId: Int) {
-        contractView?.showLce(ScreenUIStates(loadingVisible = true))
+        contractView?.showScreenLce(ScreenUIStates(loadingVisible = true))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
@@ -30,27 +31,27 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
+                                    contractView?.showScreenLce(ScreenUIStates(contentVisible = true))
                                     contractView?.showReviews(result.reviews)
                                 }
                                 else{
-                                    contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
+                                    contractView?.showScreenLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again")) }
+                                it.message?.let { it1 -> contractView?.showScreenLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again")) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
+                contractView?.showScreenLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
             }
         }
     }
 
     override fun getTherapistAvailability(specialistId: Int, day: Int, month: Int, year: Int) {
-        contractView?.showActionLce(ActionUIStates(isLoading = true, loadingMessage = "Getting Availability"))
+        contractView?.showScreenLce(ScreenUIStates(loadingVisible = true))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
@@ -59,20 +60,20 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     contractView?.showTherapistAvailability(result.availableTimes, result.timeOffs)
-                                    contractView?.showActionLce(ActionUIStates(isSuccess = true))
+                                    contractView?.showScreenLce(ScreenUIStates(contentVisible = true))
                                 }
                                 else{
-                                    contractView?.showActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
+                                    contractView?.showScreenLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
                                 }
                             },
                             onError = {
-                                contractView?.showActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
+                                contractView?.showScreenLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
+                contractView?.showScreenLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
             }
         }
     }
@@ -135,6 +136,62 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
                 result.dispose()
             } catch(e: Exception) {
                 contractView?.showActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
+            }
+        }
+    }
+
+    override fun getSpecialistAppointments(specialistId: Int) {
+        contractView?.showScreenLce(ScreenUIStates(loadingVisible = true))
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    specialistRepositoryImpl.getSpecialistAppointments(specialistId)
+                        .subscribe(
+                            onSuccess = { result ->
+                                if (result.status == "success"){
+                                    contractView?.showScreenLce(ScreenUIStates(contentVisible = true))
+                                    contractView?.showAppointments(result.listItem)
+                                }
+                                else{
+                                    contractView?.showScreenLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
+                                }
+                            },
+                            onError = {
+                                contractView?.showScreenLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.showScreenLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
+            }
+        }
+    }
+
+    override fun getMoreSpecialistAppointments(specialistId: Int, nextPage: Int) {
+        contractView?.onLoadMoreAppointmentStarted()
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    specialistRepositoryImpl.getSpecialistAppointments(specialistId, nextPage)
+                        .subscribe(
+                            onSuccess = { result ->
+                                if (result.status == "success"){
+                                    contractView?.onLoadMoreAppointmentEnded()
+                                    contractView?.showAppointments(result.listItem)
+                                }
+                                else{
+                                    contractView?.onLoadMoreAppointmentEnded()
+                                }
+                            },
+                            onError = {
+                                contractView?.onLoadMoreAppointmentEnded()
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.onLoadMoreAppointmentEnded()
             }
         }
     }

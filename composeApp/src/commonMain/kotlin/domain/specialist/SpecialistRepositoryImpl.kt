@@ -1,6 +1,7 @@
 package domain.specialist
 
 import com.badoo.reaktive.single.Single
+import domain.Models.AppointmentListDataResponse
 import domain.Models.ServerResponse
 import domain.Models.SpecialistAvailabilityResponse
 import domain.Models.SpecialistReviews
@@ -10,6 +11,7 @@ import domain.Profile.DeleteProfileRequest
 import domain.Profile.ProfileNetworkService
 import domain.Profile.ProfileRepository
 import domain.Profile.UpdateProfileRequest
+import domain.appointments.GetSpecialistAppointmentRequest
 import domain.appointments.GetSpecialistAvailabilityRequest
 import io.ktor.client.HttpClient
 
@@ -38,6 +40,15 @@ class SpecialistRepositoryImpl(apiService: HttpClient): SpecialistRepository {
         println("Params $param")
         return specialistNetworkService.addTimeOff(param)
     }
+
+    override suspend fun getSpecialistAppointments(
+        specialistId: Int,
+        nextPage: Int
+    ): Single<AppointmentListDataResponse> {
+        val param = GetSpecialistAppointmentRequest(specialistId)
+        return specialistNetworkService.getSpecialistAppointments(param, nextPage)
+    }
+
 
     override suspend fun removeTimeOff(
         specialistId: Int,

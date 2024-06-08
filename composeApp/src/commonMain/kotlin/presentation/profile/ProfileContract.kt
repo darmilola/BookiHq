@@ -7,14 +7,12 @@ import presentation.viewmodels.ActionUIStates
 class ProfileContract {
     interface View {
         fun onProfileDeleted()
-
         fun onProfileUpdated()
         fun showUserLocation(place: Place)
-
-        fun showLce(actionUIStates: ActionUIStates, message: String = "")
+        fun showActionLce(actionUIStates: ActionUIStates)
     }
 
-    interface VideoView {
+    interface MeetingViewContract {
         fun showAvailability(availableTimes: List<VendorTime>)
         fun showLce(actionUIStates: ActionUIStates, message: String = "")
 
@@ -23,8 +21,7 @@ class ProfileContract {
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
-
-        abstract fun registerTalkWithTherapistContract(view: VideoView?)
+        abstract fun registerTalkWithTherapistContract(view: MeetingViewContract?)
         abstract fun updateProfile(firstname: String, lastname: String, userEmail: String, address: String,
                                    contactPhone: String,   countryId: Int,
                                    cityId: Int, gender: String, profileImageUrl: String)

@@ -77,63 +77,6 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
             }
         }
     }
-
-    override fun getSpecialistAppointments(specialistId: Int) {
-        contractView?.showLce(ScreenUIStates(loadingVisible = true))
-        scope.launch(Dispatchers.Main) {
-            try {
-                val result = withContext(Dispatchers.IO) {
-                    appointmentRepositoryImpl.getSpecialistAppointments(specialistId)
-                        .subscribe(
-                            onSuccess = { result ->
-                                if (result.status == "success"){
-                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
-                                    contractView?.showAppointments(result.listItem)
-                                }
-                                else{
-                                    contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
-                                }
-                            },
-                            onError = {
-                                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
-                            },
-                        )
-                }
-                result.dispose()
-            } catch(e: Exception) {
-                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
-            }
-        }
-    }
-
-    override fun getMoreSpecialistAppointments(specialistId: Int, nextPage: Int) {
-        contractView?.onLoadMoreAppointmentStarted()
-        scope.launch(Dispatchers.Main) {
-            try {
-                val result = withContext(Dispatchers.IO) {
-                    appointmentRepositoryImpl.getSpecialistAppointments(specialistId, nextPage)
-                        .subscribe(
-                            onSuccess = { result ->
-                                if (result.status == "success"){
-                                    contractView?.onLoadMoreAppointmentEnded()
-                                    contractView?.showAppointments(result.listItem)
-                                }
-                                else{
-                                    contractView?.onLoadMoreAppointmentEnded()
-                                }
-                            },
-                            onError = {
-                                contractView?.onLoadMoreAppointmentEnded()
-                            },
-                        )
-                }
-                result.dispose()
-            } catch(e: Exception) {
-                contractView?.onLoadMoreAppointmentEnded()
-            }
-        }
-    }
-
     override fun postponeAppointment(
         appointment: Appointment,
         newAppointmentTime: Int,

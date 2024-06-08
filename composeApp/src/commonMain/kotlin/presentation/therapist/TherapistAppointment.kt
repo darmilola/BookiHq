@@ -35,6 +35,7 @@ import presentation.appointments.AppointmentsHandler
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.dialogs.LoadingDialog
+import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
@@ -47,27 +48,17 @@ import theme.Colors
 import utils.getAppointmentViewHeight
 
 @Composable
-fun TherapistAppointment(mainViewModel: MainViewModel, screenUiStateViewModel: ScreenUIStateViewModel, postponementViewModel: PostponementViewModel,
-                         appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel?, appointmentPresenter: AppointmentPresenter) {
+fun TherapistAppointment(mainViewModel: MainViewModel, screenUiStateViewModel: ScreenUIStateViewModel,
+                         appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel?, therapistPresenter: TherapistPresenter) {
 
-    val currentUser = mainViewModel.currentUserInfo.value
-    val specialistInfo = mainViewModel.currentSpecialistInfo.value
 
     val stackedSnackBarHostState = rememberStackedSnackbarHostState(
         maxStack = 5,
         animation = StackedSnackbarAnimation.Bounce
     )
 
-    val postponeAppointmentProgress = remember { mutableStateOf(false) }
-    val postponeAppointmentSuccess = remember { mutableStateOf(false) }
-    val postponeAppointmentFailed = remember { mutableStateOf(false) }
-
-    val deleteAppointmentProgress = remember { mutableStateOf(false) }
-    val deleteAppointmentSuccess = remember { mutableStateOf(false) }
-    val deleteAppointmentFailed = remember { mutableStateOf(false) }
-
     LaunchedEffect(Unit, block = {
-        appointmentPresenter.getSpecialistAppointments(3)
+        therapistPresenter.getSpecialistAppointments(3)
     })
 
     val loadMoreState =
@@ -105,37 +96,6 @@ fun TherapistAppointment(mainViewModel: MainViewModel, screenUiStateViewModel: S
         snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
         topBar = {},
         content = {
-            val handler = AppointmentsHandler(
-                appointmentResourceListEnvelopeViewModel,
-                screenUiStateViewModel,
-                postponementViewModel,
-                appointmentPresenter,
-                onPostponeAppointment = {
-                    postponeAppointmentProgress.value = true
-                },
-                onPostponeDone = {
-                    postponeAppointmentProgress.value = false
-                    postponeAppointmentSuccess.value = true
-                },
-                onPostponeFailed = {
-                    postponeAppointmentProgress.value = false
-                    postponeAppointmentFailed.value = true
-                },
-                onDeleteSuccess = {
-                    deleteAppointmentProgress.value = false
-                    deleteAppointmentSuccess.value = true
-                }, onDeleteFailed = {
-                    deleteAppointmentFailed.value = true
-                },
-                onDeleteStarted = {
-                    deleteAppointmentProgress.value = true
-                },
-                onJoinMeetingTokenReady = {
-
-                }
-            )
-            handler.init()
-
 
 
             if (uiState.value.loadingVisible) {
@@ -159,44 +119,6 @@ fun TherapistAppointment(mainViewModel: MainViewModel, screenUiStateViewModel: S
                     .fillMaxHeight()
                     .fillMaxWidth()
 
-                if (postponeAppointmentProgress.value) {
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        LoadingDialog("Updating Appointment")
-                    }
-                }
-                else if (postponeAppointmentSuccess.value) {
-                    ShowSnackBar(title = "Successful",
-                        description = "Your Have Successfully Postponed Your Appointment",
-                        actionLabel = "",
-                        duration = StackedSnackbarDuration.Short,
-                        snackBarType = SnackBarType.SUCCESS,
-                        stackedSnackBarHostState,
-                        onActionClick = {})
-                    postponeAppointmentSuccess.value = false
-                    appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                    appointmentPresenter.getUserAppointments(currentUser?.userId!!)
-
-                }
-
-                if (deleteAppointmentProgress.value) {
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        LoadingDialog("Deleting Appointment")
-                    }
-                }
-                else if (deleteAppointmentSuccess.value) {
-                    ShowSnackBar(title = "Successful",
-                        description = "Delete Successful",
-                        actionLabel = "",
-                        duration = StackedSnackbarDuration.Short,
-                        snackBarType = SnackBarType.SUCCESS,
-                        stackedSnackBarHostState,
-                        onActionClick = {})
-                    deleteAppointmentSuccess.value = false
-                    appointmentResourceListEnvelopeViewModel.clearData(mutableListOf())
-                    appointmentPresenter.getUserAppointments(currentUser.userId!!)
-
-                }
-
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -215,10 +137,7 @@ fun TherapistAppointment(mainViewModel: MainViewModel, screenUiStateViewModel: S
                             userScrollEnabled = true
                         ) {
                             itemsIndexed(items = appointmentUIModel.appointmentList) { it, item ->
-                                TherapistAppointmentWidget(
-                                    item,
-                                    appointmentPresenter,
-                                    postponementViewModel)
+                                TherapistAppointmentWidget(item)
                                 if (it == lastIndex && loadMoreState.value) {
                                     Box(
                                         modifier = Modifier.fillMaxWidth().height(60.dp),
@@ -243,7 +162,7 @@ fun TherapistAppointment(mainViewModel: MainViewModel, screenUiStateViewModel: S
                                         style = TextStyle()
                                     ) {
                                         if (appointmentResourceListEnvelopeViewModel.nextPageUrl.value.isNotEmpty()) {
-                                            appointmentPresenter.getMoreSpecialistAppointments(
+                                            therapistPresenter.getMoreSpecialistAppointments(
                                                 7,
                                                 nextPage = appointmentResourceListEnvelopeViewModel.currentPage.value + 1
                                             )

@@ -30,6 +30,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
+import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import com.russhwolf.settings.ObservableSettings
@@ -44,6 +47,7 @@ import org.koin.core.component.inject
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
 import presentation.dialogs.LoadingDialog
+import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.ActionUIStates
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
@@ -58,7 +62,7 @@ import rememberStackedSnackbarHostState
 
 class EditProfile(private val mainViewModel: MainViewModel, val  platformNavigator: PlatformNavigator? = null,val preferenceSettings: Settings) : Tab, KoinComponent {
     private val profilePresenter: ProfilePresenter by inject()
-    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
+    private var actionUIStateViewModel: ActionUIStateViewModel? = null
     override val options: TabOptions
         @Composable
         get() {
@@ -74,12 +78,17 @@ class EditProfile(private val mainViewModel: MainViewModel, val  platformNavigat
 
     @Composable
     override fun Content() {
-        val isLoading = remember { mutableStateOf(false) }
-        val isDone = remember { mutableStateOf(false) }
-        val isSuccess = remember { mutableStateOf(false) }
         val latitude = remember { mutableStateOf(0.0) }
         val longitude = remember { mutableStateOf(0.0) }
         val country = remember { mutableStateOf("") }
+
+        if (actionUIStateViewModel == null) {
+            actionUIStateViewModel= kmpViewModel(
+                factory = viewModelFactory {
+                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
 
         preferenceSettings as ObservableSettings
 
@@ -96,19 +105,10 @@ class EditProfile(private val mainViewModel: MainViewModel, val  platformNavigat
 
 
         val handler = ProfileHandler(profilePresenter,
-            isLoading = {
-                isLoading.value = true
-                isSuccess.value = false
-                isDone.value = false
-            }, isDone = {
-                isLoading.value = false
-                isDone.value = true
-            }, isSuccess = {
-                isSuccess.value = true
-            },
             onUserLocationReady = {
                country.value = it.country.toString()
-            })
+            },
+           actionUIStateViewModel!!)
         handler.init()
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
@@ -129,26 +129,30 @@ class EditProfile(private val mainViewModel: MainViewModel, val  platformNavigat
                  }
             },
             content = {
-                if (isLoading.value) {
+                if (actionUIStateViewModel!!.uiStateInfo.value.isLoading) {
                     Box(modifier = Modifier.fillMaxWidth(0.80f)) {
-                        LoadingDialog("Auth Profile...")
+                        LoadingDialog("Updating Profile...")
                     }
-                } else if (isSuccess.value) {
+                } else if (actionUIStateViewModel!!.uiStateInfo.value.isSuccess) {
                     ShowSnackBar(title = "Success!",
-                        description = "You Location is ${country.value}",
+                        description = "Account Updated Successfully",
                         actionLabel = "",
                         duration = StackedSnackbarDuration.Short,
                         snackBarType = SnackBarType.SUCCESS,
                         stackedSnackBarHostState,
                         onActionClick = {})
-                    isSuccess.value = false
+                }
+                else{
+                    ShowSnackBar(title = "Failed",
+                        description = "Error Occurred Please Try Again",
+                        actionLabel = "",
+                        duration = StackedSnackbarDuration.Short,
+                        snackBarType = SnackBarType.SUCCESS,
+                        stackedSnackBarHostState,
+                        onActionClick = {})
                 }
 
-                EditProfileCompose(
-                    mainViewModel,
-                    platformNavigator,
-                    profilePresenter,
-                    stackedSnackBarHostState)
+                EditProfileCompose(mainViewModel, platformNavigator)
             },
             bottomBar = {
 
@@ -175,7 +179,7 @@ class EditProfile(private val mainViewModel: MainViewModel, val  platformNavigat
 }
 
 @Composable
-fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: PlatformNavigator?, profilePresenter: ProfilePresenter, stackedSnackBarHostState: StackedSnakbarHostState) {
+fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: PlatformNavigator?) {
     val userInfo = mainViewModel.currentUserInfo.value
     val firstname = remember { mutableStateOf(userInfo.firstname) }
     val userEmail = userInfo.userEmail
@@ -361,9 +365,7 @@ fun PageTitle(){
 class ProfileHandler(
     private val profilePresenter: ProfilePresenter,
     private val onUserLocationReady:(Place)-> Unit,
-    private val isLoading: () -> Unit,
-    private val isDone: () -> Unit,
-    private val isSuccess: () -> Unit,
+    private val actionUIStateViewModel: ActionUIStateViewModel
     ) : ProfileContract.View {
     fun init() {
         profilePresenter.registerUIContract(this)
@@ -372,25 +374,11 @@ class ProfileHandler(
 
     override fun onProfileUpdated() {}
     override fun showUserLocation(place: Place) {
-        onUserLocationReady(place)
+          onUserLocationReady(place)
     }
 
-    override fun showLce(actionUIStates: ActionUIStates, message: String) {
-        actionUIStates.let {
-            when{
-                it.isLoading -> {
-                    isLoading()
-                }
-
-                it.isDone -> {
-                    isDone()
-                }
-
-                it.isSuccess -> {
-                    isSuccess()
-                }
-            }
-        }
+    override fun showActionLce(actionUIStates: ActionUIStates) {
+          actionUIStateViewModel.switchActionUIState(actionUIStates)
     }
 }
 

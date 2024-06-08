@@ -1,66 +1,57 @@
 package presentation.therapist
 
+import domain.Models.AppointmentResourceListEnvelope
 import domain.Models.AvailableTime
 import domain.Models.SpecialistReviews
 import domain.Models.TimeOffs
+import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.ActionUIStates
+import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
+import presentation.viewmodels.ScreenUIStateViewModel
 import presentation.viewmodels.ScreenUIStates
 
 class TherapistHandler(
     private val therapistPresenter: TherapistPresenter,
-    private val onPageLoading: () -> Unit,
-    private val onAsyncLoading: () -> Unit,
-    private val onAsyncSuccess: () -> Unit,
-    private val onAsyncFailed: () -> Unit,
-    private val onContentVisible: () -> Unit,
+    private val screenUiStateViewModel: ScreenUIStateViewModel,
+    private val actionUIStateViewModel: ActionUIStateViewModel,
     private val onReviewsReady: (List<SpecialistReviews>) -> Unit,
-    private val onErrorVisible: () -> Unit,
+    private val onMeetingTokenReady: (meetingToken: String) -> Unit,
+    private val appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel,
     private val onTherapistAvailabilityReady: (availableTimes: List<AvailableTime>, timeOffs: List<TimeOffs>) -> Unit) : TherapistContract.View {
     fun init() {
         therapistPresenter.registerUIContract(this)
     }
 
-    override fun showLce(uiState: ScreenUIStates, message: String) {
-        uiState.let {
-            when{
-                it.loadingVisible -> {
-                    onPageLoading()
-                }
-
-                it.contentVisible -> {
-                    onContentVisible()
-                }
-
-                it.errorOccurred -> {
-                    onErrorVisible()
-                }
-            }
-        }
+    override fun showScreenLce(screenUIStates: ScreenUIStates) {
+        screenUiStateViewModel.switchScreenUIState(screenUIStates)
     }
 
-    override fun showActionLce(uiState: ActionUIStates, message: String) {
-        uiState.let {
-            when{
-                it.isLoading-> {
-                    onAsyncLoading()
-                }
-
-                it.isSuccess -> {
-                    onAsyncSuccess()
-                }
-
-                it.isFailed-> {
-                    onAsyncFailed()
-                }
-                it.isDone -> {
-                    onAsyncFailed()
-                }
-            }
-        }
+    override fun showActionLce(actionUiState: ActionUIStates) {
+         actionUIStateViewModel.switchActionUIState(actionUiState)
     }
 
     override fun showReviews(reviews: List<SpecialistReviews>) {
         onReviewsReady(reviews)
+    }
+
+    override fun showAppointments(appointments: AppointmentResourceListEnvelope) {
+        if (appointmentResourceListEnvelopeViewModel.resources.value.isNotEmpty()) {
+            val appointmentList = appointmentResourceListEnvelopeViewModel.resources.value
+            appointmentList.addAll(appointments.resources!!)
+            appointmentResourceListEnvelopeViewModel.setResources(appointmentList)
+            appointments.prevPageUrl?.let { appointmentResourceListEnvelopeViewModel.setPrevPageUrl(it) }
+            appointments.nextPageUrl?.let { appointmentResourceListEnvelopeViewModel.setNextPageUrl(it) }
+            appointments.currentPage?.let { appointmentResourceListEnvelopeViewModel.setCurrentPage(it) }
+            appointments.totalItemCount?.let { appointmentResourceListEnvelopeViewModel.setTotalItemCount(it) }
+            appointments.displayedItemCount?.let { appointmentResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
+        } else {
+            appointmentResourceListEnvelopeViewModel.setResources(appointments.resources)
+            appointments?.prevPageUrl?.let { appointmentResourceListEnvelopeViewModel.setPrevPageUrl(it) }
+            appointments?.nextPageUrl?.let { appointmentResourceListEnvelopeViewModel.setNextPageUrl(it) }
+            appointments?.currentPage?.let { appointmentResourceListEnvelopeViewModel.setCurrentPage(it) }
+            appointments?.totalItemCount?.let { appointmentResourceListEnvelopeViewModel.setTotalItemCount(it) }
+            appointments?.displayedItemCount?.let { appointmentResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
+        }
     }
 
     override fun showTherapistAvailability(
@@ -70,5 +61,16 @@ class TherapistHandler(
         onTherapistAvailabilityReady(availableTimes, timeOffs)
     }
 
+    override fun onLoadMoreAppointmentStarted() {
+        appointmentResourceListEnvelopeViewModel.setLoadingMore(true)
+    }
+
+    override fun onLoadMoreAppointmentEnded() {
+        appointmentResourceListEnvelopeViewModel.setLoadingMore(false)
+    }
+
+    override fun onJoinMeetingTokenReady(meetingToken: String) {
+        onMeetingTokenReady(meetingToken)
+    }
 
 }

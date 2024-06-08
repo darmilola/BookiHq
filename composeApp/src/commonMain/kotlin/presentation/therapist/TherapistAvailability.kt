@@ -69,9 +69,12 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
     val displayTimes = remember { mutableStateOf(arrayListOf<AvailableTime>()) }
     val normalisedBookingTimes = arrayListOf<AvailableTime>()
 
+
     if (isNewDateSelected.value){
         therapistPresenter.getTherapistAvailability(therapistId, newSelectedDay.value, newSelectedMonth.value,
             newSelectedYear.value)
+    }else{
+        therapistPresenter.getTherapistAvailability(therapistId,currentDate.value.dayOfMonth, currentDate.value.monthNumber, currentDate.value.year)
     }
 
 
@@ -88,7 +91,7 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
             normalisedBookingTimes.add(normalisedTime!!)
         }
         else{
-            val isAvailableTime =  it.copy(isAvailable = true)
+            val isAvailableTime = it.copy(isAvailable = true)
             normalisedBookingTimes.add(isAvailableTime)
         }
     }

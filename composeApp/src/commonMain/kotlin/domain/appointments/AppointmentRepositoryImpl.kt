@@ -21,15 +21,6 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
         val param = GetAppointmentRequest(userId)
         return appointmentNetworkService.getAppointments(param, nextPage)
     }
-
-    override suspend fun getSpecialistAppointments(
-        specialistId: Int,
-        nextPage: Int
-    ): Single<AppointmentListDataResponse> {
-        val param = GetSpecialistAppointmentRequest(specialistId)
-        return appointmentNetworkService.getSpecialistAppointments(param, nextPage)
-    }
-
     override suspend fun postponeAppointment(
         appointment: Appointment,
         appointmentTime: Int,

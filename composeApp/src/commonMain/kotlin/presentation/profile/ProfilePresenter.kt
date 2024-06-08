@@ -16,14 +16,14 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
 
     private val scope: CoroutineScope = MainScope()
     private var contractView: ProfileContract.View? = null
-    private var videoView: ProfileContract.VideoView? = null
+    private var meetingViewContract: ProfileContract.MeetingViewContract? = null
     private val profileRepositoryImpl: ProfileRepositoryImpl = ProfileRepositoryImpl(apiService)
     override fun registerUIContract(view: ProfileContract.View?) {
        contractView = view
     }
 
-    override fun registerTalkWithTherapistContract(view: ProfileContract.VideoView?) {
-        videoView = view
+    override fun registerTalkWithTherapistContract(view: ProfileContract.MeetingViewContract?) {
+        meetingViewContract = view
     }
 
     override fun updateProfile(
@@ -40,26 +40,26 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(ActionUIStates(isLoading = true))
+                    contractView?.showActionLce(ActionUIStates(isLoading = true))
                     profileRepositoryImpl.updateProfile(firstname, lastname, userEmail, address, contactPhone, countryId, cityId, gender,profileImageUrl)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(ActionUIStates(isSuccess = true))
+                                    contractView?.showActionLce(ActionUIStates(isSuccess = true))
                                     //contractView?.onProfileUpdated()
                                 }
                                 else{
-                                    contractView?.showLce(ActionUIStates(isDone = true, isSuccess = false))
+                                    contractView?.showActionLce(ActionUIStates(isSuccess = false))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(ActionUIStates(isDone = true, isSuccess = false), message = it1) }
+                                it.message?.let { it1 -> contractView?.showActionLce(ActionUIStates(isSuccess = false)) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(ActionUIStates(isDone = true, isSuccess = false))
+                contractView?.showActionLce(ActionUIStates(isSuccess = false))
             }
         }
     }
@@ -68,26 +68,26 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(ActionUIStates(isLoading = true))
+                    contractView?.showActionLce(ActionUIStates(isLoading = true))
                     profileRepositoryImpl.deleteProfile(userEmail)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(ActionUIStates(isDone = true, isSuccess = true))
+                                    contractView?.showActionLce(ActionUIStates( isSuccess = true))
                                     contractView?.onProfileDeleted()
                                 }
                                 else{
-                                    contractView?.showLce(ActionUIStates(isDone = true, isSuccess = false))
+                                    contractView?.showActionLce(ActionUIStates(isSuccess = false))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(ActionUIStates(isDone = true, isSuccess = false), message = it1) }
+                                it.message?.let { it1 -> contractView?.showActionLce(ActionUIStates(isSuccess = false)) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(ActionUIStates(isDone = true, isSuccess = false))
+                contractView?.showActionLce(ActionUIStates(isSuccess = false))
             }
         }
     }
@@ -96,30 +96,30 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    videoView?.showLce(ActionUIStates(isLoading = true))
+                    meetingViewContract?.showLce(ActionUIStates(isLoading = true))
                     profileRepositoryImpl.getVendorAvailableTimes(vendorId = vendorId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     println("Success ${result.availableTimes}")
-                                    videoView?.showLce(ActionUIStates(isDone = true, isSuccess = true))
-                                    videoView?.showAvailability(result.availableTimes)
+                                    meetingViewContract?.showLce(ActionUIStates(isSuccess = true))
+                                    meetingViewContract?.showAvailability(result.availableTimes)
                                 }
                                 else{
                                     println("Error 1")
-                                    videoView?.showLce(ActionUIStates(isDone = true, isSuccess = false))
+                                    meetingViewContract?.showLce(ActionUIStates(isSuccess = false))
                                 }
                             },
                             onError = {
                                 println("Error 2")
-                                it.message?.let { it1 -> videoView?.showLce(ActionUIStates(isDone = true, isSuccess = false), message = it1) }
+                                it.message?.let { it1 -> meetingViewContract?.showLce(ActionUIStates(isSuccess = false), message = it1) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
                 println("Error 3 ${e.message}")
-                videoView?.showLce(ActionUIStates(isDone = true, isSuccess = false))
+                meetingViewContract?.showLce(ActionUIStates(isSuccess = false))
             }
         }
     }
@@ -128,26 +128,26 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(ActionUIStates(isLoading = true))
+                    contractView?.showActionLce(ActionUIStates(isLoading = true))
                     profileRepositoryImpl.reverseGeocode(lat, lng)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result?.country?.isNotEmpty() == true){
-                                    contractView?.showLce(ActionUIStates(isSuccess = true))
+                                    contractView?.showActionLce(ActionUIStates(isSuccess = true))
                                     contractView?.showUserLocation(result)
                                 }
                                 else{
-                                    contractView?.showLce(ActionUIStates(isDone = true))
+                                   // contractView?.showActionLce(ActionUIStates(isDone = true))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(ActionUIStates(isDone = true)) }
+                               // it.message?.let { it1 -> contractView?.showActionLce(ActionUIStates(isDone = true)) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(ActionUIStates(isDone =  true))
+               // contractView?.showActionLce(ActionUIStates(isDone =  true))
             }
         }
     }

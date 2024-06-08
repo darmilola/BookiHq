@@ -34,6 +34,7 @@ import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.AvailableTime
+import domain.Models.SpecialistReviews
 import domain.Models.TimeOffs
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -53,13 +54,13 @@ import theme.styles.Colors
 
 class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
-    private val appointmentPresenter: AppointmentPresenter by inject()
     private val therapistPresenter: TherapistPresenter by inject()
     private var screenUiStateViewModel: ScreenUIStateViewModel? = null
     private var actionUiStateViewModel: ActionUIStateViewModel? = null
     private var therapistViewModel: TherapistViewModel? = null
-    private var postponementViewModel: PostponementViewModel? = null
     private var appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel? = null
+    private var availabilityActionUIStateViewModel: ActionUIStateViewModel? = null
+    private var joinMeetingActionUIStateViewModel: ActionUIStateViewModel? = null
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -87,6 +88,31 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
                     ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
+        }
+
+
+        if (availabilityActionUIStateViewModel == null) {
+            availabilityActionUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+        if (joinMeetingActionUIStateViewModel == null) {
+            joinMeetingActionUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+        if (screenUiStateViewModel == null) {
+            screenUiStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
 
         }
 
@@ -97,14 +123,6 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
                 },
             )
 
-        }
-
-        if (postponementViewModel == null) {
-            postponementViewModel = kmpViewModel(
-                factory = viewModelFactory {
-                    PostponementViewModel(savedStateHandle = createSavedStateHandle())
-                },
-            )
         }
 
         if (therapistViewModel == null) {
@@ -124,30 +142,20 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
         }
 
         val handler = TherapistHandler(therapistPresenter,
+            screenUiStateViewModel = screenUiStateViewModel!!,
+             actionUiStateViewModel!!,
             onReviewsReady = {
                 therapistViewModel!!.setTherapistReviews(it)
              },
-            onErrorVisible = {
-                screenUiStateViewModel!!.switchScreenUIState(ScreenUIStates(errorOccurred = true))
+             onMeetingTokenReady = {
+
             },
-            onContentVisible = {
-                screenUiStateViewModel!!.switchScreenUIState(ScreenUIStates(contentVisible = true))
-            }, onPageLoading = {
-                screenUiStateViewModel!!.switchScreenUIState(ScreenUIStates(loadingVisible = true))
-            }, onTherapistAvailabilityReady = {
+            appointmentResourceListEnvelopeViewModel!!,
+             onTherapistAvailabilityReady = {
                     availableTimes: List<AvailableTime>,
                     timeOffs: List<TimeOffs> ->
                 therapistViewModel!!.setTherapistAvailableTimes(availableTimes)
                 therapistViewModel!!.setTherapistTimeOffs(timeOffs)
-            },
-            onAsyncLoading = {
-               // actionUiStateViewModel!!.switchActionUIState(ScreenUIStates(loadingVisible = true))
-            },
-            onAsyncSuccess = {
-               // actionUiStateViewModel!!.switchActionUIState(ScreenUIStates(contentVisible = true))
-            },
-            onAsyncFailed = {
-               // actionUiStateViewModel!!.switchActionUIState(ScreenUIStates(errorOccurred = true))
             })
         handler.init()
 
@@ -216,7 +224,7 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
                 contentAlignment = Alignment.Center
             ) {
                 when(tabIndex){
-                    0 -> TherapistAppointment(mainViewModel, screenUiStateViewModel!!, postponementViewModel!!, appointmentResourceListEnvelopeViewModel, appointmentPresenter)
+                    0 -> TherapistAppointment(mainViewModel, screenUiStateViewModel!!, appointmentResourceListEnvelopeViewModel, therapistPresenter)
                     1 -> TherapistAvailability(mainViewModel, therapistPresenter, therapistViewModel!!, screenUiStateViewModel!!, actionUiStateViewModel!!)
                     2 -> TherapistReviews(mainViewModel, therapistPresenter, therapistViewModel!!, screenUiStateViewModel!!)
                 }

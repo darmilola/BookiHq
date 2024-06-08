@@ -53,6 +53,7 @@ import presentation.components.StraightLine
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
 import presentation.dialogs.SuccessDialog
+import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.ActionUIStates
 import presentation.viewmodels.CartViewModel
 import presentation.viewmodels.MainViewModel
@@ -72,7 +73,7 @@ import utils.calculateTotal
 class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
     private val cartPresenter: CartPresenter by inject()
-    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
+    private var actionUIStateViewModel: ActionUIStateViewModel? = null
     private var cartViewModel: CartViewModel? = null
 
     override val options: TabOptions
@@ -95,16 +96,12 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
             maxStack = 5,
             animation = StackedSnackbarAnimation.Bounce
         )
-        val creatingOrderProgress = remember { mutableStateOf(false) }
-        val creatingOrderSuccess = remember { mutableStateOf(false) }
-        val creatingOrderFailed = remember { mutableStateOf(false) }
         val coroutineScope = rememberCoroutineScope()
 
-
-        if (screenUiStateViewModel == null) {
-            screenUiStateViewModel = kmpViewModel(
+        if (actionUIStateViewModel == null) {
+            actionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -118,9 +115,12 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
         }
 
         val cartItems = mainViewModel.unSavedOrders.collectAsState()
+        val uiActionState = actionUIStateViewModel!!.uiStateInfo.collectAsState()
 
         val subtotal = calculateCheckoutSubTotal(cartItems.value)
         val total = calculateTotal(subtotal, cartViewModel!!.deliveryFee.value)
+
+
         cartViewModel!!.setTotal(total)
         cartViewModel!!.setSubTotal(subtotal)
 
@@ -133,27 +133,16 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
 
                 // View Contract Handler Initialisation
                 val handler = CreateOrderScreenHandler(
-                    cartPresenter,
-                    onCreateOrderStarted = {
-                        creatingOrderProgress.value = true
-                    },
-                    onCreateOrderSuccess = {
-                        creatingOrderProgress.value = false
-                        creatingOrderSuccess.value = true
-                    },
-                    onCreateOrderFailed = {
-                        creatingOrderProgress.value = false
-                        creatingOrderFailed.value = true
-                    })
+                    cartPresenter)
                 handler.init()
 
 
-                if (creatingOrderProgress.value) {
+                if (uiActionState.value.isLoading) {
                     Box(modifier = Modifier.fillMaxWidth(0.90f)) {
                         LoadingDialog("Creating Order...")
                     }
                 }
-                else if (creatingOrderSuccess.value) {
+                else if (uiActionState.value.isSuccess) {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         SuccessDialog("Creating Order Successful", actionTitle = "Done", onConfirmation = {
                             mainViewModel.clearUnsavedOrders()
@@ -169,9 +158,9 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
                         })
                     }
                 }
-                else if (creatingOrderFailed.value){
+                else if (uiActionState.value.isFailed) {
                     Box(modifier = Modifier.fillMaxWidth()) {
-                        ErrorDialog("Creating Appointment Failed", actionTitle = "Retry", onConfirmation = {
+                        ErrorDialog("Creating Order Failed", actionTitle = "Retry", onConfirmation = {
                             val orderItemList = mainViewModel.unSavedOrders.value
                             val vendorId = mainViewModel.connectedVendor.value.vendorId
                             val userId = mainViewModel.currentUserInfo.value.userId
@@ -429,30 +418,14 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
 
 class CreateOrderScreenHandler(
     private val cartPresenter: CartPresenter,
-    private val onCreateOrderStarted: () -> Unit,
-    private val onCreateOrderSuccess: () -> Unit,
-    private val onCreateOrderFailed: () -> Unit
 ) : CartContract.View {
     fun init() {
         cartPresenter.registerUIContract(this)
     }
 
 
-    override fun showLce(uiState: ActionUIStates, message: String) {
-        uiState.let {
-            when {
-                it.isLoading -> {
-                    onCreateOrderStarted()
-                }
-                it.isSuccess -> {
-                   onCreateOrderSuccess()
-                }
-                it.isFailed -> {
-                    onCreateOrderFailed()
-                }
+    override fun showLce(actionUIStates: ActionUIStates) {
 
-            }
-        }
     }
 }
 

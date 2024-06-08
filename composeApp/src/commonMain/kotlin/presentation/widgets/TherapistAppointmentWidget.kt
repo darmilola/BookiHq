@@ -23,7 +23,7 @@ import theme.styles.Colors
 
 
 @Composable
-fun TherapistAppointmentWidget(appointment: Appointment, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null) {
+fun TherapistAppointmentWidget(appointment: Appointment, appointmentPresenter: AppointmentPresenter? = null) {
 
     val appointmentStatus = appointment.serviceStatus
     val menuItems = arrayListOf<String>()
@@ -87,7 +87,7 @@ fun TherapistAppointmentWidget(appointment: Appointment, appointmentPresenter: A
             horizontalAlignment = Alignment.Start,
             modifier = columnModifier
         ) {
-            AttachAppointmentHeader(statusText, iconRes, statusColor, appointment, menuItems, appointmentPresenter, postponementViewModel)
+            AttachAppointmentHeader(statusText, iconRes, statusColor, appointment, menuItems, appointmentPresenter)
             AttachTherapistAppointmentContent(appointment)
         }
     }
