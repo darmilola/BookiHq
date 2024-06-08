@@ -1,17 +1,13 @@
 package presentation.Orders
 
-import domain.Models.Appointment
-import domain.Models.AppointmentResourceListEnvelope
-import domain.Models.AvailableTime
 import domain.Models.OrderResourceListEnvelope
-import domain.Models.TimeOffs
-import presentation.viewmodels.AsyncUIStates
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ActionUIStates
+import presentation.viewmodels.ScreenUIStates
 
 interface OrderContract {
     interface View {
-        fun showLce(uiState: UIStates, message: String = "")
-        fun showAsyncLce(uiState: AsyncUIStates, message: String = "")
+        fun showLce(uiState: ScreenUIStates, message: String = "")
+        fun showAsyncLce(uiState: ActionUIStates, message: String = "")
         fun showUserOrders(orders: OrderResourceListEnvelope)
         fun onLoadMoreOrderStarted(isSuccess: Boolean = false)
         fun onLoadMoreOrderEnded(isSuccess: Boolean = false)

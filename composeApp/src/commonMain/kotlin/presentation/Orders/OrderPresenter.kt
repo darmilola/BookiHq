@@ -1,9 +1,7 @@
 package presentation.Orders
 
 import com.badoo.reaktive.single.subscribe
-import domain.Models.Appointment
 import domain.Orders.OrderRepositoryImpl
-import domain.appointments.AppointmentRepositoryImpl
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,9 +9,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import presentation.appointments.AppointmentContract
-import presentation.viewmodels.AsyncUIStates
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ScreenUIStates
 
 class OrderPresenter(apiService: HttpClient): OrderContract.Presenter() {
 
@@ -29,30 +25,30 @@ class OrderPresenter(apiService: HttpClient): OrderContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(UIStates(loadingVisible = true))
+                    contractView?.showLce(ScreenUIStates(loadingVisible = true))
                     orderRepositoryImpl.getUserOrders(userId, 1)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(UIStates(contentVisible = true))
+                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
                                     println("My Result")
                                     contractView?.showUserOrders(result.listItem)
                                 }
                                 else{
                                     println("Error3")
-                                    contractView?.showLce(UIStates(errorOccurred = true))
+                                    contractView?.showLce(ScreenUIStates(errorOccurred = true))
                                 }
                             },
                             onError = {
                                 println("Error3 ${it.message}")
-                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true)) }
+                                it.message?.let { it1 -> contractView?.showLce(ScreenUIStates(errorOccurred = true)) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
                 println("Error1 ${e.message}")
-                contractView?.showLce(UIStates(errorOccurred = true))
+                contractView?.showLce(ScreenUIStates(errorOccurred = true))
             }
         }
     }

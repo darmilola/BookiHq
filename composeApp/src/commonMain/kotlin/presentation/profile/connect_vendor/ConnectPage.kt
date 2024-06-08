@@ -47,8 +47,8 @@ import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.ConnectPageViewModel
 import presentation.viewmodels.ResourceListEnvelopeViewModel
-import presentation.viewmodels.UIStateViewModel
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.ScreenUIStates
 import theme.Colors
 
 
@@ -56,7 +56,7 @@ open class ConnectPage(val platformNavigator: PlatformNavigator? = null) : Scree
 
     private val preferenceSettings: Settings = Settings()
     private val connectVendorPresenter: ConnectVendorPresenter by inject()
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
     private var connectPageViewModel: ConnectPageViewModel? = null
     private var vendorResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Vendor>? = null
     private var userEmail: String = ""
@@ -75,10 +75,10 @@ open class ConnectPage(val platformNavigator: PlatformNavigator? = null) : Scree
 
 
 
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        if (screenUiStateViewModel == null) {
+            screenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
             connectVendorPresenter.getVendor(countryId = countryId, cityId = cityId)
@@ -122,7 +122,7 @@ open class ConnectPage(val platformNavigator: PlatformNavigator? = null) : Scree
         // View Contract Handler Initialisation
         val handler = ConnectPageHandler(
             vendorResourceListEnvelopeViewModel!!,
-            uiStateViewModel!!,
+            screenUiStateViewModel!!,
             connectVendorPresenter,
             onPageLoading = {
                 contentLoading.value = true
@@ -229,7 +229,7 @@ open class ConnectPage(val platformNavigator: PlatformNavigator? = null) : Scree
     }
 class ConnectPageHandler(
     private val vendorResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Vendor>,
-    private val uiStateViewModel: UIStateViewModel,
+    private val screenUiStateViewModel: ScreenUIStateViewModel,
     private val connectVendorPresenter: ConnectVendorPresenter,
     private val onPageLoading: () -> Unit,
     private val onContentVisible: () -> Unit,
@@ -240,8 +240,8 @@ class ConnectPageHandler(
         connectVendorPresenter.registerUIContract(this)
     }
 
-    override fun showLce(uiState: UIStates) {
-        uiStateViewModel.switchState(uiState)
+    override fun showLce(uiState: ScreenUIStates) {
+        screenUiStateViewModel.switchScreenUIState(uiState)
         uiState.let {
             when{
                 it.loadingVisible -> {

@@ -80,11 +80,11 @@ import presentation.Products.HomeProductItem
 import presentation.Products.ProductDetailContent
 import presentation.components.FloatingActionButton
 import presentation.components.IndeterminateCircularProgressBar
-import presentation.viewmodels.AsyncUIStates
+import presentation.viewmodels.ActionUIStates
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.UIStateViewModel
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.ScreenUIStates
 import utils.getAppointmentViewHeight
 import presentation.widgets.BusinessWhatsAppStatusWidget
 import presentation.widgets.HomeServicesWidget
@@ -101,7 +101,7 @@ import utils.getServicesViewHeight
 
 class HomeTab(private val mainViewModel: MainViewModel, private val homePageViewModel: HomePageViewModel) : Tab, KoinComponent {
 
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
     private val homepagePresenter: HomepagePresenter by inject()
     private var userEmail: String = ""
     private val preferenceSettings: Settings = Settings()
@@ -127,28 +127,20 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
     @Composable
     override fun Content() {
         userEmail = preferenceSettings["userEmail", "devprocess0@gmail.com"]
-        val screenSizeInfo = ScreenSizeInfo()
 
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        val screenSizeInfo = ScreenSizeInfo()
+        if (screenUiStateViewModel == null) {
+            screenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
 
-            val handler = HomePageHandler(uiStateViewModel!!, homepagePresenter,
-                onPageLoading = {
-                    homePageViewModel.setHomePageUIState(AsyncUIStates(isLoading = true))
-                }, onHomeInfoAvailable = {
+            val handler = HomePageHandler(screenUiStateViewModel!!, homepagePresenter,
+                 onHomeInfoAvailable = {
                         homePageInfo, vendorStatus ->
                     val viewHeight = calculateHomePageScreenHeight(homepageInfo = homePageInfo, screenSizeInfo = screenSizeInfo, isStatusExpanded = false)
                     homePageViewModel.setHomePageViewHeight(viewHeight)
-                    homePageViewModel.setHomePageUIState(
-                        AsyncUIStates(
-                            isSuccess = true,
-                            isDone = true
-                        )
-                    )
                     homePageViewModel.setHomePageInfo(homePageInfo)
                     homePageViewModel.setVendorStatus(vendorStatus)
                     mainViewModel.setConnectedVendor(homePageInfo.vendorInfo!!)
@@ -161,31 +153,22 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                     mainViewModel.setUserInfo(homePageInfo.userInfo)
                     mainViewModel.setSpecialistId(homePageInfo.specialistInfo?.id!!)
                     saveAccountInfoFromServer(homePageInfo)
-                }, onErrorVisible = {
-                    homePageViewModel.setHomePageUIState(
-                        AsyncUIStates(
-                            isSuccess = false,
-                            isDone = true
-                        )
-                    )
                 })
             handler.init()
-            if (homePageViewModel.homePageInfo.value.userInfo != null){
-                homePageViewModel!!.setHomePageUIState(AsyncUIStates(isSuccess = true, isDone = true))
-            }else {
-                homepagePresenter.getUserHomepage(userEmail)
-            }
 
+            if (homePageViewModel.homePageInfo.value.userInfo == null) {
+                homepagePresenter.getUserHomepage(userEmail, "2348111343996")
+            }
         }
 
-        val uiState = homePageViewModel!!.homePageUIState.collectAsState()
+        val uiState = screenUiStateViewModel!!.uiStateInfo.collectAsState()
         val homepageInfo = homePageViewModel.homePageInfo.collectAsState()
         val mVendorStatus = homePageViewModel.vendorStatus.collectAsState()
         val homePageViewHeight = homePageViewModel.homePageViewHeight.collectAsState()
         val isStatusViewExpanded = remember { mutableStateOf(false) }
 
 
-        if (uiState.value.isLoading) {
+        if (uiState.value.loadingVisible) {
             Box(
                 modifier = Modifier.fillMaxWidth().fillMaxHeight()
                     .padding(top = 40.dp, start = 50.dp, end = 50.dp)
@@ -194,13 +177,18 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
             ) {
                 IndeterminateCircularProgressBar()
             }
-        } else if (uiState.value.isDone && !uiState.value.isSuccess) {
+        }
+
+        else if (uiState.value.errorOccurred) {
+
+            val message = uiState.value.errorMessage
+
+            //Error Occurred
 
 
-            //Error Occurred display reload
+        }
 
-
-        } else if (uiState.value.isDone && uiState.value.isSuccess) {
+        else if (uiState.value.contentVisible) {
                 val popularProducts = homepageInfo.value.popularProducts
                 val recentAppointments = homepageInfo.value.recentAppointment
                 val vendorServices = homepageInfo.value.vendorServices
@@ -565,33 +553,23 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
 
 
     class HomePageHandler(
-        private val uiStateViewModel: UIStateViewModel,
+        private val screenUiStateViewModel: ScreenUIStateViewModel,
         private val homepagePresenter: HomepagePresenter,
-        private val onPageLoading: () -> Unit,
-        private val onHomeInfoAvailable: (HomepageInfo, ArrayList<VendorStatusModel>) -> Unit,
-        private val onErrorVisible: () -> Unit
-    ) : HomepageContract.View {
+        private val onHomeInfoAvailable: (HomepageInfo, ArrayList<VendorStatusModel>) -> Unit) : HomepageContract.View {
         fun init() {
             homepagePresenter.registerUIContract(this)
         }
 
-        override fun showLce(uiState: UIStates, message: String) {
-            uiStateViewModel.switchState(uiState)
-            uiState.let {
-                when {
-                    it.loadingVisible -> {
-                        onPageLoading()
-                    }
-                    it.errorOccurred -> {
-                        onErrorVisible()
-                    }
-                }
-            }
+        override fun showLce(uiState: ScreenUIStates) {
+            screenUiStateViewModel.switchScreenUIState(uiState)
         }
         override fun showHome(homePageInfo: HomepageInfo, vendorStatus: ArrayList<VendorStatusModel>) {
             onHomeInfoAvailable(homePageInfo, vendorStatus)
         }
     }
+
+
+
     @Composable
     fun BusinessStatusDisplay(statusList: List<VendorStatusModel>, onViewHeightChanged: (Int, Boolean) -> Unit) {
         val isStatusExpanded = remember { mutableStateOf(false) }

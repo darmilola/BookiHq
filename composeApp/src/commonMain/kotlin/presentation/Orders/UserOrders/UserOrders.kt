@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
@@ -33,14 +32,14 @@ import org.koin.core.component.inject
 import presentation.appointments.AppointmentPresenter
 import presentation.consultation.rightTopBarItem
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.ScreenUIStateViewModel
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget
 
 class UserOrders (private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
     private val appointmentPresenter: AppointmentPresenter by inject()
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
 
     override val options: TabOptions
         @Composable
@@ -61,10 +60,10 @@ class UserOrders (private val mainViewModel: MainViewModel) : Tab, KoinComponent
         val userId = mainViewModel.userId.collectAsState()
 
 
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        if (screenUiStateViewModel == null) {
+            screenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
 

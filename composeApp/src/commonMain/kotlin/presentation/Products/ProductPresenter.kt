@@ -9,7 +9,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ScreenUIStates
 
 class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
 
@@ -21,113 +21,117 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
     }
 
     override fun getProducts(vendorId: Int) {
+        contractView?.showLce(ScreenUIStates(loadingVisible = true))
+
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(UIStates(loadingVisible = true))
                     productRepositoryImpl.getAllProducts(vendorId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(UIStates(contentVisible = true))
+                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
                                     contractView?.showProducts(result.listItem, isFromSearch = false)
                                 }
                                 else{
-                                    contractView?.showLce(UIStates(errorOccurred = true))
+                                    contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Loading Products Please Try Again"))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true)) }
+                                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Loading Products Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(UIStates(errorOccurred = true))
+                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Loading Products Please Try Again"))
             }
         }
     }
 
     override fun getMoreProducts(vendorId: Int, nextPage: Int) {
+        contractView?.onLoadMoreProductStarted()
+
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.onLoadMoreProductStarted(true)
                     productRepositoryImpl.getAllProducts(vendorId, nextPage = nextPage)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.onLoadMoreProductEnded(true)
+                                    contractView?.onLoadMoreProductEnded()
                                     contractView?.showProducts(result.listItem, isFromSearch = false)
                                 }
                                 else{
-                                    contractView?.onLoadMoreProductEnded(false)
+                                    contractView?.onLoadMoreProductEnded()
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.onLoadMoreProductEnded(false) }
+                                contractView?.onLoadMoreProductEnded()
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.onLoadMoreProductEnded(false)
+                contractView?.onLoadMoreProductEnded()
             }
         }
     }
 
     override fun searchProducts(vendorId: Int, searchQuery: String) {
+        contractView?.showLce(ScreenUIStates(loadingVisible = true))
+
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(UIStates(loadingVisible = true))
                     productRepositoryImpl.searchProducts(vendorId, searchQuery)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(UIStates(contentVisible = true))
+                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
                                     contractView?.showProducts(result.listItem, isFromSearch = true)
                                 }
                                 else{
-                                    contractView?.showLce(UIStates(errorOccurred = true))
+                                    contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true)) }
+                                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(UIStates(errorOccurred = true))
+                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
             }
         }
     }
 
     override fun searchMoreProducts(vendorId: Int, searchQuery: String, nextPage: Int) {
+        contractView?.onLoadMoreProductStarted()
+
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.onLoadMoreProductStarted(true)
                     productRepositoryImpl.searchProducts(vendorId, searchQuery,nextPage)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.onLoadMoreProductEnded(true)
+                                    contractView?.onLoadMoreProductEnded()
                                     contractView?.showProducts(result.listItem, isFromSearch = true)
                                 }
                                 else{
-                                    contractView?.onLoadMoreProductEnded(false)
+                                    contractView?.onLoadMoreProductEnded()
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.onLoadMoreProductEnded(false) }
+                                contractView?.onLoadMoreProductEnded()
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.onLoadMoreProductEnded(false)
+                contractView?.onLoadMoreProductEnded()
             }
         }
     }

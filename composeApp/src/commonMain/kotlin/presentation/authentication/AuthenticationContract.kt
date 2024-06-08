@@ -1,10 +1,9 @@
 package presentation.authentication
 
-import com.badoo.reaktive.single.Single
 import dev.jordond.compass.Place
 import domain.Models.User
-import presentation.viewmodels.AsyncUIStates
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ActionUIStates
+import presentation.viewmodels.ScreenUIStates
 
 class AuthenticationContract {
     interface View {
@@ -47,8 +46,8 @@ class AuthenticationContract {
          */
         abstract fun showPasswordAllowedCharTooltip()
 
-        fun showLce(uiState: UIStates, message: String = "")
-        fun showAsyncLce(uiState: AsyncUIStates, message: String = "")
+        fun showLce(uiState: ScreenUIStates, message: String = "")
+        fun showAsyncLce(uiState: ActionUIStates, message: String = "")
     }
 
     abstract class Presenter {

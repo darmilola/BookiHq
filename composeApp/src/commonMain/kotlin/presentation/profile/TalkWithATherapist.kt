@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -26,42 +25,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import com.russhwolf.settings.ObservableSettings
-import com.russhwolf.settings.Settings
-import dev.jordond.compass.Place
-import domain.Models.PlatformNavigator
 import domain.Models.Screens
 import domain.Models.VendorTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
-import presentation.dialogs.LoadingDialog
-import presentation.viewmodels.AsyncUIStates
+import presentation.viewmodels.ActionUIStates
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.ScreenUIStateViewModel
 import presentation.widgets.BookingCalendar
 import presentation.widgets.MultilineInputWidget
 import presentation.widgets.PageBackNavWidget
-import presentation.widgets.ShowSnackBar
-import presentation.widgets.SnackBarType
-import presentation.widgets.TimeGrid
 import presentation.widgets.TitleWidget
 import presentation.widgets.VendorTimeGrid
 import presentations.components.TextComponent
-import presentations.widgets.InputWidget
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
 
 class TalkWithATherapist(private val mainViewModel: MainViewModel) : Tab,
     KoinComponent {
     private val profilePresenter: ProfilePresenter by inject()
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
     override val options: TabOptions
         @Composable
         get() {
@@ -275,8 +264,8 @@ class TalkWithTherapistHandler(
         profilePresenter.registerTalkWithTherapistContract(this)
     }
 
-    override fun showLce(asyncUIStates: AsyncUIStates, message: String) {
-        asyncUIStates.let {
+    override fun showLce(actionUIStates: ActionUIStates, message: String) {
+        actionUIStates.let {
             when{
                 it.isLoading -> {
                     isLoading()

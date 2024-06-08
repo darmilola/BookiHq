@@ -5,16 +5,12 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,15 +27,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
-import domain.Models.Appointment
-import domain.Models.AppointmentItemUIModel
 import domain.Models.CustomerItemUIModel
 import domain.Models.CustomerOrder
 import domain.Models.Screens
@@ -47,35 +39,24 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import presentation.appointments.AppointmentPresenter
-import presentation.appointments.AppointmentsHandler
-import presentation.bookings.leftTopBarItem
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.consultation.rightTopBarItem
-import presentation.dialogs.LoadingDialog
 import presentation.Orders.UserOrders.OrderItemList
-import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.OrdersResourceListEnvelopeViewModel
-import presentation.viewmodels.PostponementViewModel
-import presentation.viewmodels.UIStateViewModel
-import presentation.viewmodels.UIStates
-import presentation.widgets.NewAppointmentWidget
+import presentation.viewmodels.ScreenUIStateViewModel
 import presentation.widgets.PageBackNavWidget
-import presentation.widgets.ShowSnackBar
-import presentation.widgets.SnackBarType
 import presentation.widgets.TitleWidget
 import rememberStackedSnackbarHostState
 import theme.Colors
-import utils.getAppointmentViewHeight
 import utils.getOrderViewHeight
 
 class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
 
     private val orderPresenter: OrderPresenter by inject()
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
     private var ordersResourceListEnvelopeViewModel: OrdersResourceListEnvelopeViewModel? = null
 
 
@@ -106,10 +87,10 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
         )
 
 
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        if (screenUiStateViewModel == null) {
+            screenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -133,7 +114,7 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
             ordersResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
         val displayedOrdersCount =
             ordersResourceListEnvelopeViewModel!!.displayedItemCount.collectAsState()
-        val uiState = uiStateViewModel!!.uiData.collectAsState()
+        val uiState = screenUiStateViewModel!!.uiStateInfo.collectAsState()
         val lastIndex = ordersList?.value?.size?.minus(1)
         val selectedOrder = remember { mutableStateOf(CustomerOrder()) }
 
@@ -167,7 +148,7 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
             content = {
                 val handler = OrderHandler(
                     ordersResourceListEnvelopeViewModel!!,
-                    uiStateViewModel!!,
+                    screenUiStateViewModel!!,
                     orderPresenter
                 )
                 handler.init()

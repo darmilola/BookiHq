@@ -9,7 +9,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.badoo.reaktive.single.subscribe
-import presentation.viewmodels.AsyncUIStates
+import presentation.viewmodels.ActionUIStates
 
 
 class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
@@ -40,26 +40,26 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(AsyncUIStates(isLoading = true))
+                    contractView?.showLce(ActionUIStates(isLoading = true))
                     profileRepositoryImpl.updateProfile(firstname, lastname, userEmail, address, contactPhone, countryId, cityId, gender,profileImageUrl)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(AsyncUIStates(isSuccess = true))
+                                    contractView?.showLce(ActionUIStates(isSuccess = true))
                                     //contractView?.onProfileUpdated()
                                 }
                                 else{
-                                    contractView?.showLce(AsyncUIStates(isDone = true, isSuccess = false))
+                                    contractView?.showLce(ActionUIStates(isDone = true, isSuccess = false))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(AsyncUIStates(isDone = true, isSuccess = false), message = it1) }
+                                it.message?.let { it1 -> contractView?.showLce(ActionUIStates(isDone = true, isSuccess = false), message = it1) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(AsyncUIStates(isDone = true, isSuccess = false))
+                contractView?.showLce(ActionUIStates(isDone = true, isSuccess = false))
             }
         }
     }
@@ -68,26 +68,26 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(AsyncUIStates(isLoading = true))
+                    contractView?.showLce(ActionUIStates(isLoading = true))
                     profileRepositoryImpl.deleteProfile(userEmail)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(AsyncUIStates(isDone = true, isSuccess = true))
+                                    contractView?.showLce(ActionUIStates(isDone = true, isSuccess = true))
                                     contractView?.onProfileDeleted()
                                 }
                                 else{
-                                    contractView?.showLce(AsyncUIStates(isDone = true, isSuccess = false))
+                                    contractView?.showLce(ActionUIStates(isDone = true, isSuccess = false))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(AsyncUIStates(isDone = true, isSuccess = false), message = it1) }
+                                it.message?.let { it1 -> contractView?.showLce(ActionUIStates(isDone = true, isSuccess = false), message = it1) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(AsyncUIStates(isDone = true, isSuccess = false))
+                contractView?.showLce(ActionUIStates(isDone = true, isSuccess = false))
             }
         }
     }
@@ -96,30 +96,30 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    videoView?.showLce(AsyncUIStates(isLoading = true))
+                    videoView?.showLce(ActionUIStates(isLoading = true))
                     profileRepositoryImpl.getVendorAvailableTimes(vendorId = vendorId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     println("Success ${result.availableTimes}")
-                                    videoView?.showLce(AsyncUIStates(isDone = true, isSuccess = true))
+                                    videoView?.showLce(ActionUIStates(isDone = true, isSuccess = true))
                                     videoView?.showAvailability(result.availableTimes)
                                 }
                                 else{
                                     println("Error 1")
-                                    videoView?.showLce(AsyncUIStates(isDone = true, isSuccess = false))
+                                    videoView?.showLce(ActionUIStates(isDone = true, isSuccess = false))
                                 }
                             },
                             onError = {
                                 println("Error 2")
-                                it.message?.let { it1 -> videoView?.showLce(AsyncUIStates(isDone = true, isSuccess = false), message = it1) }
+                                it.message?.let { it1 -> videoView?.showLce(ActionUIStates(isDone = true, isSuccess = false), message = it1) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
                 println("Error 3 ${e.message}")
-                videoView?.showLce(AsyncUIStates(isDone = true, isSuccess = false))
+                videoView?.showLce(ActionUIStates(isDone = true, isSuccess = false))
             }
         }
     }
@@ -128,26 +128,26 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(AsyncUIStates(isLoading = true))
+                    contractView?.showLce(ActionUIStates(isLoading = true))
                     profileRepositoryImpl.reverseGeocode(lat, lng)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result?.country?.isNotEmpty() == true){
-                                    contractView?.showLce(AsyncUIStates(isSuccess = true))
+                                    contractView?.showLce(ActionUIStates(isSuccess = true))
                                     contractView?.showUserLocation(result)
                                 }
                                 else{
-                                    contractView?.showLce(AsyncUIStates(isDone = true))
+                                    contractView?.showLce(ActionUIStates(isDone = true))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(AsyncUIStates(isDone = true)) }
+                                it.message?.let { it1 -> contractView?.showLce(ActionUIStates(isDone = true)) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(AsyncUIStates(isDone =  true))
+                contractView?.showLce(ActionUIStates(isDone =  true))
             }
         }
     }

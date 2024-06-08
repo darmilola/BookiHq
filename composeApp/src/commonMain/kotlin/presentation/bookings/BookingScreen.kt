@@ -48,11 +48,11 @@ import org.koin.core.component.inject
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
 import presentation.dialogs.SuccessDialog
-import presentation.viewmodels.AsyncUIStates
+import presentation.viewmodels.ActionUIStates
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.UIStateViewModel
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.ScreenUIStates
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
@@ -60,7 +60,7 @@ import rememberStackedSnackbarHostState
 
 class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
     private val bookingPresenter: BookingPresenter by inject()
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
     private var bookingViewModel: BookingViewModel? = null
     override val options: TabOptions
         @Composable
@@ -88,10 +88,10 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
         val creatingAppointmentSuccess = remember { mutableStateOf(false) }
         val creatingAppointmentFailed = remember { mutableStateOf(false) }
 
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        if (screenUiStateViewModel == null) {
+            screenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -109,13 +109,13 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
         val handler = BookingScreenHandler(
             bookingViewModel!!, bookingPresenter,
            onPageLoading = {
-               uiStateViewModel!!.switchState(UIStates(loadingVisible = true))
+               screenUiStateViewModel!!.switchScreenUIState(ScreenUIStates(loadingVisible = true))
             },
             onShowUnsavedAppointment = {},
             onContentVisible = {
-                uiStateViewModel!!.switchState(UIStates(contentVisible = true))
+                screenUiStateViewModel!!.switchScreenUIState(ScreenUIStates(contentVisible = true))
             }, onErrorVisible = {
-                uiStateViewModel!!.switchState(UIStates(errorOccurred = true))
+                screenUiStateViewModel!!.switchScreenUIState(ScreenUIStates(errorOccurred = true))
             },
             onCreateAppointmentStarted = {
                 creatingAppointmentProgress.value = true
@@ -214,7 +214,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                     ) {
                         AttachBookingPages(
                             pagerState,
-                            uiStateViewModel!!,
+                            screenUiStateViewModel!!,
                             mainViewModel,
                             bookingViewModel!!,
                             services = mainViewModel.selectedService.value,
@@ -321,7 +321,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun AttachBookingPages(pagerState: PagerState,uiStateViewModel: UIStateViewModel,mainViewModel: MainViewModel,bookingViewModel: BookingViewModel,services: Services,onAddMoreServiceClicked:() -> Unit, onLastItemRemoved:() -> Unit){
+    fun AttachBookingPages(pagerState: PagerState, screenUiStateViewModel: ScreenUIStateViewModel, mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, services: Services, onAddMoreServiceClicked:() -> Unit, onLastItemRemoved:() -> Unit){
 
         val  boxModifier =
             Modifier
@@ -340,12 +340,12 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                 when (page) {
                     0 -> BookingSelectServices(mainViewModel, bookingViewModel,services)
                     1 -> if(page == pagerState.targetPage) {
-                        BookingSelectSpecialist(mainViewModel,uiStateViewModel,bookingViewModel,bookingPresenter)
+                        BookingSelectSpecialist(mainViewModel,screenUiStateViewModel,bookingViewModel,bookingPresenter)
                     }
                     2 -> if(page == pagerState.targetPage) {
                         BookingOverview(
                             mainViewModel,
-                            uiStateViewModel,
+                            screenUiStateViewModel,
                             bookingViewModel,
                             bookingPresenter,
                             onAddMoreServiceClicked = {
@@ -378,7 +378,7 @@ class BookingScreenHandler(
         bookingPresenter.registerUIContract(this)
     }
 
-    override fun showLce(uiState: UIStates, message: String) {
+    override fun showScreenLce(uiState: ScreenUIStates, message: String) {
         uiState.let {
             when{
                 it.loadingVisible -> {
@@ -396,7 +396,7 @@ class BookingScreenHandler(
         }
     }
 
-    override fun showBookingLce(uiState: AsyncUIStates, message: String) {
+    override fun showActionLce(uiState: ActionUIStates, message: String) {
         uiState.let {
             when {
                 it.isLoading -> {

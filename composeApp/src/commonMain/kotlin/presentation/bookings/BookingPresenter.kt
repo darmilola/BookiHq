@@ -1,6 +1,5 @@
 package presentation.bookings
 
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.badoo.reaktive.single.subscribe
 import domain.Models.UnsavedAppointment
 import domain.Models.User
@@ -13,8 +12,8 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import presentation.viewmodels.AsyncUIStates
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ActionUIStates
+import presentation.viewmodels.ScreenUIStates
 
 class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
 
@@ -33,26 +32,26 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(UIStates(loadingVisible = true))
+                    contractView?.showScreenLce(ScreenUIStates(loadingVisible = true))
                     bookingRepositoryImpl.getServiceTherapist(serviceTypeId, day, month, year)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(UIStates(contentVisible = true))
+                                    contractView?.showScreenLce(ScreenUIStates(contentVisible = true))
                                     contractView?.showTherapists(result.serviceSpecialists)
                                 }
                                 else{
-                                    contractView?.showLce(UIStates(errorOccurred = true))
+                                    contractView?.showScreenLce(ScreenUIStates(errorOccurred = true))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true), message = it1) }
+                                it.message?.let { it1 -> contractView?.showScreenLce(ScreenUIStates(errorOccurred = true), message = it1) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(UIStates(errorOccurred = true))
+                contractView?.showScreenLce(ScreenUIStates(errorOccurred = true))
             }
         }
     }
@@ -61,29 +60,29 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showBookingLce(AsyncUIStates(isLoading = true))
+                    contractView?.showActionLce(ActionUIStates(isLoading = true))
                     val requestList = getUnSavedAppointment(unsavedAppointments, currentUser, currentVendor)
                     bookingRepositoryImpl.createAppointment(requestList)
                         .subscribe(
                             onSuccess = { result ->
                                 println(result)
                                 if (result.status == "success"){
-                                    contractView?.showBookingLce(AsyncUIStates(isSuccess = true))
+                                    contractView?.showActionLce(ActionUIStates(isSuccess = true))
                                 }
                                 else{
-                                    contractView?.showBookingLce(AsyncUIStates(isFailed = true))
+                                    contractView?.showActionLce(ActionUIStates(isFailed = true))
                                 }
                             },
                             onError = {
                                 println(it)
-                                it.message?.let { it1 -> contractView?.showBookingLce(AsyncUIStates(isFailed = true))}
+                                it.message?.let { it1 -> contractView?.showActionLce(ActionUIStates(isFailed = true))}
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
                 println(e.message)
-                contractView?.showBookingLce(AsyncUIStates(isFailed = true))
+                contractView?.showActionLce(ActionUIStates(isFailed = true))
             }
         }
     }

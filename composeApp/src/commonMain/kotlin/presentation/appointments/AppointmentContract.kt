@@ -1,29 +1,24 @@
 package presentation.appointments
 
-import com.badoo.reaktive.single.Single
 import domain.Models.Appointment
 import domain.Models.AppointmentResourceListEnvelope
 import domain.Models.AvailableTime
-import domain.Models.JoinMeetingResponse
 import domain.Models.TimeOffs
-import presentation.viewmodels.AsyncUIStates
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ActionUIStates
+import presentation.viewmodels.ScreenUIStates
 
 interface AppointmentContract {
     interface View {
-        fun showLce(uiState: UIStates, message: String = "")
-        fun showAsyncLce(uiState: AsyncUIStates, message: String = "")
+        fun showLce(screenUiState: ScreenUIStates)
+        fun showDeleteActionLce(actionUIStates: ActionUIStates)
+        fun showPostponeActionLce(actionUIStates: ActionUIStates)
+        fun showJoinMeetingActionLce(actionUIStates: ActionUIStates)
+        fun showGetAvailabilityActionLce(actionUIStates: ActionUIStates)
         fun showAppointments(appointments: AppointmentResourceListEnvelope)
         fun showTherapistAvailability(availableTimes: List<AvailableTime>, bookedAppointment: List<Appointment>, timeOffs: List<TimeOffs>)
-        fun onLoadMoreAppointmentStarted(isSuccess: Boolean = false)
-        fun onLoadMoreAppointmentEnded(isSuccess: Boolean = false)
-        fun  onPostponeAppointmentStarted()
-        fun  onPostponeAppointmentSuccess()
-        fun  onPostponeAppointmentFailed()
-        fun  onDeleteAppointmentStarted()
-        fun  onDeleteAppointmentSuccess()
-        fun  onDeleteAppointmentFailed()
-        fun onJoinMeetingHandlerTokenReady(meetingToken: String)
+        fun onLoadMoreAppointmentStarted()
+        fun onLoadMoreAppointmentEnded()
+        fun onJoinMeetingTokenReady(meetingToken: String)
     }
 
     abstract class Presenter {

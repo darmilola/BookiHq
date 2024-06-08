@@ -11,7 +11,6 @@ class HomePageViewModel(private val savedStateHandle: SavedStateHandle): ViewMod
         private var _homePageInfo =  savedStateHandle.getStateFlow("homePageInfo",HomepageInfo())
         private var _vendorStatus =  savedStateHandle.getStateFlow("vendorStatus", arrayListOf<VendorStatusModel>())
         private var _homePageViewHeight =  savedStateHandle.getStateFlow("homePageViewHeight",0)
-        private var _homePageUiState =  savedStateHandle.getStateFlow("homePageUiState", AsyncUIStates())
 
         val homePageInfo: StateFlow<HomepageInfo>
             get() = _homePageInfo
@@ -21,9 +20,6 @@ class HomePageViewModel(private val savedStateHandle: SavedStateHandle): ViewMod
 
       val homePageViewHeight: StateFlow<Int>
         get() = _homePageViewHeight
-
-       val homePageUIState: StateFlow<AsyncUIStates>
-         get() = _homePageUiState
 
         fun setHomePageInfo(homepageInfo: HomepageInfo) {
             savedStateHandle["homePageInfo"] = homepageInfo
@@ -36,8 +32,4 @@ class HomePageViewModel(private val savedStateHandle: SavedStateHandle): ViewMod
       fun setHomePageViewHeight(viewHeight: Int) {
         savedStateHandle["homePageViewHeight"] = viewHeight
      }
-
-        fun setHomePageUIState(asyncUIStates: AsyncUIStates) {
-         savedStateHandle["homePageUiState"] = asyncUIStates
-        }
 }

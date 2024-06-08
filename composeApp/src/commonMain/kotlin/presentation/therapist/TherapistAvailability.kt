@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,52 +21,46 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.russhwolf.settings.Settings
-import com.russhwolf.settings.get
 import domain.Models.PlatformTime
 import domain.Models.AvailableTime
-import domain.Models.VendorTime
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.dataModeller.CalendarDataSource
-import presentation.viewmodels.AsyncUIStateViewModel
+import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.TherapistViewModel
-import presentation.viewmodels.UIStateViewModel
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.ScreenUIStates
 import presentation.widgets.LinearProgressIndicatorWidget
 import presentation.widgets.NewDateContent
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import presentation.widgets.TherapistAvailabilityTimeGrid
-import presentation.widgets.TimeGrid
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
 
 @Composable
 fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: TherapistPresenter, therapistViewModel: TherapistViewModel,
-                          uiStateViewModel: UIStateViewModel, asyncUIStateViewModel: AsyncUIStateViewModel){
+                          screenUiStateViewModel: ScreenUIStateViewModel, actionUIStateViewModel: ActionUIStateViewModel){
 
-    val uiState = uiStateViewModel.uiData.collectAsState()
-    val asyncState = asyncUIStateViewModel.uiData.collectAsState()
+    val screenUiState = screenUiStateViewModel.uiStateInfo.collectAsState()
+    val actionUIState = actionUIStateViewModel.uiStateInfo.collectAsState()
 
     val newSelectedDay = therapistViewModel.day.collectAsState()
     val newSelectedMonth = therapistViewModel.month.collectAsState()
     val newSelectedYear = therapistViewModel.year.collectAsState()
     val newTimeOffs = therapistViewModel.addedTimeOffs.collectAsState()
-    val specialistInfo = mainViewModel.currentSpecialistInfo.value
     val isNewDateSelected = remember { mutableStateOf(true) }
     val isSaveVisible = remember { mutableStateOf(false) }
     isSaveVisible.value = newTimeOffs.value.isNotEmpty()
-    val preferenceSettings: Settings = Settings()
     val therapistId = mainViewModel.specialistId.value
     val currentDate = remember { mutableStateOf(CalendarDataSource().today) }
+
+
     therapistViewModel.setSelectedDay(day = currentDate.value.dayOfMonth)
     therapistViewModel.setSelectedMonth(month = currentDate.value.monthNumber)
     therapistViewModel.setSelectedYear(year = currentDate.value.year)
     therapistViewModel.clearServiceTimes()
-
-    println("Spe ID $therapistId")
 
 
     val availableWorkHour = therapistViewModel.therapistAvailableTimes.collectAsState()
@@ -81,8 +74,6 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
             newSelectedYear.value)
     }
 
-    println("Time Offs $timeOffs")
-    println("Time $availableWorkHour")
 
 
     for (item in timeOffs.value) {
@@ -119,7 +110,7 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
         content = {
             Column(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
 
-                if (asyncState.value.contentVisible){
+              /*  if (actionUIState.value.contentVisible){
                     ShowSnackBar(title = "Successful",
                         description = "Availability Updated Successfully",
                         actionLabel = "",
@@ -127,8 +118,8 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
                         snackBarType = SnackBarType.SUCCESS,
                         stackedSnackBarHostState,
                         onActionClick = {})
-                    asyncUIStateViewModel.switchState(UIStates())
-                }
+                    actionUIStateViewModel.switchActionUIState(ScreenUIStates())
+                }*/
 
                 NewDateContent(onDateSelected = {
                     currentDate.value = it
@@ -138,7 +129,7 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
                     therapistViewModel.clearServiceTimes()
                     isNewDateSelected.value = true
                 })
-                if (uiState.value.loadingVisible) {
+                if (screenUiState.value.loadingVisible) {
                     Box(
                         modifier = Modifier.fillMaxWidth().height(60.dp),
                         contentAlignment = Alignment.Center
@@ -146,7 +137,7 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
                         IndeterminateCircularProgressBar()
                     }
                 }
-                else if (uiState.value.contentVisible){
+                else if (screenUiState.value.contentVisible){
                     isNewDateSelected.value = false
                     Column(
                         modifier = Modifier
@@ -168,14 +159,14 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
                                 fontWeight = FontWeight.Black,
                                 textModifier = Modifier.fillMaxWidth(0.50f).padding(start = 10.dp, bottom = 20.dp))
                         }
-                        if (asyncState.value.loadingVisible) {
+                       /* if (actionUIState.value.loadingVisible) {
                             Box(
                                 modifier = Modifier.fillMaxWidth().height(20.dp),
                                 contentAlignment = Alignment.Center
                             ) {
                                 LinearProgressIndicatorWidget()
                             }
-                        }
+                        }*/
 
                         TherapistAvailabilityTimeGrid(displayTimes.value, onWorkHourUnAvailable = {
                             therapistPresenter.addTimeOff(specialistId = therapistId, it.id!!, day = newSelectedDay.value, month = newSelectedMonth.value,

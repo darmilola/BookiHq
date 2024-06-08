@@ -10,7 +10,7 @@ import infrastructure.connectVendor.ConnectVendorRepositoryImpl
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ScreenUIStates
 
 class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Presenter() {
     private val scope: CoroutineScope = MainScope()
@@ -23,26 +23,26 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(UIStates(loadingVisible = true))
+                    contractView?.showLce(ScreenUIStates(loadingVisible = true))
                     connectVendorRepositoryImpl.connectVendor(userEmail,vendorId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(UIStates(contentVisible = true))
+                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
                                     contractView?.onVendorConnected(userEmail)
                                 }
                                 else{
-                                    contractView?.showLce(UIStates(errorOccurred = true))
+                                    contractView?.showLce(ScreenUIStates(errorOccurred = true))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true)) }
+                                it.message?.let { it1 -> contractView?.showLce(ScreenUIStates(errorOccurred = true)) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(UIStates(errorOccurred = true))
+                contractView?.showLce(ScreenUIStates(errorOccurred = true))
             }
         }
     }
@@ -51,26 +51,26 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(UIStates(loadingVisible = true))
+                    contractView?.showLce(ScreenUIStates(loadingVisible = true))
                     connectVendorRepositoryImpl.getVendor(countryId, cityId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(UIStates(contentVisible = true))
+                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
                                     contractView?.showVendors(result.listItem)
                                 }
                                 else{
-                                    contractView?.showLce(UIStates(errorOccurred = true))
+                                    contractView?.showLce(ScreenUIStates(errorOccurred = true))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true)) }
+                                it.message?.let { it1 -> contractView?.showLce(ScreenUIStates(errorOccurred = true)) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(UIStates(errorOccurred = true))
+                contractView?.showLce(ScreenUIStates(errorOccurred = true))
             }
         }
     }
@@ -107,26 +107,26 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(UIStates(loadingVisible = true))
+                    contractView?.showLce(ScreenUIStates(loadingVisible = true))
                     connectVendorRepositoryImpl.searchVendor(countryId, cityId,searchQuery)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(UIStates(contentVisible = true))
+                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
                                     contractView?.showVendors(result.listItem, isFromSearch = true)
                                 }
                                 else{
-                                    contractView?.showLce(UIStates(errorOccurred = true))
+                                    contractView?.showLce(ScreenUIStates(errorOccurred = true))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true)) }
+                                it.message?.let { it1 -> contractView?.showLce(ScreenUIStates(errorOccurred = true)) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(UIStates(errorOccurred = true))
+                contractView?.showLce(ScreenUIStates(errorOccurred = true))
             }
         }
     }

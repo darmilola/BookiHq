@@ -14,7 +14,7 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
     private var _therapistBookedTimes = savedStateHandle.getStateFlow("therapistBookedAppointment", arrayListOf<Appointment>())
     private var _therapistTimeOffs = savedStateHandle.getStateFlow("therapistTimeOffs", arrayListOf<TimeOffs>())
     private var _currentAppointment = savedStateHandle.getStateFlow("currentAppointment",Appointment())
-    private var _postponementViewUIState = savedStateHandle.getStateFlow("postponementViewUIState", AsyncUIStates())
+    private var _postponementViewUIState = savedStateHandle.getStateFlow("postponementViewUIState", ActionUIStates())
     private var _day =  savedStateHandle.getStateFlow("day", -1)
     private var _month =  savedStateHandle.getStateFlow("month", -1)
     private var _year =  savedStateHandle.getStateFlow("year", -1)
@@ -33,7 +33,7 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
     val currentAppointment: StateFlow<Appointment>
         get() = _currentAppointment
 
-    val postponementViewUIState: StateFlow<AsyncUIStates>
+    val postponementViewUIState: StateFlow<ActionUIStates>
         get() = _postponementViewUIState
 
     val day: StateFlow<Int>
@@ -64,8 +64,8 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
         savedStateHandle["therapistBookedAppointment"] = bookedAppointment
     }
 
-    fun setPostponementViewUIState(asyncUIStates: AsyncUIStates) {
-        savedStateHandle["postponementViewUIState"] = asyncUIStates
+    fun setPostponementViewUIState(actionUIStates: ActionUIStates) {
+        savedStateHandle["postponementViewUIState"] = actionUIStates
     }
 
     fun clearServiceTimes() {

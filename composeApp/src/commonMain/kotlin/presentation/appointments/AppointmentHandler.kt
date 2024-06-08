@@ -4,35 +4,45 @@ import domain.Models.Appointment
 import domain.Models.AppointmentResourceListEnvelope
 import domain.Models.AvailableTime
 import domain.Models.TimeOffs
+import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
-import presentation.viewmodels.AsyncUIStates
+import presentation.viewmodels.ActionUIStates
 import presentation.viewmodels.PostponementViewModel
-import presentation.viewmodels.UIStateViewModel
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.ScreenUIStates
 
 
 class AppointmentsHandler(
     private val appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel,
-    private val uiStateViewModel: UIStateViewModel,
+    private val screenUiStateViewModel: ScreenUIStateViewModel,
+    private val deleteActionUIStateViewModel: ActionUIStateViewModel,
+    private val joinMeetingActionUIStateViewModel: ActionUIStateViewModel,
+    private val getAvailabilityActionUIStateViewModel: ActionUIStateViewModel,
     private val postponementViewModel: PostponementViewModel,
     private val appointmentPresenter: AppointmentPresenter,
-    private val onPostponeAppointment: () -> Unit,
-    private val onPostponeDone: () -> Unit,
-    private val onJoinMeetingTokenReady: (meetingToken: String) -> Unit,
-    private val onPostponeFailed: () -> Unit,
-    private val onDeleteStarted: () -> Unit,
-    private val onDeleteSuccess: () -> Unit,
-    private val onDeleteFailed: () -> Unit) : AppointmentContract.View {
+    private val onMeetingTokenReady: (meetingToken: String) -> Unit) : AppointmentContract.View {
     fun init() {
         appointmentPresenter.registerUIContract(this)
     }
 
-    override fun showLce(uiState: UIStates, message: String) {
-        uiStateViewModel.switchState(uiState)
+    override fun showLce(screenUiState: ScreenUIStates) {
+        screenUiStateViewModel.switchScreenUIState(screenUiState)
     }
 
-    override fun showAsyncLce(uiState: AsyncUIStates, message: String) {
-        postponementViewModel.setPostponementViewUIState(uiState)
+    override fun showDeleteActionLce(actionUIStates: ActionUIStates) {
+        deleteActionUIStateViewModel.switchActionUIState(actionUIStates)
+    }
+
+    override fun showPostponeActionLce(actionUIStates: ActionUIStates) {
+        postponementViewModel.setPostponementViewUIState(actionUIStates)
+    }
+
+    override fun showJoinMeetingActionLce(actionUIStates: ActionUIStates) {
+        joinMeetingActionUIStateViewModel.switchActionUIState(actionUIStates)
+    }
+
+    override fun showGetAvailabilityActionLce(actionUIStates: ActionUIStates) {
+        getAvailabilityActionUIStateViewModel.switchActionUIState(actionUIStates)
     }
 
     override fun showAppointments(appointments: AppointmentResourceListEnvelope) {
@@ -65,42 +75,16 @@ class AppointmentsHandler(
         postponementViewModel.setTherapistBookedAppointment(bookedAppointment)
     }
 
-
-    override fun onLoadMoreAppointmentStarted(isSuccess: Boolean) {
+    override fun onLoadMoreAppointmentStarted() {
         appointmentResourceListEnvelopeViewModel.setLoadingMore(true)
     }
 
-    override fun onLoadMoreAppointmentEnded(isSuccess: Boolean) {
+    override fun onLoadMoreAppointmentEnded() {
         appointmentResourceListEnvelopeViewModel.setLoadingMore(false)
     }
 
-    override fun onPostponeAppointmentStarted() {
-        onPostponeAppointment()
-    }
-
-    override fun onPostponeAppointmentSuccess() {
-        onPostponeDone()
-    }
-
-    override fun onPostponeAppointmentFailed() {
-        onPostponeFailed()
-    }
-
-    override fun onDeleteAppointmentStarted() {
-        onDeleteStarted()
-    }
-
-    override fun onDeleteAppointmentSuccess() {
-        onDeleteSuccess()
-    }
-
-    override fun onDeleteAppointmentFailed() {
-        onDeleteFailed()
-    }
-
-    override fun onJoinMeetingHandlerTokenReady(meetingToken: String) {
-        println("token $meetingToken")
-         onJoinMeetingTokenReady(meetingToken)
+    override fun onJoinMeetingTokenReady(meetingToken: String) {
+         onMeetingTokenReady(meetingToken)
     }
 
 }

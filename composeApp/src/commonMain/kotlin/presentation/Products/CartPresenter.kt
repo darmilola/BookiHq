@@ -1,6 +1,5 @@
 package presentation.Products
 
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.badoo.reaktive.single.subscribe
 import domain.Models.OrderItem
 import domain.Products.ProductRepositoryImpl
@@ -11,7 +10,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import presentation.viewmodels.AsyncUIStates
+import presentation.viewmodels.ActionUIStates
 
 class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
 
@@ -33,26 +32,26 @@ class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(AsyncUIStates(isLoading = true))
+                    contractView?.showLce(ActionUIStates(isLoading = true, loadingMessage = "Creating Order"))
                     val orderItems = getUnSavedOrders(orderItemList,userId,orderReference)
                     productRepositoryImpl.createOrder(vendorId,userId,orderReference,deliveryMethod,paymentMethod,orderItems)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(AsyncUIStates(isSuccess = true))
+                                    contractView?.showLce(ActionUIStates(isSuccess = true, successMessage = "Order Created Successfully"))
                                 }
                                 else{
-                                    contractView?.showLce(AsyncUIStates(isSuccess = false))
+                                    contractView?.showLce(ActionUIStates(isFailed = true, errorMessage = "Error Creating Order"))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 ->  contractView?.showLce(AsyncUIStates(isSuccess = false), message = it1) }
+                                contractView?.showLce(ActionUIStates(isFailed = true, errorMessage = "Error Creating Order"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(AsyncUIStates(isSuccess = false))
+                contractView?.showLce(ActionUIStates(isFailed = true, errorMessage = "Error Creating Order"))
             }
         }
     }

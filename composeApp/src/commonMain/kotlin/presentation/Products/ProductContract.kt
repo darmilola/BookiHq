@@ -1,36 +1,18 @@
 package presentation.Products
 
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import domain.Models.FavoriteProduct
 import domain.Models.OrderItem
-import domain.Models.Product
 import domain.Models.ProductCategory
 import domain.Models.ProductResourceListEnvelope
-import domain.Models.ResourceListEnvelope
-import presentation.viewmodels.AsyncUIStates
-import presentation.viewmodels.UIStates
-
-class CategoryContract {
-    interface View {
-        fun showLce(uiState: UIStates, message: String = "")
-        fun showProductCategories(productCategories: List<ProductCategory>, favoriteProducts: List<FavoriteProduct>)
-    }
-
-    abstract class Presenter {
-        abstract fun registerUIContract(view: View?)
-        abstract fun getProductCategory(vendorId: Int, userId: Int)
-
-    }
-}
-
-
+import presentation.viewmodels.ActionUIStates
+import presentation.viewmodels.ScreenUIStates
 
 class ProductContract {
     interface View {
-        fun showLce(uiState: UIStates, message: String = "")
+        fun showLce(uiState: ScreenUIStates)
         fun showProducts(products: ProductResourceListEnvelope?, isFromSearch: Boolean = false)
-        fun onLoadMoreProductStarted(isSuccess: Boolean = false)
-        fun onLoadMoreProductEnded(isSuccess: Boolean = false)
+        fun onLoadMoreProductStarted()
+        fun onLoadMoreProductEnded()
     }
 
     abstract class Presenter {
@@ -46,7 +28,7 @@ class ProductContract {
 
 class CartContract {
     interface View {
-        fun showLce(uiState: AsyncUIStates, message: String = "")
+        fun showLce(actionUIStates: ActionUIStates)
     }
 
     abstract class Presenter {

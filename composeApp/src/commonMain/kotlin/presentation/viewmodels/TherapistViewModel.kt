@@ -8,14 +8,13 @@ import domain.Models.SpecialistReviews
 import domain.Models.TimeOffs
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.LocalDate
-import presentation.dataModeller.CalendarDataSource
 
 class TherapistViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
     private var _therapistAvailableTimes = savedStateHandle.getStateFlow("therapistAvailableTimes", arrayListOf<AvailableTime>())
     private var _therapistTimeOffs = savedStateHandle.getStateFlow("therapistTimeOffs", arrayListOf<TimeOffs>())
     private var _therapistReviews = savedStateHandle.getStateFlow("therapistReviews", arrayListOf<SpecialistReviews>())
-    private var _therapistAvailabilityViewUIState = savedStateHandle.getStateFlow("therapistAvailabilityViewUIState", AsyncUIStates())
+    private var _therapistAvailabilityViewUIState = savedStateHandle.getStateFlow("therapistAvailabilityViewUIState", ActionUIStates())
     private var _newSelectedTime = savedStateHandle.getStateFlow("newSelectedTime", AvailableTime())
     private var _addedTimeOffs = savedStateHandle.getStateFlow("addedTimeOffs", arrayListOf<AvailableTime>())
     private var _day =  savedStateHandle.getStateFlow("day", -1)
@@ -33,7 +32,7 @@ class TherapistViewModel(private val savedStateHandle: SavedStateHandle): ViewMo
     val therapistReviews: StateFlow<List<SpecialistReviews>>
         get() = _therapistReviews
 
-    val therapistAvailabilityViewUIState: StateFlow<AsyncUIStates>
+    val therapistAvailabilityViewUIState: StateFlow<ActionUIStates>
         get() = _therapistAvailabilityViewUIState
 
     val addedTimeOffs: StateFlow<ArrayList<AvailableTime>>
@@ -70,8 +69,8 @@ class TherapistViewModel(private val savedStateHandle: SavedStateHandle): ViewMo
     fun setCurrentAppointment(currentAppointment: Appointment) {
         savedStateHandle["currentAppointment"] = currentAppointment
     }
-    fun setTherapistAvailabilityViewUIState(asyncUIStates: AsyncUIStates) {
-        savedStateHandle["therapistAvailabilityViewUIState"] = asyncUIStates
+    fun setTherapistAvailabilityViewUIState(actionUIStates: ActionUIStates) {
+        savedStateHandle["therapistAvailabilityViewUIState"] = actionUIStates
     }
 
     fun setNewSelectedDate(localDate: LocalDate) {

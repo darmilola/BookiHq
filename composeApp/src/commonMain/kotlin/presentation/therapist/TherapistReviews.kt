@@ -19,14 +19,14 @@ import androidx.compose.ui.unit.dp
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.TherapistViewModel
-import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.ScreenUIStateViewModel
 import presentation.widgets.SpecialistReviewScreen
 import rememberStackedSnackbarHostState
 
 @Composable
 fun TherapistReviews(mainViewModel: MainViewModel, therapistPresenter: TherapistPresenter, therapistViewModel: TherapistViewModel,
-                     uiStateViewModel: UIStateViewModel){
-    val uiState = uiStateViewModel.uiData.collectAsState()
+                     screenUiStateViewModel: ScreenUIStateViewModel){
+    val uiState = screenUiStateViewModel.uiStateInfo.collectAsState()
     val reviews = therapistViewModel.therapistReviews.collectAsState()
 
     val stackedSnackBarHostState = rememberStackedSnackbarHostState(

@@ -36,14 +36,14 @@ import domain.Models.AvailableTime
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.ScreenUIStateViewModel
 import presentation.widgets.AttachTherapistWidget
 import presentation.widgets.SpecialistReviewScreen
 import presentation.widgets.TimeGrid
 import presentations.components.TextComponent
 
 @Composable
-fun BookingSelectSpecialist(mainViewModel: MainViewModel, uiStateViewModel: UIStateViewModel,
+fun BookingSelectSpecialist(mainViewModel: MainViewModel, screenUiStateViewModel: ScreenUIStateViewModel,
                             bookingViewModel: BookingViewModel,
                             bookingPresenter: BookingPresenter) {
 
@@ -60,7 +60,7 @@ fun BookingSelectSpecialist(mainViewModel: MainViewModel, uiStateViewModel: UISt
         }
     })
 
-    val uiStates = uiStateViewModel.uiData.collectAsState()
+    val uiStates = screenUiStateViewModel.uiStateInfo.collectAsState()
     val currentBooking = bookingViewModel.currentAppointmentBooking.value
     val selectedTherapist = remember { mutableStateOf(ServiceTypeSpecialist()) }
     if (currentBooking.serviceTypeSpecialist != null) {

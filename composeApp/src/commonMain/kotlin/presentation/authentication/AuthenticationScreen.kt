@@ -24,10 +24,10 @@ import org.koin.core.component.inject
 import presentation.profile.connect_vendor.ConnectPage
 import presentation.dialogs.LoadingDialog
 import presentation.main.MainScreen
-import presentation.viewmodels.AsyncUIStates
+import presentation.viewmodels.ActionUIStates
 import presentation.viewmodels.AuthenticationViewModel
-import presentation.viewmodels.UIStateViewModel
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.ScreenUIStates
 
 open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreenNav.AUTH_LOGIN.toPath(),
                                 val  platformNavigator: PlatformNavigator? = null,
@@ -35,7 +35,7 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
 
     private val preferenceSettings: Settings = Settings()
     private val authenticationPresenter : AuthenticationPresenter by inject()
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
     private var userNavigationPosition = AuthSSOScreenNav.AUTH_LOGIN.toPath()
     private var authenticationViewModel: AuthenticationViewModel? = null
     private var auth0UserEmail = ""
@@ -69,9 +69,9 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
             isAuthEmailAssigned.value = true
         }
 
-        uiStateViewModel = kmpViewModel(
+        screenUiStateViewModel = kmpViewModel(
             factory = viewModelFactory {
-                UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
             },
         )
 
@@ -230,7 +230,7 @@ class AuthenticationScreenHandler(
         authenticationPresenter.registerUIContract(this)
     }
 
-    override fun showLce(uiState: UIStates, message: String) {
+    override fun showLce(uiState: ScreenUIStates, message: String) {
         uiState.let {
             when{
                 it.loadingVisible -> {
@@ -248,7 +248,7 @@ class AuthenticationScreenHandler(
         }
     }
 
-    override fun showAsyncLce(uiState: AsyncUIStates, message: String) {
+    override fun showAsyncLce(uiState: ActionUIStates, message: String) {
         uiState.let {
             when{
                 it.isLoading -> {

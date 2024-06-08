@@ -32,13 +32,9 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
-import com.russhwolf.settings.Settings
-import com.russhwolf.settings.get
 import domain.Models.Appointment
 import domain.Models.AppointmentItemUIModel
 import domain.Models.PlatformNavigator
-import domain.Models.User
-import domain.Models.Vendor
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -46,11 +42,12 @@ import org.koin.core.component.inject
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.dialogs.LoadingDialog
+import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
-import presentation.viewmodels.UIStateViewModel
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.ScreenUIStates
 import utils.getAppointmentViewHeight
 import presentation.widgets.NewAppointmentWidget
 import presentation.widgets.ShowSnackBar
@@ -62,7 +59,11 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                       private var appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel,private val platformNavigator: PlatformNavigator) : Tab, KoinComponent {
 
     private val appointmentPresenter: AppointmentPresenter by inject()
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
+    private var deleteActionUIStateViewModel: ActionUIStateViewModel? = null
+    private var postponeActionUIStateViewModel: ActionUIStateViewModel? = null
+    private var availabilityActionUIStateViewModel: ActionUIStateViewModel? = null
+    private var joinMeetingActionUIStateViewModel: ActionUIStateViewModel? = null
     private var postponementViewModel: PostponementViewModel? = null
 
 
@@ -70,7 +71,7 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
     override val options: TabOptions
         @Composable
         get() {
-            val title = "Bookings"
+            val title = "Appointments"
             val icon = painterResource("drawable/calender_icon_semi.png")
 
             return remember {
@@ -92,25 +93,44 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
             animation = StackedSnackbarAnimation.Bounce
         )
 
-        val postponeAppointmentProgress = remember { mutableStateOf(false) }
-        val postponeAppointmentSuccess = remember { mutableStateOf(false) }
-        val postponeAppointmentFailed = remember { mutableStateOf(false) }
-
-        val deleteAppointmentProgress = remember { mutableStateOf(false) }
-        val deleteAppointmentSuccess = remember { mutableStateOf(false) }
-        val deleteAppointmentFailed = remember { mutableStateOf(false) }
-
-        val joinMeetingReady = remember { mutableStateOf(false) }
-        val authToken = remember { mutableStateOf("") }
-
-
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        if (screenUiStateViewModel == null) {
+            screenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
+        }
 
+        if (deleteActionUIStateViewModel == null) {
+            deleteActionUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+        if (postponeActionUIStateViewModel == null) {
+            postponeActionUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+        if (availabilityActionUIStateViewModel == null) {
+            availabilityActionUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+        if (joinMeetingActionUIStateViewModel == null) {
+            joinMeetingActionUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
         }
 
         if (postponementViewModel == null) {
@@ -123,7 +143,7 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
         }
 
         if (appointmentResourceListEnvelopeViewModel!!.resources.value.isNotEmpty()){
-            uiStateViewModel!!.switchState(UIStates(contentVisible = true))
+            screenUiStateViewModel!!.switchScreenUIState(ScreenUIStates(contentVisible = true))
         }else {
             if (userId.value != -1) {
                 appointmentPresenter.getUserAppointments(userId.value)
@@ -138,7 +158,12 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
             appointmentResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
         val displayedAppointmentsCount =
             appointmentResourceListEnvelopeViewModel?.displayedItemCount?.collectAsState()
-        val uiState = uiStateViewModel!!.uiData.collectAsState()
+
+        val uiState = screenUiStateViewModel!!.uiStateInfo.collectAsState()
+        val deleteActionUIStates = deleteActionUIStateViewModel!!.uiStateInfo.collectAsState()
+        val postponeActionUIStates = postponeActionUIStateViewModel!!.uiStateInfo.collectAsState()
+        val joinMeetingActionUIStates = joinMeetingActionUIStateViewModel!!.uiStateInfo.collectAsState()
+
         val lastIndex = appointmentList?.value?.size?.minus(1)
         val selectedAppointment = remember { mutableStateOf(Appointment()) }
 
@@ -162,41 +187,98 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                     })
               }
 
+        if (postponeActionUIStates.value.isLoading) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                LoadingDialog("Updating Appointment")
+            }
+        }
+        else if (postponeActionUIStates.value.isSuccess) {
+            ShowSnackBar(title = "Successful",
+                description = "Your Have Successfully Postponed Your Appointment",
+                actionLabel = "",
+                duration = StackedSnackbarDuration.Short,
+                snackBarType = SnackBarType.SUCCESS,
+                stackedSnackBarHostState,
+                onActionClick = {})
+            appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+            if (userId.value != -1) {
+                appointmentPresenter.getUserAppointments(userId.value)
+            }
+        }
+        else if (postponeActionUIStates.value.isFailed) {
+            ShowSnackBar(title = "Failed",
+                description = postponeActionUIStates.value.errorMessage,
+                actionLabel = "",
+                duration = StackedSnackbarDuration.Short,
+                snackBarType = SnackBarType.SUCCESS,
+                stackedSnackBarHostState,
+                onActionClick = {})
+        }
+
+
+
+        if (deleteActionUIStates.value.isLoading) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                LoadingDialog("Deleting Appointment")
+            }
+        }
+        else if (deleteActionUIStates.value.isSuccess) {
+            ShowSnackBar(title = "Successful",
+                description = "Delete Successful",
+                actionLabel = "",
+                duration = StackedSnackbarDuration.Short,
+                snackBarType = SnackBarType.SUCCESS,
+                stackedSnackBarHostState,
+                onActionClick = {})
+            appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+            if (userId.value != -1) {
+                appointmentPresenter.getUserAppointments(userId.value)
+            }
+
+        }
+        else if (deleteActionUIStates.value.isFailed) {
+            ShowSnackBar(title = "Failed",
+                description = deleteActionUIStates.value.errorMessage,
+                actionLabel = "",
+                duration = StackedSnackbarDuration.Short,
+                snackBarType = SnackBarType.SUCCESS,
+                stackedSnackBarHostState,
+                onActionClick = {})
+        }
+
+
+
+        if (joinMeetingActionUIStates.value.isLoading) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                LoadingDialog("Joining Meeting")
+            }
+        }
+        else if (joinMeetingActionUIStates.value.isSuccess) {}
+        else if (joinMeetingActionUIStates.value.isFailed) {
+            ShowSnackBar(title = "Failed",
+                description = joinMeetingActionUIStates.value.errorMessage,
+                actionLabel = "",
+                duration = StackedSnackbarDuration.Short,
+                snackBarType = SnackBarType.SUCCESS,
+                stackedSnackBarHostState,
+                onActionClick = {})
+        }
+
 
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {},
             content = {
                 val handler = AppointmentsHandler(
-                    appointmentResourceListEnvelopeViewModel!!,
-                    uiStateViewModel!!,
+                    appointmentResourceListEnvelopeViewModel,
+                    screenUiStateViewModel!!,
+                    deleteActionUIStateViewModel!!,
+                    joinMeetingActionUIStateViewModel!!,
+                    availabilityActionUIStateViewModel!!,
                     postponementViewModel!!,
                     appointmentPresenter,
-                    onPostponeAppointment = {
-                       postponeAppointmentProgress.value = true
-                    },
-                    onPostponeDone = {
-                        postponeAppointmentProgress.value = false
-                        postponeAppointmentSuccess.value = true
-                    },
-                    onPostponeFailed = {
-                        postponeAppointmentProgress.value = false
-                        postponeAppointmentFailed.value = true
-                    },
-                     onDeleteSuccess = {
-                         deleteAppointmentProgress.value = false
-                         deleteAppointmentSuccess.value = true
-                    }, onDeleteFailed = {
-                        deleteAppointmentFailed.value = true
-                    },
-                    onDeleteStarted = {
-                       deleteAppointmentProgress.value = true
-                    },
-                    onJoinMeetingTokenReady = {
-                        println("it $it")
+                    onMeetingTokenReady = {
                         platformNavigator.startVideoCall(it)
-                       // joinMeetingReady.value = true
-                        //authToken.value = it
                     }
                 )
                 handler.init()
@@ -217,57 +299,10 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
 
                 } else if (uiState.value.contentVisible) {
 
-                    if (joinMeetingReady.value){
-                        println("Ready")
-                        platformNavigator.startVideoCall(authToken = authToken.value)
-                    }
-
                     val columnModifier = Modifier
                         .padding(top = 5.dp)
                         .fillMaxHeight()
                         .fillMaxWidth()
-
-                    if (postponeAppointmentProgress.value) {
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            LoadingDialog("Updating Appointment")
-                        }
-                    }
-                    else if (postponeAppointmentSuccess.value) {
-                        ShowSnackBar(title = "Successful",
-                            description = "Your Have Successfully Postponed Your Appointment",
-                            actionLabel = "",
-                            duration = StackedSnackbarDuration.Short,
-                            snackBarType = SnackBarType.SUCCESS,
-                            stackedSnackBarHostState,
-                            onActionClick = {})
-                        postponeAppointmentSuccess.value = false
-                        appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                        if (userId.value != -1) {
-                            appointmentPresenter.getUserAppointments(userId.value)
-                        }
-
-                    }
-
-                    if (deleteAppointmentProgress.value) {
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            LoadingDialog("Deleting Appointment")
-                        }
-                    }
-                    else if (deleteAppointmentSuccess.value) {
-                        ShowSnackBar(title = "Successful",
-                            description = "Delete Successful",
-                            actionLabel = "",
-                            duration = StackedSnackbarDuration.Short,
-                            snackBarType = SnackBarType.SUCCESS,
-                            stackedSnackBarHostState,
-                            onActionClick = {})
-                        deleteAppointmentSuccess.value = false
-                        appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                        if (userId.value != -1) {
-                            appointmentPresenter.getUserAppointments(userId.value)
-                        }
-
-                    }
 
                     Column(
                         verticalArrangement = Arrangement.Center,

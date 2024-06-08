@@ -2,11 +2,11 @@ package presentation.profile.connect_vendor
 
 import domain.Models.ResourceListEnvelope
 import domain.Models.Vendor
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ScreenUIStates
 
 class ConnectVendorContract {
     interface View {
-        fun showLce(uiState: UIStates)
+        fun showLce(uiState: ScreenUIStates)
         fun onVendorConnected(userEmail: String)
         fun showVendors(vendors: ResourceListEnvelope<Vendor>?, isFromSearch: Boolean = false)
         fun onLoadMoreVendorStarted(isSuccess: Boolean = false)

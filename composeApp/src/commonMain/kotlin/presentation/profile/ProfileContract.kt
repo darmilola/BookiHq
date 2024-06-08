@@ -2,7 +2,7 @@ package presentation.profile
 
 import dev.jordond.compass.Place
 import domain.Models.VendorTime
-import presentation.viewmodels.AsyncUIStates
+import presentation.viewmodels.ActionUIStates
 
 class ProfileContract {
     interface View {
@@ -11,12 +11,12 @@ class ProfileContract {
         fun onProfileUpdated()
         fun showUserLocation(place: Place)
 
-        fun showLce(asyncUIStates: AsyncUIStates, message: String = "")
+        fun showLce(actionUIStates: ActionUIStates, message: String = "")
     }
 
     interface VideoView {
         fun showAvailability(availableTimes: List<VendorTime>)
-        fun showLce(asyncUIStates: AsyncUIStates, message: String = "")
+        fun showLce(actionUIStates: ActionUIStates, message: String = "")
 
     }
 

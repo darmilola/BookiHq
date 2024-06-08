@@ -53,10 +53,10 @@ import presentation.components.StraightLine
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
 import presentation.dialogs.SuccessDialog
-import presentation.viewmodels.AsyncUIStates
+import presentation.viewmodels.ActionUIStates
 import presentation.viewmodels.CartViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.ScreenUIStateViewModel
 import presentation.widgets.CheckOutSummaryWidget
 import presentation.widgets.ProductDeliveryAddressWidget
 import presentation.widgets.PageBackNavWidget
@@ -72,7 +72,7 @@ import utils.calculateTotal
 class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
     private val cartPresenter: CartPresenter by inject()
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
     private var cartViewModel: CartViewModel? = null
 
     override val options: TabOptions
@@ -101,10 +101,10 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
         val coroutineScope = rememberCoroutineScope()
 
 
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        if (screenUiStateViewModel == null) {
+            screenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -438,7 +438,7 @@ class CreateOrderScreenHandler(
     }
 
 
-    override fun showLce(uiState: AsyncUIStates, message: String) {
+    override fun showLce(uiState: ActionUIStates, message: String) {
         uiState.let {
             when {
                 it.isLoading -> {

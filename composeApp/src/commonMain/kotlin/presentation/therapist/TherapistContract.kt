@@ -1,16 +1,15 @@
 package presentation.therapist
 
-import domain.Models.Appointment
 import domain.Models.AvailableTime
 import domain.Models.SpecialistReviews
 import domain.Models.TimeOffs
-import presentation.viewmodels.AsyncUIStates
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ActionUIStates
+import presentation.viewmodels.ScreenUIStates
 
 interface TherapistContract {
     interface View {
-        fun showLce(uiState: UIStates, message: String = "")
-        fun showAsyncLce(uiState: AsyncUIStates, message: String = "")
+        fun showLce(screenUIStates: ScreenUIStates)
+        fun showActionLce(actionUiState: ActionUIStates)
         fun showReviews(reviews: List<SpecialistReviews>)
         fun showTherapistAvailability(availableTimes: List<AvailableTime>, timeOffs: List<TimeOffs>)
     }

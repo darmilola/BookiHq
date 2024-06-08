@@ -1,11 +1,10 @@
 package presentation.therapist
 
-import domain.Models.Appointment
 import domain.Models.AvailableTime
 import domain.Models.SpecialistReviews
 import domain.Models.TimeOffs
-import presentation.viewmodels.AsyncUIStates
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ActionUIStates
+import presentation.viewmodels.ScreenUIStates
 
 class TherapistHandler(
     private val therapistPresenter: TherapistPresenter,
@@ -21,7 +20,7 @@ class TherapistHandler(
         therapistPresenter.registerUIContract(this)
     }
 
-    override fun showLce(uiState: UIStates, message: String) {
+    override fun showLce(uiState: ScreenUIStates, message: String) {
         uiState.let {
             when{
                 it.loadingVisible -> {
@@ -39,7 +38,7 @@ class TherapistHandler(
         }
     }
 
-    override fun showAsyncLce(uiState: AsyncUIStates, message: String) {
+    override fun showActionLce(uiState: ActionUIStates, message: String) {
         uiState.let {
             when{
                 it.isLoading-> {

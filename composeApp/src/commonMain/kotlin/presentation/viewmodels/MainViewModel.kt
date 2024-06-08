@@ -32,7 +32,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     private var _currentUnsavedAppointments =  savedStateHandle.getStateFlow("currentUnsavedAppointments", ArrayList<UnsavedAppointment>())
     private var _currentUnsavedOrders =  savedStateHandle.getStateFlow("currentUnsavedOrders", ArrayList<OrderItem>())
     private var _currentOrderReference =  savedStateHandle.getStateFlow("currentOrderReference", -1)
-    private var _mainUiState =  savedStateHandle.getStateFlow("mainUiState", AsyncUIStates())
+    private var _mainUiState =  savedStateHandle.getStateFlow("mainUiState", ActionUIStates())
     private var _homePageInfo =  savedStateHandle.getStateFlow("homePageInfo", HomepageInfo())
     private var _vendorStatus =  savedStateHandle.getStateFlow("vendorStatus", arrayListOf<VendorStatusModel>())
     private var _homePageViewHeight =  savedStateHandle.getStateFlow("homePageViewHeight",0)
@@ -88,7 +88,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
 
     val screenNav: StateFlow<Pair<Int,Int>>
         get() = _screenNav
-    val mainUIState: StateFlow<AsyncUIStates>
+    val mainUIState: StateFlow<ActionUIStates>
         get() = _mainUiState
 
     val homePageInfo: StateFlow<HomepageInfo>
@@ -195,7 +195,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     fun clearVendorRecommendation() {
         savedStateHandle["vendorRecommendation"] = VendorRecommendation()
     }
-    fun setMainUIState(asyncUIStates: AsyncUIStates) {
-        savedStateHandle["mainUiState"] = asyncUIStates
+    fun setMainUIState(actionUIStates: ActionUIStates) {
+        savedStateHandle["mainUiState"] = actionUIStates
     }
 }

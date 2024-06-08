@@ -4,13 +4,13 @@ import domain.Models.ServiceTypeSpecialist
 import domain.Models.UnsavedAppointment
 import domain.Models.User
 import domain.Models.Vendor
-import presentation.viewmodels.AsyncUIStates
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ActionUIStates
+import presentation.viewmodels.ScreenUIStates
 
 class BookingContract {
     interface View {
-        fun showLce(uiState: UIStates, message: String = "")
-        fun showBookingLce(uiState: AsyncUIStates, message: String = "")
+        fun showScreenLce(uiState: ScreenUIStates, message: String = "")
+        fun showActionLce(uiState: ActionUIStates, message: String = "")
         fun showTherapists(serviceSpecialists: List<ServiceTypeSpecialist>)
         fun showUnsavedAppointment()
     }

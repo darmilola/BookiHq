@@ -1,15 +1,12 @@
 package presentation.main
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import theme.styles.Colors
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.MaterialTheme
@@ -34,31 +31,18 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
-import com.russhwolf.settings.Settings
-import com.russhwolf.settings.get
-import com.russhwolf.settings.set
-import domain.Models.Appointment
-import domain.Models.HomepageInfo
 import domain.Models.PlatformNavigator
-import domain.Models.Product
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
 import presentation.appointments.AppointmentsTab
-import presentation.components.IndeterminateCircularProgressBar
 import presentation.main.account.AccountTab
 import presentation.main.home.HomeTab
-import presentation.main.home.HomepageContract
-import presentation.main.home.HomepagePresenter
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
-import presentation.viewmodels.AsyncUIStates
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ProductResourceListEnvelopeViewModel
 import presentation.viewmodels.ProductViewModel
-import presentation.viewmodels.ResourceListEnvelopeViewModel
-import presentation.viewmodels.UIStateViewModel
-import presentation.viewmodels.UIStates
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 

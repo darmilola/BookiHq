@@ -33,7 +33,6 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
-import domain.Models.Appointment
 import domain.Models.AvailableTime
 import domain.Models.TimeOffs
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -42,12 +41,12 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.appointments.AppointmentPresenter
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
-import presentation.viewmodels.AsyncUIStateViewModel
+import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
 import presentation.viewmodels.TherapistViewModel
-import presentation.viewmodels.UIStateViewModel
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.ScreenUIStates
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
@@ -56,8 +55,8 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
 
     private val appointmentPresenter: AppointmentPresenter by inject()
     private val therapistPresenter: TherapistPresenter by inject()
-    private var uiStateViewModel: UIStateViewModel? = null
-    private var asyncUiStateViewModel: AsyncUIStateViewModel? = null
+    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
+    private var actionUiStateViewModel: ActionUIStateViewModel? = null
     private var therapistViewModel: TherapistViewModel? = null
     private var postponementViewModel: PostponementViewModel? = null
     private var appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel? = null
@@ -82,19 +81,19 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
     @Composable
     override fun Content() {
 
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        if (screenUiStateViewModel == null) {
+            screenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
 
         }
 
-        if (asyncUiStateViewModel == null) {
-            asyncUiStateViewModel = kmpViewModel(
+        if (actionUiStateViewModel == null) {
+            actionUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    AsyncUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
 
@@ -129,28 +128,26 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
                 therapistViewModel!!.setTherapistReviews(it)
              },
             onErrorVisible = {
-                uiStateViewModel!!.switchState(UIStates(errorOccurred = true))
+                screenUiStateViewModel!!.switchScreenUIState(ScreenUIStates(errorOccurred = true))
             },
             onContentVisible = {
-                uiStateViewModel!!.switchState(UIStates(contentVisible = true))
+                screenUiStateViewModel!!.switchScreenUIState(ScreenUIStates(contentVisible = true))
             }, onPageLoading = {
-                uiStateViewModel!!.switchState(UIStates(loadingVisible = true))
+                screenUiStateViewModel!!.switchScreenUIState(ScreenUIStates(loadingVisible = true))
             }, onTherapistAvailabilityReady = {
                     availableTimes: List<AvailableTime>,
                     timeOffs: List<TimeOffs> ->
-                println("timeOffs $timeOffs")
-                println("available $availableTimes")
                 therapistViewModel!!.setTherapistAvailableTimes(availableTimes)
                 therapistViewModel!!.setTherapistTimeOffs(timeOffs)
             },
             onAsyncLoading = {
-                asyncUiStateViewModel!!.switchState(UIStates(loadingVisible = true))
+               // actionUiStateViewModel!!.switchActionUIState(ScreenUIStates(loadingVisible = true))
             },
             onAsyncSuccess = {
-                asyncUiStateViewModel!!.switchState(UIStates(contentVisible = true))
+               // actionUiStateViewModel!!.switchActionUIState(ScreenUIStates(contentVisible = true))
             },
             onAsyncFailed = {
-                asyncUiStateViewModel!!.switchState(UIStates(errorOccurred = true))
+               // actionUiStateViewModel!!.switchActionUIState(ScreenUIStates(errorOccurred = true))
             })
         handler.init()
 
@@ -219,9 +216,9 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
                 contentAlignment = Alignment.Center
             ) {
                 when(tabIndex){
-                    0 -> TherapistAppointment(mainViewModel, uiStateViewModel!!, postponementViewModel!!, appointmentResourceListEnvelopeViewModel, appointmentPresenter)
-                    1 -> TherapistAvailability(mainViewModel, therapistPresenter, therapistViewModel!!, uiStateViewModel!!, asyncUiStateViewModel!!)
-                    2 -> TherapistReviews(mainViewModel, therapistPresenter, therapistViewModel!!, uiStateViewModel!!)
+                    0 -> TherapistAppointment(mainViewModel, screenUiStateViewModel!!, postponementViewModel!!, appointmentResourceListEnvelopeViewModel, appointmentPresenter)
+                    1 -> TherapistAvailability(mainViewModel, therapistPresenter, therapistViewModel!!, screenUiStateViewModel!!, actionUiStateViewModel!!)
+                    2 -> TherapistReviews(mainViewModel, therapistPresenter, therapistViewModel!!, screenUiStateViewModel!!)
                 }
 
             }

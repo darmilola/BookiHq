@@ -61,12 +61,12 @@ import presentation.Products.ProductDetailContent
 import presentation.Products.ProductPresenter
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
-import presentation.viewmodels.AsyncUIStates
+import presentation.viewmodels.ActionUIStates
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ProductResourceListEnvelopeViewModel
 import presentation.viewmodels.ProductViewModel
-import presentation.viewmodels.UIStateViewModel
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.ScreenUIStates
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
@@ -78,7 +78,7 @@ class ShopTab(private val mainViewModel: MainViewModel,
               private val productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel) : Tab, KoinComponent {
 
     private val productPresenter: ProductPresenter by inject()
-    private var productUIStateViewModel: UIStateViewModel? = null
+    private var screenUIStateViewModel: ScreenUIStateViewModel? = null
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -99,7 +99,6 @@ class ShopTab(private val mainViewModel: MainViewModel,
 
     @Composable
     override fun Content() {
-        val userId = mainViewModel.userId.collectAsState()
         val vendorId = mainViewModel.vendorId.collectAsState()
         val onCartChanged = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
@@ -109,43 +108,22 @@ class ShopTab(private val mainViewModel: MainViewModel,
             animation = StackedSnackbarAnimation.Bounce
         )
 
-        if (productUIStateViewModel == null) {
-            productUIStateViewModel = kmpViewModel(
+        if (screenUIStateViewModel == null) {
+            screenUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
 
-
-        if (productResourceListEnvelopeViewModel.resources.value.isNotEmpty()){
-            productViewModel.setProductUIState(
-                AsyncUIStates(
-                    isDone = true,
-                    isSuccess = true
-                )
-            )
-        }
-        else {
-            if (userId.value != -1 && vendorId.value != -1) {
-                productPresenter.getProducts(vendorId.value)
-            }
+        if (productResourceListEnvelopeViewModel.resources.value.isEmpty()){
+            productPresenter.getProducts(vendorId.value)
         }
 
         val productHandler = ShopProductsHandler(
-            productUIStateViewModel!!, productPresenter,
-            onPageLoading = {
-                productViewModel!!.setProductUIState(AsyncUIStates(isLoading = true))
-            },
+            screenUIStateViewModel!!, productPresenter,
             onProductAvailable = { products: ProductResourceListEnvelope?, isFromSearch: Boolean ->
-                productViewModel!!.setProductUIState(
-                    AsyncUIStates(
-                        isDone = true,
-                        isSuccess = true
-                    )
-                )
                 if (isFromSearch) {
-                    // New Search Created
                     if (productResourceListEnvelopeViewModel.resources.value.isEmpty()) {
                         productResourceListEnvelopeViewModel!!.setResources(products?.resources)
                         products?.prevPageUrl?.let {
@@ -174,8 +152,6 @@ class ShopTab(private val mainViewModel: MainViewModel,
                             )
                         }
                     }
-
-                    // Add more from search
                     else if (productResourceListEnvelopeViewModel!!.resources.value.isNotEmpty()) {
                         val productList = productResourceListEnvelopeViewModel!!.resources.value
                         productList.addAll(products?.resources!!)
@@ -237,8 +213,6 @@ class ShopTab(private val mainViewModel: MainViewModel,
                             )
                         }
                     }
-
-                    // Add more from search
                     else if (productResourceListEnvelopeViewModel!!.resources.value.isNotEmpty()) {
                         val productList = productResourceListEnvelopeViewModel!!.resources.value
                         productList.addAll(products?.resources!!)
@@ -272,14 +246,7 @@ class ShopTab(private val mainViewModel: MainViewModel,
 
                 }
 
-            }, onErrorVisible = {
-                productViewModel!!.setProductUIState(
-                    AsyncUIStates(
-                        isSuccess = false,
-                        isDone = true
-                    )
-                )
-            }, onLoadMoreStarted = { isLoadMore ->
+            }, onLoadMoreStarted = {
                 productResourceListEnvelopeViewModel.setLoadingMore(true)
             }, onLoadMoreEnded = {
                 productResourceListEnvelopeViewModel.setLoadingMore(false)
@@ -310,7 +277,7 @@ class ShopTab(private val mainViewModel: MainViewModel,
             content = {
                 ProductContent(
                     productResourceListEnvelopeViewModel = productResourceListEnvelopeViewModel,
-                    productViewModel = productViewModel,
+                    screenUIStateViewModel!!,
                     searchQuery = searchQuery.value,
                     vendorId = vendorId.value,
                     mainViewModel = mainViewModel,
@@ -386,16 +353,18 @@ class ShopTab(private val mainViewModel: MainViewModel,
     @Composable
     fun ProductContent(
         productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel,
-        searchQuery: String, vendorId: Int,
-        productViewModel: ProductViewModel, mainViewModel: MainViewModel, onCartChanged: () -> Unit
-    ) {
+        screenUiStateViewModel: ScreenUIStateViewModel,
+        searchQuery: String, vendorId: Int, mainViewModel: MainViewModel, onCartChanged: () -> Unit) {
+
         val loadMoreState = productResourceListEnvelopeViewModel.isLoadingMore.collectAsState()
         val productList = productResourceListEnvelopeViewModel.resources.collectAsState()
         val selectedProduct = remember { mutableStateOf(Product()) }
-        val productUIState = productViewModel.productUiState.collectAsState()
         val totalProductsCount = productResourceListEnvelopeViewModel.totalItemCount.collectAsState()
         val displayedProductsCount = productResourceListEnvelopeViewModel.displayedItemCount.collectAsState()
+        val uiState = screenUiStateViewModel.uiStateInfo.collectAsState()
         val lastIndex = productList.value.size.minus(1)
+
+
         var productUIModel by remember {
             mutableStateOf(
                 ProductItemUIModel(
@@ -420,8 +389,8 @@ class ShopTab(private val mainViewModel: MainViewModel,
                 .padding(bottom = 60.dp),
             contentAlignment = Alignment.Center
         ) {
-            if (productUIState.value.isLoading) {
-                productResourceListEnvelopeViewModel.setIsSearching(true)
+
+            if (uiState.value.loadingVisible) {
                 Box(
                     modifier = Modifier.fillMaxWidth().fillMaxHeight()
                         .padding(top = 40.dp, start = 50.dp, end = 50.dp)
@@ -430,10 +399,16 @@ class ShopTab(private val mainViewModel: MainViewModel,
                 ) {
                     IndeterminateCircularProgressBar()
                 }
-            } else if (productUIState.value.isDone && !productUIState.value.isSuccess) {
-                productResourceListEnvelopeViewModel.setIsSearching(false)
-                // Error Occurred display reload
-            } else if (productUIState.value.isDone && productUIState.value.isSuccess) {
+            }
+
+            else if (uiState.value.errorOccurred) {
+
+                val message = uiState.value.errorMessage
+
+                //Error Occurred
+            }
+
+            else if (uiState.value.contentVisible) {
                 productResourceListEnvelopeViewModel.setIsSearching(false)
                 val columnModifier = Modifier
                     .fillMaxHeight()
@@ -519,43 +494,30 @@ class ShopTab(private val mainViewModel: MainViewModel,
     }
 
     class ShopProductsHandler(
-        private val uiStateViewModel: UIStateViewModel,
+        private val screenUiStateViewModel: ScreenUIStateViewModel,
         private val productPresenter: ProductPresenter,
-        private val onPageLoading: () -> Unit,
         private val onProductAvailable: (products: ProductResourceListEnvelope?, isFromSearch: Boolean) -> Unit,
-        private val onLoadMoreStarted: (isLoadMore: Boolean) -> Unit,
-        private val onLoadMoreEnded: (isLoadMore: Boolean) -> Unit,
-        private val onErrorVisible: () -> Unit
+        private val onLoadMoreStarted: () -> Unit,
+        private val onLoadMoreEnded: () -> Unit
     ) : ProductContract.View {
         fun init() {
             productPresenter.registerUIContract(this)
         }
 
-        override fun showLce(uiState: UIStates, message: String) {
-            uiStateViewModel.switchState(uiState)
-            uiState.let {
-                when {
-                    it.loadingVisible -> {
-                        onPageLoading()
-                    }
-
-                    it.errorOccurred -> {
-                        onErrorVisible()
-                    }
-                }
-            }
+        override fun showLce(uiState: ScreenUIStates) {
+            screenUiStateViewModel.switchScreenUIState(uiState)
         }
 
         override fun showProducts(products: ProductResourceListEnvelope?, isFromSearch: Boolean) {
             onProductAvailable(products, isFromSearch)
         }
 
-        override fun onLoadMoreProductStarted(isSuccess: Boolean) {
-            onLoadMoreStarted(true)
+        override fun onLoadMoreProductStarted() {
+            onLoadMoreStarted()
         }
 
-        override fun onLoadMoreProductEnded(isSuccess: Boolean) {
-            onLoadMoreEnded(false)
+        override fun onLoadMoreProductEnded() {
+            onLoadMoreEnded()
         }
 
     }

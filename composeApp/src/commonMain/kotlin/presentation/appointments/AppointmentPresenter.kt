@@ -10,8 +10,8 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import presentation.viewmodels.AsyncUIStates
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ActionUIStates
+import presentation.viewmodels.ScreenUIStates
 
 class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presenter() {
 
@@ -23,113 +23,113 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
     }
 
     override fun getUserAppointments(userId: Int) {
+        contractView?.showLce(ScreenUIStates(loadingVisible = true))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(UIStates(loadingVisible = true))
                     appointmentRepositoryImpl.getAppointments(userId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(UIStates(contentVisible = true))
+                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
                                     contractView?.showAppointments(result.listItem)
                                 }
                                 else{
-                                    contractView?.showLce(UIStates(errorOccurred = true))
+                                    contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true)) }
+                                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(UIStates(errorOccurred = true))
+                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
             }
         }
     }
 
     override fun getMoreAppointments(userId: Int, nextPage: Int) {
+        contractView?.onLoadMoreAppointmentStarted()
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.onLoadMoreAppointmentStarted(true)
                     appointmentRepositoryImpl.getAppointments(userId, nextPage)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.onLoadMoreAppointmentEnded(true)
+                                    contractView?.onLoadMoreAppointmentEnded()
                                     contractView?.showAppointments(result.listItem)
                                 }
                                 else{
-                                    contractView?.onLoadMoreAppointmentEnded(false)
+                                    contractView?.onLoadMoreAppointmentEnded()
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.onLoadMoreAppointmentEnded(false) }
+                                it.message?.let { it1 -> contractView?.onLoadMoreAppointmentEnded() }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.onLoadMoreAppointmentEnded(false)
+                contractView?.onLoadMoreAppointmentEnded()
             }
         }
     }
 
     override fun getSpecialistAppointments(specialistId: Int) {
+        contractView?.showLce(ScreenUIStates(loadingVisible = true))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(UIStates(loadingVisible = true))
                     appointmentRepositoryImpl.getSpecialistAppointments(specialistId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(UIStates(contentVisible = true))
+                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
                                     contractView?.showAppointments(result.listItem)
                                 }
                                 else{
-                                    contractView?.showLce(UIStates(errorOccurred = true))
+                                    contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true)) }
+                                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(UIStates(errorOccurred = true))
+                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
             }
         }
     }
 
     override fun getMoreSpecialistAppointments(specialistId: Int, nextPage: Int) {
+        contractView?.onLoadMoreAppointmentStarted()
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.onLoadMoreAppointmentStarted(true)
                     appointmentRepositoryImpl.getSpecialistAppointments(specialistId, nextPage)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.onLoadMoreAppointmentEnded(true)
+                                    contractView?.onLoadMoreAppointmentEnded()
                                     contractView?.showAppointments(result.listItem)
                                 }
                                 else{
-                                    contractView?.onLoadMoreAppointmentEnded(false)
+                                    contractView?.onLoadMoreAppointmentEnded()
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.onLoadMoreAppointmentEnded(false) }
+                                contractView?.onLoadMoreAppointmentEnded()
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.onLoadMoreAppointmentEnded(false)
+                contractView?.onLoadMoreAppointmentEnded()
             }
         }
     }
@@ -141,114 +141,113 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
         month: Int,
         year: Int
     ) {
+        contractView?.showPostponeActionLce(ActionUIStates(isLoading = true, loadingMessage = "Postponing Your Appointment"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.onPostponeAppointmentStarted()
                     appointmentRepositoryImpl.postponeAppointment(appointment, newAppointmentTime, day,month,year)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.onPostponeAppointmentSuccess()
+                                    contractView?.showPostponeActionLce(ActionUIStates(isSuccess = true, successMessage = "Appointment Postponed"))
                                 }
                                 else{
-                                    contractView?.onPostponeAppointmentFailed()
+                                    contractView?.showPostponeActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Postponing Appointment Please Try Again"))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.onPostponeAppointmentFailed() }
+                                contractView?.showPostponeActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Postponing Appointment Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.onPostponeAppointmentFailed()
+                contractView?.showPostponeActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Postponing Appointment Please Try Again"))
             }
         }
     }
 
     override fun deleteAppointment(appointmentId: Int) {
+        contractView?.showDeleteActionLce(ActionUIStates(isLoading = true, loadingMessage = "Deleting Appointment"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.onDeleteAppointmentStarted()
                     appointmentRepositoryImpl.deleteAppointment(appointmentId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.onDeleteAppointmentSuccess()
+                                    contractView?.showDeleteActionLce(ActionUIStates(isSuccess = true, successMessage = "Appointment Deleted"))
                                 }
                                 else{
-                                    contractView?.onDeleteAppointmentFailed()
+                                    contractView?.showDeleteActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Deleting Appointment Please Try Again"))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.onDeleteAppointmentFailed() }
+                                contractView?.showDeleteActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Deleting Appointment Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.onDeleteAppointmentFailed()
+                contractView?.showDeleteActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Deleting Appointment Please Try Again"))
             }
         }
     }
 
     override fun joinMeeting(customParticipantId: String, presetName: String, meetingId: String) {
+        contractView?.showJoinMeetingActionLce(ActionUIStates(isLoading = true, loadingMessage = "Joining Meeting"))
+
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(UIStates(loadingVisible = true), message = "Joining Meeting")
                     appointmentRepositoryImpl.joinMeeting(customParticipantId, presetName, meetingId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    println("Success")
-                                    contractView?.onJoinMeetingHandlerTokenReady(result.token)
+                                    contractView?.showJoinMeetingActionLce(ActionUIStates(isSuccess = true, successMessage = "Meeting Ready to be joined"))
+                                    contractView?.onJoinMeetingTokenReady(result.token)
                                 }
                                 else{
-                                    println("Error 1")
-                                    contractView?.showLce(UIStates(errorOccurred = true), message = "Error Joining Meeting please try again")
+                                    contractView?.showJoinMeetingActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Joining Meeting please try again"))
                                 }
                             },
                             onError = {
-                                println("Error 2 ${it.message}")
-                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true), message = "Error Joining Meeting please try again")}
+                                contractView?.showJoinMeetingActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Joining Meeting please try again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Error 3 ${e.message}")
-                contractView?.showLce(UIStates(errorOccurred = true), message = "Error Joining Meeting please try again")
+                contractView?.showJoinMeetingActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Joining Meeting please try again"))
             }
         }
     }
 
     override fun getTherapistAvailability(specialistId: Int, day: Int, month: Int, year: Int) {
+        contractView?.showGetAvailabilityActionLce(ActionUIStates(isLoading = true, loadingMessage = "Getting Availability"))
+
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showAsyncLce(AsyncUIStates(isLoading = true))
                     appointmentRepositoryImpl.getTherapistAvailability(specialistId, day, month, year)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     contractView?.showTherapistAvailability(result.availableTimes, result.bookedAppointment, result.timeOffs)
-                                    contractView?.showAsyncLce(AsyncUIStates(isSuccess = true))
+                                    contractView?.showGetAvailabilityActionLce(ActionUIStates(isSuccess = true, successMessage = "Availability Ready"))
                                 }
                                 else{
-                                    contractView?.showAsyncLce(AsyncUIStates(isFailed = true))
+                                    contractView?.showGetAvailabilityActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Fetching Availability, Please Try Again"))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showAsyncLce(AsyncUIStates(isFailed = true)) }
+                                contractView?.showGetAvailabilityActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Fetching Availability, Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showAsyncLce(AsyncUIStates(isFailed = true))
+                contractView?.showGetAvailabilityActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Fetching Availability, Please Try Again"))
             }
         }
     }

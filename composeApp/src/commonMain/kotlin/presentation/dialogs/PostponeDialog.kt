@@ -151,12 +151,11 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
 
                                 TimeGrid(displayTimes.value,onWorkHourClickListener = {
                                     postponementViewModel.setNewSelectedTime(it)
-                                   // postponementViewModel.clearServiceTimes()
                                 })
                             }
                         }
                         else {
-                             // Error Occurred
+                             onDismissRequest()
                         }
 
                         buttonContent(onDismissRequest = {

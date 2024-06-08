@@ -27,8 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
@@ -36,9 +34,7 @@ import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
-import domain.Models.OrderItem
 import domain.Models.PlatformNavigator
-import domain.Models.Screens
 import domain.Models.Vendor
 import domain.Models.VendorItemUIModel
 import domain.Models.getVendorListItemViewHeight
@@ -50,18 +46,15 @@ import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.ConnectPageViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ResourceListEnvelopeViewModel
-import presentation.viewmodels.UIStateViewModel
-import presentation.widgets.ShowSnackBar
-import presentation.widgets.SnackBarType
+import presentation.viewmodels.ScreenUIStateViewModel
 import presentation.widgets.SwitchVendorBottomSheet
-import presentation.widgets.SwitchVendorBottomSheetContent
 import theme.Colors
 
 class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: PlatformNavigator? = null) : Tab, KoinComponent {
 
     private val preferenceSettings: Settings = Settings()
     private val connectVendorPresenter: ConnectVendorPresenter by inject()
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
     private var connectPageViewModel: ConnectPageViewModel? = null
     private var vendorResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Vendor>? = null
     private var userEmail: String = ""
@@ -91,10 +84,10 @@ class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: Pl
         countryId = preferenceSettings["countryId", -1]
         cityId = preferenceSettings["cityId", -1]
 
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        if (screenUiStateViewModel == null) {
+            screenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
             connectVendorPresenter.getVendor(countryId = countryId, cityId = cityId)
@@ -136,7 +129,7 @@ class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: Pl
         // View Contract Handler Initialisation
         val handler = ConnectPageHandler(
             vendorResourceListEnvelopeViewModel!!,
-            uiStateViewModel!!,
+            screenUiStateViewModel!!,
             connectVendorPresenter,
             onPageLoading = {
                 contentLoading.value = true

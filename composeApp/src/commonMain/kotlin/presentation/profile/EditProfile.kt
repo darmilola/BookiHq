@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.Scaffold
@@ -28,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
@@ -36,9 +34,7 @@ import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
-import com.russhwolf.settings.set
 import dev.jordond.compass.Place
-import domain.Models.CountryList
 import domain.Models.PlatformNavigator
 import domain.Models.Screens
 import domain.Models.getCityList
@@ -48,9 +44,9 @@ import org.koin.core.component.inject
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
 import presentation.dialogs.LoadingDialog
-import presentation.viewmodels.AsyncUIStates
+import presentation.viewmodels.ActionUIStates
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.ScreenUIStateViewModel
 import presentation.widgets.DropDownWidget
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.AccountProfileImage
@@ -59,11 +55,10 @@ import presentation.widgets.SnackBarType
 import presentation.widgets.TitleWidget
 import presentations.widgets.InputWidget
 import rememberStackedSnackbarHostState
-import utils.InputValidator
 
 class EditProfile(private val mainViewModel: MainViewModel, val  platformNavigator: PlatformNavigator? = null,val preferenceSettings: Settings) : Tab, KoinComponent {
     private val profilePresenter: ProfilePresenter by inject()
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
     override val options: TabOptions
         @Composable
         get() {
@@ -380,8 +375,8 @@ class ProfileHandler(
         onUserLocationReady(place)
     }
 
-    override fun showLce(asyncUIStates: AsyncUIStates, message: String) {
-        asyncUIStates.let {
+    override fun showLce(actionUIStates: ActionUIStates, message: String) {
+        actionUIStates.let {
             when{
                 it.isLoading -> {
                     isLoading()

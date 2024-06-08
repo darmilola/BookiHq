@@ -9,8 +9,8 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import presentation.viewmodels.AsyncUIStates
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ActionUIStates
+import presentation.viewmodels.ScreenUIStates
 
 class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() {
 
@@ -22,57 +22,57 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
     }
 
     override fun getTherapistReviews(specialistId: Int) {
+        contractView?.showLce(ScreenUIStates(loadingVisible = true))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(UIStates(loadingVisible = true))
                     specialistRepositoryImpl.getReviews(specialistId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(UIStates(contentVisible = true))
+                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
                                     contractView?.showReviews(result.reviews)
                                 }
                                 else{
-                                    contractView?.showLce(UIStates(errorOccurred = true))
+                                    contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true)) }
+                                it.message?.let { it1 -> contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again")) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(UIStates(errorOccurred = true))
+                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
             }
         }
     }
 
     override fun getTherapistAvailability(specialistId: Int, day: Int, month: Int, year: Int) {
+        contractView?.showActionLce(ActionUIStates(isLoading = true, loadingMessage = "Getting Availability"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(UIStates(loadingVisible = true))
                     specialistRepositoryImpl.getTherapistAvailability(specialistId, day, month, year)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     contractView?.showTherapistAvailability(result.availableTimes, result.timeOffs)
-                                    contractView?.showLce(UIStates(contentVisible = true))
+                                    contractView?.showActionLce(ActionUIStates(isSuccess = true))
                                 }
                                 else{
-                                    contractView?.showLce(UIStates(errorOccurred = true))
+                                    contractView?.showActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(UIStates(errorOccurred = true)) }
+                                contractView?.showActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(UIStates(errorOccurred = true))
+                contractView?.showActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
             }
         }
     }
@@ -80,28 +80,28 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
     override fun addTimeOff(specialistId: Int, timeId: Int, day: Int,
                             month: Int,
                             year: Int) {
+        contractView?.showActionLce(ActionUIStates(isLoading = true, errorMessage = "Adding New TimeOff"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showAsyncLce(AsyncUIStates(isLoading = true))
                     specialistRepositoryImpl.addTimeOff(specialistId, timeId, day, month, year)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showAsyncLce(AsyncUIStates(isSuccess = true))
+                                    contractView?.showActionLce(ActionUIStates(isSuccess = true, successMessage = "TimeOff Added Successfully"))
                                 }
                                 else{
-                                    contractView?.showAsyncLce(AsyncUIStates(isFailed = true))
+                                    contractView?.showActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showAsyncLce(AsyncUIStates(isFailed = true)) }
+                                contractView?.showActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showAsyncLce(AsyncUIStates(isFailed = true))
+                contractView?.showActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
             }
         }
     }
@@ -113,28 +113,28 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
         month: Int,
         year: Int
     ) {
+        contractView?.showActionLce(ActionUIStates(isLoading = true, loadingMessage = "Removing TimeOff"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showAsyncLce(AsyncUIStates(isLoading = true))
                     specialistRepositoryImpl.removeTimeOff(specialistId, timeId, day, month, year)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showAsyncLce(AsyncUIStates(isSuccess = true))
+                                    contractView?.showActionLce(ActionUIStates(isSuccess = true, successMessage = "TimeOff Removed Successfully"))
                                 }
                                 else{
-                                    contractView?.showAsyncLce(AsyncUIStates(isFailed = true))
+                                    contractView?.showActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showAsyncLce(AsyncUIStates(isFailed = true)) }
+                                contractView?.showActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showAsyncLce(AsyncUIStates(isFailed = true))
+                contractView?.showActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
             }
         }
     }

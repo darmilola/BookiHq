@@ -25,14 +25,14 @@ import org.koin.core.component.inject
 import presentation.dialogs.LoadingDialog
 import presentation.main.MainScreen
 import presentation.viewmodels.ResourceListEnvelopeViewModel
-import presentation.viewmodels.UIStateViewModel
-import presentation.viewmodels.UIStates
+import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.ScreenUIStates
 
 class VendorInfoPage(val vendor: Vendor, val  platformNavigator: PlatformNavigator? = null) : Screen, KoinComponent {
 
     private val preferenceSettings: Settings = Settings()
     private val connectVendorPresenter: ConnectVendorPresenter by inject()
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
 
     @Composable
     override fun Content() {
@@ -44,10 +44,10 @@ class VendorInfoPage(val vendor: Vendor, val  platformNavigator: PlatformNavigat
         val userEmail = preferenceSettings["userEmail",""]
 
 
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        if (screenUiStateViewModel == null) {
+            screenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -56,7 +56,7 @@ class VendorInfoPage(val vendor: Vendor, val  platformNavigator: PlatformNavigat
         // View Contract Handler Initialisation
         val handler = InfoPageHandler(
             null,
-            uiStateViewModel!!,
+            screenUiStateViewModel!!,
             connectVendorPresenter,
             onPageLoading = {
                 pageLoading.value = true
@@ -105,7 +105,7 @@ class VendorInfoPage(val vendor: Vendor, val  platformNavigator: PlatformNavigat
 
     class InfoPageHandler(
         private val vendorResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Vendor>? = null,
-        private val uiStateViewModel: UIStateViewModel,
+        private val screenUiStateViewModel: ScreenUIStateViewModel,
         private val connectVendorPresenter: ConnectVendorPresenter,
         private val onPageLoading: () -> Unit,
         private val onContentVisible: () -> Unit,
@@ -116,8 +116,8 @@ class VendorInfoPage(val vendor: Vendor, val  platformNavigator: PlatformNavigat
             connectVendorPresenter.registerUIContract(this)
         }
 
-        override fun showLce(uiState: UIStates) {
-            uiStateViewModel.switchState(uiState)
+        override fun showLce(uiState: ScreenUIStates) {
+            screenUiStateViewModel.switchScreenUIState(uiState)
             uiState.let {
                 when {
                     it.loadingVisible -> {

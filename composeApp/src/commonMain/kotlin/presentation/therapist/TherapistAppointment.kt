@@ -38,9 +38,7 @@ import presentation.dialogs.LoadingDialog
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
-import presentation.viewmodels.ResourceListEnvelopeViewModel
-import presentation.viewmodels.UIStateViewModel
-import presentation.widgets.NewAppointmentWidget
+import presentation.viewmodels.ScreenUIStateViewModel
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import presentation.widgets.TherapistAppointmentWidget
@@ -49,7 +47,7 @@ import theme.Colors
 import utils.getAppointmentViewHeight
 
 @Composable
-fun TherapistAppointment(mainViewModel: MainViewModel,uiStateViewModel: UIStateViewModel, postponementViewModel: PostponementViewModel,
+fun TherapistAppointment(mainViewModel: MainViewModel, screenUiStateViewModel: ScreenUIStateViewModel, postponementViewModel: PostponementViewModel,
                          appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel?, appointmentPresenter: AppointmentPresenter) {
 
     val currentUser = mainViewModel.currentUserInfo.value
@@ -79,7 +77,7 @@ fun TherapistAppointment(mainViewModel: MainViewModel,uiStateViewModel: UIStateV
         appointmentResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
     val displayedAppointmentsCount =
         appointmentResourceListEnvelopeViewModel?.displayedItemCount?.collectAsState()
-    val uiState = uiStateViewModel.uiData.collectAsState()
+    val uiState = screenUiStateViewModel.uiStateInfo.collectAsState()
     val lastIndex = appointmentList?.value?.size?.minus(1)
     val selectedAppointment = remember { mutableStateOf(Appointment()) }
 
@@ -109,7 +107,7 @@ fun TherapistAppointment(mainViewModel: MainViewModel,uiStateViewModel: UIStateV
         content = {
             val handler = AppointmentsHandler(
                 appointmentResourceListEnvelopeViewModel,
-                uiStateViewModel,
+                screenUiStateViewModel,
                 postponementViewModel,
                 appointmentPresenter,
                 onPostponeAppointment = {
