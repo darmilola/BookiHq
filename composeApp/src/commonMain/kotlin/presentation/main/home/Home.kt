@@ -196,7 +196,6 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
 
             //Error Occurred
 
-
         }
 
         else if (uiState.value.contentVisible) {

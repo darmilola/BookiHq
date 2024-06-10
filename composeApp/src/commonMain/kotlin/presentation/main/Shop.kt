@@ -99,7 +99,7 @@ class ShopTab(private val mainViewModel: MainViewModel,
 
     @Composable
     override fun Content() {
-        val vendorId = mainViewModel.vendorId.collectAsState()
+        val vendorId = mainViewModel.vendorId.value
         val onCartChanged = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
 
@@ -117,7 +117,7 @@ class ShopTab(private val mainViewModel: MainViewModel,
         }
 
         if (productResourceListEnvelopeViewModel.resources.value.isEmpty()){
-            productPresenter.getProducts(vendorId.value)
+            productPresenter.getProducts(vendorId)
         }
 
         val productHandler = ShopProductsHandler(
@@ -271,7 +271,7 @@ class ShopTab(private val mainViewModel: MainViewModel,
                     }
                 }, onBackPressed = {
                     productResourceListEnvelopeViewModel.clearData(mutableListOf())
-                    productPresenter.getProducts(vendorId.value)
+                    productPresenter.getProducts(vendorId)
                 })
             },
             content = {
@@ -279,7 +279,7 @@ class ShopTab(private val mainViewModel: MainViewModel,
                     productResourceListEnvelopeViewModel = productResourceListEnvelopeViewModel,
                     screenUIStateViewModel!!,
                     searchQuery = searchQuery.value,
-                    vendorId = vendorId.value,
+                    vendorId = vendorId,
                     mainViewModel = mainViewModel,
                     onCartChanged = {
                         onCartChanged.value = true
