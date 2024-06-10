@@ -6,4 +6,5 @@ import kotlinx.serialization.Serializable
 data class VendorStatusModel(
     @SerialName("id") val statusId: String = "", @SerialName("timeStamp") val timeStamp: Long = -1,
     @SerialName("image") val statusImage: StatusImageModel? = null,
-    @SerialName("video") val statusVideo: StatusVideoModel? = null, var statusType: Int = 0)
+    @SerialName("video") val statusVideo: StatusVideoModel? = null, var isValidStatusType: Boolean = false,
+    )

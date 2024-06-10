@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import presentation.viewmodels.ScreenUIStates
 import com.badoo.reaktive.single.subscribe
+import domain.Models.VendorStatusModel
 
 
 class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
@@ -23,6 +24,7 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
     }
 
     override fun getUserHomepage(userEmail: String, vendorWhatsAppPhone: String) {
+        val filteredStatusList = arrayListOf<VendorStatusModel>()
         contractView?.showLce(ScreenUIStates(loadingVisible = true))
         scope.launch(Dispatchers.Main) {
             try {
@@ -31,8 +33,18 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
                         .subscribe(
                             onSuccess = { response ->
                                 if (response.status == "success") {
+                                    response.vendorStatus.map { it ->
+                                        it.apply {
+                                            if (this.statusImage != null && this.statusImage.imageUrl != ""){
+                                               filteredStatusList.add(it.copy(isValidStatusType = true))
+                                            }
+                                            else if (this.statusVideo != null && this.statusVideo.videoUrl != ""){
+                                                filteredStatusList.add(it.copy(isValidStatusType = true))
+                                            }
+                                        }
+                                    }
                                     contractView?.showLce(ScreenUIStates(contentVisible = true))
-                                    contractView?.showHome(response.homepageInfo, response.vendorStatus)
+                                    contractView?.showHome(response.homepageInfo, filteredStatusList)
                                 }
                                 else{
                                     contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))

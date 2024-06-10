@@ -168,7 +168,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
             handler.init()
 
             if (homePageViewModel.homePageInfo.value.userInfo == null) {
-                homepagePresenter.getUserHomepage(userEmail, "2348111343996")
+                homepagePresenter.getUserHomepage(userEmail, "2348154864510")
             }
         }
 
@@ -453,7 +453,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, selectedProduct: OrderItem, onDismiss: (isAddToCart: Boolean, OrderItem) -> Unit, onRemoveFromCart: (OrderItem) -> Unit) {
-        val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
         ModalBottomSheet(
             modifier = Modifier.padding(top = 20.dp),
             onDismissRequest = { onDismiss(false, selectedProduct) },

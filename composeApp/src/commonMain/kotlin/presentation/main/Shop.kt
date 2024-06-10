@@ -2,6 +2,7 @@ package presentation.main
 
 import GGSansRegular
 import StackedSnackbarHost
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import theme.styles.Colors
 import androidx.compose.foundation.background
@@ -32,10 +33,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BottomDrawerValue
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -525,10 +528,12 @@ class ShopTab(private val mainViewModel: MainViewModel,
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, selectedProduct: OrderItem, onDismiss: (isAddToCart: Boolean, OrderItem) -> Unit, onRemoveFromCart: (OrderItem) -> Unit) {
-        val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
         ModalBottomSheet(
             modifier = Modifier.padding(top = 20.dp),
-            onDismissRequest = { onDismiss(false, selectedProduct) },
+            onDismissRequest = {
+                onDismiss(false, selectedProduct)
+            },
             sheetState = modalBottomSheetState,
             shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
             containerColor = Color(0xFFF3F3F3),

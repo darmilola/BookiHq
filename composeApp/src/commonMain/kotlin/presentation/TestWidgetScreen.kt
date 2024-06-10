@@ -42,18 +42,6 @@ import theme.styles.Colors
 
 @Composable
 fun TestWidgetCompose(platformNavigator: PlatformNavigator) {
-
-    val statusList = arrayListOf<VendorStatusModel>()
-    val statusModel1 = VendorStatusModel(statusId = "", statusType = 1, statusImage = StatusImageModel())
-    val statusModel2 = VendorStatusModel(statusId = "", statusType = 1, statusImage = StatusImageModel())
-    val statusModel3 = VendorStatusModel(statusId = "", statusType = 0, statusVideo = StatusVideoModel())
-
-
-    statusList.add(statusModel1)
-    statusList.add(statusModel2)
-    statusList.add(statusModel3)
-
-
     val isStatusExpanded = remember { mutableStateOf(false) }
 
     val heightChange: Float by animateFloatAsState(targetValue = if (isStatusExpanded.value) 0.80f else 0.60f,
