@@ -39,25 +39,29 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.Appointment
 import domain.Models.AppointmentType
+import domain.Models.MeetingStatus
 import domain.Models.ServiceStatus
 import domain.Models.SpecialistInfo
 import presentation.appointments.AppointmentPresenter
 import presentation.dialogs.PostponeDialog
+import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.PostponementViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun NewAppointmentWidget(appointment: Appointment, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null) {
+fun NewAppointmentWidget(appointment: Appointment, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, availabilityActionUIStateViewModel: ActionUIStateViewModel) {
 
-    val appointmentStatus = appointment.serviceStatus
+    val serviceAppointmentStatus = appointment.serviceStatus
+    val meetingAppointmentStatus = appointment.meetingStatus
+
     val serviceMenuItems = arrayListOf<String>()
     val meetingMenuItems = arrayListOf<String>()
 
 
     if (appointment.appointmentType == AppointmentType.SERVICE.toPath()) {
         var actionItem = ""
-        actionItem = when (appointmentStatus) {
+        actionItem = when (serviceAppointmentStatus) {
             ServiceStatus.Pending.toPath() -> {
                 "Postpone"
             }
@@ -67,7 +71,7 @@ fun NewAppointmentWidget(appointment: Appointment, appointmentPresenter: Appoint
             }
         }
         serviceMenuItems.add(actionItem)
-        if (appointmentStatus == ServiceStatus.Done.toPath()) {
+        if (serviceAppointmentStatus == ServiceStatus.Done.toPath()) {
             serviceMenuItems.add("Add Review")
         }
     }
@@ -75,36 +79,54 @@ fun NewAppointmentWidget(appointment: Appointment, appointmentPresenter: Appoint
 
 
     if (appointment.appointmentType == AppointmentType.MEETING.toPath()) {
-        if (appointmentStatus == ServiceStatus.Done.toPath()) {
-            meetingMenuItems.add("Delete")
-        } else {
+        if (meetingAppointmentStatus == MeetingStatus.Pending.toPath()) {
             meetingMenuItems.add("Join Meeting")
+        } else {
+            meetingMenuItems.add("Delete")
         }
     }
 
 
 
-    var iconRes = "drawable/schedule.png"
-    var statusText = "Pending"
-    var statusColor: Color = Colors.primaryColor
+    var serviceIconRes = "drawable/schedule.png"
+    var serviceStatusText = "Pending"
+    var serviceStatusColor: Color = Colors.primaryColor
+
+
+    var meetingIconRes = "drawable/schedule.png"
+    var meetingStatusText = "Pending"
+    var meetingStatusColor: Color = Colors.primaryColor
 
 
 
-    when (appointmentStatus) {
+    when (serviceAppointmentStatus) {
         ServiceStatus.Pending.toPath() -> {
-            iconRes = "drawable/schedule.png"
-            statusText = "Pending"
-            statusColor = Colors.primaryColor
+            serviceIconRes = "drawable/schedule.png"
+            serviceStatusText = "Pending"
+            serviceStatusColor = Colors.primaryColor
         }
         ServiceStatus.POSTPONED.toPath() -> {
-            iconRes = "drawable/appointment_postponed.png"
-            statusText = "Postponed"
-            statusColor = Colors.pinkColor
+            serviceIconRes = "drawable/appointment_postponed.png"
+            serviceStatusText = "Postponed"
+            serviceStatusColor = Colors.pinkColor
         }
         ServiceStatus.Done.toPath() -> {
-            iconRes = "drawable/appointment_done.png"
-            statusText = "Done"
-            statusColor = Colors.greenColor
+            serviceIconRes = "drawable/appointment_done.png"
+            serviceStatusText = "Done"
+            serviceStatusColor = Colors.greenColor
+        }
+    }
+
+    when (meetingAppointmentStatus) {
+        MeetingStatus.Pending.toPath() -> {
+            meetingIconRes = "drawable/schedule.png"
+            meetingStatusText = "Pending"
+            meetingStatusColor = Colors.primaryColor
+        }
+        ServiceStatus.Done.toPath() -> {
+            meetingIconRes = "drawable/appointment_done.png"
+            meetingStatusText = "Done"
+            meetingStatusColor = Colors.greenColor
         }
     }
 
@@ -128,20 +150,20 @@ fun NewAppointmentWidget(appointment: Appointment, appointmentPresenter: Appoint
             ) {
                 if (appointment.appointmentType == AppointmentType.SERVICE.toPath()) {
                     AttachAppointmentHeader(
-                        statusText,
-                        iconRes,
-                        statusColor,
+                        serviceStatusText,
+                        serviceIconRes,
+                        serviceStatusColor,
                         appointment,
                         serviceMenuItems,
                         appointmentPresenter,
-                        postponementViewModel
-                    )
+                        postponementViewModel,
+                        availabilityActionUIStateViewModel)
                     AttachAppointmentContent(appointment)
                 }
-                else{
-                    AttachMeetingAppointmentHeader(statusText,
-                        iconRes,
-                        statusColor,
+                else if (appointment.appointmentType == AppointmentType.MEETING.toPath()){
+                    AttachMeetingAppointmentHeader(meetingStatusText,
+                        meetingIconRes,
+                        meetingStatusColor,
                         appointment,
                         meetingMenuItems,
                         appointmentPresenter)
@@ -155,7 +177,8 @@ fun NewAppointmentWidget(appointment: Appointment, appointmentPresenter: Appoint
 
 
 @Composable
-fun AttachAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment, menuItems: ArrayList<String>, presenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null) {
+fun AttachAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment, menuItems: ArrayList<String>, presenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null,
+                            availabilityActionUIStateViewModel: ActionUIStateViewModel) {
     val expandedMenuItem = remember { mutableStateOf(false) }
     val openPostponeDialog = remember { mutableStateOf(false) }
 
@@ -163,7 +186,7 @@ fun AttachAppointmentHeader(statusText: String, statusDrawableRes: String, statu
         openPostponeDialog.value -> {
             if (presenter != null && postponementViewModel != null) {
                 postponementViewModel.setCurrentAppointment(appointment)
-                PostponeDialog(appointment,presenter, postponementViewModel, onDismissRequest = {
+                PostponeDialog(appointment,presenter, postponementViewModel, availabilityActionUIStateViewModel, onDismissRequest = {
                     openPostponeDialog.value = false
                 }, onConfirmation = {
                     openPostponeDialog.value = false
@@ -306,7 +329,7 @@ fun AttachMeetingAppointmentHeader(statusText: String, statusDrawableRes: String
                 menuItems.forEachIndexed { index, title ->
                     DropdownMenuItem(
                         onClick = {
-                            if (title == "Join Meeting"){
+                            if (title == "JoinMeeting"){
                               presenter?.joinMeeting(customParticipantId = "devprocess@gmail.com",
                                   presetName = "group_call_host", meetingId = "bbb24d30-4171-4506-875d-7a31bc8de0fa")
                             }

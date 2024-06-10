@@ -27,7 +27,7 @@ class TherapistHandler(
     }
 
     override fun showActionLce(actionUiState: ActionUIStates) {
-         actionUIStateViewModel.switchActionUIState(actionUiState)
+         actionUIStateViewModel.switchActionPostponeUIState(actionUiState)
     }
 
     override fun showReviews(reviews: List<SpecialistReviews>) {
@@ -37,7 +37,7 @@ class TherapistHandler(
     override fun showAppointments(appointments: AppointmentResourceListEnvelope) {
         if (appointmentResourceListEnvelopeViewModel.resources.value.isNotEmpty()) {
             val appointmentList = appointmentResourceListEnvelopeViewModel.resources.value
-            appointmentList.addAll(appointments.resources!!)
+            appointmentList.addAll(appointments.data!!)
             appointmentResourceListEnvelopeViewModel.setResources(appointmentList)
             appointments.prevPageUrl?.let { appointmentResourceListEnvelopeViewModel.setPrevPageUrl(it) }
             appointments.nextPageUrl?.let { appointmentResourceListEnvelopeViewModel.setNextPageUrl(it) }
@@ -45,7 +45,7 @@ class TherapistHandler(
             appointments.totalItemCount?.let { appointmentResourceListEnvelopeViewModel.setTotalItemCount(it) }
             appointments.displayedItemCount?.let { appointmentResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
         } else {
-            appointmentResourceListEnvelopeViewModel.setResources(appointments.resources)
+            appointmentResourceListEnvelopeViewModel.setResources(appointments.data)
             appointments?.prevPageUrl?.let { appointmentResourceListEnvelopeViewModel.setPrevPageUrl(it) }
             appointments?.nextPageUrl?.let { appointmentResourceListEnvelopeViewModel.setNextPageUrl(it) }
             appointments?.currentPage?.let { appointmentResourceListEnvelopeViewModel.setCurrentPage(it) }

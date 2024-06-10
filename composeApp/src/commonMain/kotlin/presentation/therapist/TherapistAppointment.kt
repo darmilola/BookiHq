@@ -30,6 +30,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import domain.Models.Appointment
 import domain.Models.AppointmentItemUIModel
+import domain.Models.UserAppointmentsData
 import presentation.appointments.AppointmentPresenter
 import presentation.appointments.AppointmentsHandler
 import presentation.components.ButtonComponent
@@ -70,7 +71,7 @@ fun TherapistAppointment(mainViewModel: MainViewModel, screenUiStateViewModel: S
         appointmentResourceListEnvelopeViewModel?.displayedItemCount?.collectAsState()
     val uiState = screenUiStateViewModel.uiStateInfo.collectAsState()
     val lastIndex = appointmentList?.value?.size?.minus(1)
-    val selectedAppointment = remember { mutableStateOf(Appointment()) }
+    val selectedAppointment = remember { mutableStateOf(UserAppointmentsData()) }
 
 
     var appointmentUIModel by remember {
@@ -85,12 +86,8 @@ fun TherapistAppointment(mainViewModel: MainViewModel, screenUiStateViewModel: S
     if (!loadMoreState?.value!!) {
         appointmentUIModel =
             appointmentUIModel.copy(selectedAppointment = selectedAppointment.value,
-                appointmentList = appointmentResourceListEnvelopeViewModel!!.resources.value.map { it2 ->
-                    it2.copy(
-                        isSelected = it2.appointmentId == selectedAppointment.value.appointmentId
-                    )
-                })
-         }
+                appointmentList = appointmentResourceListEnvelopeViewModel.resources.value)
+    }
 
     Scaffold(
         snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },

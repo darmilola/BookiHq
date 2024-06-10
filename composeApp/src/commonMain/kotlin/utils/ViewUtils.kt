@@ -10,9 +10,10 @@ import domain.Models.Product
 import domain.Models.ScreenSizeInfo
 import domain.Models.Services
 import domain.Models.UnsavedAppointment
+import domain.Models.UserAppointmentsData
 
 fun getAppointmentViewHeight(
-        itemList: List<Appointment>
+        itemList: List<UserAppointmentsData>
     ): Int {
         val itemCount = itemList.size
 
@@ -24,6 +25,14 @@ fun getOrderViewHeight(
 ): Int{
 
     return itemCount * 350
+}
+
+fun getRecentAppointmentViewHeight(
+    itemList: List<Appointment>
+): Int {
+    val itemCount = itemList.size
+
+    return itemCount * 200
 }
 
 

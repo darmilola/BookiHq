@@ -17,15 +17,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import domain.Models.Appointment
 import domain.Models.ServiceStatus
+import domain.Models.UserAppointmentsData
 import presentation.appointments.AppointmentPresenter
 import presentation.viewmodels.PostponementViewModel
 import theme.styles.Colors
 
 
 @Composable
-fun TherapistAppointmentWidget(appointment: Appointment, appointmentPresenter: AppointmentPresenter? = null) {
+fun TherapistAppointmentWidget(userAppointmentsData: UserAppointmentsData, appointmentPresenter: AppointmentPresenter? = null) {
 
-    val appointmentStatus = appointment.serviceStatus
+    val appointmentStatus = userAppointmentsData.resources?.serviceStatus
     val menuItems = arrayListOf<String>()
 
     var actionItem = ""
@@ -87,8 +88,8 @@ fun TherapistAppointmentWidget(appointment: Appointment, appointmentPresenter: A
             horizontalAlignment = Alignment.Start,
             modifier = columnModifier
         ) {
-            AttachAppointmentHeader(statusText, iconRes, statusColor, appointment, menuItems, appointmentPresenter)
-            AttachTherapistAppointmentContent(appointment)
+            ///AttachAppointmentHeader(statusText, iconRes, statusColor, appointment, menuItems, appointmentPresenter)
+            AttachTherapistAppointmentContent(userAppointmentsData.resources!!)
         }
     }
 }

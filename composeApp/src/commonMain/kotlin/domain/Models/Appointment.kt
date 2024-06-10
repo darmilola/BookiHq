@@ -16,10 +16,10 @@ data class Appointment(
     @SerialName("recommendation_id") val recommendationId: Int? = -1, @SerialName("specialist_info") val specialistInfo: SpecialistInfo? = null,
     @SerialName("service_type") val serviceTypeItem: ServiceTypeItem? = null, @SerialName("service") val services: Services? = null, @SerialName("time") val platformTime: PlatformTime? = null,
     @SerialName("vendor") val vendor: Vendor? = null, @SerialName("customer_info") val customerInfo: User? = null,
-    @SerialName("meetingDescription") val meetingDescription: String? = null, @SerialName("meetingId") val meetingId: String? = null,
-    val isSelected: Boolean = false): Parcelable
+    @SerialName("meetingStatus") val meetingStatus: String = MeetingStatus.Pending.toPath(),
+    @SerialName("meetingDescription") val meetingDescription: String? = null, @SerialName("meetingId") val meetingId: String? = null): Parcelable
 
 data class AppointmentItemUIModel(
-    val selectedAppointment: Appointment?,
-    val appointmentList: List<Appointment>
+    val selectedAppointment: UserAppointmentsData?,
+    val appointmentList: List<UserAppointmentsData>
 )

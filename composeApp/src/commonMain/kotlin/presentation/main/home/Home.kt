@@ -80,6 +80,7 @@ import presentation.Products.HomeProductItem
 import presentation.Products.ProductDetailContent
 import presentation.components.FloatingActionButton
 import presentation.components.IndeterminateCircularProgressBar
+import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.ActionUIStates
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
@@ -97,6 +98,7 @@ import rememberStackedSnackbarHostState
 import utils.calculateHomePageScreenHeight
 import utils.getPercentOfScreenHeight
 import utils.getPopularProductViewHeight
+import utils.getRecentAppointmentViewHeight
 import utils.getServicesViewHeight
 
 class HomeTab(private val mainViewModel: MainViewModel, private val homePageViewModel: HomePageViewModel) : Tab, KoinComponent {
@@ -105,6 +107,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
     private val homepagePresenter: HomepagePresenter by inject()
     private var userEmail: String = ""
     private val preferenceSettings: Settings = Settings()
+    private var availabilityActionUIStateViewModel: ActionUIStateViewModel? = null
 
   @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -135,6 +138,14 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                     ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
+            if (availabilityActionUIStateViewModel == null) {
+                availabilityActionUIStateViewModel = kmpViewModel(
+                    factory = viewModelFactory {
+                        ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    },
+                )
+            }
+
 
             val handler = HomePageHandler(screenUiStateViewModel!!, homepagePresenter,
                  onHomeInfoAvailable = {
@@ -538,13 +549,13 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
     @Composable
     fun RecentAppointmentScreen(appointmentList: List<Appointment>?) {
         if (appointmentList != null) {
-            val viewHeight = getAppointmentViewHeight(appointmentList)
+            val viewHeight = getRecentAppointmentViewHeight(appointmentList)
             LazyColumn(
                 modifier = Modifier.fillMaxWidth()
                     .height(viewHeight.dp), userScrollEnabled = false
             ) {
                 items(key = { it -> it.appointmentId!!}, items =  appointmentList) { item ->
-                    NewAppointmentWidget(item)
+                    NewAppointmentWidget(item, appointmentPresenter = null, postponementViewModel = null, availabilityActionUIStateViewModel!!)
                 }
 
             }

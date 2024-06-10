@@ -32,6 +32,7 @@ import domain.Models.PlatformTime
 import domain.Models.AvailableTime
 import presentation.appointments.AppointmentPresenter
 import presentation.components.IndeterminateCircularProgressBar
+import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.PostponementViewModel
 import presentation.widgets.NewDateContent
 import presentation.widgets.TimeGrid
@@ -40,7 +41,8 @@ import presentation.widgets.buttonContent
 import presentations.components.TextComponent
 
 @Composable
-fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPresenter,postponementViewModel: PostponementViewModel, onDismissRequest: () -> Unit,
+fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPresenter,postponementViewModel: PostponementViewModel,
+                  availabilityActionUIStateViewModel: ActionUIStateViewModel, onDismissRequest: () -> Unit,
     onConfirmation: () -> Unit) {
     Dialog( properties = DialogProperties(usePlatformDefaultWidth = false), onDismissRequest = { onDismissRequest() }) {
 
@@ -54,6 +56,15 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
         val timeOffs = postponementViewModel.therapistTimeOffs.collectAsState()
         val specialistId = postponementViewModel.currentAppointment.value.specialistId
         val isNewDateSelected = remember { mutableStateOf(true) }
+        val availabilityUIStates = availabilityActionUIStateViewModel.availabilityStateInfo.collectAsState()
+
+
+        appointmentPresenter.getTherapistAvailability(
+            specialistId,
+            day = newSelectedDay.value,
+            month = newSelectedMonth.value,
+            year = newSelectedYear.value
+        )
 
         if (isNewDateSelected.value) {
             appointmentPresenter.getTherapistAvailability(
@@ -120,7 +131,7 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
                            isNewDateSelected.value = true
                         })
 
-                        if (uiState.value.isLoading) {
+                        if (availabilityUIStates.value.isLoading) {
                             Box(
                                 modifier = Modifier.fillMaxWidth().height(60.dp),
                                 contentAlignment = Alignment.Center
@@ -128,7 +139,7 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
                                 IndeterminateCircularProgressBar()
                             }
                         }
-                        else if (uiState.value.isSuccess) {
+                        else if (availabilityUIStates.value.isSuccess) {
                             Column(
                                 modifier = Modifier
                                     .padding(top = 5.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)

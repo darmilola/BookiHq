@@ -139,7 +139,6 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
 
     override fun joinMeeting(customParticipantId: String, presetName: String, meetingId: String) {
         contractView?.showJoinMeetingActionLce(ActionUIStates(isLoading = true, loadingMessage = "Joining Meeting"))
-
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
@@ -168,7 +167,6 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
 
     override fun getTherapistAvailability(specialistId: Int, day: Int, month: Int, year: Int) {
         contractView?.showGetAvailabilityActionLce(ActionUIStates(isLoading = true, loadingMessage = "Getting Availability"))
-
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {

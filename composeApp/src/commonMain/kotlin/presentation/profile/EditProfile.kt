@@ -1,7 +1,6 @@
 package presentation.profile
 
 import StackedSnackbarHost
-import StackedSnakbarHostState
 import theme.styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -50,7 +49,6 @@ import presentation.dialogs.LoadingDialog
 import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.ActionUIStates
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.ScreenUIStateViewModel
 import presentation.widgets.DropDownWidget
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.AccountProfileImage
@@ -378,7 +376,7 @@ class ProfileHandler(
     }
 
     override fun showActionLce(actionUIStates: ActionUIStates) {
-          actionUIStateViewModel.switchActionUIState(actionUIStates)
+          actionUIStateViewModel.switchActionPostponeUIState(actionUIStates)
     }
 }
 

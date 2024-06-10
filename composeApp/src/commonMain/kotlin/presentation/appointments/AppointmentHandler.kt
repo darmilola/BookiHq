@@ -30,7 +30,7 @@ class AppointmentsHandler(
     }
 
     override fun showDeleteActionLce(actionUIStates: ActionUIStates) {
-        deleteActionUIStateViewModel.switchActionUIState(actionUIStates)
+        deleteActionUIStateViewModel.switchActionDeleteUIState(actionUIStates)
     }
 
     override fun showPostponeActionLce(actionUIStates: ActionUIStates) {
@@ -38,17 +38,17 @@ class AppointmentsHandler(
     }
 
     override fun showJoinMeetingActionLce(actionUIStates: ActionUIStates) {
-        joinMeetingActionUIStateViewModel.switchActionUIState(actionUIStates)
+        joinMeetingActionUIStateViewModel.switchActionMeetingUIState(actionUIStates)
     }
 
     override fun showGetAvailabilityActionLce(actionUIStates: ActionUIStates) {
-        getAvailabilityActionUIStateViewModel.switchActionUIState(actionUIStates)
+        getAvailabilityActionUIStateViewModel.switchActionAvailabilityUIState(actionUIStates)
     }
 
     override fun showAppointments(appointments: AppointmentResourceListEnvelope) {
         if (appointmentResourceListEnvelopeViewModel.resources.value.isNotEmpty()) {
             val appointmentList = appointmentResourceListEnvelopeViewModel.resources.value
-            appointmentList.addAll(appointments.resources!!)
+            appointmentList.addAll(appointments.data!!)
             appointmentResourceListEnvelopeViewModel.setResources(appointmentList)
             appointments.prevPageUrl?.let { appointmentResourceListEnvelopeViewModel.setPrevPageUrl(it) }
             appointments.nextPageUrl?.let { appointmentResourceListEnvelopeViewModel.setNextPageUrl(it) }
@@ -56,7 +56,7 @@ class AppointmentsHandler(
             appointments.totalItemCount?.let { appointmentResourceListEnvelopeViewModel.setTotalItemCount(it) }
             appointments.displayedItemCount?.let { appointmentResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
         } else {
-            appointmentResourceListEnvelopeViewModel.setResources(appointments.resources)
+            appointmentResourceListEnvelopeViewModel.setResources(appointments.data)
             appointments?.prevPageUrl?.let { appointmentResourceListEnvelopeViewModel.setPrevPageUrl(it) }
             appointments?.nextPageUrl?.let { appointmentResourceListEnvelopeViewModel.setNextPageUrl(it) }
             appointments?.currentPage?.let { appointmentResourceListEnvelopeViewModel.setCurrentPage(it) }

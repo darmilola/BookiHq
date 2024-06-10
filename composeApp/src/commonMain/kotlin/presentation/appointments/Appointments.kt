@@ -35,6 +35,7 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.Appointment
 import domain.Models.AppointmentItemUIModel
 import domain.Models.PlatformNavigator
+import domain.Models.UserAppointmentsData
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -160,12 +161,12 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
             appointmentResourceListEnvelopeViewModel?.displayedItemCount?.collectAsState()
 
         val uiState = screenUiStateViewModel!!.uiStateInfo.collectAsState()
-        val deleteActionUIStates = deleteActionUIStateViewModel!!.uiStateInfo.collectAsState()
-        val postponeActionUIStates = postponeActionUIStateViewModel!!.uiStateInfo.collectAsState()
-        val joinMeetingActionUIStates = joinMeetingActionUIStateViewModel!!.uiStateInfo.collectAsState()
+        val deleteActionUIStates = deleteActionUIStateViewModel!!.deleteUIStateInfo.collectAsState()
+        val postponeActionUIStates = postponeActionUIStateViewModel!!.postponeUIStateInfo.collectAsState()
+        val joinMeetingActionUIStates = joinMeetingActionUIStateViewModel!!.joinMeetingStateInfo.collectAsState()
 
         val lastIndex = appointmentList?.value?.size?.minus(1)
-        val selectedAppointment = remember { mutableStateOf(Appointment()) }
+        val selectedAppointment = remember { mutableStateOf(UserAppointmentsData()) }
 
 
         var appointmentUIModel by remember {
@@ -180,12 +181,8 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
         if (!loadMoreState?.value!!) {
                 appointmentUIModel =
                 appointmentUIModel.copy(selectedAppointment = selectedAppointment.value,
-                    appointmentList = appointmentResourceListEnvelopeViewModel!!.resources.value.map { it2 ->
-                        it2.copy(
-                            isSelected = it2.appointmentId == selectedAppointment.value.appointmentId
-                        )
-                    })
-              }
+                    appointmentList = appointmentResourceListEnvelopeViewModel.resources.value)
+        }
 
         if (postponeActionUIStates.value.isLoading) {
             Box(modifier = Modifier.fillMaxWidth()) {
@@ -324,9 +321,10 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                             ) {
                                 itemsIndexed(items = appointmentUIModel.appointmentList) { it, item ->
                                     NewAppointmentWidget(
-                                        item,
+                                        item.resources!!,
                                         appointmentPresenter,
-                                        postponementViewModel!!
+                                        postponementViewModel!!,
+                                        availabilityActionUIStateViewModel!!,
                                     )
                                     if (it == lastIndex && loadMoreState.value) {
                                         Box(
