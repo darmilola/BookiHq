@@ -65,6 +65,7 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import domain.Models.Appointment
+import domain.Models.AppointmentType
 import domain.Models.HomepageInfo
 import domain.Models.OrderItem
 import domain.Models.Product
@@ -89,8 +90,9 @@ import presentation.viewmodels.ScreenUIStates
 import utils.getAppointmentViewHeight
 import presentation.widgets.BusinessWhatsAppStatusWidget
 import presentation.widgets.HomeServicesWidget
-import presentation.widgets.NewAppointmentWidget
+import presentation.widgets.MeetingAppointmentWidget
 import presentation.widgets.RecommendedServiceItem
+import presentation.widgets.ServiceAppointmentWidget
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import presentations.components.TextComponent
@@ -555,7 +557,21 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                     .height(viewHeight.dp), userScrollEnabled = false
             ) {
                 items(key = { it -> it.appointmentId!!}, items =  appointmentList) { item ->
-                    NewAppointmentWidget(item, appointmentPresenter = null, postponementViewModel = null, availabilityActionUIStateViewModel!!)
+                    if (item.appointmentType == AppointmentType.MEETING.toPath()) {
+                        MeetingAppointmentWidget(
+                            appointment = item,
+                            appointmentPresenter = null,
+                            postponementViewModel = null,
+                            availabilityActionUIStateViewModel!!
+                        )
+                    } else {
+                        ServiceAppointmentWidget(
+                            item,
+                            appointmentPresenter = null,
+                            postponementViewModel = null,
+                            availabilityActionUIStateViewModel!!
+                        )
+                    }
                 }
 
             }

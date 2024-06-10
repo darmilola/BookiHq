@@ -32,9 +32,6 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     private var _currentUnsavedAppointments =  savedStateHandle.getStateFlow("currentUnsavedAppointments", ArrayList<UnsavedAppointment>())
     private var _currentUnsavedOrders =  savedStateHandle.getStateFlow("currentUnsavedOrders", ArrayList<OrderItem>())
     private var _currentOrderReference =  savedStateHandle.getStateFlow("currentOrderReference", -1)
-    private var _mainUiState =  savedStateHandle.getStateFlow("mainUiState", ActionUIStates())
-    private var _homePageInfo =  savedStateHandle.getStateFlow("homePageInfo", HomepageInfo())
-    private var _vendorStatus =  savedStateHandle.getStateFlow("vendorStatus", arrayListOf<VendorStatusModel>())
     private var _homePageViewHeight =  savedStateHandle.getStateFlow("homePageViewHeight",0)
 
     val screenTitle: StateFlow<String>
@@ -88,14 +85,6 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
 
     val screenNav: StateFlow<Pair<Int,Int>>
         get() = _screenNav
-    val mainUIState: StateFlow<ActionUIStates>
-        get() = _mainUiState
-
-    val homePageInfo: StateFlow<HomepageInfo>
-        get() = _homePageInfo
-
-    val vendorStatus: StateFlow<ArrayList<VendorStatusModel>>
-        get() = _vendorStatus
 
     fun setTitle(newTitle: String) {
         savedStateHandle["screenTitle"] = newTitle

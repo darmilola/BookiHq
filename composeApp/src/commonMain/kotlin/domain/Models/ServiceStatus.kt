@@ -21,15 +21,15 @@ enum class ServiceStatus {
 
 enum class MeetingStatus {
     Pending,
-    ENDED;
+    Done;
 
     fun toPath() = when (this) {
         Pending -> "Pending"
-        ENDED -> "Ended"
+        Done -> "done"
     }
 
     fun toEventPropertyName() = when (this) {
         Pending -> "Pending"
-        ENDED -> "Ended"
+        Done -> "done"
     }
 }

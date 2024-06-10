@@ -166,7 +166,7 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
                             }
                         }
                         else {
-                             onDismissRequest()
+                            // onDismissRequest()
                         }
 
                         buttonContent(onDismissRequest = {

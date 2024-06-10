@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,8 +35,10 @@ import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.Appointment
 import domain.Models.AppointmentItemUIModel
+import domain.Models.AppointmentType
 import domain.Models.PlatformNavigator
 import domain.Models.UserAppointmentsData
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -49,8 +52,9 @@ import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
 import presentation.viewmodels.ScreenUIStates
+import presentation.widgets.MeetingAppointmentWidget
+import presentation.widgets.ServiceAppointmentWidget
 import utils.getAppointmentViewHeight
-import presentation.widgets.NewAppointmentWidget
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
@@ -87,7 +91,9 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
     @Composable
     override fun Content() {
 
-       val userId = mainViewModel.userId.collectAsState()
+
+        val userId = mainViewModel.userId.value
+
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -143,13 +149,6 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
 
         }
 
-        if (appointmentResourceListEnvelopeViewModel!!.resources.value.isNotEmpty()){
-            screenUiStateViewModel!!.switchScreenUIState(ScreenUIStates(contentVisible = true))
-        }else {
-            if (userId.value != -1) {
-                appointmentPresenter.getUserAppointments(userId.value)
-            }
-        }
 
 
         val loadMoreState =
@@ -167,6 +166,18 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
 
         val lastIndex = appointmentList?.value?.size?.minus(1)
         val selectedAppointment = remember { mutableStateOf(UserAppointmentsData()) }
+
+
+        LaunchedEffect(true) {
+            if (appointmentResourceListEnvelopeViewModel!!.resources.value.isNotEmpty()){
+                screenUiStateViewModel!!.switchScreenUIState(ScreenUIStates(contentVisible = true))
+            }
+            else {
+                appointmentResourceListEnvelopeViewModel.clearData(mutableListOf())
+                appointmentPresenter.getUserAppointments(userId)
+            }
+
+        }
 
 
         var appointmentUIModel by remember {
@@ -197,9 +208,10 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                 snackBarType = SnackBarType.SUCCESS,
                 stackedSnackBarHostState,
                 onActionClick = {})
-            appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-            if (userId.value != -1) {
-                appointmentPresenter.getUserAppointments(userId.value)
+            appointmentResourceListEnvelopeViewModel.clearData(mutableListOf())
+            if (userId != -1) {
+                appointmentResourceListEnvelopeViewModel.clearData(mutableListOf())
+                appointmentPresenter.getUserAppointments(userId)
             }
         }
         else if (postponeActionUIStates.value.isFailed) {
@@ -228,8 +240,9 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                 stackedSnackBarHostState,
                 onActionClick = {})
             appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-            if (userId.value != -1) {
-                appointmentPresenter.getUserAppointments(userId.value)
+            if (userId != -1) {
+                appointmentResourceListEnvelopeViewModel.clearData(mutableListOf())
+                appointmentPresenter.getUserAppointments(userId)
             }
 
         }
@@ -320,12 +333,21 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                                 userScrollEnabled = true
                             ) {
                                 itemsIndexed(items = appointmentUIModel.appointmentList) { it, item ->
-                                    NewAppointmentWidget(
-                                        item.resources!!,
-                                        appointmentPresenter,
-                                        postponementViewModel!!,
-                                        availabilityActionUIStateViewModel!!,
-                                    )
+                                    if (item.resources?.appointmentType == AppointmentType.MEETING.toPath()) {
+                                        MeetingAppointmentWidget(
+                                            appointment = item.resources,
+                                            appointmentPresenter = appointmentPresenter,
+                                            postponementViewModel = null,
+                                            availabilityActionUIStateViewModel!!
+                                        )
+                                    } else {
+                                        ServiceAppointmentWidget(
+                                            item.resources!!,
+                                            appointmentPresenter = appointmentPresenter,
+                                            postponementViewModel = postponementViewModel,
+                                            availabilityActionUIStateViewModel!!
+                                        )
+                                    }
                                     if (it == lastIndex && loadMoreState.value) {
                                         Box(
                                             modifier = Modifier.fillMaxWidth().height(60.dp),
@@ -350,9 +372,9 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                                             style = TextStyle()
                                         ) {
                                             if (appointmentResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
-                                                if (userId.value != -1) {
+                                                if (userId != -1) {
                                                     appointmentPresenter.getMoreAppointments(
-                                                        userId.value,
+                                                        userId,
                                                         nextPage = appointmentResourceListEnvelopeViewModel!!.currentPage.value + 1
                                                     )
                                                 }

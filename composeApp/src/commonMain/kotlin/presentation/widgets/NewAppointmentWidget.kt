@@ -50,16 +50,11 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun NewAppointmentWidget(appointment: Appointment, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, availabilityActionUIStateViewModel: ActionUIStateViewModel) {
+fun ServiceAppointmentWidget(appointment: Appointment, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, availabilityActionUIStateViewModel: ActionUIStateViewModel) {
 
     val serviceAppointmentStatus = appointment.serviceStatus
-    val meetingAppointmentStatus = appointment.meetingStatus
-
     val serviceMenuItems = arrayListOf<String>()
-    val meetingMenuItems = arrayListOf<String>()
 
-
-    if (appointment.appointmentType == AppointmentType.SERVICE.toPath()) {
         var actionItem = ""
         actionItem = when (serviceAppointmentStatus) {
             ServiceStatus.Pending.toPath() -> {
@@ -70,32 +65,17 @@ fun NewAppointmentWidget(appointment: Appointment, appointmentPresenter: Appoint
                 "Delete"
             }
         }
+
         serviceMenuItems.add(actionItem)
         if (serviceAppointmentStatus == ServiceStatus.Done.toPath()) {
             serviceMenuItems.add("Add Review")
         }
-    }
-
-
-
-    if (appointment.appointmentType == AppointmentType.MEETING.toPath()) {
-        if (meetingAppointmentStatus == MeetingStatus.Pending.toPath()) {
-            meetingMenuItems.add("Join Meeting")
-        } else {
-            meetingMenuItems.add("Delete")
-        }
-    }
 
 
 
     var serviceIconRes = "drawable/schedule.png"
     var serviceStatusText = "Pending"
     var serviceStatusColor: Color = Colors.primaryColor
-
-
-    var meetingIconRes = "drawable/schedule.png"
-    var meetingStatusText = "Pending"
-    var meetingStatusColor: Color = Colors.primaryColor
 
 
 
@@ -117,19 +97,6 @@ fun NewAppointmentWidget(appointment: Appointment, appointmentPresenter: Appoint
         }
     }
 
-    when (meetingAppointmentStatus) {
-        MeetingStatus.Pending.toPath() -> {
-            meetingIconRes = "drawable/schedule.png"
-            meetingStatusText = "Pending"
-            meetingStatusColor = Colors.primaryColor
-        }
-        ServiceStatus.Done.toPath() -> {
-            meetingIconRes = "drawable/appointment_done.png"
-            meetingStatusText = "Done"
-            meetingStatusColor = Colors.greenColor
-        }
-    }
-
 
     val boxBgModifier =
         Modifier
@@ -148,8 +115,7 @@ fun NewAppointmentWidget(appointment: Appointment, appointmentPresenter: Appoint
                 horizontalAlignment = Alignment.Start,
                 modifier = columnModifier
             ) {
-                if (appointment.appointmentType == AppointmentType.SERVICE.toPath()) {
-                    AttachAppointmentHeader(
+                    AttachServiceAppointmentHeader(
                         serviceStatusText,
                         serviceIconRes,
                         serviceStatusColor,
@@ -160,25 +126,75 @@ fun NewAppointmentWidget(appointment: Appointment, appointmentPresenter: Appoint
                         availabilityActionUIStateViewModel)
                     AttachAppointmentContent(appointment)
                 }
-                else if (appointment.appointmentType == AppointmentType.MEETING.toPath()){
-                    AttachMeetingAppointmentHeader(meetingStatusText,
-                        meetingIconRes,
-                        meetingStatusColor,
-                        appointment,
-                        meetingMenuItems,
-                        appointmentPresenter)
-                    AttachAppointmentContent(appointment)
-
-                }
             }
+}
+
+
+@Composable
+fun MeetingAppointmentWidget(appointment: Appointment, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, availabilityActionUIStateViewModel: ActionUIStateViewModel) {
+    val meetingAppointmentStatus = appointment.meetingStatus
+    val meetingMenuItems = arrayListOf<String>()
+
+
+    if (meetingAppointmentStatus == MeetingStatus.Pending.toPath()) {
+            meetingMenuItems.add("Join Meeting")
+        } else {
+            meetingMenuItems.add("Delete")
         }
+
+
+    var meetingIconRes = "drawable/schedule.png"
+    var meetingStatusText = "Pending"
+    var meetingStatusColor: Color = Colors.primaryColor
+
+
+    when (meetingAppointmentStatus) {
+        MeetingStatus.Pending.toPath() -> {
+            meetingIconRes = "drawable/schedule.png"
+            meetingStatusText = "Pending"
+            meetingStatusColor = Colors.primaryColor
+        }
+        MeetingStatus.Done.toPath() -> {
+            meetingIconRes = "drawable/appointment_done.png"
+            meetingStatusText = "Done"
+            meetingStatusColor = Colors.greenColor
+        }
+    }
+
+    val boxBgModifier =
+        Modifier
+            .padding(bottom = 5.dp, top = 5.dp, start = 10.dp, end = 10.dp)
+            .fillMaxHeight()
+            .fillMaxWidth()
+            .border(border = BorderStroke(1.4.dp, Colors.lightGray), shape = RoundedCornerShape(10.dp))
+
+    Box(modifier = boxBgModifier) {
+
+        val columnModifier = Modifier
+            .padding(start = 5.dp, bottom = 10.dp)
+            .fillMaxWidth()
+        Column(
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start,
+            modifier = columnModifier
+        ) {
+                AttachMeetingAppointmentHeader(meetingStatusText,
+                    meetingIconRes,
+                    meetingStatusColor,
+                    appointment,
+                    meetingMenuItems,
+                    appointmentPresenter)
+                AttachAppointmentContent(appointment)
+
+            }
+    }
 }
 
 
 
 @Composable
-fun AttachAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment, menuItems: ArrayList<String>, presenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null,
-                            availabilityActionUIStateViewModel: ActionUIStateViewModel) {
+fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment, menuItems: ArrayList<String>, presenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null,
+                                   availabilityActionUIStateViewModel: ActionUIStateViewModel) {
     val expandedMenuItem = remember { mutableStateOf(false) }
     val openPostponeDialog = remember { mutableStateOf(false) }
 
@@ -252,10 +268,10 @@ fun AttachAppointmentHeader(statusText: String, statusDrawableRes: String, statu
                 menuItems.forEachIndexed { index, title ->
                     DropdownMenuItem(
                         onClick = {
-                            if (title == "Postpone"){
+                            if (title.contentEquals("Postpone", true)){
                                 openPostponeDialog.value = true
                             }
-                            else if (title == "Delete"){
+                            else if (title.contentEquals("Delete", true)){
                                 presenter?.deleteAppointment(appointment.appointmentId!!)
                             }
                         }) {
@@ -329,11 +345,13 @@ fun AttachMeetingAppointmentHeader(statusText: String, statusDrawableRes: String
                 menuItems.forEachIndexed { index, title ->
                     DropdownMenuItem(
                         onClick = {
-                            if (title == "JoinMeeting"){
+                            println("Title is $title")
+                            if (title.contentEquals("Join Meeting", ignoreCase = true)){
+                              println("Inside Presenter")
                               presenter?.joinMeeting(customParticipantId = "devprocess@gmail.com",
                                   presetName = "group_call_host", meetingId = "bbb24d30-4171-4506-875d-7a31bc8de0fa")
                             }
-                            else if (title == "Delete"){
+                            else if (title.contentEquals("Delete", true)){
                                 presenter?.deleteAppointment(appointment.appointmentId!!)
                             }
                         }) {

@@ -110,6 +110,7 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
                 if (userId.value != -1 && vendorId.value != -1) 60 else 0
 
             TabNavigator(showDefaultTab(mainViewModel, homePageViewModel!!)) {
+                it2 ->
                 Scaffold(
                     topBar = {
                         MainTopBar(
@@ -122,6 +123,7 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
                     content = {
                         Box(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
                             CurrentTab()
+
                         }
                     },
                     backgroundColor = Color.White,
@@ -139,7 +141,7 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
                                 labelText = "Home",
                                 imageSize = 22,
                                 currentTabId = 0,
-                                tabNavigator = it,
+                                tabNavigator = it2,
                                 mainViewModel = mainViewModel
                             ) {
                                 isBottomNavSelected = true
@@ -151,7 +153,7 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
                                 labelText = "Shop",
                                 imageSize = 22,
                                 currentTabId = 1,
-                                tabNavigator = it,
+                                tabNavigator = it2,
                                 mainViewModel = mainViewModel
                             ) {
                                 isBottomNavSelected = true
@@ -163,7 +165,7 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
                                 labelText = "History",
                                 imageSize = 25,
                                 currentTabId = 3,
-                                tabNavigator = it,
+                                tabNavigator = it2,
                                 mainViewModel = mainViewModel
                             ) {
                                 isBottomNavSelected = true
@@ -175,7 +177,7 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
                                 labelText = "More",
                                 imageSize = 25,
                                 currentTabId = 4,
-                                tabNavigator = it,
+                                tabNavigator = it2,
                                 mainViewModel = mainViewModel
                             ) {
                                 isBottomNavSelected = true
