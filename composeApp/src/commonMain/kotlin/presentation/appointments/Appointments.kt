@@ -33,12 +33,10 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
-import domain.Models.Appointment
 import domain.Models.AppointmentItemUIModel
 import domain.Models.AppointmentType
 import domain.Models.PlatformNavigator
 import domain.Models.UserAppointmentsData
-import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -53,7 +51,7 @@ import presentation.viewmodels.PostponementViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
 import presentation.viewmodels.ScreenUIStates
 import presentation.widgets.MeetingAppointmentWidget
-import presentation.widgets.ServiceAppointmentWidget
+import presentation.widgets.AppointmentWidget
 import utils.getAppointmentViewHeight
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
@@ -337,15 +335,15 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                                         MeetingAppointmentWidget(
                                             appointment = item.resources,
                                             appointmentPresenter = appointmentPresenter,
-                                            postponementViewModel = null,
-                                            availabilityActionUIStateViewModel!!
+                                            isFromHomeTab = false
                                         )
                                     } else {
-                                        ServiceAppointmentWidget(
+                                        AppointmentWidget(
                                             item.resources!!,
                                             appointmentPresenter = appointmentPresenter,
                                             postponementViewModel = postponementViewModel,
-                                            availabilityActionUIStateViewModel!!
+                                            availabilityActionUIStateViewModel!!,
+                                            isFromHomeTab = false
                                         )
                                     }
                                     if (it == lastIndex && loadMoreState.value) {

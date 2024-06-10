@@ -82,17 +82,15 @@ import presentation.Products.ProductDetailContent
 import presentation.components.FloatingActionButton
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.ActionUIStateViewModel
-import presentation.viewmodels.ActionUIStates
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
 import presentation.viewmodels.ScreenUIStates
-import utils.getAppointmentViewHeight
 import presentation.widgets.BusinessWhatsAppStatusWidget
 import presentation.widgets.HomeServicesWidget
 import presentation.widgets.MeetingAppointmentWidget
 import presentation.widgets.RecommendedServiceItem
-import presentation.widgets.ServiceAppointmentWidget
+import presentation.widgets.AppointmentWidget
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import presentations.components.TextComponent
@@ -561,15 +559,15 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                         MeetingAppointmentWidget(
                             appointment = item,
                             appointmentPresenter = null,
-                            postponementViewModel = null,
-                            availabilityActionUIStateViewModel!!
+                            isFromHomeTab = true
                         )
                     } else {
-                        ServiceAppointmentWidget(
+                        AppointmentWidget(
                             item,
                             appointmentPresenter = null,
                             postponementViewModel = null,
-                            availabilityActionUIStateViewModel!!
+                            availabilityActionUIStateViewModel!!,
+                            isFromHomeTab = true
                         )
                     }
                 }
