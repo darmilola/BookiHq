@@ -481,9 +481,23 @@ class ShopTab(private val mainViewModel: MainViewModel,
                                         textColor = theme.Colors.primaryColor,
                                         style = TextStyle()
                                     ) {
-                                        if (productResourceListEnvelopeViewModel.nextPageUrl.value.isNotEmpty()) {
-                                            productPresenter.searchMoreProducts(vendorId = vendorId, searchQuery = searchQuery,
-                                                nextPage = productResourceListEnvelopeViewModel.currentPage.value + 1)
+
+                                        if (searchQuery.isEmpty()) {
+                                            if (productResourceListEnvelopeViewModel.nextPageUrl.value.isNotEmpty()) {
+                                                productPresenter.getMoreProducts(
+                                                    vendorId = vendorId,
+                                                    nextPage = productResourceListEnvelopeViewModel.currentPage.value + 1
+                                                )
+                                            }
+                                        }
+                                        else{
+                                            if (productResourceListEnvelopeViewModel.nextPageUrl.value.isNotEmpty()) {
+                                                productPresenter.searchMoreProducts(
+                                                    vendorId = vendorId,
+                                                    nextPage = productResourceListEnvelopeViewModel.currentPage.value + 1,
+                                                    searchQuery = searchQuery
+                                                )
+                                            }
                                         }
                                     }
                                 }
