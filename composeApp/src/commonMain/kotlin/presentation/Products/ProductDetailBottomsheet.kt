@@ -152,6 +152,7 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
                             borderStroke = null
                         ) {
                             currentOrder.value.add(orderItem.value)
+                            mainViewModel.setUnsavedOrderSize(currentOrder.value.size)
                             mainViewModel.setCurrentUnsavedOrders(currentOrder.value)
                             onAddToCart(true)
 

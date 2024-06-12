@@ -33,6 +33,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     private var _currentUnsavedOrders =  savedStateHandle.getStateFlow("currentUnsavedOrders", ArrayList<OrderItem>())
     private var _currentOrderReference =  savedStateHandle.getStateFlow("currentOrderReference", -1)
     private var _homePageViewHeight =  savedStateHandle.getStateFlow("homePageViewHeight",0)
+    private var _currentUnsavedOrderSize =  savedStateHandle.getStateFlow("currentUnsavedOrderSize", 0)
 
     val screenTitle: StateFlow<String>
         get() = _screenTitle
@@ -45,6 +46,9 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
 
     val unSavedOrders: StateFlow<ArrayList<OrderItem>>
         get() = _currentUnsavedOrders
+
+    val unSavedOrderSize: StateFlow<Int>
+        get() = _currentUnsavedOrderSize
 
     val currentOrderReference: StateFlow<Int>
         get() = _currentOrderReference
@@ -88,6 +92,10 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
 
     fun setTitle(newTitle: String) {
         savedStateHandle["screenTitle"] = newTitle
+    }
+
+    fun setUnsavedOrderSize(size: Int) {
+        savedStateHandle["currentUnsavedOrderSize"] = size
     }
 
     fun setScreenNav(screenNav: Pair<Int,Int>) {

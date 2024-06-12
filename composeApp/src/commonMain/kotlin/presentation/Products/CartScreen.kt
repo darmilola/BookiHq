@@ -302,6 +302,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
                     orderItemUIModel.itemList.remove(orderItem)
                     orderItemUIModel = orderItemUIModel.copy(selectedItem = OrderItem(), itemList = orderItemUIModel.itemList)
                     mainViewModel.setCurrentUnsavedOrders(orderItemUIModel.itemList)
+                    mainViewModel.setUnsavedOrderSize(orderItemUIModel.itemList.size)
                         ShowSnackBar(title = "Product Removed",
                             description = "Product has been Removed from Cart",
                             actionLabel = "",
@@ -340,6 +341,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
                             }
                         ))
                         mainViewModel.setCurrentUnsavedOrders(orderItemUIModel.itemList)
+                        mainViewModel.setUnsavedOrderSize(orderItemUIModel.itemList.size)
 
                     }, onItemRemovedFromCart = {
                         orderItemUIModel.itemList.remove(it)
@@ -355,6 +357,7 @@ class CartScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent 
                             stackedSnackBarHostState,
                             onActionClick = {})
                         mainViewModel.setCurrentUnsavedOrders(orderItemUIModel.itemList)
+                        mainViewModel.setUnsavedOrderSize(orderItemUIModel.itemList.size)
                     })
                     StraightLine()
                 }

@@ -2,6 +2,7 @@ package presentation.main
 
 import GGSansRegular
 import StackedSnackbarHost
+import StackedSnakbarHostState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import theme.styles.Colors
@@ -42,6 +43,7 @@ import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
@@ -55,6 +57,9 @@ import domain.Models.Product
 import domain.Models.ProductItemUIModel
 import domain.Models.ProductResourceListEnvelope
 import domain.Models.Screens
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.Products.SearchBar
@@ -70,6 +75,9 @@ import presentation.viewmodels.ProductResourceListEnvelopeViewModel
 import presentation.viewmodels.ProductViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
 import presentation.viewmodels.ScreenUIStates
+import presentation.widgets.ProductDetailBottomSheet
+import presentation.widgets.ShowSnackBar
+import presentation.widgets.SnackBarType
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
@@ -286,15 +294,12 @@ class ShopTab(private val mainViewModel: MainViewModel,
                     mainViewModel = mainViewModel,
                     onCartChanged = {
                         onCartChanged.value = true
-                    })
+                    }, stackedSnackBarHostState)
             },
             backgroundColor = Color.White,
             floatingActionButton = {
-                var cartSize = mainViewModel.unSavedOrders.value.size
-                if (onCartChanged.value) {
-                    cartSize = mainViewModel.unSavedOrders.value.size
-                }
-                val cartContainer = if (cartSize > 0) 140 else 0
+                var cartSize = mainViewModel.unSavedOrderSize.collectAsState()
+                val cartContainer = if (cartSize.value > 0) 140 else 0
                 Box(
                     modifier = Modifier.size(cartContainer.dp)
                         .padding(bottom = 40.dp), contentAlignment = Alignment.CenterEnd
@@ -307,7 +312,7 @@ class ShopTab(private val mainViewModel: MainViewModel,
 
     @Composable
     fun AttachShoppingCartImage(iconRes: String, mainViewModel: MainViewModel) {
-        val currentOrders = mainViewModel.unSavedOrders.collectAsState()
+        val currentOrderSize = mainViewModel.unSavedOrderSize.collectAsState()
 
         val indicatorModifier = Modifier
             .padding(end = 15.dp, bottom = 20.dp)
@@ -340,7 +345,7 @@ class ShopTab(private val mainViewModel: MainViewModel,
                 contentAlignment = Alignment.Center
             ) {
                 TextComponent(
-                    text = currentOrders.value.size.toString(),
+                    text = currentOrderSize.value.toString(),
                     fontSize = 17,
                     fontFamily = GGSansRegular,
                     textStyle = MaterialTheme.typography.h6,
@@ -357,8 +362,8 @@ class ShopTab(private val mainViewModel: MainViewModel,
     fun ProductContent(
         productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel,
         screenUiStateViewModel: ScreenUIStateViewModel,
-        searchQuery: String, vendorId: Int, mainViewModel: MainViewModel, onCartChanged: () -> Unit) {
-
+        searchQuery: String, vendorId: Int, mainViewModel: MainViewModel, onCartChanged: () -> Unit,
+        stackedSnackBarHostState: StackedSnakbarHostState) {
         val loadMoreState = productResourceListEnvelopeViewModel.isLoadingMore.collectAsState()
         val productList = productResourceListEnvelopeViewModel.resources.collectAsState()
         val selectedProduct = remember { mutableStateOf(Product()) }
@@ -434,8 +439,9 @@ class ShopTab(private val mainViewModel: MainViewModel,
                                 mainViewModel,
                                 isViewedFromCart = false,
                                 OrderItem(itemProduct = selectedProduct.value),
-                                onDismiss = { isAddToCart, item ->
-                                    onCartChanged()
+                                onDismiss = { isAddToCart, item -> if (isAddToCart){
+                                       onCartChanged()
+                                    }
                                     showProductDetailBottomSheet = false
 
                                 },
@@ -537,28 +543,6 @@ class ShopTab(private val mainViewModel: MainViewModel,
             onLoadMoreEnded()
         }
 
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, selectedProduct: OrderItem, onDismiss: (isAddToCart: Boolean, OrderItem) -> Unit, onRemoveFromCart: (OrderItem) -> Unit) {
-        val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
-        ModalBottomSheet(
-            modifier = Modifier.padding(top = 20.dp),
-            onDismissRequest = {
-                onDismiss(false, selectedProduct)
-            },
-            sheetState = modalBottomSheetState,
-            shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
-            containerColor = Color(0xFFF3F3F3),
-            dragHandle = {},
-        ) {
-            ProductDetailContent(mainViewModel,isViewedFromCart,selectedProduct, onAddToCart = {
-                onDismiss(it,selectedProduct)
-            }, onRemoveFromCart = {
-                onRemoveFromCart(it)
-            })
-        }
     }
 
 }

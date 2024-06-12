@@ -91,6 +91,7 @@ import presentation.widgets.HomeServicesWidget
 import presentation.widgets.MeetingAppointmentWidget
 import presentation.widgets.RecommendedServiceItem
 import presentation.widgets.AppointmentWidget
+import presentation.widgets.ProductDetailBottomSheet
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import presentations.components.TextComponent
@@ -168,7 +169,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
             handler.init()
 
             if (homePageViewModel.homePageInfo.value.userInfo == null) {
-                homepagePresenter.getUserHomepage(userEmail, "2348154864510")
+                homepagePresenter.getUserHomepage(userEmail, "2348022510893")
             }
         }
 
@@ -447,26 +448,6 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                     })
                 }
             }
-        }
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, selectedProduct: OrderItem, onDismiss: (isAddToCart: Boolean, OrderItem) -> Unit, onRemoveFromCart: (OrderItem) -> Unit) {
-        val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
-        ModalBottomSheet(
-            modifier = Modifier.padding(top = 20.dp),
-            onDismissRequest = { onDismiss(false, selectedProduct) },
-            sheetState = modalBottomSheetState,
-            shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
-            containerColor = Color(0xFFF3F3F3),
-            dragHandle = {},
-        ) {
-            ProductDetailContent(mainViewModel,isViewedFromCart,selectedProduct, onAddToCart = {
-                onDismiss(it,selectedProduct)
-            }, onRemoveFromCart = {
-                onRemoveFromCart(it)
-            })
         }
     }
 
