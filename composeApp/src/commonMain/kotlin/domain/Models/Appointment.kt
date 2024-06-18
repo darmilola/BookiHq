@@ -8,8 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable @Parcelize
 data class Appointment(
     @SerialName("id") val appointmentId: Int? = -1, @SerialName("user_id") val userId: Int? = -1, @SerialName("vendor_id") val vendorId: Int = -1,
-    @SerialName("serviceLocation") val serviceLocation: String = ServiceLocation.Spa.toPath(), @SerialName("serviceStatus") val serviceStatus: String = ServiceStatus.Pending.toPath(),
-    @SerialName("consultationMedium") val consultationMedium: String = ConsultationMedium.Spa.toPath(), @SerialName("service_id") val serviceId: Int = -1,
+    @SerialName("serviceLocation") val serviceLocation: String = ServiceLocation.Spa.toPath(), @SerialName("serviceStatus") val serviceStatus: String = ServiceStatus.Pending.toPath(), @SerialName("service_id") val serviceId: Int = -1,
     @SerialName("specialist_id") val specialistId: Int = -1, @SerialName("service_type_id") val serviceTypeId: Int? = -1, @SerialName("appointmentTime") val appointmentTime: Int? = -1,
     @SerialName("day") val appointmentDay: Int? = -1, @SerialName("month") val appointmentMonth: Int? = -1, val appointmentType: String = AppointmentType.SERVICE.toPath(),
     @SerialName("year") val appointmentYear: Int? = -1, @SerialName("isRecommendedAppointment") val isRecommendedAppointment: Boolean = false,

@@ -8,4 +8,4 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Parcelize
 data class PlatformTime(@SerialName("id") val id: Int? = null, @SerialName("time") val time: String? = null,
-                       @SerialName("isAm") val isAm: Boolean = false):Parcelable
+                       @SerialName("isAm") val isAm: Boolean = false): Parcelable
