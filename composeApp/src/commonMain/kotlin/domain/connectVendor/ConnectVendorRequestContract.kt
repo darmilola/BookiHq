@@ -1,4 +1,4 @@
-package infrastructure.connectVendor
+package domain.connectVendor
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

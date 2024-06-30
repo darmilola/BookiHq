@@ -8,9 +8,9 @@ import dev.jordond.compass.geocoder.Geocoder
 import domain.Models.AuthenticationResponse
 import domain.Models.ServerResponse
 import domain.Models.VendorAvailabilityResponse
-import infrastructure.authentication.AuthenticationNetworkService
-import infrastructure.authentication.AuthenticationRepository
-import infrastructure.authentication.CompleteProfileRequest
+import domain.authentication.AuthenticationNetworkService
+import domain.authentication.AuthenticationRepository
+import domain.authentication.CompleteProfileRequest
 import io.ktor.client.HttpClient
 
 class ProfileRepositoryImpl(apiService: HttpClient): ProfileRepository {

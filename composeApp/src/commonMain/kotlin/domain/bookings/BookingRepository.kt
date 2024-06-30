@@ -1,19 +1,15 @@
 package domain.bookings
 
 import com.badoo.reaktive.single.Single
-import domain.Models.Appointment
-import domain.Models.AppointmentItem
-import domain.Models.ListDataResponse
 import domain.Models.ServerResponse
-import domain.Models.ServiceSpecialistsResponse
-import domain.Models.SpecialistAvailabilityResponse
+import domain.Models.ServiceTherapistsResponse
 
 interface BookingRepository {
     suspend fun getServiceTherapist(
         serviceTypeId: Int,
         day: Int,
         month: Int,
-        year: Int): Single<ServiceSpecialistsResponse>
+        year: Int): Single<ServiceTherapistsResponse>
     suspend fun createAppointment(appointmentRequests: ArrayList<CreateAppointmentRequest>): Single<ServerResponse>
 }
 

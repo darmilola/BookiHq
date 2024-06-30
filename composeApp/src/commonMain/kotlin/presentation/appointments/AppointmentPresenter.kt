@@ -170,16 +170,16 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
         }
     }
 
-    override fun getTherapistAvailability(specialistId: Int, day: Int, month: Int, year: Int) {
+    override fun getTherapistAvailability(therapistId: Int, day: Int, month: Int, year: Int) {
         contractView?.showGetAvailabilityActionLce(ActionUIStates(isLoading = true, loadingMessage = "Getting Availability"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    appointmentRepositoryImpl.getTherapistAvailability(specialistId, day, month, year)
+                    appointmentRepositoryImpl.getTherapistAvailability(therapistId, day, month, year)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showTherapistAvailability(result.availableTimes, result.bookedAppointment, result.timeOffs)
+                                    contractView?.showTherapistAvailability(result.bookedAppointment)
                                     contractView?.showGetAvailabilityActionLce(ActionUIStates(isSuccess = true, successMessage = "Availability Ready"))
                                 }
                                 else{

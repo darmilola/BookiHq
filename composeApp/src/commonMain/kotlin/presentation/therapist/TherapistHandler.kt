@@ -2,7 +2,7 @@ package presentation.therapist
 
 import domain.Models.AppointmentResourceListEnvelope
 import domain.Models.AvailableTime
-import domain.Models.SpecialistReviews
+import domain.Models.TherapistReviews
 import domain.Models.TimeOffs
 import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.ActionUIStates
@@ -14,7 +14,7 @@ class TherapistHandler(
     private val therapistPresenter: TherapistPresenter,
     private val screenUiStateViewModel: ScreenUIStateViewModel,
     private val actionUIStateViewModel: ActionUIStateViewModel,
-    private val onReviewsReady: (List<SpecialistReviews>) -> Unit,
+    private val onReviewsReady: (List<TherapistReviews>) -> Unit,
     private val onMeetingTokenReady: (meetingToken: String) -> Unit,
     private val appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel,
     private val onTherapistAvailabilityReady: (availableTimes: List<AvailableTime>, timeOffs: List<TimeOffs>) -> Unit) : TherapistContract.View {
@@ -30,7 +30,7 @@ class TherapistHandler(
          actionUIStateViewModel.switchActionPostponeUIState(actionUiState)
     }
 
-    override fun showReviews(reviews: List<SpecialistReviews>) {
+    override fun showReviews(reviews: List<TherapistReviews>) {
         onReviewsReady(reviews)
     }
 
@@ -52,13 +52,6 @@ class TherapistHandler(
             appointments?.totalItemCount?.let { appointmentResourceListEnvelopeViewModel.setTotalItemCount(it) }
             appointments?.displayedItemCount?.let { appointmentResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
         }
-    }
-
-    override fun showTherapistAvailability(
-        availableTimes: List<AvailableTime>,
-        timeOffs: List<TimeOffs>
-    ) {
-        onTherapistAvailabilityReady(availableTimes, timeOffs)
     }
 
     override fun onLoadMoreAppointmentStarted() {

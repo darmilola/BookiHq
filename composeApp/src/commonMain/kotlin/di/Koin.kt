@@ -42,9 +42,10 @@ private val KtorModule = module {
     single {
         httpClient {
             defaultRequest {
-                host =  "zazzyapi.onrender.com"
                 url {
+                    host = "devprocess.onrender.com/api/v1"
                     protocol = URLProtocol.HTTPS
+                    port = 443
                 }
             }
             install(Logging) {

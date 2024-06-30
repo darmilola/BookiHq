@@ -1,10 +1,10 @@
-package infrastructure.connectVendor
+package domain.connectVendor
 
 import com.badoo.reaktive.single.Single
 import domain.Models.ListDataResponse
 import domain.Models.ServerResponse
 import domain.Models.Vendor
-import infrastructure.authentication.AuthenticationNetworkService
+import domain.authentication.AuthenticationNetworkService
 import io.ktor.client.HttpClient
 
  class ConnectVendorRepositoryImpl(apiService: HttpClient): ConnectVendorRepository {

@@ -1,13 +1,10 @@
 package domain.appointments
 
 import com.badoo.reaktive.single.toSingle
-import domain.Models.Appointment
 import domain.Models.AppointmentListDataResponse
 import domain.Models.JoinMeetingResponse
-import domain.Models.ListDataResponse
-import domain.Models.Product
 import domain.Models.ServerResponse
-import domain.Models.SpecialistAvailabilityResponse
+import domain.Models.TherapistAvailabilityResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -20,7 +17,7 @@ open class AppointmentNetworkService(private val apiService: HttpClient) {
 
     suspend fun getAppointments(getAppointmentRequest: GetAppointmentRequest, nextPage: Int = 1) =
         apiService.post {
-            url("/api/v1/appointments?page=$nextPage")
+            url("/appointments?page=$nextPage")
             /*headers {
                 append(HttpHeaders.Authorization, "abc123")
             }*/
@@ -30,7 +27,7 @@ open class AppointmentNetworkService(private val apiService: HttpClient) {
 
     suspend fun postponeAppointment(postponeAppointmentRequest: PostponeAppointmentRequest) =
         apiService.post {
-            url("/api/v1/services/appointment/postpone")
+            url("/services/appointment/postpone")
             /*headers {
                 append(HttpHeaders.Authorization, "abc123")
             }*/
@@ -40,7 +37,7 @@ open class AppointmentNetworkService(private val apiService: HttpClient) {
 
     suspend fun deleteAppointment(deleteAppointmentRequest: DeleteAppointmentRequest) =
         apiService.post {
-            url("/api/v1/services/appointment/delete")
+            url("/services/appointment/delete")
             /*headers {
                 append(HttpHeaders.Authorization, "abc123")
             }*/
@@ -50,7 +47,7 @@ open class AppointmentNetworkService(private val apiService: HttpClient) {
 
     suspend fun joinMeeting(joinMeetingRequest: JoinMeetingRequest) =
         apiService.post {
-            url("/api/v1/appointment/meeting/join")
+            url("/appointment/meeting/join")
             /*headers {
                 append(HttpHeaders.Authorization, "abc123")
             }*/
@@ -58,14 +55,14 @@ open class AppointmentNetworkService(private val apiService: HttpClient) {
             setBody(joinMeetingRequest)
         }.body<JoinMeetingResponse>().toSingle()
 
-    suspend fun getSpecialistAvailability(getSpecialistAvailabilityRequest: GetSpecialistAvailabilityRequest) =
+    suspend fun getTherapistAvailability(getTherapistAvailabilityRequest: GetTherapistAvailabilityRequest) =
         apiService.post {
-            url("/api/v1/services/specialist/availability")
+            url("/services/therapist/availability")
             /*headers {
                 append(HttpHeaders.Authorization, "abc123")
             }*/
             contentType(ContentType.Application.Json)
-            setBody(getSpecialistAvailabilityRequest)
-        }.body<SpecialistAvailabilityResponse>().toSingle()
+            setBody(getTherapistAvailabilityRequest)
+        }.body<TherapistAvailabilityResponse>().toSingle()
 
 }

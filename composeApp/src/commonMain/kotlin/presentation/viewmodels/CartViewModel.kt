@@ -4,11 +4,7 @@ import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Models.DeliveryLocation
 import domain.Models.PaymentMethod
-import domain.Models.ServiceTypeItem
-import domain.Models.ServiceTypeSpecialist
-import domain.Models.UnsavedAppointment
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.datetime.LocalDate
 
 class CartViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 

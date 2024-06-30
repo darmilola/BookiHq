@@ -23,14 +23,12 @@ import domain.Models.PlatformNavigator
 import domain.Models.Screens
 import org.koin.core.component.KoinComponent
 import presentation.Orders.Orders
-import presentation.Orders.UserOrders.OrderDetails
 import presentation.bookings.BookingScreen
 import presentation.bookings.PendingAppointmentsTab
 import presentation.Products.CartScreen
 import presentation.profile.EditProfile
 import presentation.profile.connect_vendor.ConnectPageTab
 import presentation.profile.connect_vendor.ConnectedVendorDetailsPage
-import presentation.Orders.UserOrders.UserOrders
 import presentation.consultation.ConsultationScreen
 import presentation.consultation.VirtualConsultationRoom
 import presentation.dialogs.LoadingDialog
@@ -139,7 +137,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
         mainViewModel.setUserId(preferenceSettings["userId",-1])
         mainViewModel.setVendorEmail(preferenceSettings["vendorEmail",""])
         mainViewModel.setVendorId(preferenceSettings["vendorId",-1])
-        mainViewModel.setSpecialistId(preferenceSettings["specialistId",-1])
+        mainViewModel.setTherapistId(preferenceSettings["therapistId",-1])
         mainViewModel.setVendorBusinessLogoUrl(preferenceSettings["vendorBusinessLogoUrl",""])
     }
 

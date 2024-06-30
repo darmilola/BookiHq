@@ -42,7 +42,7 @@ import domain.Models.Appointment
 import domain.Models.AppointmentType
 import domain.Models.MeetingStatus
 import domain.Models.ServiceStatus
-import domain.Models.SpecialistInfo
+import domain.Models.TherapistInfo
 import presentation.appointments.AppointmentPresenter
 import presentation.dialogs.PostponeDialog
 import presentation.viewmodels.ActionUIStateViewModel
@@ -409,8 +409,8 @@ fun AttachAppointmentContent(appointment: Appointment) {
 
 
 @Composable
-fun TherapistDisplayItem(specialistInfo: SpecialistInfo) {
-    val profileInfo = specialistInfo.profileInfo
+fun TherapistDisplayItem(therapistInfo: TherapistInfo) {
+    val profileInfo = therapistInfo.profileInfo
     val rowModifier = Modifier
         .fillMaxWidth().height(40.dp)
 
@@ -459,7 +459,7 @@ fun TherapistDisplayItem(specialistInfo: SpecialistInfo) {
                         .height(24.dp)) {
                     ImageComponent(imageModifier = Modifier.size(10.dp).padding(bottom = 2.dp), imageRes = "drawable/star_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
                     TextComponent(
-                        text = specialistInfo.rating.toString(),
+                        text = therapistInfo.rating.toString(),
                         fontSize = 12,
                         fontFamily = GGSansRegular,
                         textStyle = MaterialTheme.typography.h6,

@@ -39,7 +39,7 @@ import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.Screens
-import domain.Models.ServiceTypeSpecialist
+import domain.Models.ServiceTypeTherapists
 import domain.Models.Services
 import presentation.components.ButtonComponent
 import kotlinx.coroutines.launch
@@ -291,7 +291,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                                 pagerState.animateScrollToPage(1)
                             }
                         } else if (currentPage == 1) {
-                            if (bookingViewModel?.currentAppointmentBooking?.value?.serviceTypeSpecialist == null) {
+                            if (bookingViewModel?.currentAppointmentBooking?.value?.serviceTypeTherapists == null) {
                                 ShowSnackBar(title = "No Therapist Selected",
                                     description = "Please Select a Therapist to proceed",
                                     actionLabel = "",
@@ -340,7 +340,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                 when (page) {
                     0 -> BookingSelectServices(mainViewModel, bookingViewModel,services)
                     1 -> if(page == pagerState.targetPage) {
-                        BookingSelectSpecialist(mainViewModel,screenUiStateViewModel,bookingViewModel,bookingPresenter)
+                        BookingSelectTherapists(mainViewModel,screenUiStateViewModel,bookingViewModel,bookingPresenter)
                     }
                     2 -> if(page == pagerState.targetPage) {
                         BookingOverview(
@@ -414,8 +414,8 @@ class BookingScreenHandler(
         }
     }
 
-    override fun showTherapists(serviceSpecialists: List<ServiceTypeSpecialist>) {
-        bookingViewModel.setSpecialists(serviceSpecialists)
+    override fun showTherapists(serviceTherapists: List<ServiceTypeTherapists>) {
+        bookingViewModel.setTherapists(serviceTherapists)
     }
 
     override fun showUnsavedAppointment() {

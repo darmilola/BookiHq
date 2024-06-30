@@ -3,12 +3,10 @@ package domain.appointments
 import com.badoo.reaktive.single.Single
 import domain.Models.Appointment
 import domain.Models.AppointmentListDataResponse
-import domain.Models.AppointmentResourceListEnvelope
 import domain.Models.JoinMeetingResponse
-import domain.Models.ListDataResponse
 import domain.Models.ServerResponse
 import domain.Models.ServiceStatus
-import domain.Models.SpecialistAvailabilityResponse
+import domain.Models.TherapistAvailabilityResponse
 import io.ktor.client.HttpClient
 
 class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
@@ -30,7 +28,7 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
     ): Single<ServerResponse> {
 
         val param = PostponeAppointmentRequest(userId = appointment.userId!!, vendorId = appointment.vendorId, serviceId = appointment.serviceId,
-            serviceTypeId = appointment.serviceTypeId!!, specialistId = appointment.specialistId, recommendationId = appointment.recommendationId, appointmentTime = appointmentTime,
+            serviceTypeId = appointment.serviceTypeId!!, therapistId = appointment.therapistId, recommendationId = appointment.recommendationId, appointmentTime = appointmentTime,
             day = day, month = month, year = year, serviceLocation = appointment.serviceLocation, serviceStatus = ServiceStatus.Pending.toPath(),
             isRecommendedAppointment = appointment.isRecommendedAppointment, appointmentId = appointment.appointmentId!!)
         return appointmentNetworkService.postponeAppointment(param)
@@ -53,9 +51,9 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
     override suspend fun getTherapistAvailability(
         specialistId: Int,
         day: Int, month: Int, year: Int
-    ): Single<SpecialistAvailabilityResponse> {
-        val param = GetSpecialistAvailabilityRequest(specialistId, day, month, year)
-        return appointmentNetworkService.getSpecialistAvailability(param)
+    ): Single<TherapistAvailabilityResponse> {
+        val param = GetTherapistAvailabilityRequest(specialistId, day, month, year)
+        return appointmentNetworkService.getTherapistAvailability(param)
     }
 
 

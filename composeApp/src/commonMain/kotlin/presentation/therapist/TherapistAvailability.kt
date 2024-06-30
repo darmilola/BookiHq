@@ -29,11 +29,7 @@ import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.TherapistViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
-import presentation.viewmodels.ScreenUIStates
-import presentation.widgets.LinearProgressIndicatorWidget
 import presentation.widgets.NewDateContent
-import presentation.widgets.ShowSnackBar
-import presentation.widgets.SnackBarType
 import presentation.widgets.TherapistAvailabilityTimeGrid
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
@@ -53,7 +49,7 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
     val isNewDateSelected = remember { mutableStateOf(true) }
     val isSaveVisible = remember { mutableStateOf(false) }
     isSaveVisible.value = newTimeOffs.value.isNotEmpty()
-    val therapistId = mainViewModel.specialistId.value
+    val therapistId = mainViewModel.therapistId.value
     val currentDate = remember { mutableStateOf(CalendarDataSource().today) }
 
 
@@ -68,15 +64,6 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
     val normalisedTimeOffTimes = arrayListOf<PlatformTime>()
     val displayTimes = remember { mutableStateOf(arrayListOf<AvailableTime>()) }
     val normalisedBookingTimes = arrayListOf<AvailableTime>()
-
-
-    if (isNewDateSelected.value){
-        therapistPresenter.getTherapistAvailability(therapistId, newSelectedDay.value, newSelectedMonth.value,
-            newSelectedYear.value)
-    }else{
-        therapistPresenter.getTherapistAvailability(therapistId,currentDate.value.dayOfMonth, currentDate.value.monthNumber, currentDate.value.year)
-    }
-
 
 
     for (item in timeOffs.value) {
@@ -172,12 +159,10 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
                         }*/
 
                         TherapistAvailabilityTimeGrid(displayTimes.value, onWorkHourUnAvailable = {
-                            therapistPresenter.addTimeOff(specialistId = therapistId, it.id!!, day = newSelectedDay.value, month = newSelectedMonth.value,
-                                year = newSelectedYear.value)
+
 
                         }, onWorkHourAvailable = {
-                            therapistPresenter.removeTimeOff(therapistId, it.id!!,day = newSelectedDay.value, month = newSelectedMonth.value,
-                                year = newSelectedYear.value)
+
                         })
                     }
                 }

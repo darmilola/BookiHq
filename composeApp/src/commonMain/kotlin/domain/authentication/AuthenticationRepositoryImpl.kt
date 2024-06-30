@@ -1,4 +1,4 @@
-package infrastructure.authentication
+package domain.authentication
 
 import applications.location.createGeocoder
 import com.badoo.reaktive.single.Single

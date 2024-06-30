@@ -25,13 +25,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.ProductReview
 import domain.Models.Reviewer
-import domain.Models.SpecialistReviews
+import domain.Models.TherapistReviews
 import domain.Models.User
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun SpecialistReviewsWidget(reviews: SpecialistReviews) {
+fun TherapistReviewsWidget(reviews: TherapistReviews) {
 
     val columnModifier = Modifier
         .padding(start = 5.dp, bottom = 10.dp)
@@ -74,7 +74,7 @@ fun AttachUserImage(profileImageUrl: String) {
 }
 
 @Composable
-fun AttachSpecialistReviewHeader(reviews: SpecialistReviews) {
+fun AttachSpecialistReviewHeader(reviews: TherapistReviews) {
     val rowModifier = Modifier
         .fillMaxWidth()
         Row(

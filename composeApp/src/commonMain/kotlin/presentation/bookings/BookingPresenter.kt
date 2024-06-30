@@ -38,7 +38,7 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     contractView?.showScreenLce(ScreenUIStates(contentVisible = true))
-                                    contractView?.showTherapists(result.serviceSpecialists)
+                                    contractView?.showTherapists(result.serviceTherapists)
                                 }
                                 else{
                                     contractView?.showScreenLce(ScreenUIStates(errorOccurred = true))

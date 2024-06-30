@@ -1,4 +1,4 @@
-package infrastructure.authentication
+package domain.authentication
 
 import com.badoo.reaktive.single.toSingle
 import domain.Models.AuthenticationResponse
@@ -17,7 +17,7 @@ import io.ktor.http.contentType
 open class AuthenticationNetworkService(private val apiService: HttpClient) {
     suspend fun completeProfile(completeProfileRequest: CompleteProfileRequest) =
         apiService.post {
-            url("/api/v1/auth/user/profile/complete")
+            url("/auth/user/profile/complete")
             /*headers {
                 append(HttpHeaders.Authorization, "abc123")
             }*/
@@ -27,7 +27,7 @@ open class AuthenticationNetworkService(private val apiService: HttpClient) {
 
     suspend fun validateProfile(validateProfileRequest: ValidateProfileRequest) =
         apiService.post {
-            url("/api/v1/auth/user/profile/get")
+            url("/auth/user/profile/get")
             /*headers {
                 append(HttpHeaders.Authorization, "abc123")
             }*/

@@ -1,4 +1,4 @@
-package infrastructure.connectVendor
+package domain.connectVendor
 
 import com.badoo.reaktive.single.Single
 import domain.Models.ListDataResponse

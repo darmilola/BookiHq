@@ -15,7 +15,7 @@ interface AppointmentContract {
         fun showJoinMeetingActionLce(actionUIStates: ActionUIStates)
         fun showGetAvailabilityActionLce(actionUIStates: ActionUIStates)
         fun showAppointments(appointments: AppointmentResourceListEnvelope)
-        fun showTherapistAvailability(availableTimes: List<AvailableTime>, bookedAppointment: List<Appointment>, timeOffs: List<TimeOffs>)
+        fun showTherapistAvailability(bookedAppointment: List<Appointment>)
         fun onLoadMoreAppointmentStarted()
         fun onLoadMoreAppointmentEnded()
         fun onJoinMeetingTokenReady(meetingToken: String)
@@ -28,6 +28,6 @@ interface AppointmentContract {
         abstract fun postponeAppointment(appointment: Appointment, newAppointmentTime: Int,  day: Int, month: Int, year: Int)
         abstract fun deleteAppointment(appointmentId: Int)
         abstract fun joinMeeting(customParticipantId: String, presetName: String, meetingId: String)
-        abstract fun getTherapistAvailability(specialistId: Int, day: Int, month: Int, year: Int)
+        abstract fun getTherapistAvailability(therapistId: Int, day: Int, month: Int, year: Int)
     }
 }

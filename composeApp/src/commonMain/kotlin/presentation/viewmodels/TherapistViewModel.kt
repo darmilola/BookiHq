@@ -4,7 +4,7 @@ import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Models.Appointment
 import domain.Models.AvailableTime
-import domain.Models.SpecialistReviews
+import domain.Models.TherapistReviews
 import domain.Models.TimeOffs
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.LocalDate
@@ -13,7 +13,7 @@ class TherapistViewModel(private val savedStateHandle: SavedStateHandle): ViewMo
 
     private var _therapistAvailableTimes = savedStateHandle.getStateFlow("therapistAvailableTimes", arrayListOf<AvailableTime>())
     private var _therapistTimeOffs = savedStateHandle.getStateFlow("therapistTimeOffs", arrayListOf<TimeOffs>())
-    private var _therapistReviews = savedStateHandle.getStateFlow("therapistReviews", arrayListOf<SpecialistReviews>())
+    private var _therapistReviews = savedStateHandle.getStateFlow("therapistReviews", arrayListOf<TherapistReviews>())
     private var _therapistAvailabilityViewUIState = savedStateHandle.getStateFlow("therapistAvailabilityViewUIState", ActionUIStates())
     private var _newSelectedTime = savedStateHandle.getStateFlow("newSelectedTime", AvailableTime())
     private var _addedTimeOffs = savedStateHandle.getStateFlow("addedTimeOffs", arrayListOf<AvailableTime>())
@@ -29,7 +29,7 @@ class TherapistViewModel(private val savedStateHandle: SavedStateHandle): ViewMo
     val therapistTimeOffs: StateFlow<List<TimeOffs>>
         get() = _therapistTimeOffs
 
-    val therapistReviews: StateFlow<List<SpecialistReviews>>
+    val therapistReviews: StateFlow<List<TherapistReviews>>
         get() = _therapistReviews
 
     val therapistAvailabilityViewUIState: StateFlow<ActionUIStates>
@@ -53,8 +53,8 @@ class TherapistViewModel(private val savedStateHandle: SavedStateHandle): ViewMo
         savedStateHandle["therapistAvailableTimes"] = availableTimes
     }
 
-    fun setTherapistReviews(specialistReviews: List<SpecialistReviews>) {
-        savedStateHandle["therapistReviews"] = specialistReviews
+    fun setTherapistReviews(therapistReviews: List<TherapistReviews>) {
+        savedStateHandle["therapistReviews"] = therapistReviews
     }
 
     fun setAddedTimeOffs(availableTimes: List<AvailableTime>) {

@@ -1,6 +1,6 @@
 package presentation.bookings
 
-import domain.Models.ServiceTypeSpecialist
+import domain.Models.ServiceTypeTherapists
 import domain.Models.UnsavedAppointment
 import domain.Models.User
 import domain.Models.Vendor
@@ -11,7 +11,7 @@ class BookingContract {
     interface View {
         fun showScreenLce(uiState: ScreenUIStates, message: String = "")
         fun showActionLce(uiState: ActionUIStates, message: String = "")
-        fun showTherapists(serviceSpecialists: List<ServiceTypeSpecialist>)
+        fun showTherapists(serviceTherapists: List<ServiceTypeTherapists>)
         fun showUnsavedAppointment()
     }
 

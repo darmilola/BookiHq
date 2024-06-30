@@ -35,9 +35,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -78,7 +75,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.components.StraightLine
 import presentation.Products.HomeProductItem
-import presentation.Products.ProductDetailContent
 import presentation.components.FloatingActionButton
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.ActionUIStateViewModel
@@ -163,7 +159,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                     mainViewModel.setVendorId(homePageInfo.vendorInfo.vendorId!!)
                     mainViewModel.setVendorBusinessLogoUrl(homePageInfo.vendorInfo.businessLogo)
                     mainViewModel.setUserInfo(homePageInfo.userInfo)
-                    mainViewModel.setSpecialistId(homePageInfo.specialistInfo?.id!!)
+                    mainViewModel.setTherapistId(homePageInfo.therapistInfo?.id!!)
                     saveAccountInfoFromServer(homePageInfo)
                 })
             handler.init()
@@ -271,7 +267,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
         preferenceSettings["userFirstname"] = homePageInfo.userInfo?.firstname
         preferenceSettings["vendorEmail"] = homePageInfo.vendorInfo?.businessEmail
         preferenceSettings["vendorId"] = homePageInfo.vendorInfo?.vendorId
-        preferenceSettings["specialistId"] = homePageInfo.specialistInfo?.id
+        preferenceSettings["therapistId"] = homePageInfo.therapistInfo?.id
         preferenceSettings["vendorBusinessLogoUrl"] = homePageInfo.vendorInfo?.businessLogo
     }
 

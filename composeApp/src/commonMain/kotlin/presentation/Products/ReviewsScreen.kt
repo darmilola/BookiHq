@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import domain.Models.Product
 import presentation.widgets.ProductReviewsWidget
-import presentation.widgets.SpecialistReviewsWidget
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

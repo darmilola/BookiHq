@@ -17,29 +17,20 @@ data class HomePageResponse(@SerialName("status") val status: String = "", @Seri
                             @SerialName("vendorStatus") val vendorStatus: ArrayList<VendorStatusModel> = arrayListOf())
 
 @Serializable
-data class ServiceSpecialistsResponse(@SerialName("status") val status: String = "", @SerialName("specialist") val serviceSpecialists: List<ServiceTypeSpecialist>)
+data class ServiceTherapistsResponse(@SerialName("status") val status: String = "", @SerialName("therapists") val serviceTherapists: List<ServiceTypeTherapists>)
 
 
 @Serializable
-data class SpecialistReviewsResponse(@SerialName("status") val status: String = "", @SerialName("reviews") val reviews: List<SpecialistReviews>)
+data class TherapistReviewsResponse(@SerialName("status") val status: String = "", @SerialName("reviews") val reviews: List<TherapistReviews>)
 
 
 @Serializable
-data class ProductCategoryResponse(@SerialName("status") val status: String = "",
-                                   @SerialName("categories") val productCategories: List<ProductCategory>,
-                                   @SerialName("favoriteProducts") val favoriteProducts: List<FavoriteProduct>)
-
+data class TherapistAvailabilityResponse(@SerialName("status") val status: String = "",
+                                         @SerialName("bookings") val bookedAppointment: List<Appointment>)
 
 @Serializable
-data class SpecialistAvailabilityResponse(@SerialName("status") val status: String = "",
-                                          @SerialName("availability") val availableTimes: List<AvailableTime>,
-                                          @SerialName("timeOffs") val timeOffs: List<TimeOffs>,
-                                          @SerialName("bookings") val bookedAppointment: List<Appointment>)
-
-@Serializable
-data class SpecialistTimeAvailabilityResponse(@SerialName("status") val status: String = "",
-                                              @SerialName("availability") val availableTimes: List<AvailableTime>,
-                                              @SerialName("timeOffs") val timeOffs: List<TimeOffs>)
+data class TherapistTimeAvailabilityResponse(@SerialName("status") val status: String = "",
+                                             @SerialName("availability") val availableTimes: List<AvailableTime>)
 
 @Serializable
 data class VendorAvailabilityResponse(@SerialName("status") val status: String = "",

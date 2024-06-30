@@ -40,7 +40,6 @@ import applications.date.getYear
 import domain.Models.ServiceTypeItem
 import domain.Models.Services
 import domain.Models.UnsavedAppointment
-import kotlinx.datetime.LocalDate
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.BookingCalendar
@@ -131,7 +130,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
                     bookingViewModel.undoSelectedServiceType()
                     bookingViewModel.setSelectedServiceType(it)
                     currentBooking.serviceTypeItem = it
-                    currentBooking.serviceTypeSpecialist = null
+                    currentBooking.serviceTypeTherapists = null
                     currentBooking.serviceTypeId = it.categoryId
                     bookingViewModel.setCurrentBooking(currentBooking)
                 }
@@ -144,11 +143,11 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
                 bookingViewModel.setCurrentBooking(currentBooking)
             })
             BookingCalendar(bookingViewModel = bookingViewModel) {
-                bookingViewModel.undoSpecialist()
+                bookingViewModel.undoTherapists()
                 currentBooking.day = it.dayOfMonth
                 currentBooking.month = it.monthNumber
                 currentBooking.year = it.year
-                currentBooking.serviceTypeSpecialist = null
+                currentBooking.serviceTypeTherapists = null
                 bookingViewModel.setCurrentBooking(currentBooking)
                 bookingViewModel.setSelectedDay(it.dayOfMonth)
                 bookingViewModel.setSelectedMonth(it.monthNumber)

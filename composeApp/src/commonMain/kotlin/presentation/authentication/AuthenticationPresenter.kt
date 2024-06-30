@@ -1,6 +1,6 @@
 package presentation.authentication
 
-import infrastructure.authentication.AuthenticationRepositoryImpl
+import domain.authentication.AuthenticationRepositoryImpl
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -1,4 +1,4 @@
-package infrastructure.authentication
+package domain.authentication
 
 import com.badoo.reaktive.single.Single
 import dev.jordond.compass.Location

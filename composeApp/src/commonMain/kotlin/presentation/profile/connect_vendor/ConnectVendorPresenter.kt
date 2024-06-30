@@ -6,7 +6,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.badoo.reaktive.single.subscribe
-import infrastructure.connectVendor.ConnectVendorRepositoryImpl
+import domain.connectVendor.ConnectVendorRepositoryImpl
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

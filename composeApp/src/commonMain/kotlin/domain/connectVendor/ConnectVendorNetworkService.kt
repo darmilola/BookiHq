@@ -1,4 +1,4 @@
-package infrastructure.connectVendor
+package domain.connectVendor
 
 import com.badoo.reaktive.single.toSingle
 import domain.Models.AuthenticationResponse

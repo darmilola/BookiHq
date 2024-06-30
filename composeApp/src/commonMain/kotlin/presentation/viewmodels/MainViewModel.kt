@@ -5,7 +5,7 @@ import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Models.OrderItem
 import domain.Models.VendorRecommendation
 import domain.Models.Services
-import domain.Models.SpecialistInfo
+import domain.Models.TherapistInfo
 import domain.Models.UnsavedAppointment
 import domain.Models.User
 import domain.Models.Vendor
@@ -19,13 +19,13 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     private var _connectedVendor =  savedStateHandle.getStateFlow("connectedVendor", Vendor())
     private var _currentUserInfo =  savedStateHandle.getStateFlow("userInfo", User())
     private var _currentUserId =  savedStateHandle.getStateFlow("currentUserId", -1)
-    private var _currentSpecialistId =  savedStateHandle.getStateFlow("currentSpecialistId", -1)
+    private var _currentTherapistId =  savedStateHandle.getStateFlow("currentTherapistId", -1)
     private var _currentVendorId =  savedStateHandle.getStateFlow("currentVendorId", -1)
     private var _currentUserFirstname =  savedStateHandle.getStateFlow("currentUserFirstname", "")
     private var _currentUserEmail =  savedStateHandle.getStateFlow("currentUserEmail", "")
     private var _currentVendorEmail =  savedStateHandle.getStateFlow("currentVendorEmail", "")
     private var _currentVendorLogoUrl =  savedStateHandle.getStateFlow("currentVendorLogoUrl", "")
-    private var _currentSpecialistInfo =  savedStateHandle.getStateFlow("specialistInfo", SpecialistInfo())
+    private var _currentTherapistInfo =  savedStateHandle.getStateFlow("therapistInfo", TherapistInfo())
     private var _screenNav =  savedStateHandle.getStateFlow("screenNav", Pair(-1,-1))
     private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
     private var _vendorRecommendation =  savedStateHandle.getStateFlow("vendorRecommendation", VendorRecommendation())
@@ -71,8 +71,8 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     val userId: StateFlow<Int>
         get() = _currentUserId
 
-    val specialistId: StateFlow<Int>
-        get() = _currentSpecialistId
+    val therapistId: StateFlow<Int>
+        get() = _currentTherapistId
 
     val vendorId: StateFlow<Int>
         get() = _currentVendorId
@@ -83,8 +83,8 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     val currentUserInfo: StateFlow<User>
         get() = _currentUserInfo
 
-    val currentSpecialistInfo: StateFlow<SpecialistInfo>
-        get() = _currentSpecialistInfo
+    val currentTherapistInfo: StateFlow<TherapistInfo>
+        get() = _currentTherapistInfo
 
 
     val screenNav: StateFlow<Pair<Int,Int>>
@@ -114,8 +114,8 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
         savedStateHandle["currentVendorId"] = vendorId
     }
 
-    fun setSpecialistId(specialistId: Int) {
-        savedStateHandle["currentSpecialistId"] = specialistId
+    fun setTherapistId(therapistId: Int) {
+        savedStateHandle["currentTherapistId"] = therapistId
     }
 
     fun setUserFirstname(userFirstname: String) {
@@ -135,8 +135,8 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
         savedStateHandle["userInfo"] = user
     }
 
-    fun setSpecialistInfo(specialistInfo: SpecialistInfo) {
-        savedStateHandle["specialistInfo"] = specialistInfo
+    fun setTherapistInfo(therapistInfo: TherapistInfo) {
+        savedStateHandle["therapistInfo"] = therapistInfo
     }
 
     fun setSelectedService(selectedService: Services) {

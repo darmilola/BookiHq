@@ -2,9 +2,7 @@ package domain.bookings
 
 import com.badoo.reaktive.single.toSingle
 import domain.Models.ServerResponse
-import domain.Models.ServiceSpecialistsResponse
-import domain.Models.SpecialistAvailabilityResponse
-import domain.Profile.UpdateProfileRequest
+import domain.Models.ServiceTherapistsResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -15,19 +13,19 @@ import io.ktor.http.contentType
 
 open class BookingNetworkService(private val apiService: HttpClient) {
 
-    suspend fun getSpecialists(getSpecialistsRequest: GetSpecialistsRequest) =
+    suspend fun getTherapists(getTherapistsRequest: GetTherapistsRequest) =
         apiService.post {
-            url("/api/v1/services/specialist")
+            url("/services/therapists")
             /*headers {
                 append(HttpHeaders.Authorization, "abc123")
             }*/
             contentType(ContentType.Application.Json)
-            setBody(getSpecialistsRequest)
-        }.body<ServiceSpecialistsResponse>().toSingle()
+            setBody(getTherapistsRequest)
+        }.body<ServiceTherapistsResponse>().toSingle()
 
     suspend fun createAppointment(createAppointmentRequestArray: CreateAppointmentRequestArray) =
         apiService.post {
-            url("/api/v1/services/appointment/create")
+            url("/services/appointment/create")
             /*headers {
                 append(HttpHeaders.Authorization, "abc123")
             }*/

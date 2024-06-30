@@ -1,16 +1,8 @@
 package domain.Products
 
 import com.badoo.reaktive.single.Single
-import domain.Models.ListDataResponse
-import domain.Models.Product
-import domain.Models.ProductCategoryResponse
 import domain.Models.ProductListDataResponse
 import domain.Models.ServerResponse
-import domain.Models.ServiceSpecialistsResponse
-import domain.bookings.BookingNetworkService
-import domain.bookings.BookingRepository
-import domain.bookings.CreateAppointmentRequestArray
-import domain.bookings.GetSpecialistsRequest
 import io.ktor.client.HttpClient
 
 class ProductRepositoryImpl(apiService: HttpClient): ProductRepository {

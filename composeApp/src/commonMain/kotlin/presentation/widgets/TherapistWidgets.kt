@@ -23,18 +23,16 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
-import domain.Models.ServiceTypeSpecialist
+import domain.Models.ServiceTypeTherapists
 import domain.Models.User
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun AttachTherapistProfileImage(availableTherapist: ServiceTypeSpecialist) {
+fun AttachTherapistProfileImage(availableTherapist: ServiceTypeTherapists) {
     val selectedVisibilityAlpha: Float = if (availableTherapist.isSelected) 1f else 0f
     Box(
         Modifier
@@ -52,7 +50,7 @@ fun AttachTherapistProfileImage(availableTherapist: ServiceTypeSpecialist) {
             .width(140.dp)
             .height(160.dp)
 
-        ImageComponent(imageModifier = modifier, imageRes = availableTherapist.specialistInfo?.profileInfo?.profileImageUrl!!, isAsync = true)
+        ImageComponent(imageModifier = modifier, imageRes = availableTherapist.therapistInfo?.profileInfo?.profileImageUrl!!, isAsync = true)
         Box(
            modifier =  Modifier
                 .padding(4.dp)
@@ -78,7 +76,7 @@ fun AttachTherapistProfileImage(availableTherapist: ServiceTypeSpecialist) {
                 .height(24.dp)) {
             ImageComponent(imageModifier = Modifier.size(12.dp), imageRes = "drawable/star_icon.png", colorFilter = ColorFilter.tint(color = Color.White))
             TextComponent(
-                text = availableTherapist.specialistInfo.rating.toString(),
+                text = availableTherapist.therapistInfo.rating.toString(),
                 fontSize = 12,
                 fontFamily = GGSansRegular,
                 textStyle = MaterialTheme.typography.h6,
@@ -92,7 +90,7 @@ fun AttachTherapistProfileImage(availableTherapist: ServiceTypeSpecialist) {
 }
 
 @Composable
-fun AttachTherapistWidget(availableTherapist: ServiceTypeSpecialist, onTherapistSelectedListener: (ServiceTypeSpecialist) -> Unit){
+fun AttachTherapistWidget(availableTherapist: ServiceTypeTherapists, onTherapistSelectedListener: (ServiceTypeTherapists) -> Unit){
     val rowModifier = Modifier
         .width(160.dp)
         .height(200.dp)
@@ -103,7 +101,7 @@ fun AttachTherapistWidget(availableTherapist: ServiceTypeSpecialist, onTherapist
         modifier = rowModifier
     ) {
         AttachTherapistProfileImage(availableTherapist)
-        TherapistName(availableTherapist.specialistInfo?.profileInfo!!)
+        TherapistName(availableTherapist.therapistInfo?.profileInfo!!)
     }
 }
 

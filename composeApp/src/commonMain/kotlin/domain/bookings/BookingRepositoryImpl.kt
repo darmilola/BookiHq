@@ -1,16 +1,9 @@
 package domain.bookings
 
 import com.badoo.reaktive.single.Single
-import domain.Models.Appointment
 import domain.Models.ServerResponse
-import domain.Models.ServiceSpecialistsResponse
-import domain.Models.SpecialistAvailabilityResponse
-import domain.Profile.DeleteProfileRequest
-import domain.Profile.ProfileNetworkService
-import domain.Profile.ProfileRepository
-import domain.Profile.UpdateProfileRequest
+import domain.Models.ServiceTherapistsResponse
 import io.ktor.client.HttpClient
-import kotlinx.serialization.SerialName
 
 class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
 
@@ -21,9 +14,9 @@ class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
         day: Int,
         month: Int,
         year: Int,
-    ): Single<ServiceSpecialistsResponse> {
-        val param = GetSpecialistsRequest(serviceTypeId, day, month, year)
-        return bookingNetworkService.getSpecialists(param)
+    ): Single<ServiceTherapistsResponse> {
+        val param = GetTherapistsRequest(serviceTypeId, day, month, year)
+        return bookingNetworkService.getTherapists(param)
     }
 
     override suspend fun createAppointment(appointmentRequests: ArrayList<CreateAppointmentRequest>): Single<ServerResponse> {

@@ -20,7 +20,7 @@ import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.TherapistViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
-import presentation.widgets.SpecialistReviewScreen
+import presentation.widgets.TherapistReviewScreen
 import rememberStackedSnackbarHostState
 
 @Composable
@@ -66,7 +66,7 @@ fun TherapistReviews(mainViewModel: MainViewModel, therapistPresenter: Therapist
                             .background(color = Color.White)
                     ) {
 
-                        SpecialistReviewScreen(reviews.value)
+                        TherapistReviewScreen(reviews.value)
 
                     }
              }

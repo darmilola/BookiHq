@@ -4,13 +4,13 @@ import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Models.AvailableTime
 import domain.Models.ServiceTypeItem
-import domain.Models.ServiceTypeSpecialist
+import domain.Models.ServiceTypeTherapists
 import domain.Models.UnsavedAppointment
 import kotlinx.coroutines.flow.StateFlow
 
 class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
-    private var _specialists =  savedStateHandle.getStateFlow("specialists", arrayListOf<ServiceTypeSpecialist>())
+    private var _therapists =  savedStateHandle.getStateFlow("therapists", arrayListOf<ServiceTypeTherapists>())
     private var _availableTimes =  savedStateHandle.getStateFlow("serviceTimes", arrayListOf<AvailableTime>())
     private var _selectedServiceType =  savedStateHandle.getStateFlow("selectedServiceType", ServiceTypeItem())
     private var _currentBookingId =  savedStateHandle.getStateFlow("currentBookingId", -1)
@@ -19,8 +19,8 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
     private var _year =  savedStateHandle.getStateFlow("year", -1)
     private var _currentAppointmentBooking =  savedStateHandle.getStateFlow("currentAppointmentBooking", UnsavedAppointment(bookingId = -1))
 
-    val serviceSpecialists: StateFlow<List<ServiceTypeSpecialist>>
-        get() = _specialists
+    val serviceTherapists: StateFlow<List<ServiceTypeTherapists>>
+        get() = _therapists
     val availableTime: StateFlow<List<AvailableTime>>
         get() = _availableTimes
     val selectedServiceType: StateFlow<ServiceTypeItem>
@@ -38,8 +38,8 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
     val currentBookingId: StateFlow<Int>
         get() = _currentBookingId
 
-    fun setSpecialists(serviceSpecialists: List<ServiceTypeSpecialist>) {
-        savedStateHandle["specialists"] = serviceSpecialists
+    fun setTherapists(serviceTherapists: List<ServiceTypeTherapists>) {
+        savedStateHandle["therapists"] = serviceTherapists
     }
 
     fun setServiceTimes(availableTime: List<AvailableTime>) {
@@ -75,17 +75,17 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
 
     fun undoSelectedServiceType() {
         savedStateHandle["selectedServiceType"] = ServiceTypeItem()
-        savedStateHandle["specialists"] = arrayListOf<ServiceTypeSpecialist>()
+        savedStateHandle["therapists"] = arrayListOf<ServiceTypeTherapists>()
     }
 
-    fun undoSpecialist() {
-        savedStateHandle["specialists"] = arrayListOf<ServiceTypeSpecialist>()
+    fun undoTherapists() {
+        savedStateHandle["therapists"] = arrayListOf<ServiceTypeTherapists>()
     }
 
     fun clearCurrentBooking(){
         savedStateHandle["selectedServiceType"] = ServiceTypeItem()
         savedStateHandle["currentAppointmentBooking"] = UnsavedAppointment(-1)
-        savedStateHandle["specialists"] = arrayListOf<ServiceTypeSpecialist>()
+        savedStateHandle["therapists"] = arrayListOf<ServiceTypeTherapists>()
     }
 
 }

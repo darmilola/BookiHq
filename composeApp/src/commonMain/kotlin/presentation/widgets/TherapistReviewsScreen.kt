@@ -23,16 +23,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import domain.Models.SpecialistReviews
+import domain.Models.TherapistReviews
 import theme.styles.Colors
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SpecialistReviewScreen(specialistReviews: List<SpecialistReviews>) {
+fun TherapistReviewScreen(therapistReviews: List<TherapistReviews>) {
     val pagerState = rememberPagerState(pageCount = {
-        specialistReviews.size
+        therapistReviews.size
     })
 
     val boxModifier =
@@ -56,7 +55,7 @@ fun SpecialistReviewScreen(specialistReviews: List<SpecialistReviews>) {
                 state = pagerState,
                 modifier = Modifier.fillMaxSize()
             ) { page ->
-                SpecialistReviewsWidget(specialistReviews[page])
+                TherapistReviewsWidget(therapistReviews[page])
             }
             Row(
                 Modifier

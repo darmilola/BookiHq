@@ -126,7 +126,7 @@ fun AppointmentInfoWidget(appointment: Appointment) {
                         )
                     }
                 }
-                TherapistDisplayItem(appointment.specialistInfo!!)
+                TherapistDisplayItem(appointment.therapistInfo!!)
             }
         }
     }

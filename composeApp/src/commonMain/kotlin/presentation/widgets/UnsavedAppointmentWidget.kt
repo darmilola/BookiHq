@@ -17,14 +17,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonColors
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.MaterialTheme
@@ -41,16 +37,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import domain.Models.Reviewer
-import domain.Models.ServiceTypeSpecialist
-import domain.Models.SpecialistReviews
+import domain.Models.ServiceTypeTherapists
 import domain.Models.UnsavedAppointment
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DayOfWeekNames
 import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.char
-import presentation.dialogs.PostponeDialog
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
@@ -244,7 +237,7 @@ fun UnsavedAppointmentContent(unsavedAppointment: UnsavedAppointment?) {
                     }
 
                 }
-                UnsavedTherapistDisplayItem(unsavedAppointment.serviceTypeSpecialist!!)
+                UnsavedTherapistDisplayItem(unsavedAppointment.serviceTypeTherapists!!)
             }
         }
 
@@ -252,8 +245,8 @@ fun UnsavedAppointmentContent(unsavedAppointment: UnsavedAppointment?) {
 }
 
 @Composable
-fun UnsavedTherapistDisplayItem(serviceTypeSpecialist: ServiceTypeSpecialist) {
-    val profileInfo = serviceTypeSpecialist.specialistInfo?.profileInfo
+fun UnsavedTherapistDisplayItem(serviceTypeTherapists: ServiceTypeTherapists) {
+    val profileInfo = serviceTypeTherapists.therapistInfo?.profileInfo
     val rowModifier = Modifier
         .fillMaxWidth().height(45.dp)
 

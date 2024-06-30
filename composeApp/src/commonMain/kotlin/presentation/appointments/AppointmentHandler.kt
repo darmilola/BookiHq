@@ -66,12 +66,8 @@ class AppointmentsHandler(
     }
 
     override fun showTherapistAvailability(
-        availableTimes: List<AvailableTime>,
-        bookedAppointment: List<Appointment>,
-        timeOffs: List<TimeOffs>
+        bookedAppointment: List<Appointment>
     ) {
-        postponementViewModel.setTherapistAvailableTimes(availableTimes)
-        postponementViewModel.setTherapistTimeOffs(timeOffs)
         postponementViewModel.setTherapistBookedAppointment(bookedAppointment)
     }
 

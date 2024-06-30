@@ -28,21 +28,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import domain.Models.Appointment
 import domain.Models.AppointmentItemUIModel
 import domain.Models.UserAppointmentsData
-import presentation.appointments.AppointmentPresenter
-import presentation.appointments.AppointmentsHandler
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
-import presentation.dialogs.LoadingDialog
-import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.PostponementViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
-import presentation.widgets.ShowSnackBar
-import presentation.widgets.SnackBarType
 import presentation.widgets.TherapistAppointmentWidget
 import rememberStackedSnackbarHostState
 import theme.Colors
@@ -59,7 +51,7 @@ fun TherapistAppointment(mainViewModel: MainViewModel, screenUiStateViewModel: S
     )
 
     LaunchedEffect(Unit, block = {
-        therapistPresenter.getSpecialistAppointments(3)
+        therapistPresenter.getTherapistAppointments(3)
     })
 
     val loadMoreState =
@@ -159,7 +151,7 @@ fun TherapistAppointment(mainViewModel: MainViewModel, screenUiStateViewModel: S
                                         style = TextStyle()
                                     ) {
                                         if (appointmentResourceListEnvelopeViewModel.nextPageUrl.value.isNotEmpty()) {
-                                            therapistPresenter.getMoreSpecialistAppointments(
+                                            therapistPresenter.getMoreTherapistAppointments(
                                                 7,
                                                 nextPage = appointmentResourceListEnvelopeViewModel.currentPage.value + 1
                                             )

@@ -1,4 +1,4 @@
-package infrastructure.authentication
+package domain.authentication
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

@@ -54,13 +54,13 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
         val newSelectedTime = postponementViewModel.selectedTime.collectAsState()
         val therapistBookedTimes = postponementViewModel.therapistBookedTimes.value
         val timeOffs = postponementViewModel.therapistTimeOffs.collectAsState()
-        val specialistId = postponementViewModel.currentAppointment.value.specialistId
+        val therapistId = postponementViewModel.currentAppointment.value.therapistId
         val isNewDateSelected = remember { mutableStateOf(true) }
         val availabilityUIStates = availabilityActionUIStateViewModel.availabilityStateInfo.collectAsState()
 
 
         appointmentPresenter.getTherapistAvailability(
-            specialistId,
+            therapistId,
             day = newSelectedDay.value,
             month = newSelectedMonth.value,
             year = newSelectedYear.value
@@ -68,7 +68,7 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
 
         if (isNewDateSelected.value) {
             appointmentPresenter.getTherapistAvailability(
-                specialistId,
+                therapistId,
                 day = newSelectedDay.value,
                 month = newSelectedMonth.value,
                 year = newSelectedYear.value

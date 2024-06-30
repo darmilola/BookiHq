@@ -30,7 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import domain.Models.PlatformTime
-import domain.Models.ServiceTypeSpecialist
+import domain.Models.ServiceTypeTherapists
 import domain.Models.ServiceTypeTherapistUIModel
 import domain.Models.AvailableTime
 import presentation.components.IndeterminateCircularProgressBar
@@ -38,16 +38,16 @@ import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
 import presentation.widgets.AttachTherapistWidget
-import presentation.widgets.SpecialistReviewScreen
+import presentation.widgets.TherapistReviewScreen
 import presentation.widgets.TimeGrid
 import presentations.components.TextComponent
 
 @Composable
-fun BookingSelectSpecialist(mainViewModel: MainViewModel, screenUiStateViewModel: ScreenUIStateViewModel,
+fun BookingSelectTherapists(mainViewModel: MainViewModel, screenUiStateViewModel: ScreenUIStateViewModel,
                             bookingViewModel: BookingViewModel,
                             bookingPresenter: BookingPresenter) {
 
-    val therapists = bookingViewModel.serviceSpecialists.collectAsState()
+    val therapists = bookingViewModel.serviceTherapists.collectAsState()
     LaunchedEffect(Unit, block = {
         if (therapists.value.isEmpty()
             || (bookingViewModel.currentBookingId.value != bookingViewModel.currentAppointmentBooking.value.bookingId)) {
@@ -62,9 +62,9 @@ fun BookingSelectSpecialist(mainViewModel: MainViewModel, screenUiStateViewModel
 
     val uiStates = screenUiStateViewModel.uiStateInfo.collectAsState()
     val currentBooking = bookingViewModel.currentAppointmentBooking.value
-    val selectedTherapist = remember { mutableStateOf(ServiceTypeSpecialist()) }
-    if (currentBooking.serviceTypeSpecialist != null) {
-        selectedTherapist.value = currentBooking.serviceTypeSpecialist!!
+    val selectedTherapist = remember { mutableStateOf(ServiceTypeTherapists()) }
+    if (currentBooking.serviceTypeTherapists != null) {
+        selectedTherapist.value = currentBooking.serviceTypeTherapists!!
     }
 
 
@@ -90,9 +90,9 @@ fun BookingSelectSpecialist(mainViewModel: MainViewModel, screenUiStateViewModel
         ) {
              TherapistContent(bookingViewModel,therapists.value, onTherapistSelected = {
                  selectedTherapist.value = it
-                 currentBooking.serviceTypeSpecialist = it
+                 currentBooking.serviceTypeTherapists = it
                  bookingViewModel.setCurrentBooking(currentBooking)
-                 bookingViewModel.setServiceTimes(it.specialistInfo?.availableTimes!!)
+                 bookingViewModel.setServiceTimes(it.therapistInfo?.availableTimes!!)
              })
             if(selectedTherapist.value.id != null) {
                 currentBooking.appointmentTime = null
@@ -100,7 +100,7 @@ fun BookingSelectSpecialist(mainViewModel: MainViewModel, screenUiStateViewModel
                      currentBooking.appointmentTime = it
                      bookingViewModel.setCurrentBooking(currentBooking)
                 })
-                if (selectedTherapist.value.specialistInfo?.specialistReviews?.isNotEmpty() == true) {
+                if (selectedTherapist.value.therapistInfo?.therapistReviews?.isNotEmpty() == true) {
                     AttachServiceReviews(selectedTherapist.value)
                 }
             }
@@ -115,24 +115,20 @@ fun BookingSelectSpecialist(mainViewModel: MainViewModel, screenUiStateViewModel
 
 
 @Composable
-fun AvailableTimeContent(serviceTypeSpecialist: ServiceTypeSpecialist, bookingViewModel: BookingViewModel, onWorkHourClickListener: (AvailableTime) -> Unit) {
+fun AvailableTimeContent(serviceTypeTherapists: ServiceTypeTherapists, bookingViewModel: BookingViewModel, onWorkHourClickListener: (AvailableTime) -> Unit) {
 
     val unSavedTime = bookingViewModel.currentAppointmentBooking.value.appointmentTime
-    val availableWorkHour = serviceTypeSpecialist.specialistInfo?.availableTimes
-    val timeOffs = serviceTypeSpecialist.specialistInfo?.timeOffs
+    val availableWorkHour = serviceTypeTherapists.therapistInfo?.availableTimes
     val normalisedBookedTimes = arrayListOf<PlatformTime>()
-    val normalisedTimeOffTimes = arrayListOf<PlatformTime>()
     val normalisedBookingTimes = arrayListOf<AvailableTime>()
     val displayTimes = remember { mutableStateOf(arrayListOf<AvailableTime>()) }
 
 
-    for (item in serviceTypeSpecialist.specialistInfo?.bookedTimes!!) {
+    for (item in serviceTypeTherapists.therapistInfo?.bookedTimes!!) {
         normalisedBookedTimes.add(item.platformTime!!)
     }
 
-    for (item in timeOffs!!) {
-        normalisedTimeOffTimes.add(item.timeOffTime?.vendorTime?.platformTime!!)
-    }
+
 
 
     Column(
@@ -156,7 +152,7 @@ fun AvailableTimeContent(serviceTypeSpecialist: ServiceTypeSpecialist, bookingVi
                 .fillMaxWidth().padding(start = 10.dp, bottom = 20.dp))
 
         availableWorkHour!!.map { it ->
-            if (it.vendorTime?.platformTime in normalisedBookedTimes || it.vendorTime?.platformTime in normalisedTimeOffTimes){
+            if (it.vendorTime?.platformTime in normalisedBookedTimes){
                 val normalisedTime =  availableWorkHour.find { it2 ->
                     it.id == it2.id
                 }?.copy(isAvailable = false)
@@ -177,15 +173,15 @@ fun AvailableTimeContent(serviceTypeSpecialist: ServiceTypeSpecialist, bookingVi
 }
 
 @Composable
-fun TherapistContent(bookingViewModel: BookingViewModel, specialists: List<ServiceTypeSpecialist>, onTherapistSelected: (ServiceTypeSpecialist) -> Unit) {
+fun TherapistContent(bookingViewModel: BookingViewModel, therapists: List<ServiceTypeTherapists>, onTherapistSelected: (ServiceTypeTherapists) -> Unit) {
 
-    val unsavedAppointmentTherapist = bookingViewModel.currentAppointmentBooking.value.serviceTypeSpecialist
-    var selectedTherapistUIModel = remember { mutableStateOf(ServiceTypeTherapistUIModel(selectedTherapist = ServiceTypeSpecialist(), specialists))}
+    val unsavedAppointmentTherapist = bookingViewModel.currentAppointmentBooking.value.serviceTypeTherapists
+    var selectedTherapistUIModel = remember { mutableStateOf(ServiceTypeTherapistUIModel(selectedTherapist = ServiceTypeTherapists(), therapists))}
 
     if (unsavedAppointmentTherapist != null) {
          selectedTherapistUIModel = remember { mutableStateOf(ServiceTypeTherapistUIModel(selectedTherapist = unsavedAppointmentTherapist,  visibleTherapist = selectedTherapistUIModel.value.visibleTherapist.map { it2 ->
              it2.copy(
-                 isSelected = it2.specialistId == unsavedAppointmentTherapist.specialistId
+                 isSelected = it2.therapistId == unsavedAppointmentTherapist.therapistId
              )
          }))}
          println(selectedTherapistUIModel.toString())
@@ -201,7 +197,7 @@ fun TherapistContent(bookingViewModel: BookingViewModel, specialists: List<Servi
     ) {
 
         TextComponent(
-            text = "Choose Specialist",
+            text = "Choose Therapist",
             fontSize = 18,
             fontFamily = GGSansSemiBold,
             textStyle = TextStyle(),
@@ -222,7 +218,7 @@ fun TherapistContent(bookingViewModel: BookingViewModel, specialists: List<Servi
                     selectedTherapist = it,
                     visibleTherapist = selectedTherapistUIModel.value.visibleTherapist.map { it2 ->
                         it2.copy(
-                            isSelected = it2.specialistId == it.specialistId
+                            isSelected = it2.therapistId == it.therapistId
                         )
                     })
                     onTherapistSelected(it)
@@ -233,10 +229,10 @@ fun TherapistContent(bookingViewModel: BookingViewModel, specialists: List<Servi
 }
 
 @Composable
-fun AttachServiceReviews(serviceTypeSpecialist: ServiceTypeSpecialist){
-    val specialistReviews = serviceTypeSpecialist.specialistInfo?.specialistReviews
+fun AttachServiceReviews(serviceTypeTherapists: ServiceTypeTherapists){
+    val therapistReviews = serviceTypeTherapists.therapistInfo?.therapistReviews
     TextComponent(
-        text = serviceTypeSpecialist.specialistInfo?.profileInfo?.firstname+"'s Reviews",
+        text = serviceTypeTherapists.therapistInfo?.profileInfo?.firstname+"'s Reviews",
         fontSize = 18,
         fontFamily = GGSansSemiBold,
         textStyle = TextStyle(),
@@ -248,7 +244,7 @@ fun AttachServiceReviews(serviceTypeSpecialist: ServiceTypeSpecialist){
             .padding(bottom = 5.dp, start = 15.dp, top = 10.dp)
             .fillMaxWidth())
 
-   SpecialistReviewScreen(specialistReviews!!)
+   TherapistReviewScreen(therapistReviews!!)
 
 }
 
