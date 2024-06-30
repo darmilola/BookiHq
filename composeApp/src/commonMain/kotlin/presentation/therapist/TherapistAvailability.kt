@@ -45,10 +45,8 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
     val newSelectedDay = therapistViewModel.day.collectAsState()
     val newSelectedMonth = therapistViewModel.month.collectAsState()
     val newSelectedYear = therapistViewModel.year.collectAsState()
-    val newTimeOffs = therapistViewModel.addedTimeOffs.collectAsState()
     val isNewDateSelected = remember { mutableStateOf(true) }
     val isSaveVisible = remember { mutableStateOf(false) }
-    isSaveVisible.value = newTimeOffs.value.isNotEmpty()
     val therapistId = mainViewModel.therapistId.value
     val currentDate = remember { mutableStateOf(CalendarDataSource().today) }
 
@@ -58,30 +56,8 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
     therapistViewModel.setSelectedYear(year = currentDate.value.year)
     therapistViewModel.clearServiceTimes()
 
-
-    val availableWorkHour = therapistViewModel.therapistAvailableTimes.collectAsState()
-    val timeOffs = therapistViewModel.therapistTimeOffs.collectAsState()
-    val normalisedTimeOffTimes = arrayListOf<PlatformTime>()
     val displayTimes = remember { mutableStateOf(arrayListOf<AvailableTime>()) }
     val normalisedBookingTimes = arrayListOf<AvailableTime>()
-
-
-    for (item in timeOffs.value) {
-        normalisedTimeOffTimes.add(item.timeOffTime?.vendorTime?.platformTime!!)
-    }
-
-    availableWorkHour.value.map { it ->
-        if (it.vendorTime?.platformTime in normalisedTimeOffTimes){
-            val normalisedTime =  availableWorkHour.value.find { it2 ->
-                it.vendorTime?.id == it2.vendorTime?.id
-            }?.copy(isAvailable = false)
-            normalisedBookingTimes.add(normalisedTime!!)
-        }
-        else{
-            val isAvailableTime = it.copy(isAvailable = true)
-            normalisedBookingTimes.add(isAvailableTime)
-        }
-    }
 
 
 

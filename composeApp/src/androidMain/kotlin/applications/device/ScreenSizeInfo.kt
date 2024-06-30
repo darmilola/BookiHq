@@ -17,10 +17,7 @@ actual fun ScreenSizeInfo(): ScreenSizeInfo{
     return remember(density, config) {
         ScreenSizeInfo(
             heightPx = with(density) { heightDp.roundToPx() },
-            widthPx = with(density) { widthDp.roundToPx() },
-            heightDp = heightDp,
-            widthDp = widthDp
-        )
+            widthPx = with(density) { widthDp.roundToPx() })
     }
 
 }
