@@ -38,21 +38,20 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
-import domain.Models.Screens
-import domain.Models.ServiceTypeTherapists
+import domain.Enums.Screens
 import domain.Models.Services
 import presentation.components.ButtonComponent
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import presentation.DomainViewHandler.BookingScreenHandler
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
 import presentation.dialogs.SuccessDialog
-import presentation.viewmodels.ActionUIStates
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
-import presentation.viewmodels.ScreenUIStates
+import UIStates.ScreenUIStates
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
@@ -105,7 +104,6 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
     }
 
 
-        // View Contract Handler Initialisation
         val handler = BookingScreenHandler(
             bookingViewModel!!, bookingPresenter,
            onPageLoading = {
@@ -362,68 +360,4 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
 
     }
 }
-
-class BookingScreenHandler(
-    private val bookingViewModel: BookingViewModel,
-    private val bookingPresenter: BookingPresenter,
-    private val onPageLoading: () -> Unit,
-    private val onShowUnsavedAppointment: () -> Unit,
-    private val onContentVisible: () -> Unit,
-    private val onErrorVisible: () -> Unit,
-    private val onCreateAppointmentStarted: () -> Unit,
-    private val onCreateAppointmentSuccess: () -> Unit,
-    private val onCreateAppointmentFailed: () -> Unit
-) : BookingContract.View {
-    fun init() {
-        bookingPresenter.registerUIContract(this)
-    }
-
-    override fun showScreenLce(uiState: ScreenUIStates, message: String) {
-        uiState.let {
-            when{
-                it.loadingVisible -> {
-                    onPageLoading()
-                }
-
-                it.contentVisible -> {
-                    onContentVisible()
-                }
-
-                it.errorOccurred -> {
-                    onErrorVisible()
-                }
-            }
-        }
-    }
-
-    override fun showActionLce(uiState: ActionUIStates, message: String) {
-        uiState.let {
-            when {
-                it.isLoading -> {
-                    onCreateAppointmentStarted()
-                }
-                it.isSuccess -> {
-                    onCreateAppointmentSuccess()
-                }
-
-                it.isFailed -> {
-                    onCreateAppointmentFailed()
-                }
-
-            }
-        }
-    }
-
-    override fun showTherapists(serviceTherapists: List<ServiceTypeTherapists>) {
-        bookingViewModel.setTherapists(serviceTherapists)
-    }
-
-    override fun showUnsavedAppointment() {
-       onShowUnsavedAppointment()
-    }
-
-
-}
-
-
 

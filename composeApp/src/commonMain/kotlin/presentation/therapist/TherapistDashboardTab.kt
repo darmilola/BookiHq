@@ -33,12 +33,11 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
-import domain.Models.AvailableTime
-import domain.Models.TimeOffs
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import presentation.DomainViewHandler.TherapistHandler
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
@@ -146,13 +145,7 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
              onMeetingTokenReady = {
 
             },
-            appointmentResourceListEnvelopeViewModel!!,
-             onTherapistAvailabilityReady = {
-                    availableTimes: List<AvailableTime>,
-                    timeOffs: List<TimeOffs> ->
-                therapistViewModel!!.setTherapistAvailableTimes(availableTimes)
-                therapistViewModel!!.setTherapistTimeOffs(timeOffs)
-            })
+            appointmentResourceListEnvelopeViewModel!!)
         handler.init()
 
 

@@ -2,8 +2,8 @@ package presentation.authentication
 
 import dev.jordond.compass.Place
 import domain.Models.User
-import presentation.viewmodels.ActionUIStates
-import presentation.viewmodels.ScreenUIStates
+import UIStates.ActionUIStates
+import UIStates.ScreenUIStates
 
 class AuthenticationContract {
     interface View {
@@ -11,11 +11,6 @@ class AuthenticationContract {
 
         fun onAuth0Ended()
         fun showUserProfile(user: User)
-
-
-        /**
-         * Registration successful callback.
-         */
         fun goToMainScreen(userEmail: String)
 
         fun goToCompleteProfile(userEmail: String)
@@ -23,28 +18,6 @@ class AuthenticationContract {
         fun showUserLocation(place: Place)
 
         fun goToConnectVendor(userEmail: String)
-
-        /**
-         * Registration failure callback.
-         *
-         * @param errorText Text to be displayed.
-         */
-
-        /**
-         * Might be useful if wanted to show user that action is in progress with some funny animation
-         * or just simple progressbar.
-         */
-        abstract fun lockUser()
-
-        /**
-         * Unlocks user's action. Now user should be able to re-execute request.
-         */
-        abstract fun unlockUser()
-
-        /**
-         * Shows Allowed Char Tooltip for Password View
-         */
-        abstract fun showPasswordAllowedCharTooltip()
 
         fun showLce(uiState: ScreenUIStates, message: String = "")
         fun showAsyncLce(uiState: ActionUIStates, message: String = "")

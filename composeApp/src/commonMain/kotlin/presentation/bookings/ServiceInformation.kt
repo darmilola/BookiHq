@@ -28,7 +28,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import presentation.components.ButtonComponent
-import presentation.profile.connect_vendor.BusinessLogo
+import presentation.connectVendor.BusinessLogo
 import presentation.widgets.DescriptionTextWidget
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget

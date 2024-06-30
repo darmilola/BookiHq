@@ -34,13 +34,14 @@ import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.AppointmentItemUIModel
-import domain.Models.AppointmentType
+import domain.Enums.AppointmentType
 import domain.Models.PlatformNavigator
 import domain.Models.UserAppointmentsData
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import presentation.DomainViewHandler.AppointmentsHandler
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.dialogs.LoadingDialog
@@ -49,7 +50,7 @@ import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
-import presentation.viewmodels.ScreenUIStates
+import UIStates.ScreenUIStates
 import presentation.widgets.MeetingAppointmentWidget
 import presentation.widgets.AppointmentWidget
 import utils.getAppointmentViewHeight

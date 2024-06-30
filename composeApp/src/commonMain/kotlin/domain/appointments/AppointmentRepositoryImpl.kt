@@ -1,11 +1,11 @@
 package domain.appointments
 
 import com.badoo.reaktive.single.Single
+import domain.Enums.ServiceStatusEnum
 import domain.Models.Appointment
 import domain.Models.AppointmentListDataResponse
 import domain.Models.JoinMeetingResponse
 import domain.Models.ServerResponse
-import domain.Models.ServiceStatus
 import domain.Models.TherapistAvailabilityResponse
 import io.ktor.client.HttpClient
 
@@ -29,7 +29,7 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
 
         val param = PostponeAppointmentRequest(userId = appointment.userId!!, vendorId = appointment.vendorId, serviceId = appointment.serviceId,
             serviceTypeId = appointment.serviceTypeId!!, therapistId = appointment.therapistId, recommendationId = appointment.recommendationId, appointmentTime = appointmentTime,
-            day = day, month = month, year = year, serviceLocation = appointment.serviceLocation, serviceStatus = ServiceStatus.Pending.toPath(),
+            day = day, month = month, year = year, serviceLocation = appointment.serviceLocation, serviceStatus = ServiceStatusEnum.PENDING.toPath(),
             isRecommendedAppointment = appointment.isRecommendedAppointment, appointmentId = appointment.appointmentId!!)
         return appointmentNetworkService.postponeAppointment(param)
     }

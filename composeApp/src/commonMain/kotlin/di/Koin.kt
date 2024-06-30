@@ -15,11 +15,11 @@ import org.koin.core.context.stopKoin
 import presentation.Orders.OrderModule
 import presentation.bookings.BookingModule
 import presentation.Products.ProductModule
-import presentation.profile.connect_vendor.ConnectVendorModule
+import presentation.connectVendor.ConnectVendorModule
 import presentation.profile.ProfileModule
 import presentation.appointments.AppointmentModule
 import presentation.authentication.AuthenticationModule.AuthenticationModule
-import presentation.main.home.HomepageModule
+import presentation.home.HomepageModule
 import presentation.therapist.TherapistModule
 
 fun initKoin(){

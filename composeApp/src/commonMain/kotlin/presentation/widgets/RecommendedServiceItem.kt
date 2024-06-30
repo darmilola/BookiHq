@@ -32,7 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.VendorRecommendation
-import domain.Models.RecommendationType
+import domain.Enums.RecommendationType
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 

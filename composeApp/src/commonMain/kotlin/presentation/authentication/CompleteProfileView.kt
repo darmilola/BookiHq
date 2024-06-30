@@ -34,10 +34,8 @@ import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
-import domain.Models.CountryList
 import domain.Models.PlatformNavigator
-import domain.Models.getCityList
-import domain.Models.getCountries
+import domain.Enums.getCityList
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
 import presentation.widgets.DropDownWidget

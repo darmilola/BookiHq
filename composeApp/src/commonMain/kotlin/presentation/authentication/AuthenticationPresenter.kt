@@ -8,10 +8,10 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import presentation.viewmodels.ScreenUIStates
+import UIStates.ScreenUIStates
 import com.badoo.reaktive.single.subscribe
 import domain.Models.User
-import presentation.viewmodels.ActionUIStates
+import UIStates.ActionUIStates
 
 
 class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Presenter() {

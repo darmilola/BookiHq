@@ -20,19 +20,19 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import domain.Models.PlatformNavigator
-import domain.Models.Screens
+import domain.Enums.Screens
 import org.koin.core.component.KoinComponent
 import presentation.Orders.Orders
 import presentation.bookings.BookingScreen
 import presentation.bookings.PendingAppointmentsTab
-import presentation.Products.CartScreen
+import presentation.Products.CartTab
 import presentation.profile.EditProfile
-import presentation.profile.connect_vendor.ConnectPageTab
-import presentation.profile.connect_vendor.ConnectedVendorDetailsPage
+import presentation.connectVendor.ConnectPageTab
+import presentation.connectVendor.ConnectVendorDetailsPage
 import presentation.consultation.ConsultationScreen
 import presentation.consultation.VirtualConsultationRoom
 import presentation.dialogs.LoadingDialog
-import presentation.main.account.JoinASpa
+import presentation.account.JoinASpa
 import presentation.profile.TalkWithATherapist
 import presentation.therapist.TherapistDashboardTab
 import presentation.viewmodels.MainViewModel
@@ -96,7 +96,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
                     it.current = ConsultationScreen(mainViewModel!!)
                 }
                 Screens.CART.toPath() -> {
-                    it.current = CartScreen(mainViewModel!!)
+                    it.current = CartTab(mainViewModel!!)
                 }
                 Screens.ORDERS.toPath() -> {
                     it.current = Orders(mainViewModel!!)
@@ -111,7 +111,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
                     it.current = EditProfile(mainViewModel!!, platformNavigator, preferenceSettings)
                 }
                 Screens.VENDOR_INFO.toPath() -> {
-                    it.current = ConnectedVendorDetailsPage(mainViewModel!!)
+                    it.current = ConnectVendorDetailsPage(mainViewModel!!)
                 }
                 Screens.PENDING_APPOINTMENT.toPath() -> {
                     it.current = PendingAppointmentsTab(mainViewModel!!)

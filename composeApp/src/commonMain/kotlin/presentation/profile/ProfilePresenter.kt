@@ -9,7 +9,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.badoo.reaktive.single.subscribe
-import presentation.viewmodels.ActionUIStates
+import UIStates.ActionUIStates
 
 
 class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {

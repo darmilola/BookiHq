@@ -11,8 +11,8 @@ import com.auth0.android.provider.WebAuthProvider
 import com.auth0.android.result.Credentials
 import com.auth0.android.result.UserProfile
 import com.russhwolf.settings.Settings
-import domain.Models.AuthenticationAction
-import domain.Models.AuthenticationStatus
+import domain.Enums.AuthenticationAction
+import domain.Enums.AuthenticationStatus
 import applications.auth0.AndroidAuth0ConnectionResponse
 
 

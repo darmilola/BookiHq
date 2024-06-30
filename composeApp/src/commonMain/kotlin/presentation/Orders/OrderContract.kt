@@ -1,8 +1,8 @@
 package presentation.Orders
 
 import domain.Models.OrderResourceListEnvelope
-import presentation.viewmodels.ActionUIStates
-import presentation.viewmodels.ScreenUIStates
+import UIStates.ActionUIStates
+import UIStates.ScreenUIStates
 
 interface OrderContract {
     interface View {

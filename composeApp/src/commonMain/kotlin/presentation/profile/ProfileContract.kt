@@ -2,7 +2,7 @@ package presentation.profile
 
 import dev.jordond.compass.Place
 import domain.Models.VendorTime
-import presentation.viewmodels.ActionUIStates
+import UIStates.ActionUIStates
 
 class ProfileContract {
     interface View {

@@ -29,13 +29,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import domain.Models.Screens
+import domain.Enums.Screens
 import domain.Models.VendorTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
-import presentation.viewmodels.ActionUIStates
+import UIStates.ActionUIStates
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
 import presentation.widgets.BookingCalendar

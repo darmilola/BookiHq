@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
-import domain.Models.Screens
+import domain.Enums.Screens
 import kotlinx.coroutines.launch
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel

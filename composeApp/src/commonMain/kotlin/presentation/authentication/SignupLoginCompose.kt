@@ -29,8 +29,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import domain.Models.Auth0ConnectionType
-import domain.Models.AuthSSOScreenNav
+import domain.Enums.Auth0ConnectionType
+import domain.Enums.AuthSSOScreenNav
 import presentation.components.IconButtonComponent
 import presentation.widgets.AuthenticationBackNav
 import presentations.components.ImageComponent

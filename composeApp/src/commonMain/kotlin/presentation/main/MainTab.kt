@@ -35,9 +35,11 @@ import domain.Models.PlatformNavigator
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
+import presentation.Products.ShopProductTab
 import presentation.appointments.AppointmentsTab
-import presentation.main.account.AccountTab
-import presentation.main.home.HomeTab
+import presentation.account.AccountTab
+import presentation.account.ConsultTab
+import presentation.home.HomeTab
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
@@ -147,7 +149,7 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
                                 isBottomNavSelected = true
                             }
                             TabNavigationItem(
-                                ShopTab(mainViewModel,productViewModel!!, productResourceListEnvelopeViewModel!!),
+                                ShopProductTab(mainViewModel,productViewModel!!, productResourceListEnvelopeViewModel!!),
                                 selectedImage = "drawable/shopping_basket.png",
                                 unselectedImage = "drawable/shopping_basket_outline.png",
                                 labelText = "Shop",
@@ -199,7 +201,7 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
         var imageStr by remember { mutableStateOf(unselectedImage) }
         var imageTint by remember { mutableStateOf(Colors.lightGray) }
 
-        if(tabNavigator.current is ShopTab && currentTabId == 1){
+        if(tabNavigator.current is ShopProductTab && currentTabId == 1){
             imageStr  = selectedImage
             imageTint = Colors.primaryColor
             val screenTitle = "Products"

@@ -10,10 +10,10 @@ import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
 import domain.Models.Auth0ConnectionResponse
-import domain.Models.AuthSSOScreenNav
-import domain.Models.AuthenticationAction
+import domain.Enums.AuthSSOScreenNav
+import domain.Enums.AuthenticationAction
 import domain.Models.PlatformNavigator
-import presentation.SplashScreen
+import presentation.Splashscreen.SplashScreen
 import presentation.authentication.AuthenticationScreen
 import presentation.main.MainScreen
 
@@ -63,21 +63,21 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
     }
     override fun startAuth0Login(connectionType: String) {
         val intent = Intent(this, Authentication::class.java)
-        intent.putExtra("authAction",AuthenticationAction.LOGIN.toPath())
+        intent.putExtra("authAction", AuthenticationAction.LOGIN.toPath())
         intent.putExtra("connectionType",connectionType)
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
     }
     override fun startAuth0Signup(connectionType: String) {
         val intent = Intent(this, Authentication::class.java)
-        intent.putExtra("authAction",AuthenticationAction.SIGNUP.toPath())
+        intent.putExtra("authAction", AuthenticationAction.SIGNUP.toPath())
         intent.putExtra("connectionType",connectionType)
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
     }
     override fun startAuth0Logout(connectionType: String) {
         val intent = Intent(this, Authentication::class.java)
-        intent.putExtra("authAction",AuthenticationAction.LOGOUT.toPath())
+        intent.putExtra("authAction", AuthenticationAction.LOGOUT.toPath())
         intent.putExtra("connectionType",connectionType)
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)

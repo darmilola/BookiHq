@@ -16,10 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import domain.Models.Appointment
-import domain.Models.ServiceStatus
+import domain.Enums.ServiceStatusEnum
 import domain.Models.UserAppointmentsData
 import presentation.appointments.AppointmentPresenter
-import presentation.viewmodels.PostponementViewModel
 import theme.styles.Colors
 
 
@@ -31,7 +30,7 @@ fun TherapistAppointmentWidget(userAppointmentsData: UserAppointmentsData, appoi
 
     var actionItem = ""
     actionItem = when (appointmentStatus) {
-        ServiceStatus.Pending.toPath() -> {
+        ServiceStatusEnum.PENDING.toPath() -> {
             "Postpone"
         }
 
@@ -41,7 +40,7 @@ fun TherapistAppointmentWidget(userAppointmentsData: UserAppointmentsData, appoi
     }
 
     menuItems.add(actionItem)
-    if (appointmentStatus == ServiceStatus.Done.toPath()){
+    if (appointmentStatus == ServiceStatusEnum.DONE.toPath()){
         menuItems.add("Add Review")
     }
 
@@ -53,17 +52,17 @@ fun TherapistAppointmentWidget(userAppointmentsData: UserAppointmentsData, appoi
 
 
     when (appointmentStatus) {
-        ServiceStatus.Pending.toPath() -> {
+        ServiceStatusEnum.PENDING.toPath() -> {
             iconRes = "drawable/schedule.png"
             statusText = "Pending"
             statusColor = Colors.primaryColor
         }
-        ServiceStatus.POSTPONED.toPath() -> {
+        ServiceStatusEnum.POSTPONED.toPath() -> {
             iconRes = "drawable/appointment_postponed.png"
             statusText = "Postponed"
             statusColor = Colors.pinkColor
         }
-        ServiceStatus.Done.toPath() -> {
+        ServiceStatusEnum.DONE.toPath() -> {
             iconRes = "drawable/appointment_done.png"
             statusText = "Done"
             statusColor = Colors.greenColor

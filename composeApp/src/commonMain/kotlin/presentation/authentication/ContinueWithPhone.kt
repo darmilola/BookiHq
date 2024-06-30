@@ -22,10 +22,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import domain.Models.AuthSSOScreenNav
+import domain.Enums.AuthSSOScreenNav
 import presentation.components.ButtonComponent
 import presentation.widgets.AuthenticationBackNav
-import presentation.widgets.PageBackNavWidget
 import presentation.widgets.PhoneInputWidget
 import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget

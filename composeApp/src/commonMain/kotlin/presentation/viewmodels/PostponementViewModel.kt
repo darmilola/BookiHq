@@ -1,10 +1,10 @@
 package presentation.viewmodels
 
+import UIStates.ActionUIStates
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Models.Appointment
 import domain.Models.AvailableTime
-import domain.Models.TimeOffs
 import kotlinx.coroutines.flow.StateFlow
 import presentation.dataModeller.CalendarDataSource
 
@@ -12,7 +12,6 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
 
     private var _therapistAvailableTimes = savedStateHandle.getStateFlow("therapistAvailableTimes", arrayListOf<AvailableTime>())
     private var _therapistBookedTimes = savedStateHandle.getStateFlow("therapistBookedAppointment", arrayListOf<Appointment>())
-    private var _therapistTimeOffs = savedStateHandle.getStateFlow("therapistTimeOffs", arrayListOf<TimeOffs>())
     private var _currentAppointment = savedStateHandle.getStateFlow("currentAppointment",Appointment())
     private var _postponementViewUIState = savedStateHandle.getStateFlow("postponementViewUIState", ActionUIStates())
     private var _day =  savedStateHandle.getStateFlow("day", -1)
@@ -26,9 +25,6 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
 
     val therapistBookedTimes: StateFlow<List<Appointment>>
         get() = _therapistBookedTimes
-
-    val therapistTimeOffs: StateFlow<List<TimeOffs>>
-        get() = _therapistTimeOffs
 
     val currentAppointment: StateFlow<Appointment>
         get() = _currentAppointment
@@ -50,11 +46,6 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
     fun setTherapistAvailableTimes(availableTimes: List<AvailableTime>) {
         savedStateHandle["therapistAvailableTimes"] = availableTimes
     }
-
-    fun setTherapistTimeOffs(timeOffs: List<TimeOffs>) {
-        savedStateHandle["therapistTimeOffs"] = timeOffs
-    }
-
 
     fun setCurrentAppointment(currentAppointment: Appointment) {
         savedStateHandle["currentAppointment"] = currentAppointment

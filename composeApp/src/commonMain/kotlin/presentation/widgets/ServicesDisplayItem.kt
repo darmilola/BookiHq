@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import domain.Models.Screens
+import domain.Enums.Screens
 import domain.Models.Services
 import domain.Models.getWidget
 import presentation.viewmodels.MainViewModel

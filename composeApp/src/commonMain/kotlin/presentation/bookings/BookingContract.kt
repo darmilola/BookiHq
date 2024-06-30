@@ -4,8 +4,8 @@ import domain.Models.ServiceTypeTherapists
 import domain.Models.UnsavedAppointment
 import domain.Models.User
 import domain.Models.Vendor
-import presentation.viewmodels.ActionUIStates
-import presentation.viewmodels.ScreenUIStates
+import UIStates.ActionUIStates
+import UIStates.ScreenUIStates
 
 class BookingContract {
     interface View {

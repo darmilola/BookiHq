@@ -2,8 +2,8 @@ package presentation.viewmodels
 
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
-import domain.Models.DeliveryLocation
-import domain.Models.PaymentMethod
+import domain.Enums.DeliveryMethodEnum
+import domain.Enums.PaymentMethod
 import kotlinx.coroutines.flow.StateFlow
 
 class CartViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
@@ -11,7 +11,7 @@ class CartViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     private var _subtotal =  savedStateHandle.getStateFlow("subtotal", 0)
     private var _total =  savedStateHandle.getStateFlow("total", 0)
     private var _deliveryFee =  savedStateHandle.getStateFlow("deliveryFee", 0)
-    private var _deliveryLocation = savedStateHandle.getStateFlow("deliveryLocation", DeliveryLocation.HOME_DELIVERY.toPath())
+    private var _deliveryLocation = savedStateHandle.getStateFlow("deliveryLocation", DeliveryMethodEnum.HOME_DELIVERY.toPath())
     private var _paymentMethod = savedStateHandle.getStateFlow("paymentMethod", PaymentMethod.CARD_PAYMENT.toPath())
 
 

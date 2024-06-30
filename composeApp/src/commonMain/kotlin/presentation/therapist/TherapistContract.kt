@@ -1,11 +1,9 @@
 package presentation.therapist
 
 import domain.Models.AppointmentResourceListEnvelope
-import domain.Models.AvailableTime
 import domain.Models.TherapistReviews
-import domain.Models.TimeOffs
-import presentation.viewmodels.ActionUIStates
-import presentation.viewmodels.ScreenUIStates
+import UIStates.ActionUIStates
+import UIStates.ScreenUIStates
 
 interface TherapistContract {
     interface View {

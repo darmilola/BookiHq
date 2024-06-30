@@ -2,9 +2,9 @@ package applications.auth0
 
 import android.os.Parcel
 import android.os.Parcelable
-import domain.Models.Auth0ConnectionType
-import domain.Models.AuthenticationAction
-import domain.Models.AuthenticationStatus
+import domain.Enums.Auth0ConnectionType
+import domain.Enums.AuthenticationAction
+import domain.Enums.AuthenticationStatus
 import kotlinx.serialization.Serializable
 
 @Serializable

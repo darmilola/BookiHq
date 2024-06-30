@@ -48,7 +48,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.OrderItem
 import domain.Models.Product
-import domain.Models.ValuesLimit
+import domain.Enums.ValuesLimit
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
 import presentation.viewmodels.MainViewModel

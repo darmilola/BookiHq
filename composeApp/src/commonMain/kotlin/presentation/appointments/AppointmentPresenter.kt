@@ -10,8 +10,8 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import presentation.viewmodels.ActionUIStates
-import presentation.viewmodels.ScreenUIStates
+import UIStates.ActionUIStates
+import UIStates.ScreenUIStates
 
 class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presenter() {
 

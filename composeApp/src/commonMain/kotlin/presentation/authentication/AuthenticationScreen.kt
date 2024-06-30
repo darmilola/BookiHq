@@ -15,19 +15,16 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
-import dev.jordond.compass.Place
 import domain.Models.Auth0ConnectionResponse
-import domain.Models.AuthSSOScreenNav
-import domain.Models.User
+import domain.Enums.AuthSSOScreenNav
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import presentation.profile.connect_vendor.ConnectPage
+import presentation.DomainViewHandler.AuthenticationScreenHandler
+import presentation.connectVendor.ConnectVendorScreen
 import presentation.dialogs.LoadingDialog
 import presentation.main.MainScreen
-import presentation.viewmodels.ActionUIStates
 import presentation.viewmodels.AuthenticationViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
-import presentation.viewmodels.ScreenUIStates
 
 open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreenNav.AUTH_LOGIN.toPath(),
                                 val  platformNavigator: PlatformNavigator? = null,
@@ -154,7 +151,7 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
         else if(userNavigation.value && userNavigationPosition == AuthSSOScreenNav.CONNECT_VENDOR.toPath()){
             currentPosition =  AuthSSOScreenNav.CONNECT_VENDOR.toPath()
             val navigator = LocalNavigator.current
-            navigator?.replaceAll(ConnectPage(platformNavigator))
+            navigator?.replaceAll(ConnectVendorScreen(platformNavigator))
         }
         else if(userNavigation.value && userNavigationPosition == AuthSSOScreenNav.MAIN.toPath()){
             currentPosition =  AuthSSOScreenNav.MAIN.toPath()
@@ -210,100 +207,3 @@ open class AuthenticationScreen(private var currentPosition: Int = AuthSSOScreen
                 }
          }
 }
-
-class AuthenticationScreenHandler(
-    private val authenticationViewModel: AuthenticationViewModel,
-    private val authenticationPresenter: AuthenticationPresenter,
-    private val onUserLocationReady: (Place) -> Unit,
-    private val preferenceSettings: Settings,
-    private val onPageLoading: () -> Unit,
-    private val onContentVisible: () -> Unit,
-    private val onErrorVisible: () -> Unit,
-    private val enterPlatform: (userEmail: String) -> Unit,
-    private val completeProfile: (userEmail: String) -> Unit,
-    private val connectVendor: (userEmail: String) -> Unit,
-    private val isLoading:() -> Unit,
-    private val isSuccess:() -> Unit,
-    private val isFailed:() -> Unit
-) : AuthenticationContract.View {
-    fun init() {
-        authenticationPresenter.registerUIContract(this)
-    }
-
-    override fun showLce(uiState: ScreenUIStates, message: String) {
-        uiState.let {
-            when{
-                it.loadingVisible -> {
-                    onPageLoading()
-                }
-
-                it.contentVisible -> {
-                    onContentVisible()
-                }
-
-                it.errorOccurred -> {
-                    onErrorVisible()
-                }
-            }
-        }
-    }
-
-    override fun showAsyncLce(uiState: ActionUIStates, message: String) {
-        uiState.let {
-            when{
-                it.isLoading -> {
-                    isLoading()
-                }
-
-                it.isSuccess -> {
-                    isSuccess()
-                }
-
-                it.isFailed -> {
-                    isFailed()
-                }
-            }
-        }
-    }
-
-
-    override fun onAuth0Started() {
-        preferenceSettings.clear()
-        authenticationViewModel.setAuth0Started(true)
-    }
-
-    override fun onAuth0Ended() {
-        authenticationViewModel.setAuth0Ended(true)
-    }
-
-    override fun goToMainScreen(userEmail: String) {
-        enterPlatform(userEmail)
-    }
-
-    override fun goToCompleteProfile(userEmail: String) {
-        completeProfile(userEmail)
-    }
-
-    override fun showUserLocation(place: Place) {
-        onUserLocationReady(place)
-    }
-
-    override fun goToConnectVendor(userEmail: String) {
-        connectVendor(userEmail)
-    }
-    override fun showUserProfile(user: User) {
-        TODO("Not yet implemented")
-    }
-    override fun lockUser() {
-        TODO("Not yet implemented")
-    }
-
-    override fun unlockUser() {
-        TODO("Not yet implemented")
-    }
-
-    override fun showPasswordAllowedCharTooltip() {
-        TODO("Not yet implemented")
-    }
-}
-

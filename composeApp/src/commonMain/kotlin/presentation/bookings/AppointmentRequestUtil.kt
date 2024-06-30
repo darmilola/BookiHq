@@ -1,6 +1,6 @@
 package presentation.bookings
 
-import domain.Models.ServiceLocation
+import domain.Enums.ServiceLocationEnum
 import domain.Models.UnsavedAppointment
 import domain.Models.User
 import domain.Models.Vendor
@@ -12,7 +12,7 @@ fun getUnSavedAppointment(unsavedAppointments: ArrayList<UnsavedAppointment>, cu
     for (item in unsavedAppointments){
         val request = CreateAppointmentRequest(userId = currentUser.userId!!, vendorId = currentVendor.vendorId!!, serviceId = item.serviceId,
             serviceTypeId = item.serviceTypeId!!, therapistId = item.serviceTypeTherapists?.therapistId!!, recommendationId = item.recommendationId,
-            appointmentTime = item.appointmentTime?.id!!, day = item.day, month = item.month, year = item.year, serviceLocation = if (item.isHomeService) ServiceLocation.Home.toPath() else ServiceLocation.Spa.toPath(),
+            appointmentTime = item.appointmentTime?.id!!, day = item.day, month = item.month, year = item.year, serviceLocation = if (item.isHomeService) ServiceLocationEnum.HOME.toPath() else ServiceLocationEnum.SPA.toPath(),
             serviceStatus = item.serviceStatus,
             isRecommendedAppointment = item.isRecommendedAppointment)
         appointmentRequestList.add(request)

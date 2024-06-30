@@ -25,7 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import domain.Models.Appointment
-import domain.Models.ServiceLocation
+import domain.Enums.ServiceLocationEnum
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DayOfWeekNames
@@ -115,7 +115,7 @@ fun AppointmentInfoWidget(appointment: Appointment) {
                         contentAlignment = Alignment.CenterStart
                     ) {
                         TextComponent(
-                            text = if (appointment.serviceLocation == ServiceLocation.Spa.toPath()) "At The Spa" else "Home Service",
+                            text = if (appointment.serviceLocation == ServiceLocationEnum.SPA.toPath()) "At The Spa" else "Home Service",
                             textModifier = Modifier.wrapContentSize(),
                             fontSize = 14,
                             fontFamily = GGSansRegular,

@@ -1,11 +1,9 @@
 package presentation.Products
 
-import domain.Models.FavoriteProduct
 import domain.Models.OrderItem
-import domain.Models.ProductCategory
 import domain.Models.ProductResourceListEnvelope
-import presentation.viewmodels.ActionUIStates
-import presentation.viewmodels.ScreenUIStates
+import UIStates.ActionUIStates
+import UIStates.ScreenUIStates
 
 class ProductContract {
     interface View {

@@ -9,7 +9,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import presentation.viewmodels.ScreenUIStates
+import UIStates.ScreenUIStates
 
 class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() {
 

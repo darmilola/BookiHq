@@ -5,13 +5,11 @@ import GGSansSemiBold
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,21 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import domain.Models.Appointment
-import domain.Models.Auth0ConnectionType
-import domain.Models.ServiceLocation
-import domain.Models.ServiceStatus
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.format
-import kotlinx.datetime.format.DayOfWeekNames
-import kotlinx.datetime.format.MonthNames
-import kotlinx.datetime.format.char
-import presentation.appointments.AppointmentPresenter
-import presentation.components.ButtonComponent
-import presentation.components.IconButtonComponent
 import presentation.components.RightIconButtonComponent
-import presentation.viewmodels.PostponementViewModel
-import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import theme.styles.Colors
 

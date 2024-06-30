@@ -8,26 +8,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import domain.Models.DeliveryLocation
+import domain.Enums.DeliveryMethodEnum
 import presentation.components.ToggleButton
 import presentation.viewmodels.CartViewModel
 import presentation.viewmodels.MainViewModel
@@ -59,15 +51,15 @@ fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel,cartViewModel: Car
 
         Row(modifier = Modifier.fillMaxWidth()) {
             ToggleButton(shape = CircleShape, onLeftClicked = {
-                deliveryLocation.value = DeliveryLocation.HOME_DELIVERY.toPath()
+                deliveryLocation.value = DeliveryMethodEnum.HOME_DELIVERY.toPath()
                 onHomeSelectedListener()
             }, onRightClicked = {
-                deliveryLocation.value = DeliveryLocation.PICKUP.toPath()
+                deliveryLocation.value = DeliveryMethodEnum.PICKUP.toPath()
                 onPickupSelectedListener()
             }, leftText = "Home", rightText = "Pick Up")
         }
 
-       if(deliveryLocation.value == DeliveryLocation.HOME_DELIVERY.toPath()) {
+       if(deliveryLocation.value == DeliveryMethodEnum.HOME_DELIVERY.toPath()) {
             HomeDeliveryWidget(mainViewModel = mainViewModel)
        }
         else{

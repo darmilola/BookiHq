@@ -36,18 +36,17 @@ import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
-import dev.jordond.compass.Place
+import countryList
 import domain.Models.PlatformNavigator
-import domain.Models.Screens
-import domain.Models.getCityList
-import domain.Models.getCountries
+import domain.Enums.Screens
+import domain.Enums.getCityList
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import presentation.DomainViewHandler.ProfileHandler
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
 import presentation.dialogs.LoadingDialog
 import presentation.viewmodels.ActionUIStateViewModel
-import presentation.viewmodels.ActionUIStates
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.DropDownWidget
 import presentation.widgets.PageBackNavWidget
@@ -249,7 +248,7 @@ fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: Platform
                         iconRes = "drawable/card_icon.png",
                         placeholderText = "Firstname",
                         iconSize = 40,
-                        defaultValue = userInfo.firstname!!
+                        text = userInfo.firstname!!
                     ) {
                         firstname.value = it
                     }
@@ -259,7 +258,7 @@ fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: Platform
                         iconRes = "drawable/card_icon.png",
                         placeholderText = "Lastname",
                         iconSize = 40,
-                        defaultValue = userInfo.lastname!!
+                        text = userInfo.lastname!!
                     ) {
                         lastname.value = it
                     }
@@ -270,7 +269,7 @@ fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: Platform
                 placeholderText = "Address",
                 iconSize = 28,
                 isPasswordField = false,
-                defaultValue = userInfo.address!!
+                text = userInfo.address!!
             ) {
                 address.value = it
             }
@@ -279,7 +278,7 @@ fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: Platform
                 placeholderText = "Contact Phone",
                 iconSize = 28,
                 isPasswordField = false,
-                defaultValue = userInfo.contactPhone!!
+                text = userInfo.contactPhone!!
             ) {
                 contactPhone.value = it
             }
@@ -308,7 +307,7 @@ fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: Platform
 
 @Composable
 fun AttachCountryDropDownWidget(selectedCountry: Int = -1, onMenuItemClick : (Int) -> Unit) {
-    val countryList = getCountries().values.toList()
+    val countryList = countryList()
     DropDownWidget(menuItems = countryList, selectedIndex = selectedCountry, placeHolderText = "Country of Residence", onMenuItemClick = {
         onMenuItemClick(it)
     })
@@ -359,25 +358,4 @@ fun PageTitle(){
         TitleWidget(title = "Edit Profile", textColor = Colors.primaryColor)
     }
 }
-
-class ProfileHandler(
-    private val profilePresenter: ProfilePresenter,
-    private val onUserLocationReady:(Place)-> Unit,
-    private val actionUIStateViewModel: ActionUIStateViewModel
-    ) : ProfileContract.View {
-    fun init() {
-        profilePresenter.registerUIContract(this)
-    }
-    override fun onProfileDeleted() {}
-
-    override fun onProfileUpdated() {}
-    override fun showUserLocation(place: Place) {
-          onUserLocationReady(place)
-    }
-
-    override fun showActionLce(actionUIStates: ActionUIStates) {
-          actionUIStateViewModel.switchActionPostponeUIState(actionUIStates)
-    }
-}
-
 

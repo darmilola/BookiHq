@@ -1,32 +1,21 @@
 
-import androidx.compose.ui.uikit.ComposeUIViewControllerConfiguration
 import androidx.compose.ui.uikit.OnFocusBehavior
 import androidx.compose.ui.window.ComposeUIViewController
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
 import com.russhwolf.settings.Settings
 import domain.Models.Auth0ConnectionResponse
-import domain.Models.AuthSSOScreenNav
-import domain.Models.AuthenticationAction
-import domain.Models.AuthenticationStatus
+import domain.Enums.AuthSSOScreenNav
+import domain.Enums.AuthenticationAction
+import domain.Enums.AuthenticationStatus
 import domain.Models.PlatformNavigator
-import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.ObjCClass
 import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.useContents
 import kotlinx.cinterop.usePinned
-import objcnames.classes.Protocol
-import platform.CoreLocation.CLLocation
 import platform.Foundation.NSData
 import platform.Foundation.create
-import platform.CoreLocation.CLLocationManager
-import platform.CoreLocation.CLLocationManagerDelegateProtocol
-import platform.Foundation.NSError
 import platform.UIKit.UIViewController
-import platform.darwin.NSObject
-import platform.darwin.NSUInteger
-import presentation.SplashScreen
+import presentation.Splashscreen.SplashScreen
 import presentation.authentication.AuthenticationScreen
 import presentation.main.MainScreen
 

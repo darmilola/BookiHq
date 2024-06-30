@@ -39,9 +39,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.Appointment
-import domain.Models.AppointmentType
-import domain.Models.MeetingStatus
-import domain.Models.ServiceStatus
+import domain.Enums.AppointmentType
+import domain.Enums.MeetingStatus
+import domain.Enums.ServiceStatusEnum
 import domain.Models.TherapistInfo
 import presentation.appointments.AppointmentPresenter
 import presentation.dialogs.PostponeDialog
@@ -58,7 +58,7 @@ fun AppointmentWidget(appointment: Appointment, appointmentPresenter: Appointmen
 
         var actionItem = ""
         actionItem = when (serviceAppointmentStatus) {
-            ServiceStatus.Pending.toPath() -> {
+            ServiceStatusEnum.POSTPONED.toPath() -> {
                 "Postpone"
             }
 
@@ -68,7 +68,7 @@ fun AppointmentWidget(appointment: Appointment, appointmentPresenter: Appointmen
         }
 
         serviceMenuItems.add(actionItem)
-        if (serviceAppointmentStatus == ServiceStatus.Done.toPath()) {
+        if (serviceAppointmentStatus == ServiceStatusEnum.DONE.toPath()) {
             serviceMenuItems.add("Add Review")
         }
 
@@ -81,17 +81,17 @@ fun AppointmentWidget(appointment: Appointment, appointmentPresenter: Appointmen
 
 
     when (serviceAppointmentStatus) {
-        ServiceStatus.Pending.toPath() -> {
+        ServiceStatusEnum.PENDING.toPath() -> {
             serviceIconRes = "drawable/schedule.png"
             serviceStatusText = "Pending"
             serviceStatusColor = Colors.primaryColor
         }
-        ServiceStatus.POSTPONED.toPath() -> {
+        ServiceStatusEnum.POSTPONED.toPath() -> {
             serviceIconRes = "drawable/appointment_postponed.png"
             serviceStatusText = "Postponed"
             serviceStatusColor = Colors.pinkColor
         }
-        ServiceStatus.Done.toPath() -> {
+        ServiceStatusEnum.DONE.toPath() -> {
             serviceIconRes = "drawable/appointment_done.png"
             serviceStatusText = "Done"
             serviceStatusColor = Colors.greenColor

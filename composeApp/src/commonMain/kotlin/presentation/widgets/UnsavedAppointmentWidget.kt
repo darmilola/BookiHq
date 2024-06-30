@@ -130,7 +130,7 @@ fun UnsavedAppointmentHeader(serviceTitle: String, amount: Int, onRemoveItem: ()
         ) {
 
             val expandedMenuItem = remember { mutableStateOf(false) }
-            presentation.main.AttachIcon(
+            presentation.notification.AttachIcon(
                 iconRes = "drawable/overflow_menu.png",
                 iconSize = 25,
                 iconTint = Colors.primaryColor

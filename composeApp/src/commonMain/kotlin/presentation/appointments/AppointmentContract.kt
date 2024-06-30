@@ -2,10 +2,8 @@ package presentation.appointments
 
 import domain.Models.Appointment
 import domain.Models.AppointmentResourceListEnvelope
-import domain.Models.AvailableTime
-import domain.Models.TimeOffs
-import presentation.viewmodels.ActionUIStates
-import presentation.viewmodels.ScreenUIStates
+import UIStates.ActionUIStates
+import UIStates.ScreenUIStates
 
 interface AppointmentContract {
     interface View {
