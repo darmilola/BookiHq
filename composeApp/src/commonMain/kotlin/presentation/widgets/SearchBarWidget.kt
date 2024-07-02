@@ -48,7 +48,7 @@ fun SearchBarWidget(iconRes: String, placeholderText: String, iconSize: Int, onB
         .fillMaxWidth()
         .height(50.dp)
         .border(border = borderStroke, shape = CircleShape)
-        .background(color = Color.White, shape = CircleShape)
+        .background(color = Color.Transparent, shape = CircleShape)
 
     Row(modifier = modifier,
         horizontalArrangement = Arrangement.Start,

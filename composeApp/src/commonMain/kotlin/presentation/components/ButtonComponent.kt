@@ -75,7 +75,7 @@ public fun ButtonComponent(modifier: Modifier, buttonText: String, borderStroke:
 @Composable
 public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, iconSize: Int = 28, colorFilter: ColorFilter? = null, onClick: (() -> Unit)? = null) {
     val rowModifier = Modifier
-        .fillMaxWidth()
+        .fillMaxWidth().fillMaxHeight()
 
           Button(
                 onClick = {
@@ -95,12 +95,11 @@ public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStr
             ) {
             Row(
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.Top,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = rowModifier
             ) {
 
                 val iconModifier = Modifier
-                    .padding(top = 5.dp)
                 .size(iconSize.dp)
 
                 val iconBoxModifier = Modifier
@@ -108,25 +107,30 @@ public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStr
                     .fillMaxWidth(0.10f)
 
                 val textModifier = Modifier
-                    .padding(top = 7.dp, end = 5.dp)
                     .fillMaxHeight()
-                    .fillMaxWidth(0.90f)
+                    .fillMaxWidth()
                 Row(
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.Top,
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = iconBoxModifier
                 ) {
                     ImageComponent(imageModifier = iconModifier, imageRes = iconRes, colorFilter = colorFilter)
                 }
-              TextComponent(
-                text = buttonText,
-                fontSize = fontSize,
-                textStyle = style,
-                textColor = textColor,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                textModifier = textModifier
-            )
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = textModifier
+                ) {
+                    TextComponent(
+                        text = buttonText,
+                        fontSize = fontSize,
+                        textStyle = style,
+                        textColor = textColor,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Medium,
+                        textModifier = Modifier.fillMaxWidth().wrapContentHeight()
+                    )
+                }
         }
     }
 }

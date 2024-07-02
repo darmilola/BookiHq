@@ -186,7 +186,7 @@ fun rightTopBarItem(mainViewModel: MainViewModel, isBottomNavSelected: Boolean =
     Box(modifier = modifier,
         contentAlignment = Alignment.CenterEnd
         ) {
-            ImageComponent(imageModifier = Modifier.size(33.dp).clickable {
+            ImageComponent(imageModifier = Modifier.size(30.dp).clickable {
                 tabNavigator.current = NotificationTab(mainViewModel)
                 onNotificationTabSelected()
             }, imageRes = imageRes, colorFilter = ColorFilter.tint(color = imageTint))

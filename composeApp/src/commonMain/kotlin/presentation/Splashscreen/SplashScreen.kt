@@ -51,7 +51,8 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator) {
             delay(3000L)
             //platformNavigator.startVideoCall("MyAuthToken")
             authenticateSplashScreen(preferenceSettings, onAuthenticated = {
-                navigator.replaceAll(MainScreen(platformNavigator = platformNavigator))
+                navigator.replaceAll(WelcomeScreen(platformNavigator))
+                //navigator.replaceAll(MainScreen(platformNavigator = platformNavigator))
             }, onConnectVendor = {
                 navigator.replaceAll(ConnectVendorScreen(platformNavigator))
             }, onWelcome = {

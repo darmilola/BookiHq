@@ -1,12 +1,18 @@
 package presentation.main
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import theme.styles.Colors
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.MaterialTheme
@@ -39,6 +45,7 @@ import presentation.Products.ShopProductTab
 import presentation.appointments.AppointmentsTab
 import presentation.account.AccountTab
 import presentation.account.ConsultTab
+import presentation.favorite.FavoriteTab
 import presentation.home.HomeTab
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.HomePageViewModel
@@ -108,9 +115,6 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
             val userId = mainViewModel.userId.collectAsState()
             val vendorId = mainViewModel.vendorId.collectAsState()
 
-            val bottomNavHeight =
-                if (userId.value != -1 && vendorId.value != -1) 60 else 0
-
             TabNavigator(showDefaultTab(mainViewModel, homePageViewModel!!)) {
                 it2 ->
                 Scaffold(
@@ -130,59 +134,90 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
                     },
                     backgroundColor = Color.White,
                     bottomBar = {
-                        BottomNavigation(
-                            modifier = Modifier.height(bottomNavHeight.dp),
-                            backgroundColor = Color.White,
-                            elevation = 0.dp
-                        )
-                        {
-                            TabNavigationItem(
-                                HomeTab(mainViewModel = mainViewModel, homePageViewModel = homePageViewModel!!),
-                                selectedImage = "drawable/home_icon.png",
-                                unselectedImage = "drawable/home_outline.png",
-                                labelText = "Home",
-                                imageSize = 22,
-                                currentTabId = 0,
-                                tabNavigator = it2,
-                                mainViewModel = mainViewModel
-                            ) {
-                                isBottomNavSelected = true
-                            }
-                            TabNavigationItem(
-                                ShopProductTab(mainViewModel,productViewModel!!, productResourceListEnvelopeViewModel!!),
-                                selectedImage = "drawable/shopping_basket.png",
-                                unselectedImage = "drawable/shopping_basket_outline.png",
-                                labelText = "Shop",
-                                imageSize = 22,
-                                currentTabId = 1,
-                                tabNavigator = it2,
-                                mainViewModel = mainViewModel
-                            ) {
-                                isBottomNavSelected = true
-                            }
-                            TabNavigationItem(
-                                AppointmentsTab(mainViewModel, appointmentResourceListEnvelopeViewModel!!, platformNavigator = platformNavigator),
-                                selectedImage = "drawable/appointment_icon.png",
-                                unselectedImage = "drawable/appointment_outline.png",
-                                labelText = "History",
-                                imageSize = 25,
-                                currentTabId = 3,
-                                tabNavigator = it2,
-                                mainViewModel = mainViewModel
-                            ) {
-                                isBottomNavSelected = true
-                            }
-                            TabNavigationItem(
-                                AccountTab(mainViewModel),
-                                selectedImage = "drawable/more_icon_filled.png",
-                                unselectedImage = "drawable/more_icon.png",
-                                labelText = "More",
-                                imageSize = 25,
-                                currentTabId = 4,
-                                tabNavigator = it2,
-                                mainViewModel = mainViewModel
-                            ) {
-                                isBottomNavSelected = true
+                        val bottomNavHeight =
+                            if (userId.value != -1 && vendorId.value != -1) 60 else 0
+                        Box(modifier = Modifier.fillMaxWidth().height(80.dp),
+                            contentAlignment = Alignment.Center) {
+                            BottomNavigation(
+                                modifier = Modifier.height(bottomNavHeight.dp).padding(start = 10.dp, end = 10.dp)
+                                    .background(shape = RoundedCornerShape(15.dp), color = Color.White),
+                                backgroundColor = Color.Transparent,
+                                elevation = 0.dp
+                            )
+                            {
+                                TabNavigationItem(
+                                    HomeTab(
+                                        mainViewModel = mainViewModel,
+                                        homePageViewModel = homePageViewModel!!
+                                    ),
+                                    selectedImage = "drawable/home_icon.png",
+                                    unselectedImage = "drawable/home_outline.png",
+                                    labelText = "Home",
+                                    imageSize = 22,
+                                    currentTabId = 0,
+                                    tabNavigator = it2,
+                                    mainViewModel = mainViewModel
+                                ) {
+                                    isBottomNavSelected = true
+                                }
+                                TabNavigationItem(
+                                    ShopProductTab(
+                                        mainViewModel,
+                                        productViewModel!!,
+                                        productResourceListEnvelopeViewModel!!
+                                    ),
+                                    selectedImage = "drawable/shopping_basket.png",
+                                    unselectedImage = "drawable/shopping_basket_outline.png",
+                                    labelText = "Shop",
+                                    imageSize = 22,
+                                    currentTabId = 1,
+                                    tabNavigator = it2,
+                                    mainViewModel = mainViewModel
+                                ) {
+                                    isBottomNavSelected = true
+                                }
+                                TabNavigationItem(
+                                    AppointmentsTab(
+                                        mainViewModel,
+                                        appointmentResourceListEnvelopeViewModel!!,
+                                        platformNavigator = platformNavigator
+                                    ),
+                                    selectedImage = "drawable/appointment_icon.png",
+                                    unselectedImage = "drawable/appointment_outline.png",
+                                    labelText = "History",
+                                    imageSize = 25,
+                                    currentTabId = 2,
+                                    tabNavigator = it2,
+                                    mainViewModel = mainViewModel
+                                ) {
+                                    isBottomNavSelected = true
+                                }
+
+                                TabNavigationItem(
+                                    FavoriteTab(mainViewModel),
+                                    selectedImage = "drawable/bookmark_filled.png",
+                                    unselectedImage = "drawable/bookmark.png",
+                                    labelText = "Favorite",
+                                    imageSize = 25,
+                                    currentTabId = 3,
+                                    tabNavigator = it2,
+                                    mainViewModel = mainViewModel
+                                ) {
+                                    isBottomNavSelected = true
+                                }
+
+                                TabNavigationItem(
+                                    AccountTab(mainViewModel),
+                                    selectedImage = "drawable/user_icon_filled.png",
+                                    unselectedImage = "drawable/user_icon_outline.png",
+                                    labelText = "More",
+                                    imageSize = 25,
+                                    currentTabId = 4,
+                                    tabNavigator = it2,
+                                    mainViewModel = mainViewModel
+                                ) {
+                                    isBottomNavSelected = true
+                                }
                             }
                         }
                     }
@@ -199,52 +234,51 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
     @Composable
     private fun RowScope.TabNavigationItem(tab: Tab, selectedImage: String, unselectedImage: String, imageSize: Int = 30, labelText: String ,currentTabId: Int = 0, tabNavigator: TabNavigator, mainViewModel: MainViewModel, onBottomNavSelected:() -> Unit) {
         var imageStr by remember { mutableStateOf(unselectedImage) }
-        var imageTint by remember { mutableStateOf(Colors.lightGray) }
+        var imageTint by remember { mutableStateOf(Colors.darkPrimary) }
+        var handleTint by remember { mutableStateOf(Color.White) }
 
-        if(tabNavigator.current is ShopProductTab && currentTabId == 1){
-            imageStr  = selectedImage
+        if (tabNavigator.current is ShopProductTab && currentTabId == 1) {
+            imageStr = selectedImage
             imageTint = Colors.primaryColor
+            handleTint = Colors.primaryColor
             val screenTitle = "Products"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
-        }
-
-        else if(tabNavigator.current is ConsultTab && currentTabId == 2){
-            imageStr  = selectedImage
+        } else if (tabNavigator.current is AppointmentsTab && currentTabId == 2) {
+            imageStr = selectedImage
             imageTint = Colors.primaryColor
-            val screenTitle = "Meet With Therapist"
-            onBottomNavSelected()
-            mainViewModel.setTitle(screenTitle)
-        }
-
-        else if(tabNavigator.current is AppointmentsTab && currentTabId == 3){
-            imageStr  = selectedImage
-            imageTint = Colors.primaryColor
+            handleTint = Colors.primaryColor
             val screenTitle = "Appointments"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
-        }
-
-        else if(tabNavigator.current is AccountTab && currentTabId == 4){
-            imageStr  = selectedImage
+        } else if (tabNavigator.current is FavoriteTab && currentTabId == 3) {
+            imageStr = selectedImage
             imageTint = Colors.primaryColor
+            handleTint = Colors.primaryColor
+            val screenTitle = "Favorites"
+            onBottomNavSelected()
+            mainViewModel.setTitle(screenTitle)
+        } else if (tabNavigator.current is AccountTab && currentTabId == 4) {
+            imageStr = selectedImage
+            imageTint = Colors.primaryColor
+            handleTint = Colors.primaryColor
             val screenTitle = "Manage"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
-        }
-
-        else if (tabNavigator.current is HomeTab && currentTabId == 0){
-            imageStr  = selectedImage
+        } else if (tabNavigator.current is HomeTab && currentTabId == 0) {
+            imageStr = selectedImage
             imageTint = Colors.primaryColor
+            handleTint = Colors.primaryColor
             val screenTitle = "Home"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
+        } else {
+            imageTint = Colors.darkPrimary
+            handleTint = Color.White
+            imageStr = unselectedImage
         }
 
-        else{
-            imageTint = Colors.unSelectedBottomNav
-            imageStr =   unselectedImage
-        }
+
 
         BottomNavigationItem(
             selected = tabNavigator.current == tab,
@@ -253,24 +287,22 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
                 tabNavigator.current = tab
             },
             selectedContentColor = Colors.primaryColor,
-            unselectedContentColor = Colors.lightGray,
+            unselectedContentColor = Colors.darkPrimary,
 
             icon = {
-                Box(modifier = Modifier.height(30.dp), contentAlignment = Alignment.Center) {
-                    ImageComponent(imageModifier = Modifier.size(imageSize.dp), imageRes = imageStr, colorFilter = ColorFilter.tint(imageTint))
-                }
-            },
-            label = {
-                Box(modifier = Modifier.height(30.dp), contentAlignment = Alignment.Center) {
-                    TextComponent(
-                        text = labelText,
-                        fontSize = 15,
-                        textStyle = MaterialTheme.typography.h6,
-                        textColor = imageTint,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Normal,
-                        lineHeight = 15
-                    )
+                Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally) {
+
+                    Box(modifier = Modifier.fillMaxWidth(0.50f).fillMaxHeight(0.05f)
+                        .background(color = handleTint, shape = RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp)), contentAlignment = Alignment.Center){}
+
+                    Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.Center) {
+                        ImageComponent(
+                            imageModifier = Modifier.size(imageSize.dp),
+                            imageRes = imageStr,
+                            colorFilter = ColorFilter.tint(imageTint)
+                        )
+                    }
                 }
             }
 

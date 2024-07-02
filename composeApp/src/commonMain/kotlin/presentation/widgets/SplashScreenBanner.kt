@@ -10,6 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -31,8 +33,8 @@ fun SplashScreenWidget(textStyle: TextStyle) {
 @Composable
 fun attachCompanyLogo() {
     val modifier = Modifier
-        .size(250.dp)
-    ImageComponent(imageModifier = modifier, imageRes = "drawable/makeup.png")
+        .size(200.dp)
+    ImageComponent(imageModifier = modifier, imageRes = "drawable/carevida.png", ColorFilter.tint(color = Color.White), contentScale = ContentScale.Inside)
 }
 
 @Composable

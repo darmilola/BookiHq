@@ -60,7 +60,7 @@ fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel,cartViewModel: Car
         }
 
        if(deliveryLocation.value == DeliveryMethodEnum.HOME_DELIVERY.toPath()) {
-            HomeDeliveryWidget(mainViewModel = mainViewModel)
+            MobileDeliveryWidget(mainViewModel = mainViewModel)
        }
         else{
             ParlorDeliveryWidget(mainViewModel)

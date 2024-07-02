@@ -145,9 +145,12 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
 
 
             val handler = HomepageHandler(screenUiStateViewModel!!, homepagePresenter,
-                 onHomeInfoAvailable = {
-                        homePageInfo, vendorStatus ->
-                    val viewHeight = calculateHomePageScreenHeight(homepageInfo = homePageInfo, screenSizeInfo = screenSizeInfo, isStatusExpanded = false)
+                onHomeInfoAvailable = { homePageInfo, vendorStatus ->
+                    val viewHeight = calculateHomePageScreenHeight(
+                        homepageInfo = homePageInfo,
+                        screenSizeInfo = screenSizeInfo,
+                        isStatusExpanded = false
+                    )
                     homePageViewModel.setHomePageViewHeight(viewHeight)
                     homePageViewModel.setHomePageInfo(homePageInfo)
                     homePageViewModel.setVendorStatus(vendorStatus)
@@ -176,26 +179,27 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
         val isStatusViewExpanded = remember { mutableStateOf(false) }
 
 
-        if (uiState.value.loadingVisible) {
-            Box(
-                modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                    .padding(top = 40.dp, start = 50.dp, end = 50.dp)
-                    .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                IndeterminateCircularProgressBar()
-            }
-        }
+        Box(
+            modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                .background(color = Colors.lighterPrimaryColor),
+            contentAlignment = Alignment.Center
+        ) {
+            if (uiState.value.loadingVisible) {
+                Box(
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                        .padding(top = 40.dp, start = 50.dp, end = 50.dp)
+                        .background(color = Color.Transparent, shape = RoundedCornerShape(20.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    IndeterminateCircularProgressBar()
+                }
+            } else if (uiState.value.errorOccurred) {
 
-        else if (uiState.value.errorOccurred) {
+                val message = uiState.value.errorMessage
 
-            val message = uiState.value.errorMessage
+                //Error Occurred
 
-            //Error Occurred
-
-        }
-
-        else if (uiState.value.contentVisible) {
+            } else if (uiState.value.contentVisible) {
                 val popularProducts = homepageInfo.value.popularProducts
                 val recentAppointments = homepageInfo.value.recentAppointment
                 val vendorServices = homepageInfo.value.vendorServices
@@ -224,40 +228,44 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                             )
                         }
                     },
-                     content = {
-                               Column(
-                                    Modifier
-                                        .verticalScroll(state = rememberScrollState())
-                                        .height(homePageViewHeight.value.dp)
-                                        .padding(top = 5.dp)
-                                        .background(color = Color.White)
-                                        .fillMaxWidth()
+                    content = {
+                        Column(
+                            Modifier
+                                .verticalScroll(state = rememberScrollState())
+                                .height(homePageViewHeight.value.dp)
+                                .padding(top = 5.dp)
+                                .background(color = Color.White)
+                                .fillMaxWidth()
 
-                                ) {
-                                     BusinessStatusDisplay(mVendorStatus.value, onViewHeightChanged = {
-                                             newHeight: Int, isStatusExpanded: Boolean ->
-                                             isStatusViewExpanded.value = isStatusExpanded })
+                        ) {
+                            BusinessStatusDisplay(
+                                mVendorStatus.value,
+                                onViewHeightChanged = { newHeight: Int, isStatusExpanded: Boolean ->
+                                    isStatusViewExpanded.value = isStatusExpanded
+                                })
 
-                                    AttachOurServices()
-                                    if (vendorServices != null) {
-                                        ServiceGridScreen(vendorServices)
-                                    }
-                                    if (vendorRecommendations != null) {
-                                        RecommendedSessions(vendorRecommendations)
-                                    }
+                            AttachOurServices()
+                            if (vendorServices != null) {
+                                ServiceGridScreen(vendorServices)
+                            }
+                            if (vendorRecommendations != null) {
+                                RecommendedSessions(vendorRecommendations)
+                            }
 
-                                    PopularProducts()
-                                    if (popularProducts != null) {
-                                        PopularProductScreen(
-                                            popularProducts,
-                                            mainViewModel,
-                                            stackedSnackBarHostState)
-                                    }
-                                    AttachAppointments()
-                                    RecentAppointmentScreen(appointmentList = recentAppointments)
-                                }
-                     })
-           }
+                            PopularProducts()
+                            if (popularProducts != null) {
+                                PopularProductScreen(
+                                    popularProducts,
+                                    mainViewModel,
+                                    stackedSnackBarHostState
+                                )
+                            }
+                            AttachAppointments()
+                            RecentAppointmentScreen(appointmentList = recentAppointments)
+                        }
+                    })
+            }
+        }
     }
 
     private fun saveAccountInfoFromServer(homePageInfo: HomepageInfo){

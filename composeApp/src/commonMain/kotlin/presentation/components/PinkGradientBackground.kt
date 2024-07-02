@@ -32,8 +32,8 @@ fun SplashScreenBackground() {
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            Color.White,
-                            Color.White
+                            Colors.primaryColor,
+                            Colors.primaryColor
                         )
                     )
                 )

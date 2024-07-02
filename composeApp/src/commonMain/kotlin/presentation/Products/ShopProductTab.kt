@@ -248,7 +248,10 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
             })
         productHandler.init()
 
+
         Scaffold(
+            modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                .background(color = Colors.lighterPrimaryColor),
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {
                 SearchBar(onValueChange = {
@@ -280,7 +283,7 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
                         onCartChanged.value = true
                     }, stackedSnackBarHostState)
             },
-            backgroundColor = Color.White,
+            backgroundColor = Color.Transparent,
             floatingActionButton = {
                 var cartSize = mainViewModel.unSavedOrderSize.collectAsState()
                 val cartContainer = if (cartSize.value > 0) 140 else 0
@@ -386,7 +389,7 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
                 Box(
                     modifier = Modifier.fillMaxWidth().fillMaxHeight()
                         .padding(top = 40.dp, start = 50.dp, end = 50.dp)
-                        .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
+                        .background(color = Color.Transparent, shape = RoundedCornerShape(20.dp)),
                     contentAlignment = Alignment.Center
                 ) {
                     IndeterminateCircularProgressBar()
