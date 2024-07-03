@@ -30,9 +30,15 @@ fun welcomeScreenScrollWidget() {
 
     val textList = arrayListOf<String>()
 
+    val imgList = arrayListOf<String>()
+
     textList.add("Lorem Ipsum is a dummy in typesetting industry")
     textList.add("Lorem Ipsum is a dummy in typesetting industry since 1900")
     textList.add("Lorem Ipsum is a dummy in typesetting industry")
+
+    imgList.add("drawable/afro_hair.jpg")
+    imgList.add("drawable/woman_welcome.jpg")
+    imgList.add("drawable/massage_therapy.jpg")
 
     Column(
         modifier = Modifier
@@ -49,7 +55,7 @@ fun welcomeScreenScrollWidget() {
                 modifier = Modifier.fillMaxWidth().fillMaxHeight()
                     .background(color = Color.Transparent)
             ) {
-                welcomeScreenView(textList[pagerState.currentPage])
+                welcomeScreenView(textList[currentPage], imgList[currentPage])
             }
         }
         Box(modifier = Modifier.fillMaxWidth().fillMaxHeight()
