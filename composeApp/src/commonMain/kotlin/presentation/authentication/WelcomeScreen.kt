@@ -37,6 +37,7 @@ import domain.Enums.AuthSSOScreenNav
 import presentation.components.ButtonComponent
 import presentation.components.IconButtonComponent
 import presentation.widgets.WelcomeScreenPagerContent
+import presentation.widgets.welcomeScreenScrollWidget
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
@@ -50,8 +51,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, userEmail: String
                 colors = listOf(
                     Color.Transparent,
                     Color(color = 0x60000000),
-                    Color(color = 0x80000000),
-                    Color.Black,
+                    Color(color = 0x50000000),
                     Color.Black)
             )
         )
@@ -61,33 +61,40 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, userEmail: String
             .fillMaxWidth()
 
         ) {
-            ImageComponent(imageModifier = Modifier.fillMaxHeight().fillMaxWidth(),
-                imageRes = "drawable/woman_welcome.jpg", contentScale = ContentScale.FillHeight)
+
 
             Column(
-                modifier = bgStyle,
+                modifier = Modifier.fillMaxHeight().fillMaxWidth().background(color = Color.Black),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally) {
 
-                Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.60f).padding(bottom = 40.dp), contentAlignment = Alignment.BottomCenter) {
-                    AttachTopContent()
+                Box(modifier = Modifier.fillMaxHeight(0.65f).fillMaxWidth().background(color = Color.Transparent), contentAlignment = Alignment.Center) {
+                    welcomeScreenScrollWidget()
                 }
+                Column(modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(top = 10.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                            .background(color = Color.Black), contentAlignment = Alignment.TopCenter
+                    ) {
+                        AttachActionButtons(platformNavigator)
 
-                Box(modifier = Modifier.fillMaxWidth().wrapContentHeight(), contentAlignment = Alignment.TopCenter) {
-                    AttachActionButtons(platformNavigator)
-
-                }
-                Box(modifier = Modifier.fillMaxWidth().height(100.dp).padding(start = 20.dp, end = 20.dp), contentAlignment = Alignment.TopCenter) {
-                    TextComponent(
-                        text = "An “agree to terms and conditions” is a method of protecting your business by requiring that users acknowledge the rules they must abide by when using your services.",
-                        fontSize = 14,
-                        fontFamily = GGSansRegular,
-                        textStyle = TextStyle(),
-                        textColor = Color.White,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Normal,
-                        lineHeight = 15
-                    )
+                    }
+                    Box(
+                        modifier = Modifier.fillMaxWidth().height(100.dp)
+                            .background(color = Color.Black).padding(start = 20.dp, end = 20.dp),
+                        contentAlignment = Alignment.TopCenter
+                    ) {
+                        TextComponent(
+                            text = "An “agree to terms and conditions” is a method of protecting your business by requiring that users acknowledge the rules",
+                            fontSize = 14,
+                            fontFamily = GGSansRegular,
+                            textStyle = TextStyle(),
+                            textColor = Color.White,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Normal,
+                            lineHeight = 15
+                        )
+                    }
                 }
 
                 if (userEmail.isNotEmpty()){
@@ -104,26 +111,18 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, userEmail: String
 
     }
 
-@Composable
- fun AttachTopContent(){
-     Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.50f), contentAlignment = Alignment.BottomCenter) {
-         ImageComponent(imageModifier = Modifier.fillMaxWidth(0.60f).height(150.dp),
-             imageRes = "drawable/carevida.png", contentScale = ContentScale.Inside)
-     }
- }
-
 
 
 @Composable
 fun AttachActionButtons(platformNavigator: PlatformNavigator){
     val navigator = LocalNavigator.currentOrThrow
     val buttonStyle = Modifier
-        .padding(bottom = 20.dp)
+        .padding(bottom = 15.dp)
         .fillMaxWidth(0.90f)
         .height(45.dp)
 
     val phoneButtonStyle = Modifier
-        .padding(bottom = 20.dp)
+        .padding(bottom = 15.dp)
         .fillMaxWidth(0.90f)
         .height(45.dp)
         .background(
