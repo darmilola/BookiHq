@@ -8,7 +8,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -55,11 +58,12 @@ fun OTPTextField(
         decorationBox = {
             Row(horizontalArrangement = Arrangement.Center) {
                 repeat(otpCount) { index ->
-                    CharView(
-                        index = index,
-                        text = otpText
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
+                    Row(modifier = Modifier.fillMaxHeight().weight(1f).padding(start = 5.dp)) {
+                        CharView(
+                            index = index,
+                            text = otpText
+                        )
+                    }
                 }
             }
         }
@@ -84,8 +88,8 @@ private fun CharView(
             fontWeight = FontWeight.Normal
         )
        Box(modifier = Modifier
-           .width(70.dp)
-           .height(75.dp)
+           .fillMaxWidth()
+           .height(70.dp)
            .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(10.dp))
            .border(
                (1.8).dp, when {

@@ -56,7 +56,7 @@ fun ContinueWithPhone(platformNavigator: PlatformNavigator) {
                 AuthenticationBackNav(platformNavigator = platformNavigator)
                 EnterPhoneNumberTitle()
                 AttachSendCodeDescription()
-                PhoneInputWidget()
+                PhoneInputWidget(onSelectionChange = {})
 
                 ButtonComponent(modifier = buttonStyle, buttonText = "Continue", borderStroke = null, colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h4){
                     navigator.replace(AuthenticationScreen(currentPosition = AuthSSOScreenNav.AUTH_LOGIN.toPath(), platformNavigator = platformNavigator))

@@ -146,6 +146,10 @@ class MainViewController: PlatformNavigator {
            it()
        }
     }
+
+    override fun startGoogleSSO() {
+        TODO("Not yet implemented")
+    }
 }
 
 

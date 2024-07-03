@@ -5,6 +5,7 @@ enum class AuthSSOScreenNav {
     AUTH_SIGNUP,
     VERIFY_OTP,
     WELCOME_SCREEN,
+    PHONE_SCREEN,
     CONNECT_VENDOR,
     MAIN,
     COMPLETE_PROFILE;
@@ -16,6 +17,7 @@ enum class AuthSSOScreenNav {
         WELCOME_SCREEN -> 4
         CONNECT_VENDOR -> 5
         MAIN -> 6
+        PHONE_SCREEN -> 7
     }
 
     fun toEventPropertyName() = when (this) {
@@ -26,5 +28,6 @@ enum class AuthSSOScreenNav {
         WELCOME_SCREEN -> "welcome_screen"
         CONNECT_VENDOR -> "connect_vendor"
         MAIN -> "main"
+        PHONE_SCREEN -> "phone_screen"
     }
 }

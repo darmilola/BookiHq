@@ -162,7 +162,7 @@ fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_
 
 
 @Composable
-fun CountryCodeDropDownWidget(menuItems: List<PhoneExtensionModel>) {
+fun CountryCodeDropDownWidget(menuItems: List<PhoneExtensionModel>, onSelectionChange: (Int) -> Unit) {
 
     val expandedMenuItem = remember { mutableStateOf(false) }
 
@@ -185,6 +185,7 @@ fun CountryCodeDropDownWidget(menuItems: List<PhoneExtensionModel>) {
                 expandedMenuItem.value = false
             },
             onMenuItemClick = { index ->
+                onSelectionChange(index)
                 selectedMenuIndex.value = index
                 expandedMenuItem.value = false
             }

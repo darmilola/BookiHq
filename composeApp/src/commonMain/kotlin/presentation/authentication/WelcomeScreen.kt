@@ -41,7 +41,7 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun WelcomeScreenCompose(platformNavigator: PlatformNavigator) {
+fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, userEmail: String = "") {
     val bgStyle = Modifier
         .fillMaxWidth()
         .fillMaxHeight()
@@ -90,6 +90,13 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator) {
                     )
                 }
 
+                if (userEmail.isNotEmpty()){
+                    println("Success 0 $userEmail")
+                }
+                else{
+                    println("Success 1 $userEmail")
+                }
+
 
             }
 
@@ -134,11 +141,21 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator){
     Column(modifier = Modifier.fillMaxWidth().height(200.dp), horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
 
-        IconButtonComponent(modifier = phoneButtonStyle, buttonText = "Continue with phone number", borderStroke = BorderStroke((0.01).dp, Colors.primaryColor), iconSize = 24, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor = Color.White, style = MaterialTheme.typography.h4, iconRes = "drawable/care_icon.png", colorFilter = ColorFilter.tint(color = Color.White)){}
+        IconButtonComponent(modifier = phoneButtonStyle, buttonText = "Continue with phone number", borderStroke = BorderStroke((0.01).dp, Colors.primaryColor), iconSize = 24, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor = Color.White, style = MaterialTheme.typography.h4, iconRes = "drawable/care_icon.png", colorFilter = ColorFilter.tint(color = Color.White)){
+           navigator.replaceAll(PhoneInputScreen(platformNavigator))
+        }
 
-        IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Facebook", borderStroke = BorderStroke(0.8.dp, Colors.blue), iconSize = 20, colors = ButtonDefaults.buttonColors(backgroundColor = Colors.blue), fontSize = 16, shape = CircleShape, textColor = Color.White, style = MaterialTheme.typography.h4, iconRes = "drawable/facebook_icon.png", colorFilter = ColorFilter.tint(color = Color.White)){}
+        IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Facebook", borderStroke = BorderStroke(0.8.dp, Colors.blue), iconSize = 20, colors = ButtonDefaults.buttonColors(backgroundColor = Colors.blue), fontSize = 16, shape = CircleShape, textColor = Color.White, style = MaterialTheme.typography.h4, iconRes = "drawable/facebook_icon.png", colorFilter = ColorFilter.tint(color = Color.White)){
+            platformNavigator.startFacebookSSO(onAuthSuccessful = {
+                println("Success 0 $it")
+            }, onAuthFailed = {
+                println("Success 1")
+            })
+        }
 
-        IconButtonComponent(modifier = buttonStyle, buttonText = "Sign in with Google", borderStroke = BorderStroke(0.8.dp, Color.White), iconSize = 20, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 16, shape = CircleShape, textColor = Color.Black, style = MaterialTheme.typography.h4, iconRes = "drawable/google_icon.png"){}
+        IconButtonComponent(modifier = buttonStyle, buttonText = "Sign in with Google", borderStroke = BorderStroke(0.8.dp, Color.White), iconSize = 20, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 16, shape = CircleShape, textColor = Color.Black, style = MaterialTheme.typography.h4, iconRes = "drawable/google_icon.png"){
+            platformNavigator.startGoogleSSO(onAuthSuccessful = {}, onAuthFailed = {})
+        }
 
 
     }
@@ -150,9 +167,9 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator){
     }
 
 
-class WelcomeScreen(val platformNavigator: PlatformNavigator) : Screen {
+class WelcomeScreen(val platformNavigator: PlatformNavigator, val userEmail: String = "") : Screen {
     @Composable
     override fun Content() {
-        WelcomeScreenCompose(platformNavigator)
+        WelcomeScreenCompose(platformNavigator, userEmail)
     }
 }

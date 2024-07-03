@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     id("kotlin-parcelize")
     kotlin("plugin.serialization") version "1.9.21"
+    id("com.google.gms.google-services")
 }
 
 kotlin {
@@ -47,6 +48,15 @@ kotlin {
             implementation("androidx.media3:media3-ui:1.1.0")
            // implementation ("io.dyte:core-android:1.37.0")
             implementation ("io.dyte:uikit:1.18.0")
+            implementation(project.dependencies.platform("com.google.firebase:firebase-bom:33.1.1"))
+
+            // Add the dependency for the Firebase Authentication library
+            // When using the BoM, you don't specify versions in Firebase library dependencies
+            implementation("com.google.firebase:firebase-auth")
+
+            // Also add the dependency for the Google Play services library and specify its version
+            implementation("com.google.android.gms:play-services-auth:21.2.0")
+
 
         }
 

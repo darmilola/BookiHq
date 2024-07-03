@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import presentations.components.TextFieldComponent
 
 @Composable
-fun PhoneInputWidget() {
+fun PhoneInputWidget(onValueChange: ((String) -> Unit)? = null, onSelectionChange: (Int) -> Unit) {
     val countryCodeList = listOf<PhoneExtensionModel>(PhoneExtensionModel(countryCode = "+ 234", countryFlagRes = "drawable/nigeria_flag_icon.png"), PhoneExtensionModel(countryCode = "+ 27", countryFlagRes = "drawable/south_africa_flag.png"))
     var text by remember { mutableStateOf("") }
     var borderStroke by remember { mutableStateOf(BorderStroke(2.dp, color  = Color.Transparent)) }
@@ -53,10 +53,12 @@ fun PhoneInputWidget() {
         modifier = modifier
     ) {
         Box(modifier = Modifier.fillMaxWidth(0.30f).fillMaxHeight().padding(start = 20.dp), contentAlignment = Alignment.Center) {
-            CountryCodeDropDownWidget(menuItems = countryCodeList)
+            CountryCodeDropDownWidget(menuItems = countryCodeList, onSelectionChange = {
+                onSelectionChange(it)
+            })
         }
 
-        Box(modifier = Modifier.fillMaxWidth(0.10f).fillMaxHeight(), contentAlignment = Alignment.Center) {
+        Box(modifier = Modifier.fillMaxWidth(0.05f).fillMaxHeight(), contentAlignment = Alignment.Center) {
             Box(modifier = Modifier.width(2.dp).fillMaxHeight(0.40f).background(color = Color.DarkGray)) }
 
         TextFieldComponent(
@@ -67,6 +69,7 @@ fun PhoneInputWidget() {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             onValueChange = {
                 text = it
+                onValueChange!!(text)
             } , isSingleLine = true, placeholderText = "000 0000 000", onFocusChange = {
                     it ->
                 borderStroke = if (it){
