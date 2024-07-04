@@ -3,14 +3,13 @@ package domain.authentication
 import applications.location.createGeocoder
 import com.badoo.reaktive.single.Single
 import com.badoo.reaktive.single.toSingle
-import dev.jordond.compass.Location
 import dev.jordond.compass.Place
 import dev.jordond.compass.geocoder.Geocoder
 import domain.Models.AuthenticationResponse
-import domain.Models.ListDataResponse
 import domain.Models.ServerResponse
-import domain.Models.Vendor
 import io.ktor.client.HttpClient
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 class AuthenticationRepositoryImpl(apiService: HttpClient):
     AuthenticationRepository {
@@ -23,18 +22,28 @@ class AuthenticationRepositoryImpl(apiService: HttpClient):
         val param = ValidateProfileRequest(userEmail)
         return authenticationNetworkService.validateProfile(param)
     }
+
+    override suspend fun validateEmail(userEmail: String): Single<AuthenticationResponse> {
+        val param = ValidateProfileRequest(userEmail)
+        return authenticationNetworkService.validateEmail(param)
+    }
+
+    override suspend fun validatePhone(userPhone: String): Single<AuthenticationResponse> {
+        val param = PhoneValidateProfileRequest(userPhone)
+        return authenticationNetworkService.validatePhone(param)
+    }
+
     override suspend fun completeProfile(
         firstname: String,
         lastname: String,
         userEmail: String,
-        address: String,
-        contactPhone: String,
+        authPhone: String,
         countryId: Int,
         cityId: Int,
         gender: String,
         profileImageUrl: String
     ): Single<ServerResponse> {
-        val param = CompleteProfileRequest(firstname, lastname, userEmail, address, contactPhone, countryId, cityId, gender, profileImageUrl)
+        val param = CompleteProfileRequest(firstname, lastname, userEmail, authPhone, countryId, cityId, gender, profileImageUrl)
         return authenticationNetworkService.completeProfile(param)
     }
 

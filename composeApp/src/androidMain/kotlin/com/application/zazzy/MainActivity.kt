@@ -2,49 +2,40 @@ package com.application.zazzy
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
+import android.os.Parcel
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import applications.auth0.AndroidAuth0ConnectionResponse
 import cafe.adriel.voyager.navigator.Navigator
-import com.cloudinary.android.MediaManager
-import com.cloudinary.android.callback.ErrorInfo
-import com.cloudinary.android.callback.UploadCallback
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
-import domain.Enums.AuthSSOScreenNav
-import domain.Enums.AuthenticationAction
-import domain.Models.Auth0ConnectionResponse
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import domain.Models.PlatformNavigator
 import presentation.Splashscreen.SplashScreen
-import presentation.authentication.AuthenticationScreen
 import presentation.authentication.WelcomeScreen
 import presentation.main.MainScreen
 import java.util.concurrent.TimeUnit
 
 
 class MainActivity : ComponentActivity(), PlatformNavigator {
-    private var authScreen: AuthenticationScreen? = null
-    private val mainScreen = MainScreen(platformNavigator = this)
-    private val RC_SIGN_IN = 1
-    private var firebaseAuth: FirebaseAuth? = null
-    private var mainActivityResultLauncher: ActivityResultLauncher<Intent>? = null
-    private var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks? = null
-    private var storedVerificationId: String = ""
-    private var resendToken: PhoneAuthProvider.ForceResendingToken? = null
+
+    @Transient var firebaseAuth: FirebaseAuth? = null
+    @Transient private var mainActivityResultLauncher: ActivityResultLauncher<Intent>? = null
+    @Transient var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks? = null
+    @Transient private var storedVerificationId: String = ""
+    @Transient private var resendToken: PhoneAuthProvider.ForceResendingToken? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
           firebaseAuth = FirebaseAuth.getInstance()
           setContent {
@@ -73,7 +64,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account.idToken!!, onAuthSuccessful = {
                     setContent {
-                        Navigator(WelcomeScreen(this, userEmail = it))
+                        Navigator(WelcomeScreen(this, googleAuthEmail = it))
                     }
                 }, onAuthFailed = {
 
@@ -91,7 +82,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
     }
 
     override fun startImageUpload(imageByteArray: ByteArray) {
-        authScreen?.setImageUploadProcessing(isDone = false)
+      /*  authScreen?.setImageUploadProcessing(isDone = false)
 
         try {
             MediaManager.get()
@@ -119,7 +110,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
                     authScreen?.setImageUploadProcessing(isDone = true)
                     mainScreen?.setImageUploadProcessing(isDone = true)
                 }
-            }).dispatch()
+            }).dispatch()*/
     }
 
 
@@ -161,7 +152,32 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
         })
     }
 
-    override fun startFacebookSSO(onAuthSuccessful: (String) -> Unit, onAuthFailed: () -> Unit) {}
+    override fun startXSSO(onAuthSuccessful: (String) -> Unit, onAuthFailed: () -> Unit) {
+        val provider = OAuthProvider.newBuilder("twitter.com")
+        val pendingResultTask = firebaseAuth!!.pendingAuthResult
+        if (pendingResultTask != null) {
+            // There's something already here! Finish the sign-in for your user.
+            pendingResultTask
+                .addOnSuccessListener {
+                    onAuthSuccessful(it.user?.email!!)
+                }
+                .addOnFailureListener {
+                    onAuthFailed()
+                }
+        } else {
+
+            firebaseAuth!!
+                .startActivityForSignInWithProvider(this, provider.build())
+                .addOnSuccessListener {
+                    onAuthSuccessful(it.user?.email!!)
+                }
+                .addOnFailureListener {
+                    onAuthFailed()
+                }
+
+        }
+
+    }
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential, onVerificationSuccessful: (String) -> Unit,
                                               onVerificationFailed: () -> Unit) {
         firebaseAuth!!.signInWithCredential(credential)
@@ -188,4 +204,11 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
                 }
             }
     }
+
+    override fun describeContents(): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun writeToParcel(p0: Parcel, p1: Int) {}
+
 }

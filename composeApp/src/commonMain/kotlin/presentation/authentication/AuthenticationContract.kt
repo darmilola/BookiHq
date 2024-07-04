@@ -7,30 +7,28 @@ import UIStates.ScreenUIStates
 
 class AuthenticationContract {
     interface View {
-        fun onAuth0Started()
-
-        fun onAuth0Ended()
         fun showUserProfile(user: User)
         fun goToMainScreen(userEmail: String)
-
-        fun goToCompleteProfile(userEmail: String)
-
+        fun goToMainScreenWithPhone(phone: String)
+        fun goToCompleteProfileWithEmail(userEmail: String)
+        fun goToCompleteProfileWithPhone(phone: String)
         fun showUserLocation(place: Place)
-
         fun goToConnectVendor(userEmail: String)
+        fun goToConnectVendorWithPhone(phone: String)
+        fun onProfileValidationStarted()
+        fun onProfileValidationEnded()
 
-        fun showLce(uiState: ScreenUIStates, message: String = "")
-        fun showAsyncLce(uiState: ActionUIStates, message: String = "")
+        fun onCompleteProfileStarted()
+        fun onCompleteProfileEnded(isSuccessful: Boolean = false)
     }
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
-        abstract fun startAuth0()
-        abstract fun endAuth0()
         abstract fun validateUserProfile(userEmail: String)
+        abstract fun validateEmail(userEmail: String)
+        abstract fun validatePhone(phone: String)
         abstract fun getUserLocation(lat: Double, lng: Double)
-        abstract fun completeProfile(firstname: String, lastname: String, userEmail: String, address: String,
-                                     contactPhone: String,   countryId: Int,
+        abstract fun completeProfile(firstname: String, lastname: String, userEmail: String, authPhone: String,   countryId: Int,
                                      cityId: Int, gender: String, profileImageUrl: String)
 
     }

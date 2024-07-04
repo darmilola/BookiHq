@@ -16,14 +16,17 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.Settings
 import di.initKoin
 import presentation.components.SplashScreenBackground
 import kotlinx.coroutines.delay
+import kotlinx.serialization.Transient
 import presentation.connectVendor.ConnectVendorScreen
 import presentation.authentication.WelcomeScreen
 import presentation.main.MainScreen
 import presentation.widgets.SplashScreenWidget
+import utils.ParcelableScreen
 
 @Composable
 fun SplashScreenCompose(platformNavigator: PlatformNavigator) {
@@ -53,8 +56,6 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator) {
             authenticateSplashScreen(preferenceSettings, onAuthenticated = {
                 navigator.replaceAll(WelcomeScreen(platformNavigator))
                 //navigator.replaceAll(MainScreen(platformNavigator = platformNavigator))
-            }, onConnectVendor = {
-                navigator.replaceAll(ConnectVendorScreen(platformNavigator))
             }, onWelcome = {
                 navigator.replaceAll(WelcomeScreen(platformNavigator))
             })
@@ -62,16 +63,10 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator) {
         }
     }
 
- private fun authenticateSplashScreen(settings: Settings, onAuthenticated :() -> Unit,
-                                      onConnectVendor :() -> Unit, onWelcome :() -> Unit){
-     val userEmail = "devprocess0@gmail.com"//settings.getString("userEmail", "")
-     val isVendorConnected = true//settings.getBoolean("isVendorConnected", false)
-
-     if (userEmail.isNotEmpty() && isVendorConnected){
+ private fun authenticateSplashScreen(settings: Settings, onAuthenticated :() -> Unit, onWelcome :() -> Unit){
+     val userEmail = "devprocess0@gmail.com" // settings.getString("userEmail", "")
+     if (userEmail.isNotEmpty()){
          onAuthenticated()
-     }
-     else if(userEmail.isNotEmpty() && !isVendorConnected){
-         onConnectVendor()
      }
      else{
          onWelcome()
@@ -79,7 +74,8 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator) {
 
  }
 
-class SplashScreen(val platformNavigator: PlatformNavigator) : Screen {
+@Parcelize
+class SplashScreen(val platformNavigator: PlatformNavigator) : ParcelableScreen {
     @Composable
     override fun Content() {
         initKoin()

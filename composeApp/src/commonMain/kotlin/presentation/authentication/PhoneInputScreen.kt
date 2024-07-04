@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.AuthSSOScreenNav
 import domain.Models.PlatformNavigator
 import presentation.components.ButtonComponent
@@ -36,8 +37,11 @@ import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
+import utils.ParcelableScreen
+import utils.makeValidPhone
 
-class PhoneInputScreen(val platformNavigator: PlatformNavigator) : Screen {
+@Parcelize
+class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScreen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -66,7 +70,6 @@ class PhoneInputScreen(val platformNavigator: PlatformNavigator) : Screen {
 
         var phone = remember { mutableStateOf("") }
         var countryCode = remember { mutableStateOf("+234") }
-        var verificationPhone =  countryCode.value+""+phone.value
 
 
 
@@ -106,6 +109,8 @@ class PhoneInputScreen(val platformNavigator: PlatformNavigator) : Screen {
                             stackedSnackBarHostState = stackedSnackBarHostState,
                             onActionClick = {})
                     } else {
+                        val validPhone = makeValidPhone(phone.value)
+                        var verificationPhone =  countryCode.value+""+validPhone
                         platformNavigator.startPhoneSS0(verificationPhone)
                         navigator.replaceAll(VerifyOTPScreen(platformNavigator, verificationPhone))
                     }

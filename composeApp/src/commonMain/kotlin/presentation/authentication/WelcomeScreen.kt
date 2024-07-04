@@ -12,71 +12,128 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.lifecycle.JavaSerializable
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import domain.Enums.Auth0ConnectionType
-import domain.Enums.AuthSSOScreenNav
-import presentation.components.ButtonComponent
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import kotlinx.serialization.Transient
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.components.IconButtonComponent
-import presentation.widgets.WelcomeScreenPagerContent
+import presentation.connectVendor.ConnectVendorScreen
+import presentation.dialogs.LoadingDialog
+import presentation.main.MainScreen
 import presentation.widgets.welcomeScreenScrollWidget
-import presentations.components.ImageComponent
 import presentations.components.TextComponent
+import utils.ParcelableScreen
+
+
+@Parcelize
+class WelcomeScreen(val platformNavigator: PlatformNavigator, val googleAuthEmail: String = "") : ParcelableScreen, KoinComponent {
+
+    @Transient private val  authenticationPresenter: AuthenticationPresenter by inject()
+    @Composable
+    override fun Content() {
+        WelcomeScreenCompose(platformNavigator, googleAuthEmail, authenticationPresenter = authenticationPresenter)
+    }
+}
+
 
 @Composable
-fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, userEmail: String = "") {
-    val bgStyle = Modifier
-        .fillMaxWidth()
-        .fillMaxHeight()
-        .background(
-            brush = Brush.verticalGradient(
-                colors = listOf(
-                    Color.Transparent,
-                    Color(color = 0x60000000),
-                    Color(color = 0x50000000),
-                    Color.Black)
-            )
-        )
+fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: String = "", authenticationPresenter: AuthenticationPresenter) {
 
-        Box(contentAlignment = Alignment.TopCenter, modifier = Modifier
+    val verificationInProgress = remember { mutableStateOf(false) }
+    val userAuthPhone = remember { mutableStateOf("") }
+    val authEmail = remember { mutableStateOf("") }
+    val navigateToCompleteProfile = remember { mutableStateOf(false) }
+    val navigateToConnectVendor = remember { mutableStateOf(false) }
+    val navigateToPlatform = remember { mutableStateOf(false) }
+    val navigator = LocalNavigator.currentOrThrow
+
+    val userEmailFromGoogleAuth = remember { mutableStateOf(googleAuthEmail) }
+
+    // View Contract Handler Initialisation
+    val handler = AuthenticationScreenHandler(authenticationPresenter,
+        onUserLocationReady = {},
+        enterPlatform = { userEmail, userPhone ->
+           navigateToPlatform.value = true
+        },
+        completeProfile = { userEmail, userPhone ->
+            navigateToCompleteProfile.value = true
+        },
+        connectVendor = { userEmail, userPhone ->
+            navigateToConnectVendor.value = true
+        },
+        onVerificationStarted = {
+            verificationInProgress.value = true
+        },
+        onVerificationEnded = {
+            userEmailFromGoogleAuth.value = ""
+            verificationInProgress.value = false
+        })
+    handler.init()
+
+
+    if (navigateToCompleteProfile.value){
+        navigator.replaceAll(CompleteProfileScreen(platformNavigator, authPhone = userAuthPhone.value, authEmail = authEmail.value))
+    }
+    else if (navigateToConnectVendor.value){
+        navigator.replaceAll(ConnectVendorScreen(platformNavigator))
+    }
+    else if (navigateToPlatform.value){
+        navigator.replaceAll(MainScreen(platformNavigator))
+    }
+
+    Box(contentAlignment = Alignment.TopCenter, modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth()
 
         ) {
-
+            if (verificationInProgress.value) {
+                Box(modifier = Modifier.fillMaxWidth(0.90f)) {
+                    LoadingDialog("Verifying Profile...")
+                }
+            }
 
             Column(
                 modifier = Modifier.fillMaxHeight().fillMaxWidth().background(color = Color.Black),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally) {
 
-                Box(modifier = Modifier.fillMaxHeight(0.65f).fillMaxWidth().background(color = Color.Transparent), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier.fillMaxHeight(0.65f).fillMaxWidth()
+                        .background(color = Color.Transparent), contentAlignment = Alignment.Center
+                ) {
                     welcomeScreenScrollWidget()
                 }
-                Column(modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(top = 10.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
+                Column(
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(top = 10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Bottom
+                ) {
                     Box(
                         modifier = Modifier.fillMaxWidth().wrapContentHeight()
                             .background(color = Color.Black), contentAlignment = Alignment.TopCenter
                     ) {
-                        AttachActionButtons(platformNavigator)
+                        AttachActionButtons(platformNavigator, authenticationPresenter)
 
                     }
                     Box(
@@ -97,24 +154,18 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, userEmail: String
                     }
                 }
 
-                if (userEmail.isNotEmpty()){
-                    println("Success 0 $userEmail")
+                if (userEmailFromGoogleAuth.value.isNotEmpty()) {
+                    // from google auth
+                    authenticationPresenter.validateEmail(googleAuthEmail)
                 }
-                else{
-                    println("Success 1 $userEmail")
-                }
-
-
             }
 
         }
 
     }
 
-
-
 @Composable
-fun AttachActionButtons(platformNavigator: PlatformNavigator){
+fun AttachActionButtons(platformNavigator: PlatformNavigator, authenticationPresenter: AuthenticationPresenter){
     val navigator = LocalNavigator.currentOrThrow
     val buttonStyle = Modifier
         .padding(bottom = 15.dp)
@@ -140,21 +191,24 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator){
     Column(modifier = Modifier.fillMaxWidth().height(200.dp), horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
 
+        IconButtonComponent(modifier = buttonStyle, buttonText = "Sign in with Google", borderStroke = BorderStroke(0.8.dp, Color.White), iconSize = 20, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 16, shape = CircleShape, textColor = Color.Black, style = MaterialTheme.typography.h4, iconRes = "drawable/google_icon.png"){
+            platformNavigator.startGoogleSSO(onAuthSuccessful = {
+                authenticationPresenter.validateEmail(it)
+            }, onAuthFailed = {
+
+            })
+        }
+
         IconButtonComponent(modifier = phoneButtonStyle, buttonText = "Continue with phone number", borderStroke = BorderStroke((0.01).dp, Colors.primaryColor), iconSize = 24, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor = Color.White, style = MaterialTheme.typography.h4, iconRes = "drawable/care_icon.png", colorFilter = ColorFilter.tint(color = Color.White)){
            navigator.replaceAll(PhoneInputScreen(platformNavigator))
         }
 
-        IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Facebook", borderStroke = BorderStroke(0.8.dp, Colors.blue), iconSize = 20, colors = ButtonDefaults.buttonColors(backgroundColor = Colors.blue), fontSize = 16, shape = CircleShape, textColor = Color.White, style = MaterialTheme.typography.h4, iconRes = "drawable/facebook_icon.png", colorFilter = ColorFilter.tint(color = Color.White)){
-            platformNavigator.startFacebookSSO(onAuthSuccessful = {
-                println("Success 0 $it")
-            }, onAuthFailed = {
-                println("Success 1")
-            })
+        IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with X", borderStroke = BorderStroke(0.8.dp, Color.White), iconSize = 20, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 16, shape = CircleShape, textColor = Color.Black, style = MaterialTheme.typography.h4, iconRes = "drawable/x_icon.png", colorFilter = ColorFilter.tint(color = Color.Black)){
+            platformNavigator.startXSSO(onAuthSuccessful = {
+                authenticationPresenter.validateEmail(it)
+            }, onAuthFailed = {})
         }
 
-        IconButtonComponent(modifier = buttonStyle, buttonText = "Sign in with Google", borderStroke = BorderStroke(0.8.dp, Color.White), iconSize = 20, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 16, shape = CircleShape, textColor = Color.Black, style = MaterialTheme.typography.h4, iconRes = "drawable/google_icon.png"){
-            platformNavigator.startGoogleSSO(onAuthSuccessful = {}, onAuthFailed = {})
-        }
 
 
     }
@@ -164,11 +218,3 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator){
             navigator.replace(AuthenticationScreen(currentPosition = AuthSSOScreenNav.AUTH_LOGIN.toPath(), platformNavigator = platformNavigator))
         }*/
     }
-
-
-class WelcomeScreen(val platformNavigator: PlatformNavigator, val userEmail: String = "") : Screen {
-    @Composable
-    override fun Content() {
-        WelcomeScreenCompose(platformNavigator, userEmail)
-    }
-}

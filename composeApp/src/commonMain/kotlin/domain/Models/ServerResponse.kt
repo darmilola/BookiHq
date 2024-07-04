@@ -1,5 +1,6 @@
 package domain.Models
 
+import domain.Enums.ProfileStatus
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -10,7 +11,8 @@ data class ServerResponse(@SerialName("status") val status: String = "", @Serial
 data class JoinMeetingResponse(@SerialName("status") val status: String = "", @SerialName("token") val token: String = "")
 
 @Serializable
-data class AuthenticationResponse(@SerialName("status") val status: String = "",  @SerialName("data") val userInfo: User = User())
+data class AuthenticationResponse(@SerialName("status") val status: String = "",  @SerialName("data") val userInfo: User = User(),
+                                  @SerialName("profile_status") val profileStatus: String = ProfileStatus.COMPLETE_PROFILE.toPath())
 
 @Serializable
 data class HomePageResponse(@SerialName("status") val status: String = "", @SerialName("homePage") val homepageInfo: HomepageInfo = HomepageInfo(),

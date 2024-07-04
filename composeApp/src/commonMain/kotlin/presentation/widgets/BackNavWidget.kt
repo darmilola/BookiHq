@@ -18,7 +18,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import domain.Enums.AuthSSOScreenNav
 import domain.Models.PlatformNavigator
-import presentation.authentication.AuthenticationScreen
+import presentation.authentication.PhoneInputScreen
 import presentation.authentication.WelcomeScreen
 import presentations.components.ImageComponent
 
@@ -45,8 +45,8 @@ fun AuthenticationBackNav(goToScreen: Int = AuthSSOScreenNav.AUTH_LOGIN.toPath()
         if(goToScreen == AuthSSOScreenNav.WELCOME_SCREEN.toPath()){
             navigator.replaceAll(WelcomeScreen(platformNavigator))
         }
-        else {
-            navigator.replace(AuthenticationScreen(goToScreen, platformNavigator = platformNavigator))
+        else if(goToScreen == AuthSSOScreenNav.PHONE_SCREEN.toPath()){
+            navigator.replaceAll(PhoneInputScreen(platformNavigator))
         }
     }
 }

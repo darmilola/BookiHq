@@ -3,6 +3,7 @@ package presentation.authentication
 import StackedSnackbarHost
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -27,9 +28,15 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.AuthSSOScreenNav
 import domain.Models.PlatformNavigator
+import kotlinx.serialization.Transient
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.components.ButtonComponent
+import presentation.dialogs.LoadingDialog
 import presentation.widgets.AuthenticationBackNav
 import presentation.widgets.OTPTextField
 import presentation.widgets.ShowSnackBar
@@ -38,10 +45,38 @@ import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
+import utils.ParcelableScreen
 
-class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verificationPhone: String) : Screen {
+
+@Parcelize
+class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verificationPhone: String) : ParcelableScreen, KoinComponent {
+
+    @Transient private val authenticationPresenter : AuthenticationPresenter by inject()
     @Composable
     override fun Content() {
+
+        val verificationInProgress = remember { mutableStateOf(false) }
+
+        val handler = AuthenticationScreenHandler(authenticationPresenter,
+            onUserLocationReady = {
+
+            },
+            enterPlatform = { userEmail, userPhone ->
+
+            },
+            completeProfile = { userEmail, userPhone ->
+
+            },
+            connectVendor = { userEmail, userPhone ->
+
+            },
+            onVerificationStarted = {
+                verificationInProgress.value = true
+            },
+            onVerificationEnded = {
+                verificationInProgress.value = false
+            })
+        handler.init()
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -72,6 +107,12 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                 .fillMaxWidth()
                 .fillMaxHeight(0.87f)
                 .background(color = Color(color = 0xFFFBFBFB))
+
+        if (verificationInProgress.value) {
+            Box(modifier = Modifier.fillMaxWidth(0.90f)) {
+                LoadingDialog("Verifying Profile...")
+            }
+        }
 
 
         Scaffold(
@@ -121,8 +162,9 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                                 stackedSnackBarHostState = stackedSnackBarHostState,
                                 onActionClick = {})
                         } else {
+                            verificationInProgress.value = true
                             platformNavigator.verifyOTP(otpValue, onVerificationSuccessful = {
-
+                               authenticationPresenter.validatePhone(it)
                             }, onVerificationFailed = {
                                 ShowSnackBar(title = "Error",
                                     description = "Error Occurred Please Try Again",

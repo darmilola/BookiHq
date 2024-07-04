@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.Scaffold
@@ -28,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.KeyboardType
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import com.russhwolf.settings.ObservableSettings
@@ -49,17 +47,15 @@ import rememberStackedSnackbarHostState
 import utils.InputValidator
 
 @Composable
-fun CompleteProfile(authenticationPresenter: AuthenticationPresenter,userEmail: String, platformNavigator: PlatformNavigator) {
+fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail: String, authPhone: String, platformNavigator: PlatformNavigator) {
 
     val placeHolderImage = "drawable/user_icon.png"
     val firstname = remember { mutableStateOf("") }
     val lastname = remember { mutableStateOf("") }
-    val address = remember { mutableStateOf("") }
-    val contactPhone = remember { mutableStateOf("") }
-    val country = remember { mutableStateOf("Ghana") }
-    val countryId = remember { mutableStateOf(-1) }
-    val city = remember { mutableStateOf(-1) }
     val gender = remember { mutableStateOf("male") }
+    val country = remember { mutableStateOf("Ghana") }
+    val city = remember { mutableStateOf(-1) }
+    val countryId = remember { mutableStateOf(-1) }
     val profileImageUrl = remember { mutableStateOf(placeHolderImage) }
     val imagePickerScope = rememberCoroutineScope()
     val preferenceSettings = Settings()
@@ -77,10 +73,8 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter,userEmail: 
 
     inputList.add(firstname.value)
     inputList.add(lastname.value)
-    inputList.add(address.value)
-    inputList.add(contactPhone.value)
     inputList.add(gender.value)
-    inputList.add(userEmail)
+    inputList.add(authEmail)
 
 
 
@@ -153,24 +147,6 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter,userEmail: 
                         }
                     }
                 }
-                InputWidget(
-                    iconRes = "drawable/address.png",
-                    placeholderText = "Address",
-                    iconSize = 28,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                    isPasswordField = false
-                ){
-                    address.value = it
-                }
-                InputWidget(
-                    iconRes = "drawable/phone_icon.png",
-                    placeholderText = "Contact Phone",
-                    iconSize = 28,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    isPasswordField = false
-                ){
-                    contactPhone.value = it
-                }
 
                 AttachCityDropDownWidget(userCountry = country.value) {
                     city.value = it
@@ -209,8 +185,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter,userEmail: 
                         preferenceSettings["cityId"] = city.value
                         authenticationPresenter.completeProfile(
                             firstname.value, lastname.value,
-                            userEmail = userEmail, address = address.value,
-                            contactPhone = contactPhone.value, countryId = countryId.value, cityId = city.value,
+                            userEmail = authEmail, authPhone = "", countryId = countryId.value, cityId = city.value,
                             gender = gender.value, profileImageUrl = profileImageUrl.value
                         )
 

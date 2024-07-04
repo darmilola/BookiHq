@@ -109,6 +109,7 @@ public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStr
                 val textModifier = Modifier
                     .fillMaxHeight()
                     .fillMaxWidth()
+                    .padding(end = 15.dp)
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,

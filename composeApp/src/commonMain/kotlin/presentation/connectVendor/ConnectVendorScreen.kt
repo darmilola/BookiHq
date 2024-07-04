@@ -49,16 +49,20 @@ import presentation.viewmodels.ConnectPageViewModel
 import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
 import UIStates.ScreenUIStates
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import kotlinx.serialization.Transient
 import theme.Colors
+import utils.ParcelableScreen
 
 
-open class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Screen, KoinComponent {
+@Parcelize
+class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableScreen, KoinComponent {
 
-    private val preferenceSettings: Settings = Settings()
-    private val connectVendorPresenter: ConnectVendorPresenter by inject()
-    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
-    private var connectPageViewModel: ConnectPageViewModel? = null
-    private var vendorResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Vendor>? = null
+    @Transient private val preferenceSettings: Settings = Settings()
+    @Transient private val connectVendorPresenter: ConnectVendorPresenter by inject()
+    @Transient private var screenUiStateViewModel: ScreenUIStateViewModel? = null
+    @Transient private var connectPageViewModel: ConnectPageViewModel? = null
+    @Transient private var vendorResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Vendor>? = null
     private var userEmail: String = ""
     private var countryId: Int = -1
     private var cityId: Int = -1

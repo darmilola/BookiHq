@@ -1,6 +1,8 @@
 package domain.Models
 
-interface PlatformNavigator {
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+
+interface PlatformNavigator: Parcelable {
      fun startVideoCall(authToken: String)
      fun startImageUpload(imageByteArray: ByteArray)
      fun getUserLocation()
@@ -9,6 +11,6 @@ interface PlatformNavigator {
      fun startPhoneSS0(phone: String)
      fun verifyOTP(verificationCode: String, onVerificationSuccessful: (String) -> Unit,
                    onVerificationFailed: () -> Unit)
-     fun startFacebookSSO(onAuthSuccessful: (String) -> Unit,
-                          onAuthFailed: () -> Unit)
+     fun startXSSO(onAuthSuccessful: (String) -> Unit,
+                   onAuthFailed: () -> Unit)
  }

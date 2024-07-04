@@ -31,7 +31,22 @@ data class InputValidator(private val input: ArrayList<String> = arrayListOf()) 
         }
         return isValid
     }
+
 }
+
+
+    fun makeValidPhone(input: String): String {
+        val sb = StringBuilder(input)
+        if (sb[0].toString().equals("0", ignoreCase = true)) {
+            sb.deleteAt(0)
+            return sb.toString()
+        }
+        else{
+            println("Here 2")
+            return input
+        }
+    }
+
 
 data class EmailValidator(private val input: String) {
 

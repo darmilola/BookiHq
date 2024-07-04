@@ -35,4 +35,24 @@ open class AuthenticationNetworkService(private val apiService: HttpClient) {
             setBody(validateProfileRequest)
         }.body<AuthenticationResponse>().toSingle()
 
+    suspend fun validateEmail(validateProfileRequest: ValidateProfileRequest) =
+        apiService.post {
+            url("/auth/user/profile/auth/email")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(validateProfileRequest)
+        }.body<AuthenticationResponse>().toSingle()
+
+    suspend fun validatePhone(phoneValidateProfileRequest: PhoneValidateProfileRequest) =
+        apiService.post {
+            url("/auth/user/profile/auth/phone")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(phoneValidateProfileRequest)
+        }.body<AuthenticationResponse>().toSingle()
+
 }
