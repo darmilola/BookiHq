@@ -58,7 +58,7 @@ fun ConnectBusinessTitle(title: String){
         .height(40.dp)
 
     val colModifier = Modifier
-        .padding(top = 55.dp, end = 0.dp)
+        .padding(top = 20.dp, end = 0.dp)
         .fillMaxWidth()
         .height(40.dp)
 

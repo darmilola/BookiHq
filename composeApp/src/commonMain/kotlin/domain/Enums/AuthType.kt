@@ -1,6 +1,6 @@
 package domain.Enums
 
-enum class SignupType {
+enum class AuthType {
     EMAIL,
     PHONE;
 

@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -37,13 +36,10 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
-import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
-import com.russhwolf.settings.set
 import countryList
-import domain.Enums.SignupType
+import domain.Enums.AuthType
 import domain.Models.PlatformNavigator
-import domain.Enums.getCityList
 import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.DomainViewHandler.PlatformHandler
 import presentation.components.ButtonComponent
@@ -55,7 +51,6 @@ import presentation.viewmodels.PlatformViewModel
 import presentation.widgets.DropDownWidget
 import presentation.widgets.AccountProfileImage
 import presentation.widgets.SnackBarType
-import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
 import presentation.widgets.ShowSnackBar
 import presentations.components.TextComponent
@@ -92,11 +87,6 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
     val handler = PlatformHandler(profilePresenter, platformViewModel)
     handler.init()
 
-    preferenceSettings as ObservableSettings
-
-    preferenceSettings.addStringListener("imageUrl","") {
-            value: String -> profileImageUrl.value = value
-    }
     inputList.add(firstname.value)
     inputList.add(lastname.value)
 
@@ -288,10 +278,10 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                             stackedSnackBarHostState,onActionClick = {})
                     }
                     else {
-                        val signupType = if (authEmail.isNotEmpty()) SignupType.EMAIL.toPath() else SignupType.PHONE.toPath()
+                        val authType = if (authEmail.isNotEmpty()) AuthType.EMAIL.toPath() else AuthType.PHONE.toPath()
                         authenticationPresenter.completeProfile(
                             firstname.value, lastname.value,
-                            userEmail = authEmail, authPhone = authPhone, signupType = signupType, country = country.value, city = city.value,
+                            userEmail = authEmail, authPhone = authPhone, signupType = authType, country = country.value, city = city.value,
                             gender = gender.value, profileImageUrl = profileImageUrl.value
                         )
 

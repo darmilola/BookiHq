@@ -131,8 +131,14 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
         }
     }
 
-    override fun validatePhone(phone: String) {
-        val validPhone = makeValidPhone(phone)
+    override fun validatePhone(phone: String, requireValidation: Boolean) {
+       var validPhone = ""
+        if (requireValidation) {
+            validPhone = makeValidPhone(phone)
+       }
+        else{
+            validPhone = phone
+        }
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {

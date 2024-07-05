@@ -33,6 +33,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.set
+import domain.Enums.AuthType
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -61,11 +64,11 @@ class WelcomeScreen(val platformNavigator: PlatformNavigator, val googleAuthEmai
 fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: String = "", authenticationPresenter: AuthenticationPresenter) {
 
     val verificationInProgress = remember { mutableStateOf(false) }
-    val userAuthPhone = remember { mutableStateOf("") }
     val authEmail = remember { mutableStateOf("") }
     val navigateToCompleteProfile = remember { mutableStateOf(false) }
     val navigateToConnectVendor = remember { mutableStateOf(false) }
     val navigateToPlatform = remember { mutableStateOf(false) }
+    val preferenceSettings = Settings()
     val navigator = LocalNavigator.currentOrThrow
 
     val userEmailFromGoogleAuth = remember { mutableStateOf(googleAuthEmail) }
@@ -93,12 +96,16 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
 
 
     if (navigateToCompleteProfile.value){
-        navigator.replaceAll(CompleteProfileScreen(platformNavigator, authPhone = userAuthPhone.value, authEmail = authEmail.value))
+        navigator.replaceAll(CompleteProfileScreen(platformNavigator, authPhone = "", authEmail = authEmail.value))
     }
     else if (navigateToConnectVendor.value){
+        preferenceSettings["authType"] = AuthType.EMAIL.toPath()
+        preferenceSettings["authEmail"] = authEmail.value
         navigator.replaceAll(ConnectVendorScreen(platformNavigator))
     }
     else if (navigateToPlatform.value){
+        preferenceSettings["authType"] = AuthType.EMAIL.toPath()
+        preferenceSettings["authEmail"] = authEmail.value
         navigator.replaceAll(MainScreen(platformNavigator))
     }
 

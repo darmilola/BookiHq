@@ -29,7 +29,10 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.set
 import domain.Enums.AuthSSOScreenNav
+import domain.Enums.AuthType
 import domain.Models.PlatformNavigator
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
@@ -61,6 +64,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
         val navigateToCompleteProfile = remember { mutableStateOf(false) }
         val navigateToConnectVendor = remember { mutableStateOf(false) }
         val navigateToPlatform = remember { mutableStateOf(false) }
+        val preferenceSettings = Settings()
         val navigator = LocalNavigator.currentOrThrow
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
@@ -87,14 +91,19 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
             }, onCompleteStarted = {}, onCompleteEnded = {})
         handler.init()
 
-
         if (navigateToCompleteProfile.value){
-            navigator.replaceAll(CompleteProfileScreen(platformNavigator, authPhone = verificationPhone, authEmail = ""))
+                preferenceSettings["authType"] = AuthType.PHONE.toPath()
+                preferenceSettings["authPhone"] = verificationPhone
+                navigator.replaceAll(CompleteProfileScreen(platformNavigator, authPhone = verificationPhone, authEmail = ""))
         }
         else if (navigateToConnectVendor.value){
+            preferenceSettings["authType"] = AuthType.PHONE.toPath()
+            preferenceSettings["authPhone"] = verificationPhone
             navigator.replaceAll(ConnectVendorScreen(platformNavigator))
         }
         else if (navigateToPlatform.value){
+            preferenceSettings["authType"] = AuthType.PHONE.toPath()
+            preferenceSettings["authPhone"] = verificationPhone
             navigator.replaceAll(MainScreen(platformNavigator))
         }
 
@@ -177,8 +186,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                         } else {
                             verificationInProgress.value = true
                                platformNavigator.verifyOTP(otpValue, onVerificationSuccessful = {
-                               println("Valid $it")
-                               authenticationPresenter.validatePhone(it)
+                               authenticationPresenter.validatePhone(it, requireValidation = true)
                             }, onVerificationFailed = {
                                 ShowSnackBar(title = "Error",
                                     description = "Error Occurred Please Try Again",
