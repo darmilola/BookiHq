@@ -14,15 +14,16 @@ interface AuthenticationRepository {
         lastname: String,
         userEmail: String,
         authPhone: String,
-        countryId: Int,
-        cityId: Int,
+        signupType: String,
+        country: String,
+        city: String,
         gender: String,
         profileImageUrl: String
     ): Single<ServerResponse>
     suspend fun reverseGeocode(lat: Double, lng: Double): Single<Place?>
     suspend fun validateUserProfile(userEmail: String): Single<AuthenticationResponse>
     suspend fun validateEmail(userEmail: String): Single<AuthenticationResponse>
-    suspend fun validatePhone(userPhone: String): Single<AuthenticationResponse>
+    suspend fun validatePhone(authPhone: String): Single<AuthenticationResponse>
 
 }
 

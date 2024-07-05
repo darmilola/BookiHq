@@ -155,7 +155,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                     homePageViewModel.setHomePageInfo(homePageInfo)
                     homePageViewModel.setVendorStatus(vendorStatus)
                     mainViewModel.setConnectedVendor(homePageInfo.vendorInfo!!)
-                    mainViewModel.setUserEmail(homePageInfo.userInfo?.userEmail!!)
+                    mainViewModel.setUserEmail(homePageInfo.userInfo?.email!!)
                     mainViewModel.setUserFirstname(homePageInfo.userInfo.firstname!!)
                     mainViewModel.setUserId(homePageInfo.userInfo.userId!!)
                     mainViewModel.setVendorEmail(homePageInfo.vendorInfo.businessEmail)
@@ -270,7 +270,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
 
     private fun saveAccountInfoFromServer(homePageInfo: HomepageInfo){
         val preferenceSettings = Settings()
-        preferenceSettings["userEmail"] = homePageInfo.userInfo?.userEmail
+        preferenceSettings["userEmail"] = homePageInfo.userInfo?.email
         preferenceSettings["userId"] = homePageInfo.userInfo?.userId
         preferenceSettings["userFirstname"] = homePageInfo.userInfo?.firstname
         preferenceSettings["vendorEmail"] = homePageInfo.vendorInfo?.businessEmail

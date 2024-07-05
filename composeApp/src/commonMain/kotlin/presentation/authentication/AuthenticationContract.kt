@@ -4,6 +4,7 @@ import dev.jordond.compass.Place
 import domain.Models.User
 import UIStates.ActionUIStates
 import UIStates.ScreenUIStates
+import presentation.profile.ProfileContract
 
 class AuthenticationContract {
     interface View {
@@ -28,8 +29,8 @@ class AuthenticationContract {
         abstract fun validateEmail(userEmail: String)
         abstract fun validatePhone(phone: String)
         abstract fun getUserLocation(lat: Double, lng: Double)
-        abstract fun completeProfile(firstname: String, lastname: String, userEmail: String, authPhone: String,   countryId: Int,
-                                     cityId: Int, gender: String, profileImageUrl: String)
+        abstract fun completeProfile(firstname: String, lastname: String, userEmail: String, authPhone: String,
+                                     signupType: String, country: String, city: String, gender: String, profileImageUrl: String)
 
     }
 }

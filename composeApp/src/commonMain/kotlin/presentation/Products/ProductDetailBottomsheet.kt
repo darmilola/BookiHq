@@ -196,7 +196,7 @@ fun ProductBottomSheetContent(product: Product) {
            currentTabScreen = 0
         }, onRightClicked = {
             currentTabScreen = 1
-        }, leftText = "Description", rightText = reviewText)
+        }, leftText = "Description", rightText = reviewText,)
         ProductTabScreen(product,currentTabScreen)
     }
 }

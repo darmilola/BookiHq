@@ -8,12 +8,9 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import UIStates.ScreenUIStates
 import com.badoo.reaktive.single.subscribe
 import domain.Models.User
-import UIStates.ActionUIStates
 import domain.Enums.ProfileStatus
-import kotlinx.serialization.Serializable
 import utils.makeValidPhone
 
 class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Presenter() {
@@ -27,16 +24,17 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
         lastname: String,
         userEmail: String,
         authPhone: String,
-        countryId: Int,
-        cityId: Int,
+        signupType: String,
+        country: String,
+        city: String,
         gender: String,
         profileImageUrl: String
     ) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.onProfileValidationStarted()
-                    authenticationRepositoryImpl.completeProfile(firstname, lastname, userEmail, authPhone, countryId, cityId, gender, profileImageUrl)
+                    contractView?.onCompleteProfileStarted()
+                    authenticationRepositoryImpl.completeProfile(firstname, lastname, userEmail, authPhone,signupType, country, city, gender, profileImageUrl)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
@@ -105,11 +103,11 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                                 if (result.status == "success"){
                                     if (result.profileStatus == ProfileStatus.DONE.toPath()) {
                                         contractView?.onProfileValidationEnded()
-                                        contractView?.goToMainScreen(result.userInfo.userEmail!!)
+                                        contractView?.goToMainScreen(userEmail)
                                     }
                                     else if(result.profileStatus == ProfileStatus.CONNECT_VENDOR.toPath()){
                                         contractView?.onProfileValidationEnded()
-                                        contractView?.goToConnectVendor(result.userInfo.userEmail!!)
+                                        contractView?.goToConnectVendor(userEmail)
                                     }
                                     else if(result.profileStatus == ProfileStatus.COMPLETE_PROFILE.toPath()){
                                         contractView?.onProfileValidationEnded()

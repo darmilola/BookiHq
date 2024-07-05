@@ -179,12 +179,12 @@ class EditProfile(private val mainViewModel: MainViewModel, val  platformNavigat
 fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: PlatformNavigator?) {
     val userInfo = mainViewModel.currentUserInfo.value
     val firstname = remember { mutableStateOf(userInfo.firstname) }
-    val userEmail = userInfo.userEmail
+    val userEmail = userInfo.email
     val lastname = remember { mutableStateOf(userInfo.lastname) }
     val address = remember { mutableStateOf(userInfo.address) }
     val contactPhone = remember { mutableStateOf(userInfo.contactPhone) }
-    val country = remember { mutableStateOf(userInfo.countryId) }
-    val city = remember { mutableStateOf(userInfo.cityId) }
+    val country = remember { mutableStateOf(userInfo.country) }
+    val city = remember { mutableStateOf(userInfo.city) }
     val gender = remember { mutableStateOf(userInfo.gender) }
     val profileImageUrl = remember { mutableStateOf(userInfo.profileImageUrl) }
     val imagePickerScope = rememberCoroutineScope()
@@ -282,13 +282,13 @@ fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: Platform
             ) {
                 contactPhone.value = it
             }
-            AttachCountryDropDownWidget(userInfo.countryId!!, onMenuItemClick = {
+          /*  AttachCountryDropDownWidget(userInfo.country!!, onMenuItemClick = {
                 country.value = it
             })
             AttachCityDropDownWidget(
                 onMenuItemClick = {
                     city.value = it
-                })
+                })*/
 
             val isFemale: Boolean = gender.value == "female"
 

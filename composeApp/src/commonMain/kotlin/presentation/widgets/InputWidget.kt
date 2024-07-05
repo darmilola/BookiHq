@@ -62,11 +62,11 @@ fun InputWidget(iconRes: String, placeholderText: String, text: String = "", ico
     var isPassword by remember { mutableStateOf(isPasswordField) }
 
     val modifier  = Modifier
-        .padding(end = 10.dp, start = 10.dp, top = 20.dp)
+        .padding(top = 20.dp)
         .fillMaxWidth()
         .height(viewHeight.dp)
-        .border(border = borderStroke, shape = RoundedCornerShape(15.dp))
-        .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(15.dp))
+        .border(border = borderStroke, shape = RoundedCornerShape(10.dp))
+        .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(10.dp))
 
     Row(modifier = modifier,
         horizontalArrangement = Arrangement.Start,

@@ -9,12 +9,16 @@ class ProfileContract {
         fun onProfileDeleted()
         fun onProfileUpdated()
         fun showUserLocation(place: Place)
-        fun showActionLce(actionUIStates: ActionUIStates)
-    }
+        fun showActionLce(actionUIStates: ActionUIStates) }
 
     interface MeetingViewContract {
         fun showAvailability(availableTimes: List<VendorTime>)
         fun showLce(actionUIStates: ActionUIStates, message: String = "")
+
+    }
+
+    interface PlatformContract {
+        fun showPlatformCities(cities: ArrayList<String>)
 
     }
 
@@ -26,6 +30,8 @@ class ProfileContract {
                                    contactPhone: String,   countryId: Int,
                                    cityId: Int, gender: String, profileImageUrl: String)
         abstract fun deleteProfile(userEmail: String)
+        abstract fun registerPlatformContract(view: PlatformContract?)
+        abstract fun getPlatformCities(country: String)
         abstract fun getVendorAvailability(vendorId: Int)
         abstract fun getUserLocation(lat: Double, lng: Double)
 

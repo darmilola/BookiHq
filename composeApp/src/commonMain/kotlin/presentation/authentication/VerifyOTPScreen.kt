@@ -69,25 +69,14 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
         )
 
         val handler = AuthenticationScreenHandler(authenticationPresenter,
-            onUserLocationReady = {
-
-            },
+            onUserLocationReady = {},
             enterPlatform = { userEmail, userPhone ->
-                println("Here 1")
-                navigateToConnectVendor.value = false
-                navigateToCompleteProfile.value = false
                 navigateToPlatform.value = true
             },
             completeProfile = { userEmail, userPhone ->
-                println("Here 2")
-                navigateToConnectVendor.value = false
-                navigateToPlatform.value = false
                navigateToCompleteProfile.value = true
             },
             connectVendor = { userEmail, userPhone ->
-                println("Here 3")
-                navigateToPlatform.value = false
-                navigateToCompleteProfile.value = false
                navigateToConnectVendor.value = true
             },
             onVerificationStarted = {
@@ -95,7 +84,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
             },
             onVerificationEnded = {
                 verificationInProgress.value = false
-            })
+            }, onCompleteStarted = {}, onCompleteEnded = {})
         handler.init()
 
 
@@ -188,6 +177,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                         } else {
                             verificationInProgress.value = true
                                platformNavigator.verifyOTP(otpValue, onVerificationSuccessful = {
+                               println("Valid $it")
                                authenticationPresenter.validatePhone(it)
                             }, onVerificationFailed = {
                                 ShowSnackBar(title = "Error",

@@ -27,10 +27,10 @@ fun AccountProfileImage(profileImageUrl: String, isAsync: Boolean = false, showE
         Box(
             Modifier
                 .padding(top = 20.dp, bottom = 5.dp)
-                .size(200.dp)
+                .size(160.dp)
                 .clip(CircleShape)
                 .border(
-                    width = (2.5).dp,
+                    width = (1.5).dp,
                     color = Colors.primaryColor,
                     shape = CircleShape
                 )
@@ -40,7 +40,7 @@ fun AccountProfileImage(profileImageUrl: String, isAsync: Boolean = false, showE
                 .padding(3.dp)
                 .clip(CircleShape)
                 .border(
-                    width = 2.dp,
+                    width = 1.dp,
                     color = Color.White,
                     shape = CircleShape
                 )
@@ -60,14 +60,14 @@ fun AccountProfileImage(profileImageUrl: String, isAsync: Boolean = false, showE
 fun EditProfilePictureButton(onUploadImageClicked: () -> Unit) {
     Box(modifier = Modifier.size(200.dp), contentAlignment = Alignment.BottomEnd) {
         val modifier = Modifier
-            .padding(end = 10.dp)
+            .padding(end = 20.dp)
             .background(color = Colors.surfaceColor, shape = CircleShape)
-            .size(width = 60.dp, height = 60.dp)
+            .size(width = 50.dp, height = 50.dp)
 
         Box(modifier = modifier,
             contentAlignment = Alignment.Center
         ) {
-            ImageComponent(imageModifier = Modifier.size(35.dp).clickable {
+            ImageComponent(imageModifier = Modifier.size(25.dp).clickable {
                   onUploadImageClicked()
             }, imageRes = "drawable/upload_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
         }

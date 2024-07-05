@@ -6,6 +6,7 @@ import com.badoo.reaktive.single.toSingle
 import dev.jordond.compass.Place
 import dev.jordond.compass.geocoder.Geocoder
 import domain.Models.AuthenticationResponse
+import domain.Models.PlatformCountryCitiesResponse
 import domain.Models.ServerResponse
 import domain.Models.VendorAvailabilityResponse
 import domain.authentication.AuthenticationNetworkService
@@ -45,6 +46,11 @@ class ProfileRepositoryImpl(apiService: HttpClient): ProfileRepository {
 
     override suspend fun reverseGeocode(lat: Double, lng: Double): Single<Place?> {
         return geocoder.reverse(lat, lng).getFirstOrNull().toSingle()
+    }
+
+    override suspend fun getPlatformCities(country: String): Single<PlatformCountryCitiesResponse> {
+        val param = GetPlatformCitiesRequest(country)
+        return profileNetworkService.getPlatformCities(param)
     }
 
 }

@@ -16,6 +16,7 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
 
     private val scope: CoroutineScope = MainScope()
     private var contractView: ProfileContract.View? = null
+    private var platformContractView: ProfileContract.PlatformContract? = null
     private var meetingViewContract: ProfileContract.MeetingViewContract? = null
     private val profileRepositoryImpl: ProfileRepositoryImpl = ProfileRepositoryImpl(apiService)
     override fun registerUIContract(view: ProfileContract.View?) {
@@ -25,6 +26,12 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
     override fun registerTalkWithTherapistContract(view: ProfileContract.MeetingViewContract?) {
         meetingViewContract = view
     }
+
+    override fun registerPlatformContract(view: ProfileContract.PlatformContract?) {
+        platformContractView = view
+    }
+
+
 
     override fun updateProfile(
         firstname: String,
@@ -89,6 +96,30 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
             } catch(e: Exception) {
                 contractView?.showActionLce(ActionUIStates(isSuccess = false))
             }
+        }
+    }
+
+    override fun getPlatformCities(country: String) {
+        val cityList: ArrayList<String> = arrayListOf()
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    profileRepositoryImpl.getPlatformCities(country)
+                        .subscribe(
+                            onSuccess = { response ->
+                                if (response.status == "success"){
+                                    response.countryCities?.get(0)?.cities!!.map {
+                                        cityList.add(it.cityName)
+                                    }
+                                    platformContractView?.showPlatformCities(cityList)
+                                }
+                                else if (response.status == "failure"){}
+                            },
+                            onError = {},
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {}
         }
     }
 

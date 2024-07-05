@@ -43,14 +43,14 @@ import presentations.components.TextComponent
 
 @Composable
 fun DropDownWidgetView(menuItems: List<String>,
-                   iconRes: String = "drawable/country_icon.png",
-                   iconSize: Int = 20,
-                   placeHolderText: String,
-                   menuExpandedState: Boolean,
-                   selectedIndex : Int,
-                   updateMenuExpandStatus : () -> Unit,
-                   onDismissMenuView : () -> Unit,
-                   onMenuItemClick : (Int) -> Unit) {
+                       iconRes: String = "drawable/country_icon.png",
+                       iconSize: Int = 25,
+                       placeHolderText: String,
+                       menuExpandedState: Boolean,
+                       selectedIndex : Int,
+                       updateMenuExpandStatus : () -> Unit,
+                       onDismissMenuView : () -> Unit,
+                       onMenuItemClick : (Int) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -61,62 +61,61 @@ fun DropDownWidgetView(menuItems: List<String>,
                 },
             ),
     ) {
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().fillMaxHeight()
-            ) {
-
-                Box(modifier = Modifier.fillMaxHeight().width(50.dp), contentAlignment = Alignment.Center){
-                    ImageComponent(imageModifier = Modifier
-                        .size(iconSize.dp), imageRes = iconRes, colorFilter = ColorFilter.tint(color = Colors.primaryColor))
-                }
-
-                Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.8f), contentAlignment = Alignment.Center){
-
-                    TextComponent(
-                        text =  if(selectedIndex != -1) menuItems[selectedIndex] else placeHolderText,
-                        fontSize = 16,
-                        fontFamily = GGSansSemiBold,
-                        textStyle = MaterialTheme.typography.h6,
-                        textColor = if(selectedIndex != -1) Colors.darkPrimary else  Color.Gray,
-                        textAlign = TextAlign.Start,
-                        fontWeight = FontWeight.Black,
-                        textModifier = Modifier.wrapContentHeight().fillMaxWidth().padding(end = 5.dp))
-                    }
-
-                Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(), contentAlignment = Alignment.Center){
-                    val imageModifier = Modifier
-                        .size(30.dp)
-                        .padding(start = 10.dp, top = 3.dp)
-                    ImageComponent(
-                        imageModifier = imageModifier,
-                        imageRes = "drawable/chevron_down_icon.png",
-                        colorFilter = ColorFilter.tint(color = Colors.primaryColor)
-                    )
-                }
-
-            }
-        }
-
-        DropdownMenu(
-            expanded = menuExpandedState,
-            onDismissRequest = { onDismissMenuView() },
-            modifier = Modifier
-                .fillMaxWidth(0.90f)
-                .background(Color.White)
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth().fillMaxHeight()
         ) {
-            menuItems.forEachIndexed { index, title ->
-                DropdownMenuItem(
-                    onClick = {
-                        if (index != -1) {
-                            onMenuItemClick(index)
-                        }
-                    }) {
-                    SubtitleTextWidget(text = title, fontSize = 16)
-                }
+
+            Box(modifier = Modifier.fillMaxHeight().width(50.dp), contentAlignment = Alignment.Center){
+                ImageComponent(imageModifier = Modifier
+                    .size(iconSize.dp), imageRes = iconRes, colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+            }
+
+            Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.8f), contentAlignment = Alignment.Center){
+
+                TextComponent(
+                    text =  if(selectedIndex != -1) menuItems[selectedIndex] else placeHolderText,
+                    fontSize = 16,
+                    textStyle = TextStyle(),
+                    textColor = if(selectedIndex != -1) Colors.darkPrimary else  Color.Gray,
+                    textAlign = TextAlign.Start,
+                    fontWeight = FontWeight.SemiBold,
+                    textModifier = Modifier.wrapContentHeight().fillMaxWidth().padding(end = 5.dp))
+            }
+
+            Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(), contentAlignment = Alignment.Center){
+                val imageModifier = Modifier
+                    .size(30.dp)
+                    .padding(start = 10.dp, top = 3.dp)
+                ImageComponent(
+                    imageModifier = imageModifier,
+                    imageRes = "drawable/chevron_down_icon.png",
+                    colorFilter = ColorFilter.tint(color = Colors.primaryColor)
+                )
+            }
+
+        }
+    }
+
+    DropdownMenu(
+        expanded = menuExpandedState,
+        onDismissRequest = { onDismissMenuView() },
+        modifier = Modifier
+            .fillMaxWidth(0.90f)
+            .background(Color.White)
+    ) {
+        menuItems.forEachIndexed { index, title ->
+            DropdownMenuItem(
+                onClick = {
+                    if (index != -1) {
+                        onMenuItemClick(index)
+                    }
+                }) {
+                SubtitleTextWidget(text = title, fontSize = 20)
             }
         }
+    }
 }
 
 @Composable
@@ -126,11 +125,11 @@ fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_
     val selectedMenuIndex = remember { mutableStateOf(selectedIndex) }
 
     val modifier  = Modifier
-        .padding(top = 15.dp)
+        .padding(end = 10.dp, start = 10.dp, top = 20.dp)
         .fillMaxWidth()
         .height(60.dp)
-        .border(border = BorderStroke((1.3).dp, color  = Colors.primaryColor), shape = CircleShape)
-        .background(color = Colors.lightPrimaryColor, shape = CircleShape)
+        .border(border = BorderStroke(1.dp, color  = Colors.primaryColor), shape = RoundedCornerShape(15.dp))
+        .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(15.dp))
 
     Column (
         modifier = modifier,

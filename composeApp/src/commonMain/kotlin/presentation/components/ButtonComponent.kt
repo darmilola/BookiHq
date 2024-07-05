@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
@@ -419,7 +420,7 @@ fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, isRightSelection: Boo
         .padding(top = 15.dp, end = 10.dp, start = 10.dp)
         .fillMaxWidth()
         .height(55.dp)
-        .background(color = Colors.lightPrimaryColor, shape = CircleShape)
+        .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(15.dp))
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,

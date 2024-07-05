@@ -8,8 +8,6 @@ import dev.jordond.compass.geocoder.Geocoder
 import domain.Models.AuthenticationResponse
 import domain.Models.ServerResponse
 import io.ktor.client.HttpClient
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
 class AuthenticationRepositoryImpl(apiService: HttpClient):
     AuthenticationRepository {
@@ -28,22 +26,24 @@ class AuthenticationRepositoryImpl(apiService: HttpClient):
         return authenticationNetworkService.validateEmail(param)
     }
 
-    override suspend fun validatePhone(userPhone: String): Single<AuthenticationResponse> {
-        val param = PhoneValidateProfileRequest(userPhone)
+    override suspend fun validatePhone(authPhone: String): Single<AuthenticationResponse> {
+        val param = PhoneValidateProfileRequest(authPhone)
         return authenticationNetworkService.validatePhone(param)
     }
+
 
     override suspend fun completeProfile(
         firstname: String,
         lastname: String,
         userEmail: String,
         authPhone: String,
-        countryId: Int,
-        cityId: Int,
+        signupType: String,
+        country: String,
+        city: String,
         gender: String,
         profileImageUrl: String
     ): Single<ServerResponse> {
-        val param = CompleteProfileRequest(firstname, lastname, userEmail, authPhone, countryId, cityId, gender, profileImageUrl)
+        val param = CompleteProfileRequest(firstname = firstname,lastname =  lastname,userEmail =  userEmail, authPhone = authPhone, signupType = signupType, country = country, city = city, gender = gender, profileImageUrl = profileImageUrl)
         return authenticationNetworkService.completeProfile(param)
     }
 

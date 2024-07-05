@@ -36,6 +36,7 @@ import org.koin.core.component.inject
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import UIStates.ActionUIStates
+import presentation.DomainViewHandler.TalkWithTherapistHandler
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
 import presentation.widgets.BookingCalendar
@@ -253,34 +254,6 @@ class TalkWithATherapist(private val mainViewModel: MainViewModel) : Tab,
 
 }
 
-class TalkWithTherapistHandler(
-    private val profilePresenter: ProfilePresenter,
-    private val onAvailableTimesReady:(List<VendorTime>)-> Unit,
-    private val isLoading: () -> Unit,
-    private val isDone: () -> Unit,
-    private val isSuccess: () -> Unit,
-) : ProfileContract.MeetingViewContract {
-    fun init() {
-        profilePresenter.registerTalkWithTherapistContract(this)
-    }
 
-    override fun showLce(actionUIStates: ActionUIStates, message: String) {
-        actionUIStates.let {
-            when{
-                it.isLoading -> {
-                    isLoading()
-                }
-
-                it.isSuccess -> {
-                    isSuccess()
-                }
-            }
-        }
-    }
-
-    override fun showAvailability(availableTimes: List<VendorTime>) {
-        onAvailableTimesReady(availableTimes)
-    }
-}
 
 

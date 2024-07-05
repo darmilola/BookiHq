@@ -2,6 +2,7 @@ package domain.Profile
 
 import com.badoo.reaktive.single.toSingle
 import domain.Models.AuthenticationResponse
+import domain.Models.PlatformCountryCitiesResponse
 import domain.Models.ServerResponse
 import domain.Models.VendorAvailabilityResponse
 import domain.authentication.CompleteProfileRequest
@@ -45,5 +46,15 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
             contentType(ContentType.Application.Json)
             setBody(getVendorAvailabilityRequest)
         }.body<VendorAvailabilityResponse>().toSingle()
+
+    suspend fun getPlatformCities(getPlatformCitiesRequest: GetPlatformCitiesRequest) =
+        apiService.post {
+            url("/platform/city/get")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(getPlatformCitiesRequest)
+        }.body<PlatformCountryCitiesResponse>().toSingle()
 
 }

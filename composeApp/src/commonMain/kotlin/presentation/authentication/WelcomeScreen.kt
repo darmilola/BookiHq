@@ -70,13 +70,13 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
 
     val userEmailFromGoogleAuth = remember { mutableStateOf(googleAuthEmail) }
 
-    // View Contract Handler Initialisation
     val handler = AuthenticationScreenHandler(authenticationPresenter,
         onUserLocationReady = {},
         enterPlatform = { userEmail, userPhone ->
            navigateToPlatform.value = true
         },
         completeProfile = { userEmail, userPhone ->
+            authEmail.value = userEmail
             navigateToCompleteProfile.value = true
         },
         connectVendor = { userEmail, userPhone ->
@@ -88,7 +88,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
         onVerificationEnded = {
             userEmailFromGoogleAuth.value = ""
             verificationInProgress.value = false
-        })
+        }, onCompleteStarted = {}, onCompleteEnded = {})
     handler.init()
 
 
@@ -133,7 +133,12 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                         modifier = Modifier.fillMaxWidth().wrapContentHeight()
                             .background(color = Color.Black), contentAlignment = Alignment.TopCenter
                     ) {
-                        AttachActionButtons(platformNavigator, authenticationPresenter)
+                        AttachActionButtons(platformNavigator, authenticationPresenter, onAuthSuccessful = {
+                            authEmail.value = it
+                            authenticationPresenter.validateEmail(it)
+                        }, onAuthFailed = {
+
+                        })
 
                     }
                     Box(
@@ -156,6 +161,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
 
                 if (userEmailFromGoogleAuth.value.isNotEmpty()) {
                     // from google auth
+                    authEmail.value = googleAuthEmail
                     authenticationPresenter.validateEmail(googleAuthEmail)
                 }
             }
@@ -165,7 +171,8 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
     }
 
 @Composable
-fun AttachActionButtons(platformNavigator: PlatformNavigator, authenticationPresenter: AuthenticationPresenter){
+fun AttachActionButtons(platformNavigator: PlatformNavigator, authenticationPresenter: AuthenticationPresenter, onAuthSuccessful: (String) -> Unit,
+                        onAuthFailed: () -> Unit){
     val navigator = LocalNavigator.currentOrThrow
     val buttonStyle = Modifier
         .padding(bottom = 15.dp)
@@ -193,9 +200,9 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator, authenticationPres
 
         IconButtonComponent(modifier = buttonStyle, buttonText = "Sign in with Google", borderStroke = BorderStroke(0.8.dp, Color.White), iconSize = 20, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 16, shape = CircleShape, textColor = Color.Black, style = MaterialTheme.typography.h4, iconRes = "drawable/google_icon.png"){
             platformNavigator.startGoogleSSO(onAuthSuccessful = {
-                authenticationPresenter.validateEmail(it)
+                onAuthSuccessful(it)
             }, onAuthFailed = {
-
+                onAuthFailed()
             })
         }
 
@@ -205,10 +212,9 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator, authenticationPres
 
         IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with X", borderStroke = BorderStroke(0.8.dp, Color.White), iconSize = 20, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 16, shape = CircleShape, textColor = Color.Black, style = MaterialTheme.typography.h4, iconRes = "drawable/x_icon.png", colorFilter = ColorFilter.tint(color = Color.Black)){
             platformNavigator.startXSSO(onAuthSuccessful = {
-                println("Success $it")
-                authenticationPresenter.validateEmail(it)
+                onAuthSuccessful(it)
             }, onAuthFailed = {
-                println("Success 2")
+                onAuthFailed()
             })
         }
 

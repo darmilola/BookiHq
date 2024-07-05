@@ -1,5 +1,7 @@
 package domain.Models
 
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.ProfileStatus
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -21,6 +23,9 @@ data class HomePageResponse(@SerialName("status") val status: String = "", @Seri
 @Serializable
 data class ServiceTherapistsResponse(@SerialName("status") val status: String = "", @SerialName("therapists") val serviceTherapists: List<ServiceTypeTherapists>)
 
+@Serializable @Parcelize
+data class PlatformCountryCitiesResponse(@SerialName("status") val status: String = "",
+                                         @SerialName("response") val countryCities: List<CountryCities>? = null): Parcelable
 
 @Serializable
 data class TherapistReviewsResponse(@SerialName("status") val status: String = "", @SerialName("reviews") val reviews: List<TherapistReviews>)

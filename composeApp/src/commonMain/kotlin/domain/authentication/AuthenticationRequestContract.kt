@@ -7,15 +7,16 @@ import kotlinx.serialization.Serializable
 data class CompleteProfileRequest(
     @SerialName("firstname") val firstname: String,
     @SerialName("lastname") val lastname: String,
-    @SerialName("userEmail") val userEmail: String,
-    @SerialName("authPhone") val userPhone: String,
-    @SerialName("countryId") val countryId: Int,
-    @SerialName("cityId") val cityId: Int,
+    @SerialName("email") val userEmail: String,
+    @SerialName("authPhone") val authPhone: String,
+    @SerialName("signupType") val signupType: String,
+    @SerialName("country") val country: String,
+    @SerialName("city") val city: String,
     @SerialName("gender") val gender: String,
-    @SerialName("profileImageUrl") val profileImageUrl: String)
+    @SerialName("imageUrl") val profileImageUrl: String)
 
 @Serializable
 data class ValidateProfileRequest(@SerialName("userEmail") val userEmail: String)
 
 @Serializable
-data class PhoneValidateProfileRequest(@SerialName("userPhone") val userPhone: String)
+data class PhoneValidateProfileRequest(@SerialName("authPhone") val authPhone: String)
