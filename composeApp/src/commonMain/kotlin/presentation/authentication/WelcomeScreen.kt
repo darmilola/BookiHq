@@ -205,8 +205,11 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator, authenticationPres
 
         IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with X", borderStroke = BorderStroke(0.8.dp, Color.White), iconSize = 20, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 16, shape = CircleShape, textColor = Color.Black, style = MaterialTheme.typography.h4, iconRes = "drawable/x_icon.png", colorFilter = ColorFilter.tint(color = Color.Black)){
             platformNavigator.startXSSO(onAuthSuccessful = {
+                println("Success $it")
                 authenticationPresenter.validateEmail(it)
-            }, onAuthFailed = {})
+            }, onAuthFailed = {
+                println("Success 2")
+            })
         }
 
 

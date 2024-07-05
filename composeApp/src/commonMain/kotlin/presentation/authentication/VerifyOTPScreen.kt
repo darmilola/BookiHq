@@ -36,7 +36,9 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.components.ButtonComponent
+import presentation.connectVendor.ConnectVendorScreen
 import presentation.dialogs.LoadingDialog
+import presentation.main.MainScreen
 import presentation.widgets.AuthenticationBackNav
 import presentation.widgets.OTPTextField
 import presentation.widgets.ShowSnackBar
@@ -56,19 +58,37 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
     override fun Content() {
 
         val verificationInProgress = remember { mutableStateOf(false) }
+        val navigateToCompleteProfile = remember { mutableStateOf(false) }
+        val navigateToConnectVendor = remember { mutableStateOf(false) }
+        val navigateToPlatform = remember { mutableStateOf(false) }
+        val navigator = LocalNavigator.currentOrThrow
+
+        val stackedSnackBarHostState = rememberStackedSnackbarHostState(
+            maxStack = 5,
+            animation = StackedSnackbarAnimation.Bounce
+        )
 
         val handler = AuthenticationScreenHandler(authenticationPresenter,
             onUserLocationReady = {
 
             },
             enterPlatform = { userEmail, userPhone ->
-
+                println("Here 1")
+                navigateToConnectVendor.value = false
+                navigateToCompleteProfile.value = false
+                navigateToPlatform.value = true
             },
             completeProfile = { userEmail, userPhone ->
-
+                println("Here 2")
+                navigateToConnectVendor.value = false
+                navigateToPlatform.value = false
+               navigateToCompleteProfile.value = true
             },
             connectVendor = { userEmail, userPhone ->
-
+                println("Here 3")
+                navigateToPlatform.value = false
+                navigateToCompleteProfile.value = false
+               navigateToConnectVendor.value = true
             },
             onVerificationStarted = {
                 verificationInProgress.value = true
@@ -78,10 +98,16 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
             })
         handler.init()
 
-        val stackedSnackBarHostState = rememberStackedSnackbarHostState(
-            maxStack = 5,
-            animation = StackedSnackbarAnimation.Bounce
-        )
+
+        if (navigateToCompleteProfile.value){
+            navigator.replaceAll(CompleteProfileScreen(platformNavigator, authPhone = verificationPhone, authEmail = ""))
+        }
+        else if (navigateToConnectVendor.value){
+            navigator.replaceAll(ConnectVendorScreen(platformNavigator))
+        }
+        else if (navigateToPlatform.value){
+            navigator.replaceAll(MainScreen(platformNavigator))
+        }
 
         var otpValue by remember {
             mutableStateOf("")
@@ -97,8 +123,6 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
             .padding(top = 20.dp, start = 50.dp, end = 50.dp)
             .fillMaxWidth()
             .height(50.dp)
-
-        val navigator = LocalNavigator.currentOrThrow
 
 
         val topLayoutModifier =
@@ -163,7 +187,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                                 onActionClick = {})
                         } else {
                             verificationInProgress.value = true
-                            platformNavigator.verifyOTP(otpValue, onVerificationSuccessful = {
+                               platformNavigator.verifyOTP(otpValue, onVerificationSuccessful = {
                                authenticationPresenter.validatePhone(it)
                             }, onVerificationFailed = {
                                 ShowSnackBar(title = "Error",

@@ -142,6 +142,7 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                     authenticationRepositoryImpl.validatePhone(validPhone)
                         .subscribe(
                             onSuccess = { result ->
+                                println(result)
                                 if (result.status == "success"){
                                     if (result.profileStatus == ProfileStatus.DONE.toPath()) {
                                         contractView?.onProfileValidationEnded()

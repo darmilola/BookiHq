@@ -12,7 +12,7 @@ data class JoinMeetingResponse(@SerialName("status") val status: String = "", @S
 
 @Serializable
 data class AuthenticationResponse(@SerialName("status") val status: String = "",  @SerialName("data") val userInfo: User = User(),
-                                  @SerialName("profile_status") val profileStatus: String = ProfileStatus.COMPLETE_PROFILE.toPath())
+                                  @SerialName("profile_Status") val profileStatus: String = ProfileStatus.COMPLETE_PROFILE.toPath())
 
 @Serializable
 data class HomePageResponse(@SerialName("status") val status: String = "", @SerialName("homePage") val homepageInfo: HomepageInfo = HomepageInfo(),
