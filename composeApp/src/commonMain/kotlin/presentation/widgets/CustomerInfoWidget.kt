@@ -193,10 +193,10 @@ fun VendorDisplayItem(vendor: Vendor) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = iconTextBoxModifier
             ) {
-                VendorImage(profileImageUrl = businessLogo, isAsync = true)
+                VendorImage(profileImageUrl = businessLogo!!, isAsync = true)
                 Box(modifier = Modifier.wrapContentWidth().fillMaxHeight(), contentAlignment = Alignment.CenterStart) {
                     TextComponent(
-                        text = vendor.businessName,
+                        text = vendor.businessName!!,
                         fontSize = 15,
                         fontFamily = GGSansRegular,
                         textStyle = MaterialTheme.typography.h6,
@@ -208,10 +208,7 @@ fun VendorDisplayItem(vendor: Vendor) {
                         textModifier = Modifier.wrapContentSize().padding(start = 10.dp, end = 10.dp))
                 }
 
-
             }
-
-
         }
     }
 }

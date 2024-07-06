@@ -70,6 +70,7 @@ import domain.Models.VendorRecommendation
 import domain.Enums.RecommendationType
 import domain.Enums.Screens
 import domain.Models.Services
+import domain.Models.StatusImageModel
 import domain.Models.VendorStatusModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -82,7 +83,7 @@ import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
-import presentation.widgets.BusinessWhatsAppStatusWidget
+import presentation.widgets.ShopStatusWidget
 import presentation.widgets.HomeServicesWidget
 import presentation.widgets.MeetingAppointmentWidget
 import presentation.widgets.RecommendedServiceItem
@@ -102,7 +103,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
 
     private var screenUiStateViewModel: ScreenUIStateViewModel? = null
     private val homepagePresenter: HomepagePresenter by inject()
-    private var userEmail: String = ""
+    private var userId: Long = -1L
     private val preferenceSettings: Settings = Settings()
     private var availabilityActionUIStateViewModel: ActionUIStateViewModel? = null
 
@@ -126,7 +127,8 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
 
     @Composable
     override fun Content() {
-        userEmail = preferenceSettings["userEmail", "devprocess0@gmail.com"]
+        userId = preferenceSettings["profileId", -1L]
+        val isStatusViewExpanded = remember { mutableStateOf(false) }
 
         val screenSizeInfo = ScreenSizeInfo()
         if (screenUiStateViewModel == null) {
@@ -158,17 +160,16 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                     mainViewModel.setUserEmail(homePageInfo.userInfo?.email!!)
                     mainViewModel.setUserFirstname(homePageInfo.userInfo.firstname!!)
                     mainViewModel.setUserId(homePageInfo.userInfo.userId!!)
-                    mainViewModel.setVendorEmail(homePageInfo.vendorInfo.businessEmail)
+                    mainViewModel.setVendorEmail(homePageInfo.vendorInfo.businessEmail!!)
                     mainViewModel.setVendorId(homePageInfo.vendorInfo.vendorId!!)
-                    mainViewModel.setVendorBusinessLogoUrl(homePageInfo.vendorInfo.businessLogo)
+                    mainViewModel.setVendorBusinessLogoUrl(homePageInfo.vendorInfo.businessLogo!!)
                     mainViewModel.setUserInfo(homePageInfo.userInfo)
-                    mainViewModel.setTherapistId(homePageInfo.therapistInfo?.id!!)
                     saveAccountInfoFromServer(homePageInfo)
                 })
             handler.init()
 
             if (homePageViewModel.homePageInfo.value.userInfo == null) {
-                homepagePresenter.getUserHomepage(userEmail, "2348022510893")
+                homepagePresenter.getUserHomepage(userId, "2348022510893")
             }
         }
 
@@ -176,8 +177,6 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
         val homepageInfo = homePageViewModel.homePageInfo.collectAsState()
         val mVendorStatus = homePageViewModel.vendorStatus.collectAsState()
         val homePageViewHeight = homePageViewModel.homePageViewHeight.collectAsState()
-        val isStatusViewExpanded = remember { mutableStateOf(false) }
-
 
         Box(
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -200,7 +199,6 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                 //Error Occurred
 
             } else if (uiState.value.contentVisible) {
-                val popularProducts = homepageInfo.value.popularProducts
                 val recentAppointments = homepageInfo.value.recentAppointment
                 val vendorServices = homepageInfo.value.vendorServices
                 val vendorRecommendations = homepageInfo.value.recommendationRecommendations
@@ -215,7 +213,6 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                     topBar = {},
                     floatingActionButton = {
                         if (isStatusViewExpanded.value) {
-
                             val buttonStyle = Modifier
                                 .padding(bottom = 60.dp)
                                 .clip(CircleShape)
@@ -233,14 +230,13 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                             Modifier
                                 .verticalScroll(state = rememberScrollState())
                                 .height(homePageViewHeight.value.dp)
+                                .fillMaxWidth()
                                 .padding(top = 5.dp)
-                                .background(color = Color.White)
                                 .fillMaxWidth()
 
                         ) {
                             BusinessStatusDisplay(
-                                mVendorStatus.value,
-                                onViewHeightChanged = { newHeight: Int, isStatusExpanded: Boolean ->
+                                onViewHeightChanged = { _: Float, isStatusExpanded: Boolean ->
                                     isStatusViewExpanded.value = isStatusExpanded
                                 })
 
@@ -250,15 +246,6 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                             }
                             if (vendorRecommendations != null) {
                                 RecommendedSessions(vendorRecommendations)
-                            }
-
-                            PopularProducts()
-                            if (popularProducts != null) {
-                                PopularProductScreen(
-                                    popularProducts,
-                                    mainViewModel,
-                                    stackedSnackBarHostState
-                                )
                             }
                             AttachAppointments()
                             RecentAppointmentScreen(appointmentList = recentAppointments)
@@ -271,11 +258,10 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
     private fun saveAccountInfoFromServer(homePageInfo: HomepageInfo){
         val preferenceSettings = Settings()
         preferenceSettings["userEmail"] = homePageInfo.userInfo?.email
-        preferenceSettings["userId"] = homePageInfo.userInfo?.userId
+        preferenceSettings["profileId"] = homePageInfo.userInfo?.userId
         preferenceSettings["userFirstname"] = homePageInfo.userInfo?.firstname
         preferenceSettings["vendorEmail"] = homePageInfo.vendorInfo?.businessEmail
         preferenceSettings["vendorId"] = homePageInfo.vendorInfo?.vendorId
-        preferenceSettings["therapistId"] = homePageInfo.therapistInfo?.id
         preferenceSettings["vendorBusinessLogoUrl"] = homePageInfo.vendorInfo?.businessLogo
     }
 
@@ -562,30 +548,43 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
 
 
     @Composable
-    fun BusinessStatusDisplay(statusList: List<VendorStatusModel>, onViewHeightChanged: (Int, Boolean) -> Unit) {
+    fun BusinessStatusDisplay(onViewHeightChanged: (Float, Boolean) -> Unit) {
         val isStatusExpanded = remember { mutableStateOf(false) }
-        val isWidthGreaterThanHeight = remember { mutableStateOf(false) }
+        val statusList = arrayListOf<VendorStatusModel>()
+
+        val statusModel1 = VendorStatusModel("",1L, StatusImageModel(imageId = "",
+            imageUrl = "https://cdn.pixabay.com/photo/2018/07/13/19/56/st-peters-church-3536449_1280.jpg", caption = "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content"))
+        val statusModel2 = VendorStatusModel("",1L, StatusImageModel(imageId = "", imageUrl = "https://cdn.pixabay.com/photo/2018/07/13/19/56/st-peters-church-3536449_1280.jpg",
+            caption = "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content"))
+        val statusModel3 = VendorStatusModel("",1L, StatusImageModel(imageId = "", imageUrl = "https://cdn.pixabay.com/photo/2018/07/13/19/56/st-peters-church-3536449_1280.jpg",
+            caption = "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content"))
+        val statusModel4 = VendorStatusModel("",1L, StatusImageModel(imageId = "", imageUrl = "https://cdn.pixabay.com/photo/2018/07/13/19/56/st-peters-church-3536449_1280.jpg"))
+        val statusModel5 = VendorStatusModel("",1L, StatusImageModel(imageId = "", imageUrl = "https://cdn.pixabay.com/photo/2018/07/13/19/56/st-peters-church-3536449_1280.jpg"))
+
+        statusList.add(statusModel1)
+        statusList.add(statusModel2)
+        statusList.add(statusModel3)
+        statusList.add(statusModel4)
+        statusList.add(statusModel5)
+
+
         val screenSizeInfo = ScreenSizeInfo()
-        val percentChangeExpanded = if (isWidthGreaterThanHeight.value) 70 else 90
-        val percentChangeCollapsed = if (isWidthGreaterThanHeight.value) 50 else 70
+        val percentChangeExpanded =  0.6f
+        val percentChangeCollapsed = 0.4f
 
-        val heightAtExpanded = getPercentOfScreenHeight(screenSizeInfo.heightPx.dp, percentChange = percentChangeExpanded)
-        val heightAtCollapsed = getPercentOfScreenHeight(screenSizeInfo.heightPx.dp, percentChange = percentChangeCollapsed)
 
-        val heightChange: Float by animateFloatAsState(targetValue = if (isStatusExpanded.value) heightAtExpanded.toFloat() else heightAtCollapsed.toFloat(),
+        val heightChange: Float by animateFloatAsState(targetValue = if (isStatusExpanded.value) percentChangeExpanded else percentChangeCollapsed,
             animationSpec = tween(durationMillis = 600, easing = LinearOutSlowInEasing)
         )
-        val viewHeight =  if (isStatusExpanded.value) heightAtExpanded else heightAtCollapsed
-        onViewHeightChanged(viewHeight, isStatusExpanded.value)
+
+        onViewHeightChanged(heightChange, isStatusExpanded.value)
         val modifier =
             Modifier.fillMaxWidth()
-                .height(heightChange.dp)
+                .fillMaxHeight(heightChange)
                 .background(color = Color.White)
         Box(modifier = modifier, contentAlignment = Alignment.TopCenter) {
-            BusinessWhatsAppStatusWidget(statusList, onStatusViewChanged = {
+            ShopStatusWidget(statusList, onStatusViewChanged = {
                     isStatusViewExpanded -> isStatusExpanded.value = isStatusViewExpanded
-            }, onWidthGreaterThanHeight = {
-                 isWidthGreaterThanHeight.value = it
             })
         }
     }

@@ -46,7 +46,7 @@ import presentations.components.TextComponent
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                BusinessLogo(vendor.businessLogo)
+                BusinessLogo(vendor.businessLogo!!)
                 BusinessNameAndHandle(vendor)
             }
         }
@@ -88,7 +88,7 @@ import presentations.components.TextComponent
                     .wrapContentHeight()
 
                 TextComponent(
-                    text = vendor.businessName,
+                    text = vendor.businessName!!,
                     fontSize = 16,
                     fontFamily = GGSansRegular,
                     textStyle = MaterialTheme.typography.h6,
@@ -100,7 +100,7 @@ import presentations.components.TextComponent
                     textModifier = modifier)
 
                 TextComponent(
-                    text = vendor.businessAddress,
+                    text = vendor.businessAddress!!,
                     fontSize = 14,
                     fontFamily = GGSansRegular,
                     textStyle = TextStyle(),

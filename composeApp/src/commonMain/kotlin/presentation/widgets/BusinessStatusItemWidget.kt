@@ -42,27 +42,10 @@ import theme.styles.Colors
 class BusinessStatusItemWidget {
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun getImageStatusWidget(imageUrl: String, vendorStatusModel: VendorStatusModel, onStatusViewChanged: (Boolean) -> Unit,
-                             onWidthGreaterThanHeight: (Boolean) -> Unit, pagerState: PagerState) {
+    fun getImageStatusWidget(imageUrl: String, vendorStatusModel: VendorStatusModel, onStatusViewChanged: (Boolean) -> Unit) {
 
         val isStatusExpanded = remember { mutableStateOf(false) }
         val imageRes = if(isStatusExpanded.value) "drawable/collapse_icon.png"  else "drawable/expand_icon.png"
-        val mediaViewHeight = if (vendorStatusModel.statusImage?.caption!!.isEmpty()){
-               1f
-        }
-        else {
-             0.85f
-        }
-        if (pagerState.currentPage == pagerState.settledPage) {
-          if (vendorStatusModel.statusImage.width > vendorStatusModel.statusImage.height){
-               onWidthGreaterThanHeight(true)
-            }
-        }
-        else {
-            if (pagerState.currentPage == pagerState.settledPage) {
-                onWidthGreaterThanHeight(false)
-            }
-        }
 
         Column(
             modifier = Modifier
@@ -72,7 +55,7 @@ class BusinessStatusItemWidget {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(mediaViewHeight)) {
+            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.85f)) {
                 ImageComponent(
                     imageModifier = Modifier.fillMaxSize(),
                     imageRes = imageUrl,
@@ -96,7 +79,6 @@ class BusinessStatusItemWidget {
                     ) {
                         ImageStatusCaption(vendorStatusModel.statusImage)
                     }
-
                 }
             }
         }
@@ -116,97 +98,6 @@ class BusinessStatusItemWidget {
         }
     }
 
-
-    @OptIn(ExperimentalFoundationApi::class)
-    @Composable
-    fun getVideoStatusWidget(videoUrl: String, vendorStatusModel: VendorStatusModel, videoStatusViewMeta: VideoStatusViewMeta, onStatusViewChanged: (Boolean) -> Unit,
-                             onWidthGreaterThanHeight: (Boolean) -> Unit, pagerState: PagerState) {
-
-        val isStatusExpanded = remember { mutableStateOf(false) }
-        val imageRes = if(isStatusExpanded.value) "drawable/collapse_icon.png"  else "drawable/expand_icon.png"
-        val mediaViewHeight = if (vendorStatusModel.statusVideo?.caption!!.isEmpty()){
-            1f
-        }
-        else {
-            0.85f
-        }
-        if (vendorStatusModel.statusVideo.width > vendorStatusModel.statusVideo.height){
-          if (pagerState.currentPage == pagerState.settledPage) {
-              onWidthGreaterThanHeight(true)
-          }
-        }
-        else{
-            if (pagerState.currentPage == pagerState.settledPage) {
-                onWidthGreaterThanHeight(false)
-            }
-        }
-
-
-        Column(
-            modifier = Modifier
-                .padding(top = 5.dp)
-                .fillMaxWidth()
-                .fillMaxHeight(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
-        ) {
-            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(mediaViewHeight)) {
-                // Video Playback
-                VideoPlayer(
-                    modifier = Modifier.fillMaxSize(),
-                    url = videoUrl,
-                    videoStatusViewMeta = videoStatusViewMeta
-                )
-                Box(
-                    modifier = Modifier.fillMaxWidth().height(80.dp)
-                        .padding(end = 10.dp, top = 10.dp), contentAlignment = Alignment.TopEnd
-                ) {
-                    AttachExpandCollapseIcon(imageRes = imageRes) {
-                        isStatusExpanded.value = !isStatusExpanded.value
-                        onStatusViewChanged(isStatusExpanded.value)
-                    }
-                }
-            }
-            if (vendorStatusModel.statusVideo.caption.isNotEmpty()) {
-                Box(
-                    modifier = Modifier.fillMaxWidth()
-                        .fillMaxHeight(if (isStatusExpanded.value) 0.5f else 1f)
-                        .padding(top = 5.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    VideoStatusCaption(videoModel = vendorStatusModel.statusVideo)
-                }
-            }
-        }
-    }
-
-
-    @Composable
-    fun StatusText(vendorStatusModel: VendorStatusModel) {
-        Box(
-            modifier = Modifier
-                .padding(start = 20.dp, end = 20.dp)
-                .fillMaxWidth()
-                .wrapContentHeight(),
-            contentAlignment = Alignment.Center
-        ) {
-            TextComponent(
-                textModifier = Modifier.wrapContentSize(),
-                text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod",
-                fontSize = 17, fontFamily = GGSansRegular,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Colors.darkPrimary,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.ExtraBold,
-                lineHeight = 23,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis
-            )
-
-        }
-
-    }
-
     @Composable
     fun ImageStatusCaption(imageModel: StatusImageModel) {
         Box(
@@ -218,32 +109,7 @@ class BusinessStatusItemWidget {
         ) {
             TextComponent(
                 textModifier = Modifier.wrapContentSize(),
-                text = imageModel.caption,
-                fontSize = 17, fontFamily = GGSansRegular,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Colors.darkPrimary,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.ExtraBold,
-                lineHeight = 23,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis
-            )
-
-        }
-    }
-
-    @Composable
-    fun VideoStatusCaption(videoModel: StatusVideoModel) {
-        Box(
-            modifier = Modifier
-                .padding(start = 20.dp, end = 20.dp)
-                .fillMaxWidth()
-                .wrapContentHeight(),
-            contentAlignment = Alignment.Center
-        ) {
-            TextComponent(
-                textModifier = Modifier.wrapContentSize(),
-                text = videoModel.caption,
+                text = imageModel.caption!!,
                 fontSize = 17, fontFamily = GGSansRegular,
                 textStyle = MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,

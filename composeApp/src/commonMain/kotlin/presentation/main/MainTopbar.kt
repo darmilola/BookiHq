@@ -61,19 +61,22 @@ fun MainTopBar(mainViewModel: MainViewModel, isBottomNavSelected: Boolean = fals
 
 
 @Composable
-fun leftTopBarItem() {
-    val rowModifier = Modifier
+fun leftTopBarItem(mainViewModel: MainViewModel) {
+    val columnModifier = Modifier
         .background(color = Color.Transparent)
         .fillMaxWidth()
         .fillMaxHeight()
 
-     Box(modifier = rowModifier, contentAlignment = Alignment.CenterStart) {
-               WelcomeToProfile()
+     Column(modifier = columnModifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+               WelcomeToProfile(mainViewModel)
            }
         }
 
 @Composable
-fun WelcomeToProfile() {
+fun WelcomeToProfile(mainViewModel: MainViewModel) {
+    val userInfo = mainViewModel.currentUserInfo.collectAsState()
+    val vendorInfo = mainViewModel.connectedVendor.collectAsState()
+
     val rowModifier = Modifier
         .fillMaxWidth()
         Row(
@@ -81,7 +84,7 @@ fun WelcomeToProfile() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = rowModifier
         ) {
-                BusinessImage(businessImageUrl = "drawable/sample_logo_icon.png") {}
+                BusinessImage(businessImageUrl = vendorInfo.value.businessLogo!!) {}
                 Box(
                     modifier = Modifier.wrapContentWidth().height(60.dp),
                     contentAlignment = Alignment.CenterStart
@@ -95,11 +98,11 @@ fun WelcomeToProfile() {
                             textColor = Color.DarkGray,
                             title = "Welcome ",
                             fonSize = 16,
-                            textModifier = Modifier.height(25.dp).wrapContentWidth()
+                            textModifier = Modifier.height(25.dp).padding(start = 5.dp).wrapContentWidth()
                         )
                         TitleWidget(
                             textColor = Colors.primaryColor,
-                            title = "Damilola",
+                            title = userInfo.value.firstname!!,
                             fonSize = 16,
                             textModifier = Modifier.height(25.dp).wrapContentWidth()
                         )
@@ -140,7 +143,37 @@ fun BusinessImage(businessImageUrl: String, onBusinessImageClicked: () -> Unit) 
                     color = Color.White,
                     shape = CircleShape)
                 .fillMaxSize()
-            ImageComponent(imageModifier = modifier, imageRes = businessImageUrl, isAsync = false)
+            ImageComponent(imageModifier = modifier, imageRes = businessImageUrl, isAsync = true)
+        }
+    }
+}
+
+@Composable
+fun UserImage(userImageUrl: String, onUserImageClicked: () -> Unit) {
+    Box(Modifier.size(40.dp), contentAlignment = Alignment.Center) {
+        Box(
+            Modifier
+                .size(35.dp)
+                .clip(CircleShape)
+                .clickable {
+                    onUserImageClicked()
+                }
+                .border(
+                    width = (0.6).dp,
+                    color = Colors.pinkColor,
+                    shape = CircleShape
+                )
+                .background(color = Color.Transparent)
+        ) {
+            val modifier = Modifier
+                .padding(2.dp)
+                .clip(CircleShape)
+                .border(
+                    width = 0.2.dp,
+                    color = Color.White,
+                    shape = CircleShape)
+                .fillMaxSize()
+            ImageComponent(imageModifier = modifier, imageRes = userImageUrl, isAsync = true)
         }
     }
 }
@@ -149,49 +182,18 @@ fun BusinessImage(businessImageUrl: String, onBusinessImageClicked: () -> Unit) 
 
 @Composable
 fun rightTopBarItem(mainViewModel: MainViewModel, isBottomNavSelected: Boolean = false, onNotificationTabSelected:() -> Unit) {
-    val tabNavigator = LocalTabNavigator.current
-    val heightRatio = if (mainViewModel.userId.value != -1L) 1f else 0f
-
-    val imageRes = if(isBottomNavSelected){
-        "drawable/bell_outline.png"
-    }else{
-        "drawable/bell_filled.png"
-    }
-    val imageTint: Color = if(isBottomNavSelected){
-        Colors.darkPrimary
-    }else{
-        Colors.primaryColor
-    }
-
+    val userInfo = mainViewModel.currentUserInfo.collectAsState()
     val modifier = Modifier
         .padding(end = 10.dp)
         .background(color = Color.Transparent)
         .fillMaxWidth()
         .fillMaxHeight()
 
-    val indicatorModifier = Modifier
-        .padding(start = 8.dp, bottom = 25.dp, end = 4.dp)
-        .background(color = Color.Transparent)
-        .size(14.dp)
-        .background(
-            brush = Brush.horizontalGradient(
-                colors = listOf(
-                    Color(color = 0xFFFA2D65),
-                    Color(color = 0xFFFA2D65)
-                )
-            ),
-            shape = RoundedCornerShape(7.dp)
-        )
-
     Box(modifier = modifier,
         contentAlignment = Alignment.CenterEnd
         ) {
-            ImageComponent(imageModifier = Modifier.size(30.dp).clickable {
-                tabNavigator.current = NotificationTab(mainViewModel)
-                onNotificationTabSelected()
-            }, imageRes = imageRes, colorFilter = ColorFilter.tint(color = imageTint))
-        Box(modifier = indicatorModifier){}
-        }
+        UserImage(userImageUrl = userInfo.value.profileImageUrl!!, onUserImageClicked = {})
+       }
     }
 
 @Composable
@@ -227,7 +229,7 @@ fun centerTopBarItem(mainViewModel: MainViewModel) {
                     this.durationMillis = 0
                 })
             ) {
-                   leftTopBarItem()
+                   leftTopBarItem(mainViewModel)
             }
         }
     }

@@ -9,8 +9,6 @@ import kotlinx.serialization.Serializable
 data class HomepageInfo (
     @SerialName("user_info") val userInfo: User? = null,
     @SerialName("vendor_info") val vendorInfo: Vendor? = null,
-    @SerialName("therapist_info") val therapistInfo: TherapistInfo? = null,
     @SerialName("vendor_services") val vendorServices: ArrayList<Services>? = null,
     @SerialName("vendor_recommendations") val recommendationRecommendations: ArrayList<VendorRecommendation>? = null,
-    @SerialName("recent_appointments") val recentAppointment: ArrayList<Appointment>? = null,
-    @SerialName("popular_products") var popularProducts: ArrayList<Product>? = null): Parcelable
+    @SerialName("recent_appointments") val recentAppointment: ArrayList<Appointment>? = null): Parcelable

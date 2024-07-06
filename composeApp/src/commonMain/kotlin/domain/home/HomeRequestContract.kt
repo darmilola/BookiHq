@@ -5,4 +5,4 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class GetHomeRequest(@SerialName("userEmail") val userEmail: String, @SerialName("vendorPhone") val vendorPhone: String)
+data class GetHomeRequest(@SerialName("userId") val userId: Long, @SerialName("vendorPhone") val vendorPhone: String)

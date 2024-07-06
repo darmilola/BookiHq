@@ -74,18 +74,15 @@ fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo, screenSizeInfo: Sc
     val serviceCount = homepageInfo.vendorServices!!.size
     val recommendationsCount = homepageInfo.recommendationRecommendations!!.size
     val recentAppointmentCount = homepageInfo.recentAppointment!!.size
-    val popularProductsCount = homepageInfo.popularProducts!!.size
 
     val heightAtExpanded = getPercentOfScreenHeight(screenSizeInfo.heightPx.dp, percentChange = 80)
     val heightAtCollapsed = getPercentOfScreenHeight(screenSizeInfo.heightPx.dp, percentChange = 60)
-    val statusViewHeight = if (isStatusExpanded) heightAtExpanded else heightAtCollapsed
 
 
     val servicesHeight = serviceCount * 140
     val recommendationsHeight = 400
     val recentAppointmentHeight = recentAppointmentCount * 180
-    val popularProductsHeight = popularProductsCount * 220
 
-    return servicesHeight + recentAppointmentHeight + recommendationsHeight + popularProductsHeight
+    return servicesHeight + recentAppointmentHeight + recommendationsHeight
 }
 

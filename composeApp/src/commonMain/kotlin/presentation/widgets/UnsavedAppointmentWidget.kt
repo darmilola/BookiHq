@@ -67,7 +67,7 @@ fun UnsavedAppointmentWidget(unsavedAppointment: UnsavedAppointment? = null, onR
             horizontalAlignment = Alignment.Start,
             modifier = columnModifier
         ) {
-            UnsavedAppointmentHeader(unsavedAppointment?.services?.serviceTitle!!, unsavedAppointment.serviceTypeItem?.price!!, onRemoveItem = {
+            UnsavedAppointmentHeader(unsavedAppointment?.services?.serviceInfo?.title!!, unsavedAppointment.serviceTypeItem?.price!!, onRemoveItem = {
                 onRemoveItem(unsavedAppointment)
             })
             UnsavedAppointmentContent(unsavedAppointment)

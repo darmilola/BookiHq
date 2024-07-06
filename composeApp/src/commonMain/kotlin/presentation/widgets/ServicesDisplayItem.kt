@@ -45,9 +45,9 @@ fun HomeServicesWidget(vendorService:Services, mainViewModel: MainViewModel){
             val modifier = Modifier
                 .padding(top = 10.dp)
                 .fillMaxWidth()
-            AttachServiceImage(getWidget(vendorService.widgetCode))
+            AttachServiceImage(getWidget(vendorService.serviceInfo?.widgetCode!!))
             TextComponent(
-                text = vendorService.serviceTitle,
+                text = vendorService.serviceInfo?.title!!,
                 fontSize = 15,
                 fontFamily = GGSansRegular,
                 textStyle = MaterialTheme.typography.h6,

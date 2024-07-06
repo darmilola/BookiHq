@@ -7,10 +7,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable @Parcelize
 data class Vendor(
-    @SerialName("id") val vendorId: Long? = null, @SerialName("businessEmail") val businessEmail: String = "",
-    @SerialName("businessName") val businessName: String = "", @SerialName("businessLogo") val businessLogo: String = "",
-    @SerialName("businessAddress") val businessAddress: String = "", @SerialName("businessHandle") val businessHandle: String = "",
-    @SerialName("businessAbout") val businessAbout: String = "", @SerialName("openingTime") val openingTime: String? = null,
+    @SerialName("id") val vendorId: Long? = null, @SerialName("businessEmail") val businessEmail: String? = null,
+    @SerialName("businessName") val businessName: String? = null, @SerialName("businessLogo") val businessLogo: String? = null,
+    @SerialName("businessAddress") val businessAddress: String? = null, @SerialName("businessHandle") val businessHandle: String? = null,
+    @SerialName("businessAbout") val businessAbout: String? = null, @SerialName("openingTime") val openingTime: String? = null,
     @SerialName("country") val country: String? = null, @SerialName("city") val city: String? = null,
     @SerialName("isMobileServicesAvailable") val isMobileServiceAvailable: Boolean = false, val isSelected: Boolean = false): Parcelable
 

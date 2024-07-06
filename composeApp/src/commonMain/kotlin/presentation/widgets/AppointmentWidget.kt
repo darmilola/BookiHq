@@ -228,7 +228,7 @@ fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String
                 Box(modifier = Modifier.size(6.dp).clip(CircleShape).background(color = statusColor)){}
             }
             TextComponent(
-                text = appointment.services?.serviceTitle.toString(),
+                text = appointment.services?.serviceInfo?.title.toString(),
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
                 textStyle = TextStyle(),

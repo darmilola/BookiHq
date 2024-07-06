@@ -188,9 +188,9 @@ fun BusinessInfoContent(vendor: Vendor,isUserAuthenticated: Boolean = false, onC
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                BusinessLogo(logoUrl = vendor.businessLogo)
+                BusinessLogo(logoUrl = vendor.businessLogo!!)
                 TextComponent(
-                    text = vendor.businessName,
+                    text = vendor.businessName!!,
                     fontSize = 18,
                     fontFamily = GGSansRegular,
                     textStyle = TextStyle(),
@@ -207,7 +207,7 @@ fun BusinessInfoContent(vendor: Vendor,isUserAuthenticated: Boolean = false, onC
 
                 TextComponent(
                     textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 5.dp),
-                    text = vendor.businessAddress,
+                    text = vendor.businessAddress!!,
                     fontSize = 18,
                     fontFamily = GGSansRegular,
                     textStyle = TextStyle(),
@@ -223,7 +223,7 @@ fun BusinessInfoContent(vendor: Vendor,isUserAuthenticated: Boolean = false, onC
 
                 TextComponent(
                     textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 5.dp),
-                    text = vendor.businessAbout,
+                    text = vendor.businessAbout!!,
                     fontSize = 18,
                     fontFamily = GGSansRegular,
                     textStyle = TextStyle(),

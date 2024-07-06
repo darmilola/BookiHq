@@ -114,11 +114,14 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
         var isBottomNavSelected by remember { mutableStateOf(true) }
             val userId = mainViewModel.userId.collectAsState()
             val vendorId = mainViewModel.vendorId.collectAsState()
+            val userInfo = mainViewModel.currentUserInfo.collectAsState()
+            val vendorInfo = mainViewModel.connectedVendor.collectAsState()
 
             TabNavigator(showDefaultTab(mainViewModel, homePageViewModel!!)) {
                 it2 ->
                 Scaffold(
                     topBar = {
+                        if (userInfo.value.userId != null && vendorInfo.value.vendorId != null)
                         MainTopBar(
                             mainViewModel,
                             isBottomNavSelected = isBottomNavSelected
@@ -192,20 +195,6 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
                                 ) {
                                     isBottomNavSelected = true
                                 }
-
-                                TabNavigationItem(
-                                    FavoriteTab(mainViewModel),
-                                    selectedImage = "drawable/bookmark_filled.png",
-                                    unselectedImage = "drawable/bookmark.png",
-                                    labelText = "Favorite",
-                                    imageSize = 25,
-                                    currentTabId = 3,
-                                    tabNavigator = it2,
-                                    mainViewModel = mainViewModel
-                                ) {
-                                    isBottomNavSelected = true
-                                }
-
                                 TabNavigationItem(
                                     AccountTab(mainViewModel),
                                     selectedImage = "drawable/user_icon_filled.png",

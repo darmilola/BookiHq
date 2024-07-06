@@ -218,7 +218,7 @@ fun ServiceTitle(mainViewModel: MainViewModel){
     ) {
 
         TextComponent(
-            text = serviceState.value.serviceTitle,
+            text = serviceState.value.serviceInfo?.title!!,
             fontSize = 20,
             fontFamily = GGSansSemiBold,
             textStyle =  MaterialTheme.typography.h6,

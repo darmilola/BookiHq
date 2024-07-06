@@ -23,26 +23,18 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
         contractView = view
     }
 
-    override fun getUserHomepage(userEmail: String, vendorWhatsAppPhone: String) {
+    override fun getUserHomepage(userId: Long, vendorWhatsAppPhone: String) {
+        println("UserId $userId")
         val filteredStatusList = arrayListOf<VendorStatusModel>()
         contractView?.showLce(ScreenUIStates(loadingVisible = true))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    homeRepositoryImpl.getUserHomePage(userEmail, vendorWhatsAppPhone)
+                    homeRepositoryImpl.getUserHomePage(userId, vendorWhatsAppPhone)
                         .subscribe(
                             onSuccess = { response ->
+                                println("My response $response.homepageInfo")
                                 if (response.status == "success") {
-                                    response.vendorStatus.map { it ->
-                                        it.apply {
-                                            if (this.statusImage != null && this.statusImage.imageUrl != ""){
-                                               filteredStatusList.add(it.copy(isValidStatusType = true))
-                                            }
-                                            else if (this.statusVideo != null && this.statusVideo.videoUrl != ""){
-                                                filteredStatusList.add(it.copy(isValidStatusType = true))
-                                            }
-                                        }
-                                    }
                                     contractView?.showLce(ScreenUIStates(contentVisible = true))
                                     contractView?.showHome(response.homepageInfo, filteredStatusList)
                                 }
@@ -51,12 +43,14 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
                                 }
                             },
                             onError = {
+                                println("Response 2 ${it.message}")
                                 contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
+                println("Response 3 ${e.message}")
                 contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
             }
         }
