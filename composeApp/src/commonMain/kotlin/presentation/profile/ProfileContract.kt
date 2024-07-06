@@ -32,7 +32,7 @@ class ProfileContract {
         abstract fun deleteProfile(userEmail: String)
         abstract fun registerPlatformContract(view: PlatformContract?)
         abstract fun getPlatformCities(country: String)
-        abstract fun getVendorAvailability(vendorId: Int)
+        abstract fun getVendorAvailability(vendorId: Long)
         abstract fun getUserLocation(lat: Double, lng: Double)
 
     }

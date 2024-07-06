@@ -199,7 +199,7 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                                     style = TextStyle()
                                 ) {
                                     if (ordersResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
-                                        if (userId.value != -1) {
+                                        if (userId.value != -1L) {
                                             orderPresenter.getMoreUserOrders(userId.value, nextPage = ordersResourceListEnvelopeViewModel!!.currentPage.value + 1)
                                         }
                                     }

@@ -20,7 +20,7 @@ class OrderPresenter(apiService: HttpClient): OrderContract.Presenter() {
         contractView = view
     }
 
-    override fun getUserOrders(userId: Int) {
+    override fun getUserOrders(userId: Long) {
         println("Called")
         scope.launch(Dispatchers.Main) {
             try {
@@ -53,7 +53,7 @@ class OrderPresenter(apiService: HttpClient): OrderContract.Presenter() {
         }
     }
 
-    override fun getMoreUserOrders(userId: Int, nextPage: Int) {
+    override fun getMoreUserOrders(userId: Long, nextPage: Int) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {

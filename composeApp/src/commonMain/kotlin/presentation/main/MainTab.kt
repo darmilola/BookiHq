@@ -135,11 +135,11 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
                     backgroundColor = Color.White,
                     bottomBar = {
                         val bottomNavHeight =
-                            if (userId.value != -1 && vendorId.value != -1) 60 else 0
+                            if (userId.value != -1L && vendorId.value != -1L) 60 else 0
                         Box(modifier = Modifier.fillMaxWidth().height(80.dp),
                             contentAlignment = Alignment.Center) {
                             BottomNavigation(
-                                modifier = Modifier.height(bottomNavHeight.dp).padding(start = 10.dp, end = 10.dp)
+                                modifier = Modifier.height(60.dp).padding(start = 10.dp, end = 10.dp)
                                     .background(shape = RoundedCornerShape(15.dp), color = Color.White),
                                 backgroundColor = Color.Transparent,
                                 elevation = 0.dp

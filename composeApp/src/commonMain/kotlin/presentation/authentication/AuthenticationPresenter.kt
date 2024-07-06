@@ -92,6 +92,7 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                     authenticationRepositoryImpl.validateEmail(userEmail)
                         .subscribe(
                             onSuccess = { result ->
+                                println("Result $result")
                                 if (result.status == "success"){
                                     if (result.profileStatus == ProfileStatus.DONE.toPath()) {
                                         contractView?.onProfileValidationEnded()
@@ -112,12 +113,14 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                                 }
                             },
                             onError = {
+                                println("Here 2 ${it.message}")
                                 contractView?.onProfileValidationEnded()
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
+                println("Here 2 ${e.message}")
                 contractView?.onProfileValidationEnded()
             }
         }

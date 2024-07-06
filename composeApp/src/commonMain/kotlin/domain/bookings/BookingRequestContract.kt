@@ -11,8 +11,8 @@ data class GetTherapistsRequest(@SerialName("serviceTypeId") val serviceTypeId: 
                                 @SerialName("year") val year: Int)
 
 @Serializable
-data class CreateAppointmentRequest(@SerialName("user_id") val userId: Int,
-                                    @SerialName("vendor_id") val vendorId: Int,
+data class CreateAppointmentRequest(@SerialName("user_id") val userId: Long,
+                                    @SerialName("vendor_id") val vendorId: Long,
                                     @SerialName("service_id") val serviceId: Int,
                                     @SerialName("service_type_id") val serviceTypeId: Int,
                                     @SerialName("therapist_id") val therapistId: Int,

@@ -8,7 +8,7 @@ import domain.Models.ServerResponse
 import domain.Models.TherapistAvailabilityResponse
 
 interface AppointmentRepository {
-    suspend fun getAppointments(userId: Int, nextPage: Int = 1): Single<AppointmentListDataResponse>
+    suspend fun getAppointments(userId: Long, nextPage: Int = 1): Single<AppointmentListDataResponse>
     suspend fun postponeAppointment(appointment: Appointment, appointmentTime: Int,  day: Int, month: Int, year: Int): Single<ServerResponse>
     suspend fun deleteAppointment(appointmentId: Int): Single<ServerResponse>
     suspend fun joinMeeting(customParticipantId: String, presetName: String, meetingId: String): Single<JoinMeetingResponse>

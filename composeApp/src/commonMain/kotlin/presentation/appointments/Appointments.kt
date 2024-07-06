@@ -208,7 +208,7 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                 stackedSnackBarHostState,
                 onActionClick = {})
             appointmentResourceListEnvelopeViewModel.clearData(mutableListOf())
-            if (userId != -1) {
+            if (userId != -1L) {
                 appointmentResourceListEnvelopeViewModel.clearData(mutableListOf())
                 appointmentPresenter.getUserAppointments(userId)
             }
@@ -239,7 +239,7 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                 stackedSnackBarHostState,
                 onActionClick = {})
             appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-            if (userId != -1) {
+            if (userId != -1L) {
                 appointmentResourceListEnvelopeViewModel.clearData(mutableListOf())
                 appointmentPresenter.getUserAppointments(userId)
             }
@@ -371,7 +371,7 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                                             style = TextStyle()
                                         ) {
                                             if (appointmentResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
-                                                if (userId != -1) {
+                                                if (userId != -1L) {
                                                     appointmentPresenter.getMoreAppointments(
                                                         userId,
                                                         nextPage = appointmentResourceListEnvelopeViewModel!!.currentPage.value + 1

@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.OnBackPressed
 import cafe.adriel.voyager.navigator.currentOrThrow
 import domain.Models.Vendor
 import presentation.components.ButtonComponent
@@ -93,15 +94,15 @@ fun ConnectBusinessTitle(title: String){
 }
 
 @Composable
-fun BusinessInfoTitle(){
+fun BusinessInfoTitle(onBackPressed: () -> Unit){
     val rowModifier = Modifier
         .fillMaxWidth()
         .fillMaxHeight()
 
     val colModifier = Modifier
-        .padding(top = 55.dp, start = 10.dp)
+        .padding(top = 20.dp, start = 10.dp)
         .fillMaxWidth()
-        .height(70.dp)
+        .height(60.dp)
 
     Column(modifier = colModifier,
         verticalArrangement = Arrangement.Center,
@@ -114,7 +115,9 @@ fun BusinessInfoTitle(){
                 .fillMaxWidth()
                 .fillMaxHeight(),
                 contentAlignment = Alignment.CenterStart) {
-                leftTopBarItem()
+                leftTopBarItem( onBackPressed = {
+                    onBackPressed()
+                })
             }
 
             Box(modifier =  Modifier.weight(3.0f)
@@ -152,10 +155,9 @@ fun ConnectBusinessDescription(){
 
 
 @Composable
-fun leftTopBarItem() {
-    val navigator = LocalNavigator.currentOrThrow
+fun leftTopBarItem(onBackPressed: () -> Unit) {
     PageBackNavWidget {
-        navigator.pop()
+        onBackPressed()
     }
 
 }
@@ -239,7 +241,7 @@ fun BusinessInfoContent(vendor: Vendor,isUserAuthenticated: Boolean = false, onC
                 ) {
 
                     Row(
-                        modifier = Modifier.weight(1f).height(50.dp),
+                        modifier = Modifier.fillMaxWidth().height(50.dp),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -263,7 +265,7 @@ fun BusinessInfoContent(vendor: Vendor,isUserAuthenticated: Boolean = false, onC
                             TextComponent(
                                 textModifier = Modifier.wrapContentWidth()
                                     .padding(start = 5.dp),
-                                text = vendor.openingTime,
+                                text = vendor.openingTime.toString(),
                                 fontSize = 16,
                                 textStyle = TextStyle(),
                                 textColor = Color.DarkGray,
@@ -272,26 +274,6 @@ fun BusinessInfoContent(vendor: Vendor,isUserAuthenticated: Boolean = false, onC
                                 lineHeight = 23,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
-                            )
-                        }
-
-                    }
-                    Row(
-                        modifier = Modifier.weight(1f).height(50.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        Box(
-                            modifier = Modifier.fillMaxHeight().wrapContentWidth(),
-                            contentAlignment = Alignment.BottomCenter
-                        ) {
-                            val modifier = Modifier
-                                .size(24.dp)
-                            ImageComponent(
-                                imageModifier = modifier,
-                                imageRes = "drawable/close_sign.png",
-                                colorFilter = ColorFilter.tint(color = Colors.primaryColor)
                             )
                         }
 
@@ -339,7 +321,7 @@ fun BusinessInfoContent(vendor: Vendor,isUserAuthenticated: Boolean = false, onC
                     val buttonStyle = Modifier
                         .fillMaxWidth()
                         .padding(top = 25.dp)
-                        .height(50.dp)
+                        .height(45.dp)
 
                     Column(
                         modifier = Modifier.fillMaxWidth(),
@@ -354,7 +336,7 @@ fun BusinessInfoContent(vendor: Vendor,isUserAuthenticated: Boolean = false, onC
                                 buttonText = "Connect",
                                 borderStroke = null,
                                 colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
-                                fontSize = 18,
+                                fontSize = 16,
                                 shape = CircleShape,
                                 textColor = Color.White,
                                 style = TextStyle()

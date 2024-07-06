@@ -28,7 +28,7 @@ import presentation.bookings.PendingAppointmentsTab
 import presentation.Products.CartTab
 import presentation.profile.EditProfile
 import presentation.connectVendor.ConnectPageTab
-import presentation.connectVendor.ConnectVendorDetailsPage
+import presentation.connectVendor.SwitchVendorDetailsTab
 import presentation.consultation.ConsultationScreen
 import presentation.consultation.VirtualConsultationRoom
 import presentation.dialogs.LoadingDialog
@@ -56,7 +56,6 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
                 MainViewModel(savedStateHandle = createSavedStateHandle())
             },
         )
-        saveAccountInfoToViewModel(mainViewModel!!)
       }
 
         preferenceSettings as ObservableSettings
@@ -111,7 +110,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
                     it.current = EditProfile(mainViewModel!!, platformNavigator, preferenceSettings)
                 }
                 Screens.VENDOR_INFO.toPath() -> {
-                    it.current = ConnectVendorDetailsPage(mainViewModel!!)
+                    it.current = SwitchVendorDetailsTab(mainViewModel!!)
                 }
                 Screens.PENDING_APPOINTMENT.toPath() -> {
                     it.current = PendingAppointmentsTab(mainViewModel!!)
@@ -130,31 +129,6 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
             Scaffold(
                 content = { CurrentTab() })
         }
-    }
-    private fun saveAccountInfoToViewModel(mainViewModel: MainViewModel){
-        mainViewModel.setUserEmail(preferenceSettings["userEmail",""])
-        mainViewModel.setUserFirstname(preferenceSettings["userFirstname",""])
-        mainViewModel.setUserId(preferenceSettings["userId",-1])
-        mainViewModel.setVendorEmail(preferenceSettings["vendorEmail",""])
-        mainViewModel.setVendorId(preferenceSettings["vendorId",-1])
-        mainViewModel.setTherapistId(preferenceSettings["therapistId",-1])
-        mainViewModel.setVendorBusinessLogoUrl(preferenceSettings["vendorBusinessLogoUrl",""])
-    }
-
-    fun setImageUploadResponse(imageUrl: String) {
-        preferenceSettings["imageUrl"] = imageUrl
-    }
-   fun setImageUploadProcessing(isDone: Boolean = false) {
-        preferenceSettings["imageUploadProcessing"] = isDone
-    }
-
-    fun setLocationRequestAllowed(isAllowed: Boolean) {
-        preferenceSettings["locationRequestAllowed"] = isAllowed
-    }
-
-    fun setLocationResponse(latitude: Double, longitude: Double) {
-        preferenceSettings["latitude"] = latitude
-        preferenceSettings["longitude"] = longitude
     }
 
     private fun showDefaultTab(mainViewModel: MainViewModel): MainTab {

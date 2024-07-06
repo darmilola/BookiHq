@@ -3,7 +3,7 @@ package utils
 import domain.Models.OrderItem
 import domain.Products.OrderItemRequest
 
-fun getUnSavedOrders(unsavedOrders: MutableList<OrderItem>, userId: Int, orderReference: Int): ArrayList<OrderItemRequest> {
+fun getUnSavedOrders(unsavedOrders: MutableList<OrderItem>, userId: Long, orderReference: Int): ArrayList<OrderItemRequest> {
     val orderRequestList = arrayListOf<OrderItemRequest>()
 
     for (item in unsavedOrders){

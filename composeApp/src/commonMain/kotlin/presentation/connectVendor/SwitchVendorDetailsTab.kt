@@ -8,7 +8,7 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import presentation.viewmodels.MainViewModel
 
-class ConnectVendorDetailsPage(private val mainViewModel: MainViewModel) : Tab {
+class SwitchVendorDetailsTab(private val mainViewModel: MainViewModel) : Tab {
     override val options: TabOptions
         @Composable
         get() {

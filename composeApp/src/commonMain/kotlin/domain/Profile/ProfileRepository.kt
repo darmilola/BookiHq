@@ -21,7 +21,7 @@ interface ProfileRepository {
     ): Single<ServerResponse>
 
     suspend fun deleteProfile(userEmail: String): Single<ServerResponse>
-    suspend fun getVendorAvailableTimes(vendorId: Int): Single<VendorAvailabilityResponse>
+    suspend fun getVendorAvailableTimes(vendorId: Long): Single<VendorAvailabilityResponse>
     suspend fun reverseGeocode(lat: Double, lng: Double): Single<Place?>
 
     suspend fun getPlatformCities(

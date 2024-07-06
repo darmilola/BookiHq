@@ -20,7 +20,7 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
         contractView = view
     }
 
-    override fun getProducts(vendorId: Int) {
+    override fun getProducts(vendorId: Long) {
         contractView?.showLce(ScreenUIStates(loadingVisible = true))
 
         scope.launch(Dispatchers.Main) {
@@ -49,7 +49,7 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
         }
     }
 
-    override fun getMoreProducts(vendorId: Int, nextPage: Int) {
+    override fun getMoreProducts(vendorId: Long, nextPage: Int) {
         contractView?.onLoadMoreProductStarted()
 
         scope.launch(Dispatchers.Main) {
@@ -78,7 +78,7 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
         }
     }
 
-    override fun searchProducts(vendorId: Int, searchQuery: String) {
+    override fun searchProducts(vendorId: Long, searchQuery: String) {
         contractView?.showLce(ScreenUIStates(loadingVisible = true))
 
         scope.launch(Dispatchers.Main) {
@@ -107,7 +107,7 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
         }
     }
 
-    override fun searchMoreProducts(vendorId: Int, searchQuery: String, nextPage: Int) {
+    override fun searchMoreProducts(vendorId: Long, searchQuery: String, nextPage: Int) {
         contractView?.onLoadMoreProductStarted()
 
         scope.launch(Dispatchers.Main) {

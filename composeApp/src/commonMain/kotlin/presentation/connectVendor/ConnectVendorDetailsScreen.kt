@@ -8,7 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
@@ -16,24 +15,25 @@ import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
-import com.russhwolf.settings.set
 import domain.Models.PlatformNavigator
-import domain.Models.ResourceListEnvelope
 import domain.Models.Vendor
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.dialogs.LoadingDialog
 import presentation.main.MainScreen
-import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
-import UIStates.ScreenUIStates
-import domain.Models.VendorResourceListEnvelope
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import com.russhwolf.settings.set
+import kotlinx.serialization.Transient
+import presentation.DomainViewHandler.VendorInfoPageHandler
+import utils.ParcelableScreen
 
-class VendorInfoPage(val vendor: Vendor, val  platformNavigator: PlatformNavigator? = null) : Screen, KoinComponent {
+@Parcelize
+class ConnectVendorDetailsScreen(val vendor: Vendor, val  platformNavigator: PlatformNavigator? = null) : ParcelableScreen, KoinComponent {
 
-    private val preferenceSettings: Settings = Settings()
-    private val connectVendorPresenter: ConnectVendorPresenter by inject()
-    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
+   @Transient private val preferenceSettings: Settings = Settings()
+   @Transient private val connectVendorPresenter: ConnectVendorPresenter by inject()
+   @Transient private var screenUiStateViewModel: ScreenUIStateViewModel? = null
 
     @Composable
     override fun Content() {
@@ -42,7 +42,7 @@ class VendorInfoPage(val vendor: Vendor, val  platformNavigator: PlatformNavigat
         val pageLoading = remember { mutableStateOf(false) }
         val errorVisible = remember { mutableStateOf(false) }
         val vendorConnected = remember { mutableStateOf(false) }
-        val userEmail = preferenceSettings["userEmail",""]
+        val userId = preferenceSettings["profileId", -1L]
 
 
         if (screenUiStateViewModel == null) {
@@ -55,7 +55,7 @@ class VendorInfoPage(val vendor: Vendor, val  platformNavigator: PlatformNavigat
 
 
         // View Contract Handler Initialisation
-        val handler = InfoPageHandler(
+        val handler = VendorInfoPageHandler(
             null,
             screenUiStateViewModel!!,
             connectVendorPresenter,
@@ -71,7 +71,8 @@ class VendorInfoPage(val vendor: Vendor, val  platformNavigator: PlatformNavigat
                 pageLoading.value = false
             },
             onConnected = {
-               vendorConnected.value = true
+                preferenceSettings["vendorId"] = vendor.vendorId
+                vendorConnected.value = true
             })
         handler.init()
 
@@ -79,10 +80,7 @@ class VendorInfoPage(val vendor: Vendor, val  platformNavigator: PlatformNavigat
             Box(modifier = Modifier.fillMaxWidth(0.90f)) {
                 LoadingDialog("Connecting Vendor")
             }
-        }
-        else if (vendorConnected.value){
-            preferenceSettings["connectedVendor"] = vendor.vendorId
-            preferenceSettings["isVendorConnected"] = true
+        } else if (vendorConnected.value) {
             navigator.replaceAll(MainScreen(platformNavigator))
         }
 
@@ -90,61 +88,18 @@ class VendorInfoPage(val vendor: Vendor, val  platformNavigator: PlatformNavigat
 
         Scaffold(
             topBar = {
-                BusinessInfoTitle()
+                BusinessInfoTitle(onBackPressed = {
+                    navigator.replace(ConnectVendorScreen(platformNavigator))
+                })
             },
             content = {
                 BusinessInfoContent(vendor, isUserAuthenticated = true) {
-                    if (userEmail.isNotEmpty()) {
-                        connectVendorPresenter.connectVendor(userEmail, vendor.vendorId!!)
+                    if (userId != -1L) {
+                        connectVendorPresenter.connectVendor(userId, vendor.vendorId!!)
                     }
                 }
             },
             backgroundColor = Color.Transparent,
         )
-    }
-
-
-    class InfoPageHandler(
-        private val vendorResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Vendor>? = null,
-        private val screenUiStateViewModel: ScreenUIStateViewModel,
-        private val connectVendorPresenter: ConnectVendorPresenter,
-        private val onPageLoading: () -> Unit,
-        private val onContentVisible: () -> Unit,
-        private val onConnected: (userEmail: String) -> Unit,
-        private val onErrorVisible: () -> Unit
-    ) : ConnectVendorContract.View {
-        fun init() {
-            connectVendorPresenter.registerUIContract(this)
-        }
-
-        override fun showLce(uiState: ScreenUIStates) {
-            screenUiStateViewModel.switchScreenUIState(uiState)
-            uiState.let {
-                when {
-                    it.loadingVisible -> {
-                        onPageLoading()
-                    }
-
-                    it.contentVisible -> {
-                        onContentVisible()
-                    }
-
-                    it.errorOccurred -> {
-                        onErrorVisible()
-                    }
-                }
-            }
-        }
-
-        override fun onVendorConnected(userEmail: String) {
-            onConnected(userEmail)
-        }
-
-        override fun showVendors(vendors: VendorResourceListEnvelope?, isFromSearch: Boolean) {}
-
-        override fun onLoadMoreVendorStarted(isSuccess: Boolean) {}
-
-        override fun onLoadMoreVendorEnded(isSuccess: Boolean) {}
-
     }
 }

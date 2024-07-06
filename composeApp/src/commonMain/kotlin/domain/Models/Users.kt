@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable @Parcelize
 data class User(
-    @SerialName("id") val userId: Int? = null, @SerialName("email") val email: String? = null, @SerialName("firstname") val firstname: String? = null,
+    @SerialName("id") val userId: Long? = null, @SerialName("email") val email: String? = null, @SerialName("firstname") val firstname: String? = null,
     @SerialName("lastname") val lastname: String? = null, @SerialName("address") val address: String? = null, @SerialName("contactPhone") val contactPhone: String? = null,
     @SerialName("country") val country: String = "", @SerialName("city") val city: String = "", @SerialName("gender") val gender: String? = null,
     @SerialName("imageUrl") val profileImageUrl: String? = null,

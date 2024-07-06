@@ -19,17 +19,17 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
     override fun registerUIContract(view: ConnectVendorContract.View?) {
          contractView = view
     }
-    override fun connectVendor(userEmail: String, vendorId: Int) {
+    override fun connectVendor(userId: Long, vendorId: Long) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showLce(ScreenUIStates(loadingVisible = true))
-                    connectVendorRepositoryImpl.connectVendor(userEmail,vendorId)
+                    connectVendorRepositoryImpl.connectVendor(userId,vendorId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     contractView?.showLce(ScreenUIStates(contentVisible = true))
-                                    contractView?.onVendorConnected(userEmail)
+                                    contractView?.onVendorConnected(userId)
                                 }
                                 else{
                                     contractView?.showLce(ScreenUIStates(errorOccurred = true))
@@ -55,7 +55,6 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                     connectVendorRepositoryImpl.getVendor(country)
                         .subscribe(
                             onSuccess = { result ->
-                                println("Result 0 ${result.listItem} $country")
                                 if (result.status == "success"){
                                     contractView?.showLce(ScreenUIStates(contentVisible = true))
                                     contractView?.showVendors(result.listItem)
@@ -65,14 +64,12 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                                 }
                             },
                             onError = {
-                                println("Result 1 ${it.message}")
                                 it.message?.let { it1 -> contractView?.showLce(ScreenUIStates(errorOccurred = true)) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Result 2 ${e.message}")
                 contractView?.showLce(ScreenUIStates(errorOccurred = true))
             }
         }

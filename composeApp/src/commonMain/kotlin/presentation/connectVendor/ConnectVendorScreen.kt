@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
@@ -36,7 +35,6 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import domain.Models.PlatformNavigator
-import domain.Models.ResourceListEnvelope
 import domain.Models.Vendor
 import domain.Models.VendorItemUIModel
 import domain.Models.getVendorListItemViewHeight
@@ -46,12 +44,10 @@ import presentation.widgets.SearchBar
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.ConnectPageViewModel
-import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
-import UIStates.ScreenUIStates
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
-import domain.Models.VendorResourceListEnvelope
 import kotlinx.serialization.Transient
+import presentation.DomainViewHandler.ConnectPageHandler
 import presentation.viewmodels.VendorsResourceListEnvelopeViewModel
 import theme.Colors
 import utils.ParcelableScreen
@@ -76,12 +72,21 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
         val searchQuery = remember { mutableStateOf("") }
         country = preferenceSettings["country", ""]
 
+        if (vendorResourceListEnvelopeViewModel == null) {
+            vendorResourceListEnvelopeViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    VendorsResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
+                })
+        }
+
+
         if (screenUiStateViewModel == null) {
             screenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
+            vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
             connectVendorPresenter.getVendor(country = country)
         }
 
@@ -92,14 +97,6 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
                 },
             )
         }
-
-        if (vendorResourceListEnvelopeViewModel == null) {
-            vendorResourceListEnvelopeViewModel = kmpViewModel(
-                factory = viewModelFactory {
-                    VendorsResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
-                })
-           }
-
 
         val loadMoreState = vendorResourceListEnvelopeViewModel!!.isLoadingMore.collectAsState()
         val vendorList = vendorResourceListEnvelopeViewModel?.resources?.collectAsState()
@@ -136,9 +133,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
                 errorVisible.value = true
                 contentLoading.value = false
             },
-            onConnected = {
-
-            })
+            onConnected = {})
         handler.init()
 
            Scaffold(
@@ -151,7 +146,10 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
                             vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                             searchQuery.value = it
                             connectVendorPresenter.searchVendor(country, searchQuery = it)
-                        }, onBackPressed = {})
+                        }, onBackPressed = {
+                            vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
+                            connectVendorPresenter.getVendor(country = country)
+                        })
                     }
                 },
                 content = {
@@ -178,7 +176,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
                         ) {
                             items(vendorUIModel.vendorsList.size) { i ->
                                 SwitchVendorBusinessItemComponent(vendor = vendorUIModel.vendorsList[i]) {
-                                    navigator.push(VendorInfoPage(vendor = it, platformNavigator))
+                                    navigator.replace(ConnectVendorDetailsScreen(vendor = it, platformNavigator))
                                 }
                                 if (i == lastIndex && loadMoreState.value) {
                                     Box(
@@ -190,7 +188,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
                                 }
                                 else if (i == lastIndex && (displayedVendorsCount!!.value < totalVendorsCount!!.value)) {
                                     val buttonStyle = Modifier
-                                        .height(60.dp)
+                                        .height(50.dp)
                                         .fillMaxWidth()
                                         .padding(top = 10.dp, start = 10.dp, end = 10.dp)
 
@@ -228,68 +226,3 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
             )
         }
     }
-class ConnectPageHandler(
-    private val vendorResourceListEnvelopeViewModel: VendorsResourceListEnvelopeViewModel,
-    private val screenUiStateViewModel: ScreenUIStateViewModel,
-    private val connectVendorPresenter: ConnectVendorPresenter,
-    private val onPageLoading: () -> Unit,
-    private val onContentVisible: () -> Unit,
-    private val onConnected: (userEmail: String) -> Unit,
-    private val onErrorVisible: () -> Unit
-) : ConnectVendorContract.View {
-    fun init() {
-        connectVendorPresenter.registerUIContract(this)
-    }
-
-    override fun showLce(uiState: ScreenUIStates) {
-        screenUiStateViewModel.switchScreenUIState(uiState)
-        uiState.let {
-            when{
-                it.loadingVisible -> {
-                    onPageLoading()
-                }
-
-                it.contentVisible -> {
-                    onContentVisible()
-                }
-
-                it.errorOccurred -> {
-                    onErrorVisible()
-                }
-            }
-        }
-    }
-
-    override fun onVendorConnected(userEmail: String) {
-        onConnected(userEmail)
-    }
-
-    override fun showVendors(vendors: VendorResourceListEnvelope?, isFromSearch: Boolean) {
-        if (vendorResourceListEnvelopeViewModel.resources.value.isNotEmpty()) {
-            val vendorList = vendorResourceListEnvelopeViewModel.resources.value
-            vendorList.addAll(vendors?.resources!!)
-            vendorResourceListEnvelopeViewModel.setResources(vendorList)
-            vendors.prevPageUrl?.let { vendorResourceListEnvelopeViewModel.setPrevPageUrl(it) }
-            vendors.nextPageUrl?.let { vendorResourceListEnvelopeViewModel.setNextPageUrl(it) }
-            vendors.currentPage?.let { vendorResourceListEnvelopeViewModel.setCurrentPage(it) }
-            vendors.totalItemCount?.let { vendorResourceListEnvelopeViewModel.setTotalItemCount(it) }
-            vendors.displayedItemCount?.let { vendorResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
-        } else {
-            vendorResourceListEnvelopeViewModel.setResources(vendors?.resources)
-            vendors?.prevPageUrl?.let { vendorResourceListEnvelopeViewModel.setPrevPageUrl(it) }
-            vendors?.nextPageUrl?.let { vendorResourceListEnvelopeViewModel.setNextPageUrl(it) }
-            vendors?.currentPage?.let { vendorResourceListEnvelopeViewModel.setCurrentPage(it) }
-            vendors?.totalItemCount?.let { vendorResourceListEnvelopeViewModel.setTotalItemCount(it) }
-            vendors?.displayedItemCount?.let { vendorResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
-        }
-    }
-
-    override fun onLoadMoreVendorStarted(isSuccess: Boolean) {
-        vendorResourceListEnvelopeViewModel.setLoadingMore(true)
-    }
-
-    override fun onLoadMoreVendorEnded(isSuccess: Boolean) {
-        vendorResourceListEnvelopeViewModel.setLoadingMore(false)
-    }
-
-}

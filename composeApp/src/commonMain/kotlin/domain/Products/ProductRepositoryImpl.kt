@@ -8,7 +8,7 @@ import io.ktor.client.HttpClient
 class ProductRepositoryImpl(apiService: HttpClient): ProductRepository {
     private val productNetworkService: ProductNetworkService = ProductNetworkService(apiService)
     override suspend fun getAllProducts(
-        vendorId: Int,
+        vendorId: Long,
         nextPage: Int
     ): Single<ProductListDataResponse> {
         val param = GetAllProductsRequest(vendorId = vendorId)
@@ -17,7 +17,7 @@ class ProductRepositoryImpl(apiService: HttpClient): ProductRepository {
 
 
     override suspend fun searchProducts(
-        vendorId: Int,
+        vendorId: Long,
         searchQuery: String,
         nextPage: Int
     ): Single<ProductListDataResponse> {
@@ -26,8 +26,8 @@ class ProductRepositoryImpl(apiService: HttpClient): ProductRepository {
     }
 
     override suspend fun createOrder(
-        vendorId: Int,
-        userId: Int,
+        vendorId: Long,
+        userId: Long,
         orderReference: Int,
         deliveryMethod: String,
         paymentMethod: String,

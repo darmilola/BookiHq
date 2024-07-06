@@ -19,9 +19,9 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     private var _screenTitle = savedStateHandle.getStateFlow("screenTitle","Home")
     private var _connectedVendor =  savedStateHandle.getStateFlow("connectedVendor", Vendor())
     private var _currentUserInfo =  savedStateHandle.getStateFlow("userInfo", User())
-    private var _currentUserId =  savedStateHandle.getStateFlow("currentUserId", -1)
+    private var _currentUserId =  savedStateHandle.getStateFlow("currentUserId", -1L)
     private var _currentTherapistId =  savedStateHandle.getStateFlow("currentTherapistId", -1)
-    private var _currentVendorId =  savedStateHandle.getStateFlow("currentVendorId", -1)
+    private var _currentVendorId =  savedStateHandle.getStateFlow("currentVendorId", -1L)
     private var _currentUserFirstname =  savedStateHandle.getStateFlow("currentUserFirstname", "")
     private var _currentUserEmail =  savedStateHandle.getStateFlow("currentUserEmail", "")
     private var _currentVendorEmail =  savedStateHandle.getStateFlow("currentVendorEmail", "")
@@ -69,13 +69,13 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
         get() = _currentVendorEmail
     val vendorLogoUrl: StateFlow<String>
         get() = _currentVendorLogoUrl
-    val userId: StateFlow<Int>
+    val userId: StateFlow<Long>
         get() = _currentUserId
 
     val therapistId: StateFlow<Int>
         get() = _currentTherapistId
 
-    val vendorId: StateFlow<Int>
+    val vendorId: StateFlow<Long>
         get() = _currentVendorId
 
     val vendorRecommendation: StateFlow<VendorRecommendation>
@@ -107,11 +107,11 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
         savedStateHandle["connectedVendor"] = vendor
     }
 
-    fun setUserId(userId: Int) {
+    fun setUserId(userId: Long) {
         savedStateHandle["currentUserId"] = userId
     }
 
-    fun setVendorId(vendorId: Int) {
+    fun setVendorId(vendorId: Long) {
         savedStateHandle["currentVendorId"] = vendorId
     }
 

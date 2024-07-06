@@ -15,10 +15,10 @@ class ProductContract {
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
-        abstract fun getProducts(vendorId: Int)
-        abstract fun getMoreProducts(vendorId: Int, nextPage: Int = 1)
-        abstract fun searchProducts(vendorId: Int, searchQuery: String)
-        abstract fun searchMoreProducts(vendorId: Int, searchQuery: String, nextPage: Int = 1)
+        abstract fun getProducts(vendorId: Long)
+        abstract fun getMoreProducts(vendorId: Long, nextPage: Int = 1)
+        abstract fun searchProducts(vendorId: Long, searchQuery: String)
+        abstract fun searchMoreProducts(vendorId: Long, searchQuery: String, nextPage: Int = 1)
 
     }
 }
@@ -31,7 +31,7 @@ class CartContract {
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
-        abstract fun createOrder(orderItemList: MutableList<OrderItem>, vendorId: Int, userId: Int, orderReference: Int, deliveryMethod: String, paymentMethod: String)
+        abstract fun createOrder(orderItemList: MutableList<OrderItem>, vendorId: Long, userId: Long, orderReference: Int, deliveryMethod: String, paymentMethod: String)
 
     }
 }

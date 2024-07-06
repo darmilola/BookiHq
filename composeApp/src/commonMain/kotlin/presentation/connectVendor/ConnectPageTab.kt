@@ -40,6 +40,7 @@ import domain.Models.VendorItemUIModel
 import domain.Models.getVendorListItemViewHeight
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import presentation.DomainViewHandler.ConnectPageHandler
 import presentation.widgets.SearchBar
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar

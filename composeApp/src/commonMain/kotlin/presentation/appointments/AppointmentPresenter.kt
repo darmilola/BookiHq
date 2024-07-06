@@ -22,7 +22,7 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
         contractView = view
     }
 
-    override fun getUserAppointments(userId: Int) {
+    override fun getUserAppointments(userId: Long) {
         contractView?.showLce(ScreenUIStates(loadingVisible = true))
         scope.launch(Dispatchers.Main) {
             try {
@@ -50,7 +50,7 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
         }
     }
 
-    override fun getMoreAppointments(userId: Int, nextPage: Int) {
+    override fun getMoreAppointments(userId: Long, nextPage: Int) {
         contractView?.onLoadMoreAppointmentStarted()
         scope.launch(Dispatchers.Main) {
             try {

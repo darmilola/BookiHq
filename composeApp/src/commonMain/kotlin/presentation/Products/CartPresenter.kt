@@ -24,8 +24,8 @@ class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
 
     override fun createOrder(
         orderItemList: MutableList<OrderItem>,
-        vendorId: Int,
-        userId: Int,
+        vendorId: Long,
+        userId: Long,
         orderReference: Int,
         deliveryMethod: String,
         paymentMethod: String

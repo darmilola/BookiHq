@@ -8,7 +8,7 @@ import io.ktor.client.HttpClient
 class OrderRepositoryImpl(apiService: HttpClient): OrderRepository {
     private val orderNetworkService: OrderNetworkService = OrderNetworkService(apiService)
 
-    override suspend fun getUserOrders(userId: Int, nextPage: Int): Single<OrderListDataResponse> {
+    override suspend fun getUserOrders(userId: Long, nextPage: Int): Single<OrderListDataResponse> {
         val param = GetOrderRequest(userId)
         return orderNetworkService.getUserOrders(param, nextPage)
     }

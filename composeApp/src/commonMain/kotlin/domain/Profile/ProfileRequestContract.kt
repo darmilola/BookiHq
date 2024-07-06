@@ -21,4 +21,4 @@ data class DeleteProfileRequest(@SerialName("userEmail") val userEmail: String)
 data class GetPlatformCitiesRequest(@SerialName("country") val country: String)
 
 @Serializable
-data class GetVendorAvailabilityRequest(@SerialName("vendorId") val vendorId: Int)
+data class GetVendorAvailabilityRequest(@SerialName("vendorId") val vendorId: Long)

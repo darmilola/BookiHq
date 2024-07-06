@@ -39,7 +39,7 @@ class ProfileRepositoryImpl(apiService: HttpClient): ProfileRepository {
         return profileNetworkService.deleteProfile(param)
     }
 
-    override suspend fun getVendorAvailableTimes(vendorId: Int): Single<VendorAvailabilityResponse> {
+    override suspend fun getVendorAvailableTimes(vendorId: Long): Single<VendorAvailabilityResponse> {
         val param = GetVendorAvailabilityRequest(vendorId)
         return profileNetworkService.getVendorAvailableTimes(param)
     }

@@ -8,7 +8,7 @@ import domain.Models.VendorResourceListEnvelope
 class ConnectVendorContract {
     interface View {
         fun showLce(uiState: ScreenUIStates)
-        fun onVendorConnected(userEmail: String)
+        fun onVendorConnected(userId: Long)
         fun showVendors(vendors: VendorResourceListEnvelope?, isFromSearch: Boolean = false)
         fun onLoadMoreVendorStarted(isSuccess: Boolean = false)
         fun onLoadMoreVendorEnded(isSuccess: Boolean = false)
@@ -16,7 +16,7 @@ class ConnectVendorContract {
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
-        abstract fun connectVendor(userEmail: String, vendorId: Int)
+        abstract fun connectVendor(userId: Long, vendorId: Long)
         abstract fun getVendor(country: String)
         abstract fun getMoreVendor(country: String,nextPage: Int = 1)
         abstract fun searchVendor(country: String, searchQuery: String)

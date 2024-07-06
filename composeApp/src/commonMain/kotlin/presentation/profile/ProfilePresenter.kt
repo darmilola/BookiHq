@@ -123,7 +123,7 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         }
     }
 
-    override fun getVendorAvailability(vendorId: Int) {
+    override fun getVendorAvailability(vendorId: Long) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {

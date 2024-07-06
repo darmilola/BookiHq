@@ -349,7 +349,7 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
     fun ProductContent(
         productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel,
         screenUiStateViewModel: ScreenUIStateViewModel,
-        searchQuery: String, vendorId: Int, mainViewModel: MainViewModel, onCartChanged: () -> Unit,
+        searchQuery: String, vendorId: Long, mainViewModel: MainViewModel, onCartChanged: () -> Unit,
         stackedSnackBarHostState: StackedSnakbarHostState) {
         val loadMoreState = productResourceListEnvelopeViewModel.isLoadingMore.collectAsState()
         val productList = productResourceListEnvelopeViewModel.resources.collectAsState()

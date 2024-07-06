@@ -13,7 +13,7 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
     private val appointmentNetworkService: AppointmentNetworkService = AppointmentNetworkService(apiService)
 
     override suspend fun getAppointments(
-        userId: Int,
+        userId: Long,
         nextPage: Int
     ): Single<AppointmentListDataResponse> {
         val param = GetAppointmentRequest(userId)

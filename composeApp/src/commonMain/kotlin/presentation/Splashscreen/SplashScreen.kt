@@ -53,7 +53,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
         enterPlatform = { user ->
             preferenceSettings["country"] = user.country
             preferenceSettings["profileId"] = user.userId
-                navigateToConnectVendor.value = true
+            preferenceSettings["vendorId"] = user.connectedVendor
                 navigateToPlatform.value = true
         },
         completeProfile = { _,_ ->

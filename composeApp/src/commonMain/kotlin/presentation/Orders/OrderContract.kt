@@ -15,8 +15,8 @@ interface OrderContract {
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
-        abstract fun getUserOrders(userId: Int)
-        abstract fun getMoreUserOrders(userId: Int, nextPage: Int = 1)
+        abstract fun getUserOrders(userId: Long)
+        abstract fun getMoreUserOrders(userId: Long, nextPage: Int = 1)
         abstract fun deleteOrder(userId: Int)
     }
 }

@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class GetAppointmentRequest(@SerialName("user_id") val userId: Int)
+data class GetAppointmentRequest(@SerialName("user_id") val userId: Long)
 
 @Serializable
 data class GetTherapistAppointmentRequest(@SerialName("therapist_id") val therapistId: Int)

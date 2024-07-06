@@ -80,6 +80,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
             preferenceSettings["authEmail"] = user.email
             preferenceSettings["country"] = user.country
             preferenceSettings["profileId"] = user.userId
+            preferenceSettings["vendorId"] = user.connectedVendor
             navigateToPlatform.value = true
         },
         completeProfile = { userEmail, userPhone ->

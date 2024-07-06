@@ -78,27 +78,17 @@ fun BusinessInfoTitle(mainViewModel: MainViewModel?){
         .fillMaxWidth()
         .height(40.dp)
 
-    val colModifier = Modifier
-        .padding(top = 55.dp, end = 0.dp)
-        .fillMaxWidth()
-        .height(70.dp)
-
-    Column(modifier = colModifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally) {
         Row(modifier = rowModifier,
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically) {
 
             Box(modifier =  Modifier.weight(1.0f)
-                .fillMaxWidth()
                 .fillMaxHeight(),
                 contentAlignment = Alignment.CenterStart) {
                 InfoPageLeftTopBarItem(mainViewModel)
             }
 
             Box(modifier =  Modifier.weight(3.0f)
-                .fillMaxWidth()
                 .fillMaxHeight(),
                 contentAlignment = Alignment.Center) {
                 TitleWidget(title = "Details", textColor = Colors.primaryColor)
@@ -106,12 +96,10 @@ fun BusinessInfoTitle(mainViewModel: MainViewModel?){
             }
 
             Box(modifier =  Modifier.weight(1.0f)
-                .fillMaxWidth(0.20f)
                 .fillMaxHeight(),
                 contentAlignment = Alignment.Center) {
             }
         }
-    }
 }
 
 
