@@ -143,7 +143,7 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
                             contentAlignment = Alignment.Center) {
                             BottomNavigation(
                                 modifier = Modifier.height(60.dp).padding(start = 10.dp, end = 10.dp)
-                                    .background(shape = RoundedCornerShape(15.dp), color = Color.White),
+                                    .background(shape = RoundedCornerShape(15.dp), color = Colors.darkPrimary),
                                 backgroundColor = Color.Transparent,
                                 elevation = 0.dp
                             )
@@ -223,47 +223,47 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
     @Composable
     private fun RowScope.TabNavigationItem(tab: Tab, selectedImage: String, unselectedImage: String, imageSize: Int = 30, labelText: String ,currentTabId: Int = 0, tabNavigator: TabNavigator, mainViewModel: MainViewModel, onBottomNavSelected:() -> Unit) {
         var imageStr by remember { mutableStateOf(unselectedImage) }
-        var imageTint by remember { mutableStateOf(Colors.darkPrimary) }
-        var handleTint by remember { mutableStateOf(Color.White) }
+        var imageTint by remember { mutableStateOf(Color.White) }
+        var handleTint by remember { mutableStateOf(Colors.darkPrimary) }
 
         if (tabNavigator.current is ShopProductTab && currentTabId == 1) {
             imageStr = selectedImage
-            imageTint = Colors.primaryColor
-            handleTint = Colors.primaryColor
+            imageTint = Color.White
+            handleTint = Color.White
             val screenTitle = "Products"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
         } else if (tabNavigator.current is AppointmentsTab && currentTabId == 2) {
             imageStr = selectedImage
-            imageTint = Colors.primaryColor
-            handleTint = Colors.primaryColor
+            imageTint = Color.White
+            handleTint = Color.White
             val screenTitle = "Appointments"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
         } else if (tabNavigator.current is FavoriteTab && currentTabId == 3) {
             imageStr = selectedImage
-            imageTint = Colors.primaryColor
-            handleTint = Colors.primaryColor
+            imageTint = Color.White
+            handleTint = Color.White
             val screenTitle = "Favorites"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
         } else if (tabNavigator.current is AccountTab && currentTabId == 4) {
             imageStr = selectedImage
-            imageTint = Colors.primaryColor
-            handleTint = Colors.primaryColor
+            imageTint = Color.White
+            handleTint = Color.White
             val screenTitle = "Manage"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
         } else if (tabNavigator.current is HomeTab && currentTabId == 0) {
             imageStr = selectedImage
-            imageTint = Colors.primaryColor
-            handleTint = Colors.primaryColor
+            imageTint = Color.White
+            handleTint = Color.White
             val screenTitle = "Home"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
         } else {
-            imageTint = Colors.darkPrimary
-            handleTint = Color.White
+            imageTint = Color.White
+            handleTint = Colors.darkPrimary
             imageStr = unselectedImage
         }
 
