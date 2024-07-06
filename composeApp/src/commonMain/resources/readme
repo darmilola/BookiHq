@@ -49,6 +49,5 @@
 
 
       ------------- Preferences Saved at -------------------
-      Welcome Screen -- authType and authEmail
-      OTP Screen --- authType and authPhone
-      Complete profile -- country and city
+      Welcome Screen -- authType and authEmail, Country, ProfileId
+      OTP Screen --- authType and authPhone, Country, ProfileId
