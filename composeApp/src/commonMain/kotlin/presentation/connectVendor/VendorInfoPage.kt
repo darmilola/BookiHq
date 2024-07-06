@@ -27,6 +27,7 @@ import presentation.main.MainScreen
 import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
 import UIStates.ScreenUIStates
+import domain.Models.VendorResourceListEnvelope
 
 class VendorInfoPage(val vendor: Vendor, val  platformNavigator: PlatformNavigator? = null) : Screen, KoinComponent {
 
@@ -139,7 +140,7 @@ class VendorInfoPage(val vendor: Vendor, val  platformNavigator: PlatformNavigat
             onConnected(userEmail)
         }
 
-        override fun showVendors(vendors: ResourceListEnvelope<Vendor>?, isFromSearch: Boolean) {}
+        override fun showVendors(vendors: VendorResourceListEnvelope?, isFromSearch: Boolean) {}
 
         override fun onLoadMoreVendorStarted(isSuccess: Boolean) {}
 

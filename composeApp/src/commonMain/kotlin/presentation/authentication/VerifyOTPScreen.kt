@@ -64,6 +64,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
         val navigateToCompleteProfile = remember { mutableStateOf(false) }
         val navigateToConnectVendor = remember { mutableStateOf(false) }
         val navigateToPlatform = remember { mutableStateOf(false) }
+        val authPhone = remember { mutableStateOf("") }
         val preferenceSettings = Settings()
         val navigator = LocalNavigator.currentOrThrow
 
@@ -74,36 +75,41 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
 
         val handler = AuthenticationScreenHandler(authenticationPresenter,
             onUserLocationReady = {},
-            enterPlatform = { userEmail, userPhone ->
+            enterPlatform = { user ->
+                preferenceSettings["country"] = user.country
+                preferenceSettings["profileId"] = user.userId
+                preferenceSettings["authType"] = AuthType.PHONE.toPath()
+                preferenceSettings["authPhone"] = user.authPhone
                 navigateToPlatform.value = true
             },
             completeProfile = { userEmail, userPhone ->
-               navigateToCompleteProfile.value = true
+                preferenceSettings["authType"] = AuthType.PHONE.toPath()
+                preferenceSettings["authPhone"] = userPhone
+                navigateToCompleteProfile.value = true
             },
-            connectVendor = { userEmail, userPhone ->
-               navigateToConnectVendor.value = true
+            connectVendor = { user ->
+                preferenceSettings["authType"] = AuthType.PHONE.toPath()
+                preferenceSettings["authPhone"] = user.authPhone
+                preferenceSettings["country"] = user.country
+                preferenceSettings["profileId"] = user.userId
+                navigateToConnectVendor.value = true
             },
             onVerificationStarted = {
                 verificationInProgress.value = true
             },
             onVerificationEnded = {
                 verificationInProgress.value = false
-            }, onCompleteStarted = {}, onCompleteEnded = {})
+            }, onCompleteStarted = {}, onCompleteEnded = {},connectVendorOnProfileCompleted = { country, profileId -> })
         handler.init()
 
+
         if (navigateToCompleteProfile.value){
-                preferenceSettings["authType"] = AuthType.PHONE.toPath()
-                preferenceSettings["authPhone"] = verificationPhone
-                navigator.replaceAll(CompleteProfileScreen(platformNavigator, authPhone = verificationPhone, authEmail = ""))
+                navigator.replaceAll(CompleteProfileScreen(platformNavigator, authPhone = authPhone.value, authEmail = ""))
         }
         else if (navigateToConnectVendor.value){
-            preferenceSettings["authType"] = AuthType.PHONE.toPath()
-            preferenceSettings["authPhone"] = verificationPhone
             navigator.replaceAll(ConnectVendorScreen(platformNavigator))
         }
         else if (navigateToPlatform.value){
-            preferenceSettings["authType"] = AuthType.PHONE.toPath()
-            preferenceSettings["authPhone"] = verificationPhone
             navigator.replaceAll(MainScreen(platformNavigator))
         }
 

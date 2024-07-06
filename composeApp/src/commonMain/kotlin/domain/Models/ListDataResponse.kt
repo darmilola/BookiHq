@@ -13,3 +13,6 @@ class ProductListDataResponse(@SerialName("response") var listItem: ProductResou
 
 @Serializable
 class OrderListDataResponse(@SerialName("response") var listItem: OrderResourceListEnvelope, @SerialName("status")  var status: String)
+
+@Serializable
+class VendorListDataResponse(@SerialName("response") var listItem: VendorResourceListEnvelope, @SerialName("status")  var status: String)

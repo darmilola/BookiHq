@@ -75,14 +75,23 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
 
     val handler = AuthenticationScreenHandler(authenticationPresenter,
         onUserLocationReady = {},
-        enterPlatform = { userEmail, userPhone ->
-           navigateToPlatform.value = true
+        enterPlatform = { user ->
+            preferenceSettings["authType"] = AuthType.EMAIL.toPath()
+            preferenceSettings["authEmail"] = user.email
+            preferenceSettings["country"] = user.country
+            preferenceSettings["profileId"] = user.userId
+            navigateToPlatform.value = true
         },
         completeProfile = { userEmail, userPhone ->
-            authEmail.value = userEmail
+            preferenceSettings["authType"] = AuthType.EMAIL.toPath()
+            preferenceSettings["authEmail"] = userEmail
             navigateToCompleteProfile.value = true
         },
-        connectVendor = { userEmail, userPhone ->
+        connectVendor = { user ->
+            preferenceSettings["authType"] = AuthType.EMAIL.toPath()
+            preferenceSettings["authEmail"] = user.email
+            preferenceSettings["country"] = user.country
+            preferenceSettings["profileId"] = user.userId
             navigateToConnectVendor.value = true
         },
         onVerificationStarted = {
@@ -91,7 +100,9 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
         onVerificationEnded = {
             userEmailFromGoogleAuth.value = ""
             verificationInProgress.value = false
-        }, onCompleteStarted = {}, onCompleteEnded = {})
+        }, onCompleteStarted = {}, onCompleteEnded = {},
+        connectVendorOnProfileCompleted = { country, profileId -> }
+    )
     handler.init()
 
 
@@ -99,13 +110,9 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
         navigator.replaceAll(CompleteProfileScreen(platformNavigator, authPhone = "", authEmail = authEmail.value))
     }
     else if (navigateToConnectVendor.value){
-        preferenceSettings["authType"] = AuthType.EMAIL.toPath()
-        preferenceSettings["authEmail"] = authEmail.value
         navigator.replaceAll(ConnectVendorScreen(platformNavigator))
     }
     else if (navigateToPlatform.value){
-        preferenceSettings["authType"] = AuthType.EMAIL.toPath()
-        preferenceSettings["authEmail"] = authEmail.value
         navigator.replaceAll(MainScreen(platformNavigator))
     }
 
@@ -140,12 +147,10 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                         modifier = Modifier.fillMaxWidth().wrapContentHeight()
                             .background(color = Color.Black), contentAlignment = Alignment.TopCenter
                     ) {
-                        AttachActionButtons(platformNavigator, authenticationPresenter, onAuthSuccessful = {
+                        AttachActionButtons(platformNavigator, onAuthSuccessful = {
                             authEmail.value = it
                             authenticationPresenter.validateEmail(it)
-                        }, onAuthFailed = {
-
-                        })
+                        }, onAuthFailed = {})
 
                     }
                     Box(
@@ -178,7 +183,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
     }
 
 @Composable
-fun AttachActionButtons(platformNavigator: PlatformNavigator, authenticationPresenter: AuthenticationPresenter, onAuthSuccessful: (String) -> Unit,
+fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful: (String) -> Unit,
                         onAuthFailed: () -> Unit){
     val navigator = LocalNavigator.currentOrThrow
     val buttonStyle = Modifier

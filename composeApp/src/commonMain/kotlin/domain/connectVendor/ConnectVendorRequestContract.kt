@@ -7,9 +7,7 @@ import kotlinx.serialization.Serializable
 data class ConnectVendorRequest(@SerialName("userEmail") val userEmail: String,
                                 @SerialName("vendorId") val vendorId: Int)
 @Serializable
-data class GetVendorRequest(@SerialName("cityId") val cityId: Int,
-                            @SerialName("countryId") val countryId: Int)
+data class GetVendorRequest(@SerialName("country") val country: String)
 @Serializable
-data class SearchVendorRequest(@SerialName("cityId") val cityId: Int,
-                               @SerialName("countryId") val countryId: Int,
+data class SearchVendorRequest(@SerialName("country") val country: String,
                                @SerialName("query") val query: String)

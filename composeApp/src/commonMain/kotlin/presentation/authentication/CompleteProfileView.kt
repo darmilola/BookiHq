@@ -37,6 +37,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
+import com.russhwolf.settings.set
 import countryList
 import domain.Enums.AuthType
 import domain.Models.PlatformNavigator
@@ -73,6 +75,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
     val profileImageUrl = remember { mutableStateOf(placeHolderImage) }
     val imagePickerScope = rememberCoroutineScope()
     val preferenceSettings = Settings()
+    val authType = if (authEmail.isNotEmpty()) AuthType.EMAIL.toPath() else AuthType.PHONE.toPath()
     val inputList =  ArrayList<String>()
     val isSavedClicked = remember {
         mutableStateOf(false)
@@ -123,17 +126,19 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
 
     val authHandler = AuthenticationScreenHandler(authenticationPresenter,
         onUserLocationReady = {},
-        enterPlatform = { userEmail, userPhone -> },
+        enterPlatform = { user -> },
         completeProfile = { userEmail, userPhone -> },
-        connectVendor = { userEmail, userPhone -> },
+        connectVendor = { user -> },
         onVerificationStarted = {},
         onVerificationEnded = {}, onCompleteStarted = {
             completeProfileInProgress.value = true
-        }, onCompleteEnded = { isSuccessful ->
-            completeProfileInProgress.value = false
-            if (isSuccessful){
+        }, onCompleteEnded = { isSuccessful -> completeProfileInProgress.value = false },
+        connectVendorOnProfileCompleted = {
+                country, profileId ->
+                preferenceSettings["country"] = country
+                preferenceSettings["profileId"] = profileId
                 navigateToConnectVendor.value = true
-            }
+
         })
     authHandler.init()
 
@@ -278,7 +283,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                             stackedSnackBarHostState,onActionClick = {})
                     }
                     else {
-                        val authType = if (authEmail.isNotEmpty()) AuthType.EMAIL.toPath() else AuthType.PHONE.toPath()
+
                         authenticationPresenter.completeProfile(
                             firstname.value, lastname.value,
                             userEmail = authEmail, authPhone = authPhone, signupType = authType, country = country.value, city = city.value,

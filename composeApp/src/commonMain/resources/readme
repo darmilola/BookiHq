@@ -46,3 +46,9 @@
       --------------------------- Limitations -------------------------
 
       -- don't read fresh data from server on dialog, the dialog recomposes and cause presenter to be called multiple times
+
+
+      ------------- Preferences Saved at -------------------
+      Welcome Screen -- authType and authEmail
+      OTP Screen --- authType and authPhone
+      Complete profile -- country and city

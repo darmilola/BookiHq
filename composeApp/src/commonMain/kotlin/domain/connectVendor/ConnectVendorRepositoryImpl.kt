@@ -4,7 +4,7 @@ import com.badoo.reaktive.single.Single
 import domain.Models.ListDataResponse
 import domain.Models.ServerResponse
 import domain.Models.Vendor
-import domain.authentication.AuthenticationNetworkService
+import domain.Models.VendorListDataResponse
 import io.ktor.client.HttpClient
 
  class ConnectVendorRepositoryImpl(apiService: HttpClient): ConnectVendorRepository {
@@ -15,18 +15,13 @@ import io.ktor.client.HttpClient
         return connectVendorNetworkService.connectVendor(param)
     }
 
-    override suspend fun getVendor(countryId: Int, cityId: Int, nextPage: Int): Single<ListDataResponse<Vendor>> {
-        val param = GetVendorRequest(cityId, countryId)
+    override suspend fun getVendor(country: String, nextPage: Int): Single<VendorListDataResponse> {
+        val param = GetVendorRequest(country)
         return connectVendorNetworkService.getVendor(param,nextPage)
     }
 
-    override suspend fun searchVendor(
-        countryId: Int,
-        cityId: Int,
-        searchQuery: String,
-        nextPage: Int
-    ): Single<ListDataResponse<Vendor>> {
-        val param = SearchVendorRequest(countryId = countryId, cityId = cityId, query = searchQuery)
+    override suspend fun searchVendor(country: String, searchQuery: String, nextPage: Int): Single<VendorListDataResponse> {
+        val param = SearchVendorRequest(country = country, query = searchQuery)
         return connectVendorNetworkService.searchVendor(param,nextPage)
     }
 }

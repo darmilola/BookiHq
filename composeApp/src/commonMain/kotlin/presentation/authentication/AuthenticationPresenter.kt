@@ -38,21 +38,20 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.onCompleteProfileEnded(isSuccessful = true)
-                                    contractView?.goToConnectVendor(userEmail)
+                                    contractView?.onCompleteProfileDone(country, result.profileId)
                                 }
                                 else{
-                                    contractView?.onCompleteProfileEnded(isSuccessful = false)
+                                    contractView?.onCompleteProfileDone(country, -1)
                                 }
                             },
                             onError = {
-                                contractView?.onCompleteProfileEnded(isSuccessful = false)
+                                contractView?.onCompleteProfileDone(country, -1)
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.onCompleteProfileEnded(isSuccessful = false)
+                contractView?.onCompleteProfileDone(country, -1)
             }
         }
     }
@@ -85,13 +84,6 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
             }
         }*/
     }
-    private fun directUser(user: User){
-        if (user.connectedVendor != -1){
-
-        }
-        else if (user.connectedVendor == -1){
-        }
-    }
     override fun validateEmail(userEmail: String) {
         scope.launch(Dispatchers.Main) {
             try {
@@ -103,11 +95,11 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                                 if (result.status == "success"){
                                     if (result.profileStatus == ProfileStatus.DONE.toPath()) {
                                         contractView?.onProfileValidationEnded()
-                                        contractView?.goToMainScreen(userEmail)
+                                        contractView?.goToMainScreen(result.userInfo)
                                     }
                                     else if(result.profileStatus == ProfileStatus.CONNECT_VENDOR.toPath()){
                                         contractView?.onProfileValidationEnded()
-                                        contractView?.goToConnectVendor(userEmail)
+                                        contractView?.goToConnectVendor(result.userInfo)
                                     }
                                     else if(result.profileStatus == ProfileStatus.COMPLETE_PROFILE.toPath()){
                                         contractView?.onProfileValidationEnded()
@@ -146,15 +138,15 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                     authenticationRepositoryImpl.validatePhone(validPhone)
                         .subscribe(
                             onSuccess = { result ->
-                                println(result)
+                                println("Error 3 $result")
                                 if (result.status == "success"){
                                     if (result.profileStatus == ProfileStatus.DONE.toPath()) {
                                         contractView?.onProfileValidationEnded()
-                                        contractView?.goToMainScreenWithPhone(phone)
+                                        contractView?.goToMainScreen(result.userInfo)
                                     }
                                     else if(result.profileStatus == ProfileStatus.CONNECT_VENDOR.toPath()){
                                         contractView?.onProfileValidationEnded()
-                                        contractView?.goToConnectVendorWithPhone(phone)
+                                        contractView?.goToConnectVendor(result.userInfo)
                                     }
                                     else if(result.profileStatus == ProfileStatus.COMPLETE_PROFILE.toPath()){
                                         contractView?.onProfileValidationEnded()
@@ -167,12 +159,14 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                                 }
                             },
                             onError = {
+                                println("Error 1 ${it.message}")
                                 contractView?.onProfileValidationEnded()
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
+                println("Error 2 ${e.message}")
                 contractView?.onProfileValidationEnded()
             }
         }

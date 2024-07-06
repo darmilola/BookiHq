@@ -47,6 +47,7 @@ import presentation.viewmodels.ConnectPageViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.VendorsResourceListEnvelopeViewModel
 import presentation.widgets.SwitchVendorBottomSheet
 import theme.Colors
 
@@ -56,7 +57,7 @@ class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: Pl
     private val connectVendorPresenter: ConnectVendorPresenter by inject()
     private var screenUiStateViewModel: ScreenUIStateViewModel? = null
     private var connectPageViewModel: ConnectPageViewModel? = null
-    private var vendorResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Vendor>? = null
+    private var vendorResourceListEnvelopeViewModel: VendorsResourceListEnvelopeViewModel? = null
     private var userEmail: String = ""
     private var countryId: Int = -1
     private var cityId: Int = -1
@@ -90,7 +91,7 @@ class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: Pl
                     ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
-            connectVendorPresenter.getVendor(countryId = countryId, cityId = cityId)
+            //connectVendorPresenter.getVendor(countryId = countryId, cityId = cityId)
         }
 
         if (connectPageViewModel == null) {
@@ -104,7 +105,7 @@ class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: Pl
         if (vendorResourceListEnvelopeViewModel == null) {
             vendorResourceListEnvelopeViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
+                    VendorsResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
                 })
         }
 
@@ -169,7 +170,7 @@ class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: Pl
                     SearchBar(placeholderText = "search @vendor", onValueChange = {
                         vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                         searchQuery.value = it
-                        connectVendorPresenter.searchVendor(countryId,cityId, searchQuery = it)
+                       // connectVendorPresenter.searchVendor(countryId,cityId, searchQuery = it)
                     }, onBackPressed = {
 
                     })
@@ -225,7 +226,7 @@ class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: Pl
                                     textColor = Colors.primaryColor,
                                     style = TextStyle()
                                 ) {
-                                    if (!vendorResourceListEnvelopeViewModel?.nextPageUrl?.value.isNullOrEmpty()) {
+                                    /*if (!vendorResourceListEnvelopeViewModel?.nextPageUrl?.value.isNullOrEmpty()) {
                                         if (searchQuery.value.isNotEmpty()) {
                                             connectVendorPresenter.searchMoreVendors(
                                                 countryId, cityId,
@@ -238,7 +239,7 @@ class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: Pl
                                                 vendorResourceListEnvelopeViewModel?.currentPage?.value!! + 1
                                             )
                                         }
-                                    }
+                                    }*/
                                 }
                             }
                         }

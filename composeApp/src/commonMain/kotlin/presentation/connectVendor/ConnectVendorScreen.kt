@@ -50,7 +50,9 @@ import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.ScreenUIStateViewModel
 import UIStates.ScreenUIStates
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import domain.Models.VendorResourceListEnvelope
 import kotlinx.serialization.Transient
+import presentation.viewmodels.VendorsResourceListEnvelopeViewModel
 import theme.Colors
 import utils.ParcelableScreen
 
@@ -62,10 +64,9 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
     @Transient private val connectVendorPresenter: ConnectVendorPresenter by inject()
     @Transient private var screenUiStateViewModel: ScreenUIStateViewModel? = null
     @Transient private var connectPageViewModel: ConnectPageViewModel? = null
-    @Transient private var vendorResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Vendor>? = null
-    private var userEmail: String = ""
-    private var countryId: Int = -1
-    private var cityId: Int = -1
+    @Transient private var vendorResourceListEnvelopeViewModel: VendorsResourceListEnvelopeViewModel? = null
+    private var country: String = ""
+    private var city: String = ""
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -73,11 +74,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
         val contentLoading = remember { mutableStateOf(false) }
         val errorVisible = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
-        userEmail = preferenceSettings["userEmail", ""]
-        countryId = preferenceSettings["countryId", -1]
-        cityId = preferenceSettings["cityId", -1]
-
-
+        country = preferenceSettings["country", ""]
 
         if (screenUiStateViewModel == null) {
             screenUiStateViewModel = kmpViewModel(
@@ -85,7 +82,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
                     ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
-            connectVendorPresenter.getVendor(countryId = countryId, cityId = cityId)
+            connectVendorPresenter.getVendor(country = country)
         }
 
         if (connectPageViewModel == null) {
@@ -99,7 +96,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
         if (vendorResourceListEnvelopeViewModel == null) {
             vendorResourceListEnvelopeViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
+                    VendorsResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
                 })
            }
 
@@ -153,7 +150,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
                         SearchBar(placeholderText = "search @vendor", onValueChange = {
                             vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                             searchQuery.value = it
-                            connectVendorPresenter.searchVendor(countryId,cityId, searchQuery = it)
+                            connectVendorPresenter.searchVendor(country, searchQuery = it)
                         }, onBackPressed = {})
                     }
                 },
@@ -210,13 +207,13 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
                                         if (!vendorResourceListEnvelopeViewModel?.nextPageUrl?.value.isNullOrEmpty()) {
                                             if (searchQuery.value.isNotEmpty()) {
                                                 connectVendorPresenter.searchMoreVendors(
-                                                    countryId, cityId,
+                                                    country,
                                                     searchQuery.value,
                                                     vendorResourceListEnvelopeViewModel?.currentPage?.value!! + 1
                                                 )
                                             } else {
                                                 connectVendorPresenter.getMoreVendor(
-                                                    countryId, cityId,
+                                                    country,
                                                     vendorResourceListEnvelopeViewModel?.currentPage?.value!! + 1
                                                 )
                                             }
@@ -232,7 +229,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
         }
     }
 class ConnectPageHandler(
-    private val vendorResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Vendor>,
+    private val vendorResourceListEnvelopeViewModel: VendorsResourceListEnvelopeViewModel,
     private val screenUiStateViewModel: ScreenUIStateViewModel,
     private val connectVendorPresenter: ConnectVendorPresenter,
     private val onPageLoading: () -> Unit,
@@ -267,7 +264,7 @@ class ConnectPageHandler(
         onConnected(userEmail)
     }
 
-    override fun showVendors(vendors: ResourceListEnvelope<Vendor>?, isFromSearch: Boolean) {
+    override fun showVendors(vendors: VendorResourceListEnvelope?, isFromSearch: Boolean) {
         if (vendorResourceListEnvelopeViewModel.resources.value.isNotEmpty()) {
             val vendorList = vendorResourceListEnvelopeViewModel.resources.value
             vendorList.addAll(vendors?.resources!!)

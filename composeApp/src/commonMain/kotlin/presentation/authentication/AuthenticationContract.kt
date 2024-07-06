@@ -9,18 +9,15 @@ import presentation.profile.ProfileContract
 class AuthenticationContract {
     interface View {
         fun showUserProfile(user: User)
-        fun goToMainScreen(userEmail: String)
-        fun goToMainScreenWithPhone(phone: String)
+        fun goToMainScreen(user: User)
         fun goToCompleteProfileWithEmail(userEmail: String)
         fun goToCompleteProfileWithPhone(phone: String)
         fun showUserLocation(place: Place)
-        fun goToConnectVendor(userEmail: String)
-        fun goToConnectVendorWithPhone(phone: String)
+        fun goToConnectVendor(user: User)
+        fun onCompleteProfileDone(country: String, profileId: Int)
         fun onProfileValidationStarted()
         fun onProfileValidationEnded()
-
         fun onCompleteProfileStarted()
-        fun onCompleteProfileEnded(isSuccessful: Boolean = false)
     }
 
     abstract class Presenter {

@@ -12,9 +12,10 @@ import UIStates.ScreenUIStates
 class AuthenticationScreenHandler(
     private val authenticationPresenter: AuthenticationPresenter,
     private val onUserLocationReady: (Place) -> Unit,
-    private val enterPlatform: (userEmail: String, userPhone: String) -> Unit,
+    private val enterPlatform: (User) -> Unit,
     private val completeProfile: (userEmail: String, userPhone: String) -> Unit,
-    private val connectVendor: (userEmail: String, userPhone: String) -> Unit,
+    private val connectVendorOnProfileCompleted: (country: String, profileId: Int) -> Unit,
+    private val connectVendor: (User) -> Unit,
     private val onVerificationStarted: () -> Unit,
     private val onVerificationEnded: () -> Unit,
     private val onCompleteStarted: () -> Unit,
@@ -36,16 +37,8 @@ class AuthenticationScreenHandler(
         onCompleteStarted()
     }
 
-    override fun onCompleteProfileEnded(isSuccessful: Boolean) {
-        onCompleteEnded(isSuccessful)
-    }
-
-    override fun goToMainScreen(userEmail: String) {
-        enterPlatform(userEmail, "")
-    }
-
-    override fun goToMainScreenWithPhone(phone: String) {
-        enterPlatform("", phone)
+    override fun goToMainScreen(user: User) {
+        enterPlatform(user)
     }
 
     override fun goToCompleteProfileWithEmail(userEmail: String) {
@@ -60,13 +53,17 @@ class AuthenticationScreenHandler(
         onUserLocationReady(place)
     }
 
-    override fun goToConnectVendor(userEmail: String) {
-        connectVendor(userEmail,"")
+    override fun onCompleteProfileDone(country: String, profileId: Int) {
+        if (profileId != -1){
+            onCompleteEnded(true)
+            connectVendorOnProfileCompleted(country, profileId)
+        }
+        else{
+            onCompleteEnded(false)
+        }
     }
-
-    override fun goToConnectVendorWithPhone(userEmail: String) {
-        connectVendor("",userEmail)
+    override fun goToConnectVendor(user: User) {
+        connectVendor(user)
     }
-
     override fun showUserProfile(user: User) {}
 }

@@ -263,7 +263,7 @@ fun BusinessInfoContent(vendor: Vendor,isUserAuthenticated: Boolean = false, onC
                             TextComponent(
                                 textModifier = Modifier.wrapContentWidth()
                                     .padding(start = 5.dp),
-                                text = vendor.openingHour.toString() + " AM",
+                                text = vendor.openingTime,
                                 fontSize = 16,
                                 textStyle = TextStyle(),
                                 textColor = Color.DarkGray,
@@ -295,25 +295,6 @@ fun BusinessInfoContent(vendor: Vendor,isUserAuthenticated: Boolean = false, onC
                             )
                         }
 
-                        Box(
-                            modifier = Modifier.fillMaxHeight().wrapContentWidth(),
-                            contentAlignment = Alignment.BottomCenter
-                        ) {
-                            TextComponent(
-                                textModifier = Modifier.wrapContentWidth()
-                                    .padding(start = 5.dp),
-                                text = vendor.closingHour.toString() + " PM",
-                                fontSize = 16,
-                                textStyle = TextStyle(),
-                                textColor = Color.DarkGray,
-                                textAlign = TextAlign.Left,
-                                fontWeight = FontWeight.Normal,
-                                lineHeight = 23,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
-
                     }
                 }
                 Row(
@@ -342,7 +323,7 @@ fun BusinessInfoContent(vendor: Vendor,isUserAuthenticated: Boolean = false, onC
                         TextComponent(
                             textModifier = Modifier.wrapContentWidth()
                                 .padding(start = 5.dp),
-                            text = if (vendor.homeServiceAvailable) "Home Service Available" else "No Home Service",
+                            text = if (vendor.isMobileServiceAvailable) "Mobile Service Available" else "No Mobile Service",
                             fontSize = 16,
                             textStyle = TextStyle(),
                             textColor = Color.DarkGray,

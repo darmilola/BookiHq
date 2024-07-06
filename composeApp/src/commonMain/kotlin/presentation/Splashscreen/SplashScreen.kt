@@ -41,7 +41,7 @@ import utils.ParcelableScreen
 fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPresenter: AuthenticationPresenter) {
 
     val preferenceSettings: Settings = Settings()
-    val navigateToCompleteProfile = remember { mutableStateOf(false) }
+    val navigateToWelcomeScreen = remember { mutableStateOf(false) }
     val navigateToConnectVendor = remember { mutableStateOf(false) }
     val navigateToPlatform = remember { mutableStateOf(false) }
     val authType = remember { mutableStateOf(AuthType.EMAIL.toPath()) }
@@ -50,17 +50,23 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
 
     val handler = AuthenticationScreenHandler(authenticationPresenter,
         onUserLocationReady = {},
-        enterPlatform = { userEmail, userPhone ->
-            navigateToPlatform.value = true
+        enterPlatform = { user ->
+            preferenceSettings["country"] = user.country
+            preferenceSettings["profileId"] = user.userId
+                navigateToConnectVendor.value = true
+                navigateToPlatform.value = true
         },
-        completeProfile = { userEmail, userPhone ->
-            navigateToCompleteProfile.value = true
+        completeProfile = { _,_ ->
+               navigateToWelcomeScreen.value = true
         },
-        connectVendor = { userEmail, userPhone ->
+        connectVendor = { user ->
+            preferenceSettings["country"] = user.country
+            preferenceSettings["profileId"] = user.userId
             navigateToConnectVendor.value = true
         },
         onVerificationStarted = {},
-        onVerificationEnded = {}, onCompleteStarted = {}, onCompleteEnded = {})
+        onVerificationEnded = {}, onCompleteStarted = {}, onCompleteEnded = {},
+        connectVendorOnProfileCompleted = { _,_ ->})
     handler.init()
 
     if (navigateToConnectVendor.value){
@@ -68,6 +74,9 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
     }
     else if (navigateToPlatform.value){
         navigator.replaceAll(MainScreen(platformNavigator))
+    }
+    else if (navigateToWelcomeScreen.value){
+        navigator.replaceAll(WelcomeScreen(platformNavigator))
     }
 
 

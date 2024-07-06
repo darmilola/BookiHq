@@ -2,6 +2,7 @@ package domain.authentication
 
 import com.badoo.reaktive.single.toSingle
 import domain.Models.AuthenticationResponse
+import domain.Models.CompleteProfileResponse
 import domain.Models.ListDataResponse
 import domain.Models.ServerResponse
 import domain.Models.Vendor
@@ -23,7 +24,7 @@ open class AuthenticationNetworkService(private val apiService: HttpClient) {
             }*/
             contentType(ContentType.Application.Json)
             setBody(completeProfileRequest)
-        }.body<ServerResponse>().toSingle()
+        }.body<CompleteProfileResponse>().toSingle()
 
     suspend fun validateProfile(validateProfileRequest: ValidateProfileRequest) =
         apiService.post {

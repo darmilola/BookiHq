@@ -6,6 +6,7 @@ import com.badoo.reaktive.single.toSingle
 import dev.jordond.compass.Place
 import dev.jordond.compass.geocoder.Geocoder
 import domain.Models.AuthenticationResponse
+import domain.Models.CompleteProfileResponse
 import domain.Models.ServerResponse
 import io.ktor.client.HttpClient
 
@@ -42,7 +43,7 @@ class AuthenticationRepositoryImpl(apiService: HttpClient):
         city: String,
         gender: String,
         profileImageUrl: String
-    ): Single<ServerResponse> {
+    ): Single<CompleteProfileResponse> {
         val param = CompleteProfileRequest(firstname = firstname,lastname =  lastname,userEmail =  userEmail, authPhone = authPhone, signupType = signupType, country = country, city = city, gender = gender, profileImageUrl = profileImageUrl)
         return authenticationNetworkService.completeProfile(param)
     }
