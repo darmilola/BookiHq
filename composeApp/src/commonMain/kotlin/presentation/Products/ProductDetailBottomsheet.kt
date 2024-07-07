@@ -59,12 +59,12 @@ import presentations.components.TextComponent
 @Composable
 fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, selectedProduct: OrderItem, onAddToCart: (Boolean) -> Unit,
                          onRemoveFromCart: (OrderItem) -> Unit) {
-  if (mainViewModel.currentOrderReference.value == -1) {
+  /*if (mainViewModel.currentOrderReference.value == -1) {
             val orderReference = (ValuesLimit.MIN_VALUE.toValue() ..ValuesLimit.MAX_VALUE.toValue()).random()
             mainViewModel.setCurrentOrderReference(orderReference)
-    }
+    }*/
 
-    val orderReference = mainViewModel.currentOrderReference.value
+    //val orderReference = mainViewModel.currentOrderReference.value
     val itemReference = (ValuesLimit.MIN_VALUE.toValue() ..ValuesLimit.MAX_VALUE.toValue()).random()
     val currentOrder = mainViewModel.unSavedOrders.collectAsState()
     val orderItem = remember { mutableStateOf(OrderItem()) }
@@ -74,7 +74,7 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
     }
     else {
         orderItem.value = OrderItem()
-        orderItem.value.orderId = orderReference
+       // orderItem.value.orderId = orderReference
         orderItem.value.itemReference = itemReference
         orderItem.value.itemProduct = selectedProduct.itemProduct
         orderItem.value.productId = selectedProduct.itemProduct?.productId!!
@@ -196,7 +196,7 @@ fun ProductBottomSheetContent(product: Product) {
            currentTabScreen = 0
         }, onRightClicked = {
             currentTabScreen = 1
-        }, leftText = "Description", rightText = reviewText,)
+        }, leftText = "Description", rightText = reviewText)
         ProductTabScreen(product,currentTabScreen)
     }
 }
@@ -247,7 +247,6 @@ fun ProductNameInfoContent(product: Product) {
         verticalAlignment = Alignment.CenterVertically) {
         Column(modifier = Modifier
             .fillMaxWidth(0.7f)) {
-            ProductFavInfoContent(product)
             ProductTitle(product)
         }
         ProductPriceInfoContent(product)
@@ -373,14 +372,14 @@ fun ProductTitle(product: Product){
 
         TextComponent(
             text = product.productName,
-            fontSize = 16,
+            fontSize = 18,
             fontFamily = GGSansRegular,
             textStyle = MaterialTheme.typography.h6,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.ExtraBold,
             lineHeight = 20,
-            maxLines = 1,
+            maxLines = 2,
             textModifier = Modifier
                 .fillMaxWidth(),
             overflow = TextOverflow.Ellipsis)

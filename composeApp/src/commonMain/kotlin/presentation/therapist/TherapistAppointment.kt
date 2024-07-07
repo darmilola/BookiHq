@@ -34,14 +34,14 @@ import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.TherapistAppointmentWidget
 import rememberStackedSnackbarHostState
 import theme.Colors
 import utils.getAppointmentViewHeight
 
 @Composable
-fun TherapistAppointment(mainViewModel: MainViewModel, screenUiStateViewModel: ScreenUIStateViewModel,
+fun TherapistAppointment(mainViewModel: MainViewModel, uiStateViewModel: UIStateViewModel,
                          appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel?, therapistPresenter: TherapistPresenter) {
 
 
@@ -61,7 +61,7 @@ fun TherapistAppointment(mainViewModel: MainViewModel, screenUiStateViewModel: S
         appointmentResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
     val displayedAppointmentsCount =
         appointmentResourceListEnvelopeViewModel?.displayedItemCount?.collectAsState()
-    val uiState = screenUiStateViewModel.uiStateInfo.collectAsState()
+    val uiState = uiStateViewModel.uiStateInfo.collectAsState()
     val lastIndex = appointmentList?.value?.size?.minus(1)
     val selectedAppointment = remember { mutableStateOf(UserAppointmentsData()) }
 

@@ -5,12 +5,12 @@ import presentation.Orders.OrderContract
 import presentation.Orders.OrderPresenter
 import UIStates.ActionUIStates
 import presentation.viewmodels.OrdersResourceListEnvelopeViewModel
-import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.UIStateViewModel
 import UIStates.ScreenUIStates
 
 class OrderHandler(
     private val ordersResourceListEnvelopeViewModel: OrdersResourceListEnvelopeViewModel,
-    private val screenUiStateViewModel: ScreenUIStateViewModel,
+    private val uiStateViewModel: UIStateViewModel,
     private val orderPresenter: OrderPresenter
 ) : OrderContract.View {
     fun init() {
@@ -19,7 +19,7 @@ class OrderHandler(
 
     override fun showLce(uiState: ScreenUIStates, message: String) {
         ordersResourceListEnvelopeViewModel.clearData(mutableListOf())
-        screenUiStateViewModel.switchScreenUIState(uiState)
+        uiStateViewModel.switchScreenUIState(uiState)
     }
 
     override fun showAsyncLce(uiState: ActionUIStates, message: String) {

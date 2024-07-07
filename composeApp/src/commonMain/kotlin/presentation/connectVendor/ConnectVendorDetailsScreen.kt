@@ -21,7 +21,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.dialogs.LoadingDialog
 import presentation.main.MainScreen
-import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.UIStateViewModel
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.set
 import kotlinx.serialization.Transient
@@ -33,7 +33,7 @@ class ConnectVendorDetailsScreen(val vendor: Vendor, val  platformNavigator: Pla
 
    @Transient private val preferenceSettings: Settings = Settings()
    @Transient private val connectVendorPresenter: ConnectVendorPresenter by inject()
-   @Transient private var screenUiStateViewModel: ScreenUIStateViewModel? = null
+   @Transient private var uiStateViewModel: UIStateViewModel? = null
 
     @Composable
     override fun Content() {
@@ -45,10 +45,10 @@ class ConnectVendorDetailsScreen(val vendor: Vendor, val  platformNavigator: Pla
         val userId = preferenceSettings["profileId", -1L]
 
 
-        if (screenUiStateViewModel == null) {
-            screenUiStateViewModel = kmpViewModel(
+        if (uiStateViewModel == null) {
+            uiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -57,7 +57,7 @@ class ConnectVendorDetailsScreen(val vendor: Vendor, val  platformNavigator: Pla
         // View Contract Handler Initialisation
         val handler = VendorInfoPageHandler(
             null,
-            screenUiStateViewModel!!,
+            uiStateViewModel!!,
             connectVendorPresenter,
             onPageLoading = {
                 pageLoading.value = true

@@ -21,20 +21,19 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
     }
 
     override fun getProducts(vendorId: Long) {
-        contractView?.showLce(ScreenUIStates(loadingVisible = true))
-
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
+                    contractView?.showLce(ScreenUIStates(loadingVisible = true))
                     productRepositoryImpl.getAllProducts(vendorId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
+                                    contractView?.showLce(ScreenUIStates(contentVisible = true, loadingVisible = false))
                                     contractView?.showProducts(result.listItem, isFromSearch = false)
                                 }
                                 else{
-                                    contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Loading Products Please Try Again"))
+                                    contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Unknown"))
                                 }
                             },
                             onError = {
@@ -44,7 +43,7 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Loading Products Please Try Again"))
+                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = e.message.toString()))
             }
         }
     }

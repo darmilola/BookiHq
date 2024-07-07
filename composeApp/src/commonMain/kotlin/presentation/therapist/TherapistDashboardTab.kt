@@ -42,7 +42,7 @@ import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.TherapistViewModel
-import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.UIStateViewModel
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
@@ -50,7 +50,7 @@ import theme.styles.Colors
 class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
     private val therapistPresenter: TherapistPresenter by inject()
-    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
+    private var uiStateViewModel: UIStateViewModel? = null
     private var actionUiStateViewModel: ActionUIStateViewModel? = null
     private var therapistViewModel: TherapistViewModel? = null
     private var appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel? = null
@@ -77,10 +77,10 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
     @Composable
     override fun Content() {
 
-        if (screenUiStateViewModel == null) {
-            screenUiStateViewModel = kmpViewModel(
+        if (uiStateViewModel == null) {
+            uiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -102,10 +102,10 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
             )
         }
 
-        if (screenUiStateViewModel == null) {
-            screenUiStateViewModel = kmpViewModel(
+        if (uiStateViewModel == null) {
+            uiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
 
@@ -137,7 +137,7 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
         }
 
         val handler = TherapistHandler(therapistPresenter,
-            screenUiStateViewModel = screenUiStateViewModel!!,
+            uiStateViewModel = uiStateViewModel!!,
              actionUiStateViewModel!!,
             onReviewsReady = {
                 therapistViewModel!!.setTherapistReviews(it)
@@ -213,9 +213,9 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
                 contentAlignment = Alignment.Center
             ) {
                 when(tabIndex){
-                    0 -> TherapistAppointment(mainViewModel, screenUiStateViewModel!!, appointmentResourceListEnvelopeViewModel, therapistPresenter)
-                    1 -> TherapistAvailability(mainViewModel, therapistPresenter, therapistViewModel!!, screenUiStateViewModel!!, actionUiStateViewModel!!)
-                    2 -> TherapistReviews(mainViewModel, therapistPresenter, therapistViewModel!!, screenUiStateViewModel!!)
+                    0 -> TherapistAppointment(mainViewModel, uiStateViewModel!!, appointmentResourceListEnvelopeViewModel, therapistPresenter)
+                    1 -> TherapistAvailability(mainViewModel, therapistPresenter, therapistViewModel!!, uiStateViewModel!!, actionUiStateViewModel!!)
+                    2 -> TherapistReviews(mainViewModel, therapistPresenter, therapistViewModel!!, uiStateViewModel!!)
                 }
 
             }

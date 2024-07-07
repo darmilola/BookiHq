@@ -48,18 +48,18 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.OrderItem
 import domain.Models.Product
 import domain.Models.ProductItemUIModel
-import domain.Models.ProductResourceListEnvelope
 import domain.Enums.Screens
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.ShopProductsHandler
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
+import presentation.components.ToggleButton
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ProductResourceListEnvelopeViewModel
 import presentation.viewmodels.ProductViewModel
-import presentation.viewmodels.ScreenUIStateViewModel
-import presentation.widgets.HomeProductItem
+import presentation.viewmodels.UIStateViewModel
+import presentation.widgets.ProductItem
 import presentation.widgets.ProductDetailBottomSheet
 import presentation.widgets.SearchBar
 import presentations.components.ImageComponent
@@ -69,11 +69,11 @@ import utils.getPopularProductViewHeight
 
 
 class ShopProductTab(private val mainViewModel: MainViewModel,
-                     private val productViewModel: ProductViewModel,
-                     private val productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel) : Tab, KoinComponent {
+                     private val productViewModel: ProductViewModel) : Tab, KoinComponent {
 
     private val productPresenter: ProductPresenter by inject()
-    private var screenUIStateViewModel: ScreenUIStateViewModel? = null
+    private var uiStateViewModel: UIStateViewModel? = null
+    private var productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel? = null
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -97,191 +97,90 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
         val vendorId = mainViewModel.vendorId.value
         val onCartChanged = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
+        val isSearchProduct = mainViewModel.isSearchProduct.collectAsState()
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
             animation = StackedSnackbarAnimation.Bounce
         )
 
-        if (screenUIStateViewModel == null) {
-            screenUIStateViewModel = kmpViewModel(
+        if (uiStateViewModel == null) {
+            uiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
 
-        if (productResourceListEnvelopeViewModel.resources.value.isEmpty()){
+        if (productResourceListEnvelopeViewModel == null) {
+            productResourceListEnvelopeViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    ProductResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
+                })
             productPresenter.getProducts(vendorId)
         }
 
+
         val productHandler = ShopProductsHandler(
-            screenUIStateViewModel!!, productPresenter,
-            onProductAvailable = { products: ProductResourceListEnvelope?, isFromSearch: Boolean ->
-                if (isFromSearch) {
-                    if (productResourceListEnvelopeViewModel.resources.value.isEmpty()) {
-                        productResourceListEnvelopeViewModel!!.setResources(products?.resources)
-                        products?.prevPageUrl?.let {
-                            productResourceListEnvelopeViewModel!!.setPrevPageUrl(
-                                it
-                            )
-                        }
-                        products?.nextPageUrl?.let {
-                            productResourceListEnvelopeViewModel!!.setNextPageUrl(
-                                it
-                            )
-                        }
-                        products?.currentPage?.let {
-                            productResourceListEnvelopeViewModel!!.setCurrentPage(
-                                it
-                            )
-                        }
-                        products?.totalItemCount?.let {
-                            productResourceListEnvelopeViewModel!!.setTotalItemCount(
-                                it
-                            )
-                        }
-                        products?.displayedItemCount?.let {
-                            productResourceListEnvelopeViewModel!!.setDisplayedItemCount(
-                                it
-                            )
-                        }
-                    }
-                    else if (productResourceListEnvelopeViewModel!!.resources.value.isNotEmpty()) {
-                        val productList = productResourceListEnvelopeViewModel!!.resources.value
-                        productList.addAll(products?.resources!!)
-                        productResourceListEnvelopeViewModel!!.setResources(productList)
-                        products.prevPageUrl?.let {
-                            productResourceListEnvelopeViewModel!!.setPrevPageUrl(
-                                it
-                            )
-                        }
-                        products.nextPageUrl?.let {
-                            productResourceListEnvelopeViewModel!!.setNextPageUrl(
-                                it
-                            )
-                        }
-                        products.currentPage?.let {
-                            productResourceListEnvelopeViewModel!!.setCurrentPage(
-                                it
-                            )
-                        }
-                        products.totalItemCount?.let {
-                            productResourceListEnvelopeViewModel!!.setTotalItemCount(
-                                it
-                            )
-                        }
-                        products.displayedItemCount?.let {
-                            productResourceListEnvelopeViewModel!!.setDisplayedItemCount(
-                                it
-                            )
-                        }
-                    }
-                }
-                else{
-
-                    if (productResourceListEnvelopeViewModel.resources.value.isEmpty()) {
-                        productResourceListEnvelopeViewModel!!.setResources(products?.resources)
-                        products?.prevPageUrl?.let {
-                            productResourceListEnvelopeViewModel!!.setPrevPageUrl(
-                                it
-                            )
-                        }
-                        products?.nextPageUrl?.let {
-                            productResourceListEnvelopeViewModel!!.setNextPageUrl(
-                                it
-                            )
-                        }
-                        products?.currentPage?.let {
-                            productResourceListEnvelopeViewModel!!.setCurrentPage(
-                                it
-                            )
-                        }
-                        products?.totalItemCount?.let {
-                            productResourceListEnvelopeViewModel!!.setTotalItemCount(
-                                it
-                            )
-                        }
-                        products?.displayedItemCount?.let {
-                            productResourceListEnvelopeViewModel!!.setDisplayedItemCount(
-                                it
-                            )
-                        }
-                    }
-                    else if (productResourceListEnvelopeViewModel!!.resources.value.isNotEmpty()) {
-                        val productList = productResourceListEnvelopeViewModel!!.resources.value
-                        productList.addAll(products?.resources!!)
-                        productResourceListEnvelopeViewModel!!.setResources(productList)
-                        products.prevPageUrl?.let {
-                            productResourceListEnvelopeViewModel!!.setPrevPageUrl(
-                                it
-                            )
-                        }
-                        products.nextPageUrl?.let {
-                            productResourceListEnvelopeViewModel!!.setNextPageUrl(
-                                it
-                            )
-                        }
-                        products.currentPage?.let {
-                            productResourceListEnvelopeViewModel!!.setCurrentPage(
-                                it
-                            )
-                        }
-                        products.totalItemCount?.let {
-                            productResourceListEnvelopeViewModel!!.setTotalItemCount(
-                                it
-                            )
-                        }
-                        products.displayedItemCount?.let {
-                            productResourceListEnvelopeViewModel!!.setDisplayedItemCount(
-                                it
-                            )
-                        }
-                    }
-
-                }
-
-            }, onLoadMoreStarted = {
-                productResourceListEnvelopeViewModel.setLoadingMore(true)
-            }, onLoadMoreEnded = {
-                productResourceListEnvelopeViewModel.setLoadingMore(false)
-            })
+            uiStateViewModel!!, productResourceListEnvelopeViewModel!!, productPresenter)
         productHandler.init()
 
 
         Scaffold(
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                .background(color = Colors.lighterPrimaryColor),
+                .background(color = Color.White),
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {
-                SearchBar(onValueChange = {
-                    if (it.isNotEmpty()) {
-                        if (!productResourceListEnvelopeViewModel!!.isSearching.value) {
-                            if (it.isNotEmpty()) {
-                                productResourceListEnvelopeViewModel.clearData(mutableListOf())
-                                searchQuery.value = it
-                                productPresenter.searchProducts(
-                                    mainViewModel.vendorId.value,
-                                    it
-                                )
-                            }
-                        }
-                    }
-                }, onBackPressed = {
-                    productResourceListEnvelopeViewModel.clearData(mutableListOf())
-                    productPresenter.getProducts(vendorId)
-                })
+                if (isSearchProduct.value){
+                    SearchBar(onValueChange = {
+                   if (it.isNotEmpty()) {
+                       if (!productResourceListEnvelopeViewModel!!.isSearching.value) {
+                           if (it.isNotEmpty()) {
+                               productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                               searchQuery.value = it
+                               productPresenter.searchProducts(
+                                   mainViewModel.vendorId.value,
+                                   it
+                               )
+                           }
+                       }
+                   }
+               }, onBackPressed = {
+                   mainViewModel.setIsSearchProduct(false)
+                   productPresenter.getProducts(vendorId)
+               })
+              }
+                else {
+                    ToggleButton(shape = CircleShape, onLeftClicked = {
+                    }, onRightClicked = {
+                    }, leftText = "Cosmetics", rightText = "Accessories")
+                }
             },
             content = {
-                ProductContent(
-                    productResourceListEnvelopeViewModel = productResourceListEnvelopeViewModel,
-                    screenUIStateViewModel!!,
-                    searchQuery = searchQuery.value,
-                    vendorId = vendorId,
-                    mainViewModel = mainViewModel,
-                    onCartChanged = {
-                        onCartChanged.value = true
-                    }, stackedSnackBarHostState)
+                val uiState = uiStateViewModel!!.uiStateInfo.collectAsState()
+                if (uiState.value.loadingVisible) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                            .padding(top = 40.dp, start = 50.dp, end = 50.dp)
+                            .background(color = Color.Transparent, shape = RoundedCornerShape(20.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        IndeterminateCircularProgressBar()
+                    }
+                } else if (uiState.value.errorOccurred) {
+                      val message = uiState.value.errorMessage
+
+                } else if (uiState.value.contentVisible) {
+                    ProductContent(
+                        productResourceListEnvelopeViewModel = productResourceListEnvelopeViewModel!!,
+                        searchQuery = searchQuery.value,
+                        vendorId = vendorId,
+                        mainViewModel = mainViewModel,
+                        onCartChanged = {
+                            onCartChanged.value = true
+                        }, stackedSnackBarHostState
+                    )
+                }
             },
             backgroundColor = Color.Transparent,
             floatingActionButton = {
@@ -348,15 +247,19 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
     @Composable
     fun ProductContent(
         productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel,
-        screenUiStateViewModel: ScreenUIStateViewModel,
-        searchQuery: String, vendorId: Long, mainViewModel: MainViewModel, onCartChanged: () -> Unit,
-        stackedSnackBarHostState: StackedSnakbarHostState) {
+        searchQuery: String,
+        vendorId: Long,
+        mainViewModel: MainViewModel,
+        onCartChanged: () -> Unit,
+        stackedSnackBarHostState: StackedSnakbarHostState
+    ) {
         val loadMoreState = productResourceListEnvelopeViewModel.isLoadingMore.collectAsState()
         val productList = productResourceListEnvelopeViewModel.resources.collectAsState()
         val selectedProduct = remember { mutableStateOf(Product()) }
-        val totalProductsCount = productResourceListEnvelopeViewModel.totalItemCount.collectAsState()
-        val displayedProductsCount = productResourceListEnvelopeViewModel.displayedItemCount.collectAsState()
-        val uiState = screenUiStateViewModel.uiStateInfo.collectAsState()
+        val totalProductsCount =
+            productResourceListEnvelopeViewModel.totalItemCount.collectAsState()
+        val displayedProductsCount =
+            productResourceListEnvelopeViewModel.displayedItemCount.collectAsState()
         val lastIndex = productList.value.size.minus(1)
 
 
@@ -381,29 +284,10 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
         Box(
             modifier = Modifier.fillMaxWidth()
                 .fillMaxHeight()
-                .padding(bottom = 60.dp),
+                .padding(bottom = 70.dp),
             contentAlignment = Alignment.Center
         ) {
 
-            if (uiState.value.loadingVisible) {
-                Box(
-                    modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                        .padding(top = 40.dp, start = 50.dp, end = 50.dp)
-                        .background(color = Color.Transparent, shape = RoundedCornerShape(20.dp)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    IndeterminateCircularProgressBar()
-                }
-            }
-
-            else if (uiState.value.errorOccurred) {
-
-                val message = uiState.value.errorMessage
-
-                //Error Occurred
-            }
-
-            else if (uiState.value.contentVisible) {
                 productResourceListEnvelopeViewModel.setIsSearching(false)
                 val columnModifier = Modifier
                     .fillMaxHeight()
@@ -426,8 +310,9 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
                                 mainViewModel,
                                 isViewedFromCart = false,
                                 OrderItem(itemProduct = selectedProduct.value),
-                                onDismiss = { isAddToCart, item -> if (isAddToCart){
-                                       onCartChanged()
+                                onDismiss = { isAddToCart, item ->
+                                    if (isAddToCart) {
+                                        onCartChanged()
                                     }
                                     showProductDetailBottomSheet = false
 
@@ -443,7 +328,7 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
                             userScrollEnabled = true
                         ) {
                             items(productUIModel.productList.size) { it ->
-                                HomeProductItem(
+                                ProductItem(
                                     productUIModel.productList[it],
                                     onProductClickListener = { it2 ->
                                         selectedProduct.value = it2
@@ -457,17 +342,19 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
                                     ) {
                                         IndeterminateCircularProgressBar()
                                     }
-                                }
-                                else if (it == lastIndex && (displayedProductsCount.value < totalProductsCount.value)) {
+                                } else if (it == lastIndex && (displayedProductsCount.value < totalProductsCount.value)) {
                                     val buttonStyle = Modifier
-                                        .height(60.dp)
+                                        .height(55.dp)
                                         .fillMaxWidth()
                                         .padding(top = 10.dp, start = 10.dp, end = 10.dp)
 
                                     ButtonComponent(
                                         modifier = buttonStyle,
                                         buttonText = "Show More",
-                                        borderStroke = BorderStroke(1.dp, theme.Colors.primaryColor),
+                                        borderStroke = BorderStroke(
+                                            1.dp,
+                                            theme.Colors.primaryColor
+                                        ),
                                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
                                         fontSize = 16,
                                         shape = CircleShape,
@@ -482,8 +369,7 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
                                                     nextPage = productResourceListEnvelopeViewModel.currentPage.value + 1
                                                 )
                                             }
-                                        }
-                                        else{
+                                        } else {
                                             if (productResourceListEnvelopeViewModel.nextPageUrl.value.isNotEmpty()) {
                                                 productPresenter.searchMoreProducts(
                                                     vendorId = vendorId,
@@ -497,9 +383,7 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
                             }
                         }
                     }
-
                 }
-            }
         }
     }
 }

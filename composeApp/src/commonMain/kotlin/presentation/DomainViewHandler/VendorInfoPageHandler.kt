@@ -6,11 +6,11 @@ import domain.Models.VendorResourceListEnvelope
 import presentation.connectVendor.ConnectVendorContract
 import presentation.connectVendor.ConnectVendorPresenter
 import presentation.viewmodels.ResourceListEnvelopeViewModel
-import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.UIStateViewModel
 
 class VendorInfoPageHandler(
     private val vendorResourceListEnvelopeViewModel: ResourceListEnvelopeViewModel<Vendor>? = null,
-    private val screenUiStateViewModel: ScreenUIStateViewModel,
+    private val uiStateViewModel: UIStateViewModel,
     private val connectVendorPresenter: ConnectVendorPresenter,
     private val onPageLoading: () -> Unit,
     private val onContentVisible: () -> Unit,
@@ -22,7 +22,7 @@ class VendorInfoPageHandler(
     }
 
     override fun showLce(uiState: ScreenUIStates) {
-        screenUiStateViewModel.switchScreenUIState(uiState)
+        uiStateViewModel.switchScreenUIState(uiState)
         uiState.let {
             when {
                 it.loadingVisible -> {

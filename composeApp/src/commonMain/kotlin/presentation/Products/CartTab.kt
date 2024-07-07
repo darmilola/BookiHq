@@ -164,11 +164,11 @@ class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                             val orderItemList = mainViewModel.unSavedOrders.value
                             val vendorId = mainViewModel.connectedVendor.value.vendorId
                             val userId = mainViewModel.currentUserInfo.value.userId
-                            val orderReference = mainViewModel.currentOrderReference.value
+                           // val orderReference = mainViewModel.currentOrderReference.value
                             val deliveryLocation = cartViewModel!!.deliveryLocation.value
                             val paymentMethod = cartViewModel!!.paymentMethod.value
 
-                            cartPresenter.createOrder(orderItemList,vendorId!!,userId!!,orderReference,deliveryLocation,paymentMethod)
+                           // cartPresenter.createOrder(orderItemList,vendorId!!,userId!!,orderReference,deliveryLocation,paymentMethod)
 
                         })
                     }
@@ -257,11 +257,11 @@ class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                              val orderItemList = mainViewModel.unSavedOrders.value
                              val vendorId = mainViewModel.connectedVendor.value.vendorId
                              val userId = mainViewModel.currentUserInfo.value.userId
-                             val orderReference = mainViewModel.currentOrderReference.value
+                            // val orderReference = mainViewModel.currentOrderReference.value
                              val deliveryLocation = cartViewModel!!.deliveryLocation.value
                              val paymentMethod = cartViewModel!!.paymentMethod.value
 
-                             cartPresenter.createOrder(orderItemList,vendorId!!,userId!!,orderReference,deliveryLocation,paymentMethod)
+                           //  cartPresenter.createOrder(orderItemList,vendorId!!,userId!!,orderReference,deliveryLocation,paymentMethod)
 
                         })
 

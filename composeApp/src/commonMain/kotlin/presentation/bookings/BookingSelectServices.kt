@@ -82,7 +82,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
         animation = StackedSnackbarAnimation.Bounce
     )
 
-    // initialise new recommendation
+  /*  // initialise new recommendation
     if (mainViewModel.vendorRecommendation.value.recommendationId != -1) {
         val recommendation = mainViewModel.vendorRecommendation.value
         val serviceType = recommendation.serviceTypeItem
@@ -96,7 +96,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
             services.serviceTypes.add(serviceType)
         }
         bookingViewModel.setCurrentBooking(currentBooking)
-    }
+    }*/
 
     val boxModifier =
         Modifier

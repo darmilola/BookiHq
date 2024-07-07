@@ -37,6 +37,7 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
+import domain.Enums.MainTabEnum
 import domain.Models.PlatformNavigator
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -112,8 +113,6 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
         }
 
         var isBottomNavSelected by remember { mutableStateOf(true) }
-            val userId = mainViewModel.userId.collectAsState()
-            val vendorId = mainViewModel.vendorId.collectAsState()
             val userInfo = mainViewModel.currentUserInfo.collectAsState()
             val vendorInfo = mainViewModel.connectedVendor.collectAsState()
 
@@ -122,12 +121,8 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
                 Scaffold(
                     topBar = {
                         if (userInfo.value.userId != null && vendorInfo.value.vendorId != null)
-                        MainTopBar(
-                            mainViewModel,
-                            isBottomNavSelected = isBottomNavSelected
-                        ) {
-                            isBottomNavSelected = false
-                        }
+                        MainTopBar(mainViewModel)
+
                     },
                     content = {
                         Box(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
@@ -137,8 +132,6 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
                     },
                     backgroundColor = Color.White,
                     bottomBar = {
-                        val bottomNavHeight =
-                            if (userId.value != -1L && vendorId.value != -1L) 60 else 0
                         Box(modifier = Modifier.fillMaxWidth().height(80.dp),
                             contentAlignment = Alignment.Center) {
                             BottomNavigation(
@@ -166,9 +159,7 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
                                 TabNavigationItem(
                                     ShopProductTab(
                                         mainViewModel,
-                                        productViewModel!!,
-                                        productResourceListEnvelopeViewModel!!
-                                    ),
+                                        productViewModel!!),
                                     selectedImage = "drawable/shopping_basket.png",
                                     unselectedImage = "drawable/shopping_basket_outline.png",
                                     labelText = "Shop",
@@ -201,7 +192,7 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
                                     unselectedImage = "drawable/user_icon_outline.png",
                                     labelText = "More",
                                     imageSize = 25,
-                                    currentTabId = 4,
+                                    currentTabId = 3,
                                     tabNavigator = it2,
                                     mainViewModel = mainViewModel
                                 ) {
@@ -226,13 +217,23 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
         var imageTint by remember { mutableStateOf(Color.White) }
         var handleTint by remember { mutableStateOf(Colors.darkPrimary) }
 
-        if (tabNavigator.current is ShopProductTab && currentTabId == 1) {
+        if (tabNavigator.current is HomeTab && currentTabId == 0) {
+            imageStr = selectedImage
+            imageTint = Color.White
+            handleTint = Color.White
+            val screenTitle = "Home"
+            onBottomNavSelected()
+            mainViewModel.setTitle(screenTitle)
+            mainViewModel.setDisplayedTab(MainTabEnum.HOME.toPath())
+        }
+        else  if (tabNavigator.current is ShopProductTab && currentTabId == 1) {
             imageStr = selectedImage
             imageTint = Color.White
             handleTint = Color.White
             val screenTitle = "Products"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
+            mainViewModel.setDisplayedTab(MainTabEnum.SHOP.toPath())
         } else if (tabNavigator.current is AppointmentsTab && currentTabId == 2) {
             imageStr = selectedImage
             imageTint = Color.White
@@ -240,27 +241,16 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
             val screenTitle = "Appointments"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
-        } else if (tabNavigator.current is FavoriteTab && currentTabId == 3) {
-            imageStr = selectedImage
-            imageTint = Color.White
-            handleTint = Color.White
-            val screenTitle = "Favorites"
-            onBottomNavSelected()
-            mainViewModel.setTitle(screenTitle)
-        } else if (tabNavigator.current is AccountTab && currentTabId == 4) {
+            mainViewModel.setDisplayedTab(MainTabEnum.APPOINTMENT.toPath())
+
+        } else if (tabNavigator.current is AccountTab && currentTabId == 3) {
             imageStr = selectedImage
             imageTint = Color.White
             handleTint = Color.White
             val screenTitle = "Manage"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
-        } else if (tabNavigator.current is HomeTab && currentTabId == 0) {
-            imageStr = selectedImage
-            imageTint = Color.White
-            handleTint = Color.White
-            val screenTitle = "Home"
-            onBottomNavSelected()
-            mainViewModel.setTitle(screenTitle)
+            mainViewModel.setDisplayedTab(MainTabEnum.PROFILE.toPath())
         } else {
             imageTint = Color.White
             handleTint = Colors.darkPrimary

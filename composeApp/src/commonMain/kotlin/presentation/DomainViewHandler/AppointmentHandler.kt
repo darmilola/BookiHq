@@ -8,13 +8,13 @@ import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import UIStates.ActionUIStates
 import presentation.viewmodels.PostponementViewModel
-import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.UIStateViewModel
 import UIStates.ScreenUIStates
 
 
 class AppointmentsHandler(
     private val appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel,
-    private val screenUiStateViewModel: ScreenUIStateViewModel,
+    private val uiStateViewModel: UIStateViewModel,
     private val deleteActionUIStateViewModel: ActionUIStateViewModel,
     private val joinMeetingActionUIStateViewModel: ActionUIStateViewModel,
     private val getAvailabilityActionUIStateViewModel: ActionUIStateViewModel,
@@ -26,7 +26,7 @@ class AppointmentsHandler(
     }
 
     override fun showLce(screenUiState: ScreenUIStates) {
-        screenUiStateViewModel.switchScreenUIState(screenUiState)
+        uiStateViewModel.switchScreenUIState(screenUiState)
     }
 
     override fun showDeleteActionLce(actionUIStates: ActionUIStates) {

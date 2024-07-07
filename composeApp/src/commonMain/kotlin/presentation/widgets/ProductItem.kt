@@ -39,6 +39,7 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import utils.calculateDiscount
 
+/*
 @Composable
 fun ProductItem(product: Product, onProductClickListener: (Product) -> Unit) {
     val columnModifier = Modifier
@@ -55,11 +56,12 @@ fun ProductItem(product: Product, onProductClickListener: (Product) -> Unit) {
                 ProductNameAndPrice(product)
             }
 }
+*/
 
 
 
 @Composable
-fun HomeProductItem(product: Product, onProductClickListener: (Product) -> Unit) {
+fun ProductItem(product: Product, onProductClickListener: (Product) -> Unit) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
         .clickable {
@@ -78,7 +80,7 @@ fun HomeProductItem(product: Product, onProductClickListener: (Product) -> Unit)
     }
 
 
-    @Composable
+  /*  @Composable
     fun ProductImage(product: Product) {
         val imageModifier =
             Modifier
@@ -111,7 +113,7 @@ fun HomeProductItem(product: Product, onProductClickListener: (Product) -> Unit)
             }
         }
     }
-
+*/
 
 @Composable
 fun HomeProductImage(product: Product) {
@@ -140,14 +142,6 @@ fun HomeProductImage(product: Product) {
                 contentScale = ContentScale.Crop,
                 isAsync = true
             )
-            Box(
-                modifier = Modifier
-                    .padding(5.dp)
-                    .size(35.dp).background(color = Color.White, shape = CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-              ImageComponent(imageModifier = Modifier.size(16.dp), imageRes = "drawable/like_icon.png", colorFilter = ColorFilter.tint(color = Colors.pinkColor))
-            }
         }
     }
 }

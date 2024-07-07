@@ -31,18 +31,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import domain.Enums.MainTabEnum
 import presentation.notification.NotificationTab
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.TitleWidget
 import presentations.components.ImageComponent
 
 @Composable
-fun MainTopBar(mainViewModel: MainViewModel, isBottomNavSelected: Boolean = false, onNotificationTabSelected:() -> Unit) {
-
-    val userId = mainViewModel.userId.value
-    val vendorId = mainViewModel.vendorId.value
-
-    val topBarHeight = if (userId != -1L  && vendorId != -1L) 50 else 0
+fun MainTopBar(mainViewModel: MainViewModel) {
     Column(modifier = Modifier.fillMaxWidth().height(50.dp), verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
            Box(
@@ -52,9 +48,7 @@ fun MainTopBar(mainViewModel: MainViewModel, isBottomNavSelected: Boolean = fals
                    .background(color = Color.White)
            ) {
                centerTopBarItem(mainViewModel)
-               rightTopBarItem(mainViewModel, isBottomNavSelected = isBottomNavSelected) {
-                   onNotificationTabSelected()
-               }
+               rightTopBarItem(mainViewModel)
            }
        }
 }
@@ -181,8 +175,9 @@ fun UserImage(userImageUrl: String, onUserImageClicked: () -> Unit) {
 
 
 @Composable
-fun rightTopBarItem(mainViewModel: MainViewModel, isBottomNavSelected: Boolean = false, onNotificationTabSelected:() -> Unit) {
+fun rightTopBarItem(mainViewModel: MainViewModel) {
     val userInfo = mainViewModel.currentUserInfo.collectAsState()
+    val displayedTab = mainViewModel.displayedTab.collectAsState()
     val modifier = Modifier
         .padding(end = 10.dp)
         .background(color = Color.Transparent)
@@ -192,9 +187,26 @@ fun rightTopBarItem(mainViewModel: MainViewModel, isBottomNavSelected: Boolean =
     Box(modifier = modifier,
         contentAlignment = Alignment.CenterEnd
         ) {
-        UserImage(userImageUrl = userInfo.value.profileImageUrl!!, onUserImageClicked = {})
-       }
+        when (displayedTab.value) {
+            MainTabEnum.HOME.toPath() -> {
+                UserImage(userImageUrl = userInfo.value.profileImageUrl!!, onUserImageClicked = {})
+            }
+            MainTabEnum.SHOP.toPath() -> {
+                val iconModifier = Modifier
+                    .padding(top = 5.dp)
+                    .clickable {
+                        mainViewModel.setIsSearchProduct(true)
+                    }
+                    .size(24.dp)
+                ImageComponent(imageModifier = iconModifier, imageRes = "drawable/search_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+            }
+            MainTabEnum.APPOINTMENT.toPath() -> {}
+            MainTabEnum.PROFILE.toPath() -> {}
+
+        }
     }
+
+}
 
 @Composable
 fun centerTopBarItem(mainViewModel: MainViewModel) {

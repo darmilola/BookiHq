@@ -50,7 +50,7 @@ import presentation.dialogs.LoadingDialog
 import presentation.dialogs.SuccessDialog
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.UIStateViewModel
 import UIStates.ScreenUIStates
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
@@ -59,7 +59,7 @@ import rememberStackedSnackbarHostState
 
 class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
     private val bookingPresenter: BookingPresenter by inject()
-    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
+    private var uiStateViewModel: UIStateViewModel? = null
     private var bookingViewModel: BookingViewModel? = null
     override val options: TabOptions
         @Composable
@@ -87,10 +87,10 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
         val creatingAppointmentSuccess = remember { mutableStateOf(false) }
         val creatingAppointmentFailed = remember { mutableStateOf(false) }
 
-        if (screenUiStateViewModel == null) {
-            screenUiStateViewModel = kmpViewModel(
+        if (uiStateViewModel == null) {
+            uiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -107,13 +107,13 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
         val handler = BookingScreenHandler(
             bookingViewModel!!, bookingPresenter,
            onPageLoading = {
-               screenUiStateViewModel!!.switchScreenUIState(ScreenUIStates(loadingVisible = true))
+               uiStateViewModel!!.switchScreenUIState(ScreenUIStates(loadingVisible = true))
             },
             onShowUnsavedAppointment = {},
             onContentVisible = {
-                screenUiStateViewModel!!.switchScreenUIState(ScreenUIStates(contentVisible = true))
+                uiStateViewModel!!.switchScreenUIState(ScreenUIStates(contentVisible = true))
             }, onErrorVisible = {
-                screenUiStateViewModel!!.switchScreenUIState(ScreenUIStates(errorOccurred = true))
+                uiStateViewModel!!.switchScreenUIState(ScreenUIStates(errorOccurred = true))
             },
             onCreateAppointmentStarted = {
                 creatingAppointmentProgress.value = true
@@ -212,7 +212,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                     ) {
                         AttachBookingPages(
                             pagerState,
-                            screenUiStateViewModel!!,
+                            uiStateViewModel!!,
                             mainViewModel,
                             bookingViewModel!!,
                             services = mainViewModel.selectedService.value,
@@ -319,7 +319,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun AttachBookingPages(pagerState: PagerState, screenUiStateViewModel: ScreenUIStateViewModel, mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, services: Services, onAddMoreServiceClicked:() -> Unit, onLastItemRemoved:() -> Unit){
+    fun AttachBookingPages(pagerState: PagerState, uiStateViewModel: UIStateViewModel, mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, services: Services, onAddMoreServiceClicked:() -> Unit, onLastItemRemoved:() -> Unit){
 
         val  boxModifier =
             Modifier
@@ -338,12 +338,12 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                 when (page) {
                     0 -> BookingSelectServices(mainViewModel, bookingViewModel,services)
                     1 -> if(page == pagerState.targetPage) {
-                        BookingSelectTherapists(mainViewModel,screenUiStateViewModel,bookingViewModel,bookingPresenter)
+                        BookingSelectTherapists(mainViewModel,uiStateViewModel,bookingViewModel,bookingPresenter)
                     }
                     2 -> if(page == pagerState.targetPage) {
                         BookingOverview(
                             mainViewModel,
-                            screenUiStateViewModel,
+                            uiStateViewModel,
                             bookingViewModel,
                             bookingPresenter,
                             onAddMoreServiceClicked = {

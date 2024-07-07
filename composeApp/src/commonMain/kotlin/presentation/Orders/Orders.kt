@@ -45,7 +45,7 @@ import presentation.components.IndeterminateCircularProgressBar
 import presentation.consultation.rightTopBarItem
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.OrdersResourceListEnvelopeViewModel
-import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget
 import rememberStackedSnackbarHostState
@@ -56,7 +56,7 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
 
     private val orderPresenter: OrderPresenter by inject()
-    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
+    private var uiStateViewModel: UIStateViewModel? = null
     private var ordersResourceListEnvelopeViewModel: OrdersResourceListEnvelopeViewModel? = null
 
 
@@ -79,18 +79,16 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
     @Composable
     override fun Content() {
 
-        val userId = mainViewModel.userId.collectAsState()
-
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
             animation = StackedSnackbarAnimation.Bounce
         )
 
 
-        if (screenUiStateViewModel == null) {
-            screenUiStateViewModel = kmpViewModel(
+        if (uiStateViewModel == null) {
+            uiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -101,7 +99,7 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                     OrdersResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
-            orderPresenter.getUserOrders(userId.value)
+           // orderPresenter.getUserOrders(userId.value)
         }
 
 
@@ -114,7 +112,7 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
             ordersResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
         val displayedOrdersCount =
             ordersResourceListEnvelopeViewModel!!.displayedItemCount.collectAsState()
-        val uiState = screenUiStateViewModel!!.uiStateInfo.collectAsState()
+        val uiState = uiStateViewModel!!.uiStateInfo.collectAsState()
         val lastIndex = ordersList?.value?.size?.minus(1)
         val selectedOrder = remember { mutableStateOf(CustomerOrder()) }
 
@@ -148,7 +146,7 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
             content = {
                 val handler = OrderHandler(
                     ordersResourceListEnvelopeViewModel!!,
-                    screenUiStateViewModel!!,
+                    uiStateViewModel!!,
                     orderPresenter
                 )
                 handler.init()
@@ -199,9 +197,9 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                                     style = TextStyle()
                                 ) {
                                     if (ordersResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
-                                        if (userId.value != -1L) {
+                                    /*    if (userId.value != -1L) {
                                             orderPresenter.getMoreUserOrders(userId.value, nextPage = ordersResourceListEnvelopeViewModel!!.currentPage.value + 1)
-                                        }
+                                        }*/
                                     }
                                 }
                             }

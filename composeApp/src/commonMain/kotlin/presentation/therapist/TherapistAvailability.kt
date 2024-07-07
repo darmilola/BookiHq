@@ -21,14 +21,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import domain.Models.PlatformTime
 import domain.Models.AvailableTime
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.dataModeller.CalendarDataSource
 import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.TherapistViewModel
-import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.NewDateContent
 import presentation.widgets.TherapistAvailabilityTimeGrid
 import presentations.components.TextComponent
@@ -37,9 +36,9 @@ import theme.styles.Colors
 
 @Composable
 fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: TherapistPresenter, therapistViewModel: TherapistViewModel,
-                          screenUiStateViewModel: ScreenUIStateViewModel, actionUIStateViewModel: ActionUIStateViewModel){
+                          uiStateViewModel: UIStateViewModel, actionUIStateViewModel: ActionUIStateViewModel){
 
-    val screenUiState = screenUiStateViewModel.uiStateInfo.collectAsState()
+    val screenUiState = uiStateViewModel.uiStateInfo.collectAsState()
     val actionUIState = actionUIStateViewModel.uiStateInfo.collectAsState()
 
     val newSelectedDay = therapistViewModel.day.collectAsState()
@@ -47,7 +46,6 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
     val newSelectedYear = therapistViewModel.year.collectAsState()
     val isNewDateSelected = remember { mutableStateOf(true) }
     val isSaveVisible = remember { mutableStateOf(false) }
-    val therapistId = mainViewModel.therapistId.value
     val currentDate = remember { mutableStateOf(CalendarDataSource().today) }
 
 

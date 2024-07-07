@@ -35,10 +35,9 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
-import UIStates.ActionUIStates
 import presentation.DomainViewHandler.TalkWithTherapistHandler
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.BookingCalendar
 import presentation.widgets.MultilineInputWidget
 import presentation.widgets.PageBackNavWidget
@@ -51,7 +50,7 @@ import theme.styles.Colors
 class TalkWithATherapist(private val mainViewModel: MainViewModel) : Tab,
     KoinComponent {
     private val profilePresenter: ProfilePresenter by inject()
-    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
+    private var uiStateViewModel: UIStateViewModel? = null
     override val options: TabOptions
         @Composable
         get() {

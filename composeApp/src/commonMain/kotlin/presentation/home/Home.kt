@@ -2,7 +2,6 @@ package presentation.home
 
 import GGSansRegular
 import StackedSnackbarHost
-import StackedSnakbarHostState
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,7 +30,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -49,7 +46,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -64,8 +60,6 @@ import com.russhwolf.settings.set
 import domain.Models.Appointment
 import domain.Enums.AppointmentType
 import domain.Models.HomepageInfo
-import domain.Models.OrderItem
-import domain.Models.Product
 import domain.Models.VendorRecommendation
 import domain.Enums.RecommendationType
 import domain.Enums.Screens
@@ -76,33 +70,26 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.HomepageHandler
 import presentation.components.StraightLine
-import presentation.widgets.HomeProductItem
-import presentation.components.FloatingActionButton
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.ShopStatusWidget
 import presentation.widgets.HomeServicesWidget
 import presentation.widgets.MeetingAppointmentWidget
 import presentation.widgets.RecommendedServiceItem
 import presentation.widgets.AppointmentWidget
-import presentation.widgets.ProductDetailBottomSheet
-import presentation.widgets.ShowSnackBar
-import presentation.widgets.SnackBarType
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import utils.calculateHomePageScreenHeight
-import utils.getPercentOfScreenHeight
-import utils.getPopularProductViewHeight
 import utils.getRecentAppointmentViewHeight
 import utils.getServicesViewHeight
 import utils.pxToDp
 
 class HomeTab(private val mainViewModel: MainViewModel, private val homePageViewModel: HomePageViewModel) : Tab, KoinComponent {
 
-    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
+    private var uiStateViewModel: UIStateViewModel? = null
     private val homepagePresenter: HomepagePresenter by inject()
     private var userId: Long = -1L
     private val preferenceSettings: Settings = Settings()
@@ -132,10 +119,10 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
         val isStatusViewExpanded = remember { mutableStateOf(false) }
 
         val screenSizeInfo = ScreenSizeInfo()
-        if (screenUiStateViewModel == null) {
-            screenUiStateViewModel = kmpViewModel(
+        if (uiStateViewModel == null) {
+            uiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
             if (availabilityActionUIStateViewModel == null) {
@@ -147,7 +134,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
             }
 
 
-            val handler = HomepageHandler(screenUiStateViewModel!!, homepagePresenter,
+            val handler = HomepageHandler(uiStateViewModel!!, homepagePresenter,
                 onHomeInfoAvailable = { homePageInfo, vendorStatus ->
                     val viewHeight = calculateHomePageScreenHeight(
                         homepageInfo = homePageInfo,
@@ -174,14 +161,14 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
             }
         }
 
-        val uiState = screenUiStateViewModel!!.uiStateInfo.collectAsState()
+        val uiState = uiStateViewModel!!.uiStateInfo.collectAsState()
         val homepageInfo = homePageViewModel.homePageInfo.collectAsState()
         val mVendorStatus = homePageViewModel.vendorStatus.collectAsState()
         val homePageViewHeight = homePageViewModel.homePageViewHeight.collectAsState()
 
         Box(
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                .background(color = Colors.lighterPrimaryColor),
+                .background(color = Color.White),
             contentAlignment = Alignment.Center
         ) {
             if (uiState.value.loadingVisible) {
@@ -417,7 +404,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                                 .padding(2.dp)
                                 .clip(CircleShape)
                                 .background(color)
-                                .height(3.dp)
+                                .height(2.dp)
                                 .width(width.dp)
                         )
                     }

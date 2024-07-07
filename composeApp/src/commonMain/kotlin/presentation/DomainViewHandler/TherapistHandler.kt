@@ -7,12 +7,12 @@ import presentation.therapist.TherapistPresenter
 import presentation.viewmodels.ActionUIStateViewModel
 import UIStates.ActionUIStates
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
-import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.UIStateViewModel
 import UIStates.ScreenUIStates
 
 class TherapistHandler(
     private val therapistPresenter: TherapistPresenter,
-    private val screenUiStateViewModel: ScreenUIStateViewModel,
+    private val uiStateViewModel: UIStateViewModel,
     private val actionUIStateViewModel: ActionUIStateViewModel,
     private val onReviewsReady: (List<TherapistReviews>) -> Unit,
     private val onMeetingTokenReady: (meetingToken: String) -> Unit,
@@ -23,7 +23,7 @@ class TherapistHandler(
     }
 
     override fun showScreenLce(screenUIStates: ScreenUIStates) {
-        screenUiStateViewModel.switchScreenUIState(screenUIStates)
+        uiStateViewModel.switchScreenUIState(screenUIStates)
     }
 
     override fun showActionLce(actionUiState: ActionUIStates) {

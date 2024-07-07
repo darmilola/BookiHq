@@ -25,14 +25,14 @@ import domain.Models.UnsavedAppointment
 import presentation.components.ButtonComponent
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.UnsavedAppointmentWidget
 import theme.styles.Colors
 import utils.getUnSavedAppointmentViewHeight
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
- fun BookingOverview(mainViewModel: MainViewModel, screenUiStateViewModel: ScreenUIStateViewModel,
+ fun BookingOverview(mainViewModel: MainViewModel, uiStateViewModel: UIStateViewModel,
                      bookingViewModel: BookingViewModel,
                      bookingPresenter: BookingPresenter, onAddMoreServiceClicked:() -> Unit, onLastItemRemoved: () -> Unit) {
 

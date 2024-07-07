@@ -419,8 +419,8 @@ fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, isRightSelection: Boo
     val rowModifier = Modifier
         .padding(top = 15.dp, end = 10.dp, start = 10.dp)
         .fillMaxWidth()
-        .height(55.dp)
-        .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(15.dp))
+        .height(50.dp)
+        .background(color = Colors.lightPrimaryColor, shape = CircleShape)
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,

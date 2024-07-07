@@ -44,7 +44,7 @@ import presentation.widgets.SearchBar
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.ConnectPageViewModel
-import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.UIStateViewModel
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.ConnectPageHandler
@@ -58,7 +58,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
 
     @Transient private val preferenceSettings: Settings = Settings()
     @Transient private val connectVendorPresenter: ConnectVendorPresenter by inject()
-    @Transient private var screenUiStateViewModel: ScreenUIStateViewModel? = null
+    @Transient private var uiStateViewModel: UIStateViewModel? = null
     @Transient private var connectPageViewModel: ConnectPageViewModel? = null
     @Transient private var vendorResourceListEnvelopeViewModel: VendorsResourceListEnvelopeViewModel? = null
     private var country: String = ""
@@ -80,10 +80,10 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
         }
 
 
-        if (screenUiStateViewModel == null) {
-            screenUiStateViewModel = kmpViewModel(
+        if (uiStateViewModel == null) {
+            uiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
             vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
@@ -120,7 +120,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
         // View Contract Handler Initialisation
         val handler = ConnectPageHandler(
             vendorResourceListEnvelopeViewModel!!,
-            screenUiStateViewModel!!,
+            uiStateViewModel!!,
             connectVendorPresenter,
             onPageLoading = {
                 contentLoading.value = true

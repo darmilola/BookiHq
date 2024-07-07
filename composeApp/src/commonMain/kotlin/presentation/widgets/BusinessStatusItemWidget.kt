@@ -47,6 +47,7 @@ class BusinessStatusItemWidget {
         val isStatusExpanded = remember { mutableStateOf(false) }
         val imageRes = if(isStatusExpanded.value) "drawable/collapse_icon.png"  else "drawable/expand_icon.png"
         val likeImageRes = if(isStatusExpanded.value) "drawable/like_icon_filled.png"  else "drawable/like_icon.png"
+        val imageHeight = if(vendorStatusModel.statusImage?.caption!!.isNotEmpty()) 0.85f else 1f
 
         Column(
             modifier = Modifier
@@ -56,7 +57,7 @@ class BusinessStatusItemWidget {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.85f)) {
+            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(imageHeight)) {
                 ImageComponent(
                     imageModifier = Modifier.fillMaxSize(),
                     imageRes = imageUrl,
@@ -64,10 +65,6 @@ class BusinessStatusItemWidget {
                     isAsync = true
                 )
                 Box(modifier = Modifier.fillMaxWidth().height(80.dp).padding(end = 10.dp, top = 10.dp), contentAlignment = Alignment.TopStart) {
-                    AttachLikeIcon(imageRes = likeImageRes) {
-                        isStatusExpanded.value = !isStatusExpanded.value
-                        onStatusViewChanged(isStatusExpanded.value)
-                    }
                 }
                 Box(modifier = Modifier.fillMaxWidth().height(80.dp).padding(end = 10.dp, top = 10.dp), contentAlignment = Alignment.TopEnd) {
                     AttachExpandCollapseIcon(imageRes = imageRes) {
