@@ -181,10 +181,10 @@ fun VendorTimeGrid(availableTimes: List<VendorTime>? = arrayListOf(), selectedTi
 @Composable
 fun VendorTimeItem(vendorTime: VendorTime, onWorkHourClickListener: (VendorTime) -> Unit) {
     val meridian = if (vendorTime.platformTime?.isAm!!){
-        "am"
+        "AM"
     }
     else{
-        "pm"
+        "PM"
     }
     val color: Color = if(vendorTime.isSelected){
         Colors.primaryColor

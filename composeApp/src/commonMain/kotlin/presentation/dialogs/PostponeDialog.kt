@@ -80,7 +80,7 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
         val displayTimes = remember { mutableStateOf(arrayListOf<AvailableTime>()) }
         val normalisedTherapistTimes = arrayListOf<AvailableTime>()
         for (item in therapistBookedTimes) {
-            normalisedBookedTimes.add(item.platformTime!!)
+            normalisedBookedTimes.add(item.timeObject?.platformTime!!)
         }
 
 

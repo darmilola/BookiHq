@@ -44,10 +44,12 @@ fun AppointmentInfoWidget(appointment: Appointment) {
         char(' ')
         dayOfMonth()
     }
+    val platformTime = appointment.timeObject?.platformTime
+    val isAm = if (platformTime?.isAm == true) "AM" else "PM"
 
     val appointmentDate =
         LocalDate(dayOfMonth = appointment.appointmentDay!!, monthNumber = appointment.appointmentMonth!!, year = appointment.appointmentYear!!).format(appointmentDateFormat)
-    val appointmentTime = appointment.platformTime?.time
+    val appointmentTime = platformTime?.time+" "+isAm
 
     val columnModifier = Modifier
         .padding(start = 15.dp, end = 10.dp)
@@ -148,7 +150,11 @@ fun MeetingInfoWidget(appointment: Appointment) {
 
     val appointmentDate =
         LocalDate(dayOfMonth = appointment.appointmentDay!!, monthNumber = appointment.appointmentMonth!!, year = appointment.appointmentYear!!).format(appointmentDateFormat)
-    val appointmentTime = appointment.platformTime?.time
+
+    val platformTime = appointment.timeObject?.platformTime
+    val isAm = if (platformTime?.isAm == true) "AM" else "PM"
+
+    val appointmentTime = platformTime?.time+" "+isAm
 
     val columnModifier = Modifier
         .padding(start = 15.dp, end = 10.dp)

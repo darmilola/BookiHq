@@ -46,6 +46,7 @@ class BusinessStatusItemWidget {
 
         val isStatusExpanded = remember { mutableStateOf(false) }
         val imageRes = if(isStatusExpanded.value) "drawable/collapse_icon.png"  else "drawable/expand_icon.png"
+        val likeImageRes = if(isStatusExpanded.value) "drawable/like_icon_filled.png"  else "drawable/like_icon.png"
 
         Column(
             modifier = Modifier
@@ -62,6 +63,12 @@ class BusinessStatusItemWidget {
                     contentScale = ContentScale.Crop,
                     isAsync = true
                 )
+                Box(modifier = Modifier.fillMaxWidth().height(80.dp).padding(end = 10.dp, top = 10.dp), contentAlignment = Alignment.TopStart) {
+                    AttachLikeIcon(imageRes = likeImageRes) {
+                        isStatusExpanded.value = !isStatusExpanded.value
+                        onStatusViewChanged(isStatusExpanded.value)
+                    }
+                }
                 Box(modifier = Modifier.fillMaxWidth().height(80.dp).padding(end = 10.dp, top = 10.dp), contentAlignment = Alignment.TopEnd) {
                     AttachExpandCollapseIcon(imageRes = imageRes) {
                         isStatusExpanded.value = !isStatusExpanded.value
@@ -95,6 +102,19 @@ class BusinessStatusItemWidget {
                 }
                 .size(20.dp)
             ImageComponent(imageModifier = modifier, imageRes = imageRes, colorFilter = ColorFilter.tint(color = Colors.darkPrimary))
+        }
+    }
+
+    @Composable
+    fun AttachLikeIcon(imageRes: String, onClick:() -> Unit) {
+        Box(modifier = Modifier.size(40.dp).background(color = Color.White, shape = CircleShape), contentAlignment = Alignment.Center) {
+            val modifier = Modifier
+                .padding(top = 2.dp)
+                .clickable {
+                    onClick()
+                }
+                .size(24.dp)
+            ImageComponent(imageModifier = modifier, imageRes = imageRes, colorFilter = ColorFilter.tint(color = Colors.pinkColor))
         }
     }
 

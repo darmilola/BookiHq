@@ -1,5 +1,7 @@
 package utils
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import applications.device.ScreenSizeInfo
@@ -70,6 +72,13 @@ fun getPercentOfScreenHeight(
     return screenHeightChange.toInt()
 }
 
+@Composable
+fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
+
+
+@Composable
+fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
+
 fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo, screenSizeInfo: ScreenSizeInfo, isStatusExpanded: Boolean = false): Int{
     val serviceCount = homepageInfo.vendorServices!!.size
     val recommendationsCount = homepageInfo.recommendationRecommendations!!.size
@@ -81,7 +90,7 @@ fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo, screenSizeInfo: Sc
 
     val servicesHeight = serviceCount * 140
     val recommendationsHeight = 400
-    val recentAppointmentHeight = recentAppointmentCount * 180
+    val recentAppointmentHeight = recentAppointmentCount * 200
 
     return servicesHeight + recentAppointmentHeight + recommendationsHeight
 }

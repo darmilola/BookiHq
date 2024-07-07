@@ -98,6 +98,7 @@ import utils.getPercentOfScreenHeight
 import utils.getPopularProductViewHeight
 import utils.getRecentAppointmentViewHeight
 import utils.getServicesViewHeight
+import utils.pxToDp
 
 class HomeTab(private val mainViewModel: MainViewModel, private val homePageViewModel: HomePageViewModel) : Tab, KoinComponent {
 
@@ -211,20 +212,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                 Scaffold(
                     snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
                     topBar = {},
-                    floatingActionButton = {
-                        if (isStatusViewExpanded.value) {
-                            val buttonStyle = Modifier
-                                .padding(bottom = 60.dp)
-                                .clip(CircleShape)
-                                .size(60.dp)
-                            FloatingActionButton(
-                                modifier = buttonStyle,
-                                colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
-                                iconRes = "drawable/new_chat_icon.png",
-                                colorFilter = ColorFilter.tint(color = Color.White)
-                            )
-                        }
-                    },
+                    floatingActionButton = {},
                     content = {
                         Column(
                             Modifier
@@ -344,7 +332,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
     @Composable
     fun AttachAppointments(){
         val rowModifier = Modifier
-            .padding(start = 10.dp, top = 10.dp, bottom = 20.dp)
+            .padding(start = 10.dp, top = 20.dp, bottom = 20.dp)
             .fillMaxWidth()
             Row(
                 horizontalArrangement = Arrangement.Start,
@@ -364,81 +352,6 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                 )
                 StraightLine()
             }
-    }
-
-
-    @Composable
-    fun PopularProducts(){
-        val rowModifier = Modifier
-            .padding(start = 10.dp, top = 30.dp)
-            .fillMaxWidth()
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = rowModifier
-            ) {
-                TextComponent(
-                    text = "Popular Products",
-                    fontSize = 18,
-                    fontFamily = GGSansRegular,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Colors.darkPrimary,
-                    textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.ExtraBold,
-                    lineHeight = 20,
-                    textModifier = Modifier.fillMaxWidth(0.42f),
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                StraightLine()
-            }
-
-        }
-
-
-
-
-    @Composable
-    fun PopularProductScreen(popularProducts: List<Product>, mainViewModel: MainViewModel, stackedSnackBarHostState: StackedSnakbarHostState) {
-
-        Column {
-
-            var showProductDetailBottomSheet by remember { mutableStateOf(false) }
-            val selectedProduct  = remember { mutableStateOf(Product()) }
-
-            if (showProductDetailBottomSheet) {
-                ProductDetailBottomSheet(mainViewModel,isViewedFromCart = false, OrderItem(itemProduct = selectedProduct.value), onDismiss = {
-                        isAddToCart,item -> if (isAddToCart){
-                    ShowSnackBar(title = "Successful",
-                        description = "Your Product has been successfully Added to Cart",
-                        actionLabel = "",
-                        duration = StackedSnackbarDuration.Short,
-                        snackBarType = SnackBarType.SUCCESS,
-                        stackedSnackBarHostState,
-                        onActionClick = {})
-                     }
-                    showProductDetailBottomSheet = false
-
-                }, onRemoveFromCart = {})
-            }
-
-            val viewHeight = getPopularProductViewHeight(popularProducts)
-
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(viewHeight.dp),
-                contentPadding = PaddingValues(top = 6.dp, bottom = 6.dp),
-                verticalArrangement = Arrangement.spacedBy(5.dp),
-                userScrollEnabled = false
-            ) {
-                items(popularProducts.size) {
-                    HomeProductItem(popularProducts[it],onProductClickListener = { it2 ->
-                        selectedProduct.value = it2
-                        showProductDetailBottomSheet = true
-                    })
-                }
-            }
-        }
     }
 
 
@@ -476,7 +389,6 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                             RecommendationType.Services.toPath() -> {
                                 mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.BOOKING.toPath()))
                                 mainViewModel.setSelectedService(it.serviceTypeItem?.serviceDetails!!)
-                                //mainViewModel.setVendorRecommendation(it)
                             }
                             RecommendationType.Products.toPath() -> {
                                 showProductBottomSheet = true
@@ -569,18 +481,22 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
 
 
         val screenSizeInfo = ScreenSizeInfo()
-        val percentChangeExpanded =  0.6f
-        val percentChangeCollapsed = 0.4f
+        val percentChangeExpanded =  1f
+        val percentChangeCollapsed = 0.7f
 
 
-        val heightChange: Float by animateFloatAsState(targetValue = if (isStatusExpanded.value) percentChangeExpanded else percentChangeCollapsed,
+        val heightAtExpanded = (screenSizeInfo.heightPx * percentChangeExpanded)
+        val heightAtCollapsed = screenSizeInfo.heightPx * percentChangeCollapsed
+
+
+        val heightChange: Float by animateFloatAsState(targetValue = if (isStatusExpanded.value) heightAtExpanded else heightAtCollapsed,
             animationSpec = tween(durationMillis = 600, easing = LinearOutSlowInEasing)
         )
 
         onViewHeightChanged(heightChange, isStatusExpanded.value)
         val modifier =
             Modifier.fillMaxWidth()
-                .fillMaxHeight(heightChange)
+                .height(heightChange.toInt().pxToDp())
                 .background(color = Color.White)
         Box(modifier = modifier, contentAlignment = Alignment.TopCenter) {
             ShopStatusWidget(statusList, onStatusViewChanged = {
