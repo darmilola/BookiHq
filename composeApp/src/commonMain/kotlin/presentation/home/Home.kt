@@ -53,6 +53,8 @@ import androidx.compose.ui.unit.dp
 import applications.device.ScreenSizeInfo
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
@@ -87,13 +89,16 @@ import utils.getRecentAppointmentViewHeight
 import utils.getServicesViewHeight
 import utils.pxToDp
 
-class HomeTab(private val mainViewModel: MainViewModel, private val homePageViewModel: HomePageViewModel) : Tab, KoinComponent {
+@Parcelize
+class HomeTab() : Tab, KoinComponent, Parcelable {
 
     private var uiStateViewModel: UIStateViewModel? = null
     private val homepagePresenter: HomepagePresenter by inject()
     private var userId: Long = -1L
     private val preferenceSettings: Settings = Settings()
     private var availabilityActionUIStateViewModel: ActionUIStateViewModel? = null
+    private var mainViewModel: MainViewModel? = null
+    private var homePageViewModel: HomePageViewModel? = null
 
   @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -111,6 +116,13 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
             }
         }
 
+    fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
+
+    fun setHomePageViewModel(homePageViewModel: HomePageViewModel){
+        this.homePageViewModel = homePageViewModel
+    }
 
 
     @Composable
@@ -141,30 +153,30 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                         screenSizeInfo = screenSizeInfo,
                         isStatusExpanded = false
                     )
-                    homePageViewModel.setHomePageViewHeight(viewHeight)
-                    homePageViewModel.setHomePageInfo(homePageInfo)
-                    homePageViewModel.setVendorStatus(vendorStatus)
-                    mainViewModel.setConnectedVendor(homePageInfo.vendorInfo!!)
-                    mainViewModel.setUserEmail(homePageInfo.userInfo?.email!!)
-                    mainViewModel.setUserFirstname(homePageInfo.userInfo.firstname!!)
-                    mainViewModel.setUserId(homePageInfo.userInfo.userId!!)
-                    mainViewModel.setVendorEmail(homePageInfo.vendorInfo.businessEmail!!)
-                    mainViewModel.setVendorId(homePageInfo.vendorInfo.vendorId!!)
-                    mainViewModel.setVendorBusinessLogoUrl(homePageInfo.vendorInfo.businessLogo!!)
-                    mainViewModel.setUserInfo(homePageInfo.userInfo)
+                    homePageViewModel!!.setHomePageViewHeight(viewHeight)
+                    homePageViewModel!!.setHomePageInfo(homePageInfo)
+                    homePageViewModel!!.setVendorStatus(vendorStatus)
+                    mainViewModel!!.setConnectedVendor(homePageInfo.vendorInfo!!)
+                    mainViewModel!!.setUserEmail(homePageInfo.userInfo?.email!!)
+                    mainViewModel!!.setUserFirstname(homePageInfo.userInfo.firstname!!)
+                    mainViewModel!!.setUserId(homePageInfo.userInfo.userId!!)
+                    mainViewModel!!.setVendorEmail(homePageInfo.vendorInfo.businessEmail!!)
+                    mainViewModel!!.setVendorId(homePageInfo.vendorInfo.vendorId!!)
+                    mainViewModel!!.setVendorBusinessLogoUrl(homePageInfo.vendorInfo.businessLogo!!)
+                    mainViewModel!!.setUserInfo(homePageInfo.userInfo)
                     saveAccountInfoFromServer(homePageInfo)
                 })
             handler.init()
 
-            if (homePageViewModel.homePageInfo.value.userInfo == null) {
+            if (homePageViewModel!!.homePageInfo.value.userInfo == null) {
                 homepagePresenter.getUserHomepage(userId, "2348022510893")
             }
         }
 
         val uiState = uiStateViewModel!!.uiStateInfo.collectAsState()
-        val homepageInfo = homePageViewModel.homePageInfo.collectAsState()
-        val mVendorStatus = homePageViewModel.vendorStatus.collectAsState()
-        val homePageViewHeight = homePageViewModel.homePageViewHeight.collectAsState()
+        val homepageInfo = homePageViewModel!!.homePageInfo.collectAsState()
+        val mVendorStatus = homePageViewModel!!.vendorStatus.collectAsState()
+        val homePageViewHeight = homePageViewModel!!.homePageViewHeight.collectAsState()
 
         Box(
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -252,7 +264,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
             userScrollEnabled = false
         ) {
             items(vendorServices.size) {
-                HomeServicesWidget(vendorServices[it], mainViewModel)
+                HomeServicesWidget(vendorServices[it], mainViewModel!!)
             }
         }
      }
@@ -327,7 +339,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                 modifier = rowModifier
             ) {
                 TextComponent(
-                    text = "Recent Appointments",
+                    text = "Recently",
                     fontSize = 16,
                     fontFamily = GGSansRegular,
                     textStyle = MaterialTheme.typography.h6,
@@ -335,7 +347,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                     textAlign = TextAlign.Left,
                     fontWeight = FontWeight.Black,
                     lineHeight = 10,
-                    textModifier = Modifier.fillMaxWidth(0.40f)
+                    textModifier = Modifier.fillMaxWidth(0.20f)
                 )
                 StraightLine()
             }
@@ -374,8 +386,8 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                     RecommendedServiceItem (recommendations[page], onItemClickListener = {
                         when (it.recommendationType) {
                             RecommendationType.Services.toPath() -> {
-                                mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.BOOKING.toPath()))
-                                mainViewModel.setSelectedService(it.serviceTypeItem?.serviceDetails!!)
+                                mainViewModel!!.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.BOOKING.toPath()))
+                                mainViewModel!!.setSelectedService(it.serviceTypeItem?.serviceDetails!!)
                             }
                             RecommendationType.Products.toPath() -> {
                                 showProductBottomSheet = true

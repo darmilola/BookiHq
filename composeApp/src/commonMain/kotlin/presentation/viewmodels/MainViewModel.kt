@@ -3,6 +3,9 @@ package presentation.viewmodels
 import UIStates.ActionUIStates
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
+import com.hoc081098.kmp.viewmodel.parcelable.IgnoredOnParcel
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.MainTabEnum
 import domain.Models.OrderItem
 import domain.Models.VendorRecommendation
@@ -14,8 +17,10 @@ import domain.Models.Vendor
 import kotlinx.coroutines.flow.StateFlow
 import domain.Models.HomepageInfo
 import domain.Models.VendorStatusModel
+import kotlinx.serialization.Transient
 
-class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
+
+class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     private var _screenTitle = savedStateHandle.getStateFlow("screenTitle","Home")
     private var _connectedVendor =  savedStateHandle.getStateFlow("connectedVendor", Vendor())

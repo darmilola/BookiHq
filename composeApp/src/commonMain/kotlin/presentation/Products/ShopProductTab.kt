@@ -44,6 +44,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Enums.CRUD
 import domain.Enums.ProductType
@@ -58,6 +60,7 @@ import presentation.DomainViewHandler.ShopProductsHandler
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.components.ToggleButton
+import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ProductResourceListEnvelopeViewModel
 import presentation.viewmodels.ProductViewModel
@@ -70,12 +73,12 @@ import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import utils.getPopularProductViewHeight
 
-
-class ShopProductTab(private val mainViewModel: MainViewModel,
-                     private val productViewModel: ProductViewModel) : Tab, KoinComponent {
+@Parcelize
+class ShopProductTab : Tab, KoinComponent, Parcelable {
 
     private val productPresenter: ProductPresenter by inject()
     private var uiStateViewModel: UIStateViewModel? = null
+    private var mainViewModel: MainViewModel? = null
     private var productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel? = null
 
     @OptIn(ExperimentalResourceApi::class)
@@ -95,12 +98,18 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
             }
         }
 
+    fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
+
+
+
     @Composable
     override fun Content() {
-        val vendorId = mainViewModel.vendorId.value
+        val vendorId = mainViewModel!!.vendorId.value
         val onCartChanged = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
-        val isSearchProduct = mainViewModel.isSearchProduct.collectAsState()
+        val isSearchProduct = mainViewModel!!.isSearchProduct.collectAsState()
         val selectedProductType = remember { mutableStateOf(ProductType.COSMETICS.toPath()) }
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
@@ -141,12 +150,12 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
                                productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                                searchQuery.value = it
                                productPresenter.searchProducts(
-                                   mainViewModel.vendorId.value,
+                                   mainViewModel!!.vendorId.value,
                                    it
                                )
                            }
                }, onBackPressed = {
-                   mainViewModel.setIsSearchProduct(false)
+                   mainViewModel!!.setIsSearchProduct(false)
                    productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                         productPresenter.getProductsByType(vendorId, productType = selectedProductType.value)
                })
@@ -186,7 +195,7 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
                         productResourceListEnvelopeViewModel = productResourceListEnvelopeViewModel!!,
                         searchQuery = searchQuery.value,
                         vendorId = vendorId,
-                        mainViewModel = mainViewModel,
+                        mainViewModel = mainViewModel!!,
                         onCartChanged = {
                             onCartChanged.value = true
                         }, selectedProductType.value
@@ -195,13 +204,13 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
             },
             backgroundColor = Color.Transparent,
             floatingActionButton = {
-                var cartSize = mainViewModel.unSavedOrderSize.collectAsState()
+                var cartSize = mainViewModel!!.unSavedOrderSize.collectAsState()
                 val cartContainer = if (cartSize.value > 0) 140 else 0
                 Box(
                     modifier = Modifier.size(cartContainer.dp)
                         .padding(bottom = 40.dp), contentAlignment = Alignment.CenterEnd
                 ) {
-                    AttachShoppingCartImage("drawable/shopping_cart.png", mainViewModel)
+                    AttachShoppingCartImage("drawable/shopping_cart.png", mainViewModel!!)
                 }
             }
         )

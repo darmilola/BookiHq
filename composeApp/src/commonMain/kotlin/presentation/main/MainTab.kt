@@ -11,11 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -27,8 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.Tab
@@ -36,17 +32,18 @@ import cafe.adriel.voyager.navigator.tab.TabNavigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Enums.MainTabEnum
 import domain.Models.PlatformNavigator
+import kotlinx.serialization.Transient
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
 import presentation.Products.ShopProductTab
 import presentation.appointments.AppointmentsTab
 import presentation.account.AccountTab
-import presentation.account.ConsultTab
-import presentation.favorite.FavoriteTab
 import presentation.home.HomeTab
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.HomePageViewModel
@@ -54,16 +51,19 @@ import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ProductResourceListEnvelopeViewModel
 import presentation.viewmodels.ProductViewModel
 import presentations.components.ImageComponent
-import presentations.components.TextComponent
 
-class MainTab(private val mainViewModel: MainViewModel, private val platformNavigator: PlatformNavigator): Tab, KoinComponent {
+@Parcelize
+class MainTab(private val platformNavigator: PlatformNavigator): Tab, KoinComponent, Parcelable {
 
 
-    private var homePageViewModel: HomePageViewModel? = null
-    private var productViewModel: ProductViewModel? = null
-    private var productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel? = null
-    private var appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel? = null
-@OptIn(ExperimentalResourceApi::class)
+
+    @Transient
+    private var mainViewModel: MainViewModel? = null
+    private var homeTab: HomeTab? = null
+    private var shopProductTab: ShopProductTab? = null
+    private var appointmentsTab: AppointmentsTab? = null
+    private var accountTab: AccountTab? = null
+    @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
         @Composable
         get() {
@@ -78,9 +78,15 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
                 )
             }
         }
+
+   fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
+
     @Composable
     override fun Content() {
 
+         var homePageViewModel: HomePageViewModel? = null
 
         if (homePageViewModel == null) {
             homePageViewModel = kmpViewModel(
@@ -90,38 +96,16 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
             )
         }
 
-        if (productViewModel == null) {
-            productViewModel = kmpViewModel(
-                factory = viewModelFactory {
-                    ProductViewModel(savedStateHandle = createSavedStateHandle())
-                },
-            )
-        }
-
-        if (productResourceListEnvelopeViewModel == null) {
-            productResourceListEnvelopeViewModel = kmpViewModel(
-                factory = viewModelFactory {
-                    ProductResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
-                })
-        }
-
-        if (appointmentResourceListEnvelopeViewModel == null) {
-            appointmentResourceListEnvelopeViewModel = kmpViewModel(
-                factory = viewModelFactory {
-                    AppointmentResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
-                })
-        }
-
         var isBottomNavSelected by remember { mutableStateOf(true) }
-            val userInfo = mainViewModel.currentUserInfo.collectAsState()
-            val vendorInfo = mainViewModel.connectedVendor.collectAsState()
+            val userInfo = mainViewModel!!.currentUserInfo.collectAsState()
+            val vendorInfo = mainViewModel!!.connectedVendor.collectAsState()
 
-            TabNavigator(showDefaultTab(mainViewModel, homePageViewModel!!)) {
+            TabNavigator(showDefaultTab(mainViewModel!!, homePageViewModel!!)) {
                 it2 ->
                 Scaffold(
                     topBar = {
                         if (userInfo.value.userId != null && vendorInfo.value.vendorId != null)
-                        MainTopBar(mainViewModel)
+                        MainTopBar(mainViewModel!!)
 
                     },
                     content = {
@@ -141,60 +125,58 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
                                 elevation = 0.dp
                             )
                             {
+                                homeTab = HomeTab()
+                                homeTab!!.setMainViewModel(mainViewModel!!)
+                                homeTab!!.setHomePageViewModel(homePageViewModel)
                                 TabNavigationItem(
-                                    HomeTab(
-                                        mainViewModel = mainViewModel,
-                                        homePageViewModel = homePageViewModel!!
-                                    ),
+                                    homeTab!!,
                                     selectedImage = "drawable/home_icon.png",
                                     unselectedImage = "drawable/home_outline.png",
                                     labelText = "Home",
                                     imageSize = 22,
                                     currentTabId = 0,
                                     tabNavigator = it2,
-                                    mainViewModel = mainViewModel
+                                    mainViewModel = mainViewModel!!
                                 ) {
                                     isBottomNavSelected = true
                                 }
+                                shopProductTab = ShopProductTab()
+                                shopProductTab!!.setMainViewModel(mainViewModel!!)
                                 TabNavigationItem(
-                                    ShopProductTab(
-                                        mainViewModel,
-                                        productViewModel!!),
+                                    shopProductTab!!,
                                     selectedImage = "drawable/shopping_basket.png",
                                     unselectedImage = "drawable/shopping_basket_outline.png",
                                     labelText = "Shop",
                                     imageSize = 22,
                                     currentTabId = 1,
                                     tabNavigator = it2,
-                                    mainViewModel = mainViewModel
+                                    mainViewModel = mainViewModel!!
                                 ) {
                                     isBottomNavSelected = true
                                 }
                                 TabNavigationItem(
-                                    AppointmentsTab(
-                                        mainViewModel,
-                                        appointmentResourceListEnvelopeViewModel!!,
-                                        platformNavigator = platformNavigator
-                                    ),
+                                    AppointmentsTab(platformNavigator = platformNavigator),
                                     selectedImage = "drawable/appointment_icon.png",
                                     unselectedImage = "drawable/appointment_outline.png",
                                     labelText = "History",
                                     imageSize = 25,
                                     currentTabId = 2,
                                     tabNavigator = it2,
-                                    mainViewModel = mainViewModel
+                                    mainViewModel = mainViewModel!!
                                 ) {
                                     isBottomNavSelected = true
                                 }
+                                accountTab = AccountTab()
+                                accountTab!!.setMainViewModel(mainViewModel!!)
                                 TabNavigationItem(
-                                    AccountTab(mainViewModel),
+                                    accountTab!!,
                                     selectedImage = "drawable/user_icon_filled.png",
                                     unselectedImage = "drawable/user_icon_outline.png",
                                     labelText = "More",
                                     imageSize = 25,
                                     currentTabId = 3,
                                     tabNavigator = it2,
-                                    mainViewModel = mainViewModel
+                                    mainViewModel = mainViewModel!!
                                 ) {
                                     isBottomNavSelected = true
                                 }
@@ -208,8 +190,11 @@ class MainTab(private val mainViewModel: MainViewModel, private val platformNavi
 
 
     private fun showDefaultTab(mainViewModel: MainViewModel, homePageViewModel: HomePageViewModel): HomeTab {
+        homeTab = HomeTab()
+        homeTab!!.setMainViewModel(mainViewModel)
+        homeTab!!.setHomePageViewModel(homePageViewModel)
 
-        return  HomeTab(mainViewModel, homePageViewModel)
+        return  homeTab!!
     }
     @Composable
     private fun RowScope.TabNavigationItem(tab: Tab, selectedImage: String, unselectedImage: String, imageSize: Int = 30, labelText: String ,currentTabId: Int = 0, tabNavigator: TabNavigator, mainViewModel: MainViewModel, onBottomNavSelected:() -> Unit) {

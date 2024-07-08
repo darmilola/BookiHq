@@ -9,7 +9,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
@@ -17,8 +16,7 @@ import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
-import com.russhwolf.settings.get
-import com.russhwolf.settings.set
+import dev.icerock.moko.parcelize.Parcelize
 import domain.Models.PlatformNavigator
 import domain.Enums.Screens
 import org.koin.core.component.KoinComponent
@@ -36,11 +34,14 @@ import presentation.account.JoinASpa
 import presentation.profile.TalkWithATherapist
 import presentation.therapist.TherapistDashboardTab
 import presentation.viewmodels.MainViewModel
+import utils.ParcelableScreen
 
-class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, KoinComponent {
+@Parcelize
+class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableScreen, KoinComponent {
 
-    private var mainViewModel: MainViewModel? = null
-    private val preferenceSettings: Settings = Settings()
+     private var mainViewModel: MainViewModel? = null
+     private val preferenceSettings: Settings = Settings()
+     private var mainTab: MainTab? = null
 
     @Composable
     override fun Content() {
@@ -83,10 +84,13 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
 
         val screenNav: State<Pair<Int, Int>>? = mainViewModel?.screenNav?.collectAsState()
 
+
         TabNavigator(showDefaultTab(mainViewModel!!)) {
             when (screenNav?.value?.second) {
                 Screens.MAIN_TAB.toPath() -> {
-                    it.current = MainTab(mainViewModel!!, platformNavigator!!)
+                    mainTab =  MainTab(platformNavigator!!)
+                    mainTab!!.setMainViewModel(mainViewModel!!)
+                    it.current = mainTab!!
                 }
                 Screens.BOOKING.toPath() -> {
                     it.current = BookingScreen(mainViewModel!!)
@@ -132,7 +136,9 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : Screen, Koi
     }
 
     private fun showDefaultTab(mainViewModel: MainViewModel): MainTab {
-        return  MainTab(mainViewModel, platformNavigator!!)
+        mainTab =  MainTab(platformNavigator!!)
+        mainTab!!.setMainViewModel(mainViewModel)
+        return mainTab!!
     }
 
 }

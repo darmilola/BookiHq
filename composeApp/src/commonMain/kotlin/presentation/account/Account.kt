@@ -34,6 +34,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.Screens
 import presentation.components.ButtonComponent
 import presentation.viewmodels.MainViewModel
@@ -41,7 +43,10 @@ import presentation.widgets.ActionItemComponent
 import presentation.widgets.AccountProfileImage
 import presentations.components.TextComponent
 
-class AccountTab(private val mainViewModel: MainViewModel) : Tab {
+@Parcelize
+class AccountTab : Tab, Parcelable {
+
+    private var mainViewModel: MainViewModel? = null
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -58,6 +63,10 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                 )
             }
         }
+
+    fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
 
     @Composable
     override fun Content() {
@@ -118,8 +127,8 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
             .height(45.dp)
 
         ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke(1.dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor =  Color.DarkGray, style = style){
-           if (mainViewModel.currentUserInfo.value.userId != null){
-               mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.EDIT_PROFILE.toPath()))
+           if (mainViewModel!!.currentUserInfo.value.userId != null){
+               mainViewModel!!.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.EDIT_PROFILE.toPath()))
            }
         }
 
@@ -152,7 +161,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                     style = TextStyle(),
                     iconRes = "drawable/video_chat.png",
                     isDestructiveAction = false, onClick = {
-                        mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.TALK_WITH_A_THERAPIST.toPath()))
+                        mainViewModel!!.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.TALK_WITH_A_THERAPIST.toPath()))
                     })
 
 
@@ -165,7 +174,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                     style = TextStyle(),
                     iconRes = "drawable/shopping_basket.png",
                     isDestructiveAction = false, onClick = {
-                        mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.ORDERS.toPath()))
+                        mainViewModel!!.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.ORDERS.toPath()))
                     })
 
 
@@ -178,7 +187,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                     style = TextStyle(),
                     iconRes = "drawable/switch.png",
                     isDestructiveAction = false, onClick = {
-                        mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.CONNECT_VENDOR_PAGE.toPath()))
+                        mainViewModel!!.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.CONNECT_VENDOR_PAGE.toPath()))
                     })
 
 
@@ -205,7 +214,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                     style = TextStyle(),
                     iconRes = "drawable/dashboard_icon.png",
                     isDestructiveAction = false, onClick = {
-                        mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.THERAPIST_DASHBOARD.toPath()))
+                        mainViewModel!!.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.THERAPIST_DASHBOARD.toPath()))
                     })
 
                 ActionItemComponent(
@@ -217,7 +226,7 @@ class AccountTab(private val mainViewModel: MainViewModel) : Tab {
                     style = TextStyle(),
                     iconRes = "drawable/join.png",
                     isDestructiveAction = false, onClick = {
-                        mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.JOIN_SPA.toPath()))
+                        mainViewModel!!.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.JOIN_SPA.toPath()))
                     })
 
                 ActionItemComponent(

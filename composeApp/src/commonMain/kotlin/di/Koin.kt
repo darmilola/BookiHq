@@ -1,6 +1,9 @@
 package di
 
 import applications.ktor.httpClient
+import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
+import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.viewModelFactory
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import io.ktor.client.plugins.contentnegotiation.*
@@ -12,6 +15,7 @@ import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.context.stopKoin
+import org.koin.core.module.dsl.singleOf
 import presentation.Orders.OrderModule
 import presentation.bookings.BookingModule
 import presentation.Products.ProductModule
@@ -21,12 +25,14 @@ import presentation.appointments.AppointmentModule
 import presentation.authentication.AuthenticationModule.AuthenticationModule
 import presentation.home.HomepageModule
 import presentation.therapist.TherapistModule
+import presentation.viewmodels.MainViewModel
 
 fun initKoin(){
     stopKoin()
     startKoin {
         modules(KtorModule)
         modules(AuthenticationModule)
+        modules(viewModelModule)
         modules(ConnectVendorModule.ConnectVendorModule)
         modules(HomepageModule.HomepageModule)
         modules(ProfileModule.ProfileModule)
@@ -63,4 +69,8 @@ private val KtorModule = module {
             }
         }
     }
+}
+
+private val viewModelModule = module {
+    singleOf(::MainViewModel)
 }

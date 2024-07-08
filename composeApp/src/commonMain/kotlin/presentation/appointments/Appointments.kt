@@ -51,6 +51,9 @@ import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
 import presentation.viewmodels.UIStateViewModel
 import UIStates.ScreenUIStates
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import presentation.viewmodels.HomePageViewModel
 import presentation.widgets.MeetingAppointmentWidget
 import presentation.widgets.AppointmentWidget
 import utils.getAppointmentViewHeight
@@ -59,8 +62,8 @@ import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
 import theme.Colors
 
-class AppointmentsTab(private val mainViewModel: MainViewModel,
-                      private var appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel,private val platformNavigator: PlatformNavigator) : Tab, KoinComponent {
+@Parcelize
+class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
 
     private val appointmentPresenter: AppointmentPresenter by inject()
     private var uiStateViewModel: UIStateViewModel? = null
@@ -69,6 +72,7 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
     private var availabilityActionUIStateViewModel: ActionUIStateViewModel? = null
     private var joinMeetingActionUIStateViewModel: ActionUIStateViewModel? = null
     private var postponementViewModel: PostponementViewModel? = null
+    private var appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel? = null
 
 
     @OptIn(ExperimentalResourceApi::class)
@@ -87,11 +91,21 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
             }
         }
 
+
+
     @Composable
     override fun Content() {
 
 
         val userId = 14L
+
+        if (appointmentResourceListEnvelopeViewModel == null) {
+            appointmentResourceListEnvelopeViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    AppointmentResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
+                })
+        }
+
 
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
@@ -172,7 +186,7 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                 uiStateViewModel!!.switchScreenUIState(ScreenUIStates(contentVisible = true))
             }
             else {
-                appointmentResourceListEnvelopeViewModel.clearData(mutableListOf())
+                appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                 appointmentPresenter.getUserAppointments(userId)
             }
 
@@ -191,7 +205,7 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
         if (!loadMoreState?.value!!) {
                 appointmentUIModel =
                 appointmentUIModel.copy(selectedAppointment = selectedAppointment.value,
-                    appointmentList = appointmentResourceListEnvelopeViewModel.resources.value)
+                    appointmentList = appointmentResourceListEnvelopeViewModel!!.resources.value)
         }
 
         if (postponeActionUIStates.value.isLoading) {
@@ -207,9 +221,9 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                 snackBarType = SnackBarType.SUCCESS,
                 stackedSnackBarHostState,
                 onActionClick = {})
-            appointmentResourceListEnvelopeViewModel.clearData(mutableListOf())
+            appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
             if (userId != -1L) {
-                appointmentResourceListEnvelopeViewModel.clearData(mutableListOf())
+                appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                 appointmentPresenter.getUserAppointments(userId)
             }
         }
@@ -237,7 +251,7 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                 onActionClick = {})
             appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
             if (userId != -1L) {
-                appointmentResourceListEnvelopeViewModel.clearData(mutableListOf())
+                appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                 appointmentPresenter.getUserAppointments(userId)
             }
 
@@ -276,7 +290,7 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
             topBar = {},
             content = {
                 val handler = AppointmentsHandler(
-                    appointmentResourceListEnvelopeViewModel,
+                    appointmentResourceListEnvelopeViewModel!!,
                     uiStateViewModel!!,
                     deleteActionUIStateViewModel!!,
                     joinMeetingActionUIStateViewModel!!,
