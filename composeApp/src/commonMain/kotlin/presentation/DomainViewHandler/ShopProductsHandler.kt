@@ -20,9 +20,28 @@ class ShopProductsHandler(
         uiStateViewModel.switchScreenUIState(uiState)
     }
 
-    override fun showProducts(products: ProductResourceListEnvelope?, isFromSearch: Boolean) {
-        productResourceListEnvelopeViewModel.setIsRefreshing(false)
+    override fun showProducts(products: ProductResourceListEnvelope?) {
         if (productResourceListEnvelopeViewModel.resources.value.isNotEmpty()) {
+            val productList = productResourceListEnvelopeViewModel.resources.value
+            productList.addAll(products?.resources!!)
+            productResourceListEnvelopeViewModel.setResources(productList)
+            products.prevPageUrl?.let { productResourceListEnvelopeViewModel.setPrevPageUrl(it) }
+            products.nextPageUrl?.let { productResourceListEnvelopeViewModel.setNextPageUrl(it) }
+            products.currentPage?.let { productResourceListEnvelopeViewModel.setCurrentPage(it) }
+            products.totalItemCount?.let { productResourceListEnvelopeViewModel.setTotalItemCount(it) }
+            products.displayedItemCount?.let { productResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
+        } else {
+            productResourceListEnvelopeViewModel.setResources(products?.resources)
+            products?.prevPageUrl?.let { productResourceListEnvelopeViewModel.setPrevPageUrl(it) }
+            products?.nextPageUrl?.let { productResourceListEnvelopeViewModel.setNextPageUrl(it) }
+            products?.currentPage?.let { productResourceListEnvelopeViewModel.setCurrentPage(it) }
+            products?.totalItemCount?.let { productResourceListEnvelopeViewModel.setTotalItemCount(it) }
+            products?.displayedItemCount?.let { productResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
+        }
+    }
+
+    override fun showSearchProducts(products: ProductResourceListEnvelope?, isLoadMore: Boolean) {
+        if (isLoadMore) {
             val productList = productResourceListEnvelopeViewModel.resources.value
             productList.addAll(products?.resources!!)
             productResourceListEnvelopeViewModel.setResources(productList)

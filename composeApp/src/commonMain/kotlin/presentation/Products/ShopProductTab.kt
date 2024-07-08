@@ -133,9 +133,7 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
             topBar = {
                 if (isSearchProduct.value){
                     SearchBar(onValueChange = {
-                   if (it.isNotEmpty()) {
-                       if (!productResourceListEnvelopeViewModel!!.isSearching.value) {
-                           if (it.isNotEmpty()) {
+                    if (it.isNotEmpty()) {
                                productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                                searchQuery.value = it
                                productPresenter.searchProducts(
@@ -143,10 +141,9 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
                                    it
                                )
                            }
-                       }
-                   }
                }, onBackPressed = {
                    mainViewModel.setIsSearchProduct(false)
+                   productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                    productPresenter.getProducts(vendorId)
                })
               }

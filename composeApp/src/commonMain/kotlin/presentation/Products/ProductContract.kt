@@ -8,7 +8,8 @@ import UIStates.ScreenUIStates
 class ProductContract {
     interface View {
         fun showLce(uiState: ScreenUIStates)
-        fun showProducts(products: ProductResourceListEnvelope?, isFromSearch: Boolean = false)
+        fun showProducts(products: ProductResourceListEnvelope?)
+        fun showSearchProducts(products: ProductResourceListEnvelope?, isLoadMore: Boolean = false)
         fun onLoadMoreProductStarted()
         fun onLoadMoreProductEnded()
     }

@@ -30,7 +30,7 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     contractView?.showLce(ScreenUIStates(contentVisible = true, loadingVisible = false))
-                                    contractView?.showProducts(result.listItem, isFromSearch = false)
+                                    contractView?.showProducts(result.listItem)
                                 }
                                 else{
                                     contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Unknown"))
@@ -59,7 +59,7 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     contractView?.onLoadMoreProductEnded()
-                                    contractView?.showProducts(result.listItem, isFromSearch = false)
+                                    contractView?.showProducts(result.listItem)
                                 }
                                 else{
                                     contractView?.onLoadMoreProductEnded()
@@ -88,7 +88,7 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     contractView?.showLce(ScreenUIStates(contentVisible = true))
-                                    contractView?.showProducts(result.listItem, isFromSearch = true)
+                                    contractView?.showSearchProducts(result.listItem, isLoadMore = false)
                                 }
                                 else{
                                     contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
@@ -117,7 +117,7 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     contractView?.onLoadMoreProductEnded()
-                                    contractView?.showProducts(result.listItem, isFromSearch = true)
+                                    contractView?.showSearchProducts(result.listItem, isLoadMore = true)
                                 }
                                 else{
                                     contractView?.onLoadMoreProductEnded()
