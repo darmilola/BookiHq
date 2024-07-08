@@ -101,7 +101,7 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
         val onCartChanged = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
         val isSearchProduct = mainViewModel.isSearchProduct.collectAsState()
-        var selectedProductType = remember { mutableStateOf(ProductType.COSMETICS.toPath()) }
+        val selectedProductType = remember { mutableStateOf(ProductType.COSMETICS.toPath()) }
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
