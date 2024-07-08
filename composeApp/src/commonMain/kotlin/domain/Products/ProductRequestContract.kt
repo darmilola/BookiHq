@@ -23,3 +23,9 @@ data class OrderItemRequest(@SerialName("orderReference") val orderReference: In
                             @SerialName("user_id") val userId: Long,
                             @SerialName("product_id") val productId: Int,
                             @SerialName("itemCount") val itemCount: Int)
+
+@Serializable
+data class GetProductTypeRequest(
+    @SerialName("vendorId") val vendorId: Long,
+    @SerialName("type") val productType: String
+)

@@ -45,10 +45,13 @@ import androidx.compose.ui.text.style.TextAlign
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
+import domain.Enums.CRUD
+import domain.Enums.ProductType
 import domain.Models.OrderItem
 import domain.Models.Product
 import domain.Models.ProductItemUIModel
 import domain.Enums.Screens
+import domain.Models.NetworkState
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.ShopProductsHandler
@@ -98,6 +101,7 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
         val onCartChanged = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
         val isSearchProduct = mainViewModel.isSearchProduct.collectAsState()
+        var selectedProductType = remember { mutableStateOf(ProductType.COSMETICS.toPath()) }
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -117,7 +121,7 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
                 factory = viewModelFactory {
                     ProductResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
                 })
-            productPresenter.getProducts(vendorId)
+            productPresenter.getProductsByType(vendorId, productType = selectedProductType.value)
         }
 
 
@@ -144,13 +148,23 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
                }, onBackPressed = {
                    mainViewModel.setIsSearchProduct(false)
                    productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                   productPresenter.getProducts(vendorId)
+                        productPresenter.getProductsByType(vendorId, productType = selectedProductType.value)
                })
               }
                 else {
-                    ToggleButton(shape = CircleShape, onLeftClicked = {
-                    }, onRightClicked = {
-                    }, leftText = "Cosmetics", rightText = "Accessories")
+                    ToggleButton(shape = CircleShape,
+                        onLeftClicked = {
+                            productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                            selectedProductType.value = ProductType.COSMETICS.toPath()
+                            productPresenter.getProductsByType(vendorId, productType = selectedProductType.value)
+                        },
+                        onRightClicked = {
+                            productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                            selectedProductType.value = ProductType.ACCESSORIES.toPath()
+                            productPresenter.getProductsByType(vendorId, productType = selectedProductType.value)
+                        },
+                        leftText = "Cosmetics",
+                        rightText = "Accessories")
                 }
             },
             content = {
@@ -175,7 +189,7 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
                         mainViewModel = mainViewModel,
                         onCartChanged = {
                             onCartChanged.value = true
-                        }, stackedSnackBarHostState
+                        }, selectedProductType.value
                     )
                 }
             },
@@ -248,7 +262,7 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
         vendorId: Long,
         mainViewModel: MainViewModel,
         onCartChanged: () -> Unit,
-        stackedSnackBarHostState: StackedSnakbarHostState
+        productType: String
     ) {
         val loadMoreState = productResourceListEnvelopeViewModel.isLoadingMore.collectAsState()
         val productList = productResourceListEnvelopeViewModel.resources.collectAsState()
@@ -361,9 +375,10 @@ class ShopProductTab(private val mainViewModel: MainViewModel,
 
                                         if (searchQuery.isEmpty()) {
                                             if (productResourceListEnvelopeViewModel.nextPageUrl.value.isNotEmpty()) {
-                                                productPresenter.getMoreProducts(
+                                                productPresenter.getMoreProductsByType(
                                                     vendorId = vendorId,
-                                                    nextPage = productResourceListEnvelopeViewModel.currentPage.value + 1
+                                                    nextPage = productResourceListEnvelopeViewModel.currentPage.value + 1,
+                                                    productType = productType
                                                 )
                                             }
                                         } else {

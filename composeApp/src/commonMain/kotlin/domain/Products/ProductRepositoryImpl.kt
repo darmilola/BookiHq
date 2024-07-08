@@ -25,6 +25,16 @@ class ProductRepositoryImpl(apiService: HttpClient): ProductRepository {
         return productNetworkService.searchProduct(param,nextPage)
     }
 
+
+    override suspend fun getProductsByType(
+        vendorId: Long,
+        productType: String,
+        nextPage: Int
+    ): Single<ProductListDataResponse> {
+        val param = GetProductTypeRequest(vendorId, productType)
+        return productNetworkService.getProductType(param, nextPage)
+    }
+
     override suspend fun createOrder(
         vendorId: Long,
         userId: Long,

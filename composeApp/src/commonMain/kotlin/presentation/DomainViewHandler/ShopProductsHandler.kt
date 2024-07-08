@@ -21,6 +21,7 @@ class ShopProductsHandler(
     }
 
     override fun showProducts(products: ProductResourceListEnvelope?) {
+        productResourceListEnvelopeViewModel.setIsRefreshing(false)
         if (productResourceListEnvelopeViewModel.resources.value.isNotEmpty()) {
             val productList = productResourceListEnvelopeViewModel.resources.value
             productList.addAll(products?.resources!!)
@@ -41,6 +42,7 @@ class ShopProductsHandler(
     }
 
     override fun showSearchProducts(products: ProductResourceListEnvelope?, isLoadMore: Boolean) {
+        productResourceListEnvelopeViewModel.setIsRefreshing(false)
         if (isLoadMore) {
             val productList = productResourceListEnvelopeViewModel.resources.value
             productList.addAll(products?.resources!!)
@@ -67,4 +69,8 @@ class ShopProductsHandler(
     override fun onLoadMoreProductEnded() {
         productResourceListEnvelopeViewModel.setLoadingMore(false)
     }
+
+    override fun onProductTypeChangeStarted() {}
+
+    override fun onProductTypeChangeEnded(isSuccess: Boolean) {}
 }

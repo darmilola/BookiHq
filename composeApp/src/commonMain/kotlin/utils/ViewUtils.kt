@@ -53,7 +53,7 @@ fun getPopularProductViewHeight(
 ): Int {
     val itemCount = itemList.size
 
-    return itemCount * 225
+    return itemCount * 280
 }
 
 fun getServicesViewHeight(

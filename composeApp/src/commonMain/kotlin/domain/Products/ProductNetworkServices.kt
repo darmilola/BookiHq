@@ -43,4 +43,14 @@ open class ProductNetworkService(private val apiService: HttpClient) {
             setBody(createOrderRequest)
         }.body<ServerResponse>().toSingle()
 
+    suspend fun getProductType(getProductTypeRequest: GetProductTypeRequest,nextPage: Int = 1) =
+        apiService.post {
+            url("/vendor/product/get/type?page=$nextPage")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(getProductTypeRequest)
+        }.body<ProductListDataResponse>().toSingle()
+
 }
