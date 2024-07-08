@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import UIStates.ActionUIStates
 import UIStates.ScreenUIStates
+import domain.Enums.ServerResponseEnum
 
 class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presenter() {
 
@@ -30,12 +31,17 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                     appointmentRepositoryImpl.getAppointments(userId)
                         .subscribe(
                             onSuccess = { result ->
-                                if (result.status == "success"){
-                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
-                                    contractView?.showAppointments(result.listItem)
-                                }
-                                else{
-                                    contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
+                                when (result.status) {
+                                    ServerResponseEnum.SUCCESS.toPath() -> {
+                                        contractView?.showLce(ScreenUIStates(contentVisible = true))
+                                        contractView?.showAppointments(result.listItem)
+                                    }
+                                    ServerResponseEnum.EMPTY.toPath() -> {
+                                        contractView?.showLce(ScreenUIStates(emptyContent = true))
+                                    }
+                                    else -> {
+                                        contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
+                                    }
                                 }
                             },
                             onError = {

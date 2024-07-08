@@ -222,9 +222,6 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                 stackedSnackBarHostState,
                 onActionClick = {})
         }
-
-
-
         if (deleteActionUIStates.value.isLoading) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 LoadingDialog("Deleting Appointment")
@@ -306,29 +303,17 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
 
                     //Error Occurred display reload
 
-                } else if (uiState.value.contentVisible) {
+                } else if (uiState.value.emptyContent) {
 
-                    val columnModifier = Modifier
-                        .padding(top = 5.dp)
-                        .fillMaxHeight()
-                        .fillMaxWidth()
 
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = columnModifier
-                    ) {
-                        Column(
-                            Modifier
-                                .fillMaxHeight()
-                                .fillMaxWidth()
-                                .background(color = Color.White)
-                        ) {
+                    //Error Occurred display reload
 
-                            LazyColumn(
+                }
+                else if (uiState.value.contentVisible) {
+                       LazyColumn(
                                 modifier = Modifier.fillMaxWidth()
-                                    .padding(bottom = 50.dp)
-                                    .height(getAppointmentViewHeight(appointmentUIModel.appointmentList).dp),
+                                    .height(getAppointmentViewHeight(appointmentUIModel.appointmentList).dp)
+                                    .padding(bottom = 70.dp),
                                 userScrollEnabled = true
                             ) {
                                 itemsIndexed(items = appointmentUIModel.appointmentList) { it, item ->
@@ -382,9 +367,8 @@ class AppointmentsTab(private val mainViewModel: MainViewModel,
                                     }
                                 }
 
-                            }
 
-                        }
+
                     }
 
                 }

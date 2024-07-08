@@ -20,7 +20,7 @@ fun getAppointmentViewHeight(
     ): Int {
         val itemCount = itemList.size
 
-        return itemCount * 200
+        return itemCount * 280
     }
 
 fun getOrderViewHeight(

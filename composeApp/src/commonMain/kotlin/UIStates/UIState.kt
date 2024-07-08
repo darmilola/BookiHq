@@ -9,7 +9,8 @@ class ScreenUIStates(
    val loadingVisible: Boolean = false,
    val contentVisible: Boolean = false,
    val errorOccurred: Boolean = false,
-   val errorMessage: String = ""): Parcelable
+   val errorMessage: String = "",
+   val emptyContent: Boolean = false): Parcelable
 
 @Parcelize
 class ActionUIStates(
