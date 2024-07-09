@@ -19,7 +19,6 @@ import presentation.viewmodels.MainViewModel
 @Composable
 fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, selectedProduct: OrderItem, onDismiss: (isAddToCart: Boolean, OrderItem) -> Unit, onRemoveFromCart: (OrderItem) -> Unit) {
     val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val scope = rememberCoroutineScope()
     ModalBottomSheet(
         modifier = Modifier.padding(top = 20.dp),
         onDismissRequest = {
@@ -31,21 +30,10 @@ fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boo
         dragHandle = {},
     ) {
         ProductDetailContent(mainViewModel,isViewedFromCart,selectedProduct, onAddToCart = {
-            scope
-                .launch { modalBottomSheetState.hide() }
-                .invokeOnCompletion { it2 ->
-                    if (!modalBottomSheetState.isVisible) {
-                        onDismiss(it,selectedProduct)
-                    }
-                }
+              onDismiss(it,selectedProduct)
+
         }, onRemoveFromCart = {
-            scope
-                .launch { modalBottomSheetState.partialExpand() }
-                .invokeOnCompletion { it2 ->
-                    if (!modalBottomSheetState.isVisible) {
-                        onRemoveFromCart(it)
-                    }
-                }
+              onRemoveFromCart(it)
         })
     }
 }

@@ -164,7 +164,7 @@ class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                             val orderItemList = mainViewModel.unSavedOrders.value
                             val vendorId = mainViewModel.connectedVendor.value.vendorId
                             val userId = mainViewModel.currentUserInfo.value.userId
-                           // val orderReference = mainViewModel.currentOrderReference.value
+                            //val orderReference = mainViewModel.currentOrderReference.value
                             val deliveryLocation = cartViewModel!!.deliveryLocation.value
                             val paymentMethod = cartViewModel!!.paymentMethod.value
 
@@ -257,7 +257,7 @@ class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                              val orderItemList = mainViewModel.unSavedOrders.value
                              val vendorId = mainViewModel.connectedVendor.value.vendorId
                              val userId = mainViewModel.currentUserInfo.value.userId
-                            // val orderReference = mainViewModel.currentOrderReference.value
+                             //val orderReference = mainViewModel.currentOrderReference.value
                              val deliveryLocation = cartViewModel!!.deliveryLocation.value
                              val paymentMethod = cartViewModel!!.paymentMethod.value
 
@@ -276,6 +276,7 @@ class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
     private fun PopulateCartItemList(mainViewModel: MainViewModel,stackedSnackBarHostState: StackedSnakbarHostState) {
 
         val cartItems = mainViewModel.unSavedOrders.collectAsState()
+        println(cartItems)
 
         if (cartItems.value.isNotEmpty()){
 

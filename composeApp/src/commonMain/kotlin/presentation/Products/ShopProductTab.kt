@@ -177,6 +177,24 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                 }
             },
             content = {
+                var showProductDetailBottomSheet by remember { mutableStateOf(false) }
+                val selectedProduct = remember { mutableStateOf(Product()) }
+
+                if (showProductDetailBottomSheet) {
+                    ProductDetailBottomSheet(
+                        mainViewModel!!,
+                        isViewedFromCart = false,
+                        OrderItem(itemProduct = selectedProduct.value),
+                        onDismiss = { isAddToCart, item ->
+                            if (isAddToCart) {
+                                onCartChanged.value
+                            }
+                            showProductDetailBottomSheet = false
+
+                        },
+                        onRemoveFromCart = {})
+                }
+
                 val uiState = uiStateViewModel!!.uiStateInfo.collectAsState()
                 if (uiState.value.loadingVisible) {
                     Box(
@@ -195,10 +213,12 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                         productResourceListEnvelopeViewModel = productResourceListEnvelopeViewModel!!,
                         searchQuery = searchQuery.value,
                         vendorId = vendorId,
-                        mainViewModel = mainViewModel!!,
-                        onCartChanged = {
-                            onCartChanged.value = true
-                        }, selectedProductType.value
+                        onProductSelected = {
+                         selectedProduct.value = it
+                         showProductDetailBottomSheet = true
+
+                        },
+                        selectedProductType.value
                     )
                 }
             },
@@ -269,8 +289,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
         productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel,
         searchQuery: String,
         vendorId: Long,
-        mainViewModel: MainViewModel,
-        onCartChanged: () -> Unit,
+        onProductSelected: (Product) -> Unit,
         productType: String
     ) {
         val loadMoreState = productResourceListEnvelopeViewModel.isLoadingMore.collectAsState()
@@ -324,24 +343,9 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                             .background(color = Color.White),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        var showProductDetailBottomSheet by remember { mutableStateOf(false) }
-                        if (showProductDetailBottomSheet) {
-                            ProductDetailBottomSheet(
-                                mainViewModel,
-                                isViewedFromCart = false,
-                                OrderItem(itemProduct = selectedProduct.value),
-                                onDismiss = { isAddToCart, item ->
-                                    if (isAddToCart) {
-                                        onCartChanged()
-                                    }
-                                    showProductDetailBottomSheet = false
-
-                                },
-                                onRemoveFromCart = {})
-                        }
                         LazyColumn(
                             modifier = Modifier.fillMaxWidth().height(
-                                getPopularProductViewHeight(productUIModel.productList).dp
+                                getPopularProductViewHeight(productList.value).dp
                             ),
                             contentPadding = PaddingValues(top = 6.dp, bottom = 6.dp),
                             verticalArrangement = Arrangement.spacedBy(5.dp),
@@ -351,8 +355,8 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                                 ProductItem(
                                     productUIModel.productList[it],
                                     onProductClickListener = { it2 ->
+                                        onProductSelected(it2)
                                         selectedProduct.value = it2
-                                        showProductDetailBottomSheet = true
                                     })
 
                                 if (it == lastIndex && loadMoreState.value) {

@@ -59,26 +59,24 @@ import presentations.components.TextComponent
 @Composable
 fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, selectedProduct: OrderItem, onAddToCart: (Boolean) -> Unit,
                          onRemoveFromCart: (OrderItem) -> Unit) {
-  /*if (mainViewModel.currentOrderReference.value == -1) {
-            val orderReference = (ValuesLimit.MIN_VALUE.toValue() ..ValuesLimit.MAX_VALUE.toValue()).random()
-            mainViewModel.setCurrentOrderReference(orderReference)
-    }*/
-
-    //val orderReference = mainViewModel.currentOrderReference.value
     val itemReference = (ValuesLimit.MIN_VALUE.toValue() ..ValuesLimit.MAX_VALUE.toValue()).random()
     val currentOrder = mainViewModel.unSavedOrders.collectAsState()
     val orderItem = remember { mutableStateOf(OrderItem()) }
 
     if (isViewedFromCart){
+        println("Yes here 1")
         orderItem.value = selectedProduct
     }
     else {
+        println("Yes here 2")
         orderItem.value = OrderItem()
        // orderItem.value.orderId = orderReference
         orderItem.value.itemReference = itemReference
         orderItem.value.itemProduct = selectedProduct.itemProduct
         orderItem.value.productId = selectedProduct.itemProduct?.productId!!
     }
+
+    println("Yes here")
 
 
     Scaffold(
@@ -137,7 +135,7 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             CartIncrementDecrementWidget(orderItem.value,onItemCountChanged = {
-                                orderItem.value = it
+                                orderItem.value.itemCount = it.itemCount
                             }, onItemRemovedFromCart = {})
                         }
 
@@ -151,6 +149,7 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
                             style = TextStyle(),
                             borderStroke = null
                         ) {
+                            println(orderItem.value)
                             currentOrder.value.add(orderItem.value)
                             mainViewModel.setUnsavedOrderSize(currentOrder.value.size)
                             mainViewModel.setCurrentUnsavedOrders(currentOrder.value)

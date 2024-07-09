@@ -65,6 +65,8 @@ import domain.Models.HomepageInfo
 import domain.Models.VendorRecommendation
 import domain.Enums.RecommendationType
 import domain.Enums.Screens
+import domain.Models.OrderItem
+import domain.Models.Product
 import domain.Models.Services
 import domain.Models.StatusImageModel
 import domain.Models.VendorStatusModel
@@ -82,6 +84,7 @@ import presentation.widgets.HomeServicesWidget
 import presentation.widgets.MeetingAppointmentWidget
 import presentation.widgets.RecommendedServiceItem
 import presentation.widgets.AppointmentWidget
+import presentation.widgets.ProductDetailBottomSheet
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import utils.calculateHomePageScreenHeight
@@ -232,7 +235,7 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
                                 ServiceGridScreen(vendorServices)
                             }
                             if (vendorRecommendations != null) {
-                                RecommendedSessions(vendorRecommendations)
+                                RecommendedSessions(vendorRecommendations, mainViewModel!!)
                             }
                             AttachAppointments()
                             RecentAppointmentScreen(appointmentList = recentAppointments)
@@ -297,7 +300,7 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
     }
 
     @Composable
-    fun RecommendedSessions(recommendations: List<VendorRecommendation>) {
+    fun RecommendedSessions(recommendations: List<VendorRecommendation>, mainViewModel: MainViewModel) {
         Column(modifier = Modifier.fillMaxWidth().height(450.dp)) {
         Row(
             horizontalArrangement = Arrangement.Start,
@@ -322,7 +325,8 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
             )
             StraightLine()
         }
-        RecommendedAppointmentList(recommendations)
+
+        RecommendedAppointmentList(recommendations, mainViewModel)
     }
 
     }
@@ -356,10 +360,23 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun RecommendedAppointmentList(recommendations: List<VendorRecommendation>) {
-        val pagerState = rememberPagerState(pageCount = {
-            recommendations.size
-        })
+    fun RecommendedAppointmentList(recommendations: List<VendorRecommendation>, mainViewModel: MainViewModel) {
+        val selectedProduct = remember { mutableStateOf(Product()) }
+        var showProductDetailBottomSheet by remember { mutableStateOf(false) }
+
+        println("Called $showProductDetailBottomSheet")
+
+        if (showProductDetailBottomSheet) {
+            ProductDetailBottomSheet(
+                mainViewModel,
+                isViewedFromCart = false,
+                OrderItem(itemProduct = selectedProduct.value),
+                onDismiss = { isAddToCart, item ->
+                    showProductDetailBottomSheet = false
+                },
+                onRemoveFromCart = {})
+        }
+
 
         val boxModifier =
             Modifier
@@ -372,37 +389,48 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
                 .fillMaxHeight()
                 .fillMaxWidth()
 
+        val pagerState = rememberPagerState(pageCount = {
+            recommendations.size
+        })
 
-        Box(modifier = boxBgModifier) {
-            var showProductBottomSheet by remember { mutableStateOf(false) }
 
-
-            Box(contentAlignment = Alignment.BottomCenter, modifier = boxModifier) {
+        Column(modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth(),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally) {
                 HorizontalPager(
                     state = pagerState,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight(0.95f),
                     pageSpacing = 10.dp
                 ) { page ->
-                    RecommendedServiceItem (recommendations[page], onItemClickListener = {
+                    RecommendedServiceItem(recommendations[page], onItemClickListener = {
                         when (it.recommendationType) {
                             RecommendationType.Services.toPath() -> {
-                                mainViewModel!!.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.BOOKING.toPath()))
-                                mainViewModel!!.setSelectedService(it.serviceTypeItem?.serviceDetails!!)
-                                mainViewModel!!.setRecommendationServiceType(it.serviceTypeItem)
+                                mainViewModel.setScreenNav(
+                                    Pair(
+                                        Screens.MAIN_TAB.toPath(),
+                                        Screens.BOOKING.toPath()
+                                    )
+                                )
+                                mainViewModel.setSelectedService(it.serviceTypeItem?.serviceDetails!!)
+                                mainViewModel.setRecommendationServiceType(it.serviceTypeItem)
                             }
+
                             RecommendationType.Products.toPath() -> {
-                                showProductBottomSheet = true
+                                selectedProduct.value = it.product!!
+                                showProductDetailBottomSheet = true
                             }
                         }
                     })
                 }
                 Row(
                     Modifier
-                        .wrapContentHeight()
+                        .fillMaxHeight()
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    repeat(pagerState.pageCount) { iteration ->
+                    repeat(recommendations.size) { iteration ->
                         val color: Color
                         val width: Int
                         if (pagerState.currentPage == iteration) {
@@ -423,7 +451,7 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
                     }
 
                 }
-            }
+
         }
 
     }
