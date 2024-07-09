@@ -26,15 +26,16 @@ import presentation.viewmodels.MainViewModel
 import presentations.components.TextComponent
 
 @Composable
-fun ServiceLocationToggle(bookingViewModel: BookingViewModel, mainViewModel: MainViewModel, onSpaSelectedListener:() -> Unit,
+fun ServiceLocationToggle(bookingViewModel: BookingViewModel, onSpaSelectedListener:() -> Unit,
                           onHomeSelectedListener:() -> Unit){
 
     var locationType by remember { mutableStateOf(0) }
-    val isHomeService = bookingViewModel.currentAppointmentBooking.value.isMobileService
-    if(isHomeService){
+    val isMobileService = bookingViewModel.currentAppointmentBooking.value.isMobileService
+    if(isMobileService){
         locationType = 1
         onHomeSelectedListener()
-    }else{
+    }
+    else{
         locationType = 0
         onSpaSelectedListener()
     }

@@ -86,7 +86,7 @@ fun BookingScreenTopBar(pagerState: PagerState, mainViewModel: MainViewModel, bo
         Row(modifier = Modifier.fillMaxWidth().height(70.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically) {
-            StepsProgressBar(modifier = Modifier.fillMaxWidth().padding(start = 10.dp), numberOfSteps = 2, currentStep = pagerState.currentPage, stepItems = stepList)
+            StepsProgressBar(modifier = Modifier.fillMaxWidth().padding(start = 20.dp), numberOfSteps = 2, currentStep = pagerState.currentPage, stepItems = stepList)
         }
 
     }

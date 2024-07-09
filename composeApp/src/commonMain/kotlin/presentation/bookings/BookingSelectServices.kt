@@ -58,7 +58,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
     //Initialising New Booking
     var currentBookingId = -1
     val savedBooking = bookingViewModel.currentAppointmentBooking.value
-
+    val mobileServicesAvailable = mainViewModel.connectedVendor.value.isMobileServiceAvailable
     if(bookingViewModel.currentBookingId.value == -1) {
         currentBookingId = (0..100000000).random()
         bookingViewModel.setCurrentBookingId(currentBookingId)
@@ -69,7 +69,6 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
     val currentBooking =  if (savedBooking.bookingId != -1) savedBooking else UnsavedAppointment(currentBookingId)
     currentBooking.services = services
     currentBooking.serviceId = services.serviceId
-    println("Types ${services.serviceTypes}")
 
     currentBooking.year = getYear()
     currentBooking.month = getMonth()
@@ -127,22 +126,24 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
                         stackedSnackBarHostState,
                         onActionClick = {})
                 }
-                if (it.serviceId != -1) {
+                if (it.serviceTypeId != -1) {
                     bookingViewModel.undoSelectedServiceType()
                     bookingViewModel.setSelectedServiceType(it)
                     currentBooking.serviceTypeItem = it
                     currentBooking.serviceTypeTherapists = null
-                    currentBooking.serviceTypeId = it.categoryId
+                    currentBooking.serviceTypeId = it.serviceTypeId
                     bookingViewModel.setCurrentBooking(currentBooking)
                 }
             })
-            ServiceLocationToggle(bookingViewModel, mainViewModel, onSpaSelectedListener = {
-                currentBooking.isMobileService = false
-                bookingViewModel.setCurrentBooking(currentBooking)
-            }, onHomeSelectedListener = {
-                currentBooking.isMobileService = true
-                bookingViewModel.setCurrentBooking(currentBooking)
-            })
+            if (mobileServicesAvailable) {
+                ServiceLocationToggle(bookingViewModel, onSpaSelectedListener = {
+                    currentBooking.isMobileService = false
+                    bookingViewModel.setCurrentBooking(currentBooking)
+                }, onHomeSelectedListener = {
+                    currentBooking.isMobileService = true
+                    bookingViewModel.setCurrentBooking(currentBooking)
+                })
+            }
             BookingCalendar(bookingViewModel = bookingViewModel) {
                 bookingViewModel.undoTherapists()
                 currentBooking.day = it.dayOfMonth
@@ -189,11 +190,17 @@ fun AttachServiceTypeToggle(mainViewModel: MainViewModel,bookingViewModel: Booki
 @Composable
 fun AttachDropDownWidget(mainViewModel: MainViewModel,bookingViewModel: BookingViewModel, onServiceSelected: (ServiceTypeItem) -> Unit) {
     val serviceState = mainViewModel.selectedService.collectAsState()
+    val recommendationServiceType = mainViewModel.selectedServiceType.value
+    val isRecommendationType = recommendationServiceType.serviceTypeId != -1
     val serviceTypeList = arrayListOf<String>()
     var selectedIndex: Int = -1
     val unsavedAppointment = bookingViewModel.currentAppointmentBooking.collectAsState()
     if (unsavedAppointment.value.serviceTypeId != -1) {
         selectedIndex = serviceState.value.serviceTypes.indexOf(unsavedAppointment.value.serviceTypeItem!!)
+    }
+    if (recommendationServiceType.serviceTypeId != -1){
+        serviceTypeList.add(recommendationServiceType.title)
+        selectedIndex = 0
     }
     var selectedService: ServiceTypeItem? = null
     for (item in serviceState.value.serviceTypes){
@@ -201,8 +208,13 @@ fun AttachDropDownWidget(mainViewModel: MainViewModel,bookingViewModel: BookingV
     }
     DropDownWidget(menuItems = serviceTypeList, selectedIndex = selectedIndex, shape = CircleShape ,iconRes = "drawable/spa_treatment_leaves.png",
         placeHolderText = "Select Service Type", iconSize = 20, onMenuItemClick = {
-         selectedService = serviceState.value.serviceTypes[it]
-         onServiceSelected(selectedService!!)
+        if (!isRecommendationType) {
+            selectedService = serviceState.value.serviceTypes[it]
+            onServiceSelected(selectedService!!)
+        }
+      else{
+           onServiceSelected(recommendationServiceType)
+      }
     })
 }
 

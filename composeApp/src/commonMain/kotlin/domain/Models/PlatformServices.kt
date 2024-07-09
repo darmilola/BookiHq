@@ -7,5 +7,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @Parcelize
-data class PlatformServices(@SerialName("id") val serviceId: Int = -1, @SerialName("title") val title: String? = null,
+data class PlatformServices(@SerialName("id") val serviceId: Int = -1, @SerialName("title") val title: String = "",
                     @SerialName("widgetCode") val widgetCode: Int? = -1): Parcelable

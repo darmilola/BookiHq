@@ -1,23 +1,16 @@
 package presentation.viewmodels
 
-import UIStates.ActionUIStates
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
-import com.hoc081098.kmp.viewmodel.parcelable.IgnoredOnParcel
-import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
-import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.MainTabEnum
 import domain.Models.OrderItem
 import domain.Models.VendorRecommendation
 import domain.Models.Services
-import domain.Models.TherapistInfo
 import domain.Models.UnsavedAppointment
 import domain.Models.User
 import domain.Models.Vendor
 import kotlinx.coroutines.flow.StateFlow
-import domain.Models.HomepageInfo
-import domain.Models.VendorStatusModel
-import kotlinx.serialization.Transient
+import domain.Models.ServiceTypeItem
 
 
 class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
@@ -28,6 +21,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _currentVendorId =  savedStateHandle.getStateFlow("currentVendorId", -1L)
     private var _screenNav =  savedStateHandle.getStateFlow("screenNav", Pair(-1,-1))
     private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
+    private var _selectedServiceType =  savedStateHandle.getStateFlow("selectedServiceType", ServiceTypeItem())
     private var _currentUnsavedAppointments =  savedStateHandle.getStateFlow("currentUnsavedAppointments", ArrayList<UnsavedAppointment>())
     private var _currentUnsavedOrders =  savedStateHandle.getStateFlow("currentUnsavedOrders", ArrayList<OrderItem>())
     private var _currentUnsavedOrderSize =  savedStateHandle.getStateFlow("currentUnsavedOrderSize", 0)
@@ -63,6 +57,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     val currentUserInfo: StateFlow<User>
         get() = _currentUserInfo
 
+    val selectedServiceType: StateFlow<ServiceTypeItem>
+        get() = _selectedServiceType
+
 
     val screenNav: StateFlow<Pair<Int,Int>>
         get() = _screenNav
@@ -89,6 +86,10 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     fun setConnectedVendor(vendor: Vendor) {
         savedStateHandle["connectedVendor"] = vendor
+    }
+
+    fun setRecommendationServiceType(serviceTypeItem: ServiceTypeItem) {
+        savedStateHandle["selectedServiceType"] = serviceTypeItem
     }
 
     fun setUserId(userId: Long) {

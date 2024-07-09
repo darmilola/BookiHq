@@ -52,7 +52,7 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, uiStateViewModel: UISt
         if (therapists.value.isEmpty()
             || (bookingViewModel.currentBookingId.value != bookingViewModel.currentAppointmentBooking.value.bookingId)) {
             bookingPresenter.getServiceTherapists(
-                bookingViewModel.selectedServiceType.value.categoryId,
+                bookingViewModel.selectedServiceType.value.serviceTypeId,
                 day = bookingViewModel.day.value,
                 month = bookingViewModel.month.value,
                 year = bookingViewModel.year.value
