@@ -6,9 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class GetTherapistsRequest(@SerialName("serviceTypeId") val serviceTypeId: Int,
-                                @SerialName("day") val day: Int,
-                                @SerialName("month") val month: Int,
-                                @SerialName("year") val year: Int)
+                                @SerialName("vendorId") val vendorId: Long)
 
 @Serializable
 data class CreateAppointmentRequest(@SerialName("user_id") val userId: Long,

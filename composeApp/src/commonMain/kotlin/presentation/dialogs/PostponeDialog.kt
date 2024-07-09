@@ -136,9 +136,9 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
                                     textModifier = Modifier.fillMaxWidth().padding(start = 10.dp, bottom = 20.dp)
                                 )
 
-                                TimeGrid(displayTimes.value,onWorkHourClickListener = {
+                               /* TimeGrid(displayTimes.value,onWorkHourClickListener = {
                                     postponementViewModel.setNewSelectedTime(it)
-                                })
+                                })*/
                             }
                         }
                         else {

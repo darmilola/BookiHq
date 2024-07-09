@@ -24,7 +24,9 @@ data class CompleteProfileResponse(@SerialName("status") val status: String = ""
 data class HomePageResponse(@SerialName("status") val status: String = "", @SerialName("homePage") val homepageInfo: HomepageInfo = HomepageInfo())
 
 @Serializable
-data class ServiceTherapistsResponse(@SerialName("status") val status: String = "", @SerialName("therapists") val serviceTherapists: List<ServiceTypeTherapists>)
+data class ServiceTherapistsResponse(@SerialName("status") val status: String = "", @SerialName("therapists") val serviceTherapists: List<ServiceTypeTherapists>,
+                                     @SerialName("platformTime") val platformTimes: List<PlatformTime>? = null,
+                                     @SerialName("vendorTime") val vendorTimes: List<VendorTime>? = null)
 
 @Serializable @Parcelize
 data class PlatformCountryCitiesResponse(@SerialName("status") val status: String = "",

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.PlatformTime
 import domain.Models.ServiceTypeTherapists
@@ -41,6 +43,7 @@ import presentation.widgets.AttachTherapistWidget
 import presentation.widgets.TherapistReviewScreen
 import presentation.widgets.TimeGrid
 import presentations.components.TextComponent
+import utils.calculateBookingServiceTimes
 
 @Composable
 fun BookingSelectTherapists(mainViewModel: MainViewModel, uiStateViewModel: UIStateViewModel,
@@ -48,15 +51,13 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, uiStateViewModel: UISt
                             bookingPresenter: BookingPresenter) {
 
     val therapists = bookingViewModel.serviceTherapists.collectAsState()
+    val vendorTimes = bookingViewModel.vendorTimes.collectAsState()
+    val platformTimes = bookingViewModel.platformTimes.collectAsState()
     LaunchedEffect(Unit, block = {
         if (therapists.value.isEmpty()
             || (bookingViewModel.currentBookingId.value != bookingViewModel.currentAppointmentBooking.value.bookingId)) {
-            bookingPresenter.getServiceTherapists(
-                bookingViewModel.selectedServiceType.value.serviceTypeId,
-                day = bookingViewModel.day.value,
-                month = bookingViewModel.month.value,
-                year = bookingViewModel.year.value
-            )
+            bookingPresenter.getServiceTherapists(bookingViewModel.selectedServiceType.value.serviceTypeId,
+                mainViewModel.connectedVendor.value.vendorId!!)
         }
     })
 
@@ -79,24 +80,28 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, uiStateViewModel: UISt
             IndeterminateCircularProgressBar()
         }
     } else if (uiStates.value.errorOccurred) {
-
-      // error occurred, refresh
-
+       // error occurred, refresh
     } else if (uiStates.value.contentVisible) {
         Column(
             Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
              TherapistContent(bookingViewModel,therapists.value, onTherapistSelected = {
                  selectedTherapist.value = it
                  currentBooking.serviceTypeTherapists = it
                  bookingViewModel.setCurrentBooking(currentBooking)
-                 bookingViewModel.setServiceTimes(it.therapistInfo?.availableTimes!!)
              })
             if(selectedTherapist.value.id != null) {
                 currentBooking.appointmentTime = null
-                AvailableTimeContent(selectedTherapist.value,bookingViewModel, onWorkHourClickListener = {
+
+                val workHours = calculateBookingServiceTimes(bookedTimes = selectedTherapist.value.therapistInfo?.bookedTimes!!, vendorTimes = vendorTimes.value,
+                    platformTimes = platformTimes.value, day = bookingViewModel.day.value, month = bookingViewModel.month.value, year = bookingViewModel.year.value)
+
+                AvailableTimeContent(workHours,bookingViewModel, onWorkHourClickListener = {
                      currentBooking.appointmentTime = it
                      bookingViewModel.setCurrentBooking(currentBooking)
                 })
@@ -115,21 +120,7 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, uiStateViewModel: UISt
 
 
 @Composable
-fun AvailableTimeContent(serviceTypeTherapists: ServiceTypeTherapists, bookingViewModel: BookingViewModel, onWorkHourClickListener: (AvailableTime) -> Unit) {
-
-    val unSavedTime = bookingViewModel.currentAppointmentBooking.value.appointmentTime
-    val availableWorkHour = serviceTypeTherapists.therapistInfo?.availableTimes
-    val normalisedBookedTimes = arrayListOf<PlatformTime>()
-    val normalisedBookingTimes = arrayListOf<AvailableTime>()
-    val displayTimes = remember { mutableStateOf(arrayListOf<AvailableTime>()) }
-
-
-    for (item in serviceTypeTherapists.therapistInfo?.bookedTimes!!) {
-        normalisedBookedTimes.add(item.platformTime!!)
-    }
-
-
-
+fun AvailableTimeContent(availableHours: ArrayList<PlatformTime>, bookingViewModel: BookingViewModel, onWorkHourClickListener: (PlatformTime) -> Unit) {
 
     Column(
         modifier = Modifier
@@ -140,7 +131,7 @@ fun AvailableTimeContent(serviceTypeTherapists: ServiceTypeTherapists, bookingVi
     ) {
 
         TextComponent(
-            text = "Service Times",
+            text = "Available Times",
             fontSize = 18,
             fontFamily = GGSansSemiBold,
             textStyle = TextStyle(),
@@ -150,25 +141,52 @@ fun AvailableTimeContent(serviceTypeTherapists: ServiceTypeTherapists, bookingVi
             lineHeight = 30,
             textModifier = Modifier
                 .fillMaxWidth().padding(start = 10.dp, bottom = 20.dp))
-
-        availableWorkHour!!.map { it ->
-            if (it.vendorTime?.platformTime in normalisedBookedTimes){
-                val normalisedTime =  availableWorkHour.find { it2 ->
-                    it.id == it2.id
-                }?.copy(isAvailable = false)
-                normalisedBookingTimes.add(normalisedTime!!)
-            }
-            else{
-                val isAvailableTime =  it.copy(isAvailable = true)
-                normalisedBookingTimes.add(isAvailableTime)
-            }
+        Row(modifier = Modifier.fillMaxWidth(0.90f).wrapContentHeight()) {
+            TextComponent(
+                text = "Morning",
+                fontSize = 16,
+                textStyle = TextStyle(),
+                textColor = theme.Colors.darkPrimary,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 25,
+                textModifier = Modifier.weight(1f).padding(bottom = 15.dp, top = 10.dp),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis)
+            TextComponent(
+                text = "Afternoon",
+                fontSize = 16,
+                textStyle = TextStyle(),
+                textColor = theme.Colors.darkPrimary,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 25,
+                textModifier = Modifier.weight(1f).padding(bottom = 15.dp, top = 10.dp),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis)
+            TextComponent(
+                text = "Evening",
+                fontSize = 16,
+                textStyle = TextStyle(),
+                textColor = theme.Colors.darkPrimary,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 25,
+                textModifier = Modifier.weight(1f).padding(bottom = 15.dp, top = 10.dp),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis)
         }
-         displayTimes.value = normalisedBookingTimes
-         if (displayTimes.value.isNotEmpty()) {
-             TimeGrid(displayTimes.value, selectedTime = unSavedTime, onWorkHourClickListener = {
-                 onWorkHourClickListener(it)
-             })
-         }
+
+        val currentBooking = bookingViewModel.currentAppointmentBooking.collectAsState()
+
+        Row(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
+            Column(modifier = Modifier.weight(1f).wrapContentHeight()) {
+                TimeGrid(platformTimes = availableHours,selectedTime = currentBooking.value.appointmentTime, onWorkHourClickListener = {
+                    onWorkHourClickListener(it)
+                })
+            }
+
+        }
     }
 }
 

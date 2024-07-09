@@ -5,15 +5,20 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import applications.device.ScreenSizeInfo
+import domain.Enums.SessionEnum
 import domain.Models.Appointment
+import domain.Models.BookedTimes
 import domain.Models.CustomerOrder
 import domain.Models.HomepageInfo
 import domain.Models.OrderItem
+import domain.Models.PlatformTime
 import domain.Models.Product
 import domain.Models.ScreenSizeInfo
 import domain.Models.Services
 import domain.Models.UnsavedAppointment
 import domain.Models.UserAppointmentsData
+import domain.Models.VendorTime
+import kotlinx.serialization.SerialName
 
 fun getAppointmentViewHeight(
         itemList: List<UserAppointmentsData>
@@ -93,5 +98,34 @@ fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo, screenSizeInfo: Sc
     val recentAppointmentHeight = recentAppointmentCount * 200
 
     return servicesHeight + recentAppointmentHeight + recommendationsHeight
+}
+
+fun calculateBookingServiceTimes(platformTimes: List<PlatformTime>, vendorTimes: List<VendorTime>, bookedTimes: List<BookedTimes>, day: Int, month: Int, year: Int):
+ArrayList<PlatformTime>{
+    val workingHours: ArrayList<PlatformTime> = arrayListOf()
+    val vendorWorkingHours: ArrayList<Int> = arrayListOf()
+    val bookedHours: ArrayList<Int> = arrayListOf()
+
+    vendorTimes.forEach {
+        vendorWorkingHours.add(it.platformTime?.id!!)
+    }
+    bookedTimes.forEach {
+        if (it.day == day && it.month == month && it.year == year) {
+            bookedHours.add(it.vendorTime?.platformTime?.id!!)
+        }
+    }
+
+
+    platformTimes.map {
+        if (it.id in vendorWorkingHours && it.id !in bookedHours){
+            workingHours.add(it.copy(isEnabled = true))
+        }
+        else{
+            workingHours.add(it)
+        }
+    }
+
+    return workingHours
+
 }
 

@@ -6,6 +6,8 @@ import presentation.bookings.BookingPresenter
 import UIStates.ActionUIStates
 import presentation.viewmodels.BookingViewModel
 import UIStates.ScreenUIStates
+import domain.Models.PlatformTime
+import domain.Models.VendorTime
 
 class BookingScreenHandler(
     private val bookingViewModel: BookingViewModel,
@@ -58,9 +60,12 @@ class BookingScreenHandler(
         }
     }
 
-    override fun showTherapists(serviceTherapists: List<ServiceTypeTherapists>) {
+    override fun showTherapists(serviceTherapists: List<ServiceTypeTherapists>, platformTime: List<PlatformTime>, vendorTime: List<VendorTime>) {
         bookingViewModel.setTherapists(serviceTherapists)
+        bookingViewModel.setVendorTimes(vendorTime)
+        bookingViewModel.setPlatformTimes(platformTime)
     }
+
 
     override fun showUnsavedAppointment() {
         onShowUnsavedAppointment()

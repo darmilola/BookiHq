@@ -337,7 +337,7 @@ class BookingScreen() : Tab, KoinComponent {
                 .fillMaxWidth()
 
         // AnimationEffect
-        Box(contentAlignment = Alignment.BottomCenter, modifier = boxModifier) {
+        Box(contentAlignment = Alignment.TopCenter, modifier = boxModifier) {
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize(),

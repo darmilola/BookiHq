@@ -61,7 +61,7 @@ fun RecommendedServiceItem(vendorRecommendation: VendorRecommendation, onItemCli
                 Column(
                     modifier = columnModifier
                 ) {
-                    RecommendedServicesImage(vendorRecommendation.serviceTypeItem?.serviceDetails?.serviceImages!![0].imageUrl!!)
+                    RecommendedServicesImage("https://cdn.pixabay.com/photo/2017/06/05/07/58/butterfly-2373175_1280.png")
                     RecommendedServiceDescription(vendorRecommendation)
                     RecommendedServicePriceAndAction(vendorRecommendation, onItemClickListener = {
                         onItemClickListener(it)
