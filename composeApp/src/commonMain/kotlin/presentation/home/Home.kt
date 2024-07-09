@@ -51,6 +51,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import applications.device.ScreenSizeInfo
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.transitions.SlideTransition
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
@@ -71,8 +75,12 @@ import domain.Models.VendorStatusModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.HomepageHandler
+import presentation.Splashscreen.SplashScreen
+import presentation.authentication.WelcomeScreen
+import presentation.bookings.BookingScreen
 import presentation.components.StraightLine
 import presentation.components.IndeterminateCircularProgressBar
+import presentation.main.MainScreen
 import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel

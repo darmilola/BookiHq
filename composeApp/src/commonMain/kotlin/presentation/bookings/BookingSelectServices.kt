@@ -69,6 +69,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
     val currentBooking =  if (savedBooking.bookingId != -1) savedBooking else UnsavedAppointment(currentBookingId)
     currentBooking.services = services
     currentBooking.serviceId = services.serviceId
+    println("Types ${services.serviceTypes}")
 
     currentBooking.year = getYear()
     currentBooking.month = getMonth()
@@ -117,9 +118,9 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
             }
             ServiceTitle(mainViewModel)
             AttachServiceTypeToggle(mainViewModel,bookingViewModel, onServiceSelected = {
-                if (it.homeServiceAvailable) {
-                    ShowSnackBar(title = "Home Service Is Available",
-                        description = "Home service is available for this service",
+                if (it.mobileServiceAvailable) {
+                    ShowSnackBar(title = "Mobile Service Is Available",
+                        description = "Mobile service is available for this service",
                         actionLabel = "",
                         duration = StackedSnackbarDuration.Short,
                         snackBarType = SnackBarType.INFO,
@@ -136,10 +137,10 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
                 }
             })
             ServiceLocationToggle(bookingViewModel, mainViewModel, onSpaSelectedListener = {
-                currentBooking.isHomeService = false
+                currentBooking.isMobileService = false
                 bookingViewModel.setCurrentBooking(currentBooking)
             }, onHomeSelectedListener = {
-                currentBooking.isHomeService = true
+                currentBooking.isMobileService = true
                 bookingViewModel.setCurrentBooking(currentBooking)
             })
             BookingCalendar(bookingViewModel = bookingViewModel) {
@@ -161,7 +162,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
 fun AttachServiceTypeToggle(mainViewModel: MainViewModel,bookingViewModel: BookingViewModel, onServiceSelected: (ServiceTypeItem) -> Unit){
     Column(
         modifier = Modifier
-            .padding(start = 10.dp, end = 10.dp, top = 35.dp)
+            .padding(top = 35.dp)
             .fillMaxWidth()
             .wrapContentHeight(),
         verticalArrangement = Arrangement.Center,
@@ -198,8 +199,8 @@ fun AttachDropDownWidget(mainViewModel: MainViewModel,bookingViewModel: BookingV
     for (item in serviceState.value.serviceTypes){
          serviceTypeList.add(item.title)
     }
-    DropDownWidget(menuItems = serviceTypeList, selectedIndex = selectedIndex, iconRes = "drawable/spa_treatment_leaves.png",
-        placeHolderText = "Select Service Type", iconSize = 25, onMenuItemClick = {
+    DropDownWidget(menuItems = serviceTypeList, selectedIndex = selectedIndex, shape = CircleShape ,iconRes = "drawable/spa_treatment_leaves.png",
+        placeHolderText = "Select Service Type", iconSize = 20, onMenuItemClick = {
          selectedService = serviceState.value.serviceTypes[it]
          onServiceSelected(selectedService!!)
     })
@@ -278,7 +279,7 @@ fun AttachServiceImages(mainViewModel: MainViewModel){
                         .padding(2.dp)
                         .clip(CircleShape)
                         .background(color)
-                        .height(3.dp)
+                        .height(2.dp)
                         .width(width.dp)
                 )
             }

@@ -55,12 +55,15 @@ import UIStates.ScreenUIStates
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
+import utils.ParcelableScreen
 
 
-class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
+class BookingScreen() : Tab, KoinComponent {
     private val bookingPresenter: BookingPresenter by inject()
     private var uiStateViewModel: UIStateViewModel? = null
     private var bookingViewModel: BookingViewModel? = null
+    private var mainViewModel: MainViewModel? = null
+
     override val options: TabOptions
         @Composable
         get() {
@@ -73,6 +76,11 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                 )
             }
         }
+
+    fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
+
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
@@ -138,11 +146,11 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
             Box(modifier = Modifier.fillMaxWidth()) {
                 SuccessDialog("Creating Appointment Successful", actionTitle = "Done", onConfirmation = {
                     bookingViewModel!!.clearCurrentBooking()
-                    mainViewModel.clearVendorRecommendation()
-                    mainViewModel.clearUnsavedAppointments()
+                    mainViewModel!!.clearVendorRecommendation()
+                    mainViewModel!!.clearUnsavedAppointments()
                     coroutineScope.launch {
                         pagerState.scrollToPage(0)
-                        mainViewModel.setScreenNav(
+                        mainViewModel!!.setScreenNav(
                             Pair(
                                 Screens.BOOKING.toPath(),
                                 Screens.MAIN_TAB.toPath()
@@ -155,7 +163,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
         else if (creatingAppointmentFailed.value){
             Box(modifier = Modifier.fillMaxWidth()) {
                 ErrorDialog("Creating Appointment Failed", actionTitle = "Retry", onConfirmation = {
-                    bookingPresenter.createAppointment(mainViewModel.unSavedAppointments.value, mainViewModel.currentUserInfo.value, mainViewModel.connectedVendor.value)
+                    bookingPresenter.createAppointment(mainViewModel!!.unSavedAppointments.value, mainViewModel!!.currentUserInfo.value, mainViewModel!!.connectedVendor.value)
                 })
             }
         }
@@ -170,15 +178,15 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
             rememberCoroutineScope().launch {
                 pagerState.scrollToPage(0)
                 bookingViewModel!!.setCurrentBookingId(-1)
-                mainViewModel.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.MAIN_TAB.toPath()))
+                mainViewModel!!.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.MAIN_TAB.toPath()))
             }
         }
         if (lastItemRemoved.value){
             rememberCoroutineScope().launch {
                 pagerState.scrollToPage(0)
                 bookingViewModel!!.setCurrentBookingId(-1)
-                mainViewModel.clearUnsavedAppointments()
-                mainViewModel.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.MAIN_TAB.toPath()))
+                mainViewModel!!.clearUnsavedAppointments()
+                mainViewModel!!.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.MAIN_TAB.toPath()))
             }
         }
 
@@ -193,7 +201,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                     .background(color = Color.White)
             Column(modifier = layoutModifier) {
 
-                BookingScreenTopBar(pagerState, mainViewModel, bookingViewModel!!)
+                BookingScreenTopBar(pagerState, mainViewModel!!, bookingViewModel!!)
 
                 val bgStyle = Modifier
                     .fillMaxWidth()
@@ -213,9 +221,9 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                         AttachBookingPages(
                             pagerState,
                             uiStateViewModel!!,
-                            mainViewModel,
+                            mainViewModel!!,
                             bookingViewModel!!,
-                            services = mainViewModel.selectedService.value,
+                            services = mainViewModel!!.selectedService.value,
                             onAddMoreServiceClicked = {
                                 addMoreService.value = true
                             },
@@ -223,7 +231,7 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
                                 lastItemRemoved.value = true
                             }
                         )
-                        AttachActionButtons(pagerState, mainViewModel, stackedSnackBarHostState, bookingPresenter)
+                        AttachActionButtons(pagerState, mainViewModel!!, stackedSnackBarHostState, bookingPresenter)
                     }
                 }
 
@@ -359,5 +367,6 @@ class BookingScreen(private val mainViewModel: MainViewModel) : Tab, KoinCompone
         }
 
     }
+
 }
 

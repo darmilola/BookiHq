@@ -9,8 +9,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
+import cafe.adriel.voyager.transitions.SlideTransition
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
@@ -31,6 +35,7 @@ import presentation.consultation.ConsultationScreen
 import presentation.consultation.VirtualConsultationRoom
 import presentation.dialogs.LoadingDialog
 import presentation.account.JoinASpa
+import presentation.authentication.WelcomeScreen
 import presentation.profile.TalkWithATherapist
 import presentation.therapist.TherapistDashboardTab
 import presentation.viewmodels.MainViewModel
@@ -93,7 +98,9 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
                     it.current = mainTab!!
                 }
                 Screens.BOOKING.toPath() -> {
-                    it.current = BookingScreen(mainViewModel!!)
+                    val bookingTab = BookingScreen()
+                    bookingTab.setMainViewModel(mainViewModel!!)
+                    it.current = bookingTab
                 }
                 Screens.CONSULTATION.toPath() -> {
                     it.current = ConsultationScreen(mainViewModel!!)

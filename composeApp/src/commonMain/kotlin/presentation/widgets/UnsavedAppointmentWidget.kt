@@ -225,7 +225,7 @@ fun UnsavedAppointmentContent(unsavedAppointment: UnsavedAppointment?) {
                     }
                     Box(modifier = Modifier.wrapContentWidth().fillMaxHeight(), contentAlignment = Alignment.CenterStart) {
                         TextComponent(
-                            text = if (unsavedAppointment.isHomeService) "Home Service" else "At The Spa",
+                            text = if (unsavedAppointment.isMobileService) "Home Service" else "At The Spa",
                             textModifier = Modifier.wrapContentSize(),
                             fontSize = 14,
                             fontFamily = GGSansRegular,

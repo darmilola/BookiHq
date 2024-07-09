@@ -49,7 +49,7 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 10.dp),bookingViewModel: BookingViewModel? = null, onDateSelected: (LocalDate) -> Unit) {
+fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 30.dp),bookingViewModel: BookingViewModel? = null, onDateSelected: (LocalDate) -> Unit) {
     val dataSource = CalendarDataSource()
     val calendarUiModel = dataSource.getDate(lastSelectedDate = dataSource.today)
     val coroutineScope = rememberCoroutineScope()
