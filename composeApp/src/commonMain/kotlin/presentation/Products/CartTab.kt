@@ -55,6 +55,9 @@ import presentation.dialogs.LoadingDialog
 import presentation.dialogs.SuccessDialog
 import presentation.viewmodels.ActionUIStateViewModel
 import UIStates.ActionUIStates
+import applications.date.getDay
+import applications.date.getMonth
+import applications.date.getYear
 import presentation.viewmodels.CartViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.CartItem
@@ -257,11 +260,13 @@ class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                              val orderItemList = mainViewModel.unSavedOrders.value
                              val vendorId = mainViewModel.connectedVendor.value.vendorId
                              val userId = mainViewModel.currentUserInfo.value.userId
-                             //val orderReference = mainViewModel.currentOrderReference.value
                              val deliveryLocation = cartViewModel!!.deliveryLocation.value
                              val paymentMethod = cartViewModel!!.paymentMethod.value
+                             val year = getYear()
+                             val month = getMonth()
+                             val day = getDay()
 
-                           //  cartPresenter.createOrder(orderItemList,vendorId!!,userId!!,orderReference,deliveryLocation,paymentMethod)
+                             cartPresenter.createOrder(orderItemList,vendorId!!,userId!!,deliveryLocation,paymentMethod, day, month, year)
 
                         })
 

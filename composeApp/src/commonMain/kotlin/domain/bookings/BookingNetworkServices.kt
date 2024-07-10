@@ -23,14 +23,14 @@ open class BookingNetworkService(private val apiService: HttpClient) {
             setBody(getTherapistsRequest)
         }.body<ServiceTherapistsResponse>().toSingle()
 
-    suspend fun createAppointment(createAppointmentRequestArray: CreateAppointmentRequestArray) =
+    suspend fun createAppointment(createAppointmentRequest: CreateAppointmentRequest) =
         apiService.post {
             url("/services/appointment/create")
             /*headers {
                 append(HttpHeaders.Authorization, "abc123")
             }*/
             contentType(ContentType.Application.Json)
-            setBody(createAppointmentRequestArray)
+            setBody(createAppointmentRequest)
         }.body<ServerResponse>().toSingle()
 
 }

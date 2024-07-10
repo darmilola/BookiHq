@@ -15,13 +15,15 @@ data class SearchProductRequest(@SerialName("vendorId") val vendorId: Long,
 
 @Serializable
 data class CreateOrderRequest(@SerialName("vendor_id") val vendorId: Long, @SerialName("user_id") val userId: Long,
-                              @SerialName("orderReference") val orderReference: Int, @SerialName("deliveryMethod") val deliveryMethod: String,
-                              @SerialName("paymentMethod") val paymentMethod: String, @SerialName("orderItem_Array") val orderItems: ArrayList<OrderItemRequest>)
+                              @SerialName("deliveryMethod") val deliveryMethod: String, @SerialName("day") val day: Int,
+                              @SerialName("month") val month: Int, @SerialName("year") val year: Int,
+                              @SerialName("paymentMethod") val paymentMethod: String, @SerialName("orderItemJson") val orderItemJson: List<String>)
 
 @Serializable
-data class OrderItemRequest(@SerialName("orderReference") val orderReference: Int,
-                            @SerialName("user_id") val userId: Long,
-                            @SerialName("product_id") val productId: Int,
+data class OrderItemRequest(@SerialName("product_id") val productId: Int,
+                            @SerialName("product_name") val productName: String,
+                            @SerialName("description") val productDescription: String,
+                            @SerialName("price") val price: Int,
                             @SerialName("itemCount") val itemCount: Int)
 
 @Serializable

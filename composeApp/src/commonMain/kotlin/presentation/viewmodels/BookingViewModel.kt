@@ -2,11 +2,10 @@ package presentation.viewmodels
 
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
-import domain.Models.AvailableTime
 import domain.Models.PlatformTime
 import domain.Models.ServiceTypeItem
 import domain.Models.ServiceTypeTherapists
-import domain.Models.UnsavedAppointment
+import domain.Models.CurrentAppointmentBooking
 import domain.Models.VendorTime
 import kotlinx.coroutines.flow.StateFlow
 
@@ -18,7 +17,7 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
     private var _day =  savedStateHandle.getStateFlow("day", -1)
     private var _month =  savedStateHandle.getStateFlow("month", -1)
     private var _year =  savedStateHandle.getStateFlow("year", -1)
-    private var _currentAppointmentBooking =  savedStateHandle.getStateFlow("currentAppointmentBooking", UnsavedAppointment(bookingId = -1))
+    private var _currentAppointmentBooking =  savedStateHandle.getStateFlow("currentAppointmentBooking", CurrentAppointmentBooking(bookingId = -1))
 
     private var _vendorMorningHours = savedStateHandle.getStateFlow("morningHours", listOf<PlatformTime>())
 
@@ -84,7 +83,7 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
         savedStateHandle["eveningHours"] = eveningHours
     }
 
-    val currentAppointmentBooking: StateFlow<UnsavedAppointment>
+    val currentAppointmentBooking: StateFlow<CurrentAppointmentBooking>
         get() = _currentAppointmentBooking
 
     fun setSelectedServiceType(selectedServiceType: ServiceTypeItem) {
@@ -103,8 +102,8 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
         savedStateHandle["year"] = year
     }
 
-    fun setCurrentBooking(unsavedAppointment: UnsavedAppointment) {
-        savedStateHandle["currentAppointmentBooking"] = unsavedAppointment
+    fun setCurrentBooking(currentAppointmentBooking: CurrentAppointmentBooking) {
+        savedStateHandle["currentAppointmentBooking"] = currentAppointmentBooking
     }
 
     fun setCurrentBookingId(bookingId: Int) {
@@ -122,7 +121,7 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
 
     fun clearCurrentBooking(){
         savedStateHandle["selectedServiceType"] = ServiceTypeItem()
-        savedStateHandle["currentAppointmentBooking"] = UnsavedAppointment(-1)
+        savedStateHandle["currentAppointmentBooking"] = CurrentAppointmentBooking(-1)
         savedStateHandle["therapists"] = arrayListOf<ServiceTypeTherapists>()
     }
 

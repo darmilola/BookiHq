@@ -52,6 +52,8 @@ import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.UIStateViewModel
 import UIStates.ScreenUIStates
+import domain.Enums.AppointmentType
+import domain.Enums.ServiceLocationEnum
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
@@ -163,7 +165,13 @@ class BookingScreen() : Tab, KoinComponent {
         else if (creatingAppointmentFailed.value){
             Box(modifier = Modifier.fillMaxWidth()) {
                 ErrorDialog("Creating Appointment Failed", actionTitle = "Retry", onConfirmation = {
-                    bookingPresenter.createAppointment(mainViewModel!!.unSavedAppointments.value, mainViewModel!!.currentUserInfo.value, mainViewModel!!.connectedVendor.value)
+                    val userId = mainViewModel!!.currentUserInfo.value.userId
+                    val vendorId = mainViewModel!!.connectedVendor.value.vendorId
+                    val appointment = bookingViewModel!!.currentAppointmentBooking.value
+                    bookingPresenter.createAppointment(userId = userId!!, vendorId = vendorId!!, service_id = appointment.serviceId, serviceTypeId = appointment.serviceTypeId!!,
+                        therapist_id = appointment.serviceTypeTherapists?.therapistId!!, appointmentTime = appointment.appointmentTime?.id!!,
+                        day = appointment.day, month = appointment.month, year = appointment.year, serviceLocation = if (appointment.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
+                        serviceStatus = appointment.serviceStatus, appointmentType = AppointmentType.SERVICE.toPath())
                 })
             }
         }
@@ -279,7 +287,13 @@ class BookingScreen() : Tab, KoinComponent {
                 textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h6, borderStroke = null) {
 
                 if (currentPage == 2){
-                    bookingPresenter.createAppointment(mainViewModel.unSavedAppointments.value, mainViewModel.currentUserInfo.value, mainViewModel.connectedVendor.value)
+                    val userId = mainViewModel.currentUserInfo.value.userId
+                    val vendorId = mainViewModel.connectedVendor.value.vendorId
+                    val appointment = bookingViewModel?.currentAppointmentBooking!!.value
+                    bookingPresenter.createAppointment(userId = userId!!, vendorId = vendorId!!, service_id = appointment.serviceId, serviceTypeId = appointment.serviceTypeId!!,
+                        therapist_id = appointment.serviceTypeTherapists?.therapistId!!, appointmentTime = appointment.appointmentTime?.id!!,
+                        day = appointment.day, month = appointment.month, year = appointment.year, serviceLocation = if (appointment.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
+                        serviceStatus = appointment.serviceStatus, appointmentType = AppointmentType.SERVICE.toPath())
                 }
                 else {
 

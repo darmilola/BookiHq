@@ -48,12 +48,6 @@ fun OrderItemDetail(mainViewModel: MainViewModel, customerOrder: CustomerOrder) 
         Column(modifier = columnModifier,
             verticalArrangement = Arrangement.Top
         ) {
-            Column(modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                OrderID(customerOrder.orderReference!!)
-            }
             LazyVerticalGrid(
                 columns = GridCells.Fixed(1),
                 modifier = Modifier.fillMaxWidth().height((130 * 3).dp),

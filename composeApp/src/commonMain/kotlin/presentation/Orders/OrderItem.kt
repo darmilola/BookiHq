@@ -65,7 +65,7 @@ fun OrderItemList(mainViewModel: MainViewModel, customerOrder: CustomerOrder) {
                     modifier = Modifier.height(50.dp).fillMaxWidth()
                 ) {
 
-                    TextComponent(
+/*                    TextComponent(
                         text = customerOrder.orderReference.toString(),
                         fontSize = 18,
                         fontFamily = GGSansRegular,
@@ -73,7 +73,7 @@ fun OrderItemList(mainViewModel: MainViewModel, customerOrder: CustomerOrder) {
                         textColor = Colors.primaryColor,
                         textAlign = TextAlign.Left,
                         fontWeight = FontWeight.Black,
-                        textModifier = Modifier.wrapContentHeight().fillMaxWidth(0.50f))
+                        textModifier = Modifier.wrapContentHeight().fillMaxWidth(0.50f))*/
 
                     Box(modifier = Modifier.fillMaxWidth().clickable {
                           navigator.current = OrderDetails(mainViewModel, customerOrder)

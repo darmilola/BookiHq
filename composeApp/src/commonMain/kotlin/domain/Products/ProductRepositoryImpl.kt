@@ -4,6 +4,7 @@ import com.badoo.reaktive.single.Single
 import domain.Models.ProductListDataResponse
 import domain.Models.ServerResponse
 import io.ktor.client.HttpClient
+import kotlinx.serialization.SerialName
 
 class ProductRepositoryImpl(apiService: HttpClient): ProductRepository {
     private val productNetworkService: ProductNetworkService = ProductNetworkService(apiService)
@@ -25,6 +26,21 @@ class ProductRepositoryImpl(apiService: HttpClient): ProductRepository {
         return productNetworkService.searchProduct(param,nextPage)
     }
 
+    override suspend fun createOrder(
+        vendorId: Long,
+        userId: Long,
+        deliveryMethod: String,
+        paymentMethod: String,
+        day: Int,
+        month: Int,
+        year: Int,
+        orderItemJson: List<String>
+    ): Single<ServerResponse> {
+        val param = CreateOrderRequest(vendorId, userId, deliveryMethod,day,month,year,paymentMethod,orderItemJson)
+        println("My Param is $param")
+        return productNetworkService.createOrder(param)
+    }
+
 
     override suspend fun getProductsByType(
         vendorId: Long,
@@ -35,17 +51,6 @@ class ProductRepositoryImpl(apiService: HttpClient): ProductRepository {
         return productNetworkService.getProductType(param, nextPage)
     }
 
-    override suspend fun createOrder(
-        vendorId: Long,
-        userId: Long,
-        orderReference: Int,
-        deliveryMethod: String,
-        paymentMethod: String,
-        orderItems: ArrayList<OrderItemRequest>
-    ): Single<ServerResponse> {
-        val param = CreateOrderRequest(vendorId, userId, orderReference, deliveryMethod, paymentMethod, orderItems)
-        return productNetworkService.createOrder(param)
-    }
 
 
 }

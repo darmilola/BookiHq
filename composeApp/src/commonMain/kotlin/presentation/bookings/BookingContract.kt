@@ -1,9 +1,6 @@
 package presentation.bookings
 
 import domain.Models.ServiceTypeTherapists
-import domain.Models.UnsavedAppointment
-import domain.Models.User
-import domain.Models.Vendor
 import UIStates.ActionUIStates
 import UIStates.ScreenUIStates
 import domain.Models.PlatformTime
@@ -21,6 +18,8 @@ class BookingContract {
         abstract fun registerUIContract(view: View?)
         abstract fun getUnSavedAppointment()
         abstract fun getServiceTherapists(serviceTypeId: Int, vendorId: Long)
-        abstract fun createAppointment(unsavedAppointments: ArrayList<UnsavedAppointment>, currentUser: User, currentVendor: Vendor)
+        abstract fun createAppointment(userId: Long, vendorId: Long, service_id: Int, serviceTypeId: Int, therapist_id: Int,
+                                       appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, serviceStatus: String,
+                                       appointmentType: String)
     }
 }

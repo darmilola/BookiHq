@@ -39,7 +39,7 @@ import applications.date.getMonth
 import applications.date.getYear
 import domain.Models.ServiceTypeItem
 import domain.Models.Services
-import domain.Models.UnsavedAppointment
+import domain.Models.CurrentAppointmentBooking
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.BookingCalendar
@@ -66,7 +66,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
     else{
         currentBookingId = bookingViewModel.currentBookingId.value
     }
-    val currentBooking =  if (savedBooking.bookingId != -1) savedBooking else UnsavedAppointment(currentBookingId)
+    val currentBooking =  if (savedBooking.bookingId != -1) savedBooking else CurrentAppointmentBooking(currentBookingId)
     currentBooking.services = services
     currentBooking.serviceId = services.serviceId
 

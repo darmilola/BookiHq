@@ -4,21 +4,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import applications.device.ScreenSizeInfo
-import domain.Enums.SessionEnum
 import domain.Models.Appointment
 import domain.Models.BookedTimes
-import domain.Models.CustomerOrder
 import domain.Models.HomepageInfo
-import domain.Models.OrderItem
 import domain.Models.PlatformTime
 import domain.Models.Product
 import domain.Models.ScreenSizeInfo
 import domain.Models.Services
-import domain.Models.UnsavedAppointment
+import domain.Models.CurrentAppointmentBooking
 import domain.Models.UserAppointmentsData
 import domain.Models.VendorTime
-import kotlinx.serialization.SerialName
 
 fun getAppointmentViewHeight(
         itemList: List<UserAppointmentsData>
@@ -46,7 +41,7 @@ fun getRecentAppointmentViewHeight(
 
 
 fun getUnSavedAppointmentViewHeight(
-    itemList: List<UnsavedAppointment>
+    itemList: List<CurrentAppointmentBooking>
 ): Int {
     val itemCount = itemList.size
 

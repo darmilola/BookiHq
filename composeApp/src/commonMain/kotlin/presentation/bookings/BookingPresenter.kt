@@ -1,9 +1,6 @@
 package presentation.bookings
 
 import com.badoo.reaktive.single.subscribe
-import domain.Models.UnsavedAppointment
-import domain.Models.User
-import domain.Models.Vendor
 import domain.bookings.BookingRepositoryImpl
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
@@ -58,13 +55,15 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
         }
     }
 
-    override fun createAppointment(unsavedAppointments: ArrayList<UnsavedAppointment>, currentUser: User, currentVendor: Vendor) {
+    override fun createAppointment(userId: Long, vendorId: Long, service_id: Int, serviceTypeId: Int, therapist_id: Int,
+                                   appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, serviceStatus: String,
+                                   appointmentType: String) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showActionLce(ActionUIStates(isLoading = true))
-                    val requestList = getUnSavedAppointment(unsavedAppointments, currentUser, currentVendor)
-                    bookingRepositoryImpl.createAppointment(requestList)
+                    bookingRepositoryImpl.createAppointment(userId, vendorId, service_id, serviceTypeId, therapist_id, appointmentTime,
+                        day, month, year, serviceLocation, serviceStatus, appointmentType)
                         .subscribe(
                             onSuccess = { result ->
                                 println(result)

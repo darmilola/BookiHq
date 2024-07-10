@@ -2,17 +2,14 @@ package domain.Enums
 
 enum class ServiceLocationEnum {
     SPA,
-    HOME,
-    WORK;
+    MOBILE;
     fun toPath() = when (this) {
         SPA -> "spa"
-        HOME -> "home"
-        WORK -> "work"
+        MOBILE -> "home"
     }
 
     fun toEventPropertyName() = when (this) {
         SPA -> "spa"
-        HOME -> "home"
-        WORK -> "work"
+        MOBILE -> "home"
     }
 }

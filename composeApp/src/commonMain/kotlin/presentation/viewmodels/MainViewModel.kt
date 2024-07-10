@@ -6,7 +6,7 @@ import domain.Enums.MainTabEnum
 import domain.Models.OrderItem
 import domain.Models.VendorRecommendation
 import domain.Models.Services
-import domain.Models.UnsavedAppointment
+import domain.Models.CurrentAppointmentBooking
 import domain.Models.User
 import domain.Models.Vendor
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +22,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _screenNav =  savedStateHandle.getStateFlow("screenNav", Pair(-1,-1))
     private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
     private var _selectedServiceType =  savedStateHandle.getStateFlow("selectedServiceType", ServiceTypeItem())
-    private var _currentUnsavedAppointments =  savedStateHandle.getStateFlow("currentUnsavedAppointments", ArrayList<UnsavedAppointment>())
+    private var _currentCurrentAppointmentBooking =  savedStateHandle.getStateFlow("currentUnsavedAppointment", CurrentAppointmentBooking())
     private var _currentUnsavedOrders =  savedStateHandle.getStateFlow("currentUnsavedOrders", ArrayList<OrderItem>())
     private var _currentUnsavedOrderSize =  savedStateHandle.getStateFlow("currentUnsavedOrderSize", 0)
     private var _currentMainDisplayTab =  savedStateHandle.getStateFlow("displayedTab", MainTabEnum.HOME.toPath())
@@ -34,8 +34,8 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     val selectedService: StateFlow<Services>
         get() = _selectedService
 
-    val unSavedAppointments: StateFlow<ArrayList<UnsavedAppointment>>
-        get() = _currentUnsavedAppointments
+    val unSavedAppointments: StateFlow<CurrentAppointmentBooking>
+        get() = _currentCurrentAppointmentBooking
 
     val unSavedOrders: StateFlow<ArrayList<OrderItem>>
         get() = _currentUnsavedOrders
@@ -121,8 +121,8 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
         savedStateHandle["selectedService"] = selectedService
     }
 
-    fun setCurrentUnsavedAppointments(unsavedAppointments: ArrayList<UnsavedAppointment>) {
-        savedStateHandle["currentUnsavedAppointments"] = unsavedAppointments
+    fun setCurrentUnsavedAppointment(currentAppointmentBooking: CurrentAppointmentBooking) {
+        savedStateHandle["currentUnsavedAppointment"] = currentAppointmentBooking
     }
 
     fun setCurrentUnsavedOrders(orderItems: ArrayList<OrderItem>) {
@@ -130,7 +130,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     }
 
     fun clearUnsavedAppointments() {
-        savedStateHandle["currentUnsavedAppointments"] = ArrayList<UnsavedAppointment>()
+        savedStateHandle["currentUnsavedAppointments"] = ArrayList<CurrentAppointmentBooking>()
     }
 
     fun clearCurrentOrderReference() {
@@ -142,9 +142,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     }
 
     fun removeLastAppointment() {
-        val unsavedAppointments: ArrayList<UnsavedAppointment> = savedStateHandle["currentUnsavedAppointments"]!!
-        unsavedAppointments.removeLastOrNull()
-        savedStateHandle["currentUnsavedAppointments"] = unsavedAppointments
+        val currentAppointmentBookings: ArrayList<CurrentAppointmentBooking> = savedStateHandle["currentUnsavedAppointments"]!!
+        currentAppointmentBookings.removeLastOrNull()
+        savedStateHandle["currentUnsavedAppointments"] = currentAppointmentBookings
     }
 
     fun clearVendorRecommendation() {

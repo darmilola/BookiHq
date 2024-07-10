@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
@@ -38,7 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.ServiceTypeTherapists
-import domain.Models.UnsavedAppointment
+import domain.Models.CurrentAppointmentBooking
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DayOfWeekNames
@@ -48,7 +49,7 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun UnsavedAppointmentWidget(unsavedAppointment: UnsavedAppointment? = null, onRemoveItem: (UnsavedAppointment) -> Unit) {
+fun UnsavedAppointmentWidget(currentAppointmentBooking: CurrentAppointmentBooking? = null, onRemoveItem: (CurrentAppointmentBooking) -> Unit) {
 
     val boxBgModifier =
         Modifier
@@ -67,10 +68,10 @@ fun UnsavedAppointmentWidget(unsavedAppointment: UnsavedAppointment? = null, onR
             horizontalAlignment = Alignment.Start,
             modifier = columnModifier
         ) {
-            UnsavedAppointmentHeader(unsavedAppointment?.services?.serviceInfo?.title!!, unsavedAppointment.serviceTypeItem?.price!!, onRemoveItem = {
-                onRemoveItem(unsavedAppointment)
+            UnsavedAppointmentHeader(currentAppointmentBooking?.services?.serviceInfo?.title!!, currentAppointmentBooking.serviceTypeItem?.price!!, onRemoveItem = {
+                onRemoveItem(currentAppointmentBooking)
             })
-            UnsavedAppointmentContent(unsavedAppointment)
+            UnsavedAppointmentContent(currentAppointmentBooking)
         }
     }
 }
@@ -82,7 +83,7 @@ fun UnsavedAppointmentHeader(serviceTitle: String, amount: Int, onRemoveItem: ()
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp, top = 15.dp)
+        modifier = Modifier.fillMaxWidth().height(60.dp).padding(start = 10.dp, end = 10.dp, top = 15.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.Start,
@@ -163,7 +164,7 @@ fun UnsavedAppointmentHeader(serviceTitle: String, amount: Int, onRemoveItem: ()
 }
 
 @Composable
-fun UnsavedAppointmentContent(unsavedAppointment: UnsavedAppointment?) {
+fun UnsavedAppointmentContent(currentAppointmentBooking: CurrentAppointmentBooking?) {
 
   val appointmentDateFormat =  LocalDate.Format {
         dayOfWeek(DayOfWeekNames.ENGLISH_FULL)
@@ -173,9 +174,11 @@ fun UnsavedAppointmentContent(unsavedAppointment: UnsavedAppointment?) {
         dayOfMonth()
     }
 
-    val unsavedAppointmentDay = unsavedAppointment?.day
-    val unsavedAppointmentMonth = unsavedAppointment?.month
-    val unsavedAppointmentYear = unsavedAppointment?.year
+    val unsavedAppointmentDay = currentAppointmentBooking?.day
+    val unsavedAppointmentMonth = currentAppointmentBooking?.month
+    val unsavedAppointmentYear = currentAppointmentBooking?.year
+
+    println("The Day is $unsavedAppointmentDay")
 
    val appointmentDate = LocalDate(dayOfMonth = unsavedAppointmentDay!!, monthNumber = unsavedAppointmentMonth!!, year = unsavedAppointmentYear!!).format(appointmentDateFormat)
 
@@ -184,7 +187,7 @@ fun UnsavedAppointmentContent(unsavedAppointment: UnsavedAppointment?) {
         .fillMaxWidth()
     Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
         TextComponent(
-            text = unsavedAppointment.serviceTypeItem?.title!!,
+            text = currentAppointmentBooking.serviceTypeItem?.title!!,
             fontSize = 16,
             fontFamily = GGSansSemiBold,
             textStyle = MaterialTheme.typography.h6,
@@ -225,7 +228,7 @@ fun UnsavedAppointmentContent(unsavedAppointment: UnsavedAppointment?) {
                     }
                     Box(modifier = Modifier.wrapContentWidth().fillMaxHeight(), contentAlignment = Alignment.CenterStart) {
                         TextComponent(
-                            text = if (unsavedAppointment.isMobileService) "Home Service" else "At The Spa",
+                            text = if (currentAppointmentBooking.isMobileService) "Home Service" else "At The Spa",
                             textModifier = Modifier.wrapContentSize(),
                             fontSize = 14,
                             fontFamily = GGSansRegular,
@@ -237,7 +240,7 @@ fun UnsavedAppointmentContent(unsavedAppointment: UnsavedAppointment?) {
                     }
 
                 }
-                UnsavedTherapistDisplayItem(unsavedAppointment.serviceTypeTherapists!!)
+                UnsavedTherapistDisplayItem(currentAppointmentBooking.serviceTypeTherapists!!)
             }
         }
 

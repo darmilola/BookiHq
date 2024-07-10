@@ -23,35 +23,40 @@ class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
     }
 
     override fun createOrder(
-        orderItemList: MutableList<OrderItem>,
+        orderItemList: List<OrderItem>,
         vendorId: Long,
         userId: Long,
-        orderReference: Int,
         deliveryMethod: String,
-        paymentMethod: String
-    ) {
+        paymentMethod: String,
+        day: Int,
+        month: Int,
+        year: Int) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showLce(ActionUIStates(isLoading = true, loadingMessage = "Creating Order"))
-                    val orderItems = getUnSavedOrders(orderItemList,userId,orderReference)
-                    productRepositoryImpl.createOrder(vendorId,userId,orderReference,deliveryMethod,paymentMethod,orderItems)
+                    val orderItemsJson = getUnSavedOrders(orderItemList)
+                    productRepositoryImpl.createOrder(vendorId,userId,deliveryMethod,paymentMethod,day, month, year, orderItemsJson)
                         .subscribe(
                             onSuccess = { result ->
+                                println(result)
                                 if (result.status == "success"){
                                     contractView?.showLce(ActionUIStates(isSuccess = true, successMessage = "Order Created Successfully"))
                                 }
                                 else{
+                                    println("Error 0")
                                     contractView?.showLce(ActionUIStates(isFailed = true, errorMessage = "Error Creating Order"))
                                 }
                             },
                             onError = {
+                                println("Error 1 ${it.message}")
                                 contractView?.showLce(ActionUIStates(isFailed = true, errorMessage = "Error Creating Order"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
+                println("Error 2 ${e.message}")
                 contractView?.showLce(ActionUIStates(isFailed = true, errorMessage = "Error Creating Order"))
             }
         }
