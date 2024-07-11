@@ -91,7 +91,7 @@ fun BookingOverview(mainViewModel: MainViewModel, bookingViewModel: BookingViewM
 
     Column(
         modifier = columnModifier,
-        verticalArrangement = Arrangement.Top,
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -122,7 +122,7 @@ fun BookingOverview(mainViewModel: MainViewModel, bookingViewModel: BookingViewM
 
 
 
-        Box(
+      /*  Box(
             modifier = Modifier.fillMaxWidth().fillMaxHeight(),
             contentAlignment = Alignment.BottomCenter
         ) {
@@ -144,7 +144,7 @@ fun BookingOverview(mainViewModel: MainViewModel, bookingViewModel: BookingViewM
             ) {
                 onAddMoreServiceClicked()
             }
-        }
+        }*/
     }
 
     }

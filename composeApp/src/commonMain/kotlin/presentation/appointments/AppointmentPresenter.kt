@@ -24,6 +24,7 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
     }
 
     override fun getUserAppointments(userId: Long) {
+        println(userId)
         contractView?.showLce(ScreenUIStates(loadingVisible = true))
         scope.launch(Dispatchers.Main) {
             try {
@@ -45,12 +46,14 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                                 }
                             },
                             onError = {
+                                println("Error 1 ${it.message}")
                                 contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
+                println("Error 2 ${e.message}")
                 contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
             }
         }

@@ -35,7 +35,6 @@ import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.PostponementViewModel
 import presentation.widgets.NewDateContent
-import presentation.widgets.TimeGrid
 import presentation.widgets.TitleWidget
 import presentation.widgets.buttonContent
 import presentations.components.TextComponent
@@ -80,7 +79,7 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
         val displayTimes = remember { mutableStateOf(arrayListOf<AvailableTime>()) }
         val normalisedTherapistTimes = arrayListOf<AvailableTime>()
         for (item in therapistBookedTimes) {
-            normalisedBookedTimes.add(item.timeObject?.platformTime!!)
+            normalisedBookedTimes.add(item.platformTime!!)
         }
 
 

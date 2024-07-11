@@ -17,7 +17,7 @@ data class Appointment(
     @SerialName("day") val appointmentDay: Int? = -1, @SerialName("month") val appointmentMonth: Int? = -1, @SerialName("appointmentType") val appointmentType: String = AppointmentType.SERVICE.toPath(),
     @SerialName("year") val appointmentYear: Int? = -1, @SerialName("isRecommendedAppointment") val isRecommendedAppointment: Boolean = false,
     @SerialName("recommendation_id") val recommendationId: Int? = -1, @SerialName("therapist_info") val therapistInfo: TherapistInfo? = null,
-    @SerialName("service_type") val serviceTypeItem: ServiceTypeItem? = null, @SerialName("service") val services: Services? = null, @SerialName("time") val timeObject: TimeObject? = null,
+    @SerialName("service_type") val serviceTypeItem: ServiceTypeItem? = null, @SerialName("service") val services: Services? = null, @SerialName("time") val platformTime: PlatformTime = PlatformTime(),
     @SerialName("vendor") val vendor: Vendor? = null, @SerialName("customer_info") val customerInfo: User? = null,
     @SerialName("meetingStatus") val meetingStatus: String = MeetingStatus.Pending.toPath(),
     @SerialName("meetingDescription") val meetingDescription: String? = null, @SerialName("meetingId") val meetingId: String? = null): Parcelable
