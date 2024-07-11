@@ -51,6 +51,7 @@ import presentations.components.TextComponent
 @Composable
 fun UnsavedAppointmentWidget(currentAppointmentBooking: CurrentAppointmentBooking? = null, onRemoveItem: (CurrentAppointmentBooking) -> Unit) {
 
+    println("Current $currentAppointmentBooking")
     val boxBgModifier =
         Modifier
             .padding(bottom = 5.dp, top = 5.dp, start = 10.dp, end = 10.dp)

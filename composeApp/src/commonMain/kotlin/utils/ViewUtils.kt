@@ -106,7 +106,7 @@ ArrayList<PlatformTime>{
     }
     bookedTimes.forEach {
         if (it.day == day && it.month == month && it.year == year) {
-            bookedHours.add(it.vendorTime?.platformTime?.id!!)
+            bookedHours.add(it.platformTime?.id!!)
         }
     }
 

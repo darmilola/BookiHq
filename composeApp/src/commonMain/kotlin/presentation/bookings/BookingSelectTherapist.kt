@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import domain.Models.PlatformTime
 import domain.Models.ServiceTypeTherapists
 import domain.Models.ServiceTypeTherapistUIModel
-import domain.Models.AvailableTime
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
@@ -55,7 +54,7 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, uiStateViewModel: UISt
     val platformTimes = bookingViewModel.platformTimes.collectAsState()
     LaunchedEffect(Unit, block = {
         if (therapists.value.isEmpty()
-            || (bookingViewModel.currentBookingId.value != bookingViewModel.currentAppointmentBooking.value.bookingId)) {
+            || (bookingViewModel.currentBookingKey.value != bookingViewModel.currentAppointmentBooking.value.bookingKey)) {
             bookingPresenter.getServiceTherapists(bookingViewModel.selectedServiceType.value.serviceTypeId,
                 mainViewModel.connectedVendor.value.vendorId!!)
         }
@@ -67,6 +66,11 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, uiStateViewModel: UISt
     if (currentBooking.serviceTypeTherapists != null) {
         selectedTherapist.value = currentBooking.serviceTypeTherapists!!
     }
+    currentBooking.serviceTypeItem = bookingViewModel.selectedServiceType.value
+    currentBooking.isMobileService = bookingViewModel.isMobileService.value
+    currentBooking.day = bookingViewModel.day.value
+    currentBooking.month = bookingViewModel.month.value
+    currentBooking.year = bookingViewModel.year.value
 
 
     if (uiStates.value.loadingVisible) {

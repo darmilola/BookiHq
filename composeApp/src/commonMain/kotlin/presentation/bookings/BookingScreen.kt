@@ -57,7 +57,6 @@ import domain.Enums.ServiceLocationEnum
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
-import utils.ParcelableScreen
 
 
 class BookingScreen() : Tab, KoinComponent {
@@ -185,14 +184,12 @@ class BookingScreen() : Tab, KoinComponent {
         if (addMoreService.value){
             rememberCoroutineScope().launch {
                 pagerState.scrollToPage(0)
-                bookingViewModel!!.setCurrentBookingId(-1)
                 mainViewModel!!.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.MAIN_TAB.toPath()))
             }
         }
         if (lastItemRemoved.value){
             rememberCoroutineScope().launch {
                 pagerState.scrollToPage(0)
-                bookingViewModel!!.setCurrentBookingId(-1)
                 mainViewModel!!.clearUnsavedAppointments()
                 mainViewModel!!.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.MAIN_TAB.toPath()))
             }
@@ -365,9 +362,7 @@ class BookingScreen() : Tab, KoinComponent {
                     2 -> if(page == pagerState.targetPage) {
                         BookingOverview(
                             mainViewModel,
-                            uiStateViewModel,
                             bookingViewModel,
-                            bookingPresenter,
                             onAddMoreServiceClicked = {
                                 onAddMoreServiceClicked()
                             },

@@ -55,48 +55,23 @@ import rememberStackedSnackbarHostState
 fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: BookingViewModel,
                           services: Services) {
 
-    //Initialising New Booking
-    var currentBookingId = -1
     val savedBooking = bookingViewModel.currentAppointmentBooking.value
     val mobileServicesAvailable = mainViewModel.connectedVendor.value.isMobileServiceAvailable
-    if(bookingViewModel.currentBookingId.value == -1) {
-        currentBookingId = (0..100000000).random()
-        bookingViewModel.setCurrentBookingId(currentBookingId)
-    }
-    else{
-        currentBookingId = bookingViewModel.currentBookingId.value
-    }
-    val currentBooking =  if (savedBooking.bookingId != -1) savedBooking else CurrentAppointmentBooking(currentBookingId)
+
+    val currentBooking = CurrentAppointmentBooking()
     currentBooking.services = services
     currentBooking.serviceId = services.serviceId
 
     currentBooking.year = getYear()
     currentBooking.month = getMonth()
     currentBooking.day = getDay()
-
+    currentBooking.bookingKey = (0..100000000).random()
 
     bookingViewModel.setCurrentBooking(currentBooking)
 
     val stackedSnackBarHostState = rememberStackedSnackbarHostState(
         maxStack = 5,
-        animation = StackedSnackbarAnimation.Bounce
-    )
-
-  /*  // initialise new recommendation
-    if (mainViewModel.vendorRecommendation.value.recommendationId != -1) {
-        val recommendation = mainViewModel.vendorRecommendation.value
-        val serviceType = recommendation.serviceTypeItem
-        bookingViewModel.setSelectedServiceType(serviceType!!)
-        currentBooking.serviceTypeItem = serviceType
-        currentBooking.recommendationId = recommendation.recommendationId
-        currentBooking.isRecommendedAppointment = true
-        currentBooking.serviceTypeId = serviceType.categoryId
-        bookingViewModel.setCurrentBooking(currentBooking)
-        if (services.serviceTypes.size == 0) {
-            services.serviceTypes.add(serviceType)
-        }
-        bookingViewModel.setCurrentBooking(currentBooking)
-    }*/
+        animation = StackedSnackbarAnimation.Bounce)
 
     val boxModifier =
         Modifier
@@ -138,9 +113,11 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
             if (mobileServicesAvailable) {
                 ServiceLocationToggle(bookingViewModel, onSpaSelectedListener = {
                     currentBooking.isMobileService = false
+                    bookingViewModel.setIsMobileService(false)
                     bookingViewModel.setCurrentBooking(currentBooking)
                 }, onHomeSelectedListener = {
                     currentBooking.isMobileService = true
+                    bookingViewModel.setIsMobileService(true)
                     bookingViewModel.setCurrentBooking(currentBooking)
                 })
             }

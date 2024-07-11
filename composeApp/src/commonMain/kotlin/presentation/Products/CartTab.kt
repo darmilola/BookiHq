@@ -323,7 +323,7 @@ class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
             LazyColumn(
                 modifier = Modifier.height((180 * cartItems.value.size).dp),
-                userScrollEnabled = false
+                userScrollEnabled = true
             ) {
                 items(key = { it -> it.itemKey}, items = orderItemUIModel.itemList) { item ->
                     CartItem(item, onProductClickListener = {
@@ -363,7 +363,7 @@ class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                             snackBarType = SnackBarType.SUCCESS,
                             stackedSnackBarHostState,
                             onActionClick = {})
-                        mainViewModel.setCurrentUnsavedOrders(orderItemUIModel.itemList)
+                         mainViewModel.setCurrentUnsavedOrders(orderItemUIModel.itemList)
                         mainViewModel.setUnsavedOrderSize(orderItemUIModel.itemList.size)
                     })
                     StraightLine()

@@ -6,4 +6,4 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable @Parcelize
-data class BookedTimes(@SerialName("day") val day: Int, @SerialName("month") val month: Int, @SerialName("year") val year: Int, @SerialName("time") val vendorTime: VendorTime? = null): Parcelable
+data class BookedTimes(@SerialName("day") val day: Int, @SerialName("month") val month: Int, @SerialName("year") val year: Int, @SerialName("time") val platformTime: PlatformTime? = null): Parcelable

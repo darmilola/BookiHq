@@ -51,3 +51,5 @@
       ------------- Preferences Saved at -------------------
       Welcome Screen -- authType and authEmail, Country, ProfileId
       OTP Screen --- authType and authPhone, Country, ProfileId
+
+      ItemUIModel is powerful in displaying and removing item from the UI
