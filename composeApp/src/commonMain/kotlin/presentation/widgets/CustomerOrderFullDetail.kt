@@ -29,12 +29,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import domain.Models.CustomerOrder
+import domain.Models.ItemComponent
 import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun OrderDetailList(mainViewModel: MainViewModel, customerOrder: CustomerOrder) {
+fun OrderDetailList(mainViewModel: MainViewModel, itemList: ArrayList<ItemComponent>) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
         .clickable {}
@@ -50,11 +51,11 @@ fun OrderDetailList(mainViewModel: MainViewModel, customerOrder: CustomerOrder) 
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                OrderDetailsStatusView(customerOrder)
+                OrderDetailsStatusView(itemList)
             }
 
             Box(modifier = Modifier.padding(top = 10.dp).fillMaxWidth().fillMaxHeight(),) {
-                    OrderItemDetail(mainViewModel = mainViewModel, customerOrder)
+                    OrderItemDetail(mainViewModel = mainViewModel, itemList)
             }
 
             Row(
@@ -71,7 +72,7 @@ fun OrderDetailList(mainViewModel: MainViewModel, customerOrder: CustomerOrder) 
 
 
 @Composable
-fun OrderDetailsStatusView(customerOrder: CustomerOrder){
+fun OrderDetailsStatusView(itemList: ArrayList<ItemComponent>){
     val columnModifier = Modifier
         .padding(start = 10.dp, end = 10.dp)
         .wrapContentHeight()

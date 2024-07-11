@@ -59,7 +59,7 @@ import presentations.components.TextComponent
 @Composable
 fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, selectedProduct: OrderItem, onAddToCart: (Boolean) -> Unit,
                          onRemoveFromCart: (OrderItem) -> Unit) {
-    val itemReference = (ValuesLimit.MIN_VALUE.toValue() ..ValuesLimit.MAX_VALUE.toValue()).random()
+    val itemKey = (ValuesLimit.MIN_VALUE.toValue() ..ValuesLimit.MAX_VALUE.toValue()).random()
     val currentOrder = mainViewModel.unSavedOrders.collectAsState()
     val orderItem = remember { mutableStateOf(OrderItem()) }
 
@@ -71,7 +71,7 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
         println("Yes here 2")
         orderItem.value = OrderItem()
        // orderItem.value.orderId = orderReference
-        orderItem.value.itemReference = itemReference
+        orderItem.value.itemKey = itemKey
         orderItem.value.itemProduct = selectedProduct.itemProduct
         orderItem.value.productId = selectedProduct.itemProduct?.productId!!
     }

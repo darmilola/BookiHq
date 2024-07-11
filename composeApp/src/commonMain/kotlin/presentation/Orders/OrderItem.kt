@@ -35,12 +35,21 @@ import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import domain.Models.CustomerOrder
 import domain.Models.OrderItem
 import domain.Enums.Screens
+import domain.Models.ItemComponent
+import kotlinx.serialization.json.Json
 import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
 fun OrderItemList(mainViewModel: MainViewModel, customerOrder: CustomerOrder) {
+
+      var itemList: ArrayList<ItemComponent> = arrayListOf<ItemComponent>()
+      itemList = Json.decodeFromString<ArrayList<ItemComponent>>(customerOrder.orderItems?.orderItemJson!!)
+
+
+
+
     val navigator = LocalTabNavigator.current
     val columnModifier = Modifier
         .padding(start = 10.dp, top = 35.dp, bottom = 10.dp, end = 10.dp)
@@ -65,18 +74,18 @@ fun OrderItemList(mainViewModel: MainViewModel, customerOrder: CustomerOrder) {
                     modifier = Modifier.height(50.dp).fillMaxWidth()
                 ) {
 
-/*                    TextComponent(
-                        text = customerOrder.orderReference.toString(),
+                   TextComponent(
+                        text = "Processing...",
                         fontSize = 18,
                         fontFamily = GGSansRegular,
                         textStyle = TextStyle(),
                         textColor = Colors.primaryColor,
                         textAlign = TextAlign.Left,
                         fontWeight = FontWeight.Black,
-                        textModifier = Modifier.wrapContentHeight().fillMaxWidth(0.50f))*/
+                        textModifier = Modifier.wrapContentHeight().fillMaxWidth(0.50f))
 
                     Box(modifier = Modifier.fillMaxWidth().clickable {
-                          navigator.current = OrderDetails(mainViewModel, customerOrder)
+                          navigator.current = OrderDetails(mainViewModel, itemList)
                     },
                         contentAlignment = Alignment.CenterEnd) {
                         ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
@@ -91,7 +100,7 @@ fun OrderItemList(mainViewModel: MainViewModel, customerOrder: CustomerOrder) {
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                itemsIndexed(items = customerOrder.orderItems) { it, item ->
+                itemsIndexed(items = itemList) { it, item ->
 
                       OrderItemImage(item)
 
@@ -141,7 +150,7 @@ fun StraightLine() {
 }
 
 @Composable
-fun OrderItemImage(orderItem: OrderItem) {
+fun OrderItemImage(itemComponent: ItemComponent) {
     val imageModifier = Modifier
             .height(100.dp)
             .width(100.dp)
@@ -151,7 +160,7 @@ fun OrderItemImage(orderItem: OrderItem) {
             ImageComponent(
                 imageModifier = imageModifier,
                 isAsync = true,
-                imageRes = orderItem.itemProduct?.productImages?.get(0)?.imageUrl!!,
+                imageRes = itemComponent.imageUrl!!,
                 contentScale = ContentScale.Crop)
         }
 

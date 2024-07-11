@@ -6,6 +6,7 @@ import domain.Models.Appointment
 import domain.Models.CustomerOrder
 import domain.Models.Product
 import domain.Models.UserAppointmentsData
+import domain.Models.UserOrders
 import domain.Models.Vendor
 import kotlinx.coroutines.flow.StateFlow
 
@@ -319,7 +320,7 @@ class ProductResourceListEnvelopeViewModel(private val savedStateHandle: SavedSt
 
 class OrdersResourceListEnvelopeViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
-    private var _resources =  savedStateHandle.getStateFlow("resources", mutableListOf<CustomerOrder>())
+    private var _resources =  savedStateHandle.getStateFlow("resources", mutableListOf<UserOrders>())
 
     private var _nextPageUrl =  savedStateHandle.getStateFlow("nextPageUrl", "")
 
@@ -338,7 +339,7 @@ class OrdersResourceListEnvelopeViewModel(private val savedStateHandle: SavedSta
     private var _isRefreshing =  savedStateHandle.getStateFlow("isRefreshing", false)
 
 
-    val resources: StateFlow<MutableList<CustomerOrder>>
+    val resources: StateFlow<MutableList<UserOrders>>
         get() = _resources
 
     val prevPageUrl: StateFlow<String>
@@ -366,7 +367,7 @@ class OrdersResourceListEnvelopeViewModel(private val savedStateHandle: SavedSta
         get() = _isRefreshing
 
 
-    fun setResources(resources: MutableList<CustomerOrder>?) {
+    fun setResources(resources: MutableList<UserOrders>?) {
         savedStateHandle["resources"] = resources
     }
 
@@ -402,7 +403,7 @@ class OrdersResourceListEnvelopeViewModel(private val savedStateHandle: SavedSta
         savedStateHandle["isRefreshing"] = isRefreshing
     }
 
-    fun clearData(data: MutableList<CustomerOrder>) {
+    fun clearData(data: MutableList<UserOrders>) {
         setResources(data)
         setCurrentPage(-1)
         setDisplayedItemCount(-1)

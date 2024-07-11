@@ -136,7 +136,8 @@ class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
                 // View Contract Handler Initialisation
                 val handler = CreateOrderScreenHandler(
-                    cartPresenter)
+                    cartPresenter,
+                    actionUIStateViewModel!!)
                 handler.init()
 
 
@@ -324,7 +325,7 @@ class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                 modifier = Modifier.height((180 * cartItems.value.size).dp),
                 userScrollEnabled = false
             ) {
-                items(key = { it -> it.itemReference}, items = orderItemUIModel.itemList) { item ->
+                items(key = { it -> it.itemKey}, items = orderItemUIModel.itemList) { item ->
                     CartItem(item, onProductClickListener = {
                         orderItemUIModel = orderItemUIModel.copy(
                             selectedItem = it,
@@ -335,7 +336,7 @@ class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                         // Increase Order Item Count
                         orderItemUIModel = orderItemUIModel.copy(selectedItem = it,
                             itemList = ArrayList(mainViewModel.unSavedOrders.value.map { it2 ->
-                                if (it2.itemReference == it.itemReference) {
+                                if (it2.itemKey == it.itemKey) {
                                     it2.copy(
                                         itemCount = it.itemCount
                                     )
@@ -427,6 +428,7 @@ class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
 
 class CreateOrderScreenHandler(
     private val cartPresenter: CartPresenter,
+    private val uiStateViewModel: ActionUIStateViewModel
 ) : CartContract.View {
     fun init() {
         cartPresenter.registerUIContract(this)
@@ -434,7 +436,7 @@ class CreateOrderScreenHandler(
 
 
     override fun showLce(actionUIStates: ActionUIStates) {
-
+        uiStateViewModel.switchActionUIState(actionUIStates)
     }
 }
 

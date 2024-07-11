@@ -35,6 +35,8 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.CustomerItemUIModel
 import domain.Models.CustomerOrder
 import domain.Enums.Screens
+import domain.Models.UserOrderItemUIModel
+import domain.Models.UserOrders
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -99,7 +101,8 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                     OrdersResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
-           // orderPresenter.getUserOrders(userId.value)
+            val userId = mainViewModel.currentUserInfo.value.userId
+            orderPresenter.getUserOrders(userId!!)
         }
 
 
@@ -114,12 +117,13 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
             ordersResourceListEnvelopeViewModel!!.displayedItemCount.collectAsState()
         val uiState = uiStateViewModel!!.uiStateInfo.collectAsState()
         val lastIndex = ordersList?.value?.size?.minus(1)
-        val selectedOrder = remember { mutableStateOf(CustomerOrder()) }
+        val userId = mainViewModel.currentUserInfo.value.userId
+        val selectedOrder = remember { mutableStateOf(UserOrders()) }
 
 
-        var customerOrderUIModel by remember {
+        var userOrderItemUIModel by remember {
             mutableStateOf(
-                CustomerItemUIModel(
+                UserOrderItemUIModel(
                     selectedOrder.value,
                     ordersList?.value!!
                 )
@@ -127,9 +131,9 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
         }
 
         if (!loadMoreState?.value!!) {
-            customerOrderUIModel =
-                customerOrderUIModel.copy(selectedCustomerOrder = selectedOrder.value,
-                    customerOrderList = ordersResourceListEnvelopeViewModel!!.resources.value.map { it2 ->
+            userOrderItemUIModel =
+                userOrderItemUIModel.copy(selectedUserOrders = selectedOrder.value,
+                    userOrderList = ordersResourceListEnvelopeViewModel!!.resources.value.map { it2 ->
                         it2.copy(
                             isSelected = it2.id == selectedOrder.value.id
                         )
@@ -168,11 +172,11 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                     LazyColumn(
                         modifier = Modifier.fillMaxWidth()
                             .padding(bottom = 50.dp)
-                            .height(getOrderViewHeight(customerOrderUIModel.customerOrderList.size).dp),
+                            .height(getOrderViewHeight(userOrderItemUIModel.userOrderList.size).dp),
                         userScrollEnabled = true
                     ) {
-                        itemsIndexed(items = customerOrderUIModel.customerOrderList) { it, item ->
-                            OrderItemList(mainViewModel, item)
+                        itemsIndexed(items = userOrderItemUIModel.userOrderList) { it, item ->
+                            OrderItemList(mainViewModel, item.customerOrder!!)
                             if (it == lastIndex && loadMoreState.value) {
                                 Box(
                                     modifier = Modifier.fillMaxWidth().height(60.dp),
@@ -197,9 +201,9 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                                     style = TextStyle()
                                 ) {
                                     if (ordersResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
-                                    /*    if (userId.value != -1L) {
-                                            orderPresenter.getMoreUserOrders(userId.value, nextPage = ordersResourceListEnvelopeViewModel!!.currentPage.value + 1)
-                                        }*/
+                                        if (userId != -1L) {
+                                            orderPresenter.getMoreUserOrders(userId!!, nextPage = ordersResourceListEnvelopeViewModel!!.currentPage.value + 1)
+                                        }
                                     }
                                 }
                             }

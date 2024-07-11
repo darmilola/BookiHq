@@ -17,11 +17,12 @@ import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import domain.Models.CustomerOrder
+import domain.Models.ItemComponent
 import presentation.widgets.OrderDetailList
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.PageBackNavWidget
 
-class OrderDetails(private val mainViewModel: MainViewModel,private val customerOrder: CustomerOrder) : Tab {
+class OrderDetails(private val mainViewModel: MainViewModel,private val itemList: ArrayList<ItemComponent>) : Tab {
 
     override val options: TabOptions
         @Composable
@@ -65,7 +66,7 @@ class OrderDetails(private val mainViewModel: MainViewModel,private val customer
                 }
 
             }
-            OrderDetailList(mainViewModel, customerOrder = customerOrder )
+            OrderDetailList(mainViewModel, itemList)
         }
     }
 }

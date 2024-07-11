@@ -34,10 +34,9 @@ class ProductRepositoryImpl(apiService: HttpClient): ProductRepository {
         day: Int,
         month: Int,
         year: Int,
-        orderItemJson: List<String>
+        orderItemJson: String
     ): Single<ServerResponse> {
         val param = CreateOrderRequest(vendorId, userId, deliveryMethod,day,month,year,paymentMethod,orderItemJson)
-        println("My Param is $param")
         return productNetworkService.createOrder(param)
     }
 

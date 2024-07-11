@@ -21,7 +21,6 @@ class OrderPresenter(apiService: HttpClient): OrderContract.Presenter() {
     }
 
     override fun getUserOrders(userId: Long) {
-        println("Called")
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
@@ -31,23 +30,19 @@ class OrderPresenter(apiService: HttpClient): OrderContract.Presenter() {
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     contractView?.showLce(ScreenUIStates(contentVisible = true))
-                                    println("My Result")
                                     contractView?.showUserOrders(result.listItem)
                                 }
                                 else{
-                                    println("Error3")
                                     contractView?.showLce(ScreenUIStates(errorOccurred = true))
                                 }
                             },
                             onError = {
-                                println("Error3 ${it.message}")
                                 it.message?.let { it1 -> contractView?.showLce(ScreenUIStates(errorOccurred = true)) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Error1 ${e.message}")
                 contractView?.showLce(ScreenUIStates(errorOccurred = true))
             }
         }

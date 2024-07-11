@@ -32,15 +32,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import domain.Models.CustomerOrder
-import domain.Models.OrderItem
+import domain.Models.ItemComponent
 import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 
 @Composable
-fun OrderItemDetail(mainViewModel: MainViewModel, customerOrder: CustomerOrder) {
+fun OrderItemDetail(mainViewModel: MainViewModel, itemList: ArrayList<ItemComponent>) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
@@ -50,10 +49,10 @@ fun OrderItemDetail(mainViewModel: MainViewModel, customerOrder: CustomerOrder) 
         ) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(1),
-                modifier = Modifier.fillMaxWidth().height((130 * 3).dp),
+                modifier = Modifier.fillMaxWidth().height((150 * 3).dp),
                 contentPadding = PaddingValues(6.dp)
             ) {
-                itemsIndexed(items = customerOrder.orderItems) { it, item ->
+                itemsIndexed(items = itemList) { it, item ->
                         OrderProductItemComponent(item)
                 }
             }
@@ -88,7 +87,7 @@ fun OrderItemDetail(mainViewModel: MainViewModel, customerOrder: CustomerOrder) 
     }
 
 @Composable
-fun OrderProductItemComponent(orderItem: OrderItem) {
+fun OrderProductItemComponent(itemComponent: ItemComponent) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 10.dp, bottom = 10.dp)
         .height(110.dp)
@@ -96,14 +95,14 @@ fun OrderProductItemComponent(orderItem: OrderItem) {
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Top
         ) {
-            OrderProductItemImage(orderItem)
-            OrderProductItemDescription(orderItem)
+            OrderProductItemImage()
+            OrderProductItemName(itemComponent)
         }
     }
 
 
 @Composable
-fun OrderProductItemImage(orderItem: OrderItem) {
+fun OrderProductItemImage() {
     val imageModifier =
         Modifier
             .fillMaxHeight()
@@ -134,7 +133,7 @@ fun OrderProductItemImage(orderItem: OrderItem) {
 
 
 @Composable
-fun OrderProductItemDescription(orderItem: OrderItem){
+fun OrderProductItemName(itemComponent: ItemComponent){
     val columnModifier = Modifier
         .padding(start = 10.dp, end = 10.dp)
         .fillMaxHeight()
@@ -150,7 +149,7 @@ fun OrderProductItemDescription(orderItem: OrderItem){
                 .wrapContentHeight()
 
             TextComponent(
-                text = orderItem.itemProduct!!.productDescription,
+                text = itemComponent.productName,
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
                 textStyle = TextStyle(),
@@ -160,15 +159,14 @@ fun OrderProductItemDescription(orderItem: OrderItem){
                 lineHeight = 25,
                 textModifier = modifier,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-            OrderProductItemQty(orderItem)
+                overflow = TextOverflow.Ellipsis)
+            OrderProductItemQty(itemComponent)
         }
     }
 
 
 @Composable
-fun OrderProductItemQty(orderItem: OrderItem) {
+fun OrderProductItemQty(itemComponent: ItemComponent) {
     Row(
         modifier = Modifier
             .height(40.dp)
@@ -177,7 +175,7 @@ fun OrderProductItemQty(orderItem: OrderItem) {
     ) {
 
         TextComponent(
-            text = orderItem.itemCount.toString()+"x",
+            text = itemComponent.itemCount.toString()+"x",
             fontSize = 18,
             fontFamily = GGSansSemiBold,
             textStyle = TextStyle(),
@@ -190,7 +188,7 @@ fun OrderProductItemQty(orderItem: OrderItem) {
                 .wrapContentSize())
 
         TextComponent(
-            text = orderItem.itemProduct!!.productPrice.toString()+"$",
+            text = itemComponent!!.productPrice.toString()+"$",
             fontSize = 20,
             fontFamily = GGSansRegular,
             textStyle = TextStyle(),

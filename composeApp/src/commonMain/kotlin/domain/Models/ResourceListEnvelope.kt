@@ -49,7 +49,7 @@ class ProductResourceListEnvelope(
 
 @Serializable
 class OrderResourceListEnvelope(
-    @SerialName("data") val resources: MutableList<CustomerOrder>? = null,
+    @SerialName("data") val resources: MutableList<UserOrders>? = null,
     @SerialName("next_page_url") val nextPageUrl: String? = null,
     @SerialName("prev_page_url") val prevPageUrl: String? = null,
     @SerialName("per_page") val perPage: String? = null,

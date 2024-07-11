@@ -14,7 +14,7 @@ data class CustomerOrder (
     @SerialName("vendor_id") val vendorId: Int? = null,
     @SerialName("orderStatus") val orderStatus: String? = "order_processing",
     @SerialName("paymentMethod") val paymentMethod: String = PaymentMethod.CARD_PAYMENT.toString(),
-    @SerialName("order_items") var orderItems: List<OrderItem> = arrayListOf(),
+    @SerialName("order_items") var orderItems: OrderItem? = null,
     val isSelected: Boolean = false): Parcelable
 
 data class CustomerItemUIModel(
