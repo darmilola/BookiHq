@@ -7,7 +7,7 @@ enum class Screens {
     CONSULTATION,
     CART,
     ORDERS,
-    CONNECT_VENDOR_PAGE,
+    CONNECT_VENDOR_TAB,
     CONSULTATION_ROOM,
     EDIT_PROFILE,
     VENDOR_INFO,
@@ -22,7 +22,7 @@ enum class Screens {
         CONSULTATION -> 2
         CART -> 3
         ORDERS -> 4
-        CONNECT_VENDOR_PAGE -> 5
+        CONNECT_VENDOR_TAB -> 5
         CONSULTATION_ROOM -> 6
         EDIT_PROFILE -> 7
         VENDOR_INFO -> 8

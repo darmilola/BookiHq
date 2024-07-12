@@ -24,7 +24,6 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
     }
 
     override fun getUserHomepage(userId: Long, vendorWhatsAppPhone: String) {
-        println("UserId $userId")
         val filteredStatusList = arrayListOf<VendorStatusModel>()
         contractView?.showLce(ScreenUIStates(loadingVisible = true))
         scope.launch(Dispatchers.Main) {

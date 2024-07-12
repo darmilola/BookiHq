@@ -4,7 +4,9 @@ import dev.jordond.compass.Place
 import domain.Models.VendorTime
 import UIStates.ActionUIStates
 import UIStates.ScreenUIStates
+import com.badoo.reaktive.single.Single
 import domain.Models.PlatformTime
+import domain.Models.ServerResponse
 
 class ProfileContract {
     interface View {
@@ -36,6 +38,8 @@ class ProfileContract {
         abstract fun registerPlatformContract(view: PlatformContract?)
         abstract fun getPlatformCities(country: String)
         abstract fun getVendorAvailability(vendorId: Long)
+       abstract fun switchVendor(userId: Long, vendorId: Long, action: String,
+                         exitReason: String)
         abstract fun getUserLocation(lat: Double, lng: Double)
         abstract fun createMeeting(meetingTitle: String,userId: Long, vendorId: Long, serviceStatus: String, appointmentType: String,
                                    appointmentTime: Int, day: Int, month: Int, year: Int, meetingDescription: String)

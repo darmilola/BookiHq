@@ -7,7 +7,7 @@ import domain.Models.Vendor
 import domain.Models.VendorListDataResponse
 
 interface ConnectVendorRepository {
-    suspend fun connectVendor(userId: Long, vendorId: Long): Single<ServerResponse>
+    suspend fun connectVendor(userId: Long, vendorId: Long, action: String): Single<ServerResponse>
     suspend fun getVendor(country: String, nextPage: Int = 1): Single<VendorListDataResponse>
     suspend fun searchVendor(country: String,searchQuery: String, nextPage: Int = 1): Single<VendorListDataResponse>
 }

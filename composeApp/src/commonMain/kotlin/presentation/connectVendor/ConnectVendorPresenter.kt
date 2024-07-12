@@ -19,12 +19,12 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
     override fun registerUIContract(view: ConnectVendorContract.View?) {
          contractView = view
     }
-    override fun connectVendor(userId: Long, vendorId: Long) {
+    override fun connectVendor(userId: Long, vendorId: Long, action: String) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showLce(ScreenUIStates(loadingVisible = true))
-                    connectVendorRepositoryImpl.connectVendor(userId,vendorId)
+                    connectVendorRepositoryImpl.connectVendor(userId,vendorId,action)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){

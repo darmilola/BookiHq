@@ -169,7 +169,7 @@ fun ConnectTitle(title: String){
 
 
 @Composable
-fun BusinessInfoContent(vendor: Vendor,isUserAuthenticated: Boolean = false, onConnectedListener: () -> Unit) {
+fun BusinessInfoContent(vendor: Vendor, onConnectedListener: () -> Unit) {
     val columnModifier = Modifier
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .padding(start = 10.dp, end = 10.dp)
@@ -329,8 +329,6 @@ fun BusinessInfoContent(vendor: Vendor,isUserAuthenticated: Boolean = false, onC
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        if (isUserAuthenticated) {
-
                             ButtonComponent(
                                 modifier = buttonStyle,
                                 buttonText = "Connect",
@@ -343,7 +341,6 @@ fun BusinessInfoContent(vendor: Vendor,isUserAuthenticated: Boolean = false, onC
                             ) {
                                 onConnectedListener()
                             }
-                        }
                 }
             }
         }

@@ -10,8 +10,8 @@ import io.ktor.client.HttpClient
  class ConnectVendorRepositoryImpl(apiService: HttpClient): ConnectVendorRepository {
 
      private val connectVendorNetworkService: ConnectVendorNetworkService = ConnectVendorNetworkService(apiService)
-    override suspend fun connectVendor(userId: Long, vendorId: Long): Single<ServerResponse> {
-        val param = ConnectVendorRequest(userId, vendorId)
+    override suspend fun connectVendor(userId: Long, vendorId: Long, action: String): Single<ServerResponse> {
+        val param = ConnectVendorRequest(userId, vendorId, action)
         return connectVendorNetworkService.connectVendor(param)
     }
 

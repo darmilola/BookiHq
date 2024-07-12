@@ -67,4 +67,14 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
             setBody(createMeetingRequest)
         }.body<ServerResponse>().toSingle()
 
+    suspend fun switchVendor(switchVendorRequest: SwitchVendorRequest) =
+        apiService.post {
+            url("/profile/vendor/switch")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(switchVendorRequest)
+        }.body<ServerResponse>().toSingle()
+
 }

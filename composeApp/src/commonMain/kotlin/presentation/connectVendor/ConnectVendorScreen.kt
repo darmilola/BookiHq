@@ -62,7 +62,6 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
     @Transient private var connectPageViewModel: ConnectPageViewModel? = null
     @Transient private var vendorResourceListEnvelopeViewModel: VendorsResourceListEnvelopeViewModel? = null
     private var country: String = ""
-    private var city: String = ""
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow

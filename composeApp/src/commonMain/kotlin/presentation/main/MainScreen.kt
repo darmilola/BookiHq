@@ -9,12 +9,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
-import cafe.adriel.voyager.transitions.SlideTransition
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
@@ -29,13 +25,12 @@ import presentation.bookings.BookingScreen
 import presentation.bookings.PendingAppointmentsTab
 import presentation.Products.CartTab
 import presentation.profile.EditProfile
-import presentation.connectVendor.ConnectPageTab
+import presentation.connectVendor.ConnectVendorTab
 import presentation.connectVendor.SwitchVendorDetailsTab
 import presentation.consultation.ConsultationScreen
 import presentation.consultation.VirtualConsultationRoom
 import presentation.dialogs.LoadingDialog
 import presentation.account.JoinASpa
-import presentation.authentication.WelcomeScreen
 import presentation.profile.TalkWithATherapist
 import presentation.therapist.TherapistDashboardTab
 import presentation.viewmodels.MainViewModel
@@ -111,8 +106,8 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
                 Screens.ORDERS.toPath() -> {
                     it.current = Orders(mainViewModel!!)
                 }
-                Screens.CONNECT_VENDOR_PAGE.toPath() -> {
-                    it.current = ConnectPageTab(mainViewModel!!, platformNavigator)
+                Screens.CONNECT_VENDOR_TAB.toPath() -> {
+                    it.current = ConnectVendorTab(mainViewModel!!, platformNavigator)
                 }
                 Screens.CONSULTATION_ROOM.toPath() -> {
                     it.current = VirtualConsultationRoom(mainViewModel!!)

@@ -27,6 +27,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _currentUnsavedOrderSize =  savedStateHandle.getStateFlow("currentUnsavedOrderSize", 0)
     private var _currentMainDisplayTab =  savedStateHandle.getStateFlow("displayedTab", MainTabEnum.HOME.toPath())
     private var _isSearchProductState =  savedStateHandle.getStateFlow("isSearchProduct", false)
+    private var _switchVendorId =  savedStateHandle.getStateFlow("switchVendorId", -1L)
+    private var _switchVendorReason =  savedStateHandle.getStateFlow("switchVendorReason", "")
+
 
     val screenTitle: StateFlow<String>
         get() = _screenTitle
@@ -51,6 +54,11 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     val connectedVendor: StateFlow<Vendor>
         get() = _connectedVendor
 
+    val switchVendorId: StateFlow<Long>
+        get() = _switchVendorId
+    val switchVendorReason: StateFlow<String>
+        get() = _switchVendorReason
+
     val vendorId: StateFlow<Long>
         get() = _currentVendorId
 
@@ -66,6 +74,14 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     fun setTitle(newTitle: String) {
         savedStateHandle["screenTitle"] = newTitle
+    }
+
+    fun setSwitchVendorID(vendorId: Long) {
+        savedStateHandle["switchVendorId"] = vendorId
+    }
+
+    fun setSwitchVendorReason(switchReason: String) {
+        savedStateHandle["switchVendorReason"] = switchReason
     }
 
     fun setIsSearchProduct(isSearching: Boolean) {

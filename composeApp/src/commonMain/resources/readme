@@ -62,3 +62,5 @@
       UIStates --- actionUiStateViewModel handle actions carried out, screenUIStateViewModel handles screen loading,
       both can publish text to display
       dialog should be displayed inside content method of composable
+
+      -- database by default for id

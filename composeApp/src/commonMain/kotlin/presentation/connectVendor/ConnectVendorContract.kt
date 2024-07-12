@@ -16,7 +16,7 @@ class ConnectVendorContract {
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
-        abstract fun connectVendor(userId: Long, vendorId: Long)
+        abstract fun connectVendor(userId: Long, vendorId: Long, action: String)
         abstract fun getVendor(country: String)
         abstract fun getMoreVendor(country: String,nextPage: Int = 1)
         abstract fun searchVendor(country: String, searchQuery: String)

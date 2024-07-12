@@ -24,7 +24,7 @@ import presentation.widgets.TitleWidget
 @Composable
 fun ConnectVendorHeader(mainViewModel: MainViewModel? = null){
     Column(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally) {
         ConnectBusinessTitle(mainViewModel)
         ConnectBusinessDescription()
@@ -38,7 +38,7 @@ fun ConnectBusinessTitle(mainViewModel: MainViewModel?){
         .height(40.dp)
 
     val colModifier = Modifier
-        .padding(top = 55.dp, end = 0.dp)
+        .padding(top = 20.dp, end = 0.dp)
         .fillMaxWidth()
         .height(40.dp)
 
@@ -76,6 +76,7 @@ fun ConnectBusinessTitle(mainViewModel: MainViewModel?){
 fun BusinessInfoTitle(mainViewModel: MainViewModel?){
     val rowModifier = Modifier
         .fillMaxWidth()
+        .padding(top = 20.dp)
         .height(40.dp)
 
         Row(modifier = rowModifier,
@@ -91,7 +92,7 @@ fun BusinessInfoTitle(mainViewModel: MainViewModel?){
             Box(modifier =  Modifier.weight(3.0f)
                 .fillMaxHeight(),
                 contentAlignment = Alignment.Center) {
-                TitleWidget(title = "Details", textColor = Colors.primaryColor)
+                TitleWidget(title = "Vendor Details", textColor = Colors.primaryColor)
 
             }
 
@@ -106,7 +107,7 @@ fun BusinessInfoTitle(mainViewModel: MainViewModel?){
 @Composable
 fun leftTopBarItem(mainViewModel: MainViewModel) {
     PageBackNavWidget {
-        mainViewModel.setScreenNav(Pair(Screens.CONNECT_VENDOR_PAGE.toPath(), Screens.MAIN_TAB.toPath()))
+        mainViewModel.setScreenNav(Pair(Screens.CONNECT_VENDOR_TAB.toPath(), Screens.MAIN_TAB.toPath()))
     }
 }
 
@@ -115,6 +116,9 @@ fun leftTopBarItem(mainViewModel: MainViewModel) {
 fun InfoPageLeftTopBarItem(mainViewModel: MainViewModel?) {
     PageBackNavWidget {
         when (mainViewModel?.screenNav?.value?.first) {
+            Screens.MAIN_TAB.toPath() -> {
+                mainViewModel.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.MAIN_TAB.toPath()))
+            }
             Screens.BOOKING.toPath() -> {
                 mainViewModel.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.BOOKING.toPath()))
             }
@@ -124,8 +128,8 @@ fun InfoPageLeftTopBarItem(mainViewModel: MainViewModel?) {
             Screens.JOIN_SPA.toPath() -> {
                 mainViewModel.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.JOIN_SPA.toPath()))
             }
-            Screens.CONNECT_VENDOR_PAGE.toPath() -> {
-                mainViewModel.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.CONNECT_VENDOR_PAGE.toPath()))
+            Screens.CONNECT_VENDOR_TAB.toPath() -> {
+                mainViewModel.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.CONNECT_VENDOR_TAB.toPath()))
             }
             else -> {
                 // navigator.current = MainTab(mainViewModel)

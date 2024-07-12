@@ -452,27 +452,8 @@ fun TherapistDisplayItem(therapistInfo: TherapistInfo) {
                         overflow = TextOverflow.Ellipsis,
                         textModifier = Modifier.wrapContentSize().padding(start = 10.dp, end = 10.dp))
                 }
-                Row (horizontalArrangement = Arrangement.Center,
-                    verticalAlignment  = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(start = 5.dp)
-                        .width(60.dp)
-                        .border(BorderStroke(1.dp, Colors.primaryColor), shape = RoundedCornerShape(5.dp))
-                        .height(24.dp)) {
-                    ImageComponent(imageModifier = Modifier.size(10.dp).padding(bottom = 2.dp), imageRes = "drawable/star_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
-                    TextComponent(
-                        text = therapistInfo.rating.toString(),
-                        fontSize = 12,
-                        fontFamily = GGSansRegular,
-                        textStyle = MaterialTheme.typography.h6,
-                        textColor = Colors.primaryColor,
-                        textAlign = TextAlign.Left,
-                        fontWeight = FontWeight.Medium,
-                        textModifier = Modifier.padding(start = 3.dp))
-                }
 
             }
-
 
         }
     }

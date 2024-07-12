@@ -34,6 +34,7 @@ import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
+import domain.Enums.Screens
 import domain.Models.PlatformNavigator
 import domain.Models.Vendor
 import domain.Models.VendorItemUIModel
@@ -51,16 +52,15 @@ import presentation.viewmodels.VendorsResourceListEnvelopeViewModel
 import presentation.widgets.SwitchVendorBottomSheet
 import theme.Colors
 
-class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: PlatformNavigator? = null) : Tab, KoinComponent {
+class ConnectVendorTab(val mainViewModel: MainViewModel, val platformNavigator: PlatformNavigator? = null) : Tab, KoinComponent {
 
-    private val preferenceSettings: Settings = Settings()
+
     private val connectVendorPresenter: ConnectVendorPresenter by inject()
     private var uiStateViewModel: UIStateViewModel? = null
     private var connectPageViewModel: ConnectPageViewModel? = null
     private var vendorResourceListEnvelopeViewModel: VendorsResourceListEnvelopeViewModel? = null
-    private var userEmail: String = ""
-    private var countryId: Int = -1
-    private var cityId: Int = -1
+    private var country: String = ""
+    private val preferenceSettings: Settings = Settings()
 
     override val options: TabOptions
         @Composable
@@ -81,9 +81,15 @@ class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: Pl
         val contentLoading = remember { mutableStateOf(false) }
         val errorVisible = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
-        userEmail = preferenceSettings["userEmail", ""]
-        countryId = preferenceSettings["countryId", -1]
-        cityId = preferenceSettings["cityId", -1]
+        country = preferenceSettings["country", ""]
+
+        if (vendorResourceListEnvelopeViewModel == null) {
+            vendorResourceListEnvelopeViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    VendorsResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
+                })
+        }
+
 
         if (uiStateViewModel == null) {
             uiStateViewModel = kmpViewModel(
@@ -91,7 +97,8 @@ class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: Pl
                     UIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
-            //connectVendorPresenter.getVendor(countryId = countryId, cityId = cityId)
+            vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+            connectVendorPresenter.getVendor(country = country)
         }
 
         if (connectPageViewModel == null) {
@@ -100,13 +107,6 @@ class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: Pl
                     ConnectPageViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
-        }
-
-        if (vendorResourceListEnvelopeViewModel == null) {
-            vendorResourceListEnvelopeViewModel = kmpViewModel(
-                factory = viewModelFactory {
-                    VendorsResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
-                })
         }
 
         val loadMoreState = vendorResourceListEnvelopeViewModel!!.isLoadingMore.collectAsState()
@@ -143,22 +143,26 @@ class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: Pl
                 errorVisible.value = true
                 contentLoading.value = false
             },
-            onConnected = {
-
-            })
+            onConnected = {})
         handler.init()
 
         var showSwitchReasonBottomSheet by remember { mutableStateOf(false) }
 
         if (showSwitchReasonBottomSheet) {
             SwitchVendorBottomSheet(onDismiss = {
-                  showSwitchReasonBottomSheet = false
+                showSwitchReasonBottomSheet = false
             }, onConfirmation = {
-
+                mainViewModel.setSwitchVendorReason(it)
+                showSwitchReasonBottomSheet = false
+                mainViewModel!!.setScreenNav(
+                    Pair(
+                        Screens.CONNECT_VENDOR_TAB.toPath(),
+                        Screens.VENDOR_INFO.toPath()
+                    )
+                )
             })
 
-          }
-
+        }
 
 
         Scaffold(
@@ -170,9 +174,10 @@ class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: Pl
                     SearchBar(placeholderText = "search @vendor", onValueChange = {
                         vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                         searchQuery.value = it
-                       // connectVendorPresenter.searchVendor(countryId,cityId, searchQuery = it)
+                        connectVendorPresenter.searchVendor(country, searchQuery = it)
                     }, onBackPressed = {
-
+                        vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
+                        connectVendorPresenter.getVendor(country = country)
                     })
                 }
             },
@@ -181,7 +186,7 @@ class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: Pl
                     //Content Loading
                     Box(
                         modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                            .padding(top = 40.dp, start = 50.dp, end = 50.dp)
+                            .padding(start = 50.dp, end = 50.dp)
                             .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
                         contentAlignment = Alignment.Center
                     ) {
@@ -193,13 +198,14 @@ class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: Pl
 
                 } else if (contentVisible.value) {
                     LazyColumn(
-                        modifier = Modifier.padding(top = 10.dp, bottom = 40.dp).fillMaxWidth()
+                        modifier = Modifier.padding(top = 10.dp).fillMaxWidth()
                             .height(getVendorListItemViewHeight(vendorUIModel.vendorsList).dp),
                         contentPadding = PaddingValues(6.dp),
                         verticalArrangement = Arrangement.spacedBy(5.dp), userScrollEnabled = true
                     ) {
                         items(vendorUIModel.vendorsList.size) { i ->
                             SwitchVendorBusinessItemComponent(vendor = vendorUIModel.vendorsList[i]) {
+                                mainViewModel.setSwitchVendorID(it.vendorId!!)
                                 showSwitchReasonBottomSheet = true
                             }
                             if (i == lastIndex && loadMoreState.value) {
@@ -212,7 +218,7 @@ class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: Pl
                             }
                             else if (i == lastIndex && (displayedVendorsCount!!.value < totalVendorsCount!!.value)) {
                                 val buttonStyle = Modifier
-                                    .height(60.dp)
+                                    .height(50.dp)
                                     .fillMaxWidth()
                                     .padding(top = 10.dp, start = 10.dp, end = 10.dp)
 
@@ -226,20 +232,20 @@ class ConnectPageTab(val mainViewModel: MainViewModel, val platformNavigator: Pl
                                     textColor = Colors.primaryColor,
                                     style = TextStyle()
                                 ) {
-                                    /*if (!vendorResourceListEnvelopeViewModel?.nextPageUrl?.value.isNullOrEmpty()) {
+                                    if (!vendorResourceListEnvelopeViewModel?.nextPageUrl?.value.isNullOrEmpty()) {
                                         if (searchQuery.value.isNotEmpty()) {
                                             connectVendorPresenter.searchMoreVendors(
-                                                countryId, cityId,
+                                                country,
                                                 searchQuery.value,
                                                 vendorResourceListEnvelopeViewModel?.currentPage?.value!! + 1
                                             )
                                         } else {
                                             connectVendorPresenter.getMoreVendor(
-                                                countryId, cityId,
+                                                country,
                                                 vendorResourceListEnvelopeViewModel?.currentPage?.value!! + 1
                                             )
                                         }
-                                    }*/
+                                    }
                                 }
                             }
                         }

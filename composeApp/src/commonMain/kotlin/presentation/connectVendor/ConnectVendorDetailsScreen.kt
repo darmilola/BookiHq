@@ -24,6 +24,7 @@ import presentation.main.MainScreen
 import presentation.viewmodels.UIStateViewModel
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.set
+import domain.Enums.CustomerMovementEnum
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.VendorInfoPageHandler
 import utils.ParcelableScreen
@@ -93,9 +94,9 @@ class ConnectVendorDetailsScreen(val vendor: Vendor, val  platformNavigator: Pla
                 })
             },
             content = {
-                BusinessInfoContent(vendor, isUserAuthenticated = true) {
+                BusinessInfoContent(vendor) {
                     if (userId != -1L) {
-                        connectVendorPresenter.connectVendor(userId, vendor.vendorId!!)
+                        connectVendorPresenter.connectVendor(userId, vendor.vendorId!!, action = CustomerMovementEnum.Entry.toPath())
                     }
                 }
             },

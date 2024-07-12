@@ -11,6 +11,7 @@ import kotlinx.coroutines.withContext
 import com.badoo.reaktive.single.subscribe
 import UIStates.ActionUIStates
 import UIStates.ScreenUIStates
+import domain.Enums.ServerResponseEnum
 
 
 class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
@@ -153,6 +154,37 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
             } catch(e: Exception) {
                 println("Error 3 ${e.message}")
                 meetingViewContract?.showLce(ScreenUIStates(errorOccurred = true))
+            }
+        }
+    }
+
+    override fun switchVendor(userId: Long, vendorId: Long, action: String, exitReason: String) {
+        println("Error -1")
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    contractView?.showActionLce(ActionUIStates(isLoading = true))
+                    profileRepositoryImpl.switchVendor(userId, vendorId, action, exitReason)
+                        .subscribe(
+                            onSuccess = { result ->
+                                println("Error 0 $result")
+                                if (result?.status == ServerResponseEnum.SUCCESS.toPath()){
+                                    contractView?.showActionLce(ActionUIStates(isSuccess = true))
+                                }
+                                else{
+                                    contractView?.showActionLce(ActionUIStates(isFailed = true))
+                                }
+                            },
+                            onError = {
+                                println("Error 2 ${it.message}")
+                                contractView?.showActionLce(ActionUIStates(isFailed = true))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                println("Error 2 ${e.message}")
+                contractView?.showActionLce(ActionUIStates(isFailed = true))
             }
         }
     }

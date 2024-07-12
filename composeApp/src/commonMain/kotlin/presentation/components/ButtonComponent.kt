@@ -175,14 +175,14 @@ public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStr
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-public fun bottomSheetIconButtonComponent(modifier: Modifier, buttonText: String, borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, iconSize: Int = 28, colorFilter: ColorFilter? = null, onClick: (() -> Unit)? = null) {
+fun bottomSheetIconButtonComponent(modifier: Modifier, buttonText: String, borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, iconSize: Int = 28, colorFilter: ColorFilter? = null, onClick: (String) -> Unit) {
     val rowModifier = Modifier
         .fillMaxWidth()
 
     Button(
         onClick = {
             if (onClick != null) {
-                onClick()
+                onClick(buttonText)
             }
         },
         border = borderStroke,

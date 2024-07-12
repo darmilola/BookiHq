@@ -18,6 +18,10 @@ data class UpdateProfileRequest(@SerialName("firstname") val firstname: String,
 data class DeleteProfileRequest(@SerialName("userEmail") val userEmail: String)
 
 @Serializable
+data class SwitchVendorRequest(@SerialName("userId") val userId: Long, @SerialName("vendorId") val vendorId: Long,
+                               @SerialName("action") val action: String, @SerialName("exit_reason") val exitReason: String)
+
+@Serializable
 data class GetPlatformCitiesRequest(@SerialName("country") val country: String)
 
 @Serializable
