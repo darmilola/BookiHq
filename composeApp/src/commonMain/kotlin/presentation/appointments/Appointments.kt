@@ -1,11 +1,10 @@
 package presentation.appointments
 
 import StackedSnackbarHost
+import UIStates.ActionUIStates
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -53,7 +52,8 @@ import presentation.viewmodels.UIStateViewModel
 import UIStates.ScreenUIStates
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
-import presentation.viewmodels.HomePageViewModel
+import presentation.dialogs.ErrorDialog
+import presentation.dialogs.SuccessDialog
 import presentation.widgets.MeetingAppointmentWidget
 import presentation.widgets.AppointmentWidget
 import utils.getAppointmentViewHeight
@@ -69,9 +69,10 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
     private var uiStateViewModel: UIStateViewModel? = null
     private var deleteActionUIStateViewModel: ActionUIStateViewModel? = null
     private var postponeActionUIStateViewModel: ActionUIStateViewModel? = null
-    private var availabilityActionUIStateViewModel: ActionUIStateViewModel? = null
+    private var postponeTimeUIStateViewModel: ActionUIStateViewModel? = null
     private var joinMeetingActionUIStateViewModel: ActionUIStateViewModel? = null
     private var postponementViewModel: PostponementViewModel? = null
+    private var mainViewModel: MainViewModel? = null
     private var appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel? = null
 
 
@@ -91,13 +92,15 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
             }
         }
 
-
+    fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
 
     @Composable
     override fun Content() {
 
 
-        val userId = 14L
+        val userId = mainViewModel!!.currentUserInfo.value.userId
 
         if (appointmentResourceListEnvelopeViewModel == null) {
             appointmentResourceListEnvelopeViewModel = kmpViewModel(
@@ -137,8 +140,8 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
             )
         }
 
-        if (availabilityActionUIStateViewModel == null) {
-            availabilityActionUIStateViewModel = kmpViewModel(
+        if (postponeTimeUIStateViewModel == null) {
+            postponeTimeUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
@@ -174,7 +177,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
 
         val uiState = uiStateViewModel!!.uiStateInfo.collectAsState()
         val deleteActionUIStates = deleteActionUIStateViewModel!!.deleteUIStateInfo.collectAsState()
-        val postponeActionUIStates = postponeActionUIStateViewModel!!.postponeUIStateInfo.collectAsState()
+        val postponeActionUIStates = postponementViewModel!!.postponementViewUIState.collectAsState()
         val joinMeetingActionUIStates = joinMeetingActionUIStateViewModel!!.joinMeetingStateInfo.collectAsState()
 
         val lastIndex = appointmentList?.value?.size?.minus(1)
@@ -187,7 +190,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
             }
             else {
                 appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                appointmentPresenter.getUserAppointments(userId)
+                appointmentPresenter.getUserAppointments(userId!!)
             }
 
         }
@@ -214,27 +217,21 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
             }
         }
         else if (postponeActionUIStates.value.isSuccess) {
-            ShowSnackBar(title = "Successful",
-                description = "Your Have Successfully Postponed Your Appointment",
-                actionLabel = "",
-                duration = StackedSnackbarDuration.Short,
-                snackBarType = SnackBarType.SUCCESS,
-                stackedSnackBarHostState,
-                onActionClick = {})
-            appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-            if (userId != -1L) {
-                appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                appointmentPresenter.getUserAppointments(userId)
+            println("Loading...")
+            Box(modifier = Modifier.fillMaxWidth()) {
+                SuccessDialog("Appointment Postponed", "Close", onConfirmation = {
+                    appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                    appointmentPresenter.getUserAppointments(userId!!)
+                    postponementViewModel!!.setPostponementViewUIState(ActionUIStates(isDefault = true))
+                })
             }
         }
+
         else if (postponeActionUIStates.value.isFailed) {
-            ShowSnackBar(title = "Failed",
-                description = postponeActionUIStates.value.errorMessage,
-                actionLabel = "",
-                duration = StackedSnackbarDuration.Short,
-                snackBarType = SnackBarType.SUCCESS,
-                stackedSnackBarHostState,
-                onActionClick = {})
+            Box(modifier = Modifier.fillMaxWidth()) {
+                println("Called Me")
+                ErrorDialog("Error Postponing Appointment", "Close", onConfirmation = {})
+            }
         }
         if (deleteActionUIStates.value.isLoading) {
             Box(modifier = Modifier.fillMaxWidth()) {
@@ -242,28 +239,16 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
             }
         }
         else if (deleteActionUIStates.value.isSuccess) {
-            ShowSnackBar(title = "Successful",
-                description = "Delete Successful",
-                actionLabel = "",
-                duration = StackedSnackbarDuration.Short,
-                snackBarType = SnackBarType.SUCCESS,
-                stackedSnackBarHostState,
-                onActionClick = {})
-            appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-            if (userId != -1L) {
-                appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                appointmentPresenter.getUserAppointments(userId)
+            Box(modifier = Modifier.fillMaxWidth()) {
+                SuccessDialog("Delete Successful", "Close", onConfirmation = {
+                    appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                    appointmentPresenter.getUserAppointments(userId!!)
+                    deleteActionUIStateViewModel!!.switchActionDeleteUIState(ActionUIStates(isDefault = true))
+                })
             }
-
         }
         else if (deleteActionUIStates.value.isFailed) {
-            ShowSnackBar(title = "Failed",
-                description = deleteActionUIStates.value.errorMessage,
-                actionLabel = "",
-                duration = StackedSnackbarDuration.Short,
-                snackBarType = SnackBarType.SUCCESS,
-                stackedSnackBarHostState,
-                onActionClick = {})
+            ErrorDialog("Error Deleting Appointment", "Close", onConfirmation = {})
         }
 
 
@@ -294,7 +279,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                     uiStateViewModel!!,
                     deleteActionUIStateViewModel!!,
                     joinMeetingActionUIStateViewModel!!,
-                    availabilityActionUIStateViewModel!!,
+                    postponeTimeUIStateViewModel!!,
                     postponementViewModel!!,
                     appointmentPresenter,
                     onMeetingTokenReady = {
@@ -319,7 +304,6 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
 
                 } else if (uiState.value.emptyContent) {
 
-
                     //Error Occurred display reload
 
                 }
@@ -342,8 +326,12 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                                             item.resources!!,
                                             appointmentPresenter = appointmentPresenter,
                                             postponementViewModel = postponementViewModel,
-                                            availabilityActionUIStateViewModel!!,
-                                            isFromHomeTab = false
+                                            mainViewModel = mainViewModel!!,
+                                            postponeTimeUIStateViewModel!!,
+                                            isFromHomeTab = false,
+                                            onDeleteAppointment = {
+                                                appointmentPresenter.deleteAppointment(it.appointmentId!!)
+                                            }
                                         )
                                     }
                                     if (it == lastIndex && loadMoreState.value) {
@@ -372,7 +360,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                                             if (appointmentResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
                                                 if (userId != -1L) {
                                                     appointmentPresenter.getMoreAppointments(
-                                                        userId,
+                                                        userId!!,
                                                         nextPage = appointmentResourceListEnvelopeViewModel!!.currentPage.value + 1
                                                     )
                                                 }

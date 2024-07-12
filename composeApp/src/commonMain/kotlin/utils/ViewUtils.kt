@@ -124,3 +124,32 @@ ArrayList<PlatformTime>{
 
 }
 
+
+fun calculateTherapistServiceTimes(platformTimes: List<PlatformTime>, vendorTimes: List<VendorTime>, bookedAppointment: List<Appointment>):
+        ArrayList<PlatformTime>{
+
+
+    val workingHours: ArrayList<PlatformTime> = arrayListOf()
+    val vendorWorkingHours: ArrayList<Int> = arrayListOf()
+    val bookedHours: ArrayList<Int> = arrayListOf()
+
+    vendorTimes.forEach {
+        vendorWorkingHours.add(it.platformTime?.id!!)
+    }
+       bookedAppointment.forEach {
+           bookedHours.add(it.platformTime?.id!!)
+        }
+
+    platformTimes.map {
+        if (it.id in vendorWorkingHours && it.id !in bookedHours){
+            workingHours.add(it.copy(isEnabled = true))
+        }
+        else{
+            workingHours.add(it)
+        }
+    }
+
+    return workingHours
+
+}
+

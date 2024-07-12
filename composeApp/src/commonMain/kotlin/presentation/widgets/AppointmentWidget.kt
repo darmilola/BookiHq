@@ -46,12 +46,13 @@ import domain.Models.TherapistInfo
 import presentation.appointments.AppointmentPresenter
 import presentation.dialogs.PostponeDialog
 import presentation.viewmodels.ActionUIStateViewModel
+import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun AppointmentWidget(appointment: Appointment, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, availabilityActionUIStateViewModel: ActionUIStateViewModel, isFromHomeTab: Boolean) {
+fun AppointmentWidget(appointment: Appointment, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, mainViewModel: MainViewModel, availabilityActionUIStateViewModel: ActionUIStateViewModel, isFromHomeTab: Boolean,onDeleteAppointment: (Appointment) -> Unit) {
 
     val serviceAppointmentStatus = appointment.serviceStatus
     val serviceMenuItems = arrayListOf<String>()
@@ -59,11 +60,11 @@ fun AppointmentWidget(appointment: Appointment, appointmentPresenter: Appointmen
         var actionItem = ""
         actionItem = when (serviceAppointmentStatus) {
             ServiceStatusEnum.POSTPONED.toPath() -> {
-                "Postpone"
+                "Delete"
             }
 
             else -> {
-                "Delete"
+                "Postpone"
             }
         }
 
@@ -125,7 +126,10 @@ fun AppointmentWidget(appointment: Appointment, appointmentPresenter: Appointmen
                         appointmentPresenter,
                         postponementViewModel,
                         availabilityActionUIStateViewModel,
-                        isFromHomeTab)
+                        mainViewModel = mainViewModel,
+                        isFromHomeTab, onDeleteAppointment = {
+                            onDeleteAppointment(it)
+                        })
                     AttachAppointmentContent(appointment)
                 }
             }
@@ -197,7 +201,7 @@ fun MeetingAppointmentWidget(appointment: Appointment, appointmentPresenter: App
 
 @Composable
 fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment, menuItems: ArrayList<String>, presenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null,
-                                   availabilityActionUIStateViewModel: ActionUIStateViewModel, isFromHomeTab: Boolean = false) {
+                                   availabilityActionUIStateViewModel: ActionUIStateViewModel, mainViewModel: MainViewModel, isFromHomeTab: Boolean = false, onDeleteAppointment: (Appointment) -> Unit) {
     val expandedMenuItem = remember { mutableStateOf(false) }
     val openPostponeDialog = remember { mutableStateOf(false) }
 
@@ -205,7 +209,7 @@ fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String
         openPostponeDialog.value -> {
             if (presenter != null && postponementViewModel != null) {
                 postponementViewModel.setCurrentAppointment(appointment)
-                PostponeDialog(appointment,presenter, postponementViewModel, availabilityActionUIStateViewModel, onDismissRequest = {
+                PostponeDialog(appointment,presenter, postponementViewModel, mainViewModel = mainViewModel, availabilityActionUIStateViewModel, onDismissRequest = {
                     openPostponeDialog.value = false
                 }, onConfirmation = {
                     openPostponeDialog.value = false
@@ -277,7 +281,7 @@ fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String
                                if (title.contentEquals("Postpone", true)) {
                                    openPostponeDialog.value = true
                                } else if (title.contentEquals("Delete", true)) {
-                                   presenter?.deleteAppointment(appointment.appointmentId!!)
+                                   onDeleteAppointment(appointment)
                                }
                            }) {
                            SubtitleTextWidget(text = title, fontSize = 16)

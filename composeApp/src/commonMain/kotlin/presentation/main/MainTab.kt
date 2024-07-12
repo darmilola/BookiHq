@@ -154,8 +154,10 @@ class MainTab(private val platformNavigator: PlatformNavigator): Tab, KoinCompon
                                 ) {
                                     isBottomNavSelected = true
                                 }
+                                appointmentsTab = AppointmentsTab(platformNavigator)
+                                appointmentsTab!!.setMainViewModel(mainViewModel!!)
                                 TabNavigationItem(
-                                    AppointmentsTab(platformNavigator = platformNavigator),
+                                    appointmentsTab!!,
                                     selectedImage = "drawable/appointment_icon.png",
                                     unselectedImage = "drawable/appointment_outline.png",
                                     labelText = "History",

@@ -17,6 +17,7 @@ class ActionUIStates(
     val isLoading: Boolean = false,
     val isSuccess: Boolean = false,
     val isFailed: Boolean = false,
+    val isDefault: Boolean = false,
     val loadingMessage: String = "",
     val successMessage: String = "",
     val errorMessage: String = ""): Parcelable

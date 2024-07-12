@@ -12,5 +12,5 @@ interface AppointmentRepository {
     suspend fun postponeAppointment(appointment: Appointment, appointmentTime: Int,  day: Int, month: Int, year: Int): Single<ServerResponse>
     suspend fun deleteAppointment(appointmentId: Int): Single<ServerResponse>
     suspend fun joinMeeting(customParticipantId: String, presetName: String, meetingId: String): Single<JoinMeetingResponse>
-    suspend fun getTherapistAvailability(specialistId: Int, day: Int, month: Int, year: Int): Single<TherapistAvailabilityResponse>
+    suspend fun getTherapistAvailability(therapistId: Int,vendorId: Long,day: Int, month: Int, year: Int): Single<TherapistAvailabilityResponse>
 }

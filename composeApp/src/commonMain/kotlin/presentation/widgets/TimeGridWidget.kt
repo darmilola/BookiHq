@@ -84,6 +84,46 @@ fun TimeGrid(platformTimes: List<PlatformTime>? = arrayListOf(), selectedTime: P
     }
 }
 
+
+@Composable
+fun PostponeTimeGrid(platformTimes: List<PlatformTime>? = arrayListOf(), onWorkHourClickListener: (PlatformTime) -> Unit) {
+
+    var workHourUIModel by remember {
+        mutableStateOf(
+            PlatformTimeUIModel(
+                selectedTime = PlatformTime(),
+                platformTimes!!
+            )
+        )
+    }
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            modifier = Modifier.fillMaxWidth().height(300.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+            userScrollEnabled = false,
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            items(workHourUIModel.visibleTime.size) { i ->
+                TimeItem(workHourUIModel.visibleTime[i], onWorkHourClickListener = { it ->
+                    onWorkHourClickListener(it)
+                    workHourUIModel = workHourUIModel.copy(
+                        selectedTime = it,
+                        visibleTime = workHourUIModel.visibleTime.map { it2 ->
+                            it2.copy(
+                                isSelected = it2.id == it.id
+                            )
+                        }
+
+                    )
+                })
+            }
+        }
+    }
+}
+
 @Composable
 fun TimeItem(platformTime: PlatformTime, onWorkHourClickListener: (PlatformTime) -> Unit) {
     val meridian = if (platformTime.isAm){

@@ -38,7 +38,9 @@ data class TherapistReviewsResponse(@SerialName("status") val status: String = "
 
 @Serializable
 data class TherapistAvailabilityResponse(@SerialName("status") val status: String = "",
-                                         @SerialName("bookings") val bookedAppointment: List<Appointment>)
+                                         @SerialName("bookedTimes") val bookedAppointment: List<Appointment>,
+                                         @SerialName("platformTime") val platformTimes: List<PlatformTime>,
+                                         @SerialName("vendorTime") val vendorTimes: List<VendorTime>)
 
 @Serializable
 data class TherapistTimeAvailabilityResponse(@SerialName("status") val status: String = "",

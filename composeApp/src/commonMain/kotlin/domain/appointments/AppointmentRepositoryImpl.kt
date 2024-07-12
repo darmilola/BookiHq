@@ -28,9 +28,9 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
     ): Single<ServerResponse> {
 
         val param = PostponeAppointmentRequest(userId = appointment.userId!!, vendorId = appointment.vendorId, serviceId = appointment.serviceId,
-            serviceTypeId = appointment.serviceTypeId!!, therapistId = appointment.therapistId, recommendationId = appointment.recommendationId, appointmentTime = appointmentTime,
+            serviceTypeId = appointment.serviceTypeId!!, therapistId = appointment.therapistId, appointmentTime = appointmentTime,
             day = day, month = month, year = year, serviceLocation = appointment.serviceLocation, serviceStatus = ServiceStatusEnum.PENDING.toPath(),
-            isRecommendedAppointment = appointment.isRecommendedAppointment, appointmentId = appointment.appointmentId!!)
+            appointmentId = appointment.appointmentId!!, appointmentType = appointment.appointmentType)
         return appointmentNetworkService.postponeAppointment(param)
     }
 
@@ -48,11 +48,8 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
         return appointmentNetworkService.joinMeeting(param)
     }
 
-    override suspend fun getTherapistAvailability(
-        specialistId: Int,
-        day: Int, month: Int, year: Int
-    ): Single<TherapistAvailabilityResponse> {
-        val param = GetTherapistAvailabilityRequest(specialistId, day, month, year)
+    override suspend fun getTherapistAvailability(therapistId: Int,vendorId: Long,day: Int, month: Int, year: Int): Single<TherapistAvailabilityResponse> {
+        val param = GetTherapistAvailabilityRequest(therapistId,vendorId, day, month, year)
         return appointmentNetworkService.getTherapistAvailability(param)
     }
 

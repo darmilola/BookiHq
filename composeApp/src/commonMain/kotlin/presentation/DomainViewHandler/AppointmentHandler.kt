@@ -10,6 +10,8 @@ import UIStates.ActionUIStates
 import presentation.viewmodels.PostponementViewModel
 import presentation.viewmodels.UIStateViewModel
 import UIStates.ScreenUIStates
+import domain.Models.PlatformTime
+import domain.Models.VendorTime
 
 
 class AppointmentsHandler(
@@ -66,9 +68,11 @@ class AppointmentsHandler(
     }
 
     override fun showTherapistAvailability(
-        bookedAppointment: List<Appointment>
-    ) {
+        bookedAppointment: List<Appointment>, platformTime: List<PlatformTime>,
+        vendorTimes: List<VendorTime>){
         postponementViewModel.setTherapistBookedAppointment(bookedAppointment)
+        postponementViewModel.setPlatformTimes(platformTime)
+        postponementViewModel.setVendorTimes(vendorTimes = vendorTimes)
     }
 
     override fun onLoadMoreAppointmentStarted() {

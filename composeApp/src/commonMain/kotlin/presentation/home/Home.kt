@@ -476,8 +476,10 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
                             item,
                             appointmentPresenter = null,
                             postponementViewModel = null,
+                            mainViewModel = mainViewModel!!,
                             availabilityActionUIStateViewModel!!,
-                            isFromHomeTab = true
+                            isFromHomeTab = true,
+                            onDeleteAppointment = {}
                         )
                     }
                 }

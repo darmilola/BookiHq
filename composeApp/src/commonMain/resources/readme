@@ -53,3 +53,6 @@
       OTP Screen --- authType and authPhone, Country, ProfileId
 
       ItemUIModel is powerful in displaying and removing item from the UI
+
+      Update, Delete process that requires UI update
+      -- carry out action, -- show success, error, dialog, refresh UI from dialog callback action, mind Snackbar it will loop infinitely

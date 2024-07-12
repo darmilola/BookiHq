@@ -15,15 +15,14 @@ data class PostponeAppointmentRequest(@SerialName("user_id") val userId: Int,
                                       @SerialName("service_id") val serviceId: Int,
                                       @SerialName("service_type_id") val serviceTypeId: Int,
                                       @SerialName("therapist_id") val therapistId: Int,
-                                      @SerialName("recommendation_id") val recommendationId: Int?,
                                       @SerialName("appointmentTime") val appointmentTime: Int,
                                       @SerialName("day") val day: Int,
                                       @SerialName("month") val month: Int,
                                       @SerialName("year") val year: Int,
                                       @SerialName("serviceLocation") val serviceLocation: String,
                                       @SerialName("serviceStatus") val serviceStatus: String,
-                                      @SerialName("isRecommendedAppointment") val isRecommendedAppointment: Boolean,
-                                      @SerialName("appointment_id") val appointmentId: Int)
+                                      @SerialName("appointment_id") val appointmentId: Int,
+                                      @SerialName("appointmentType") val appointmentType: String)
 
 
 @Serializable
@@ -35,5 +34,5 @@ data class JoinMeetingRequest(@SerialName("custom_participant_id") val customPar
                               @SerialName("meetingId") val meetingId: String)
 
 @Serializable
-data class GetTherapistAvailabilityRequest(@SerialName("therapist_id") val therapistId: Int, @SerialName("day") val day: Int,
+data class GetTherapistAvailabilityRequest(@SerialName("therapist_id") val therapistId: Int,@SerialName("vendorId") val vendorId: Long, @SerialName("day") val day: Int,
                                            @SerialName("month") val month: Int, @SerialName("year") val year: Int)

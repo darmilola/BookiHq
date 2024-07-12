@@ -100,6 +100,7 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                     appointmentRepositoryImpl.postponeAppointment(appointment, newAppointmentTime, day,month,year)
                         .subscribe(
                             onSuccess = { result ->
+                                println("Error $result")
                                 if (result.status == "success"){
                                     contractView?.showPostponeActionLce(ActionUIStates(isSuccess = true, successMessage = "Appointment Postponed"))
                                 }
@@ -108,12 +109,14 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                                 }
                             },
                             onError = {
+                                println("Error 2 ${it.message}")
                                 contractView?.showPostponeActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Postponing Appointment Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
+                println("Error 2 ${e.message}")
                 contractView?.showPostponeActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Postponing Appointment Please Try Again"))
             }
         }
@@ -156,17 +159,14 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    println("Inside Presenter2")
                                     contractView?.showJoinMeetingActionLce(ActionUIStates(isSuccess = true, successMessage = "Meeting Ready to be joined"))
                                     contractView?.onJoinMeetingTokenReady(result.token)
                                 }
                                 else{
-                                    println("Inside Presenter Erroe")
                                     contractView?.showJoinMeetingActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Joining Meeting please try again"))
                                 }
                             },
                             onError = {
-                                println("Inside Presenter ${it.message}")
                                 contractView?.showJoinMeetingActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Joining Meeting please try again"))
                             },
                         )
@@ -179,16 +179,16 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
         }
     }
 
-    override fun getTherapistAvailability(therapistId: Int, day: Int, month: Int, year: Int) {
+    override fun getTherapistAvailability(therapistId: Int, vendorId: Long, day: Int, month: Int, year: Int) {
         contractView?.showGetAvailabilityActionLce(ActionUIStates(isLoading = true, loadingMessage = "Getting Availability"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    appointmentRepositoryImpl.getTherapistAvailability(therapistId, day, month, year)
+                    appointmentRepositoryImpl.getTherapistAvailability(therapistId,vendorId, day, month, year)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showTherapistAvailability(result.bookedAppointment)
+                                    contractView?.showTherapistAvailability(result.bookedAppointment, result.platformTimes, result.vendorTimes)
                                     contractView?.showGetAvailabilityActionLce(ActionUIStates(isSuccess = true, successMessage = "Availability Ready"))
                                 }
                                 else{
