@@ -22,6 +22,6 @@ class ProfileHandler(
     }
 
     override fun showActionLce(actionUIStates: ActionUIStates) {
-        actionUIStateViewModel.switchActionPostponeUIState(actionUIStates)
+        actionUIStateViewModel.switchActionUIState(actionUIStates)
     }
 }

@@ -2,6 +2,7 @@ package presentation.profile
 
 import GGSansSemiBold
 import StackedSnackbarHost
+import UIStates.ActionUIStates
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -26,31 +28,48 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
+import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.viewModelFactory
+import domain.Enums.AppointmentType
 import domain.Enums.Screens
+import domain.Enums.ServiceStatusEnum
+import domain.Models.CurrentAppointmentBooking
+import domain.Models.PlatformTime
 import domain.Models.VendorTime
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.DomainViewHandler.TalkWithTherapistHandler
+import presentation.dialogs.ErrorDialog
+import presentation.dialogs.LoadingDialog
+import presentation.dialogs.SuccessDialog
+import presentation.viewmodels.ActionUIStateViewModel
+import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.BookingCalendar
 import presentation.widgets.MultilineInputWidget
 import presentation.widgets.PageBackNavWidget
+import presentation.widgets.PostponeTimeGrid
 import presentation.widgets.TitleWidget
 import presentation.widgets.VendorTimeGrid
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
+import utils.calculateTherapistServiceTimes
+import utils.calculateVendorServiceTimes
 
 class TalkWithATherapist(private val mainViewModel: MainViewModel) : Tab,
     KoinComponent {
     private val profilePresenter: ProfilePresenter by inject()
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var actionUIStateViewModel: ActionUIStateViewModel? = null
     override val options: TabOptions
         @Composable
         get() {
@@ -70,7 +89,21 @@ class TalkWithATherapist(private val mainViewModel: MainViewModel) : Tab,
         val isLoading = remember { mutableStateOf(false) }
         val isDone = remember { mutableStateOf(false) }
         val isSuccess = remember { mutableStateOf(false) }
-        val availableTimes = remember { mutableStateOf(listOf<VendorTime>()) }
+        val vendorTimes = remember { mutableStateOf(listOf<VendorTime>()) }
+        val platformTimes = remember { mutableStateOf(listOf<PlatformTime>()) }
+        val description = remember { mutableStateOf("") }
+        val serviceType: String = AppointmentType.MEETING.toPath()
+
+        if (actionUIStateViewModel == null) {
+            actionUIStateViewModel= kmpViewModel(
+                factory = viewModelFactory {
+                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+
+        val currentBooking = CurrentAppointmentBooking()
 
 
         val handler = TalkWithTherapistHandler(profilePresenter,
@@ -87,10 +120,36 @@ class TalkWithATherapist(private val mainViewModel: MainViewModel) : Tab,
                 isSuccess.value = true
                 isDone.value = true
             },
-            onAvailableTimesReady = {
-                availableTimes.value = it
-            })
+            onAvailableTimesReady = { it1, it2 ->
+                vendorTimes.value = it1
+                platformTimes.value = it2
+            }, actionUIStateViewModel = actionUIStateViewModel!!)
         handler.init()
+
+
+
+        val actionUIState = actionUIStateViewModel!!.uiStateInfo.collectAsState()
+
+
+        if (actionUIState.value.isLoading) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                LoadingDialog("Creating Appointment")
+            }
+        }
+        else if (actionUIState.value.isSuccess) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                SuccessDialog("Appointment Created Successfully", "Close", onConfirmation = {
+                        mainViewModel!!.setScreenNav(
+                            Pair(
+                                Screens.BOOKING.toPath(),
+                                Screens.MAIN_TAB.toPath()))
+                })
+            }
+        }
+        else if (actionUIState.value.isFailed) {
+            ErrorDialog("Error Occurred", "Close", onConfirmation = {})
+        }
+
 
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
@@ -153,29 +212,26 @@ class TalkWithATherapist(private val mainViewModel: MainViewModel) : Tab,
                                     .fillMaxWidth().padding(start = 10.dp)
                             )
 
-                            BookingCalendar(modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(top = 10.dp)) {}
+                            BookingCalendar(modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(top = 10.dp)) {
+                                currentBooking.day = it.dayOfMonth
+                                currentBooking.month = it.monthNumber
+                                currentBooking.year = it.year
+                                println(" ${currentBooking.day}")
+                                println(it)
+                            }
                         }
 
 
                         Column(
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth().wrapContentHeight()
                                 .padding(top = 40.dp, start = 10.dp, end = 10.dp)
                         ) {
 
-                            TextComponent(
-                                text = "Select Time",
-                                fontSize = 16,
-                                fontFamily = GGSansSemiBold,
-                                textStyle = TextStyle(),
-                                textColor = Colors.darkPrimary,
-                                textAlign = TextAlign.Left,
-                                fontWeight = FontWeight.Black,
-                                lineHeight = 30,
-                                textModifier = Modifier
-                                    .fillMaxWidth().padding(start = 10.dp)
-                            )
+                            val workHours = calculateVendorServiceTimes(platformTimes = platformTimes.value, vendorTimes = vendorTimes.value)
 
-                            VendorTimeGrid(availableTimes.value, onWorkHourClickListener = {})
+                            VendorTimeContent(workHours, onWorkHourClickListener = {
+                                currentBooking.appointmentTime = it
+                            })
                         }
 
                         Column(
@@ -196,7 +252,9 @@ class TalkWithATherapist(private val mainViewModel: MainViewModel) : Tab,
                                     .fillMaxWidth().padding(start = 10.dp)
                             )
 
-                            MultilineInputWidget(viewHeight = 200){}
+                            MultilineInputWidget(viewHeight = 150){
+                                description.value = it
+                            }
                         }
                     }
                 }
@@ -219,6 +277,12 @@ class TalkWithATherapist(private val mainViewModel: MainViewModel) : Tab,
                     style = TextStyle(),
                     borderStroke = null
                 ) {
+
+                    profilePresenter.createMeeting(meetingTitle = "Talk With Therapist", userId = mainViewModel.currentUserInfo.value.userId!!,
+                        vendorId = mainViewModel.connectedVendor.value.vendorId!!, serviceStatus = ServiceStatusEnum.PENDING.toPath(),
+                        appointmentType = AppointmentType.MEETING.toPath(), appointmentTime = currentBooking.appointmentTime?.id!!,
+                        day = currentBooking.day, month = currentBooking.month, year = currentBooking.year, meetingDescription = description.value
+                    )
 
                 }
             })
@@ -252,6 +316,76 @@ class TalkWithATherapist(private val mainViewModel: MainViewModel) : Tab,
     }
 
 }
+
+@Composable
+fun VendorTimeContent(availableHours: ArrayList<PlatformTime>, onWorkHourClickListener: (PlatformTime) -> Unit) {
+
+    Column(
+        modifier = Modifier
+            .padding(start = 20.dp, end = 10.dp, top = 15.dp, bottom = 10.dp)
+            .height(250.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment  = Alignment.CenterHorizontally,
+    ) {
+
+        TextComponent(
+            text = "Available Times",
+            fontSize = 18,
+            fontFamily = GGSansSemiBold,
+            textStyle = TextStyle(),
+            textColor = Colors.darkPrimary,
+            textAlign = TextAlign.Left,
+            fontWeight = FontWeight.Black,
+            lineHeight = 30,
+            textModifier = Modifier
+                .fillMaxWidth().padding(start = 10.dp, bottom = 20.dp))
+        Row(modifier = Modifier.fillMaxWidth(0.90f).wrapContentHeight()) {
+            TextComponent(
+                text = "Morning",
+                fontSize = 16,
+                textStyle = TextStyle(),
+                textColor = theme.Colors.darkPrimary,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 25,
+                textModifier = Modifier.weight(1f).padding(bottom = 15.dp, top = 10.dp),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis)
+            TextComponent(
+                text = "Afternoon",
+                fontSize = 16,
+                textStyle = TextStyle(),
+                textColor = theme.Colors.darkPrimary,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 25,
+                textModifier = Modifier.weight(1f).padding(bottom = 15.dp, top = 10.dp),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis)
+            TextComponent(
+                text = "Evening",
+                fontSize = 16,
+                textStyle = TextStyle(),
+                textColor = theme.Colors.darkPrimary,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 25,
+                textModifier = Modifier.weight(1f).padding(bottom = 15.dp, top = 10.dp),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis)
+        }
+
+        Row(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
+            Column(modifier = Modifier.weight(1f).wrapContentHeight()) {
+                PostponeTimeGrid(platformTimes = availableHours, onWorkHourClickListener = {
+                    onWorkHourClickListener(it)
+                })
+            }
+
+        }
+    }
+}
+
 
 
 

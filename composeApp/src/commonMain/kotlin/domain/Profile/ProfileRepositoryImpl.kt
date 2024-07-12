@@ -48,9 +48,26 @@ class ProfileRepositoryImpl(apiService: HttpClient): ProfileRepository {
         return geocoder.reverse(lat, lng).getFirstOrNull().toSingle()
     }
 
-    override suspend fun getPlatformCities(country: String): Single<PlatformCountryCitiesResponse> {
+    override suspend fun getPlatformCities(country : String): Single<PlatformCountryCitiesResponse> {
         val param = GetPlatformCitiesRequest(country)
         return profileNetworkService.getPlatformCities(param)
     }
+
+    override suspend fun createMeetingAppointment(
+        meetingTitle: String,
+        userId: Long,
+        vendorId: Long,
+        serviceStatus: String,
+        appointmentType: String,
+        appointmentTime: Int,
+        day: Int,
+        month: Int,
+        year: Int,
+        meetingDescription: String
+    ): Single<ServerResponse> {
+        val param = CreateMeetingRequest(meetingTitle,userId,vendorId,appointmentTime, day, month, year, serviceStatus, meetingDescription, appointmentType)
+        return profileNetworkService.createMeeting(param)
+    }
+
 
 }

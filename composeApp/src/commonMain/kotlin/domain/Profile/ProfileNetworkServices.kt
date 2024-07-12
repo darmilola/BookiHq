@@ -57,4 +57,14 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
             setBody(getPlatformCitiesRequest)
         }.body<PlatformCountryCitiesResponse>().toSingle()
 
+    suspend fun createMeeting(createMeetingRequest: CreateMeetingRequest) =
+        apiService.post {
+            url("/appointment/meeting/create")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(createMeetingRequest)
+        }.body<ServerResponse>().toSingle()
+
 }

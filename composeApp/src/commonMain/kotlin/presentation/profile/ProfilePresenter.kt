@@ -16,6 +16,7 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
 
     private val scope: CoroutineScope = MainScope()
     private var contractView: ProfileContract.View? = null
+    private var meetingView: ProfileContract.MeetingViewContract? = null
     private var platformContractView: ProfileContract.PlatformContract? = null
     private var meetingViewContract: ProfileContract.MeetingViewContract? = null
     private val profileRepositoryImpl: ProfileRepositoryImpl = ProfileRepositoryImpl(apiService)
@@ -132,9 +133,9 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    println("Success ${result.availableTimes}")
+                                    println("Success ${result.vendorTimes}")
                                     meetingViewContract?.showLce(ActionUIStates(isSuccess = true))
-                                    meetingViewContract?.showAvailability(result.availableTimes)
+                                    meetingViewContract?.showAvailability(result.vendorTimes, result.platformTimes)
                                 }
                                 else{
                                     println("Error 1")
@@ -179,6 +180,49 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                 result.dispose()
             } catch(e: Exception) {
                // contractView?.showActionLce(ActionUIStates(isDone =  true))
+            }
+        }
+    }
+
+
+    override fun createMeeting(
+        meetingTitle: String,
+        userId: Long,
+        vendorId: Long,
+        serviceStatus: String,
+        appointmentType: String,
+        appointmentTime: Int,
+        day: Int,
+        month: Int,
+        year: Int,
+        meetingDescription: String
+    ) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    meetingViewContract?.showActionLce(ActionUIStates(isLoading = true))
+                    profileRepositoryImpl.createMeetingAppointment(meetingTitle, userId, vendorId, serviceStatus, appointmentType,
+                        appointmentTime, day, month, year, meetingDescription)
+                        .subscribe(
+                            onSuccess = { result ->
+                                println(result)
+                                if (result.status == "success"){
+                                    meetingViewContract?.showActionLce(ActionUIStates(isSuccess = true))
+                                }
+                                else{
+                                    meetingViewContract?.showActionLce(ActionUIStates(isFailed = true))
+                                }
+                            },
+                            onError = {
+                                println(it)
+                                it.message?.let { it1 -> meetingViewContract?.showActionLce(ActionUIStates(isFailed = true))}
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                println(e.message)
+                meetingViewContract?.showActionLce(ActionUIStates(isFailed = true))
             }
         }
     }

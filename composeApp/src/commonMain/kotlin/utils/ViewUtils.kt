@@ -153,3 +153,28 @@ fun calculateTherapistServiceTimes(platformTimes: List<PlatformTime>, vendorTime
 
 }
 
+
+fun calculateVendorServiceTimes(platformTimes: List<PlatformTime>, vendorTimes: List<VendorTime>):
+        ArrayList<PlatformTime>{
+
+
+    val workingHours: ArrayList<PlatformTime> = arrayListOf()
+    val vendorWorkingHours: ArrayList<Int> = arrayListOf()
+
+    vendorTimes.forEach {
+        vendorWorkingHours.add(it.platformTime?.id!!)
+    }
+
+    platformTimes.map {
+        if (it.id in vendorWorkingHours){
+            workingHours.add(it.copy(isEnabled = true))
+        }
+        else{
+            workingHours.add(it)
+        }
+    }
+
+    return workingHours
+
+}
+

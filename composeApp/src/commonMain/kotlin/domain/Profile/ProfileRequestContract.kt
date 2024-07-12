@@ -22,3 +22,14 @@ data class GetPlatformCitiesRequest(@SerialName("country") val country: String)
 
 @Serializable
 data class GetVendorAvailabilityRequest(@SerialName("vendorId") val vendorId: Long)
+
+@Serializable
+data class CreateMeetingRequest(@SerialName("meeting_title") val meetingTitle: String, @SerialName("user_id") val user_id: Long,
+                                @SerialName("vendor_id") val vendor_id: Long,
+                                @SerialName("appointmentTime") val appointmentTime: Int,
+                                @SerialName("day") val day: Int,
+                                @SerialName("month") val month: Int,
+                                @SerialName("year") val year: Int,
+                                @SerialName("serviceStatus") val serviceStatus: String,
+                                @SerialName("meetingDescription") val meetingDescription: String,
+                                @SerialName("appointmentType") val appointmentType: String)

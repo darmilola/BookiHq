@@ -138,7 +138,7 @@ fun AppointmentWidget(appointment: Appointment, appointmentPresenter: Appointmen
 
 @Composable
 fun MeetingAppointmentWidget(appointment: Appointment, appointmentPresenter: AppointmentPresenter? = null, isFromHomeTab: Boolean) {
-    val meetingAppointmentStatus = appointment.meetingStatus
+    val meetingAppointmentStatus = appointment.serviceStatus
     val meetingMenuItems = arrayListOf<String>()
 
 
@@ -359,7 +359,6 @@ fun AttachMeetingAppointmentHeader(statusText: String, statusDrawableRes: String
                           onClick = {
                               println("Title is $title")
                               if (title.contentEquals("Join Meeting", ignoreCase = true)) {
-                                  println("Inside Presenter")
                                   presenter?.joinMeeting(
                                       customParticipantId = "devprocess@gmail.com",
                                       presetName = "group_call_host",
