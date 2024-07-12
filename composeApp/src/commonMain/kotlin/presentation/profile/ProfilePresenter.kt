@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.badoo.reaktive.single.subscribe
 import UIStates.ActionUIStates
+import UIStates.ScreenUIStates
 
 
 class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
@@ -128,30 +129,30 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    meetingViewContract?.showLce(ActionUIStates(isLoading = true))
+                    meetingViewContract?.showLce(ScreenUIStates(loadingVisible = true, loadingMessage = "Loading Vendor Availability"))
                     profileRepositoryImpl.getVendorAvailableTimes(vendorId = vendorId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     println("Success ${result.vendorTimes}")
-                                    meetingViewContract?.showLce(ActionUIStates(isSuccess = true))
+                                    meetingViewContract?.showLce(ScreenUIStates(contentVisible = true))
                                     meetingViewContract?.showAvailability(result.vendorTimes, result.platformTimes)
                                 }
                                 else{
                                     println("Error 1")
-                                    meetingViewContract?.showLce(ActionUIStates(isSuccess = false))
+                                    meetingViewContract?.showLce(ScreenUIStates(errorOccurred = true))
                                 }
                             },
                             onError = {
                                 println("Error 2")
-                                it.message?.let { it1 -> meetingViewContract?.showLce(ActionUIStates(isSuccess = false), message = it1) }
+                                meetingViewContract?.showLce(ScreenUIStates(errorOccurred = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
                 println("Error 3 ${e.message}")
-                meetingViewContract?.showLce(ActionUIStates(isSuccess = false))
+                meetingViewContract?.showLce(ScreenUIStates(errorOccurred = true))
             }
         }
     }

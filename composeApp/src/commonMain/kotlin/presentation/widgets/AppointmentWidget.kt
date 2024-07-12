@@ -141,12 +141,11 @@ fun MeetingAppointmentWidget(appointment: Appointment, appointmentPresenter: App
     val meetingAppointmentStatus = appointment.serviceStatus
     val meetingMenuItems = arrayListOf<String>()
 
-
-    if (meetingAppointmentStatus == MeetingStatus.Pending.toPath()) {
+    if (meetingAppointmentStatus == ServiceStatusEnum.PENDING.toPath()) {
             meetingMenuItems.add("Join Meeting")
         } else {
             meetingMenuItems.add("Delete")
-        }
+      }
 
 
     var meetingIconRes = "drawable/schedule.png"
@@ -360,9 +359,9 @@ fun AttachMeetingAppointmentHeader(statusText: String, statusDrawableRes: String
                               println("Title is $title")
                               if (title.contentEquals("Join Meeting", ignoreCase = true)) {
                                   presenter?.joinMeeting(
-                                      customParticipantId = "devprocess@gmail.com",
-                                      presetName = "group_call_host",
-                                      meetingId = "bbb24d30-4171-4506-875d-7a31bc8de0fa"
+                                      customParticipantId = appointment.userId.toString(),
+                                      presetName = "group_call_participant",
+                                      meetingId = appointment.meetingId!!
                                   )
                               } else if (title.contentEquals("Delete", true)) {
                                   presenter?.deleteAppointment(appointment.appointmentId!!)

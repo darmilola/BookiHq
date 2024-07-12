@@ -52,7 +52,13 @@
       Welcome Screen -- authType and authEmail, Country, ProfileId
       OTP Screen --- authType and authPhone, Country, ProfileId
 
+      design rules
+
       ItemUIModel is powerful in displaying and removing item from the UI
 
       Update, Delete process that requires UI update
       -- carry out action, -- show success, error, dialog, refresh UI from dialog callback action, mind Snackbar it will loop infinitely
+
+      UIStates --- actionUiStateViewModel handle actions carried out, screenUIStateViewModel handles screen loading,
+      both can publish text to display
+      dialog should be displayed inside content method of composable

@@ -229,7 +229,6 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
 
         else if (postponeActionUIStates.value.isFailed) {
             Box(modifier = Modifier.fillMaxWidth()) {
-                println("Called Me")
                 ErrorDialog("Error Postponing Appointment", "Close", onConfirmation = {})
             }
         }
@@ -260,13 +259,11 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
         }
         else if (joinMeetingActionUIStates.value.isSuccess) {}
         else if (joinMeetingActionUIStates.value.isFailed) {
-            ShowSnackBar(title = "Failed",
-                description = joinMeetingActionUIStates.value.errorMessage,
-                actionLabel = "",
-                duration = StackedSnackbarDuration.Short,
-                snackBarType = SnackBarType.SUCCESS,
-                stackedSnackBarHostState,
-                onActionClick = {})
+            Box(modifier = Modifier.fillMaxWidth()) {
+                ErrorDialog("Error Joining Meeting Please Try Again", actionTitle = "Retry", onConfirmation = {
+                    
+                })
+            }
         }
 
 

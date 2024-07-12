@@ -3,6 +3,7 @@ package presentation.profile
 import dev.jordond.compass.Place
 import domain.Models.VendorTime
 import UIStates.ActionUIStates
+import UIStates.ScreenUIStates
 import domain.Models.PlatformTime
 
 class ProfileContract {
@@ -14,7 +15,7 @@ class ProfileContract {
 
     interface MeetingViewContract {
         fun showAvailability(vendorTimes: List<VendorTime>, platformTimes: List<PlatformTime>)
-        fun showLce(actionUIStates: ActionUIStates, message: String = "")
+        fun showLce(screenUIStates: ScreenUIStates, message: String = "")
         fun showActionLce(actionUIStates: ActionUIStates, message: String = "")
 
     }

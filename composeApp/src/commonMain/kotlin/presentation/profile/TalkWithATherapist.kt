@@ -58,6 +58,8 @@ import presentation.widgets.BookingCalendar
 import presentation.widgets.MultilineInputWidget
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.PostponeTimeGrid
+import presentation.widgets.ShowSnackBar
+import presentation.widgets.SnackBarType
 import presentation.widgets.TitleWidget
 import presentation.widgets.VendorTimeGrid
 import presentations.components.TextComponent
@@ -70,6 +72,7 @@ class TalkWithATherapist(private val mainViewModel: MainViewModel) : Tab,
     KoinComponent {
     private val profilePresenter: ProfilePresenter by inject()
     private var actionUIStateViewModel: ActionUIStateViewModel? = null
+    private var uiStateViewModel: UIStateViewModel? = null
     override val options: TabOptions
         @Composable
         get() {
@@ -86,13 +89,8 @@ class TalkWithATherapist(private val mainViewModel: MainViewModel) : Tab,
     @Composable
     override fun Content() {
 
-        val isLoading = remember { mutableStateOf(false) }
-        val isDone = remember { mutableStateOf(false) }
-        val isSuccess = remember { mutableStateOf(false) }
         val vendorTimes = remember { mutableStateOf(listOf<VendorTime>()) }
         val platformTimes = remember { mutableStateOf(listOf<PlatformTime>()) }
-        val description = remember { mutableStateOf("") }
-        val serviceType: String = AppointmentType.MEETING.toPath()
 
         if (actionUIStateViewModel == null) {
             actionUIStateViewModel= kmpViewModel(
@@ -102,53 +100,31 @@ class TalkWithATherapist(private val mainViewModel: MainViewModel) : Tab,
             )
         }
 
+        if (uiStateViewModel == null) {
+            uiStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
 
         val currentBooking = CurrentAppointmentBooking()
 
 
         val handler = TalkWithTherapistHandler(profilePresenter,
-            isLoading = {
-                isLoading.value = true
-                isSuccess.value = false
-                isDone.value = false
-            }, isDone = {
-                isLoading.value = false
-                isDone.value = true
-                isSuccess.value = true
-            }, isSuccess = {
-                isLoading.value = false
-                isSuccess.value = true
-                isDone.value = true
-            },
             onAvailableTimesReady = { it1, it2 ->
                 vendorTimes.value = it1
                 platformTimes.value = it2
-            }, actionUIStateViewModel = actionUIStateViewModel!!)
+            },
+            uiStateViewModel = uiStateViewModel!!,
+            actionUIStateViewModel = actionUIStateViewModel!!)
         handler.init()
 
 
 
         val actionUIState = actionUIStateViewModel!!.uiStateInfo.collectAsState()
-
-
-        if (actionUIState.value.isLoading) {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                LoadingDialog("Creating Appointment")
-            }
-        }
-        else if (actionUIState.value.isSuccess) {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                SuccessDialog("Appointment Created Successfully", "Close", onConfirmation = {
-                        mainViewModel!!.setScreenNav(
-                            Pair(
-                                Screens.BOOKING.toPath(),
-                                Screens.MAIN_TAB.toPath()))
-                })
-            }
-        }
-        else if (actionUIState.value.isFailed) {
-            ErrorDialog("Error Occurred", "Close", onConfirmation = {})
-        }
+        val screenUIStates = uiStateViewModel!!.uiStateInfo.collectAsState()
 
 
 
@@ -173,7 +149,7 @@ class TalkWithATherapist(private val mainViewModel: MainViewModel) : Tab,
             },
             content = {
 
-                if (isLoading.value) {
+                if (screenUIStates.value.loadingVisible) {
                     //Content Loading
                     Box(
                         modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -183,11 +159,32 @@ class TalkWithATherapist(private val mainViewModel: MainViewModel) : Tab,
                     ) {
                         IndeterminateCircularProgressBar()
                     }
-                } else if (isDone.value && !isSuccess.value) {
+                } else if (screenUIStates.value.errorOccurred) {
 
                     //Error Occurred display reload
 
-                } else if (isDone.value && isSuccess.value) {
+                } else if (screenUIStates.value.contentVisible) {
+
+
+                    if (actionUIState.value.isLoading) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            LoadingDialog("Creating Appointment")
+                        }
+                    }
+                    else if (actionUIState.value.isSuccess) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            SuccessDialog("Appointment Created Successfully", "Close", onConfirmation = {
+                                actionUIStateViewModel!!.switchActionUIState(ActionUIStates(isDefault = true))
+                                mainViewModel!!.setScreenNav(
+                                    Pair(
+                                        Screens.BOOKING.toPath(),
+                                        Screens.MAIN_TAB.toPath()))
+                            })
+                        }
+                    }
+                    else if (actionUIState.value.isFailed) {
+                        ErrorDialog("Error Occurred", "Close", onConfirmation = {})
+                    }
 
                     Column(
                         modifier = Modifier.fillMaxSize()
@@ -216,11 +213,8 @@ class TalkWithATherapist(private val mainViewModel: MainViewModel) : Tab,
                                 currentBooking.day = it.dayOfMonth
                                 currentBooking.month = it.monthNumber
                                 currentBooking.year = it.year
-                                println(" ${currentBooking.day}")
-                                println(it)
                             }
                         }
-
 
                         Column(
                             modifier = Modifier.fillMaxWidth().wrapContentHeight()
@@ -253,7 +247,7 @@ class TalkWithATherapist(private val mainViewModel: MainViewModel) : Tab,
                             )
 
                             MultilineInputWidget(viewHeight = 150){
-                                description.value = it
+                                currentBooking.description = it
                             }
                         }
                     }
@@ -277,12 +271,24 @@ class TalkWithATherapist(private val mainViewModel: MainViewModel) : Tab,
                     style = TextStyle(),
                     borderStroke = null
                 ) {
-
-                    profilePresenter.createMeeting(meetingTitle = "Talk With Therapist", userId = mainViewModel.currentUserInfo.value.userId!!,
-                        vendorId = mainViewModel.connectedVendor.value.vendorId!!, serviceStatus = ServiceStatusEnum.PENDING.toPath(),
-                        appointmentType = AppointmentType.MEETING.toPath(), appointmentTime = currentBooking.appointmentTime?.id!!,
-                        day = currentBooking.day, month = currentBooking.month, year = currentBooking.year, meetingDescription = description.value
-                    )
+                    if (currentBooking.day == -1 || currentBooking.year == -1 || currentBooking.month == -1 || currentBooking.description.isEmpty() || currentBooking.appointmentTime == null){
+                        ShowSnackBar(title = "Input Required", description = "Please provide the required info", actionLabel = "", duration = StackedSnackbarDuration.Short, snackBarType = SnackBarType.ERROR,
+                            onActionClick = {}, stackedSnackBarHostState = stackedSnackBarHostState)
+                    }
+                    else {
+                        profilePresenter.createMeeting(
+                            meetingTitle = "Talk With Therapist",
+                            userId = mainViewModel.currentUserInfo.value.userId!!,
+                            vendorId = mainViewModel.connectedVendor.value.vendorId!!,
+                            serviceStatus = ServiceStatusEnum.PENDING.toPath(),
+                            appointmentType = AppointmentType.MEETING.toPath(),
+                            appointmentTime = currentBooking.appointmentTime?.id!!,
+                            day = currentBooking.day,
+                            month = currentBooking.month,
+                            year = currentBooking.year,
+                            meetingDescription = currentBooking.description
+                        )
+                    }
 
                 }
             })

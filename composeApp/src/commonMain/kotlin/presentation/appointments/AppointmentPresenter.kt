@@ -150,7 +150,6 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
     }
 
     override fun joinMeeting(customParticipantId: String, presetName: String, meetingId: String) {
-        println("Inside Presenter1")
         contractView?.showJoinMeetingActionLce(ActionUIStates(isLoading = true, loadingMessage = "Joining Meeting"))
         scope.launch(Dispatchers.Main) {
             try {
@@ -158,6 +157,7 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                     appointmentRepositoryImpl.joinMeeting(customParticipantId, presetName, meetingId)
                         .subscribe(
                             onSuccess = { result ->
+                                println("Error 0 $result")
                                 if (result.status == "success"){
                                     contractView?.showJoinMeetingActionLce(ActionUIStates(isSuccess = true, successMessage = "Meeting Ready to be joined"))
                                     contractView?.onJoinMeetingTokenReady(result.token)
@@ -167,13 +167,14 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                                 }
                             },
                             onError = {
+                                println("Error 1 ${it.message}")
                                 contractView?.showJoinMeetingActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Joining Meeting please try again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Inside Presenter ${e.message}")
+                println("Error 2 ${e.message}")
                 contractView?.showJoinMeetingActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Joining Meeting please try again"))
             }
         }
