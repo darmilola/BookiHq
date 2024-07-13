@@ -229,13 +229,12 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
                                 onViewHeightChanged = { _: Float, isStatusExpanded: Boolean ->
                                     isStatusViewExpanded.value = isStatusExpanded
                                 })
-
-                            AttachOurServices()
                             if (vendorServices != null) {
+                                AttachOurServices()
                                 ServiceGridScreen(vendorServices)
                             }
-                            if (vendorRecommendations != null) {
-                                RecommendedSessions(vendorRecommendations, mainViewModel!!)
+                            if (!vendorRecommendations.isNullOrEmpty()) {
+                                RecommendedSessions(vendorRecommendations!!, mainViewModel!!)
                             }
                             AttachAppointments()
                             RecentAppointmentScreen(appointmentList = recentAppointments)

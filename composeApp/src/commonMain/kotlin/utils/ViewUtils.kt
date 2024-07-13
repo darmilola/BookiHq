@@ -81,7 +81,6 @@ fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
 
 fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo, screenSizeInfo: ScreenSizeInfo, isStatusExpanded: Boolean = false): Int{
     val serviceCount = homepageInfo.vendorServices!!.size
-    val recommendationsCount = homepageInfo.recommendationRecommendations!!.size
     val recentAppointmentCount = homepageInfo.recentAppointment!!.size
 
     val heightAtExpanded = getPercentOfScreenHeight(screenSizeInfo.heightPx.dp, percentChange = 80)
@@ -90,7 +89,7 @@ fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo, screenSizeInfo: Sc
 
     val servicesHeight = serviceCount * 140
     val recommendationsHeight = 400
-    val recentAppointmentHeight = recentAppointmentCount * 200
+    val recentAppointmentHeight = recentAppointmentCount * 220
 
     return servicesHeight + recentAppointmentHeight + recommendationsHeight
 }

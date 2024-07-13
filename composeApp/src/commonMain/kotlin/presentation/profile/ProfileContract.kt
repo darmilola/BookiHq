@@ -13,11 +13,17 @@ class ProfileContract {
         fun onProfileDeleted()
         fun onProfileUpdated()
         fun showUserLocation(place: Place)
-        fun showActionLce(actionUIStates: ActionUIStates) }
+        fun showActionLce(actionUIStates: ActionUIStates)
+    }
 
     interface MeetingViewContract {
         fun showAvailability(vendorTimes: List<VendorTime>, platformTimes: List<PlatformTime>)
         fun showLce(screenUIStates: ScreenUIStates, message: String = "")
+        fun showActionLce(actionUIStates: ActionUIStates, message: String = "")
+
+    }
+
+    interface SwitchVendorContract {
         fun showActionLce(actionUIStates: ActionUIStates, message: String = "")
 
     }
@@ -31,6 +37,7 @@ class ProfileContract {
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
         abstract fun registerTalkWithTherapistContract(view: MeetingViewContract?)
+        abstract fun registerSwitchVendorContract(view: SwitchVendorContract?)
         abstract fun updateProfile(firstname: String, lastname: String, userEmail: String, address: String,
                                    contactPhone: String,   countryId: Int,
                                    cityId: Int, gender: String, profileImageUrl: String)

@@ -68,6 +68,9 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
     currentBooking.bookingKey = (0..100000000).random()
 
     bookingViewModel.setCurrentBooking(currentBooking)
+    bookingViewModel.setSelectedDay(currentBooking.day)
+    bookingViewModel.setSelectedMonth(currentBooking.month)
+    bookingViewModel.setSelectedYear(currentBooking.year)
 
     val stackedSnackBarHostState = rememberStackedSnackbarHostState(
         maxStack = 5,

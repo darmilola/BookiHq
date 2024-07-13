@@ -22,6 +22,8 @@ class ProfileHandler(
     }
 
     override fun showActionLce(actionUIStates: ActionUIStates) {
+        println("I got here")
         actionUIStateViewModel.switchActionUIState(actionUIStates)
     }
+
 }

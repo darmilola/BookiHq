@@ -29,6 +29,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import applications.date.getDay
+import applications.date.getMonth
+import applications.date.getYear
 import domain.Models.Appointment
 import domain.Models.PlatformTime
 import domain.Models.AvailableTime
@@ -54,6 +57,14 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
     onConfirmation: (Appointment) -> Unit) {
     Dialog( properties = DialogProperties(usePlatformDefaultWidth = false), onDismissRequest = { onDismissRequest() }) {
 
+        val currentDay = getDay()
+        val currentMonth = getMonth()
+        val currentYear = getYear()
+
+        postponementViewModel.setSelectedDay(currentDay)
+        postponementViewModel.setSelectedMonth(currentMonth)
+        postponementViewModel.setSelectedYear(currentYear)
+
         val newSelectedDay = postponementViewModel.day.collectAsState()
         val newSelectedMonth = postponementViewModel.month.collectAsState()
         val newSelectedYear = postponementViewModel.year.collectAsState()
@@ -63,12 +74,13 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
         val availabilityUIStates = availabilityActionUIStateViewModel.availabilityStateInfo.collectAsState()
 
 
+
         appointmentPresenter.getTherapistAvailability(
             therapistId,
             day = newSelectedDay.value,
             month = newSelectedMonth.value,
             year = newSelectedYear.value,
-            vendorId = mainViewModel.connectedVendor.value.vendorId!!)
+            vendorId = appointment.vendor?.vendorId!!)
 
         if (isNewDateSelected.value) {
             appointmentPresenter.getTherapistAvailability(
@@ -76,7 +88,7 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
                 day = newSelectedDay.value,
                 month = newSelectedMonth.value,
                 year = newSelectedYear.value,
-                vendorId = mainViewModel.connectedVendor.value.vendorId!!
+                vendorId = appointment.vendor?.vendorId!!
             )
             isNewDateSelected.value = false
         }

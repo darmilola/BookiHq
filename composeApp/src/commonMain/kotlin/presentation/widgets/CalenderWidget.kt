@@ -64,7 +64,7 @@ fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 
         var selectedUIModel by remember { mutableStateOf(calendarUiModel) }
         var initialVisibleDates by remember { mutableStateOf(5) }
 
-        if (bookingViewModel != null) {
+        /*if (bookingViewModel != null) {
             // date selected on appointment booking process
             val unsavedAppointmentDay = bookingViewModel.currentAppointmentBooking.value.day
             val unsavedAppointmentMonth = bookingViewModel.currentAppointmentBooking.value.month
@@ -81,7 +81,7 @@ fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 
             }
         else{
             // onDateSelected(calendarUiModel.selectedDate.date)
-         }
+         }*/
 
         CalenderHeader(selectedUIModel, onPrevClickListener = { startDate ->
             coroutineScope.launch {

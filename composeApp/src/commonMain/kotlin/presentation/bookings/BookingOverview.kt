@@ -42,6 +42,7 @@ fun BookingOverview(mainViewModel: MainViewModel, bookingViewModel: BookingViewM
 
     val currentBooking = bookingViewModel.currentAppointmentBooking.value
     val currentKeys = arrayListOf<Int>()
+    mainViewModel.clearUnsavedAppointments()
     var unsavedAppointments = remember {  mutableStateOf(mainViewModel.unSavedAppointments.value) }
     unsavedAppointments.value.map {
         currentKeys.add(it.bookingKey)
@@ -60,22 +61,27 @@ fun BookingOverview(mainViewModel: MainViewModel, bookingViewModel: BookingViewM
            }
            unsavedAppointments.value.remove(editedIndex)
            unsavedAppointments.value.add(currentBooking)
-           mainViewModel.setCurrentUnsavedAppointment(unsavedAppointments.value)
+          // mainViewModel.setCurrentUnsavedAppointment(unsavedAppointments.value)
        }
     } else {
         println("Here 4")
         if (currentBooking.bookingKey != -1) {
             unsavedAppointments.value.add(currentBooking)
-            mainViewModel.setCurrentUnsavedAppointment(unsavedAppointments.value)
+          //  mainViewModel.setCurrentUnsavedAppointment(unsavedAppointments.value)
         }
     }
+
+
+    // display one item
+    val displayOneItem = arrayListOf<CurrentAppointmentBooking>()
+    displayOneItem.add(currentBooking)
 
 
     var currentAppointmentBookingItemUIModel by remember {
         mutableStateOf(
             CurrentAppointmentBookingItemUIModel(
                 currentBooking,
-                mainViewModel.unSavedAppointments.value
+                displayOneItem
             )
         )
     }
@@ -104,7 +110,7 @@ fun BookingOverview(mainViewModel: MainViewModel, bookingViewModel: BookingViewM
                         selectedItem = CurrentAppointmentBooking(),
                         itemList = currentAppointmentBookingItemUIModel.itemList
                     )
-                    mainViewModel.setCurrentUnsavedAppointment(currentAppointmentBookingItemUIModel.itemList)
+                  //  mainViewModel.setCurrentUnsavedAppointment(currentAppointmentBookingItemUIModel.itemList)
                     if (unsavedAppointments.value.size == 0){
                         onLastItemRemoved()
                     }

@@ -149,6 +149,7 @@ class BookingScreen() : Tab, KoinComponent {
                     bookingViewModel!!.clearCurrentBooking()
                     mainViewModel!!.clearVendorRecommendation()
                     mainViewModel!!.clearUnsavedAppointments()
+                    bookingViewModel!!.clearCurrentBooking()
                     coroutineScope.launch {
                         pagerState.scrollToPage(0)
                         mainViewModel!!.setScreenNav(

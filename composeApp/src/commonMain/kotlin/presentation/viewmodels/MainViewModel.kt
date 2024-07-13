@@ -29,6 +29,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _isSearchProductState =  savedStateHandle.getStateFlow("isSearchProduct", false)
     private var _switchVendorId =  savedStateHandle.getStateFlow("switchVendorId", -1L)
     private var _switchVendorReason =  savedStateHandle.getStateFlow("switchVendorReason", "")
+    private var _restartApp =  savedStateHandle.getStateFlow("restartApp", false)
 
 
     val screenTitle: StateFlow<String>
@@ -42,6 +43,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     val unSavedOrders: StateFlow<ArrayList<OrderItem>>
         get() = _currentUnsavedOrders
+
+    val restartApp: StateFlow<Boolean>
+        get() = _restartApp
 
     val isSearchProduct: StateFlow<Boolean>
         get() = _isSearchProductState
@@ -74,6 +78,10 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     fun setTitle(newTitle: String) {
         savedStateHandle["screenTitle"] = newTitle
+    }
+
+    fun setRestartApp(isRestart: Boolean) {
+        savedStateHandle["restartApp"] = isRestart
     }
 
     fun setSwitchVendorID(vendorId: Long) {
@@ -146,7 +154,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     }
 
     fun clearUnsavedAppointments() {
-        savedStateHandle["currentUnsavedAppointments"] = ArrayList<CurrentAppointmentBooking>()
+        savedStateHandle["currentUnsavedAppointments"] = arrayListOf<CurrentAppointmentBooking>()
     }
 
     fun clearCurrentOrderReference() {

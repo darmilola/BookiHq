@@ -21,6 +21,7 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
     private var meetingView: ProfileContract.MeetingViewContract? = null
     private var platformContractView: ProfileContract.PlatformContract? = null
     private var meetingViewContract: ProfileContract.MeetingViewContract? = null
+    private var switchVendorContract: ProfileContract.SwitchVendorContract? = null
     private val profileRepositoryImpl: ProfileRepositoryImpl = ProfileRepositoryImpl(apiService)
     override fun registerUIContract(view: ProfileContract.View?) {
        contractView = view
@@ -28,6 +29,10 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
 
     override fun registerTalkWithTherapistContract(view: ProfileContract.MeetingViewContract?) {
         meetingViewContract = view
+    }
+
+    override fun registerSwitchVendorContract(view: ProfileContract.SwitchVendorContract?) {
+        switchVendorContract = view
     }
 
     override fun registerPlatformContract(view: ProfileContract.PlatformContract?) {
@@ -161,30 +166,31 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
     override fun switchVendor(userId: Long, vendorId: Long, action: String, exitReason: String) {
         println("Error -1")
         scope.launch(Dispatchers.Main) {
+            println("Arena 1")
+            switchVendorContract?.showActionLce(ActionUIStates(isLoading = true))
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showActionLce(ActionUIStates(isLoading = true))
                     profileRepositoryImpl.switchVendor(userId, vendorId, action, exitReason)
                         .subscribe(
                             onSuccess = { result ->
                                 println("Error 0 $result")
                                 if (result?.status == ServerResponseEnum.SUCCESS.toPath()){
-                                    contractView?.showActionLce(ActionUIStates(isSuccess = true))
+                                    switchVendorContract?.showActionLce(ActionUIStates(isSuccess = true))
                                 }
                                 else{
-                                    contractView?.showActionLce(ActionUIStates(isFailed = true))
+                                    switchVendorContract?.showActionLce(ActionUIStates(isFailed = true))
                                 }
                             },
                             onError = {
                                 println("Error 2 ${it.message}")
-                                contractView?.showActionLce(ActionUIStates(isFailed = true))
+                                switchVendorContract?.showActionLce(ActionUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
                 println("Error 2 ${e.message}")
-                contractView?.showActionLce(ActionUIStates(isFailed = true))
+                switchVendorContract?.showActionLce(ActionUIStates(isFailed = true))
             }
         }
     }
