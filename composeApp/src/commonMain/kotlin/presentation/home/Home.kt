@@ -88,6 +88,7 @@ import presentation.widgets.ProductDetailBottomSheet
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import utils.calculateHomePageScreenHeight
+import utils.getPercentOfScreenHeight
 import utils.getRecentAppointmentViewHeight
 import utils.getServicesViewHeight
 import utils.pxToDp
@@ -172,7 +173,7 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
             handler.init()
 
             if (homePageViewModel!!.homePageInfo.value.userInfo == null) {
-                homepagePresenter.getUserHomepage(userId, "2348022510893")
+                homepagePresenter.getUserHomepage(userId, "2347038243519")
             }
         }
 
@@ -225,19 +226,24 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
                                 .fillMaxWidth()
 
                         ) {
-                            BusinessStatusDisplay(
-                                onViewHeightChanged = { _: Float, isStatusExpanded: Boolean ->
-                                    isStatusViewExpanded.value = isStatusExpanded
-                                })
-                            if (vendorServices != null) {
+                            if (!homePageViewModel!!.vendorStatus.value.isNullOrEmpty()) {
+                                BusinessStatusDisplay(
+                                    statusList = homePageViewModel!!.vendorStatus.value,
+                                    onViewHeightChanged = { _: Float, isStatusExpanded: Boolean ->
+                                        isStatusViewExpanded.value = isStatusExpanded
+                                    })
+                            }
+                            if (!vendorServices.isNullOrEmpty()) {
                                 AttachOurServices()
                                 ServiceGridScreen(vendorServices)
                             }
                             if (!vendorRecommendations.isNullOrEmpty()) {
                                 RecommendedSessions(vendorRecommendations!!, mainViewModel!!)
                             }
-                            AttachAppointments()
-                            RecentAppointmentScreen(appointmentList = recentAppointments)
+                            if (!recentAppointments.isNullOrEmpty()) {
+                                AttachAppointments()
+                                RecentAppointmentScreen(appointmentList = recentAppointments)
+                            }
                         }
                     })
             }
@@ -489,32 +495,15 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
 
 
     @Composable
-    fun BusinessStatusDisplay(onViewHeightChanged: (Float, Boolean) -> Unit) {
+    fun BusinessStatusDisplay(statusList: List<VendorStatusModel>, onViewHeightChanged: (Float, Boolean) -> Unit) {
         val isStatusExpanded = remember { mutableStateOf(false) }
-        val statusList = arrayListOf<VendorStatusModel>()
-
-        val statusModel1 = VendorStatusModel("",1L, StatusImageModel(imageId = "",
-            imageUrl = "https://cdn.pixabay.com/photo/2018/07/13/19/56/st-peters-church-3536449_1280.jpg", caption = "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content"))
-        val statusModel2 = VendorStatusModel("",1L, StatusImageModel(imageId = "", imageUrl = "https://cdn.pixabay.com/photo/2018/07/13/19/56/st-peters-church-3536449_1280.jpg",
-            caption = "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content"))
-        val statusModel3 = VendorStatusModel("",1L, StatusImageModel(imageId = "", imageUrl = "https://cdn.pixabay.com/photo/2018/07/13/19/56/st-peters-church-3536449_1280.jpg",
-            caption = "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content"))
-        val statusModel4 = VendorStatusModel("",1L, StatusImageModel(imageId = "", imageUrl = "https://cdn.pixabay.com/photo/2018/07/13/19/56/st-peters-church-3536449_1280.jpg"))
-        val statusModel5 = VendorStatusModel("",1L, StatusImageModel(imageId = "", imageUrl = "https://cdn.pixabay.com/photo/2018/07/13/19/56/st-peters-church-3536449_1280.jpg"))
-
-        statusList.add(statusModel1)
-        statusList.add(statusModel2)
-        statusList.add(statusModel3)
-        statusList.add(statusModel4)
-        statusList.add(statusModel5)
-
 
         val screenSizeInfo = ScreenSizeInfo()
         val percentChangeExpanded =  1f
         val percentChangeCollapsed = 0.7f
 
 
-        val heightAtExpanded = (screenSizeInfo.heightPx * percentChangeExpanded)
+        val heightAtExpanded =  screenSizeInfo.heightPx * percentChangeExpanded
         val heightAtCollapsed = screenSizeInfo.heightPx * percentChangeCollapsed
 
 

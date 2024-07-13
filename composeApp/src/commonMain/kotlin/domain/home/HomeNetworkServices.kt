@@ -14,7 +14,7 @@ import io.ktor.http.contentType
 open class HomeNetworkService(private val apiService: HttpClient) {
     suspend fun getHomePage(getHomeRequest: GetHomeRequest) =
         apiService.post {
-            url("/home")
+            url("/home/status")
             /*headers {
                 append(HttpHeaders.Authorization, "abc123")
             }*/

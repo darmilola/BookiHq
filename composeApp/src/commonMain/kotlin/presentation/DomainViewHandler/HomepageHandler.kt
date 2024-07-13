@@ -10,7 +10,7 @@ import UIStates.ScreenUIStates
 class HomepageHandler(
     private val uiStateViewModel: UIStateViewModel,
     private val homepagePresenter: HomepagePresenter,
-    private val onHomeInfoAvailable: (HomepageInfo, ArrayList<VendorStatusModel>) -> Unit) : HomepageContract.View {
+    private val onHomeInfoAvailable: (HomepageInfo, List<VendorStatusModel>) -> Unit) : HomepageContract.View {
     fun init() {
         homepagePresenter.registerUIContract(this)
     }
@@ -18,7 +18,7 @@ class HomepageHandler(
     override fun showLce(uiState: ScreenUIStates) {
         uiStateViewModel.switchScreenUIState(uiState)
     }
-    override fun showHome(homePageInfo: HomepageInfo, vendorStatus: ArrayList<VendorStatusModel>) {
+    override fun showHome(homePageInfo: HomepageInfo, vendorStatus: List<VendorStatusModel>) {
         onHomeInfoAvailable(homePageInfo, vendorStatus)
     }
 }

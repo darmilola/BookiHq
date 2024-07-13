@@ -21,7 +21,8 @@ data class CompleteProfileResponse(@SerialName("status") val status: String = ""
                                    @SerialName("profileId") val profileId: Int = -1,)
 
 @Serializable
-data class HomePageResponse(@SerialName("status") val status: String = "", @SerialName("homePage") val homepageInfo: HomepageInfo = HomepageInfo())
+data class HomePageResponse(@SerialName("status") val status: String = "", @SerialName("homePage") val homepageInfo: HomepageInfo = HomepageInfo(),
+                            @SerialName("vendorStatus") val vendorStatusList: List<VendorStatusModel>)
 
 @Serializable
 data class ServiceTherapistsResponse(@SerialName("status") val status: String = "", @SerialName("therapists") val serviceTherapists: List<ServiceTypeTherapists>,

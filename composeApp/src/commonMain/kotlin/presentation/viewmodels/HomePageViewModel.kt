@@ -9,13 +9,13 @@ import kotlinx.coroutines.flow.StateFlow
 class HomePageViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
         private var _homePageInfo =  savedStateHandle.getStateFlow("homePageInfo",HomepageInfo())
-        private var _vendorStatus =  savedStateHandle.getStateFlow("vendorStatus", arrayListOf<VendorStatusModel>())
+        private var _vendorStatus =  savedStateHandle.getStateFlow("vendorStatus", listOf<VendorStatusModel>())
         private var _homePageViewHeight =  savedStateHandle.getStateFlow("homePageViewHeight",0)
 
         val homePageInfo: StateFlow<HomepageInfo>
             get() = _homePageInfo
 
-       val vendorStatus: StateFlow<ArrayList<VendorStatusModel>>
+       val vendorStatus: StateFlow<List<VendorStatusModel>>
         get() = _vendorStatus
 
       val homePageViewHeight: StateFlow<Int>
@@ -25,7 +25,7 @@ class HomePageViewModel(private val savedStateHandle: SavedStateHandle): ViewMod
             savedStateHandle["homePageInfo"] = homepageInfo
         }
 
-      fun setVendorStatus(vendorStatus: ArrayList<VendorStatusModel>) {
+      fun setVendorStatus(vendorStatus: List<VendorStatusModel>) {
         savedStateHandle["vendorStatus"] = vendorStatus
      }
 

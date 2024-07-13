@@ -7,7 +7,7 @@ import UIStates.ScreenUIStates
 class HomepageContract {
     interface View {
         fun showLce(uiState: ScreenUIStates)
-        fun showHome(homePageInfo: HomepageInfo, vendorStatus: ArrayList<VendorStatusModel>)
+        fun showHome(homePageInfo: HomepageInfo, vendorStatus: List<VendorStatusModel>)
     }
 
     abstract class Presenter {

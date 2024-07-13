@@ -24,7 +24,6 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
     }
 
     override fun getUserHomepage(userId: Long, vendorWhatsAppPhone: String) {
-        val filteredStatusList = arrayListOf<VendorStatusModel>()
         contractView?.showLce(ScreenUIStates(loadingVisible = true))
         scope.launch(Dispatchers.Main) {
             try {
@@ -35,7 +34,7 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
                                 println("My response $response.homepageInfo")
                                 if (response.status == "success") {
                                     contractView?.showLce(ScreenUIStates(contentVisible = true))
-                                    contractView?.showHome(response.homepageInfo, filteredStatusList)
+                                    contractView?.showHome(response.homepageInfo, response.vendorStatusList)
                                 }
                                 else{
                                     contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
