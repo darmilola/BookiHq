@@ -29,6 +29,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _isSearchProductState =  savedStateHandle.getStateFlow("isSearchProduct", false)
     private var _switchVendorId =  savedStateHandle.getStateFlow("switchVendorId", -1L)
     private var _switchVendorReason =  savedStateHandle.getStateFlow("switchVendorReason", "")
+    private var _switchVendor =  savedStateHandle.getStateFlow("switchVendor", Vendor())
     private var _restartApp =  savedStateHandle.getStateFlow("restartApp", false)
 
 
@@ -37,6 +38,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     val selectedService: StateFlow<Services>
         get() = _selectedService
+
+    val switchVendor: StateFlow<Vendor>
+        get() = _switchVendor
 
     val unSavedAppointments: StateFlow<ArrayList<CurrentAppointmentBooking>>
         get() = _currentCurrentAppointmentBooking
@@ -78,6 +82,10 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     fun setTitle(newTitle: String) {
         savedStateHandle["screenTitle"] = newTitle
+    }
+
+    fun setSwitchVendor(vendor: Vendor) {
+        savedStateHandle["switchVendor"] = vendor
     }
 
     fun setRestartApp(isRestart: Boolean) {

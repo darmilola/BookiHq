@@ -75,12 +75,13 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
 
     val handler = AuthenticationScreenHandler(authenticationPresenter,
         onUserLocationReady = {},
-        enterPlatform = { user ->
+        enterPlatform = { user, phone ->
             preferenceSettings["authType"] = AuthType.EMAIL.toPath()
             preferenceSettings["authEmail"] = user.email
             preferenceSettings["country"] = user.country
             preferenceSettings["profileId"] = user.userId
             preferenceSettings["vendorId"] = user.connectedVendor
+            preferenceSettings["whatsappPhone"] = phone
             navigateToPlatform.value = true
         },
         completeProfile = { userEmail, userPhone ->

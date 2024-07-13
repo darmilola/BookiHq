@@ -126,7 +126,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
 
     val authHandler = AuthenticationScreenHandler(authenticationPresenter,
         onUserLocationReady = {},
-        enterPlatform = { user -> },
+        enterPlatform = { user, whatsappPhone -> },
         completeProfile = { userEmail, userPhone -> },
         connectVendor = { user -> },
         onVerificationStarted = {},

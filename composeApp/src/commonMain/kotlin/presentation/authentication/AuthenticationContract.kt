@@ -4,12 +4,13 @@ import dev.jordond.compass.Place
 import domain.Models.User
 import UIStates.ActionUIStates
 import UIStates.ScreenUIStates
+import domain.Models.Vendor
 import presentation.profile.ProfileContract
 
 class AuthenticationContract {
     interface View {
         fun showUserProfile(user: User)
-        fun goToMainScreen(user: User)
+        fun goToMainScreen(user: User, vendorPhone: String)
         fun goToCompleteProfileWithEmail(userEmail: String)
         fun goToCompleteProfileWithPhone(phone: String)
         fun showUserLocation(place: Place)

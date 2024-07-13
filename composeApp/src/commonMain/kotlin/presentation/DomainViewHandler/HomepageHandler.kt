@@ -19,7 +19,14 @@ class HomepageHandler(
     override fun showLce(uiState: ScreenUIStates) {
         uiStateViewModel.switchScreenUIState(uiState)
     }
-    override fun showHome(homePageInfo: HomepageInfo, vendorStatus: List<VendorStatusModel>) {
+
+
+    override fun showHome(homePageInfo: HomepageInfo) {
+        val filteredList = arrayListOf<VendorStatusModel>()
+        onHomeInfoAvailable(homePageInfo, filteredList)
+    }
+
+    override fun showHomeWithStatus(homePageInfo: HomepageInfo, vendorStatus: List<VendorStatusModel>) {
         val filteredList = arrayListOf<VendorStatusModel>()
         vendorStatus.map {
             if (it.statusText != null || it.statusVideoModel != null || it.statusImage != null){

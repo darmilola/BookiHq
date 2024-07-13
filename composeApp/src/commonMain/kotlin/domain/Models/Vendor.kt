@@ -11,7 +11,7 @@ data class Vendor(
     @SerialName("businessName") val businessName: String? = null, @SerialName("businessLogo") val businessLogo: String? = null,
     @SerialName("businessAddress") val businessAddress: String? = null, @SerialName("businessHandle") val businessHandle: String? = null,
     @SerialName("businessAbout") val businessAbout: String? = null, @SerialName("openingTime") val openingTime: String? = null,
-    @SerialName("country") val country: String? = null, @SerialName("city") val city: String? = null,
+    @SerialName("country") val country: String? = null, @SerialName("city") val city: String? = null, @SerialName("whatsappPhone") val whatsAppPhone: String = "",
     @SerialName("isMobileServicesAvailable") val isMobileServiceAvailable: Boolean = false, val isSelected: Boolean = false): Parcelable
 
 data class VendorItemUIModel(

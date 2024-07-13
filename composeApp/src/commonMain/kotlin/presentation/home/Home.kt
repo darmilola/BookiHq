@@ -157,10 +157,10 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
                         screenSizeInfo = screenSizeInfo,
                         isStatusExpanded = false
                     )
+                    mainViewModel!!.setConnectedVendor(homePageInfo.vendorInfo!!)
                     homePageViewModel!!.setHomePageViewHeight(viewHeight)
                     homePageViewModel!!.setHomePageInfo(homePageInfo)
                     homePageViewModel!!.setVendorStatus(vendorStatus)
-                    mainViewModel!!.setConnectedVendor(homePageInfo.vendorInfo!!)
                     mainViewModel!!.setUserEmail(homePageInfo.userInfo?.email!!)
                     mainViewModel!!.setUserFirstname(homePageInfo.userInfo.firstname!!)
                     mainViewModel!!.setUserId(homePageInfo.userInfo.userId!!)
@@ -173,7 +173,13 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
             handler.init()
 
             if (homePageViewModel!!.homePageInfo.value.userInfo == null) {
-                homepagePresenter.getUserHomepage(userId, "2348119288587")
+                val vendorPhone: String = preferenceSettings["whatsappPhone"]!!
+                if (!vendorPhone.isNullOrEmpty()){
+                    homepagePresenter.getUserHomepageWithStatus(userId, vendorPhone)
+                }
+                else {
+                    homepagePresenter.getUserHomepage(userId)
+                }
             }
         }
 

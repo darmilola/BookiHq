@@ -50,10 +50,11 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
 
     val handler = AuthenticationScreenHandler(authenticationPresenter,
         onUserLocationReady = {},
-        enterPlatform = { user ->
+        enterPlatform = { user, whatsAppPhone ->
             preferenceSettings["country"] = user.country
             preferenceSettings["profileId"] = user.userId
             preferenceSettings["vendorId"] = user.connectedVendor
+            preferenceSettings["whatsappPhone"] = whatsAppPhone
                 navigateToPlatform.value = true
         },
         completeProfile = { _,_ ->

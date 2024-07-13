@@ -75,11 +75,12 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
 
         val handler = AuthenticationScreenHandler(authenticationPresenter,
             onUserLocationReady = {},
-            enterPlatform = { user ->
+            enterPlatform = { user, whatsappPhone ->
                 preferenceSettings["country"] = user.country
                 preferenceSettings["profileId"] = user.userId
                 preferenceSettings["authType"] = AuthType.PHONE.toPath()
                 preferenceSettings["authPhone"] = user.authPhone
+                preferenceSettings["whatsappPhone"] = whatsappPhone
                 navigateToPlatform.value = true
             },
             completeProfile = { userEmail, userPhone ->

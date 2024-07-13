@@ -15,7 +15,6 @@ class SwitchVendorHandler (
     }
 
     override fun showActionLce(actionUIStates: ActionUIStates, message: String) {
-        println("Arena 2")
         actionUIStateViewModel.switchVendorActionUIState(actionUIStates)
     }
 

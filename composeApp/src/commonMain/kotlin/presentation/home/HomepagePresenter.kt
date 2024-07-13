@@ -23,18 +23,49 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
         contractView = view
     }
 
-    override fun getUserHomepage(userId: Long, vendorWhatsAppPhone: String) {
+    override fun getUserHomepageWithStatus(userId: Long, vendorWhatsAppPhone: String) {
         contractView?.showLce(ScreenUIStates(loadingVisible = true))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    homeRepositoryImpl.getUserHomePage(userId, vendorWhatsAppPhone)
+                    homeRepositoryImpl.getUserHomePageWithStatus(userId, vendorWhatsAppPhone)
                         .subscribe(
                             onSuccess = { response ->
-                                println("My response $response.homepageInfo")
+                                println("My response ${response.vendorStatusList}")
                                 if (response.status == "success") {
                                     contractView?.showLce(ScreenUIStates(contentVisible = true))
-                                    contractView?.showHome(response.homepageInfo, response.vendorStatusList)
+                                    contractView?.showHomeWithStatus(response.homepageInfo, response.vendorStatusList)
+                                }
+                                else{
+                                    contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
+                                }
+                            },
+                            onError = {
+                                println("Response 2 ${it.message}")
+                                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                println("Response 3 ${e.message}")
+                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
+            }
+        }
+    }
+
+    override fun getUserHomepage(userId: Long) {
+        contractView?.showLce(ScreenUIStates(loadingVisible = true))
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    homeRepositoryImpl.getUserHomePage(userId)
+                        .subscribe(
+                            onSuccess = { response ->
+                                println("My response ${response.vendorStatusList}")
+                                if (response.status == "success") {
+                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
+                                    contractView?.showHome(response.homepageInfo)
                                 }
                                 else{
                                     contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))

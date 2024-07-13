@@ -23,6 +23,8 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.set
 import domain.Enums.CustomerMovementEnum
 import domain.Enums.Screens
 import domain.Models.PlatformNavigator
@@ -43,6 +45,7 @@ import presentation.viewmodels.MainViewModel
 class SwitchVendorDetailsTab(private val mainViewModel: MainViewModel, private val platformNavigator: PlatformNavigator) : Tab, KoinComponent {
     private var actionUIStateViewModel: ActionUIStateViewModel? = null
     private val profilePresenter: ProfilePresenter by inject()
+    private val preferenceSettings: Settings = Settings()
     override val options: TabOptions
         @Composable
         get() {
@@ -86,10 +89,10 @@ class SwitchVendorDetailsTab(private val mainViewModel: MainViewModel, private v
             },
             content = {
 
-                println(uiState.value)
                 if (uiState.value.isLoading) {
                     LoadingDialog("Connecting New Vendor")
                 } else if (uiState.value.isSuccess) {
+                    preferenceSettings["whatsappPhone"] = mainViewModel.switchVendor.value.whatsAppPhone
                     mainViewModel.setRestartApp(true)
                     mainViewModel!!.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.MAIN_TAB.toPath()))
                 } else if (uiState.value.isFailed) {

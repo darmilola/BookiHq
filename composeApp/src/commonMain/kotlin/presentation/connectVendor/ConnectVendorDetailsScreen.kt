@@ -73,6 +73,7 @@ class ConnectVendorDetailsScreen(val vendor: Vendor, val  platformNavigator: Pla
             },
             onConnected = {
                 preferenceSettings["vendorId"] = vendor.vendorId
+                preferenceSettings["whatsappPhone"] = vendor.whatsAppPhone
                 vendorConnected.value = true
             })
         handler.init()

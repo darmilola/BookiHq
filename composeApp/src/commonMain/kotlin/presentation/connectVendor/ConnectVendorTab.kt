@@ -206,6 +206,7 @@ class ConnectVendorTab(val mainViewModel: MainViewModel, val platformNavigator: 
                         items(vendorUIModel.vendorsList.size) { i ->
                             SwitchVendorBusinessItemComponent(vendor = vendorUIModel.vendorsList[i]) {
                                 mainViewModel.setSwitchVendorID(it.vendorId!!)
+                                mainViewModel.setSwitchVendor(it)
                                 showSwitchReasonBottomSheet = true
                             }
                             if (i == lastIndex && loadMoreState.value) {

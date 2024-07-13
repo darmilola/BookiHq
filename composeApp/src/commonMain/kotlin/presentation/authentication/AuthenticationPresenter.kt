@@ -96,7 +96,7 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                                 if (result.status == "success"){
                                     if (result.profileStatus == ProfileStatus.DONE.toPath()) {
                                         contractView?.onProfileValidationEnded()
-                                        contractView?.goToMainScreen(result.userInfo)
+                                        contractView?.goToMainScreen(result.userInfo, result.whatsAppPhone)
                                     }
                                     else if(result.profileStatus == ProfileStatus.CONNECT_VENDOR.toPath()){
                                         contractView?.onProfileValidationEnded()
@@ -145,7 +145,7 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                                 if (result.status == "success"){
                                     if (result.profileStatus == ProfileStatus.DONE.toPath()) {
                                         contractView?.onProfileValidationEnded()
-                                        contractView?.goToMainScreen(result.userInfo)
+                                        contractView?.goToMainScreen(result.userInfo,  result.whatsAppPhone)
                                     }
                                     else if(result.profileStatus == ProfileStatus.CONNECT_VENDOR.toPath()){
                                         contractView?.onProfileValidationEnded()

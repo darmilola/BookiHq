@@ -12,7 +12,7 @@ import UIStates.ScreenUIStates
 class AuthenticationScreenHandler(
     private val authenticationPresenter: AuthenticationPresenter,
     private val onUserLocationReady: (Place) -> Unit,
-    private val enterPlatform: (User) -> Unit,
+    private val enterPlatform: (User,vendorPhone: String) -> Unit,
     private val completeProfile: (userEmail: String, userPhone: String) -> Unit,
     private val connectVendorOnProfileCompleted: (country: String, profileId: Int) -> Unit,
     private val connectVendor: (User) -> Unit,
@@ -37,8 +37,8 @@ class AuthenticationScreenHandler(
         onCompleteStarted()
     }
 
-    override fun goToMainScreen(user: User) {
-        enterPlatform(user)
+    override fun goToMainScreen(user: User, vendorPhone: String) {
+        enterPlatform(user, vendorPhone)
     }
 
     override fun goToCompleteProfileWithEmail(userEmail: String) {
