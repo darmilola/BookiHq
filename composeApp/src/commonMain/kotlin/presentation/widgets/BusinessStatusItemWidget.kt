@@ -1,6 +1,7 @@
 package presentation.widgets
 
 import GGSansRegular
+import GGSansSemiBold
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -99,6 +101,9 @@ class BusinessStatusItemWidget {
             }
         }
     }
+
+
+
 
 
     @Composable
@@ -209,7 +214,7 @@ class BusinessStatusItemWidget {
         ) {
             Box(
                 modifier = Modifier.fillMaxWidth()
-                    .fillMaxHeight(if (isStatusExpanded.value) 0.70f else 0.85f)
+                    .fillMaxHeight(if (isStatusExpanded.value) 0.85f else 1f)
             ) {
                 // Video Playback
                 VideoPlayer(
@@ -233,6 +238,43 @@ class BusinessStatusItemWidget {
                 contentAlignment = Alignment.Center
             ) {
                 VideoStatusCaption(videoModel)
+            }
+        }
+    }
+
+    @Composable
+    fun getTextStatusWidget(
+        vendorStatusModel: VendorStatusModel) {
+
+        val isStatusExpanded = remember { mutableStateOf(false) }
+        val imageRes =
+            if (isStatusExpanded.value) "drawable/collapse_icon.png" else "drawable/expand_icon.png"
+        val likeImageRes =
+            if (isStatusExpanded.value) "drawable/like_icon_filled.png" else "drawable/like_icon.png"
+
+        Column(
+            modifier = Modifier
+                .padding(top = 5.dp)
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .background(color = Colors.primaryColor),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.Center) {
+
+                TextComponent(
+                    text = vendorStatusModel.statusText?.body!!,
+                    fontSize = 20,
+                    fontFamily = GGSansSemiBold,
+                    textStyle = TextStyle(),
+                    textColor = Color.White,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.SemiBold,
+                    lineHeight = 30,
+                    letterSpacing = 1,
+                    textModifier = Modifier
+                        .fillMaxWidth().padding(start = 40.dp, end = 40.dp))
             }
         }
     }

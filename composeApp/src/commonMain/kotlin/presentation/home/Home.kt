@@ -173,7 +173,7 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
             handler.init()
 
             if (homePageViewModel!!.homePageInfo.value.userInfo == null) {
-                homepagePresenter.getUserHomepage(userId, "2347038243519")
+                homepagePresenter.getUserHomepage(userId, "2348119288587")
             }
         }
 

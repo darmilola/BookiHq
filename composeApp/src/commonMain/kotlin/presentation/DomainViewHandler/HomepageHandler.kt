@@ -6,6 +6,7 @@ import presentation.home.HomepageContract
 import presentation.home.HomepagePresenter
 import presentation.viewmodels.UIStateViewModel
 import UIStates.ScreenUIStates
+import domain.Models.Vendor
 
 class HomepageHandler(
     private val uiStateViewModel: UIStateViewModel,
@@ -19,6 +20,12 @@ class HomepageHandler(
         uiStateViewModel.switchScreenUIState(uiState)
     }
     override fun showHome(homePageInfo: HomepageInfo, vendorStatus: List<VendorStatusModel>) {
-        onHomeInfoAvailable(homePageInfo, vendorStatus)
+        val filteredList = arrayListOf<VendorStatusModel>()
+        vendorStatus.map {
+            if (it.statusText != null || it.statusVideoModel != null || it.statusImage != null){
+                filteredList.add(it)
+            }
+        }
+        onHomeInfoAvailable(homePageInfo, filteredList)
     }
 }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -38,7 +39,7 @@ fun ShopStatusWidget(whatsAppStatusList: List<VendorStatusModel>, onStatusViewCh
     Column(
         modifier = Modifier
             .fillMaxHeight()
-            .fillMaxWidth(),
+            .wrapContentHeight(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -66,7 +67,7 @@ fun ShopStatusWidget(whatsAppStatusList: List<VendorStatusModel>, onStatusViewCh
         }
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxWidth().fillMaxHeight()
+            modifier = Modifier.fillMaxWidth().wrapContentHeight()
         ) { currentPage ->
             val currentStatus = whatsAppStatusList[currentPage]
             Box(
@@ -107,6 +108,9 @@ private fun LoadStatusView(statusModel: VendorStatusModel, currentPage: Int, set
             videoStatusViewMeta = videoStatusViewMeta,
             vendorStatusModel =   statusModel,
             onStatusViewChanged = onStatusChanged)
+    }
+    else if (statusModel.statusText != null){
+        BusinessStatusItemWidget().getTextStatusWidget(vendorStatusModel = statusModel)
     }
 }
 
