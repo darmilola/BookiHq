@@ -47,6 +47,9 @@ import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
+import com.russhwolf.settings.set
 import domain.Enums.CRUD
 import domain.Enums.ProductType
 import domain.Models.OrderItem
@@ -79,6 +82,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
     private val productPresenter: ProductPresenter by inject()
     private var uiStateViewModel: UIStateViewModel? = null
     private var mainViewModel: MainViewModel? = null
+    val preferenceSettings = Settings()
     private var productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel? = null
 
     @OptIn(ExperimentalResourceApi::class)
@@ -106,7 +110,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
 
     @Composable
     override fun Content() {
-        val vendorId = mainViewModel!!.vendorId.value
+        val vendorId = preferenceSettings["vendorId",-1L]
         val onCartChanged = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
         val isSearchProduct = mainViewModel!!.isSearchProduct.collectAsState()

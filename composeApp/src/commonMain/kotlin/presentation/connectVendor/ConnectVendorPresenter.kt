@@ -55,6 +55,7 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                     connectVendorRepositoryImpl.getVendor(country)
                         .subscribe(
                             onSuccess = { result ->
+                                println(result)
                                 if (result.status == "success"){
                                     contractView?.showLce(ScreenUIStates(contentVisible = true))
                                     contractView?.showVendors(result.listItem)
@@ -64,12 +65,14 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                                 }
                             },
                             onError = {
+                                println("Error ${it.message}")
                                 it.message?.let { it1 -> contractView?.showLce(ScreenUIStates(errorOccurred = true)) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
+                println("Error ${e.message}")
                 contractView?.showLce(ScreenUIStates(errorOccurred = true))
             }
         }

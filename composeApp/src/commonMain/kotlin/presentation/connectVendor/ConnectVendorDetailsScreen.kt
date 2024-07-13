@@ -44,6 +44,7 @@ class ConnectVendorDetailsScreen(val vendor: Vendor, val  platformNavigator: Pla
         val errorVisible = remember { mutableStateOf(false) }
         val vendorConnected = remember { mutableStateOf(false) }
         val userId = preferenceSettings["profileId", -1L]
+        preferenceSettings["profileId"] = vendor.vendorId
 
 
         if (uiStateViewModel == null) {

@@ -52,6 +52,9 @@ import presentation.viewmodels.UIStateViewModel
 import UIStates.ScreenUIStates
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
+import com.russhwolf.settings.set
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.SuccessDialog
 import presentation.widgets.MeetingAppointmentWidget
@@ -73,6 +76,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
     private var joinMeetingActionUIStateViewModel: ActionUIStateViewModel? = null
     private var postponementViewModel: PostponementViewModel? = null
     private var mainViewModel: MainViewModel? = null
+    val preferenceSettings = Settings()
     private var appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel? = null
 
 
@@ -100,7 +104,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
     override fun Content() {
 
 
-        val userId = mainViewModel!!.currentUserInfo.value.userId
+        val userId = preferenceSettings["profileId",-1L]
 
         if (appointmentResourceListEnvelopeViewModel == null) {
             appointmentResourceListEnvelopeViewModel = kmpViewModel(

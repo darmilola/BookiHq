@@ -27,7 +27,7 @@ fun AccountProfileImage(profileImageUrl: String, isAsync: Boolean = false, showE
         Box(
             Modifier
                 .padding(top = 20.dp, bottom = 5.dp)
-                .size(160.dp)
+                .size(200.dp)
                 .clip(CircleShape)
                 .border(
                     width = (1.5).dp,

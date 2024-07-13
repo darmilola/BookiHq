@@ -2,6 +2,7 @@ package domain.home
 
 import com.badoo.reaktive.single.toSingle
 import domain.Models.HomePageResponse
+import domain.Models.HomePageWithStatusResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -30,6 +31,6 @@ open class HomeNetworkService(private val apiService: HttpClient) {
             }*/
             contentType(ContentType.Application.Json)
             setBody(getHomeRequestWithStatus)
-        }.body<HomePageResponse>().toSingle()
+        }.body<HomePageWithStatusResponse>().toSingle()
 
 }

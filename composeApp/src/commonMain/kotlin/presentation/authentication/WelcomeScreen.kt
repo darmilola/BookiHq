@@ -34,6 +34,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import domain.Enums.AuthType
 import kotlinx.serialization.Transient
@@ -94,6 +95,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
             preferenceSettings["authEmail"] = user.email
             preferenceSettings["country"] = user.country
             preferenceSettings["profileId"] = user.userId
+            preferenceSettings["vendorId"] = user.connectedVendor
             navigateToConnectVendor.value = true
         },
         onVerificationStarted = {

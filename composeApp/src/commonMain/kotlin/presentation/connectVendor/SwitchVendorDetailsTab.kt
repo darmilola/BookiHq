@@ -1,5 +1,6 @@
 package presentation.connectVendor
 
+import UIStates.ActionUIStates
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -78,9 +79,8 @@ class SwitchVendorDetailsTab(private val mainViewModel: MainViewModel, private v
         val switchVendorReason = mainViewModel.switchVendorReason.value
         val userInfo = mainViewModel.currentUserInfo.value
         val uiState = actionUIStateViewModel!!.switchVendorUiState.collectAsState()
+        actionUIStateViewModel!!.switchVendorActionUIState(ActionUIStates(isDefault = true))
         var switchVendorSuccess = remember { mutableStateOf(false) }
-
-
 
 
         Scaffold(
@@ -94,10 +94,10 @@ class SwitchVendorDetailsTab(private val mainViewModel: MainViewModel, private v
                 } else if (uiState.value.isSuccess) {
                     preferenceSettings["whatsappPhone"] = mainViewModel.switchVendor.value.whatsAppPhone
                     mainViewModel.setRestartApp(true)
+                    actionUIStateViewModel!!.switchVendorActionUIState(ActionUIStates(isDefault = true))
                     mainViewModel!!.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.MAIN_TAB.toPath()))
                 } else if (uiState.value.isFailed) {
-                    ErrorDialog(dialogTitle = "Error Occurred Please Try Again", actionTitle = "Retry"){
-                    }
+                    ErrorDialog(dialogTitle = "Error Occurred Please Try Again", actionTitle = "Retry"){}
                 }
 
                 BusinessInfoContent(mainViewModel.connectedVendor.value){

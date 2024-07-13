@@ -36,7 +36,7 @@ data class CompleteProfileScreen(val platformNavigator: PlatformNavigator, val a
 
 
         CompleteProfile(authenticationPresenter,authEmail = authEmail, authPhone = authPhone, platformNavigator = platformNavigator!!, platformViewModel!!,
-            profilePresenter!!)
+            profilePresenter)
     }
 
 }

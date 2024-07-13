@@ -62,7 +62,6 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
                     homeRepositoryImpl.getUserHomePage(userId)
                         .subscribe(
                             onSuccess = { response ->
-                                println("My response ${response.vendorStatusList}")
                                 if (response.status == "success") {
                                     contractView?.showLce(ScreenUIStates(contentVisible = true))
                                     contractView?.showHome(response.homepageInfo)
