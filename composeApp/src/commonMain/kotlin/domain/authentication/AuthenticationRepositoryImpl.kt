@@ -32,6 +32,21 @@ class AuthenticationRepositoryImpl(apiService: HttpClient):
         return authenticationNetworkService.validatePhone(param)
     }
 
+    override suspend fun updateProfile(
+        userId: Long,
+        firstname: String,
+        lastname: String,
+        address: String,
+        contactPhone: String,
+        country: String,
+        city: String,
+        gender: String,
+        profileImageUrl: String
+    ): Single<ServerResponse> {
+        val param = UpdateProfileRequest(userId, firstname, lastname, contactPhone, address, country, city, gender, profileImageUrl)
+        return authenticationNetworkService.updateProfile(param)
+    }
+
 
     override suspend fun completeProfile(
         firstname: String,

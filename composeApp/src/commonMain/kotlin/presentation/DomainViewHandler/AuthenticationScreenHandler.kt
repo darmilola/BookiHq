@@ -19,7 +19,9 @@ class AuthenticationScreenHandler(
     private val onVerificationStarted: () -> Unit,
     private val onVerificationEnded: () -> Unit,
     private val onCompleteStarted: () -> Unit,
-    private val onCompleteEnded: (Boolean) -> Unit
+    private val onCompleteEnded: (Boolean) -> Unit,
+    private val onUpdateStarted: () -> Unit,
+    private val onUpdateEnded: (Boolean) -> Unit
 ) : AuthenticationContract.View {
     fun init() {
         authenticationPresenter.registerUIContract(this)
@@ -35,6 +37,14 @@ class AuthenticationScreenHandler(
 
     override fun onCompleteProfileStarted() {
         onCompleteStarted()
+    }
+
+    override fun onProfileUpdateStarted() {
+        onUpdateStarted()
+    }
+
+    override fun onProfileUpdateEnded(isSuccessful: Boolean) {
+        onUpdateEnded(isSuccessful)
     }
 
     override fun goToMainScreen(user: User, vendorPhone: String?) {

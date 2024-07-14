@@ -9,9 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
@@ -29,7 +27,7 @@ import presentation.bookings.BookingScreen
 import presentation.bookings.PendingAppointmentsTab
 import presentation.Products.CartTab
 import presentation.Splashscreen.SplashScreen
-import presentation.profile.EditProfile
+import presentation.profile.EditProfileTab
 import presentation.connectVendor.ConnectVendorTab
 import presentation.connectVendor.SwitchVendorDetailsTab
 import presentation.consultation.ConsultationScreen
@@ -124,7 +122,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
                     it.current = VirtualConsultationRoom(mainViewModel!!)
                 }
                 Screens.EDIT_PROFILE.toPath() -> {
-                    it.current = EditProfile(mainViewModel!!, platformNavigator, preferenceSettings)
+                    it.current = EditProfileTab(mainViewModel!!, platformNavigator)
                 }
                 Screens.VENDOR_INFO.toPath() -> {
                     it.current = SwitchVendorDetailsTab(mainViewModel!!,platformNavigator!!)

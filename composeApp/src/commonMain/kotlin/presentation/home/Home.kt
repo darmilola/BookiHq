@@ -70,6 +70,7 @@ import domain.Models.Product
 import domain.Models.Services
 import domain.Models.StatusImageModel
 import domain.Models.VendorStatusModel
+import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.HomepageHandler
@@ -96,13 +97,13 @@ import utils.pxToDp
 @Parcelize
 class HomeTab() : Tab, KoinComponent, Parcelable {
 
-    private var uiStateViewModel: UIStateViewModel? = null
-    private val homepagePresenter: HomepagePresenter by inject()
+    @Transient private var uiStateViewModel: UIStateViewModel? = null
+    @Transient private val homepagePresenter: HomepagePresenter by inject()
     private var userId: Long = -1L
-    private val preferenceSettings: Settings = Settings()
-    private var availabilityActionUIStateViewModel: ActionUIStateViewModel? = null
-    private var mainViewModel: MainViewModel? = null
-    private var homePageViewModel: HomePageViewModel? = null
+    @Transient private val preferenceSettings: Settings = Settings()
+    @Transient private var availabilityActionUIStateViewModel: ActionUIStateViewModel? = null
+    @Transient private var mainViewModel: MainViewModel? = null
+    @Transient private var homePageViewModel: HomePageViewModel? = null
 
   @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions

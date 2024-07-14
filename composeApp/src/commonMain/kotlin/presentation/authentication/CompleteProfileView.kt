@@ -139,7 +139,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                 preferenceSettings["profileId"] = profileId
                 navigateToConnectVendor.value = true
 
-        })
+        }, onUpdateStarted = {}, onUpdateEnded = {})
     authHandler.init()
 
     if (completeProfileInProgress.value) {
@@ -207,7 +207,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                     country.value = it
                 }
 
-                AttachCityDropDownWidget(platformViewModel) {
+                AttachCityDropDownWidget(platformViewModel = platformViewModel) {
                     city.value = it
                 }
 
@@ -283,7 +283,6 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                             stackedSnackBarHostState,onActionClick = {})
                     }
                     else {
-
                         authenticationPresenter.completeProfile(
                             firstname.value, lastname.value,
                             userEmail = authEmail, authPhone = authPhone, signupType = authType, country = country.value, city = city.value,
@@ -298,22 +297,20 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
 }
 
 @Composable
-fun AttachCountryDropDownWidget(onMenuItemClick : (String) -> Unit) {
+fun AttachCountryDropDownWidget(defaultValue: String = "", onMenuItemClick : (String) -> Unit) {
     val countryList = countryList()
-
-    //val index = if (selectedCountry ==  CountryEnum.SOUTH_AFRICA.toPath()) CountryEnum.SOUTH_AFRICA.getId() else CountryEnum.NIGERIA.getId()
-
-    DropDownWidget(menuItems = countryList, placeHolderText = "Country", onMenuItemClick = {
+    val placeholder = defaultValue.ifEmpty { "Country" }
+    DropDownWidget(menuItems = countryList, placeHolderText = placeholder, onMenuItemClick = {
         onMenuItemClick(countryList[it])
     })
 }
 
 @Composable
-fun AttachCityDropDownWidget(platformViewModel: PlatformViewModel, onMenuItemClick : (String) -> Unit) {
+fun AttachCityDropDownWidget(defaultValue: String = "", platformViewModel: PlatformViewModel, onMenuItemClick : (String) -> Unit) {
     val cityListState = platformViewModel.platformCities.collectAsState()
     val cityList = cityListState.value
-
-    DropDownWidget(menuItems = cityList, iconRes = "drawable/urban_icon.png", placeHolderText = "City", onMenuItemClick = {
+    val placeholder = defaultValue.ifEmpty { "City" }
+    DropDownWidget(menuItems = cityList, iconRes = "drawable/urban_icon.png", placeHolderText = placeholder, onMenuItemClick = {
         onMenuItemClick(cityList[it])
     })
 }

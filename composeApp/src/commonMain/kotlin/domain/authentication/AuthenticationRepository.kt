@@ -8,8 +8,22 @@ import domain.Models.CompleteProfileResponse
 import domain.Models.ListDataResponse
 import domain.Models.ServerResponse
 import domain.Models.Vendor
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 interface AuthenticationRepository {
+    suspend fun updateProfile(
+        userId: Long,
+        firstname: String,
+        lastname: String,
+        address: String,
+        contactPhone: String,
+        country: String,
+        city: String,
+        gender: String,
+        profileImageUrl: String
+    ): Single<ServerResponse>
+
     suspend fun completeProfile(
         firstname: String,
         lastname: String,
@@ -21,6 +35,7 @@ interface AuthenticationRepository {
         gender: String,
         profileImageUrl: String
     ): Single<CompleteProfileResponse>
+
     suspend fun reverseGeocode(lat: Double, lng: Double): Single<Place?>
     suspend fun validateUserProfile(userEmail: String): Single<AuthenticationResponse>
     suspend fun validateEmail(userEmail: String): Single<AuthenticationResponse>

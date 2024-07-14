@@ -26,6 +26,16 @@ open class AuthenticationNetworkService(private val apiService: HttpClient) {
             setBody(completeProfileRequest)
         }.body<CompleteProfileResponse>().toSingle()
 
+    suspend fun updateProfile(updateProfileRequest: UpdateProfileRequest) =
+        apiService.post {
+            url("/auth/user/profile/update")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(updateProfileRequest)
+        }.body<ServerResponse>().toSingle()
+
     suspend fun validateProfile(validateProfileRequest: ValidateProfileRequest) =
         apiService.post {
             url("/auth/user/profile/get")

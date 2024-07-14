@@ -100,7 +100,8 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
             },
             onVerificationEnded = {
                 verificationInProgress.value = false
-            }, onCompleteStarted = {}, onCompleteEnded = {},connectVendorOnProfileCompleted = { country, profileId -> })
+            }, onCompleteStarted = {}, onCompleteEnded = {},connectVendorOnProfileCompleted = { country, profileId -> },
+            onUpdateStarted = {}, onUpdateEnded = {})
         handler.init()
 
 

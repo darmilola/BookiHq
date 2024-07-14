@@ -56,33 +56,44 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
         }
     }
 
-    override fun validateUserProfile(userEmail: String) {
-      /*  scope.launch(Dispatchers.Main) {
+    override fun updateProfile(
+        userId: Long,
+        firstname: String,
+        lastname: String,
+        address: String,
+        contactPhone: String,
+        country: String,
+        city: String,
+        gender: String,
+        profileImageUrl: String
+    ) {
+        scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(ScreenUIStates(loadingVisible = true))
-                    authenticationRepositoryImpl.validateUserProfile(userEmail)
+                    contractView?.onProfileUpdateStarted()
+                    authenticationRepositoryImpl.updateProfile(userId, firstname, lastname, address, contactPhone, country, city, gender, profileImageUrl)
                         .subscribe(
                             onSuccess = { result ->
+                                println("Error 1 $result")
                                 if (result.status == "success"){
-                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
-                                    directUser(result.userInfo)
+                                    contractView?.onProfileUpdateEnded(isSuccessful = true)
                                 }
                                 else{
-                                    contractView?.showLce(ScreenUIStates(errorOccurred = true))
-                                    contractView?.goToCompleteProfileWithEmail(userEmail)
+                                    contractView?.onProfileUpdateEnded(isSuccessful = false)
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(ScreenUIStates(errorOccurred = true), message = it1) }
+                                println("Error 2 ${it.message}")
+                                contractView?.onProfileUpdateEnded(isSuccessful = false)
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(ScreenUIStates(errorOccurred = true))
+                println("Error 2 ${e.message}")
+                contractView?.onProfileUpdateEnded(isSuccessful = false)
             }
-        }*/
+        }
     }
     override fun validateEmail(userEmail: String) {
         scope.launch(Dispatchers.Main) {
