@@ -232,7 +232,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                 val cartContainer = if (cartSize.value > 0) 140 else 0
                 Box(
                     modifier = Modifier.size(cartContainer.dp)
-                        .padding(bottom = 40.dp), contentAlignment = Alignment.CenterEnd
+                        .padding(bottom = 45.dp), contentAlignment = Alignment.CenterEnd
                 ) {
                     AttachShoppingCartImage("drawable/shopping_cart.png", mainViewModel!!)
                 }
@@ -260,7 +260,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                         Pair(Screens.MAIN_TAB.toPath(), Screens.CART.toPath())
                     )
                 }
-                .background(color = Colors.primaryColor),
+                .background(color = Colors.darkPrimary),
             contentAlignment = Alignment.Center
         ) {
             val modifier = Modifier

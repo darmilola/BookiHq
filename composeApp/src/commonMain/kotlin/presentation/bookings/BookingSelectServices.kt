@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import applications.date.getDay
 import applications.date.getMonth
 import applications.date.getYear
+import domain.Enums.Screens
 import domain.Models.ServiceTypeItem
 import domain.Models.Services
 import domain.Models.CurrentAppointmentBooking
@@ -95,14 +96,29 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
             }
             ServiceTitle(mainViewModel)
             AttachServiceTypeToggle(mainViewModel,bookingViewModel, onServiceSelected = {
+                val description = if (mainViewModel.currentUserInfo.value.isProfileCompleted == true){
+                    "You can go Mobile for this service"
+                }
+                else{
+                    "Please complete your profile"
+                }
+                val action = if (mainViewModel.currentUserInfo.value.isProfileCompleted == true){
+                    ""
+                }
+                else{
+                    "Complete"
+                }
                 if (it.mobileServiceAvailable) {
                     ShowSnackBar(title = "Mobile Service Is Available",
-                        description = "Mobile service is available for this service",
-                        actionLabel = "",
+                        description = description,
+                        actionLabel = action,
                         duration = StackedSnackbarDuration.Short,
                         snackBarType = SnackBarType.INFO,
                         stackedSnackBarHostState,
-                        onActionClick = {})
+                        onActionClick = {
+                            mainViewModel.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.EDIT_PROFILE.toPath()))
+
+                        })
                 }
                 if (it.serviceTypeId != -1) {
                     bookingViewModel.undoSelectedServiceType()
@@ -114,7 +130,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
                 }
             })
             if (mobileServicesAvailable) {
-                ServiceLocationToggle(bookingViewModel, onSpaSelectedListener = {
+                ServiceLocationToggle(bookingViewModel, isDisabled = mainViewModel.currentUserInfo.value.isProfileCompleted != true,onSpaSelectedListener = {
                     currentBooking.isMobileService = false
                     bookingViewModel.setIsMobileService(false)
                     bookingViewModel.setCurrentBooking(currentBooking)

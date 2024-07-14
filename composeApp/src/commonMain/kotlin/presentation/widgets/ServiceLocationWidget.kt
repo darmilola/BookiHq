@@ -26,7 +26,7 @@ import presentation.viewmodels.MainViewModel
 import presentations.components.TextComponent
 
 @Composable
-fun ServiceLocationToggle(bookingViewModel: BookingViewModel, onSpaSelectedListener:() -> Unit,
+fun ServiceLocationToggle(bookingViewModel: BookingViewModel, isDisabled: Boolean = false, onSpaSelectedListener:() -> Unit,
                           onHomeSelectedListener:() -> Unit){
 
     var locationType by remember { mutableStateOf(0) }
@@ -67,13 +67,13 @@ fun ServiceLocationToggle(bookingViewModel: BookingViewModel, onSpaSelectedListe
             textModifier = Modifier
                 .fillMaxWidth().padding(start = 10.dp))
 
-        ToggleButton(shape = CircleShape, onLeftClicked = {
+        ToggleButton(shape = CircleShape,onLeftClicked = {
             onSpaSelectedListener()
             locationType = 0
         }, onRightClicked = {
             onHomeSelectedListener()
             locationType = 1
-        }, leftText = "Parlor", rightText = "My Address", isRightSelection = locationType != 0, isDisabled = !selectedServiceTypeState.value.mobileServiceAvailable)
+        }, leftText = "Parlor", rightText = "My Address", isRightSelection = locationType != 0, isDisabled = !selectedServiceTypeState.value.mobileServiceAvailable || isDisabled)
 
     }
 

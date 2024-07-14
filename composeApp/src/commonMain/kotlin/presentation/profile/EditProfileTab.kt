@@ -382,12 +382,35 @@ class EditProfileTab(private val mainViewModel: MainViewModel, val  platformNavi
                             style = TextStyle(),
                             borderStroke = BorderStroke(1.dp, Colors.primaryColor)
                         ) {
-                            mainViewModel.setScreenNav(
-                                Pair(
-                                    Screens.EDIT_PROFILE.toPath(),
-                                    Screens.MAIN_TAB.toPath()
-                                )
-                            )
+                            when (mainViewModel?.screenNav?.value?.first) {
+                                Screens.MAIN_TAB.toPath() -> {
+                                    mainViewModel.setScreenNav(
+                                        Pair(
+                                            Screens.EDIT_PROFILE.toPath(),
+                                            Screens.MAIN_TAB.toPath()
+                                        )
+                                    )
+                                }
+
+                                Screens.BOOKING.toPath() -> {
+                                    mainViewModel.setScreenNav(
+                                        Pair(
+                                            Screens.EDIT_PROFILE.toPath(),
+                                            Screens.BOOKING.toPath()
+                                        )
+                                    )
+                                }
+
+                                Screens.CART.toPath() -> {
+                                    mainViewModel.setScreenNav(
+                                        Pair(
+                                            Screens.EDIT_PROFILE.toPath(),
+                                            Screens.CART.toPath()
+                                        )
+                                    )
+                                }
+
+                            }
                         }
 
                         ButtonComponent(
@@ -443,34 +466,40 @@ class EditProfileTab(private val mainViewModel: MainViewModel, val  platformNavi
 @Composable
 fun leftTopBarItem(mainViewModel: MainViewModel) {
     PageBackNavWidget {
-        mainViewModel.setScreenNav(
-            Pair(
-                Screens.EDIT_PROFILE.toPath(),
-                Screens.MAIN_TAB.toPath()
-            )
-        )
-    }
-}
+        when (mainViewModel?.screenNav?.value?.first) {
+            Screens.MAIN_TAB.toPath() -> {
+                mainViewModel.setScreenNav(
+                    Pair(
+                        Screens.EDIT_PROFILE.toPath(),
+                        Screens.MAIN_TAB.toPath()
+                    )
+                )
+            }
 
-@Composable
-private fun AttachBackIcon(mainViewModel: MainViewModel) {
-        PageBackNavWidget {
-            when (mainViewModel.screenNav.value.first) {
-                Screens.BOOKING.toPath() -> {
-                    mainViewModel.setScreenNav(Pair(Screens.EDIT_PROFILE.toPath(), Screens.BOOKING.toPath()))
-                }
-                Screens.CART.toPath() -> {
-                    mainViewModel.setScreenNav(Pair(Screens.EDIT_PROFILE.toPath(), Screens.CART.toPath()))
-                }
-                Screens.MAIN_TAB.toPath() -> {
-                    mainViewModel.setScreenNav(Pair(Screens.EDIT_PROFILE.toPath(), Screens.MAIN_TAB.toPath()))
-                }
-                else -> {
+            Screens.BOOKING.toPath() -> {
+                mainViewModel.setScreenNav(
+                    Pair(
+                        Screens.EDIT_PROFILE.toPath(),
+                        Screens.BOOKING.toPath()
+                    )
+                )
+            }
 
-                }
+            Screens.CART.toPath() -> {
+                mainViewModel.setScreenNav(
+                    Pair(
+                        Screens.EDIT_PROFILE.toPath(),
+                        Screens.CART.toPath()
+                    )
+                )
+            }
+
+            else -> {
+                // navigator.current = MainTab(mainViewModel)
             }
         }
     }
+}
 
 
 
