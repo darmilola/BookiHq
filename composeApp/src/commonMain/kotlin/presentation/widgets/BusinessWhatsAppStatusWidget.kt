@@ -43,26 +43,28 @@ fun ShopStatusWidget(whatsAppStatusList: List<VendorStatusModel>, onStatusViewCh
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            Modifier
-                .height(10.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.Bottom
-        ) {
-            repeat(whatsAppStatusList.size) { iteration ->
-                val color =
-                    if (pagerState.currentPage == iteration) Colors.darkPrimary else Colors.darkPrimary.copy(
-                        alpha = 0.2f
+        if (whatsAppStatusList.size > 1) {
+            Row(
+                Modifier
+                    .height(10.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                repeat(whatsAppStatusList.size) { iteration ->
+                    val color =
+                        if (pagerState.currentPage == iteration) Colors.darkPrimary else Colors.darkPrimary.copy(
+                            alpha = 0.2f
+                        )
+                    Box(
+                        modifier = Modifier
+                            .padding(start = 4.dp, end = 4.dp, top = 4.dp)
+                            .clip(CircleShape)
+                            .background(color)
+                            .height(2.dp)
+                            .weight(1f, fill = true)
                     )
-                Box(
-                    modifier = Modifier
-                        .padding(start = 4.dp, end = 4.dp, top = 4.dp)
-                        .clip(CircleShape)
-                        .background(color)
-                        .height(2.dp)
-                        .weight(1f, fill = true)
-                )
+                }
             }
         }
         HorizontalPager(

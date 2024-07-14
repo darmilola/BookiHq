@@ -11,116 +11,78 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import domain.Enums.MainTabEnum
-import presentation.notification.NotificationTab
+import domain.Enums.Screens
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.TitleWidget
 import presentations.components.ImageComponent
 
 @Composable
 fun MainTopBar(mainViewModel: MainViewModel) {
-    Column(modifier = Modifier.fillMaxWidth().height(50.dp), verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(modifier = Modifier.fillMaxWidth().height(60.dp), verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.Start) {
            Box(
                modifier = Modifier
-                   .padding(end = 0.dp)
                    .fillMaxHeight()
                    .background(color = Color.White)
            ) {
-               centerTopBarItem(mainViewModel)
-               rightTopBarItem(mainViewModel)
+               appLogoTitleItem(mainViewModel)
+               connectedBusinessLogoItem(mainViewModel)
            }
        }
 }
 
 
 @Composable
-fun leftTopBarItem(mainViewModel: MainViewModel) {
+fun appLogoItem(mainViewModel: MainViewModel) {
     val columnModifier = Modifier
         .background(color = Color.Transparent)
         .fillMaxWidth()
         .fillMaxHeight()
 
-     Column(modifier = columnModifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-               WelcomeToProfile(mainViewModel)
+     Column(modifier = columnModifier, horizontalAlignment = Alignment.Start, verticalArrangement = Arrangement.Center) {
+         appLogo()
            }
         }
 
-@Composable
-fun WelcomeToProfile(mainViewModel: MainViewModel) {
-    val userInfo = mainViewModel.currentUserInfo.collectAsState()
-    val vendorInfo = mainViewModel.connectedVendor.collectAsState()
 
-    val rowModifier = Modifier
-        .fillMaxWidth()
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = rowModifier
-        ) {
-                BusinessImage(businessImageUrl = vendorInfo.value.businessLogo!!) {}
-                Box(
-                    modifier = Modifier.wrapContentWidth().height(60.dp),
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    Row(
-                        modifier = Modifier.height(30.dp),
-                        horizontalArrangement = Arrangement.Start,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        TitleWidget(
-                            textColor = Color.DarkGray,
-                            title = "Welcome ",
-                            fonSize = 16,
-                            textModifier = Modifier.height(25.dp).padding(start = 5.dp).wrapContentWidth()
-                        )
-                        TitleWidget(
-                            textColor = Colors.primaryColor,
-                            title = userInfo.value.firstname!!,
-                            fonSize = 16,
-                            textModifier = Modifier.height(25.dp).wrapContentWidth()
-                        )
-                        TitleWidget(
-                            textColor = Color.DarkGray,
-                            title = ",",
-                            fonSize = 16,
-                            textModifier = Modifier.height(25.dp).wrapContentWidth()
-                        )
-                    }
-                }
-            }
+@Composable
+fun appLogo() {
+    Box(Modifier.wrapContentSize(), contentAlignment = Alignment.CenterStart) {
+            val modifier = Modifier
+                .width(200.dp)
+                .height(100.dp)
+            ImageComponent(imageModifier = modifier, imageRes = "drawable/app_logo.png")
+        }
     }
 
 
 @Composable
-fun BusinessImage(businessImageUrl: String, onBusinessImageClicked: () -> Unit) {
-    Box(Modifier.size(40.dp), contentAlignment = Alignment.Center) {
+fun VendorLogo(imageUrl: String, onVendorLogoClicked: () -> Unit) {
+    Box(Modifier.size(50.dp), contentAlignment = Alignment.Center) {
         Box(
             Modifier
-                .size(35.dp)
+                .size(50.dp)
                 .clip(CircleShape)
                 .clickable {
-                    onBusinessImageClicked()
+                    onVendorLogoClicked()
                 }
                 .border(
                     width = (0.6).dp,
@@ -137,37 +99,7 @@ fun BusinessImage(businessImageUrl: String, onBusinessImageClicked: () -> Unit) 
                     color = Color.White,
                     shape = CircleShape)
                 .fillMaxSize()
-            ImageComponent(imageModifier = modifier, imageRes = businessImageUrl, isAsync = true)
-        }
-    }
-}
-
-@Composable
-fun UserImage(userImageUrl: String, onUserImageClicked: () -> Unit) {
-    Box(Modifier.size(40.dp), contentAlignment = Alignment.Center) {
-        Box(
-            Modifier
-                .size(35.dp)
-                .clip(CircleShape)
-                .clickable {
-                    onUserImageClicked()
-                }
-                .border(
-                    width = (0.6).dp,
-                    color = Colors.pinkColor,
-                    shape = CircleShape
-                )
-                .background(color = Color.Transparent)
-        ) {
-            val modifier = Modifier
-                .padding(2.dp)
-                .clip(CircleShape)
-                .border(
-                    width = 0.2.dp,
-                    color = Color.White,
-                    shape = CircleShape)
-                .fillMaxSize()
-            ImageComponent(imageModifier = modifier, imageRes = userImageUrl, isAsync = true)
+            ImageComponent(imageModifier = modifier, imageRes = imageUrl, isAsync = true)
         }
     }
 }
@@ -175,8 +107,8 @@ fun UserImage(userImageUrl: String, onUserImageClicked: () -> Unit) {
 
 
 @Composable
-fun rightTopBarItem(mainViewModel: MainViewModel) {
-    val userInfo = mainViewModel.currentUserInfo.collectAsState()
+fun connectedBusinessLogoItem(mainViewModel: MainViewModel) {
+    val vendorInfo = mainViewModel.connectedVendor.value
     val displayedTab = mainViewModel.displayedTab.collectAsState()
     val modifier = Modifier
         .padding(end = 10.dp)
@@ -189,7 +121,9 @@ fun rightTopBarItem(mainViewModel: MainViewModel) {
         ) {
         when (displayedTab.value) {
             MainTabEnum.HOME.toPath() -> {
-                UserImage(userImageUrl = userInfo.value.profileImageUrl!!, onUserImageClicked = {})
+                VendorLogo(imageUrl = vendorInfo.businessLogo!!, onVendorLogoClicked = {
+                    mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.VENDOR_INFO.toPath()))
+                })
             }
             MainTabEnum.SHOP.toPath() -> {
                 val iconModifier = Modifier
@@ -209,18 +143,18 @@ fun rightTopBarItem(mainViewModel: MainViewModel) {
 }
 
 @Composable
-fun centerTopBarItem(mainViewModel: MainViewModel) {
+fun appLogoTitleItem(mainViewModel: MainViewModel) {
     val rowModifier = Modifier
         .background(color = Color.Transparent)
         .fillMaxWidth()
         .fillMaxHeight()
 
     val screenTitle =  mainViewModel.screenTitle.collectAsState()
-
+    val isHomePage = screenTitle.value == "Home"
     Box(modifier = rowModifier,
-        contentAlignment = Alignment.Center
+        contentAlignment = if (isHomePage) Alignment.CenterStart else Alignment.Center
     ) {
-        val isHomePage = screenTitle.value == "Home"
+
         AnimatedVisibility(
                 visible = !isHomePage,
                 enter = fadeIn(animationSpec = keyframes {
@@ -241,7 +175,7 @@ fun centerTopBarItem(mainViewModel: MainViewModel) {
                     this.durationMillis = 0
                 })
             ) {
-                   leftTopBarItem(mainViewModel)
+                   appLogoItem(mainViewModel)
             }
         }
     }

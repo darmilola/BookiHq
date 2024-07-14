@@ -155,7 +155,7 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
                     val viewHeight = calculateHomePageScreenHeight(
                         homepageInfo = homePageInfo,
                         screenSizeInfo = screenSizeInfo,
-                        isStatusExpanded = false
+                        statusList = vendorStatus
                     )
                     mainViewModel!!.setConnectedVendor(homePageInfo.vendorInfo!!)
                     homePageViewModel!!.setHomePageViewHeight(viewHeight)
@@ -174,7 +174,7 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
 
             if (homePageViewModel!!.homePageInfo.value.userInfo == null) {
                 val vendorPhone: String = preferenceSettings["whatsappPhone",""]
-                if (!vendorPhone.isNullOrEmpty()){
+                if (vendorPhone.isNotEmpty()){
                     homepagePresenter.getUserHomepageWithStatus(userId, vendorPhone)
                 }
                 else {
@@ -185,7 +185,6 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
 
         val uiState = uiStateViewModel!!.uiStateInfo.collectAsState()
         val homepageInfo = homePageViewModel!!.homePageInfo.collectAsState()
-        val mVendorStatus = homePageViewModel!!.vendorStatus.collectAsState()
         val homePageViewHeight = homePageViewModel!!.homePageViewHeight.collectAsState()
 
         Box(
@@ -229,10 +228,9 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
                                 .height(homePageViewHeight.value.dp)
                                 .fillMaxWidth()
                                 .padding(top = 5.dp)
-                                .fillMaxWidth()
 
                         ) {
-                            if (!homePageViewModel!!.vendorStatus.value.isNullOrEmpty()) {
+                            if (homePageViewModel!!.vendorStatus.value.isNotEmpty()) {
                                 BusinessStatusDisplay(
                                     statusList = homePageViewModel!!.vendorStatus.value,
                                     onViewHeightChanged = { _: Float, isStatusExpanded: Boolean ->
@@ -375,8 +373,6 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
         val selectedProduct = remember { mutableStateOf(Product()) }
         var showProductDetailBottomSheet by remember { mutableStateOf(false) }
 
-        println("Called $showProductDetailBottomSheet")
-
         if (showProductDetailBottomSheet) {
             ProductDetailBottomSheet(
                 mainViewModel,
@@ -387,18 +383,6 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
                 },
                 onRemoveFromCart = {})
         }
-
-
-        val boxModifier =
-            Modifier
-                .background(color = Color.White)
-                .fillMaxSize()
-                .padding(start = 5.dp)
-
-        val boxBgModifier =
-            Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
 
         val pagerState = rememberPagerState(pageCount = {
             recommendations.size

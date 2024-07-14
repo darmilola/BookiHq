@@ -13,7 +13,9 @@ import domain.Models.ScreenSizeInfo
 import domain.Models.Services
 import domain.Models.CurrentAppointmentBooking
 import domain.Models.UserAppointmentsData
+import domain.Models.VendorStatusModel
 import domain.Models.VendorTime
+import kotlin.math.ceil
 
 fun getAppointmentViewHeight(
         itemList: List<UserAppointmentsData>
@@ -53,13 +55,13 @@ fun getPopularProductViewHeight(
 ): Int {
     val itemCount = itemList.size
 
-    return itemCount * 280
+    return itemCount * 250
 }
 
 fun getServicesViewHeight(
     itemList: List<Services>
 ): Int {
-    val lineCount: Int = itemList.size/4
+    val lineCount: Int = ceil((itemList.size/4).toDouble()).toInt()
 
     return lineCount * 140
 }
@@ -79,19 +81,23 @@ fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 @Composable
 fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
 
-fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo, screenSizeInfo: ScreenSizeInfo, isStatusExpanded: Boolean = false): Int{
+fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo, screenSizeInfo: ScreenSizeInfo, statusList: List<VendorStatusModel>): Int{
     val serviceCount = homepageInfo.vendorServices!!.size
     val recentAppointmentCount = homepageInfo.recentAppointment!!.size
+    var statusHeight = 0
 
     val heightAtExpanded = getPercentOfScreenHeight(screenSizeInfo.heightPx.dp, percentChange = 80)
     val heightAtCollapsed = getPercentOfScreenHeight(screenSizeInfo.heightPx.dp, percentChange = 60)
 
+    if (statusList.isNotEmpty()){
+        statusHeight = 800
+    }
 
-    val servicesHeight = serviceCount * 140
-    val recommendationsHeight = 400
-    val recentAppointmentHeight = recentAppointmentCount * 220
+    val servicesHeight = (ceil((serviceCount/4).toDouble()) * 140).toInt()
+    val recommendationsHeight = 450
+    val recentAppointmentHeight = recentAppointmentCount * 200
 
-    return servicesHeight + recentAppointmentHeight + recommendationsHeight
+    return servicesHeight + recentAppointmentHeight + recommendationsHeight + statusHeight
 }
 
 fun calculateBookingServiceTimes(platformTimes: List<PlatformTime>, vendorTimes: List<VendorTime>, bookedTimes: List<BookedTimes>, day: Int, month: Int, year: Int):
