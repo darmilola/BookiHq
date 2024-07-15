@@ -18,11 +18,10 @@ import domain.Models.VendorTime
 import kotlin.math.ceil
 
 fun getAppointmentViewHeight(
-        itemList: List<UserAppointmentsData>
+        itemListCount: Int
     ): Int {
-        val itemCount = itemList.size
 
-        return itemCount * 280
+        return itemListCount * 280
     }
 
 fun getOrderViewHeight(

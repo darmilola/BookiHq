@@ -34,7 +34,7 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
         return appointmentNetworkService.postponeAppointment(param)
     }
 
-    override suspend fun deleteAppointment(appointmentId: Int): Single<ServerResponse> {
+    override suspend fun deleteAppointment(appointmentId: Long): Single<ServerResponse> {
         val param = DeleteAppointmentRequest(appointmentId)
         return appointmentNetworkService.deleteAppointment(param)
     }

@@ -2,6 +2,7 @@ package presentation.therapist
 
 import GGSansSemiBold
 import StackedSnackbarHost
+import UIStates.ActionUIStates
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,9 +40,11 @@ import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.TherapistHandler
+import presentation.dialogs.LoadingDialog
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.TherapistAppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.TherapistViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentations.components.TextComponent
@@ -53,7 +57,7 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
     private var uiStateViewModel: UIStateViewModel? = null
     private var actionUiStateViewModel: ActionUIStateViewModel? = null
     private var therapistViewModel: TherapistViewModel? = null
-    private var appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel? = null
+    private var appointmentResourceListEnvelopeViewModel: TherapistAppointmentResourceListEnvelopeViewModel? = null
     private var availabilityActionUIStateViewModel: ActionUIStateViewModel? = null
     private var joinMeetingActionUIStateViewModel: ActionUIStateViewModel? = null
 
@@ -132,31 +136,48 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
         if (appointmentResourceListEnvelopeViewModel == null) {
             appointmentResourceListEnvelopeViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    AppointmentResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
+                    TherapistAppointmentResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
                 })
+
+            val therapistInfo = mainViewModel.currentUserInfo.value
+            therapistPresenter.getTherapistAppointments(therapistInfo.userId!!)
         }
 
         val handler = TherapistHandler(therapistPresenter,
-            uiStateViewModel = uiStateViewModel!!,
+             uiStateViewModel = uiStateViewModel!!,
              actionUiStateViewModel!!,
             onReviewsReady = {
                 therapistViewModel!!.setTherapistReviews(it)
              },
-             onMeetingTokenReady = {
-
-            },
+             onMeetingTokenReady = {},
             appointmentResourceListEnvelopeViewModel!!)
         handler.init()
+
+        val therapistInfo = mainViewModel.currentUserInfo.value
+        val actionState = actionUiStateViewModel!!.therapistDashboardUiState.collectAsState()
 
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
-            animation = StackedSnackbarAnimation.Bounce
-        )
+            animation = StackedSnackbarAnimation.Bounce)
+
+        if (actionState.value.isLoading){
+            //Content Loading
+            Box(modifier = Modifier.fillMaxWidth()) {
+                LoadingDialog(actionState.value.loadingMessage)
+            }
+        }
+        else if (actionState.value.isSuccess){
+            appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+            actionUiStateViewModel!!.switchActionUIState(ActionUIStates(isDefault = true))
+            therapistPresenter.getTherapistAppointments(therapistInfo.userId!!)
+        }
+
+
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {
-                TherapistDashboardTopBar(mainViewModel)
+                TherapistDashboardTopBar(mainViewModel, appointmentResourceListEnvelopeViewModel!!)
             },
             content = {
                  TabScreen()
@@ -171,10 +192,9 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
     fun TabScreen() {
         val tabItems: ArrayList<String> = arrayListOf()
         tabItems.add("Appointments")
-        tabItems.add("Availability")
         tabItems.add("Reviews")
         var tabIndex by remember { mutableStateOf(0) }
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
             ScrollableTabRow(selectedTabIndex = tabIndex,
                 modifier = Modifier.height(40.dp),
                 backgroundColor = Color.Transparent,
@@ -213,9 +233,8 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
                 contentAlignment = Alignment.Center
             ) {
                 when(tabIndex){
-                    0 -> TherapistAppointment(mainViewModel, uiStateViewModel!!, appointmentResourceListEnvelopeViewModel, therapistPresenter)
-                    1 -> TherapistAvailability(mainViewModel, therapistPresenter, therapistViewModel!!, uiStateViewModel!!, actionUiStateViewModel!!)
-                    2 -> TherapistReviews(mainViewModel, therapistPresenter, therapistViewModel!!, uiStateViewModel!!)
+                    0 -> TherapistAppointment(mainViewModel, uiStateViewModel!!, appointmentResourceListEnvelopeViewModel, therapistPresenter, actionUiStateViewModel!!)
+                    1 -> TherapistReviews(mainViewModel, therapistPresenter, therapistViewModel!!, uiStateViewModel!!)
                 }
 
             }

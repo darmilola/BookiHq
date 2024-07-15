@@ -2,8 +2,9 @@ package domain.therapist
 
 import com.badoo.reaktive.single.toSingle
 import domain.Models.AppointmentListDataResponse
+import domain.Models.ServerResponse
+import domain.Models.TherapistAppointmentListDataResponse
 import domain.Models.TherapistReviewsResponse
-import domain.appointments.GetTherapistAppointmentRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -33,6 +34,26 @@ open class TherapistNetworkService(private val apiService: HttpClient) {
             }*/
             contentType(ContentType.Application.Json)
             setBody(getTherapistAppointmentRequest)
-        }.body<AppointmentListDataResponse>().toSingle()
+        }.body<TherapistAppointmentListDataResponse>().toSingle()
+
+    suspend fun doneAppointment(doneAppointmentRequest: DoneAppointmentRequest) =
+        apiService.post {
+            url("/therapist/appointment/done")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(doneAppointmentRequest)
+        }.body<ServerResponse>().toSingle()
+
+    suspend fun archiveAppointment(archiveAppointmentRequest: ArchiveAppointmentRequest) =
+        apiService.post {
+            url("/therapist/appointment/archive")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(archiveAppointmentRequest)
+        }.body<ServerResponse>().toSingle()
 
 }

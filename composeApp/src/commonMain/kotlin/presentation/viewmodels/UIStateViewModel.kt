@@ -26,11 +26,15 @@ class ActionUIStateViewModel(private val savedStateHandle: SavedStateHandle): Vi
     private var _availabilityUiState = savedStateHandle.getStateFlow("availabilityUiState", ActionUIStates())
     private var _switchVendorUiState = savedStateHandle.getStateFlow("switchVendorUiState", ActionUIStates())
     private var _joinMeetingUiState = savedStateHandle.getStateFlow("joinMeetingUiState", ActionUIStates())
+    private var _therapistDashboardUiState = savedStateHandle.getStateFlow("therapistDashboardUiState", ActionUIStates())
     val postponeUIStateInfo: StateFlow<ActionUIStates>
         get() = _postponeUiState
 
     val deleteUIStateInfo: StateFlow<ActionUIStates>
         get() = _deleteUiState
+
+    val therapistDashboardUiState: StateFlow<ActionUIStates>
+        get() = _therapistDashboardUiState
 
     val availabilityStateInfo: StateFlow<ActionUIStates>
         get() = _availabilityUiState
@@ -58,6 +62,11 @@ class ActionUIStateViewModel(private val savedStateHandle: SavedStateHandle): Vi
     fun switchActionMeetingUIState(actionUIStates: ActionUIStates) {
         savedStateHandle["joinMeetingUiState"] = actionUIStates
     }
+
+    fun switchActionTherapistDashboardUIState(actionUIStates: ActionUIStates) {
+        savedStateHandle["therapistDashboardUiState"] = actionUIStates
+    }
+
     fun switchVendorActionUIState(actionUIStates: ActionUIStates) {
         savedStateHandle["switchVendorUiState"] = actionUIStates
     }

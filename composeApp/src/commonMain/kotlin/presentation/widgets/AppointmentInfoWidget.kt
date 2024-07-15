@@ -102,24 +102,103 @@ fun AppointmentInfoWidget(appointment: Appointment) {
                             fontWeight = FontWeight.Bold,
                         )
                     }
-                    Box(
-                        modifier = Modifier.width(25.dp).fillMaxHeight()
-                            .padding(start = 10.dp, end = 10.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
+                    if (appointment.serviceLocation == ServiceLocationEnum.MOBILE.toPath()) {
                         Box(
-                            modifier = Modifier.size(6.dp).clip(CircleShape)
-                                .background(color = Colors.serviceLightGray)
-                        ) {}
+                            modifier = Modifier.width(25.dp).fillMaxHeight()
+                                .padding(start = 10.dp, end = 10.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Box(
+                                modifier = Modifier.size(6.dp).clip(CircleShape)
+                                    .background(color = Colors.serviceLightGray)
+                            ) {}
+                        }
+                        Box(
+                            modifier = Modifier.wrapContentWidth().fillMaxHeight(),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            TextComponent(
+                                text = "Mobile Service",
+                                textModifier = Modifier.wrapContentSize(),
+                                fontSize = 14,
+                                fontFamily = GGSansRegular,
+                                textStyle = MaterialTheme.typography.h6,
+                                textColor = Colors.serviceLightGray,
+                                textAlign = TextAlign.Start,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
                     }
+                }
+                TherapistDisplayItem(appointment.therapistInfo!!)
+            }
+        }
+    }
+}
+
+
+
+@Composable
+fun TherapistAppointmentInfoWidget(appointment: Appointment) {
+
+    val appointmentDateFormat = LocalDate.Format {
+        dayOfWeek(DayOfWeekNames.ENGLISH_FULL)
+        chars(", ")
+        monthName(MonthNames.ENGLISH_ABBREVIATED)
+        char(' ')
+        dayOfMonth()
+    }
+    val platformTime = appointment.platformTime
+    val isAm = if (platformTime?.isAm == true) "AM" else "PM"
+
+    val appointmentDate =
+        LocalDate(dayOfMonth = appointment.appointmentDay!!, monthNumber = appointment.appointmentMonth!!, year = appointment.appointmentYear!!).format(appointmentDateFormat)
+    val appointmentTime = platformTime?.time+" "+isAm
+
+    val columnModifier = Modifier
+        .padding(start = 15.dp, end = 10.dp)
+        .fillMaxWidth()
+    Column(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start,
+        modifier = columnModifier
+    ) {
+        TextComponent(
+            text = appointment.serviceTypeItem?.title.toString(),
+            fontSize = 16,
+            fontFamily = GGSansSemiBold,
+            textStyle = MaterialTheme.typography.h6,
+            textColor = Colors.darkPrimary,
+            textAlign = TextAlign.Start,
+            fontWeight = FontWeight.Bold,
+            textModifier = Modifier
+                .fillMaxWidth().padding(start = 5.dp, top = 10.dp)
+        )
+
+
+        Row(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
+            Column(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(top = 5.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                val rowModifier = Modifier
+                    .fillMaxWidth().height(25.dp)
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.Top,
+                    modifier = rowModifier
+                ) {
                     Box(
                         modifier = Modifier.wrapContentWidth().fillMaxHeight(),
                         contentAlignment = Alignment.CenterStart
                     ) {
                         TextComponent(
-                            text = if (appointment.serviceLocation == ServiceLocationEnum.SPA.toPath()) "At The Spa" else "Home Service",
-                            textModifier = Modifier.wrapContentSize(),
-                            fontSize = 14,
+                            text = "$appointmentTime $appointmentDate",
+                            textModifier = Modifier.wrapContentSize()
+                                .padding(start = 5.dp),
+                            fontSize = 15,
                             fontFamily = GGSansRegular,
                             textStyle = MaterialTheme.typography.h6,
                             textColor = Colors.serviceLightGray,
@@ -127,8 +206,34 @@ fun AppointmentInfoWidget(appointment: Appointment) {
                             fontWeight = FontWeight.Bold,
                         )
                     }
+                    if (appointment.serviceLocation == ServiceLocationEnum.MOBILE.toPath()) {
+                        Box(
+                            modifier = Modifier.width(25.dp).fillMaxHeight()
+                                .padding(start = 10.dp, end = 10.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Box(
+                                modifier = Modifier.size(6.dp).clip(CircleShape)
+                                    .background(color = Colors.serviceLightGray)
+                            ) {}
+                        }
+                        Box(
+                            modifier = Modifier.wrapContentWidth().fillMaxHeight(),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            TextComponent(
+                                text = "Mobile Service",
+                                textModifier = Modifier.wrapContentSize(),
+                                fontSize = 14,
+                                fontFamily = GGSansRegular,
+                                textStyle = MaterialTheme.typography.h6,
+                                textColor = Colors.serviceLightGray,
+                                textAlign = TextAlign.Start,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
                 }
-                TherapistDisplayItem(appointment.therapistInfo!!)
             }
         }
     }

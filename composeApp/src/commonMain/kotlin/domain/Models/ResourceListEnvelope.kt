@@ -27,6 +27,17 @@ class AppointmentResourceListEnvelope(
     @SerialName("path") var path: String? = null)
 
 @Serializable
+class TherapistAppointmentResourceListEnvelope(
+    @SerialName("data") val data: MutableList<Appointment>? = null,
+    @SerialName("next_page_url") val nextPageUrl: String? = null,
+    @SerialName("prev_page_url") val prevPageUrl: String? = null,
+    @SerialName("per_page") val perPage: String? = null,
+    @SerialName("current_page") val currentPage: Int? = null,
+    @SerialName("to") var displayedItemCount: Int? = null,
+    @SerialName("total") var totalItemCount: Int? = null,
+    @SerialName("path") var path: String? = null)
+
+@Serializable
 class UserAppointmentsData(
     @SerialName("id") val id: Int = -1,
     @SerialName("user_id") val userId: Int = -1,

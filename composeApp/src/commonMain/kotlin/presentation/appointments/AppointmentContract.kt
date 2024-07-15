@@ -27,7 +27,7 @@ interface AppointmentContract {
         abstract fun getUserAppointments(userId: Long)
         abstract fun getMoreAppointments(userId: Long, nextPage: Int = 1)
         abstract fun postponeAppointment(appointment: Appointment, newAppointmentTime: Int,  day: Int, month: Int, year: Int)
-        abstract fun deleteAppointment(appointmentId: Int)
+        abstract fun deleteAppointment(appointmentId: Long)
         abstract fun joinMeeting(customParticipantId: String, presetName: String, meetingId: String)
         abstract fun getTherapistAvailability(therapistId: Int, vendorId: Long, day: Int, month: Int, year: Int)
     }

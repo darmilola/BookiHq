@@ -311,7 +311,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                 else if (uiState.value.contentVisible) {
                        LazyColumn(
                                 modifier = Modifier.fillMaxWidth()
-                                    .height(getAppointmentViewHeight(appointmentUIModel.appointmentList).dp)
+                                    .height(getAppointmentViewHeight(appointmentUIModel.appointmentList.size).dp)
                                     .padding(bottom = 70.dp),
                                 userScrollEnabled = true
                             ) {

@@ -14,12 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import domain.Enums.Screens
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.TherapistAppointmentResourceListEnvelopeViewModel
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget
 import theme.styles.Colors
 
 @Composable
-fun TherapistDashboardTopBar(mainViewModel: MainViewModel) {
+fun TherapistDashboardTopBar(mainViewModel: MainViewModel, appointmentResourceListEnvelopeViewModel: TherapistAppointmentResourceListEnvelopeViewModel) {
 
     val rowModifier = Modifier
         .fillMaxWidth()
@@ -34,7 +35,7 @@ fun TherapistDashboardTopBar(mainViewModel: MainViewModel) {
                 .fillMaxHeight()
                 .padding(start = 10.dp),
                 contentAlignment = Alignment.CenterStart) {
-                leftTopBarItem(mainViewModel)
+                leftTopBarItem(mainViewModel,appointmentResourceListEnvelopeViewModel)
             }
 
             Box(modifier =  Modifier.weight(3.0f)
@@ -55,10 +56,12 @@ fun TherapistDashboardTopBar(mainViewModel: MainViewModel) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun leftTopBarItem(mainViewModel: MainViewModel) {
+fun leftTopBarItem(mainViewModel: MainViewModel, therapistAppointmentResourceListEnvelopeViewModel: TherapistAppointmentResourceListEnvelopeViewModel) {
     PageBackNavWidget(){
+           therapistAppointmentResourceListEnvelopeViewModel.clearData(mutableListOf())
            mainViewModel.setScreenNav(Pair(Screens.THERAPIST_DASHBOARD.toPath(), Screens.MAIN_TAB.toPath()))
                  }
+
             }
 
 @Composable

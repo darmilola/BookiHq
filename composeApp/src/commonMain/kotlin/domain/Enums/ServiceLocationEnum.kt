@@ -5,11 +5,11 @@ enum class ServiceLocationEnum {
     MOBILE;
     fun toPath() = when (this) {
         SPA -> "spa"
-        MOBILE -> "home"
+        MOBILE -> "mobile"
     }
 
     fun toEventPropertyName() = when (this) {
         SPA -> "spa"
-        MOBILE -> "home"
+        MOBILE -> "mobile"
     }
 }

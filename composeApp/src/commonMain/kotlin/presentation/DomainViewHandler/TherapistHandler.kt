@@ -9,6 +9,8 @@ import UIStates.ActionUIStates
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.UIStateViewModel
 import UIStates.ScreenUIStates
+import domain.Models.TherapistAppointmentResourceListEnvelope
+import presentation.viewmodels.TherapistAppointmentResourceListEnvelopeViewModel
 
 class TherapistHandler(
     private val therapistPresenter: TherapistPresenter,
@@ -16,7 +18,7 @@ class TherapistHandler(
     private val actionUIStateViewModel: ActionUIStateViewModel,
     private val onReviewsReady: (List<TherapistReviews>) -> Unit,
     private val onMeetingTokenReady: (meetingToken: String) -> Unit,
-    private val appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel) :
+    private val appointmentResourceListEnvelopeViewModel: TherapistAppointmentResourceListEnvelopeViewModel) :
     TherapistContract.View {
     fun init() {
         therapistPresenter.registerUIContract(this)
@@ -27,14 +29,14 @@ class TherapistHandler(
     }
 
     override fun showActionLce(actionUiState: ActionUIStates) {
-         actionUIStateViewModel.switchActionPostponeUIState(actionUiState)
+         actionUIStateViewModel.switchActionTherapistDashboardUIState(actionUiState)
     }
 
     override fun showReviews(reviews: List<TherapistReviews>) {
         onReviewsReady(reviews)
     }
 
-    override fun showAppointments(appointments: AppointmentResourceListEnvelope) {
+    override fun showAppointments(appointments: TherapistAppointmentResourceListEnvelope) {
         if (appointmentResourceListEnvelopeViewModel.resources.value.isNotEmpty()) {
             val appointmentList = appointmentResourceListEnvelopeViewModel.resources.value
             appointmentList.addAll(appointments.data!!)

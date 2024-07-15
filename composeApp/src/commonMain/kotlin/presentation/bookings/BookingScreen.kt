@@ -169,7 +169,7 @@ class BookingScreen() : Tab, KoinComponent {
                     val vendorId = mainViewModel!!.connectedVendor.value.vendorId
                     val appointment = bookingViewModel!!.currentAppointmentBooking.value
                     bookingPresenter.createAppointment(userId = userId!!, vendorId = vendorId!!, service_id = appointment.serviceId, serviceTypeId = appointment.serviceTypeId!!,
-                        therapist_id = appointment.serviceTypeTherapists?.therapistId!!, appointmentTime = appointment.appointmentTime?.id!!,
+                        therapist_id = appointment.serviceTypeTherapists?.therapistInfo?.therapistId!!, appointmentTime = appointment.appointmentTime?.id!!,
                         day = appointment.day, month = appointment.month, year = appointment.year, serviceLocation = if (appointment.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
                         serviceStatus = appointment.serviceStatus, appointmentType = AppointmentType.SERVICE.toPath())
                 })
@@ -289,7 +289,7 @@ class BookingScreen() : Tab, KoinComponent {
                     val vendorId = mainViewModel.connectedVendor.value.vendorId
                     val appointment = bookingViewModel?.currentAppointmentBooking!!.value
                     bookingPresenter.createAppointment(userId = userId!!, vendorId = vendorId!!, service_id = appointment.serviceId, serviceTypeId = appointment.serviceTypeId!!,
-                        therapist_id = appointment.serviceTypeTherapists?.therapistId!!, appointmentTime = appointment.appointmentTime?.id!!,
+                        therapist_id = appointment.serviceTypeTherapists?.therapistInfo?.therapistId!!, appointmentTime = appointment.appointmentTime?.id!!,
                         day = appointment.day, month = appointment.month, year = appointment.year, serviceLocation = if (appointment.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
                         serviceStatus = appointment.serviceStatus, appointmentType = AppointmentType.SERVICE.toPath())
                 }

@@ -24,7 +24,6 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
     }
 
     override fun getUserAppointments(userId: Long) {
-        println(userId)
         contractView?.showLce(ScreenUIStates(loadingVisible = true))
         scope.launch(Dispatchers.Main) {
             try {
@@ -122,7 +121,7 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
         }
     }
 
-    override fun deleteAppointment(appointmentId: Int) {
+    override fun deleteAppointment(appointmentId: Long) {
         contractView?.showDeleteActionLce(ActionUIStates(isLoading = true, loadingMessage = "Deleting Appointment"))
         scope.launch(Dispatchers.Main) {
             try {

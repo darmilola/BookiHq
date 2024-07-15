@@ -7,9 +7,6 @@ import kotlinx.serialization.Serializable
 data class GetAppointmentRequest(@SerialName("user_id") val userId: Long)
 
 @Serializable
-data class GetTherapistAppointmentRequest(@SerialName("therapist_id") val therapistId: Int)
-
-@Serializable
 data class PostponeAppointmentRequest(@SerialName("user_id") val userId: Int,
                                       @SerialName("vendor_id") val vendorId: Int,
                                       @SerialName("service_id") val serviceId: Int,
@@ -21,12 +18,12 @@ data class PostponeAppointmentRequest(@SerialName("user_id") val userId: Int,
                                       @SerialName("year") val year: Int,
                                       @SerialName("serviceLocation") val serviceLocation: String,
                                       @SerialName("serviceStatus") val serviceStatus: String,
-                                      @SerialName("appointment_id") val appointmentId: Int,
+                                      @SerialName("appointment_id") val appointmentId: Long,
                                       @SerialName("appointmentType") val appointmentType: String)
 
 
 @Serializable
-data class DeleteAppointmentRequest(@SerialName("appointment_id") val appointmentId: Int)
+data class DeleteAppointmentRequest(@SerialName("appointment_id") val appointmentId: Long)
 
 @Serializable
 data class JoinMeetingRequest(@SerialName("custom_participant_id") val customParticipantId: String,
