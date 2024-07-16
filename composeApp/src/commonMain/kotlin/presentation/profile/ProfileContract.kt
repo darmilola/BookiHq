@@ -7,12 +7,15 @@ import UIStates.ScreenUIStates
 import com.badoo.reaktive.single.Single
 import domain.Models.PlatformTime
 import domain.Models.ServerResponse
+import domain.Models.Vendor
+import domain.Models.VendorAccountResponse
 
 class ProfileContract {
     interface View {
         fun onProfileDeleted()
         fun onProfileUpdated()
         fun showUserLocation(place: Place)
+        fun showVendorInfo(vendor: Vendor)
         fun showActionLce(actionUIStates: ActionUIStates)
     }
 
@@ -45,8 +48,10 @@ class ProfileContract {
         abstract fun registerPlatformContract(view: PlatformContract?)
         abstract fun getPlatformCities(country: String)
         abstract fun getVendorAvailability(vendorId: Long)
-       abstract fun switchVendor(userId: Long, vendorId: Long, action: String,
+        abstract fun switchVendor(userId: Long, vendorId: Long, action: String,
                          exitReason: String)
+        abstract fun getVendorAccountInfo(vendorId: Long)
+        abstract fun joinSpa(vendorId: Long, therapistId: Long)
         abstract fun getUserLocation(lat: Double, lng: Double)
         abstract fun createMeeting(meetingTitle: String,userId: Long, vendorId: Long, serviceStatus: String, appointmentType: String,
                                    appointmentTime: Int, day: Int, month: Int, year: Int, meetingDescription: String)

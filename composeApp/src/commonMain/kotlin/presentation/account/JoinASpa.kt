@@ -2,6 +2,7 @@ package presentation.account
 
 import GGSansSemiBold
 import StackedSnackbarHost
+import UIStates.ActionUIStates
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,15 +39,29 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
+import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Enums.Screens
 import domain.Models.PlatformNavigator
+import domain.Models.Vendor
+import domain.Models.VendorTime
 import kotlinx.serialization.Transient
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import presentation.DomainViewHandler.ProfileHandler
 import presentation.components.RightIconButtonComponent
+import presentation.dialogs.ErrorDialog
+import presentation.dialogs.LoadingDialog
+import presentation.dialogs.SuccessDialog
+import presentation.profile.ProfilePresenter
+import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.OTPTextField
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
@@ -53,9 +69,15 @@ import rememberStackedSnackbarHostState
 import theme.styles.Colors
 
 @Parcelize
-class JoinASpa(private val platformNavigator: PlatformNavigator) : Tab, Parcelable {
+class JoinASpa(private val platformNavigator: PlatformNavigator) : Tab,KoinComponent, Parcelable {
 
     @Transient private var mainViewModel: MainViewModel? = null
+    @Transient
+    private val profilePresenter: ProfilePresenter by inject()
+    @Transient
+    private var actionUIStateViewModel: ActionUIStateViewModel? = null
+    @Transient
+    private var uiStateViewModel: UIStateViewModel? = null
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
         @Composable
@@ -79,6 +101,34 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : Tab, Parcelab
     @Composable
     override fun Content() {
 
+        if (actionUIStateViewModel == null) {
+            actionUIStateViewModel= kmpViewModel(
+                factory = viewModelFactory {
+                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+        if (uiStateViewModel == null) {
+            uiStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+        val vendorInfo = remember { mutableStateOf(Vendor()) }
+        val uiState = actionUIStateViewModel!!.uiStateInfo.collectAsState()
+
+        val profileHandler = ProfileHandler(profilePresenter,
+            onUserLocationReady = {},
+            onVendorInfoReady = { it ->
+               vendorInfo.value = it
+            },
+            actionUIStateViewModel!!)
+        profileHandler.init()
+
+
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
             animation = StackedSnackbarAnimation.Bounce
@@ -91,6 +141,22 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : Tab, Parcelab
             backgroundColor = Color.White,
             floatingActionButton = {},
             content = {
+
+                if (uiState.value.isLoading) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        LoadingDialog("Getting Vendor")
+                    }
+                }
+                else if (uiState.value.isSuccess) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        actionUIStateViewModel!!.switchActionUIState(ActionUIStates(isDefault = true))
+                        mainViewModel!!.setJoinSpaVendor(vendorInfo.value)
+                        mainViewModel!!.setScreenNav(Pair(Screens.JOIN_SPA.toPath(), Screens.JOIN_SPA_INFO.toPath()))
+                    }
+                }
+                else if (uiState.value.isFailed) {
+                    ErrorDialog("Error Occurred", "Close", onConfirmation = {})
+                }
 
                 val columnModifier = Modifier
                     .background(color = Color.White, shape = RoundedCornerShape(10.dp))
@@ -139,7 +205,7 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : Tab, Parcelab
 
 
                             TextComponent(
-                                text = "Enter Invite Code to Proceed",
+                                text = "Scan Shop QR To Continue",
                                 fontSize = 16,
                                 fontFamily = GGSansSemiBold,
                                 textStyle = MaterialTheme.typography.h6,
@@ -151,29 +217,6 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : Tab, Parcelab
                                 textModifier = Modifier.fillMaxWidth().padding(top = 40.dp),
                                 overflow = TextOverflow.Ellipsis)
 
-
-                            Row(modifier = Modifier
-                                .fillMaxWidth()
-                                .height(150.dp)
-                                .padding(start = 10.dp, end = 10.dp, top = 30.dp, bottom = 30.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-
-                            ) {
-
-                                var otpValue by remember {
-                                    mutableStateOf("")
-                                }
-
-                                OTPTextField(
-                                    otpText = otpValue,
-                                    onOTPTextChanged = { value, OTPInputField ->
-                                        otpValue = value
-                                    }
-                                )
-
-                            }
-
                             Column(modifier = Modifier.fillMaxWidth(),
                                     verticalArrangement = Arrangement.Center,
                                     horizontalAlignment = Alignment.CenterHorizontally) {
@@ -183,11 +226,13 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : Tab, Parcelab
                                      .fillMaxWidth()
                                      .height(50.dp)
 
-                                 RightIconButtonComponent(modifier = buttonStyle, buttonText = "Proceed", borderStroke = BorderStroke(0.8.dp, Colors.darkPrimary), colors = ButtonDefaults.buttonColors(backgroundColor = Colors.lightPrimaryColor), fontSize = 16, shape = CircleShape, textColor = Colors.darkPrimary, style = MaterialTheme.typography.h4, iconRes = "drawable/forward_arrow.png",  colorFilter = ColorFilter.tint(color = Colors.darkPrimary)){
+                                 RightIconButtonComponent(modifier = buttonStyle, buttonText = "Scan QR", borderStroke = BorderStroke(0.8.dp, Colors.darkPrimary), colors = ButtonDefaults.buttonColors(backgroundColor = Colors.lightPrimaryColor), fontSize = 16, shape = CircleShape, textColor = Colors.darkPrimary, style = MaterialTheme.typography.h4, iconRes = "drawable/forward_arrow.png",  colorFilter = ColorFilter.tint(color = Colors.darkPrimary)){
                                       platformNavigator.startScanningBarCode {
-                                          println("Am Ready")
+                                          val vendorId =  it.toLongOrNull()
+                                          if (vendorId != null) {
+                                              profilePresenter.getVendorAccountInfo(it.toLong())
+                                          }
                                       }
-                                     //mainViewModel.setScreenNav(Pair(Screens.JOIN_SPA.toPath(), Screens.VENDOR_INFO.toPath()))
                                  }
                                }
                             }

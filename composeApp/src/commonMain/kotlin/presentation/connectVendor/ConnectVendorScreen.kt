@@ -49,6 +49,7 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.ConnectPageHandler
 import presentation.viewmodels.VendorsResourceListEnvelopeViewModel
+import presentation.widgets.ConnectVendorHeader
 import theme.Colors
 import utils.ParcelableScreen
 

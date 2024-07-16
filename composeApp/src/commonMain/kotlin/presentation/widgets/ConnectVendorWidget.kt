@@ -1,4 +1,4 @@
-package presentation.connectVendor
+package presentation.widgets
 
 import GGSansRegular
 import theme.styles.Colors
@@ -29,13 +29,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.OnBackPressed
-import cafe.adriel.voyager.navigator.currentOrThrow
 import domain.Models.Vendor
 import presentation.components.ButtonComponent
-import presentation.widgets.PageBackNavWidget
-import presentation.widgets.TitleWidget
+import presentation.connectVendor.BusinessLogo
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
@@ -169,7 +165,7 @@ fun ConnectTitle(title: String){
 
 
 @Composable
-fun BusinessInfoContent(vendor: Vendor, onConnectedListener: () -> Unit) {
+fun BusinessInfoContent(vendor: Vendor, isViewOnly: Boolean = false, onConnectedListener: () -> Unit, ) {
     val columnModifier = Modifier
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .padding(start = 10.dp, end = 10.dp)
@@ -318,6 +314,8 @@ fun BusinessInfoContent(vendor: Vendor, onConnectedListener: () -> Unit) {
                     }
                 }
 
+                if (!isViewOnly){
+
                     val buttonStyle = Modifier
                         .fillMaxWidth()
                         .padding(top = 25.dp)
@@ -329,18 +327,19 @@ fun BusinessInfoContent(vendor: Vendor, onConnectedListener: () -> Unit) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                            ButtonComponent(
-                                modifier = buttonStyle,
-                                buttonText = "Connect",
-                                borderStroke = null,
-                                colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
-                                fontSize = 16,
-                                shape = CircleShape,
-                                textColor = Color.White,
-                                style = TextStyle()
-                            ) {
-                                onConnectedListener()
-                            }
+                        ButtonComponent(
+                            modifier = buttonStyle,
+                            buttonText = "Connect",
+                            borderStroke = null,
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
+                            fontSize = 16,
+                            shape = CircleShape,
+                            textColor = Color.White,
+                            style = TextStyle()
+                        ) {
+                            onConnectedListener()
+                        }
+                    }
                 }
             }
         }

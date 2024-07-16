@@ -47,6 +47,10 @@ data class TherapistAvailabilityResponse(@SerialName("status") val status: Strin
                                          @SerialName("vendorTime") val vendorTimes: List<VendorTime>)
 
 @Serializable
+data class VendorAccountResponse(@SerialName("status") val status: String = "",
+                                         @SerialName("vendorInfo") val vendorInfo: Vendor)
+
+@Serializable
 data class TherapistTimeAvailabilityResponse(@SerialName("status") val status: String = "",
                                              @SerialName("availability") val availableTimes: List<AvailableTime>)
 

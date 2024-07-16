@@ -22,6 +22,12 @@ data class SwitchVendorRequest(@SerialName("userId") val userId: Long, @SerialNa
                                @SerialName("action") val action: String, @SerialName("exit_reason") val exitReason: String)
 
 @Serializable
+data class GetVendorInfoRequest(@SerialName("vendor_id") val vendorId: Long)
+
+@Serializable
+data class JoinSpaRequest(@SerialName("vendor_id") val vendorId: Long, @SerialName("therapist_id") val therapistId: Long)
+
+@Serializable
 data class GetPlatformCitiesRequest(@SerialName("country") val country: String)
 
 @Serializable

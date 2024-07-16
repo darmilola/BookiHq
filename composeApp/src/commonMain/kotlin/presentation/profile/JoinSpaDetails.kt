@@ -1,4 +1,4 @@
-package presentation.connectVendor
+package presentation.profile
 
 import UIStates.ActionUIStates
 import androidx.compose.material.Scaffold
@@ -21,16 +21,17 @@ import domain.Enums.Screens
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import presentation.DomainViewHandler.ProfileHandler
 import presentation.DomainViewHandler.SwitchVendorHandler
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
-import presentation.profile.ProfilePresenter
 import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.BusinessInfoContent
+import presentation.widgets.BusinessInfoTitle
 
 @Parcelize
-class SwitchVendorDetailsTab() : Tab, KoinComponent, Parcelable {
+class JoinDetailsTab() : Tab, KoinComponent, Parcelable {
     @Transient
     private var actionUIStateViewModel: ActionUIStateViewModel? = null
     @Transient
@@ -66,40 +67,35 @@ class SwitchVendorDetailsTab() : Tab, KoinComponent, Parcelable {
             )
         }
 
-
-        val handler = SwitchVendorHandler(profilePresenter,
+        val profileHandler = ProfileHandler(profilePresenter,
+            onUserLocationReady = {},
+            onVendorInfoReady = { it -> },
             actionUIStateViewModel!!)
-        handler.init()
+        profileHandler.init()
 
-        val switchVendorId = mainViewModel!!.switchVendorId.value
-        val switchVendorReason = mainViewModel!!.switchVendorReason.value
+
         val userInfo = mainViewModel!!.currentUserInfo.value
-        val uiState = actionUIStateViewModel!!.switchVendorUiState.collectAsState()
-        actionUIStateViewModel!!.switchVendorActionUIState(ActionUIStates(isDefault = true))
-        var switchVendorSuccess = remember { mutableStateOf(false) }
+        val uiState = actionUIStateViewModel!!.uiStateInfo.collectAsState()
 
 
         Scaffold(
             topBar = {
-                presentation.widgets.BusinessInfoTitle(mainViewModel = mainViewModel)
+                BusinessInfoTitle(mainViewModel = mainViewModel)
             },
             content = {
-
+                val joinVendor = mainViewModel!!.joinSpaVendor.value
                 if (uiState.value.isLoading) {
-                    LoadingDialog("Connecting New Vendor")
+                    LoadingDialog("Joining Spa")
                 } else if (uiState.value.isSuccess) {
-                    preferenceSettings["whatsappPhone"] = mainViewModel!!.switchVendor.value.whatsAppPhone
+                    actionUIStateViewModel!!.switchActionUIState(ActionUIStates(isDefault = true))
                     mainViewModel!!.setRestartApp(true)
-                    actionUIStateViewModel!!.switchVendorActionUIState(ActionUIStates(isDefault = true))
                     mainViewModel!!.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.MAIN_TAB.toPath()))
                 } else if (uiState.value.isFailed) {
                     ErrorDialog(dialogTitle = "Error Occurred Please Try Again", actionTitle = "Retry"){}
                 }
 
-                BusinessInfoContent(mainViewModel!!.connectedVendor.value){
-                 profilePresenter.switchVendor(userId = userInfo.userId!!,
-                     vendorId = switchVendorId, action = CustomerMovementEnum.Exit.toPath(),
-                     exitReason = switchVendorReason)
+                BusinessInfoContent(joinVendor){
+                    profilePresenter.joinSpa(therapistId = userInfo.userId!!, vendorId = joinVendor.vendorId!!)
                 }
             },
             backgroundColor = Color.Transparent

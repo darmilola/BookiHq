@@ -195,6 +195,67 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         }
     }
 
+    override fun getVendorAccountInfo(vendorId: Long) {
+        scope.launch(Dispatchers.Main) {
+            contractView?.showActionLce(ActionUIStates(isLoading = true, loadingMessage = "Searching Vendor"))
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    profileRepositoryImpl.getVendorAccountInfo(vendorId)
+                        .subscribe(
+                            onSuccess = { result ->
+                                println("My Result is $result")
+                                if (result.status == ServerResponseEnum.SUCCESS.toPath()){
+                                    contractView?.showActionLce(ActionUIStates(isSuccess = true))
+                                    contractView?.showVendorInfo(result.vendorInfo)
+                                }
+                                else if (result.status == ServerResponseEnum.FAILURE.toPath()){
+                                    contractView?.showActionLce(ActionUIStates(isFailed = true))
+                                }
+                            },
+                            onError = {
+                                println("My Result is Error ${it.message}")
+                                contractView?.showActionLce(ActionUIStates(isFailed = true))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                println("My Result is Error 2 ${e.message}")
+                contractView?.showActionLce(ActionUIStates(isFailed = true))
+            }
+        }
+    }
+
+    override fun joinSpa(vendorId: Long, therapistId: Long) {
+        scope.launch(Dispatchers.Main) {
+            contractView?.showActionLce(ActionUIStates(isLoading = true, loadingMessage = "Joining Spa"))
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    profileRepositoryImpl.joinSpa(vendorId, therapistId)
+                        .subscribe(
+                            onSuccess = { result ->
+                                println("My Result 1 $result")
+                                if (result.status == ServerResponseEnum.SUCCESS.toPath()){
+                                    contractView?.showActionLce(ActionUIStates(isSuccess = true))
+                                }
+                                else{
+                                    contractView?.showActionLce(ActionUIStates(isFailed = true))
+                                }
+                            },
+                            onError = {
+                                println("My Result 2 ${it.message}")
+                                contractView?.showActionLce(ActionUIStates(isFailed = true))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                println("My Result 3  ${e.message}")
+                contractView?.showActionLce(ActionUIStates(isFailed = true))
+            }
+        }
+    }
+
     override fun getUserLocation(lat: Double, lng: Double) {
         scope.launch(Dispatchers.Main) {
             try {

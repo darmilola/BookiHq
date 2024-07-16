@@ -158,6 +158,7 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
             onUserLocationReady = {
                 country.value = it.country.toString()
             },
+            onVendorInfoReady = {},
             actionUIStateViewModel!!)
         profileHandler.init()
 

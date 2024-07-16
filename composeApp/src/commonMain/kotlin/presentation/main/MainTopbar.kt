@@ -122,7 +122,7 @@ fun connectedBusinessLogoItem(mainViewModel: MainViewModel) {
         when (displayedTab.value) {
             MainTabEnum.HOME.toPath() -> {
                 VendorLogo(imageUrl = vendorInfo.businessLogo!!, onVendorLogoClicked = {
-                    mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.VENDOR_INFO.toPath()))
+                    mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.CONNECTED_VENDOR_DETAILS.toPath()))
                 })
             }
             MainTabEnum.SHOP.toPath() -> {

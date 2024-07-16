@@ -30,6 +30,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _switchVendorId =  savedStateHandle.getStateFlow("switchVendorId", -1L)
     private var _switchVendorReason =  savedStateHandle.getStateFlow("switchVendorReason", "")
     private var _switchVendor =  savedStateHandle.getStateFlow("switchVendor", Vendor())
+    private var _joinSpa =  savedStateHandle.getStateFlow("joinSpaVendor", Vendor())
     private var _restartApp =  savedStateHandle.getStateFlow("restartApp", false)
 
 
@@ -67,6 +68,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     val switchVendorReason: StateFlow<String>
         get() = _switchVendorReason
 
+    val joinSpaVendor: StateFlow<Vendor>
+        get() = _joinSpa
+
     val vendorId: StateFlow<Long>
         get() = _currentVendorId
 
@@ -83,6 +87,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     fun setTitle(newTitle: String) {
         savedStateHandle["screenTitle"] = newTitle
     }
+    fun setJoinSpaVendor(vendor: Vendor) {
+        savedStateHandle["joinSpaVendor"] = vendor
+    }
 
     fun setSwitchVendor(vendor: Vendor) {
         savedStateHandle["switchVendor"] = vendor
@@ -91,6 +98,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     fun setRestartApp(isRestart: Boolean) {
         savedStateHandle["restartApp"] = isRestart
         savedStateHandle["switchVendor"] = Vendor()
+        savedStateHandle["joinSpaVendor"] = Vendor()
     }
 
     fun setSwitchVendorID(vendorId: Long) {

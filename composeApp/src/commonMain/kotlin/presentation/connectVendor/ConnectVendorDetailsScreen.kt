@@ -27,6 +27,8 @@ import com.russhwolf.settings.set
 import domain.Enums.CustomerMovementEnum
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.VendorInfoPageHandler
+import presentation.widgets.BusinessInfoContent
+import presentation.widgets.BusinessInfoTitle
 import utils.ParcelableScreen
 
 @Parcelize

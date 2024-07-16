@@ -5,13 +5,10 @@ import com.badoo.reaktive.single.Single
 import com.badoo.reaktive.single.toSingle
 import dev.jordond.compass.Place
 import dev.jordond.compass.geocoder.Geocoder
-import domain.Models.AuthenticationResponse
 import domain.Models.PlatformCountryCitiesResponse
 import domain.Models.ServerResponse
+import domain.Models.VendorAccountResponse
 import domain.Models.VendorAvailabilityResponse
-import domain.authentication.AuthenticationNetworkService
-import domain.authentication.AuthenticationRepository
-import domain.authentication.CompleteProfileRequest
 import io.ktor.client.HttpClient
 
 class ProfileRepositoryImpl(apiService: HttpClient): ProfileRepository {
@@ -39,6 +36,19 @@ class ProfileRepositoryImpl(apiService: HttpClient): ProfileRepository {
         return profileNetworkService.deleteProfile(param)
     }
 
+    override suspend fun getVendorAccountInfo(vendorId: Long): Single<VendorAccountResponse> {
+        val param = GetVendorInfoRequest(vendorId)
+        return profileNetworkService.getVendorInfo(param)
+    }
+
+    override suspend fun joinSpa(
+        vendorId: Long,
+        therapistId: Long
+    ): Single<ServerResponse> {
+        val param = JoinSpaRequest(vendorId, therapistId)
+        return profileNetworkService.joinSpa(param)
+    }
+
     override suspend fun switchVendor(
         userId: Long,
         vendorId: Long,
@@ -46,7 +56,6 @@ class ProfileRepositoryImpl(apiService: HttpClient): ProfileRepository {
         exitReason: String
     ): Single<ServerResponse> {
         val param = SwitchVendorRequest(userId, vendorId, action, exitReason)
-        println(param)
         return profileNetworkService.switchVendor(param)
     }
 

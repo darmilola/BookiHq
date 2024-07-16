@@ -1,4 +1,4 @@
-package presentation.connectVendor
+package presentation.widgets
 
 import theme.styles.Colors
 import androidx.compose.foundation.layout.Arrangement
@@ -16,9 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import domain.Enums.Screens
 import presentation.viewmodels.MainViewModel
-import presentation.widgets.PageBackNavWidget
-import presentation.widgets.TitleWidget
-
 
 
 @Composable

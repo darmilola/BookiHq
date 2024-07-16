@@ -186,7 +186,7 @@ class ConnectVendorTab(val platformNavigator: PlatformNavigator? = null) : Tab, 
                 Column(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally) {
-                    ConnectVendorHeader(mainViewModel)
+                    presentation.widgets.ConnectVendorHeader(mainViewModel)
                     SearchBar(placeholderText = "search @vendor", onValueChange = {
                         vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                         searchQuery.value = it

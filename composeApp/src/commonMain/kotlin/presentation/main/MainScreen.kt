@@ -34,6 +34,9 @@ import presentation.consultation.ConsultationScreen
 import presentation.consultation.VirtualConsultationRoom
 import presentation.dialogs.LoadingDialog
 import presentation.account.JoinASpa
+import presentation.connectVendor.ConnectVendorDetailsScreen
+import presentation.home.ViewConnectedVendorDetailsTab
+import presentation.profile.JoinDetailsTab
 import presentation.profile.TalkWithATherapist
 import presentation.therapist.TherapistDashboardTab
 import presentation.viewmodels.MainViewModel
@@ -161,6 +164,16 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
                     val talkWithTherapist = TalkWithATherapist()
                     talkWithTherapist.setMainViewModel(mainViewModel!!)
                     it.current = talkWithTherapist
+                }
+                Screens.CONNECTED_VENDOR_DETAILS.toPath() -> {
+                    val details = ViewConnectedVendorDetailsTab()
+                    details.setMainViewModel(mainViewModel!!)
+                    it.current = details
+                }
+                Screens.JOIN_SPA_INFO.toPath() -> {
+                    val details = JoinDetailsTab()
+                    details.setMainViewModel(mainViewModel!!)
+                    it.current = details
                 }
             }
 

@@ -5,6 +5,7 @@ import dev.jordond.compass.Place
 import domain.Models.AuthenticationResponse
 import domain.Models.PlatformCountryCitiesResponse
 import domain.Models.ServerResponse
+import domain.Models.VendorAccountResponse
 import domain.Models.VendorAvailabilityResponse
 
 interface ProfileRepository {
@@ -21,6 +22,8 @@ interface ProfileRepository {
     ): Single<ServerResponse>
 
     suspend fun deleteProfile(userEmail: String): Single<ServerResponse>
+    suspend fun getVendorAccountInfo(vendorId: Long): Single<VendorAccountResponse>
+    suspend fun joinSpa(vendorId: Long, therapistId: Long): Single<ServerResponse>
     suspend fun switchVendor(userId: Long, vendorId: Long, action: String,
                              exitReason: String): Single<ServerResponse>
     suspend fun getVendorAvailableTimes(vendorId: Long): Single<VendorAvailabilityResponse>
