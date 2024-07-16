@@ -101,6 +101,10 @@ class MainViewController: PlatformNavigator {
     override fun startXSSO(onAuthSuccessful: (String) -> Unit, onAuthFailed: () -> Unit) {
         TODO("Not yet implemented")
     }
+
+    override fun startScanningBarCode(onCodeReady: (String) -> Unit) {
+        TODO("Not yet implemented")
+    }
 }
 
 

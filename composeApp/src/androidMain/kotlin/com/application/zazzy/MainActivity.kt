@@ -18,6 +18,9 @@ import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.mlkit.vision.barcode.common.Barcode
+import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import domain.Models.PlatformNavigator
 import presentation.Splashscreen.SplashScreen
@@ -210,5 +213,28 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
     }
 
     override fun writeToParcel(p0: Parcel, p1: Int) {}
+    override fun startScanningBarCode(onCodeReady: (String) -> Unit) {
+        println("You called me")
+        val options = GmsBarcodeScannerOptions.Builder()
+            .setBarcodeFormats(
+                Barcode.FORMAT_QR_CODE,
+                Barcode.FORMAT_AZTEC)
+        .enableAutoZoom() // available on 16.1.0 and higher
+            .build()
+
+        val scanner = GmsBarcodeScanning.getClient(this, options)
+
+        scanner.startScan()
+            .addOnSuccessListener { barcode ->
+                val rawValue: String? = barcode.rawValue
+                onCodeReady(rawValue.toString())
+            }
+            .addOnCanceledListener {
+                // Task canceled
+            }
+            .addOnFailureListener { e ->
+                // Task failed with an exception
+            }
+    }
 
 }

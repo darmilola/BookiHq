@@ -40,14 +40,20 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import kotlinx.serialization.Transient
 import presentation.main.MainTab
 import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 
-class VirtualConsultationRoom(private val mainViewModel: MainViewModel) : Tab {
+@Parcelize
+class VirtualConsultationRoom() : Tab, Parcelable {
 
+    @Transient
+    private var mainViewModel: MainViewModel? = null
     override val options: TabOptions
         @Composable
         get() {
@@ -60,6 +66,10 @@ class VirtualConsultationRoom(private val mainViewModel: MainViewModel) : Tab {
                 )
             }
         }
+
+    fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
 
     @Composable
     override fun Content() {
@@ -84,7 +94,7 @@ class VirtualConsultationRoom(private val mainViewModel: MainViewModel) : Tab {
                 },
                 floatingActionButtonPosition = FabPosition.End,
                 bottomBar = {
-                    AttachActionButtons(mainViewModel)
+                    AttachActionButtons(mainViewModel!!)
                 },
                 backgroundColor = Color.Transparent,
 

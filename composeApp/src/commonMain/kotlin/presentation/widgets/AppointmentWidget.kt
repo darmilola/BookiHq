@@ -70,6 +70,8 @@ fun AppointmentWidget(appointment: Appointment, appointmentPresenter: Appointmen
 
         serviceMenuItems.add(actionItem)
         if (serviceAppointmentStatus == ServiceStatusEnum.DONE.toPath()) {
+            serviceMenuItems.clear()
+            serviceMenuItems.add("Delete")
             serviceMenuItems.add("Add Review")
         }
 

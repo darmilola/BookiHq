@@ -21,13 +21,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import kotlinx.serialization.Transient
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.PageBackNavWidget
 import presentations.components.TextComponent
 
-class PendingAppointmentsTab(private val mainViewModel: MainViewModel) : Tab {
+@Parcelize
+class PendingAppointmentsTab() : Tab, Parcelable {
+
+    @Transient
+    private var mainViewModel: MainViewModel? = null
+
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
         @Composable
@@ -43,6 +51,10 @@ class PendingAppointmentsTab(private val mainViewModel: MainViewModel) : Tab {
                 )
             }
         }
+
+    fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
 
     @Composable
     override fun Content() {
@@ -76,7 +88,7 @@ class PendingAppointmentsTab(private val mainViewModel: MainViewModel) : Tab {
                         .padding(start = 10.dp),
                     contentAlignment = Alignment.CenterStart
                 ) {
-                    leftTopBarItem(mainViewModel)
+                    leftTopBarItem(mainViewModel!!)
                 }
 
                 Box(

@@ -52,18 +52,22 @@ import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.UIStateViewModel
 import UIStates.ScreenUIStates
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.AppointmentType
 import domain.Enums.ServiceLocationEnum
+import kotlinx.serialization.Transient
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
 
 
-class BookingScreen() : Tab, KoinComponent {
-    private val bookingPresenter: BookingPresenter by inject()
-    private var uiStateViewModel: UIStateViewModel? = null
-    private var bookingViewModel: BookingViewModel? = null
-    private var mainViewModel: MainViewModel? = null
+@Parcelize
+class BookingScreen() : Tab, KoinComponent, Parcelable {
+    @Transient private val bookingPresenter: BookingPresenter by inject()
+    @Transient private var uiStateViewModel: UIStateViewModel? = null
+    @Transient private var bookingViewModel: BookingViewModel? = null
+    @Transient private var mainViewModel: MainViewModel? = null
 
     override val options: TabOptions
         @Composable

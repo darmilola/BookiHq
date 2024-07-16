@@ -58,6 +58,9 @@ import UIStates.ActionUIStates
 import applications.date.getDay
 import applications.date.getMonth
 import applications.date.getYear
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import dev.icerock.moko.parcelize.Parcelable
+import kotlinx.serialization.Transient
 import presentation.viewmodels.CartViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.CartItem
@@ -73,11 +76,17 @@ import utils.calculateCheckoutSubTotal
 import utils.calculateTotal
 
 
-class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
+@Parcelize
+class CartTab() : Tab, KoinComponent, Parcelable {
 
+    @Transient
     private val cartPresenter: CartPresenter by inject()
+    @Transient
     private var actionUIStateViewModel: ActionUIStateViewModel? = null
+    @Transient
     private var cartViewModel: CartViewModel? = null
+    @Transient
+    private var mainViewModel: MainViewModel? = null
 
     override val options: TabOptions
         @Composable
@@ -91,6 +100,11 @@ class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                 )
             }
         }
+
+    fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
+
 
     @Composable
     override fun Content() {
@@ -117,7 +131,7 @@ class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
             )
         }
 
-        val cartItems = mainViewModel.unSavedOrders.collectAsState()
+        val cartItems = mainViewModel!!.unSavedOrders.collectAsState()
         val uiActionState = actionUIStateViewModel!!.uiStateInfo.collectAsState()
 
         val subtotal = calculateCheckoutSubTotal(cartItems.value)
@@ -149,10 +163,10 @@ class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                 else if (uiActionState.value.isSuccess) {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         SuccessDialog("Creating Order Successful", actionTitle = "Done", onConfirmation = {
-                            mainViewModel.clearUnsavedOrders()
-                            mainViewModel.clearCurrentOrderReference()
+                            mainViewModel!!.clearUnsavedOrders()
+                            mainViewModel!!.clearCurrentOrderReference()
                             coroutineScope.launch {
-                                mainViewModel.setScreenNav(
+                                mainViewModel!!.setScreenNav(
                                     Pair(
                                         Screens.CART.toPath(),
                                         Screens.MAIN_TAB.toPath()
@@ -165,9 +179,9 @@ class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                 else if (uiActionState.value.isFailed) {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         ErrorDialog("Creating Order Failed", actionTitle = "Retry", onConfirmation = {
-                            val orderItemList = mainViewModel.unSavedOrders.value
-                            val vendorId = mainViewModel.connectedVendor.value.vendorId
-                            val userId = mainViewModel.currentUserInfo.value.userId
+                            val orderItemList = mainViewModel!!.unSavedOrders.value
+                            val vendorId = mainViewModel!!.connectedVendor.value.vendorId
+                            val userId = mainViewModel!!.currentUserInfo.value.userId
                             //val orderReference = mainViewModel.currentOrderReference.value
                             val deliveryLocation = cartViewModel!!.deliveryLocation.value
                             val paymentMethod = cartViewModel!!.paymentMethod.value
@@ -205,7 +219,7 @@ class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                                 .fillMaxHeight(),
                             contentAlignment = Alignment.CenterStart
                         ) {
-                            leftTopBarItem(mainViewModel)
+                            leftTopBarItem(mainViewModel!!)
                         }
 
                         Box(
@@ -238,8 +252,8 @@ class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                             .weight(1f, false)
                     ) {
 
-                        PopulateCartItemList(mainViewModel,stackedSnackBarHostState)
-                        ProductDeliveryAddressWidget(mainViewModel,
+                        PopulateCartItemList(mainViewModel!!,stackedSnackBarHostState)
+                        ProductDeliveryAddressWidget(mainViewModel!!,
                             cartViewModel!!, onHomeSelectedListener = {
 
                                   cartViewModel!!.setDeliveryLocation(DeliveryMethodEnum.HOME_DELIVERY.toPath())
@@ -258,9 +272,9 @@ class CartTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                         StraightLine()
                         CheckOutSummaryWidget(cartViewModel!!, onCreateOrderStarted = {
 
-                             val orderItemList = mainViewModel.unSavedOrders.value
-                             val vendorId = mainViewModel.connectedVendor.value.vendorId
-                             val userId = mainViewModel.currentUserInfo.value.userId
+                             val orderItemList = mainViewModel!!.unSavedOrders.value
+                             val vendorId = mainViewModel!!.connectedVendor.value.vendorId
+                             val userId = mainViewModel!!.currentUserInfo.value.userId
                              val deliveryLocation = cartViewModel!!.deliveryLocation.value
                              val paymentMethod = cartViewModel!!.paymentMethod.value
                              val year = getYear()

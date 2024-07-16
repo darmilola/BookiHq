@@ -45,6 +45,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
      private var mainViewModel: MainViewModel? = null
      private val preferenceSettings: Settings = Settings()
      private var mainTab: MainTab? = null
+    private var joinASpa: JoinASpa? = null
 
     @Composable
     override fun Content() {
@@ -107,37 +108,59 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
                     it.current = bookingTab
                 }
                 Screens.CONSULTATION.toPath() -> {
-                    it.current = ConsultationScreen(mainViewModel!!)
+                    val consultTab = ConsultationScreen()
+                    consultTab.setMainViewModel(mainViewModel!!)
+                    it.current = consultTab
                 }
                 Screens.CART.toPath() -> {
-                    it.current = CartTab(mainViewModel!!)
+                    val cart = CartTab()
+                    cart.setMainViewModel(mainViewModel!!)
+                    it.current = cart
                 }
                 Screens.ORDERS.toPath() -> {
-                    it.current = Orders(mainViewModel!!)
+                    val orders = Orders()
+                    orders.setMainViewModel(mainViewModel!!)
+                    it.current = orders
                 }
                 Screens.CONNECT_VENDOR_TAB.toPath() -> {
-                    it.current = ConnectVendorTab(mainViewModel!!, platformNavigator)
+                    val connectVendorTab = ConnectVendorTab(platformNavigator)
+                    connectVendorTab.setMainViewModel(mainViewModel!!)
+                    it.current = connectVendorTab
                 }
                 Screens.CONSULTATION_ROOM.toPath() -> {
-                    it.current = VirtualConsultationRoom(mainViewModel!!)
+                    val consultation = VirtualConsultationRoom()
+                    consultation.setMainViewModel(mainViewModel!!)
+                    it.current = consultation
                 }
                 Screens.EDIT_PROFILE.toPath() -> {
-                    it.current = EditProfileTab(mainViewModel!!, platformNavigator)
+                    val editProfileTab = EditProfileTab(platformNavigator)
+                    editProfileTab.setMainViewModel(mainViewModel!!)
+                    it.current = editProfileTab
                 }
                 Screens.VENDOR_INFO.toPath() -> {
-                    it.current = SwitchVendorDetailsTab(mainViewModel!!,platformNavigator!!)
+                    val switchVendor = SwitchVendorDetailsTab()
+                    switchVendor.setMainViewModel(mainViewModel!!)
+                    it.current = switchVendor
                 }
                 Screens.PENDING_APPOINTMENT.toPath() -> {
-                    it.current = PendingAppointmentsTab(mainViewModel!!)
+                    val pendingAppointmentsTab = PendingAppointmentsTab()
+                    pendingAppointmentsTab.setMainViewModel(mainViewModel!!)
+                    it.current = pendingAppointmentsTab
                 }
                 Screens.THERAPIST_DASHBOARD.toPath() -> {
-                    it.current = TherapistDashboardTab(mainViewModel!!)
+                    val dashboard = TherapistDashboardTab()
+                    dashboard.setMainViewModel(mainViewModel!!)
+                    it.current = dashboard
                 }
                 Screens.JOIN_SPA.toPath() -> {
-                    it.current = JoinASpa(mainViewModel!!)
+                    joinASpa = JoinASpa(platformNavigator!!)
+                    joinASpa!!.setMainViewModel(mainViewModel!!)
+                    it.current = joinASpa!!
                 }
                 Screens.TALK_WITH_A_THERAPIST.toPath() -> {
-                    it.current = TalkWithATherapist(mainViewModel!!)
+                    val talkWithTherapist = TalkWithATherapist()
+                    talkWithTherapist.setMainViewModel(mainViewModel!!)
+                    it.current = talkWithTherapist
                 }
             }
 

@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import domain.Enums.Screens
 import domain.Models.CustomerOrder
 import domain.Models.ItemComponent
 import presentation.widgets.OrderDetailList
@@ -73,9 +74,8 @@ class OrderDetails(private val mainViewModel: MainViewModel,private val itemList
 
 @Composable
 fun leftTopBarItem(mainViewModel: MainViewModel) {
-    val tabNavigator = LocalTabNavigator.current
     PageBackNavWidget {
-        tabNavigator.current = Orders(mainViewModel)
+        mainViewModel.setScreenNav(Pair(Screens.ORDER_DETAILS.toPath(), Screens.ORDERS.toPath()))
 
        }
 

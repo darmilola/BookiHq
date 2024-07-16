@@ -31,13 +31,19 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import presentation.components.ButtonComponent
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Transient
 import presentation.viewmodels.MainViewModel
 
 
-class ConsultationScreen(private val mainViewModel: MainViewModel) : Tab {
+@Parcelize
+class ConsultationScreen() : Tab, Parcelable {
 
+    @Transient
+    private var mainViewModel: MainViewModel? = null
     override val options: TabOptions
         @Composable
         get() {
@@ -50,6 +56,12 @@ class ConsultationScreen(private val mainViewModel: MainViewModel) : Tab {
                 )
             }
         }
+
+    fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
+
+
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
@@ -65,7 +77,7 @@ class ConsultationScreen(private val mainViewModel: MainViewModel) : Tab {
                     .background(color = Color.White)
             Column(modifier = layoutModifier) {
 
-                ConsultationScreenTopBar(pagerState, mainViewModel)
+                ConsultationScreenTopBar(pagerState, mainViewModel!!)
 
                 val bgStyle = Modifier
                     .fillMaxWidth()

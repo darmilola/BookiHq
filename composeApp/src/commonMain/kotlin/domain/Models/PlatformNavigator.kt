@@ -4,6 +4,7 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 
 interface PlatformNavigator: Parcelable {
      fun startVideoCall(authToken: String)
+     fun startScanningBarCode(onCodeReady: (String) -> Unit)
      fun startImageUpload(imageByteArray: ByteArray)
      fun getUserLocation()
      fun startGoogleSSO(onAuthSuccessful: (String) -> Unit,

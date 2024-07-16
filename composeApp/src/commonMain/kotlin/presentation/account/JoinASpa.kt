@@ -37,7 +37,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.Screens
+import domain.Models.PlatformNavigator
+import kotlinx.serialization.Transient
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import presentation.components.RightIconButtonComponent
@@ -48,8 +52,10 @@ import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
 
-class JoinASpa(private val mainViewModel: MainViewModel) : Tab {
+@Parcelize
+class JoinASpa(private val platformNavigator: PlatformNavigator) : Tab, Parcelable {
 
+    @Transient private var mainViewModel: MainViewModel? = null
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
         @Composable
@@ -66,6 +72,10 @@ class JoinASpa(private val mainViewModel: MainViewModel) : Tab {
             }
         }
 
+    fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
+
     @Composable
     override fun Content() {
 
@@ -76,7 +86,7 @@ class JoinASpa(private val mainViewModel: MainViewModel) : Tab {
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {
-                JoinASpaTopBar(mainViewModel)
+                JoinASpaTopBar(mainViewModel!!)
             },
             backgroundColor = Color.White,
             floatingActionButton = {},
@@ -174,7 +184,10 @@ class JoinASpa(private val mainViewModel: MainViewModel) : Tab {
                                      .height(50.dp)
 
                                  RightIconButtonComponent(modifier = buttonStyle, buttonText = "Proceed", borderStroke = BorderStroke(0.8.dp, Colors.darkPrimary), colors = ButtonDefaults.buttonColors(backgroundColor = Colors.lightPrimaryColor), fontSize = 16, shape = CircleShape, textColor = Colors.darkPrimary, style = MaterialTheme.typography.h4, iconRes = "drawable/forward_arrow.png",  colorFilter = ColorFilter.tint(color = Colors.darkPrimary)){
-                                     mainViewModel.setScreenNav(Pair(Screens.JOIN_SPA.toPath(), Screens.VENDOR_INFO.toPath()))
+                                      platformNavigator.startScanningBarCode {
+                                          println("Am Ready")
+                                      }
+                                     //mainViewModel.setScreenNav(Pair(Screens.JOIN_SPA.toPath(), Screens.VENDOR_INFO.toPath()))
                                  }
                                }
                             }

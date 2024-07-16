@@ -31,12 +31,15 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.CustomerItemUIModel
 import domain.Models.CustomerOrder
 import domain.Enums.Screens
 import domain.Models.UserOrderItemUIModel
 import domain.Models.UserOrders
+import kotlinx.serialization.Transient
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -54,13 +57,22 @@ import rememberStackedSnackbarHostState
 import theme.Colors
 import utils.getOrderViewHeight
 
-class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
+@Parcelize
+class Orders() : Tab, KoinComponent, Parcelable {
 
 
+    @Transient
     private val orderPresenter: OrderPresenter by inject()
+    @Transient
     private var uiStateViewModel: UIStateViewModel? = null
+    @Transient
     private var ordersResourceListEnvelopeViewModel: OrdersResourceListEnvelopeViewModel? = null
+    @Transient
+    private var mainViewModel: MainViewModel? = null
 
+    fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -101,7 +113,7 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                     OrdersResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
-            val userId = mainViewModel.currentUserInfo.value.userId
+            val userId = mainViewModel!!.currentUserInfo.value.userId
             orderPresenter.getUserOrders(userId!!)
         }
 
@@ -117,7 +129,7 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
             ordersResourceListEnvelopeViewModel!!.displayedItemCount.collectAsState()
         val uiState = uiStateViewModel!!.uiStateInfo.collectAsState()
         val lastIndex = ordersList?.value?.size?.minus(1)
-        val userId = mainViewModel.currentUserInfo.value.userId
+        val userId = mainViewModel!!.currentUserInfo.value.userId
         val selectedOrder = remember { mutableStateOf(UserOrders()) }
 
 
@@ -176,7 +188,7 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                         userScrollEnabled = true
                     ) {
                         itemsIndexed(items = userOrderItemUIModel.userOrderList) { it, item ->
-                            OrderItemList(mainViewModel, item.customerOrder!!)
+                            OrderItemList(mainViewModel!!, item.customerOrder!!)
                             if (it == lastIndex && loadMoreState.value) {
                                 Box(
                                     modifier = Modifier.fillMaxWidth().height(60.dp),
@@ -231,7 +243,7 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                 .fillMaxWidth()
                 .fillMaxHeight(),
                 contentAlignment = Alignment.CenterStart) {
-                leftTopBarItem(mainViewModel)
+                leftTopBarItem(mainViewModel!!)
             }
 
             Box(modifier =  Modifier.weight(3.0f)

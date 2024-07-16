@@ -35,6 +35,7 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
+import kotlinx.serialization.Transient
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -51,15 +52,24 @@ import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
 
-class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
+class TherapistDashboardTab() : Tab, KoinComponent {
 
+    @Transient
     private val therapistPresenter: TherapistPresenter by inject()
+    @Transient
     private var uiStateViewModel: UIStateViewModel? = null
+    @Transient
     private var actionUiStateViewModel: ActionUIStateViewModel? = null
+    @Transient
     private var therapistViewModel: TherapistViewModel? = null
+    @Transient
     private var appointmentResourceListEnvelopeViewModel: TherapistAppointmentResourceListEnvelopeViewModel? = null
+    @Transient
     private var availabilityActionUIStateViewModel: ActionUIStateViewModel? = null
+    @Transient
     private var joinMeetingActionUIStateViewModel: ActionUIStateViewModel? = null
+    @Transient
+    private var mainViewModel: MainViewModel? = null
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -77,6 +87,10 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
                 )
             }
         }
+
+    fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
 
     @Composable
     override fun Content() {
@@ -139,7 +153,7 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
                     TherapistAppointmentResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
                 })
 
-            val therapistInfo = mainViewModel.currentUserInfo.value
+            val therapistInfo = mainViewModel!!.currentUserInfo.value
             therapistPresenter.getTherapistAppointments(therapistInfo.userId!!)
         }
 
@@ -153,7 +167,7 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
             appointmentResourceListEnvelopeViewModel!!)
         handler.init()
 
-        val therapistInfo = mainViewModel.currentUserInfo.value
+        val therapistInfo = mainViewModel!!.currentUserInfo.value
         val actionState = actionUiStateViewModel!!.therapistDashboardUiState.collectAsState()
 
 
@@ -177,7 +191,7 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {
-                TherapistDashboardTopBar(mainViewModel, appointmentResourceListEnvelopeViewModel!!)
+                TherapistDashboardTopBar(mainViewModel!!, appointmentResourceListEnvelopeViewModel!!)
             },
             content = {
                  TabScreen()
@@ -233,8 +247,8 @@ class TherapistDashboardTab(private val mainViewModel: MainViewModel) : Tab, Koi
                 contentAlignment = Alignment.Center
             ) {
                 when(tabIndex){
-                    0 -> TherapistAppointment(mainViewModel, uiStateViewModel!!, appointmentResourceListEnvelopeViewModel, therapistPresenter, actionUiStateViewModel!!)
-                    1 -> TherapistReviews(mainViewModel, therapistPresenter, therapistViewModel!!, uiStateViewModel!!)
+                    0 -> TherapistAppointment(mainViewModel!!, uiStateViewModel!!, appointmentResourceListEnvelopeViewModel, therapistPresenter, actionUiStateViewModel!!)
+                    1 -> TherapistReviews(mainViewModel!!, therapistPresenter, therapistViewModel!!, uiStateViewModel!!)
                 }
 
             }

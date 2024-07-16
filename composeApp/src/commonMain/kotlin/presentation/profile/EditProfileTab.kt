@@ -33,6 +33,8 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
@@ -42,6 +44,7 @@ import domain.Enums.AuthType
 import domain.Enums.Gender
 import domain.Models.PlatformNavigator
 import domain.Enums.Screens
+import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.AuthenticationScreenHandler
@@ -67,13 +70,19 @@ import presentations.widgets.InputWidget
 import rememberStackedSnackbarHostState
 import utils.InputValidator
 
-class EditProfileTab(private val mainViewModel: MainViewModel, val  platformNavigator: PlatformNavigator? = null) : Tab, KoinComponent {
+@Parcelize
+class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, KoinComponent, Parcelable {
 
+    @Transient
     private val profilePresenter: ProfilePresenter by inject()
+    @Transient
     private var actionUIStateViewModel: ActionUIStateViewModel? = null
-    val authenticationPresenter : AuthenticationPresenter by inject()
+    @Transient
+    private val authenticationPresenter : AuthenticationPresenter by inject()
+    @Transient
     private var platformViewModel: PlatformViewModel? = null
-    private val preferenceSettings = Settings()
+    @Transient
+    private var mainViewModel: MainViewModel? = null
 
 
 
@@ -90,6 +99,10 @@ class EditProfileTab(private val mainViewModel: MainViewModel, val  platformNavi
             }
         }
 
+    fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
+
     @Composable
     override fun Content() {
 
@@ -103,7 +116,7 @@ class EditProfileTab(private val mainViewModel: MainViewModel, val  platformNavi
 
 
 
-        val userInfo = mainViewModel.currentUserInfo.value
+        val userInfo = mainViewModel!!.currentUserInfo.value
         val userGender = if (userInfo.gender == Gender.MALE.toPath()) Gender.MALE.toPath()
         else Gender.FEMALE.toPath()
 
@@ -212,8 +225,8 @@ class EditProfileTab(private val mainViewModel: MainViewModel, val  platformNavi
             LoadingDialog(dialogTitle = "Updating Your Profile")
         }
         else if (updateProfileEnded.value && updateProfileSuccessful.value){
-            mainViewModel.setRestartApp(isRestart = true)
-            mainViewModel.setScreenNav(Pair(Screens.EDIT_PROFILE.toPath(), Screens.MAIN_TAB.toPath()))
+            mainViewModel!!.setRestartApp(isRestart = true)
+            mainViewModel!!.setScreenNav(Pair(Screens.EDIT_PROFILE.toPath(), Screens.MAIN_TAB.toPath()))
         }
         else if(updateProfileEnded.value && !updateProfileSuccessful.value){
             ErrorDialog(dialogTitle = "Error Occurred", actionTitle = "", onConfirmation = {})
@@ -231,7 +244,7 @@ class EditProfileTab(private val mainViewModel: MainViewModel, val  platformNavi
                             .fillMaxWidth()
                             .fillMaxHeight(),
                             contentAlignment = Alignment.CenterStart) {
-                            leftTopBarItem(mainViewModel)
+                            leftTopBarItem(mainViewModel!!)
                         }
 
                         Box(modifier =  Modifier.weight(3.0f)
@@ -384,7 +397,7 @@ class EditProfileTab(private val mainViewModel: MainViewModel, val  platformNavi
                         ) {
                             when (mainViewModel?.screenNav?.value?.first) {
                                 Screens.MAIN_TAB.toPath() -> {
-                                    mainViewModel.setScreenNav(
+                                    mainViewModel!!.setScreenNav(
                                         Pair(
                                             Screens.EDIT_PROFILE.toPath(),
                                             Screens.MAIN_TAB.toPath()
@@ -393,7 +406,7 @@ class EditProfileTab(private val mainViewModel: MainViewModel, val  platformNavi
                                 }
 
                                 Screens.BOOKING.toPath() -> {
-                                    mainViewModel.setScreenNav(
+                                    mainViewModel!!.setScreenNav(
                                         Pair(
                                             Screens.EDIT_PROFILE.toPath(),
                                             Screens.BOOKING.toPath()
@@ -402,7 +415,7 @@ class EditProfileTab(private val mainViewModel: MainViewModel, val  platformNavi
                                 }
 
                                 Screens.CART.toPath() -> {
-                                    mainViewModel.setScreenNav(
+                                    mainViewModel!!.setScreenNav(
                                         Pair(
                                             Screens.EDIT_PROFILE.toPath(),
                                             Screens.CART.toPath()
