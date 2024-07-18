@@ -105,6 +105,14 @@ class MainViewController: PlatformNavigator {
     override fun startScanningBarCode(onCodeReady: (String) -> Unit) {
         TODO("Not yet implemented")
     }
+
+    override fun startImageUpload(onUploadDone: (String) -> Unit) {
+        TODO("Not yet implemented")
+    }
+
+    override fun startNotificationService(onTokenReady: (String) -> Unit) {
+        TODO("Not yet implemented")
+    }
 }
 
 

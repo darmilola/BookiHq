@@ -53,11 +53,14 @@ kotlin {
             // Add the dependency for the Firebase Authentication library
             // When using the BoM, you don't specify versions in Firebase library dependencies
             implementation("com.google.firebase:firebase-auth")
+            implementation("com.google.firebase:firebase-messaging")
 
             // Also add the dependency for the Google Play services library and specify its version
             implementation("com.google.android.gms:play-services-auth:21.2.0")
 
             implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
+            implementation("com.google.firebase:firebase-storage")
+            implementation("com.google.auth:google-auth-library-oauth2-http:1.24.0")
 
 
         }
@@ -199,6 +202,7 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += "/META-INF/DEPENDENCIES"
+            excludes += "/META-INF/INDEX.LIST"
         }
     }
     buildTypes {

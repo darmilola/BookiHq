@@ -1,16 +1,25 @@
 package com.application.zazzy
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.os.Parcel
+import android.provider.OpenableColumns
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import cafe.adriel.voyager.navigator.Navigator
+import com.application.zazzy.firebase.NotificationService
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.auth.oauth2.GoogleCredentials
+import com.google.firebase.Firebase
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -18,14 +27,15 @@ import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.storage.storage
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
-import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import domain.Models.PlatformNavigator
 import presentation.Splashscreen.SplashScreen
 import presentation.authentication.WelcomeScreen
-import presentation.main.MainScreen
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 
@@ -36,9 +46,14 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
     @Transient var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks? = null
     @Transient private var storedVerificationId: String = ""
     @Transient private var resendToken: PhoneAuthProvider.ForceResendingToken? = null
+    @Transient var imagePickerActivityResult: ActivityResultLauncher<Intent>? = null
+    @Transient private var preferences: SharedPreferences? = null
+    private var notificationServiceAccessToken: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+          preferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
 
           firebaseAuth = FirebaseAuth.getInstance()
           setContent {
@@ -75,6 +90,60 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
             } catch (e: ApiException) {}
         }
 
+         imagePickerActivityResult =
+            registerForActivityResult( ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.data?.data != null) {
+                    val storageRef = Firebase.storage.reference;
+                    // getting URI of selected Image
+                    val imageUri: Uri? = result.data?.data
+                    // extract the file name with extension
+                    val imageName = getFileName(applicationContext, imageUri!!)
+
+                    // Upload Task with upload to directory 'file'
+                    // and name of the file remains same
+                    val uploadTask = storageRef.child("file/$imageName").putFile(imageUri)
+
+                    // On success, download the file URL and display it
+                    uploadTask.addOnSuccessListener {
+                        // using glide library to display the image
+                        storageRef.child("file/$imageName").downloadUrl.addOnSuccessListener {
+                            println(it)
+                            // Creating an Editor object to edit(write to the file)
+                            val myEdit: SharedPreferences.Editor = preferences!!.edit()
+                            myEdit.putString("imageUrl",it.toString())
+                            myEdit.apply()
+
+                        }.addOnFailureListener {
+                            Log.e("Firebase", "Failed in downloading")
+                        }
+                    }.addOnFailureListener {
+                        Log.e("Firebase", "Image Upload fail")
+                    }
+                }
+            }
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                return@OnCompleteListener
+            }
+            val token = task.result
+            val myEdit: SharedPreferences.Editor = preferences!!.edit()
+            myEdit.putString("fcmToken",token)
+            myEdit.apply()
+        })
+
+        Thread {
+           notificationServiceAccessToken =  getAccessToken()
+            runOnUiThread {
+                if (!notificationServiceAccessToken.isNullOrEmpty()){
+                    val myEdit: SharedPreferences.Editor = preferences!!.edit()
+                    myEdit.putString("accessToken",notificationServiceAccessToken)
+                    myEdit.apply()
+                }
+            }
+        }.start()
+
+
     }
 
     override fun startVideoCall(authToken: String) {
@@ -84,40 +153,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
         startActivity(intent)
     }
 
-    override fun startImageUpload(imageByteArray: ByteArray) {
-      /*  authScreen?.setImageUploadProcessing(isDone = false)
-
-        try {
-            MediaManager.get()
-        } catch (e: IllegalStateException) {
-            MediaManager.init(this)
-        }
-
-        val requestId = MediaManager.get().upload(imageByteArray)
-            .unsigned("UserUploads")
-            .callback(object : UploadCallback {
-                override fun onStart(requestId: String) {}
-                override fun onProgress(requestId: String, bytes: Long, totalBytes: Long) {}
-                override fun onSuccess(requestId: String, resultData: Map<*, *>?) {
-                    authScreen?.setImageUploadProcessing(isDone = true)
-                    mainScreen.setImageUploadProcessing(isDone = true)
-                    authScreen?.setImageUploadResponse(resultData?.get("secure_url") as String)
-                    mainScreen.setImageUploadResponse(resultData?.get("secure_url") as String)
-                }
-                override fun onError(requestId: String?, error: ErrorInfo?) {
-                    authScreen?.setImageUploadProcessing(isDone = true)
-                    mainScreen.setImageUploadProcessing(isDone = true)
-                }
-
-                override fun onReschedule(requestId: String?, error: ErrorInfo?) {
-                    authScreen?.setImageUploadProcessing(isDone = true)
-                    mainScreen?.setImageUploadProcessing(isDone = true)
-                }
-            }).dispatch()*/
-    }
-
-
-
+    override fun startImageUpload(imageByteArray: ByteArray) {}
 
     override fun getUserLocation() {}
 
@@ -177,10 +213,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
                 .addOnFailureListener {
                     onAuthFailed()
                 }
-
         }
-
     }
+
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential, onVerificationSuccessful: (String) -> Unit,
                                               onVerificationFailed: () -> Unit) {
         firebaseAuth!!.signInWithCredential(credential)
@@ -214,7 +249,6 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
 
     override fun writeToParcel(p0: Parcel, p1: Int) {}
     override fun startScanningBarCode(onCodeReady: (String) -> Unit) {
-        println("You called me")
         val options = GmsBarcodeScannerOptions.Builder()
             .setBarcodeFormats(
                 Barcode.FORMAT_QR_CODE,
@@ -235,6 +269,60 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
             .addOnFailureListener { e ->
                 // Task failed with an exception
             }
+    }
+
+    override fun startImageUpload(onUploadDone: (String) -> Unit) {
+        val galleryIntent = Intent(Intent.ACTION_PICK)
+        galleryIntent.type = "image/*"
+        imagePickerActivityResult!!.launch(galleryIntent)
+        preferences!!.registerOnSharedPreferenceChangeListener { sharedPreferences, s ->
+          val imageUrl = sharedPreferences.getString("imageUrl","")
+          onUploadDone(imageUrl!!)
+        }
+    }
+
+
+
+    private fun getFileName(context: Context, uri: Uri): String? {
+        if (uri.scheme == "content") {
+            val cursor = context.contentResolver.query(uri, null, null, null, null)
+            cursor.use {
+                if (cursor != null) {
+                    if(cursor.moveToFirst()) {
+                        return cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                    }
+                }
+            }
+        }
+        return uri.path?.lastIndexOf('/')?.let { uri.path?.substring(it) }
+    }
+
+    override fun startNotificationService(onTokenReady: (String) -> Unit) {
+        val token = preferences!!.getString("fcmToken","")
+
+        preferences!!.registerOnSharedPreferenceChangeListener { sharedPreferences, s ->
+            val fcmToken = sharedPreferences.getString("fcmToken","")
+            onTokenReady(fcmToken!!)
+        }
+
+        preferences!!.registerOnSharedPreferenceChangeListener { sharedPreferences, s ->
+            val fcmToken = sharedPreferences.getString("accessToken","")
+            onTokenReady(fcmToken!!)
+        }
+
+        println("Access Token $notificationServiceAccessToken")
+        println("NotificationToken $token")
+        NotificationService().sendNotification(fcmToken = token!!, accessToken = notificationServiceAccessToken!!)
+
+    }
+
+    @Throws(IOException::class)
+    fun getAccessToken(): String? {
+        val googleCredentials: GoogleCredentials = GoogleCredentials
+            .fromStream(assets.open("cloud_messaging_v1.json"))
+            .createScoped("https://www.googleapis.com/auth/firebase.messaging")
+        googleCredentials.refresh()
+        return googleCredentials.accessToken.tokenValue
     }
 
 }

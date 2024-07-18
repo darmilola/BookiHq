@@ -267,7 +267,9 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
                         profileImageUrl = profileImageUrl.value!!,
                         isAsync = true,
                         onUploadImageClicked = {
-                            imagePicker.launch()
+                            platformNavigator!!.startImageUpload {
+                                profileImageUrl.value = it
+                            }
                         })
                     Row(modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp)) {
                         Box(
@@ -438,7 +440,6 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
                             borderStroke = null
                         ) {
                             isSavedClicked.value = true
-                            profileImageUrl.value = "https://cdn.pixabay.com/photo/2016/11/29/06/08/woman-1867715_1280.jpg"
                             if (!InputValidator(inputList).isValidInput()) {
                                 ShowSnackBar(title = "Input Required", description = "Please provide the required info", actionLabel = "", duration = StackedSnackbarDuration.Short, snackBarType = SnackBarType.ERROR,
                                     onActionClick = {}, stackedSnackBarHostState = stackedSnackBarHostState)

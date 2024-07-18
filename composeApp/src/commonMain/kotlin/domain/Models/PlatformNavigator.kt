@@ -14,4 +14,6 @@ interface PlatformNavigator: Parcelable {
                    onVerificationFailed: () -> Unit)
      fun startXSSO(onAuthSuccessful: (String) -> Unit,
                    onAuthFailed: () -> Unit)
+    fun startImageUpload(onUploadDone: (String) -> Unit)
+    fun startNotificationService(onTokenReady: (String) -> Unit)
  }

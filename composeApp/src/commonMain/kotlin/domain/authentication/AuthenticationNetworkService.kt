@@ -3,9 +3,7 @@ package domain.authentication
 import com.badoo.reaktive.single.toSingle
 import domain.Models.AuthenticationResponse
 import domain.Models.CompleteProfileResponse
-import domain.Models.ListDataResponse
 import domain.Models.ServerResponse
-import domain.Models.Vendor
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -25,7 +23,6 @@ open class AuthenticationNetworkService(private val apiService: HttpClient) {
             contentType(ContentType.Application.Json)
             setBody(completeProfileRequest)
         }.body<CompleteProfileResponse>().toSingle()
-
     suspend fun updateProfile(updateProfileRequest: UpdateProfileRequest) =
         apiService.post {
             url("/auth/user/profile/update")

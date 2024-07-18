@@ -178,7 +178,7 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
             handler.init()
 
             if (homePageViewModel!!.homePageInfo.value.userInfo == null) {
-                val vendorPhone: String = preferenceSettings["whatsappPhone",""]
+                val vendorPhone: String = preferenceSettings["whatsappPhone","2349074558406"]
                 if (vendorPhone.isNotEmpty()){
                     homepagePresenter.getUserHomepageWithStatus(userId, vendorPhone)
                 }

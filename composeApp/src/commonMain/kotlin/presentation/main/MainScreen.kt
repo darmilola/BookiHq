@@ -58,12 +58,15 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
    val imageUploading = remember { mutableStateOf(false) }
    val locationRequestAllowed = remember { mutableStateOf(false) }
 
+
     if (mainViewModel == null) {
         mainViewModel = kmpViewModel(
             factory = viewModelFactory {
                 MainViewModel(savedStateHandle = createSavedStateHandle())
             },
         )
+        platformNavigator!!.startNotificationService {
+        }
     }
 
         preferenceSettings as ObservableSettings
