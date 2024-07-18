@@ -22,7 +22,7 @@ class NotificationService {
 
     fun sendNotification(fcmToken: String, accessToken: String) {
 
-        val notification = notification(title = "This is my Title", body = "This is my body")
+        val notification = notification(title = "This is my Title", body = "This is the body of my notification, thank you.")
         //  val android = android(notification)
         // val ios = ios(notification)
         val message = message(token = fcmToken, notification = notification)

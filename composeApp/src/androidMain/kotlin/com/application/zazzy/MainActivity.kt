@@ -305,13 +305,6 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
             onTokenReady(fcmToken!!)
         }
 
-        preferences!!.registerOnSharedPreferenceChangeListener { sharedPreferences, s ->
-            val fcmToken = sharedPreferences.getString("accessToken","")
-            onTokenReady(fcmToken!!)
-        }
-
-        println("Access Token $notificationServiceAccessToken")
-        println("NotificationToken $token")
         NotificationService().sendNotification(fcmToken = token!!, accessToken = notificationServiceAccessToken!!)
 
     }
