@@ -64,3 +64,12 @@
       dialog should be displayed inside content method of composable
 
       -- database by default for id
+
+      -------- Firebase ------
+
+      -- Authentication google-services.json placed in compose App controls storage and authentication for
+      both Android and ios, google-services  plugin does the job of reading from the json file
+
+      --- service-account cloud_messaging_v1.json in android assets controls cloud messaging for android to generate access key for making
+      upstream messaging and downstream receiving notification
+      the files has to be in assets folder because we will be reading with code not google plugin, so it has to be in accessible location

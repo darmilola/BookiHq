@@ -1,4 +1,4 @@
-package com.application.zazzy
+package com.application.zazzy.firebase
 
 import android.R
 import android.app.NotificationChannel
@@ -13,6 +13,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.application.zazzy.MainActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import java.util.Random
