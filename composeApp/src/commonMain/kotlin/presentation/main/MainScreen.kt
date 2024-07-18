@@ -21,7 +21,9 @@ import com.russhwolf.settings.Settings
 import dev.icerock.moko.parcelize.Parcelize
 import domain.Models.PlatformNavigator
 import domain.Enums.Screens
+import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import presentation.Orders.Orders
 import presentation.bookings.BookingScreen
 import presentation.bookings.PendingAppointmentsTab
@@ -34,6 +36,7 @@ import presentation.consultation.ConsultationScreen
 import presentation.consultation.VirtualConsultationRoom
 import presentation.dialogs.LoadingDialog
 import presentation.account.JoinASpa
+import presentation.authentication.AuthenticationPresenter
 import presentation.connectVendor.ConnectVendorDetailsScreen
 import presentation.home.ViewConnectedVendorDetailsTab
 import presentation.profile.JoinDetailsTab
@@ -45,18 +48,20 @@ import utils.ParcelableScreen
 @Parcelize
 class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableScreen, KoinComponent {
 
-     private var mainViewModel: MainViewModel? = null
-     private val preferenceSettings: Settings = Settings()
+     @Transient private var mainViewModel: MainViewModel? = null
+     @Transient private val preferenceSettings: Settings = Settings()
+     private var userId: Long = 0L
      private var mainTab: MainTab? = null
-    private var joinASpa: JoinASpa? = null
+     private var joinASpa: JoinASpa? = null
+     @Transient
+     private val  authenticationPresenter: AuthenticationPresenter by inject()
 
     @Composable
     override fun Content() {
 
-
-
-   val imageUploading = remember { mutableStateOf(false) }
-   val locationRequestAllowed = remember { mutableStateOf(false) }
+        val imageUploading = remember { mutableStateOf(false) }
+        val locationRequestAllowed = remember { mutableStateOf(false) }
+        userId = preferenceSettings.getLong("profileId",0L)
 
 
     if (mainViewModel == null) {
@@ -66,6 +71,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
             },
         )
         platformNavigator!!.startNotificationService {
+            authenticationPresenter.updateFcmToken(userId = userId, fcmToken = it)
         }
     }
 

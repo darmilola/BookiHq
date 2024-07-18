@@ -33,6 +33,16 @@ open class AuthenticationNetworkService(private val apiService: HttpClient) {
             setBody(updateProfileRequest)
         }.body<ServerResponse>().toSingle()
 
+    suspend fun updateFcmToken(updateFcmRequest: UpdateFcmRequest) =
+        apiService.post {
+            url("/auth/user/profile/fcm/update")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(updateFcmRequest)
+        }.body<ServerResponse>().toSingle()
+
     suspend fun validateProfile(validateProfileRequest: ValidateProfileRequest) =
         apiService.post {
             url("/auth/user/profile/get")

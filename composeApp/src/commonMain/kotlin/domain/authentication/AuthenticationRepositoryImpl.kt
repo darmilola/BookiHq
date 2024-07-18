@@ -47,6 +47,11 @@ class AuthenticationRepositoryImpl(apiService: HttpClient):
         return authenticationNetworkService.updateProfile(param)
     }
 
+    override suspend fun updateFcmToken(userId: Long, fcmToken: String): Single<ServerResponse> {
+        val param = UpdateFcmRequest(userId = userId, fcmToken = fcmToken)
+        return authenticationNetworkService.updateFcmToken(param)
+    }
+
 
     override suspend fun completeProfile(
         firstname: String,

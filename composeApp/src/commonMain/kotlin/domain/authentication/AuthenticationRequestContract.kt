@@ -29,6 +29,11 @@ data class UpdateProfileRequest(
     @SerialName("imageUrl") val profileImageUrl: String)
 
 @Serializable
+data class UpdateFcmRequest(
+    @SerialName("userId") val userId: Long,
+    @SerialName("fcmToken") val fcmToken: String)
+
+@Serializable
 data class ValidateProfileRequest(@SerialName("userEmail") val userEmail: String)
 
 @Serializable

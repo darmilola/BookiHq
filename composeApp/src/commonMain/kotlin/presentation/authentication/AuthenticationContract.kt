@@ -28,6 +28,7 @@ class AuthenticationContract {
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
         abstract fun validateEmail(userEmail: String)
+        abstract fun updateFcmToken(userId: Long, fcmToken: String)
         abstract fun validatePhone(phone: String,  requireValidation: Boolean = true)
         abstract fun getUserLocation(lat: Double, lng: Double)
         abstract fun completeProfile(firstname: String, lastname: String, userEmail: String, authPhone: String,

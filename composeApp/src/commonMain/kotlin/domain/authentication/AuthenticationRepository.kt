@@ -24,6 +24,11 @@ interface AuthenticationRepository {
         profileImageUrl: String
     ): Single<ServerResponse>
 
+    suspend fun updateFcmToken(
+        userId: Long,
+        fcmToken: String
+    ): Single<ServerResponse>
+
     suspend fun completeProfile(
         firstname: String,
         lastname: String,

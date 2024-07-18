@@ -137,6 +137,21 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
         }
     }
 
+    override fun updateFcmToken(userId: Long, fcmToken: String) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    authenticationRepositoryImpl.updateFcmToken(userId, fcmToken)
+                        .subscribe(
+                            onSuccess = { result -> },
+                            onError = {},
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {}
+        }
+    }
+
     override fun validatePhone(phone: String, requireValidation: Boolean) {
        var validPhone = ""
         if (requireValidation) {

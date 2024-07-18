@@ -298,15 +298,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
     }
 
     override fun startNotificationService(onTokenReady: (String) -> Unit) {
-        val token = preferences!!.getString("fcmToken","")
-
-        preferences!!.registerOnSharedPreferenceChangeListener { sharedPreferences, s ->
-            val fcmToken = sharedPreferences.getString("fcmToken","")
-            onTokenReady(fcmToken!!)
-        }
-
-        NotificationService().sendNotification(fcmToken = token!!, accessToken = notificationServiceAccessToken!!)
-
+        val fcmToken = preferences!!.getString("fcmToken","")
+        onTokenReady(fcmToken!!)
+        NotificationService().sendNotification(fcmToken = fcmToken!!, accessToken = notificationServiceAccessToken!!)
     }
 
     @Throws(IOException::class)
