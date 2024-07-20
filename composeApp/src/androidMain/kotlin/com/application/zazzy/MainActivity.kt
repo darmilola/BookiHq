@@ -306,7 +306,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
     @Throws(IOException::class)
     fun getAccessToken(): String? {
         val googleCredentials: GoogleCredentials = GoogleCredentials
-            .fromStream(assets.open("cloud_messaging_v1.json"))
+            .fromStream(assets.open("cloud_message.json"))
             .createScoped("https://www.googleapis.com/auth/firebase.messaging")
         googleCredentials.refresh()
         return googleCredentials.accessToken.tokenValue
