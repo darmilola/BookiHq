@@ -110,7 +110,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
 
     @Composable
     override fun Content() {
-        val vendorId = preferenceSettings["vendorId",-1L]
+        val vendorId: Long = preferenceSettings["vendorId",-1L]
         val onCartChanged = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
         val isSearchProduct = mainViewModel!!.isSearchProduct.collectAsState()

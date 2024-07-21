@@ -61,6 +61,7 @@ kotlin {
             implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
             implementation("com.google.firebase:firebase-storage")
             implementation("com.google.auth:google-auth-library-oauth2-http:1.24.0")
+            implementation("com.github.bumptech.glide:glide:4.16.0")
 
 
         }

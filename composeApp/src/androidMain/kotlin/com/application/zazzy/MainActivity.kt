@@ -5,7 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
-import android.os.Parcel
+import android.os.Parcelable
 import android.provider.OpenableColumns
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -33,13 +33,15 @@ import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import domain.Models.PlatformNavigator
+import kotlinx.parcelize.Parcelize
 import presentation.Splashscreen.SplashScreen
 import presentation.authentication.WelcomeScreen
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
+@Parcelize
 
-class MainActivity : ComponentActivity(), PlatformNavigator {
+class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
     @Transient var firebaseAuth: FirebaseAuth? = null
     @Transient private var mainActivityResultLauncher: ActivityResultLauncher<Intent>? = null
@@ -247,7 +249,6 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
         TODO("Not yet implemented")
     }
 
-    override fun writeToParcel(p0: Parcel, p1: Int) {}
     override fun startScanningBarCode(onCodeReady: (String) -> Unit) {
         val options = GmsBarcodeScannerOptions.Builder()
             .setBarcodeFormats(
@@ -300,7 +301,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator {
     override fun startNotificationService(onTokenReady: (String) -> Unit) {
         val fcmToken = preferences!!.getString("fcmToken","")
         onTokenReady(fcmToken!!)
-        NotificationService().sendNotification(fcmToken = fcmToken!!, accessToken = notificationServiceAccessToken!!)
+        NotificationService().sendTestNotification(fcmToken = fcmToken!!, accessToken = notificationServiceAccessToken!!)
     }
 
     @Throws(IOException::class)

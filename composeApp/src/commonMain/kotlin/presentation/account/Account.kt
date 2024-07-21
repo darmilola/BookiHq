@@ -84,11 +84,27 @@ class AccountTab : Tab, Parcelable {
                 modifier = columnModifier
             ) {
                     val userInfo = mainViewModel!!.currentUserInfo.value
-                    AccountProfileImage(profileImageUrl = userInfo.profileImageUrl!!, showEditIcon = false, isAsync = true){}
-                    UserAccountName(userInfo.firstname!!, userInfo.lastname!!)
-                    EditProfileButton(TextStyle(fontFamily = GGSansSemiBold, fontWeight = FontWeight.Black, fontSize = TextUnit(18f, TextUnitType.Sp)))
-                    Divider(color = Color(color = 0x90C8C8C8), thickness = 2.dp, modifier = Modifier.fillMaxWidth(0.90f).padding(top = 30.dp))
-                    AttachAccountAction()
+                   if (userInfo.userId != null) {
+                       AccountProfileImage(
+                           profileImageUrl = userInfo.profileImageUrl!!,
+                           showEditIcon = false,
+                           isAsync = true
+                       ) {}
+                       UserAccountName(userInfo.firstname!!, userInfo.lastname!!)
+                       EditProfileButton(
+                           TextStyle(
+                               fontFamily = GGSansSemiBold,
+                               fontWeight = FontWeight.Black,
+                               fontSize = TextUnit(18f, TextUnitType.Sp)
+                           )
+                       )
+                       Divider(
+                           color = Color(color = 0x90C8C8C8),
+                           thickness = 2.dp,
+                           modifier = Modifier.fillMaxWidth(0.90f).padding(top = 30.dp)
+                       )
+                       AttachAccountAction()
+                   }
             }
         }
 
