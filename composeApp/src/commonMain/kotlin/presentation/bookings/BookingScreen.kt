@@ -56,6 +56,7 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.AppointmentType
 import domain.Enums.ServiceLocationEnum
+import domain.Models.PlatformNavigator
 import kotlinx.serialization.Transient
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
@@ -63,7 +64,7 @@ import rememberStackedSnackbarHostState
 
 
 @Parcelize
-class BookingScreen() : Tab, KoinComponent, Parcelable {
+class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
     @Transient private val bookingPresenter: BookingPresenter by inject()
     @Transient private var uiStateViewModel: UIStateViewModel? = null
     @Transient private var bookingViewModel: BookingViewModel? = null
@@ -142,6 +143,8 @@ class BookingScreen() : Tab, KoinComponent, Parcelable {
         handler.init()
 
 
+
+
         if (creatingAppointmentProgress.value) {
             Box(modifier = Modifier.fillMaxWidth(0.90f)) {
                 LoadingDialog("Creating Appointment...")
@@ -175,7 +178,8 @@ class BookingScreen() : Tab, KoinComponent, Parcelable {
                     bookingPresenter.createAppointment(userId = userId!!, vendorId = vendorId!!, service_id = appointment.serviceId, serviceTypeId = appointment.serviceTypeId!!,
                         therapist_id = appointment.serviceTypeTherapists?.therapistInfo?.therapistId!!, appointmentTime = appointment.appointmentTime?.id!!,
                         day = appointment.day, month = appointment.month, year = appointment.year, serviceLocation = if (appointment.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
-                        serviceStatus = appointment.serviceStatus, appointmentType = AppointmentType.SERVICE.toPath())
+                        serviceStatus = appointment.serviceStatus, appointmentType = AppointmentType.SERVICE.toPath(),
+                        platformNavigator = platformNavigator,user = mainViewModel!!.currentUserInfo.value, vendor = mainViewModel!!.connectedVendor.value, monthName = bookingViewModel!!.monthName.value,appointment.appointmentTime!!, serviceType = appointment.serviceTypeItem!!)
                 })
             }
         }
@@ -295,7 +299,8 @@ class BookingScreen() : Tab, KoinComponent, Parcelable {
                     bookingPresenter.createAppointment(userId = userId!!, vendorId = vendorId!!, service_id = appointment.serviceId, serviceTypeId = appointment.serviceTypeId!!,
                         therapist_id = appointment.serviceTypeTherapists?.therapistInfo?.therapistId!!, appointmentTime = appointment.appointmentTime?.id!!,
                         day = appointment.day, month = appointment.month, year = appointment.year, serviceLocation = if (appointment.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
-                        serviceStatus = appointment.serviceStatus, appointmentType = AppointmentType.SERVICE.toPath())
+                        serviceStatus = appointment.serviceStatus, appointmentType = AppointmentType.SERVICE.toPath(), platformNavigator = platformNavigator,
+                        user = mainViewModel.currentUserInfo.value, vendor = mainViewModel.connectedVendor.value, monthName = bookingViewModel!!.monthName.value, platformTime = appointment.appointmentTime!!,serviceType = appointment.serviceTypeItem!!)
                 }
                 else {
 

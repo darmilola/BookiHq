@@ -1,5 +1,6 @@
 package com.application.zazzy
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -13,7 +14,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import cafe.adriel.voyager.navigator.Navigator
+import com.application.zazzy.firebase.NotificationMessage
 import com.application.zazzy.firebase.NotificationService
+import com.application.zazzy.firebase.NotificationType
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -55,7 +58,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-          preferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+          preferences = getSharedPreferences("TokenSharedPref", MODE_PRIVATE);
 
           firebaseAuth = FirebaseAuth.getInstance()
           setContent {
@@ -284,6 +287,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
 
 
+    @SuppressLint("Range")
     private fun getFileName(context: Context, uri: Uri): String? {
         if (uri.scheme == "content") {
             val cursor = context.contentResolver.query(uri, null, null, null, null)
@@ -301,7 +305,6 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     override fun startNotificationService(onTokenReady: (String) -> Unit) {
         val fcmToken = preferences!!.getString("fcmToken","")
         onTokenReady(fcmToken!!)
-        NotificationService().sendTestNotification(fcmToken = fcmToken!!, accessToken = notificationServiceAccessToken!!)
     }
 
     @Throws(IOException::class)
@@ -312,5 +315,91 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         googleCredentials.refresh()
         return googleCredentials.accessToken.tokenValue
     }
+
+    override fun sendOrderBookingNotification(
+        customerName: String,
+        vendorLogoUrl: String,
+        fcmToken: String
+    ) {
+        val data = NotificationMessage.SendNotificationData(customerName = customerName, vendorLogoUrl = vendorLogoUrl,
+            type = NotificationType.ORDER_BOOKING.toPath())
+        NotificationService().sendAppNotification(fcmToken = fcmToken!!,
+            accessToken = notificationServiceAccessToken!!, data = data)
+    }
+
+    override fun sendMeetingBookingNotification(
+        customerName: String,
+        vendorLogoUrl: String,
+        meetingDay: String,
+        meetingMonth: String,
+        meetingYear: String,
+        meetingTime: String,
+        fcmToken: String
+    ) {
+        val data = NotificationMessage.SendNotificationData(customerName = customerName, vendorLogoUrl = vendorLogoUrl,
+            type = NotificationType.MEETING_BOOKING.toPath(), meetingDay = meetingDay,
+            meetingMonth = meetingMonth, meetingYear = meetingYear, meetingTime = meetingTime)
+        NotificationService().sendAppNotification(fcmToken = fcmToken!!,
+            accessToken = notificationServiceAccessToken!!, data = data)
+    }
+
+    override fun sendAppointmentBookingNotification(
+        customerName: String,
+        vendorLogoUrl: String,
+        businessName: String,
+        appointmentDay: String,
+        appointmentMonth: String,
+        appointmentYear: String,
+        appointmentTime: String,
+        serviceType: String,
+        fcmToken: String
+    ) {
+        val data = NotificationMessage.SendNotificationData(customerName = customerName, vendorLogoUrl = vendorLogoUrl,
+            type = NotificationType.APPOINTMENT_BOOKING.toPath(), businessName = businessName, appointmentDay = appointmentDay,
+            appointmentMonth = appointmentMonth, appointmentYear = appointmentYear, appointmentTime = appointmentTime, serviceType = serviceType)
+        NotificationService().sendAppNotification(fcmToken = fcmToken!!,
+            accessToken = notificationServiceAccessToken!!, data = data)
+    }
+
+    override fun sendPostponedAppointmentNotification(
+        customerName: String,
+        vendorLogoUrl: String,
+        businessName: String,
+        appointmentDay: String,
+        appointmentMonth: String,
+        appointmentYear: String,
+        appointmentTime: String,
+        serviceType: String,
+        fcmToken: String
+    ) {
+        val data = NotificationMessage.SendNotificationData(customerName = customerName, vendorLogoUrl = vendorLogoUrl,
+            type = NotificationType.APPOINTMENT_POSTPONED.toPath(), businessName = businessName, appointmentDay = appointmentDay,
+            appointmentMonth = appointmentMonth, appointmentYear = appointmentYear, appointmentTime = appointmentTime, serviceType = serviceType)
+        NotificationService().sendAppNotification(fcmToken = fcmToken!!,
+            accessToken = notificationServiceAccessToken!!, data = data)
+    }
+
+    override fun sendConnectVendorNotification(
+        customerName: String,
+        vendorLogoUrl: String,
+        fcmToken: String
+    ) {
+        val data = NotificationMessage.SendNotificationData(customerName = customerName, vendorLogoUrl = vendorLogoUrl,
+            type = NotificationType.CONNECT_BUSINESS.toPath())
+        NotificationService().sendAppNotification(fcmToken = fcmToken!!,
+            accessToken = notificationServiceAccessToken!!, data = data)
+    }
+
+    override fun sendCustomerExitNotification(
+        exitReason: String,
+        vendorLogoUrl: String,
+        fcmToken: String
+    ) {
+        val data = NotificationMessage.SendNotificationData(exitReason = exitReason, vendorLogoUrl = vendorLogoUrl,
+            type = NotificationType.CONNECT_BUSINESS.toPath())
+        NotificationService().sendAppNotification(fcmToken = fcmToken!!,
+            accessToken = notificationServiceAccessToken!!, data = data)
+    }
+
 
 }

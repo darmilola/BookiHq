@@ -16,7 +16,6 @@ import android.graphics.drawable.Drawable
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
-import android.text.Html
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.application.zazzy.MainActivity
@@ -35,16 +34,14 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
     private var preferences: SharedPreferences? = null
   override  fun onMessageReceived(message: RemoteMessage) {
         val notificationId: Int = Random().nextInt(60000)
-        println("My Message ${message.data}")
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
-
-      val vendorLogoUrl = "https://cdn.pixabay.com/photo/2023/01/14/19/50/ai-generated-7718952_1280.jpg"
-      Glide.with(applicationContext)
+        val notificationData = NotificationMessage().getNotificationText(message)
+        Glide.with(applicationContext)
           .asBitmap()
-          .load(vendorLogoUrl)
+          .load(notificationData.vendorLogoUrl)
           .into(object : CustomTarget<Bitmap>() {
               override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                  val builder = createNotificationBuilder(message)
+                  val builder = createNotificationBuilder(notificationData)
                   builder.setLargeIcon(getCircleBitmap(resource))
                   notificationManager!!.notify(notificationId, builder.build())
               }
@@ -56,15 +53,13 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
     }
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        preferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        preferences = getSharedPreferences("TokenSharedPref", MODE_PRIVATE);
         val myEdit: SharedPreferences.Editor = preferences!!.edit()
         myEdit.putString("fcmToken",token)
         myEdit.apply()
     }
 
-    private fun createNotificationBuilder(
-        message: RemoteMessage
-    ): NotificationCompat.Builder {
+    private fun createNotificationBuilder(notificationDisplayData: NotificationMessage.NotificationDisplayData): NotificationCompat.Builder {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             setupChannels()
@@ -77,9 +72,9 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
         val defaultSoundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val builder =  NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
                 .setSmallIcon(com.application.zazzy.R.drawable.sample_logo)
-                .setContentTitle(Html.fromHtml("<b>Content Title is Here</b>"))
-                .setStyle(NotificationCompat.BigTextStyle().bigText("Lorem ipsum is a placeholder text commonly used to demonstrate the visual\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73"))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentTitle(notificationDisplayData.title)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(notificationDisplayData.body))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
                 .setSound(defaultSoundUri)
 
@@ -94,7 +89,7 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
         adminChannel = NotificationChannel(
             ADMIN_CHANNEL_ID,
             adminChannelName,
-            NotificationManager.IMPORTANCE_LOW
+            NotificationManager.IMPORTANCE_HIGH
         )
         adminChannel.description = adminChannelDescription
         adminChannel.enableLights(true)

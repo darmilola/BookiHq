@@ -1,6 +1,5 @@
 package com.application.zazzy.firebase
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -14,11 +13,9 @@ import java.net.URL
 
 class NotificationService {
 
-    fun sendTestNotification(fcmToken: String, accessToken: String) {
-
-        val data = data(type = NotificationType.CONNECT_BUSINESS.toPath())
-        val message = message(token = fcmToken, data = data)
-        val rootMessage = rootMessage(message = message)
+    fun sendAppNotification(fcmToken: String, accessToken: String, data: NotificationMessage.SendNotificationData) {
+        val message = NotificationMessage.message(token = fcmToken, SendNotificationData = data)
+        val rootMessage = NotificationMessage.rootMessage(message = message)
         val jsonBody = Json.encodeToString(rootMessage)
 
         var mediaType = "application/json".toMediaTypeOrNull()
@@ -42,18 +39,6 @@ class NotificationService {
         })
         thread.start()
     }
-
-    @Serializable
-    data class data(val type: String, val businessName: String = "", val customerName: String = "", val therapistName: String = "",
-        val meetingTime: String = "", val meetingDay: String = "", val meetingMonth: String = "", val meetingYear: String = "",
-                    val appointmentDay: String = "", val appointmentMonth: String = "", val appointmentYear: String = "", val appointmentTime: String = "",
-            val serviceType: String ="", val exitReason: String = "", val vendorLogoUrl: String = "")
-
-    @Serializable
-    data class message(val token: String, val data: data)
-
-    @Serializable
-    data class rootMessage(val message: message)
 }
 
 

@@ -18,6 +18,7 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import domain.Enums.CustomerMovementEnum
 import domain.Enums.Screens
+import domain.Models.PlatformNavigator
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -30,7 +31,7 @@ import presentation.viewmodels.MainViewModel
 import presentation.widgets.BusinessInfoContent
 
 @Parcelize
-class SwitchVendorDetailsTab() : Tab, KoinComponent, Parcelable {
+class SwitchVendorDetailsTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
     @Transient
     private var actionUIStateViewModel: ActionUIStateViewModel? = null
     @Transient
@@ -99,7 +100,7 @@ class SwitchVendorDetailsTab() : Tab, KoinComponent, Parcelable {
                 BusinessInfoContent(mainViewModel!!.connectedVendor.value){
                  profilePresenter.switchVendor(userId = userInfo.userId!!,
                      vendorId = switchVendorId, action = CustomerMovementEnum.Exit.toPath(),
-                     exitReason = switchVendorReason)
+                     exitReason = switchVendorReason, vendor = mainViewModel!!.connectedVendor.value!!, platformNavigator = platformNavigator)
                 }
             },
             backgroundColor = Color.Transparent

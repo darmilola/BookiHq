@@ -5,7 +5,8 @@ enum class NotificationType {
     MEETING_STARTED,
     MEETING_BOOKING,
     ORDER_BOOKING,
-    ORDER_UPDATE,
+    ORDER_DELIVERY,
+    ORDER_DELIVERED,
     APPOINTMENT_BOOKING,
     APPOINTMENT_POSTPONED,
     APPOINTMENT_REMINDER,
@@ -17,7 +18,8 @@ enum class NotificationType {
         MEETING_STARTED -> "meeting_started"
         MEETING_BOOKING -> "meeting_booking"
         ORDER_BOOKING -> "order_booking"
-        ORDER_UPDATE -> "order_update"
+        ORDER_DELIVERY -> "order_delivery"
+        ORDER_DELIVERED -> "order_delivered"
         APPOINTMENT_BOOKING -> "appointment_booking"
         APPOINTMENT_POSTPONED -> "appointment_postponed"
         APPOINTMENT_REMINDER -> "appointment_reminder"
@@ -30,7 +32,8 @@ enum class NotificationType {
         MEETING_STARTED -> "meeting_started"
         MEETING_BOOKING -> "meeting_booking"
         ORDER_BOOKING -> "order_booking"
-        ORDER_UPDATE -> "order_update"
+        ORDER_DELIVERY -> "order_delivery"
+        ORDER_DELIVERED -> "order_delivered"
         APPOINTMENT_BOOKING -> "appointment_booking"
         APPOINTMENT_POSTPONED -> "appointment_postponed"
         APPOINTMENT_REMINDER -> "appointment_reminder"

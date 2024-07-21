@@ -3,7 +3,11 @@ package presentation.bookings
 import domain.Models.ServiceTypeTherapists
 import UIStates.ActionUIStates
 import UIStates.ScreenUIStates
+import domain.Models.PlatformNavigator
 import domain.Models.PlatformTime
+import domain.Models.ServiceTypeItem
+import domain.Models.User
+import domain.Models.Vendor
 import domain.Models.VendorTime
 
 class BookingContract {
@@ -20,6 +24,7 @@ class BookingContract {
         abstract fun getServiceTherapists(serviceTypeId: Int, vendorId: Long)
         abstract fun createAppointment(userId: Long, vendorId: Long, service_id: Int, serviceTypeId: Int, therapist_id: Int,
                                        appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, serviceStatus: String,
-                                       appointmentType: String)
+                                       appointmentType: String, platformNavigator: PlatformNavigator, user: User, vendor: Vendor,monthName: String,
+                                       platformTime: PlatformTime, serviceType: ServiceTypeItem)
     }
 }

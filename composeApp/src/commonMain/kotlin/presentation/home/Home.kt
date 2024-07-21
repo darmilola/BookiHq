@@ -69,6 +69,7 @@ import domain.Models.VendorRecommendation
 import domain.Enums.RecommendationType
 import domain.Enums.Screens
 import domain.Models.OrderItem
+import domain.Models.PlatformNavigator
 import domain.Models.Product
 import domain.Models.Services
 import domain.Models.StatusImageModel
@@ -99,7 +100,7 @@ import utils.getServicesViewHeight
 import utils.pxToDp
 
 @Parcelize
-class HomeTab() : Tab, KoinComponent, Parcelable {
+class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
 
     @Transient private var uiStateViewModel: UIStateViewModel? = null
     @Transient private val homepagePresenter: HomepagePresenter by inject()
@@ -260,7 +261,7 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
                             }
                             if (!recentAppointments.isNullOrEmpty()) {
                                 AttachAppointments()
-                                RecentAppointmentScreen(appointmentList = recentAppointments)
+                                RecentAppointmentScreen(appointmentList = recentAppointments, platformNavigator = platformNavigator)
                             }
                         }
                     })
@@ -488,7 +489,7 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
     }
 
     @Composable
-    fun RecentAppointmentScreen(appointmentList: List<Appointment>?) {
+    fun RecentAppointmentScreen(appointmentList: List<Appointment>?, platformNavigator: PlatformNavigator) {
         if (appointmentList != null) {
             val viewHeight = getRecentAppointmentViewHeight(appointmentList)
             LazyColumn(
@@ -510,7 +511,8 @@ class HomeTab() : Tab, KoinComponent, Parcelable {
                             mainViewModel = mainViewModel!!,
                             availabilityActionUIStateViewModel!!,
                             isFromHomeTab = true,
-                            onDeleteAppointment = {}
+                            onDeleteAppointment = {},
+                            platformNavigator = platformNavigator
                         )
                     }
                 }

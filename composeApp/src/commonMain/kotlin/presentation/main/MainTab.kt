@@ -125,7 +125,7 @@ class MainTab(private val platformNavigator: PlatformNavigator): Tab, KoinCompon
                                 elevation = 0.dp
                             )
                             {
-                                homeTab = HomeTab()
+                                homeTab = HomeTab(platformNavigator)
                                 homeTab!!.setMainViewModel(mainViewModel!!)
                                 homeTab!!.setHomePageViewModel(homePageViewModel)
                                 TabNavigationItem(
@@ -192,7 +192,7 @@ class MainTab(private val platformNavigator: PlatformNavigator): Tab, KoinCompon
 
 
     private fun showDefaultTab(mainViewModel: MainViewModel, homePageViewModel: HomePageViewModel): HomeTab {
-        homeTab = HomeTab()
+        homeTab = HomeTab(platformNavigator)
         homeTab!!.setMainViewModel(mainViewModel)
         homeTab!!.setHomePageViewModel(homePageViewModel)
 

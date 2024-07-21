@@ -11,6 +11,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import UIStates.ActionUIStates
 import UIStates.ScreenUIStates
+import applications.date.getMonth
+import domain.Models.PlatformNavigator
+import domain.Models.PlatformTime
+import domain.Models.ServiceTypeItem
+import domain.Models.User
+import domain.Models.Vendor
 
 class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
 
@@ -57,7 +63,8 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
 
     override fun createAppointment(userId: Long, vendorId: Long, service_id: Int, serviceTypeId: Int, therapist_id: Int,
                                    appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, serviceStatus: String,
-                                   appointmentType: String) {
+                                   appointmentType: String, platformNavigator: PlatformNavigator, user: User, vendor: Vendor, monthName: String,platformTime: PlatformTime
+                                   ,serviceType: ServiceTypeItem) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
@@ -66,8 +73,10 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
                         day, month, year, serviceLocation, serviceStatus, appointmentType)
                         .subscribe(
                             onSuccess = { result ->
-                                println(result)
                                 if (result.status == "success"){
+                                    val time = if (platformTime.isAm) platformTime.time+"AM" else platformTime.time+"PM"
+                                    platformNavigator.sendAppointmentBookingNotification(customerName = user.firstname!!, vendorLogoUrl = vendor.businessLogo!!, businessName = vendor.businessName!!, appointmentDay = day.toString(),
+                                        appointmentMonth = monthName, appointmentYear = year.toString(), appointmentTime = time, fcmToken = vendor.fcmToken!!, serviceType = serviceType.title)
                                     contractView?.showActionLce(ActionUIStates(isSuccess = true))
                                 }
                                 else{

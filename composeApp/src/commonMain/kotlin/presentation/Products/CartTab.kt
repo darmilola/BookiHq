@@ -60,6 +60,7 @@ import applications.date.getMonth
 import applications.date.getYear
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import dev.icerock.moko.parcelize.Parcelable
+import domain.Models.PlatformNavigator
 import kotlinx.serialization.Transient
 import presentation.viewmodels.CartViewModel
 import presentation.viewmodels.MainViewModel
@@ -77,7 +78,7 @@ import utils.calculateTotal
 
 
 @Parcelize
-class CartTab() : Tab, KoinComponent, Parcelable {
+class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
 
     @Transient
     private val cartPresenter: CartPresenter by inject()
@@ -281,7 +282,8 @@ class CartTab() : Tab, KoinComponent, Parcelable {
                              val month = getMonth()
                              val day = getDay()
 
-                             cartPresenter.createOrder(orderItemList,vendorId!!,userId!!,deliveryLocation,paymentMethod, day, month, year)
+                             cartPresenter.createOrder(orderItemList,vendorId!!,userId!!,deliveryLocation,paymentMethod, day, month, year, user = mainViewModel!!.currentUserInfo.value, vendor = mainViewModel!!.connectedVendor.value,
+                                 platformNavigator = platformNavigator)
 
                         })
 

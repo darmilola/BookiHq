@@ -5,6 +5,9 @@ import domain.Models.ProductResourceListEnvelope
 import UIStates.ActionUIStates
 import UIStates.ScreenUIStates
 import domain.Enums.ProductType
+import domain.Models.PlatformNavigator
+import domain.Models.User
+import domain.Models.Vendor
 
 class ProductContract {
     interface View {
@@ -39,7 +42,9 @@ class CartContract {
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
-        abstract fun createOrder(orderItemList: List<OrderItem>, vendorId: Long, userId: Long, deliveryMethod: String, paymentMethod: String, day: Int, month: Int, year: Int)
+        abstract fun createOrder(orderItemList: List<OrderItem>, vendorId: Long, userId: Long, deliveryMethod: String, paymentMethod: String, day: Int, month: Int, year: Int,
+                                 user: User, vendor: Vendor, platformNavigator: PlatformNavigator
+        )
 
     }
 }

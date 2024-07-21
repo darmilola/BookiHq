@@ -25,6 +25,7 @@ import presentation.viewmodels.UIStateViewModel
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.set
 import domain.Enums.CustomerMovementEnum
+import domain.Models.User
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.VendorInfoPageHandler
 import presentation.widgets.BusinessInfoContent
@@ -32,7 +33,7 @@ import presentation.widgets.BusinessInfoTitle
 import utils.ParcelableScreen
 
 @Parcelize
-class ConnectVendorDetailsScreen(val vendor: Vendor, val  platformNavigator: PlatformNavigator? = null) : ParcelableScreen, KoinComponent {
+class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: PlatformNavigator? = null) : ParcelableScreen, KoinComponent {
 
    @Transient private val preferenceSettings: Settings = Settings()
    @Transient private val connectVendorPresenter: ConnectVendorPresenter by inject()
@@ -46,6 +47,7 @@ class ConnectVendorDetailsScreen(val vendor: Vendor, val  platformNavigator: Pla
         val errorVisible = remember { mutableStateOf(false) }
         val vendorConnected = remember { mutableStateOf(false) }
         val userId = preferenceSettings["profileId", -1L]
+        val userFirstname = preferenceSettings["firstname",""]
         preferenceSettings["profileId"] = vendor.vendorId
 
 
@@ -100,7 +102,8 @@ class ConnectVendorDetailsScreen(val vendor: Vendor, val  platformNavigator: Pla
             content = {
                 BusinessInfoContent(vendor) {
                     if (userId != -1L) {
-                        connectVendorPresenter.connectVendor(userId, vendor.vendorId!!, action = CustomerMovementEnum.Entry.toPath())
+                        connectVendorPresenter.connectVendor(userId, vendor.vendorId!!, action = CustomerMovementEnum.Entry.toPath(),
+                            userFirstname = userFirstname, vendor = vendor, platformNavigator = platformNavigator!!)
                     }
                 }
             },

@@ -35,6 +35,7 @@ import applications.date.getYear
 import domain.Models.Appointment
 import domain.Models.PlatformTime
 import domain.Models.AvailableTime
+import domain.Models.PlatformNavigator
 import presentation.appointments.AppointmentPresenter
 import presentation.bookings.AvailableTimeContent
 import presentation.components.IndeterminateCircularProgressBar
@@ -53,7 +54,7 @@ import utils.calculateTherapistServiceTimes
 @Composable
 fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPresenter,
                    postponementViewModel: PostponementViewModel,mainViewModel: MainViewModel,
-                  availabilityActionUIStateViewModel: ActionUIStateViewModel, onDismissRequest: () -> Unit,
+                  availabilityActionUIStateViewModel: ActionUIStateViewModel, onDismissRequest: () -> Unit,platformNavigator: PlatformNavigator,
     onConfirmation: (Appointment) -> Unit) {
     Dialog( properties = DialogProperties(usePlatformDefaultWidth = false), onDismissRequest = { onDismissRequest() }) {
 
@@ -113,6 +114,7 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
                            postponementViewModel.setSelectedDay(it.dayOfMonth)
                            postponementViewModel.setSelectedYear(it.year)
                            postponementViewModel.setSelectedMonth(it.monthNumber)
+                           postponementViewModel.setMonthName(it.month.name)
                            postponementViewModel.clearServiceTimes()
                            isNewDateSelected.value = true
                         })
@@ -153,14 +155,18 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
                             postponementViewModel.clearPostponementSelection()
                             onDismissRequest()
                         }, onConfirmation = {
-                            println(newSelectedTime.value)
                           if (newSelectedTime.value.id != null) {
                                 appointmentPresenter.postponeAppointment(
                                     appointment,
                                     newSelectedTime.value.id!!,
                                     day = newSelectedDay.value,
                                     month = newSelectedMonth.value,
-                                    year = newSelectedYear.value
+                                    year = newSelectedYear.value,
+                                    vendor = appointment.vendor,
+                                    user = mainViewModel.currentUserInfo.value,
+                                    monthName = postponementViewModel.monthName.value,
+                                    platformNavigator = platformNavigator,
+                                    platformTime = newSelectedTime.value
                                 )
                               postponementViewModel.clearPostponementSelection()
                               onConfirmation(appointment)

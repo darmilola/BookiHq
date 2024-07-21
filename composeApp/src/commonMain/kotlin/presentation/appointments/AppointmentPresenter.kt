@@ -13,6 +13,10 @@ import kotlinx.coroutines.withContext
 import UIStates.ActionUIStates
 import UIStates.ScreenUIStates
 import domain.Enums.ServerResponseEnum
+import domain.Models.PlatformNavigator
+import domain.Models.PlatformTime
+import domain.Models.User
+import domain.Models.Vendor
 
 class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presenter() {
 
@@ -90,7 +94,8 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
         newAppointmentTime: Int,
         day: Int,
         month: Int,
-        year: Int
+        year: Int,
+        vendor: Vendor, user: User, monthName: String, platformNavigator: PlatformNavigator, platformTime: PlatformTime
     ) {
         contractView?.showPostponeActionLce(ActionUIStates(isLoading = true, loadingMessage = "Postponing Your Appointment"))
         scope.launch(Dispatchers.Main) {
@@ -99,9 +104,11 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                     appointmentRepositoryImpl.postponeAppointment(appointment, newAppointmentTime, day,month,year)
                         .subscribe(
                             onSuccess = { result ->
-                                println("Error $result")
                                 if (result.status == "success"){
+                                    val time = if (platformTime.isAm) platformTime.time+"AM" else platformTime.time+"PM"
                                     contractView?.showPostponeActionLce(ActionUIStates(isSuccess = true, successMessage = "Appointment Postponed"))
+                                    platformNavigator.sendPostponedAppointmentNotification(customerName = user.firstname!!, vendorLogoUrl = vendor.businessLogo!!, businessName = vendor.businessName!!, appointmentDay = day.toString(), appointmentMonth = monthName, appointmentYear = year.toString(),
+                                        appointmentTime = time, fcmToken = vendor.fcmToken!!, serviceType = appointment.serviceTypeItem!!.title)
                                 }
                                 else{
                                     contractView?.showPostponeActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Postponing Appointment Please Try Again"))

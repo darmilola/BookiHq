@@ -4,7 +4,10 @@ import domain.Models.Appointment
 import domain.Models.AppointmentResourceListEnvelope
 import UIStates.ActionUIStates
 import UIStates.ScreenUIStates
+import domain.Models.PlatformNavigator
 import domain.Models.PlatformTime
+import domain.Models.User
+import domain.Models.Vendor
 import domain.Models.VendorTime
 
 interface AppointmentContract {
@@ -26,7 +29,8 @@ interface AppointmentContract {
         abstract fun registerUIContract(view: View?)
         abstract fun getUserAppointments(userId: Long)
         abstract fun getMoreAppointments(userId: Long, nextPage: Int = 1)
-        abstract fun postponeAppointment(appointment: Appointment, newAppointmentTime: Int,  day: Int, month: Int, year: Int)
+        abstract fun postponeAppointment(appointment: Appointment, newAppointmentTime: Int,  day: Int, month: Int, year: Int, vendor: Vendor, user: User, monthName: String, platformNavigator: PlatformNavigator,
+            platformTime: PlatformTime)
         abstract fun deleteAppointment(appointmentId: Long)
         abstract fun joinMeeting(customParticipantId: String, presetName: String, meetingId: String)
         abstract fun getTherapistAvailability(therapistId: Int, vendorId: Long, day: Int, month: Int, year: Int)

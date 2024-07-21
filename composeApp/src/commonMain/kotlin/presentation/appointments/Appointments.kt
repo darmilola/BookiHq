@@ -332,7 +332,8 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                                             isFromHomeTab = false,
                                             onDeleteAppointment = {
                                                 appointmentPresenter.deleteAppointment(it.appointmentId!!)
-                                            }
+                                            },
+                                            platformNavigator = platformNavigator
                                         )
                                     }
                                     if (it == lastIndex && loadMoreState.value) {

@@ -42,6 +42,7 @@ import domain.Models.Appointment
 import domain.Enums.AppointmentType
 import domain.Enums.MeetingStatus
 import domain.Enums.ServiceStatusEnum
+import domain.Models.PlatformNavigator
 import domain.Models.TherapistInfo
 import presentation.appointments.AppointmentPresenter
 import presentation.dialogs.PostponeDialog
@@ -52,7 +53,7 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun AppointmentWidget(appointment: Appointment, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, mainViewModel: MainViewModel, availabilityActionUIStateViewModel: ActionUIStateViewModel, isFromHomeTab: Boolean,onDeleteAppointment: (Appointment) -> Unit) {
+fun AppointmentWidget(appointment: Appointment, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, mainViewModel: MainViewModel, availabilityActionUIStateViewModel: ActionUIStateViewModel, isFromHomeTab: Boolean,onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
 
     val serviceAppointmentStatus = appointment.serviceStatus
     val serviceMenuItems = arrayListOf<String>()
@@ -131,7 +132,7 @@ fun AppointmentWidget(appointment: Appointment, appointmentPresenter: Appointmen
                         mainViewModel = mainViewModel,
                         isFromHomeTab, onDeleteAppointment = {
                             onDeleteAppointment(it)
-                        })
+                        }, platformNavigator = platformNavigator)
                     AttachAppointmentContent(appointment)
                 }
             }
@@ -202,7 +203,7 @@ fun MeetingAppointmentWidget(appointment: Appointment, appointmentPresenter: App
 
 @Composable
 fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment, menuItems: ArrayList<String>, presenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null,
-                                   availabilityActionUIStateViewModel: ActionUIStateViewModel, mainViewModel: MainViewModel, isFromHomeTab: Boolean = false, onDeleteAppointment: (Appointment) -> Unit) {
+                                   availabilityActionUIStateViewModel: ActionUIStateViewModel, mainViewModel: MainViewModel, isFromHomeTab: Boolean = false, onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
     val expandedMenuItem = remember { mutableStateOf(false) }
     val openPostponeDialog = remember { mutableStateOf(false) }
 
@@ -214,7 +215,7 @@ fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String
                     openPostponeDialog.value = false
                 }, onConfirmation = {
                     openPostponeDialog.value = false
-                })
+                }, platformNavigator = platformNavigator)
             }
         }
     }

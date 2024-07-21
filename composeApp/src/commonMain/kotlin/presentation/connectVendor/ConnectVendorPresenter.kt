@@ -11,6 +11,8 @@ import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import UIStates.ScreenUIStates
+import domain.Models.PlatformNavigator
+import domain.Models.Vendor
 
 class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Presenter() {
     private val scope: CoroutineScope = MainScope()
@@ -19,7 +21,7 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
     override fun registerUIContract(view: ConnectVendorContract.View?) {
          contractView = view
     }
-    override fun connectVendor(userId: Long, vendorId: Long, action: String) {
+    override fun connectVendor(userId: Long, vendorId: Long, action: String, userFirstname: String, vendor: Vendor, platformNavigator: PlatformNavigator) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
@@ -29,6 +31,7 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     contractView?.showLce(ScreenUIStates(contentVisible = true))
+                                    platformNavigator.sendConnectVendorNotification(customerName = userFirstname, vendorLogoUrl = vendor.businessLogo!!, fcmToken = vendor.fcmToken!!)
                                     contractView?.onVendorConnected(userId)
                                 }
                                 else{

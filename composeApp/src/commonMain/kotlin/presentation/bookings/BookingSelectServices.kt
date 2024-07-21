@@ -150,6 +150,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
                 bookingViewModel.setSelectedDay(it.dayOfMonth)
                 bookingViewModel.setSelectedMonth(it.monthNumber)
                 bookingViewModel.setSelectedYear(it.year)
+                bookingViewModel.setSelectedMonthName(it.month.name)
             }
         }
     }

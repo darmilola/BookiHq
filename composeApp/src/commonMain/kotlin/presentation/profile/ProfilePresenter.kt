@@ -12,6 +12,10 @@ import com.badoo.reaktive.single.subscribe
 import UIStates.ActionUIStates
 import UIStates.ScreenUIStates
 import domain.Enums.ServerResponseEnum
+import domain.Models.PlatformNavigator
+import domain.Models.PlatformTime
+import domain.Models.User
+import domain.Models.Vendor
 
 
 class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
@@ -163,18 +167,16 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         }
     }
 
-    override fun switchVendor(userId: Long, vendorId: Long, action: String, exitReason: String) {
-        println("Error -1")
+    override fun switchVendor(userId: Long, vendorId: Long, action: String, exitReason: String, vendor: Vendor, platformNavigator: PlatformNavigator) {
         scope.launch(Dispatchers.Main) {
-            println("Arena 1")
             switchVendorContract?.showActionLce(ActionUIStates(isLoading = true))
             try {
                 val result = withContext(Dispatchers.IO) {
                     profileRepositoryImpl.switchVendor(userId, vendorId, action, exitReason)
                         .subscribe(
                             onSuccess = { result ->
-                                println("Error 0 $result")
                                 if (result?.status == ServerResponseEnum.SUCCESS.toPath()){
+                                    platformNavigator.sendCustomerExitNotification(exitReason = exitReason, vendorLogoUrl = vendor.businessLogo!!, fcmToken = vendor.fcmToken!!)
                                     switchVendorContract?.showActionLce(ActionUIStates(isSuccess = true))
                                 }
                                 else{
@@ -295,7 +297,8 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         day: Int,
         month: Int,
         year: Int,
-        meetingDescription: String
+        meetingDescription: String,
+        user: User, vendor: Vendor, platformTime: PlatformTime, monthName: String, platformNavigator: PlatformNavigator
     ) {
         scope.launch(Dispatchers.Main) {
             try {
@@ -305,8 +308,10 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                         appointmentTime, day, month, year, meetingDescription)
                         .subscribe(
                             onSuccess = { result ->
-                                println(result)
-                                if (result.status == "success"){
+                                if (result.status == "success") {
+                                    val time = if (platformTime.isAm) platformTime.time+"AM" else platformTime.time+"PM"
+                                    platformNavigator.sendMeetingBookingNotification(customerName = user.firstname!!, vendorLogoUrl = vendor.businessLogo!!,
+                                        meetingDay = day.toString(), meetingMonth = monthName, meetingYear = year.toString(), meetingTime = time, fcmToken = vendor.fcmToken!!)
                                     meetingViewContract?.showActionLce(ActionUIStates(isSuccess = true))
                                 }
                                 else{
@@ -314,7 +319,6 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                                 }
                             },
                             onError = {
-                                println(it)
                                 it.message?.let { it1 -> meetingViewContract?.showActionLce(ActionUIStates(isFailed = true))}
                             },
                         )

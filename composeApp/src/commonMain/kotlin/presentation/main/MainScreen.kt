@@ -115,7 +115,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
                     it.current = mainTab!!
                 }
                 Screens.BOOKING.toPath() -> {
-                    val bookingTab = BookingScreen()
+                    val bookingTab = BookingScreen(platformNavigator!!)
                     bookingTab.setMainViewModel(mainViewModel!!)
                     it.current = bookingTab
                 }
@@ -125,7 +125,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
                     it.current = consultTab
                 }
                 Screens.CART.toPath() -> {
-                    val cart = CartTab()
+                    val cart = CartTab(platformNavigator!!)
                     cart.setMainViewModel(mainViewModel!!)
                     it.current = cart
                 }
@@ -150,7 +150,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
                     it.current = editProfileTab
                 }
                 Screens.VENDOR_INFO.toPath() -> {
-                    val switchVendor = SwitchVendorDetailsTab()
+                    val switchVendor = SwitchVendorDetailsTab(platformNavigator!!)
                     switchVendor.setMainViewModel(mainViewModel!!)
                     it.current = switchVendor
                 }
@@ -170,7 +170,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
                     it.current = joinASpa!!
                 }
                 Screens.TALK_WITH_A_THERAPIST.toPath() -> {
-                    val talkWithTherapist = TalkWithATherapist()
+                    val talkWithTherapist = TalkWithATherapist(platformNavigator!!)
                     talkWithTherapist.setMainViewModel(mainViewModel!!)
                     it.current = talkWithTherapist
                 }

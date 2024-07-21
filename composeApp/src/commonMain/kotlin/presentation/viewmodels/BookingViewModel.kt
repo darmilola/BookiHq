@@ -16,6 +16,7 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
     private var _currentBookingKey =  savedStateHandle.getStateFlow("currentBookingId", -1)
     private var _day =  savedStateHandle.getStateFlow("day", -1)
     private var _month =  savedStateHandle.getStateFlow("month", -1)
+    private var _monthName =  savedStateHandle.getStateFlow("monthName", "")
     private var _year =  savedStateHandle.getStateFlow("year", -1)
     private var _isMobileService =  savedStateHandle.getStateFlow("isMobileService", false)
     private var _currentAppointmentBooking =  savedStateHandle.getStateFlow("currentAppointmentBooking", CurrentAppointmentBooking(bookingKey = -1))
@@ -38,6 +39,9 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
 
     val month: StateFlow<Int>
         get() = _month
+
+    val monthName: StateFlow<String>
+        get() = _monthName
 
     val year: StateFlow<Int>
         get() = _year
@@ -74,6 +78,10 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
 
     fun setSelectedMonth(month: Int) {
         savedStateHandle["month"] = month
+    }
+
+    fun setSelectedMonthName(monthName: String) {
+        savedStateHandle["monthName"] = monthName
     }
 
     fun setSelectedYear(year: Int) {

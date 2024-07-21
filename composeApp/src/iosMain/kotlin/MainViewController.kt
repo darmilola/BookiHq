@@ -113,6 +113,71 @@ class MainViewController: PlatformNavigator {
     override fun startNotificationService(onTokenReady: (String) -> Unit) {
         TODO("Not yet implemented")
     }
+
+    override fun sendOrderBookingNotification(
+        customerName: String,
+        vendorLogoUrl: String,
+        fcmToken: String
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun sendMeetingBookingNotification(
+        customerName: String,
+        vendorLogoUrl: String,
+        businessName: String,
+        meetingDay: String,
+        meetingMonth: String,
+        meetingYear: String,
+        meetingTime: String,
+        fcmToken: String
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun sendAppointmentBookingNotification(
+        customerName: String,
+        vendorLogoUrl: String,
+        businessName: String,
+        appointmentDay: String,
+        appointmentMonth: String,
+        appointmentYear: String,
+        appointmentTime: String,
+        serviceType: String,
+        fcmToken: String
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun sendPostponedAppointmentNotification(
+        customerName: String,
+        vendorLogoUrl: String,
+        businessName: String,
+        appointmentDay: String,
+        appointmentMonth: String,
+        appointmentYear: String,
+        appointmentTime: String,
+        serviceType: String,
+        fcmToken: String
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun sendConnectVendorNotification(
+        customerName: String,
+        vendorLogoUrl: String,
+        fcmToken: String
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun sendCustomerExitNotification(
+        exitReason: String,
+        vendorLogoUrl: String,
+        fcmToken: String
+    ) {
+        TODO("Not yet implemented")
+    }
 }
 
 

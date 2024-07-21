@@ -20,6 +20,7 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
     private var _postponementViewUIState = savedStateHandle.getStateFlow("postponementViewUIState", ActionUIStates())
     private var _day =  savedStateHandle.getStateFlow("day", -1)
     private var _month =  savedStateHandle.getStateFlow("month", -1)
+    private var _monthName =  savedStateHandle.getStateFlow("monthName", "")
     private var _year =  savedStateHandle.getStateFlow("year", -1)
     private var _newSelectedTime = savedStateHandle.getStateFlow("newSelectedTime", PlatformTime())
 
@@ -45,6 +46,9 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
 
     val month: StateFlow<Int>
         get() = _month
+
+    val monthName: StateFlow<String>
+        get() = _monthName
 
     val year: StateFlow<Int>
         get() = _year
@@ -76,6 +80,10 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
 
     fun setSelectedYear(year: Int) {
         savedStateHandle["year"] = year
+    }
+
+    fun setMonthName(monthName: String) {
+        savedStateHandle["monthName"] = monthName
     }
 
 

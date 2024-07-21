@@ -3,6 +3,7 @@ package presentation.connectVendor
 import domain.Models.ResourceListEnvelope
 import domain.Models.Vendor
 import UIStates.ScreenUIStates
+import domain.Models.PlatformNavigator
 import domain.Models.VendorResourceListEnvelope
 
 class ConnectVendorContract {
@@ -16,7 +17,7 @@ class ConnectVendorContract {
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
-        abstract fun connectVendor(userId: Long, vendorId: Long, action: String)
+        abstract fun connectVendor(userId: Long, vendorId: Long, action: String, userFirstname: String, vendor: Vendor, platformNavigator: PlatformNavigator)
         abstract fun getVendor(country: String)
         abstract fun getMoreVendor(country: String,nextPage: Int = 1)
         abstract fun searchVendor(country: String, searchQuery: String)

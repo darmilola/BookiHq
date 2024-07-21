@@ -5,8 +5,10 @@ import domain.Models.VendorTime
 import UIStates.ActionUIStates
 import UIStates.ScreenUIStates
 import com.badoo.reaktive.single.Single
+import domain.Models.PlatformNavigator
 import domain.Models.PlatformTime
 import domain.Models.ServerResponse
+import domain.Models.User
 import domain.Models.Vendor
 import domain.Models.VendorAccountResponse
 
@@ -49,12 +51,13 @@ class ProfileContract {
         abstract fun getPlatformCities(country: String)
         abstract fun getVendorAvailability(vendorId: Long)
         abstract fun switchVendor(userId: Long, vendorId: Long, action: String,
-                         exitReason: String)
+                         exitReason: String, vendor: Vendor, platformNavigator: PlatformNavigator)
         abstract fun getVendorAccountInfo(vendorId: Long)
         abstract fun joinSpa(vendorId: Long, therapistId: Long)
         abstract fun getUserLocation(lat: Double, lng: Double)
         abstract fun createMeeting(meetingTitle: String,userId: Long, vendorId: Long, serviceStatus: String, appointmentType: String,
-                                   appointmentTime: Int, day: Int, month: Int, year: Int, meetingDescription: String)
+                                   appointmentTime: Int, day: Int, month: Int, year: Int, meetingDescription: String,
+                                   user: User, vendor: Vendor, platformTime: PlatformTime, monthName: String, platformNavigator: PlatformNavigator)
 
     }
 }

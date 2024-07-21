@@ -41,9 +41,9 @@ import domain.Enums.AppointmentType
 import domain.Enums.Screens
 import domain.Enums.ServiceStatusEnum
 import domain.Models.CurrentAppointmentBooking
+import domain.Models.PlatformNavigator
 import domain.Models.PlatformTime
 import domain.Models.VendorTime
-import kotlinx.coroutines.launch
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -54,7 +54,6 @@ import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
 import presentation.dialogs.SuccessDialog
 import presentation.viewmodels.ActionUIStateViewModel
-import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.BookingCalendar
@@ -64,15 +63,13 @@ import presentation.widgets.PostponeTimeGrid
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import presentation.widgets.TitleWidget
-import presentation.widgets.VendorTimeGrid
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
-import utils.calculateTherapistServiceTimes
 import utils.calculateVendorServiceTimes
 
 @Parcelize
-class TalkWithATherapist() : Tab,
+class TalkWithATherapist(val platformNavigator: PlatformNavigator) : Tab,
     KoinComponent, Parcelable {
 
     @Transient
@@ -228,6 +225,7 @@ class TalkWithATherapist() : Tab,
                                 currentBooking.day = it.dayOfMonth
                                 currentBooking.month = it.monthNumber
                                 currentBooking.year = it.year
+                                currentBooking.monthName = it.month.name
                             }
                         }
 
@@ -301,7 +299,9 @@ class TalkWithATherapist() : Tab,
                             day = currentBooking.day,
                             month = currentBooking.month,
                             year = currentBooking.year,
-                            meetingDescription = currentBooking.description
+                            meetingDescription = currentBooking.description,
+                            user = mainViewModel!!.currentUserInfo.value, vendor = mainViewModel!!.connectedVendor.value,
+                            platformTime = currentBooking.appointmentTime!!, monthName = currentBooking.monthName, platformNavigator = platformNavigator
                         )
                     }
 

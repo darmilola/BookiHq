@@ -11,6 +11,9 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import UIStates.ActionUIStates
+import domain.Models.PlatformNavigator
+import domain.Models.User
+import domain.Models.Vendor
 import utils.getUnSavedOrders
 
 class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
@@ -30,7 +33,8 @@ class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
         paymentMethod: String,
         day: Int,
         month: Int,
-        year: Int) {
+        year: Int, user: User, vendor: Vendor, platformNavigator: PlatformNavigator
+    ) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
@@ -42,9 +46,9 @@ class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
                                 println(result)
                                 if (result.status == "success"){
                                     contractView?.showLce(ActionUIStates(isSuccess = true, successMessage = "Order Created Successfully"))
+                                    platformNavigator.sendOrderBookingNotification(customerName = user.firstname!!, vendorLogoUrl = vendor.businessLogo!!, fcmToken = vendor.fcmToken!!)
                                 }
                                 else{
-                                    println("Error 0")
                                     contractView?.showLce(ActionUIStates(isFailed = true, errorMessage = "Error Creating Order"))
                                 }
                             },

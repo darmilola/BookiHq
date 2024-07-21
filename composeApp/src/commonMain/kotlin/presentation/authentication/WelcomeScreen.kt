@@ -80,6 +80,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
             preferenceSettings["authType"] = AuthType.EMAIL.toPath()
             preferenceSettings["authEmail"] = user.email
             preferenceSettings["country"] = user.country
+            preferenceSettings["firstname"] = user.firstname
             preferenceSettings["profileId"] = user.userId
             preferenceSettings["vendorId"] = user.connectedVendor
             preferenceSettings["whatsappPhone"] = phone

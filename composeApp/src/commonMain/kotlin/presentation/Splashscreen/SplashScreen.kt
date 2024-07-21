@@ -53,6 +53,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
         enterPlatform = { user, whatsAppPhone ->
             preferenceSettings["country"] = user.country
             preferenceSettings["profileId"] = user.userId
+            preferenceSettings["firstname"] = user.firstname
             preferenceSettings["vendorId"] = user.connectedVendor
             preferenceSettings["whatsappPhone"] = whatsAppPhone
             preferenceSettings["country"] = user.country
