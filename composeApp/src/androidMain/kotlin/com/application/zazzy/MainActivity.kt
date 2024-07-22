@@ -321,9 +321,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         vendorLogoUrl: String,
         fcmToken: String
     ) {
-        val data = NotificationMessage.SendNotificationData(customerName = customerName, vendorLogoUrl = vendorLogoUrl,
+        val data = NotificationMessage.data(customerName = customerName, vendorLogoUrl = vendorLogoUrl,
             type = NotificationType.ORDER_BOOKING.toPath())
-        NotificationService().sendAppNotification(fcmToken = fcmToken!!,
+        NotificationService().sendAppNotification(fcmToken = fcmToken,
             accessToken = notificationServiceAccessToken!!, data = data)
     }
 
@@ -336,10 +336,10 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         meetingTime: String,
         fcmToken: String
     ) {
-        val data = NotificationMessage.SendNotificationData(customerName = customerName, vendorLogoUrl = vendorLogoUrl,
+        val data = NotificationMessage.data(customerName = customerName, vendorLogoUrl = vendorLogoUrl,
             type = NotificationType.MEETING_BOOKING.toPath(), meetingDay = meetingDay,
             meetingMonth = meetingMonth, meetingYear = meetingYear, meetingTime = meetingTime)
-        NotificationService().sendAppNotification(fcmToken = fcmToken!!,
+        NotificationService().sendAppNotification(fcmToken = fcmToken,
             accessToken = notificationServiceAccessToken!!, data = data)
     }
 
@@ -354,10 +354,10 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         serviceType: String,
         fcmToken: String
     ) {
-        val data = NotificationMessage.SendNotificationData(customerName = customerName, vendorLogoUrl = vendorLogoUrl,
+        val data = NotificationMessage.data(customerName = customerName, vendorLogoUrl = vendorLogoUrl,
             type = NotificationType.APPOINTMENT_BOOKING.toPath(), businessName = businessName, appointmentDay = appointmentDay,
             appointmentMonth = appointmentMonth, appointmentYear = appointmentYear, appointmentTime = appointmentTime, serviceType = serviceType)
-        NotificationService().sendAppNotification(fcmToken = fcmToken!!,
+        NotificationService().sendAppNotification(fcmToken = fcmToken,
             accessToken = notificationServiceAccessToken!!, data = data)
     }
 
@@ -372,10 +372,10 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         serviceType: String,
         fcmToken: String
     ) {
-        val data = NotificationMessage.SendNotificationData(customerName = customerName, vendorLogoUrl = vendorLogoUrl,
+        val data = NotificationMessage.data(customerName = customerName, vendorLogoUrl = vendorLogoUrl,
             type = NotificationType.APPOINTMENT_POSTPONED.toPath(), businessName = businessName, appointmentDay = appointmentDay,
             appointmentMonth = appointmentMonth, appointmentYear = appointmentYear, appointmentTime = appointmentTime, serviceType = serviceType)
-        NotificationService().sendAppNotification(fcmToken = fcmToken!!,
+        NotificationService().sendAppNotification(fcmToken = fcmToken,
             accessToken = notificationServiceAccessToken!!, data = data)
     }
 
@@ -384,9 +384,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         vendorLogoUrl: String,
         fcmToken: String
     ) {
-        val data = NotificationMessage.SendNotificationData(customerName = customerName, vendorLogoUrl = vendorLogoUrl,
+        val data = NotificationMessage.data(customerName = customerName, vendorLogoUrl = vendorLogoUrl,
             type = NotificationType.CONNECT_BUSINESS.toPath())
-        NotificationService().sendAppNotification(fcmToken = fcmToken!!,
+        NotificationService().sendAppNotification(fcmToken = fcmToken,
             accessToken = notificationServiceAccessToken!!, data = data)
     }
 
@@ -395,9 +395,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         vendorLogoUrl: String,
         fcmToken: String
     ) {
-        val data = NotificationMessage.SendNotificationData(exitReason = exitReason, vendorLogoUrl = vendorLogoUrl,
+        val data = NotificationMessage.data(exitReason = exitReason, vendorLogoUrl = vendorLogoUrl,
             type = NotificationType.CONNECT_BUSINESS.toPath())
-        NotificationService().sendAppNotification(fcmToken = fcmToken!!,
+        NotificationService().sendAppNotification(fcmToken = fcmToken,
             accessToken = notificationServiceAccessToken!!, data = data)
     }
 

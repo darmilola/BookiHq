@@ -32,7 +32,6 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
     }
 
     override fun getServiceTherapists(serviceTypeId: Int, vendorId: Long) {
-        println("My Vendor $vendorId")
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {

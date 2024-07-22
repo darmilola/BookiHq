@@ -16,6 +16,7 @@ import android.graphics.drawable.Drawable
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
+import android.text.Html
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.application.zazzy.MainActivity
@@ -73,7 +74,7 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
         val builder =  NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
                 .setSmallIcon(com.application.zazzy.R.drawable.sample_logo)
                 .setContentTitle(notificationDisplayData.title)
-                .setStyle(NotificationCompat.BigTextStyle().bigText(notificationDisplayData.body))
+                .setStyle(NotificationCompat.BigTextStyle().bigText(Html.fromHtml(notificationDisplayData.body)))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
                 .setSound(defaultSoundUri)

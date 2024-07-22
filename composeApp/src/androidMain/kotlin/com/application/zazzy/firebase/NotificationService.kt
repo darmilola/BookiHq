@@ -13,13 +13,13 @@ import java.net.URL
 
 class NotificationService {
 
-    fun sendAppNotification(fcmToken: String, accessToken: String, data: NotificationMessage.SendNotificationData) {
-        val message = NotificationMessage.message(token = fcmToken, SendNotificationData = data)
+    fun sendAppNotification(fcmToken: String, accessToken: String, data: NotificationMessage.data) {
+        val message = NotificationMessage.message(token = fcmToken, data = data)
         val rootMessage = NotificationMessage.rootMessage(message = message)
         val jsonBody = Json.encodeToString(rootMessage)
-
-        var mediaType = "application/json".toMediaTypeOrNull()
-        var requestBody: RequestBody = jsonBody.toRequestBody(mediaType)
+        println("JsonBody $jsonBody")
+        val mediaType = "application/json".toMediaTypeOrNull()
+        val requestBody: RequestBody = jsonBody.toRequestBody(mediaType)
 
         val thread = Thread(Runnable {
             try {
