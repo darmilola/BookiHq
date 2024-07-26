@@ -298,16 +298,18 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         month: Int,
         year: Int,
         meetingDescription: String,
-        user: User, vendor: Vendor, platformTime: PlatformTime, monthName: String, platformNavigator: PlatformNavigator
+        user: User, vendor: Vendor, platformTime: PlatformTime, monthName: String, platformNavigator: PlatformNavigator,
+        paymentAmount: Double, paymentMethod: String
     ) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     meetingViewContract?.showActionLce(ActionUIStates(isLoading = true))
                     profileRepositoryImpl.createMeetingAppointment(meetingTitle, userId, vendorId, serviceStatus, appointmentType,
-                        appointmentTime, day, month, year, meetingDescription)
+                        appointmentTime, day, month, year, meetingDescription, paymentAmount, paymentMethod)
                         .subscribe(
                             onSuccess = { result ->
+                                println("Result $result")
                                 if (result.status == "success") {
                                     val time = if (platformTime.isAm) platformTime.time+"AM" else platformTime.time+"PM"
                                     platformNavigator.sendMeetingBookingNotification(customerName = user.firstname!!, vendorLogoUrl = vendor.businessLogo!!,
@@ -319,13 +321,14 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                                 }
                             },
                             onError = {
+                                println("Result 2  ${it.message}")
                                 it.message?.let { it1 -> meetingViewContract?.showActionLce(ActionUIStates(isFailed = true))}
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println(e.message)
+                println("Result ${e.message}")
                 meetingViewContract?.showActionLce(ActionUIStates(isFailed = true))
             }
         }

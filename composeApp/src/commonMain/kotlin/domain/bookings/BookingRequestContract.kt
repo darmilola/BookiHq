@@ -23,4 +23,6 @@ data class CreateAppointmentRequest(@SerialName("user_id") val user_id: Long,
                                     @SerialName("year") val year: Int,
                                     @SerialName("serviceLocation") val serviceLocation: String,
                                     @SerialName("serviceStatus") val serviceStatus: String,
-                                    @SerialName("appointmentType") val appointmentType: String)
+                                    @SerialName("appointmentType") val appointmentType: String,
+                                    @SerialName("paymentAmount") val paymentAmount: Double,
+                                    @SerialName("paymentMethod") val paymentMethod: String)

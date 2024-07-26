@@ -63,15 +63,16 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
     override fun createAppointment(userId: Long, vendorId: Long, service_id: Int, serviceTypeId: Int, therapist_id: Int,
                                    appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, serviceStatus: String,
                                    appointmentType: String, platformNavigator: PlatformNavigator, user: User, vendor: Vendor, monthName: String,platformTime: PlatformTime
-                                   ,serviceType: ServiceTypeItem) {
+                                   ,serviceType: ServiceTypeItem, paymentAmount: Double, paymentMethod: String) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showActionLce(ActionUIStates(isLoading = true))
                     bookingRepositoryImpl.createAppointment(userId, vendorId, service_id, serviceTypeId, therapist_id, appointmentTime,
-                        day, month, year, serviceLocation, serviceStatus, appointmentType)
+                        day, month, year, serviceLocation, serviceStatus, appointmentType, paymentAmount, paymentMethod)
                         .subscribe(
                             onSuccess = { result ->
+                                println("Result $result")
                                 if (result.status == "success"){
                                     val time = if (platformTime.isAm) platformTime.time+"AM" else platformTime.time+"PM"
                                     platformNavigator.sendAppointmentBookingNotification(customerName = user.firstname!!, vendorLogoUrl = vendor.businessLogo!!, businessName = vendor.businessName!!, appointmentDay = day.toString(),

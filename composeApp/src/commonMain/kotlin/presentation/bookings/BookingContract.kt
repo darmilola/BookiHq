@@ -25,6 +25,6 @@ class BookingContract {
         abstract fun createAppointment(userId: Long, vendorId: Long, service_id: Int, serviceTypeId: Int, therapist_id: Int,
                                        appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, serviceStatus: String,
                                        appointmentType: String, platformNavigator: PlatformNavigator, user: User, vendor: Vendor,monthName: String,
-                                       platformTime: PlatformTime, serviceType: ServiceTypeItem)
+                                       platformTime: PlatformTime, serviceType: ServiceTypeItem, paymentAmount: Double, paymentMethod: String)
     }
 }

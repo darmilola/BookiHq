@@ -57,7 +57,8 @@ class ProfileContract {
         abstract fun getUserLocation(lat: Double, lng: Double)
         abstract fun createMeeting(meetingTitle: String,userId: Long, vendorId: Long, serviceStatus: String, appointmentType: String,
                                    appointmentTime: Int, day: Int, month: Int, year: Int, meetingDescription: String,
-                                   user: User, vendor: Vendor, platformTime: PlatformTime, monthName: String, platformNavigator: PlatformNavigator)
+                                   user: User, vendor: Vendor, platformTime: PlatformTime, monthName: String, platformNavigator: PlatformNavigator,
+                                   paymentAmount: Double, paymentMethod: String)
 
     }
 }

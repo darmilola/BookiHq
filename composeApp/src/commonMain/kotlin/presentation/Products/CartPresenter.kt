@@ -33,14 +33,14 @@ class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
         paymentMethod: String,
         day: Int,
         month: Int,
-        year: Int, user: User, vendor: Vendor, platformNavigator: PlatformNavigator
+        year: Int, user: User, vendor: Vendor,paymentAmount: Double, platformNavigator: PlatformNavigator
     ) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showLce(ActionUIStates(isLoading = true, loadingMessage = "Creating Order"))
                     val orderItemsJson = getUnSavedOrders(orderItemList)
-                    productRepositoryImpl.createOrder(vendorId,userId,deliveryMethod,paymentMethod,day, month, year, orderItemsJson)
+                    productRepositoryImpl.createOrder(vendorId,userId,deliveryMethod,paymentMethod,day, month, year, orderItemsJson,paymentAmount)
                         .subscribe(
                             onSuccess = { result ->
                                 println(result)

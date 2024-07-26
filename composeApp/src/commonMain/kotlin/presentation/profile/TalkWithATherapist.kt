@@ -38,6 +38,7 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Enums.AppointmentType
+import domain.Enums.PaymentMethod
 import domain.Enums.Screens
 import domain.Enums.ServiceStatusEnum
 import domain.Models.CurrentAppointmentBooking
@@ -301,7 +302,8 @@ class TalkWithATherapist(val platformNavigator: PlatformNavigator) : Tab,
                             year = currentBooking.year,
                             meetingDescription = currentBooking.description,
                             user = mainViewModel!!.currentUserInfo.value, vendor = mainViewModel!!.connectedVendor.value,
-                            platformTime = currentBooking.appointmentTime!!, monthName = currentBooking.monthName, platformNavigator = platformNavigator
+                            platformTime = currentBooking.appointmentTime!!, monthName = currentBooking.monthName, platformNavigator = platformNavigator,
+                            paymentAmount = 4000.0, paymentMethod = PaymentMethod.CARD_PAYMENT.toPath()
                         )
                     }
 

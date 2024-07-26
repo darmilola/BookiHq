@@ -19,9 +19,9 @@ class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
 
     override suspend fun createAppointment(userId: Long, vendorId: Long, service_id: Int, serviceTypeId: Int, therapist_id: Int,
                                            appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, serviceStatus: String,
-                                           appointmentType: String): Single<ServerResponse> {
+                                           appointmentType: String, paymentAmount: Double, paymentMethod: String): Single<ServerResponse> {
         val param = CreateAppointmentRequest(userId, vendorId, service_id, serviceTypeId, therapist_id,
-            appointmentTime, day, month, year, serviceLocation, serviceStatus, appointmentType)
+            appointmentTime, day, month, year, serviceLocation, serviceStatus, appointmentType,paymentAmount, paymentMethod)
         return bookingNetworkService.createAppointment(param)
     }
 

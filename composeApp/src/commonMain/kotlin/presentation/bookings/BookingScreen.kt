@@ -55,6 +55,7 @@ import UIStates.ScreenUIStates
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.AppointmentType
+import domain.Enums.PaymentMethod
 import domain.Enums.ServiceLocationEnum
 import domain.Models.PlatformNavigator
 import kotlinx.serialization.Transient
@@ -179,7 +180,8 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
                         therapist_id = appointment.serviceTypeTherapists?.therapistInfo?.therapistId!!, appointmentTime = appointment.appointmentTime?.id!!,
                         day = appointment.day, month = appointment.month, year = appointment.year, serviceLocation = if (appointment.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
                         serviceStatus = appointment.serviceStatus, appointmentType = AppointmentType.SERVICE.toPath(),
-                        platformNavigator = platformNavigator,user = mainViewModel!!.currentUserInfo.value, vendor = mainViewModel!!.connectedVendor.value, monthName = bookingViewModel!!.monthName.value,appointment.appointmentTime!!, serviceType = appointment.serviceTypeItem!!)
+                        platformNavigator = platformNavigator,user = mainViewModel!!.currentUserInfo.value, vendor = mainViewModel!!.connectedVendor.value, monthName = bookingViewModel!!.monthName.value,appointment.appointmentTime!!, serviceType = appointment.serviceTypeItem!!,
+                        paymentAmount = appointment.serviceTypeItem!!.price.toDouble(), paymentMethod = PaymentMethod.CARD_PAYMENT.toPath())
                 })
             }
         }
@@ -300,7 +302,8 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
                         therapist_id = appointment.serviceTypeTherapists?.therapistInfo?.therapistId!!, appointmentTime = appointment.appointmentTime?.id!!,
                         day = appointment.day, month = appointment.month, year = appointment.year, serviceLocation = if (appointment.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
                         serviceStatus = appointment.serviceStatus, appointmentType = AppointmentType.SERVICE.toPath(), platformNavigator = platformNavigator,
-                        user = mainViewModel.currentUserInfo.value, vendor = mainViewModel.connectedVendor.value, monthName = bookingViewModel!!.monthName.value, platformTime = appointment.appointmentTime!!,serviceType = appointment.serviceTypeItem!!)
+                        user = mainViewModel.currentUserInfo.value, vendor = mainViewModel.connectedVendor.value, monthName = bookingViewModel!!.monthName.value, platformTime = appointment.appointmentTime!!,serviceType = appointment.serviceTypeItem!!,
+                        paymentAmount = appointment.serviceTypeItem!!.price.toDouble(), paymentMethod = PaymentMethod.CARD_PAYMENT.toPath())
                 }
                 else {
 

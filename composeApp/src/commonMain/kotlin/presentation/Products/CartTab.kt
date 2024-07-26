@@ -283,7 +283,7 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                              val day = getDay()
 
                              cartPresenter.createOrder(orderItemList,vendorId!!,userId!!,deliveryLocation,paymentMethod, day, month, year, user = mainViewModel!!.currentUserInfo.value, vendor = mainViewModel!!.connectedVendor.value,
-                                 platformNavigator = platformNavigator)
+                                 paymentAmount = cartViewModel!!.total.value.toDouble(), platformNavigator = platformNavigator)
 
                         })
 

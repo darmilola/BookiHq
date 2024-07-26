@@ -2,6 +2,7 @@ package domain.Profile
 
 import com.badoo.reaktive.single.Single
 import dev.jordond.compass.Place
+import domain.Enums.PaymentMethod
 import domain.Models.AuthenticationResponse
 import domain.Models.PlatformCountryCitiesResponse
 import domain.Models.ServerResponse
@@ -34,7 +35,8 @@ interface ProfileRepository {
     ): Single<PlatformCountryCitiesResponse>
 
     suspend fun createMeetingAppointment(meetingTitle: String,userId: Long, vendorId: Long, serviceStatus: String, appointmentType: String,
-                                         appointmentTime: Int, day: Int, month: Int, year: Int, meetingDescription: String): Single<ServerResponse>
+                                         appointmentTime: Int, day: Int, month: Int, year: Int, meetingDescription: String,
+                                         paymentAmount: Double, paymentMethod: String): Single<ServerResponse>
 }
 
 

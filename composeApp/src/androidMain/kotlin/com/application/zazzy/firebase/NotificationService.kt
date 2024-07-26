@@ -17,7 +17,6 @@ class NotificationService {
         val message = NotificationMessage.message(token = fcmToken, data = data)
         val rootMessage = NotificationMessage.rootMessage(message = message)
         val jsonBody = Json.encodeToString(rootMessage)
-        println("JsonBody $jsonBody")
         val mediaType = "application/json".toMediaTypeOrNull()
         val requestBody: RequestBody = jsonBody.toRequestBody(mediaType)
 
@@ -31,9 +30,11 @@ class NotificationService {
                     .url(url)
                     .post(body = requestBody)
                     .build()
-                var response: Response = client.newCall(request).execute()
+                val response: Response = client.newCall(request).execute()
+                println("Response S $response")
+                response.close()
             } catch (e: Exception) {
-                println(e.message)
+                println("Response F ${e.message}")
                 e.printStackTrace()
             }
         })
