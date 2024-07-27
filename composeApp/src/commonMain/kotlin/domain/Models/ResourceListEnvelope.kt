@@ -2,6 +2,7 @@ package domain.Models
 
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import domain.Enums.PaymentMethod
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -19,7 +20,7 @@ class ResourceListEnvelope<T : Any>(
 
 @Serializable @Parcelize
 class AppointmentResourceListEnvelope(
-    @SerialName("data") val data: MutableList<UserAppointmentsData>? = null,
+    @SerialName("data") val data: MutableList<UserAppointments>? = null,
     @SerialName("next_page_url") val nextPageUrl: String? = null,
     @SerialName("prev_page_url") val prevPageUrl: String? = null,
     @SerialName("per_page") val perPage: String? = null,
@@ -40,10 +41,11 @@ class TherapistAppointmentResourceListEnvelope(
     @SerialName("path") var path: String? = null): Parcelable
 
 @Serializable @Parcelize
-class UserAppointmentsData(
+class UserAppointments(
     @SerialName("id") val id: Int = -1,
     @SerialName("user_id") val userId: Int = -1,
     @SerialName("appointment_id") val appointmentId: Int = -1,
+    @SerialName("paymentMethod") val paymentMethod: String? = PaymentMethod.CARD_PAYMENT.toPath(),
     @SerialName("appointments") val resources: Appointment? = null): Parcelable
 
 

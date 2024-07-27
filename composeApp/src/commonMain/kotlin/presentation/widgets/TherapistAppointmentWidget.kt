@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.runtime.Composable
@@ -34,12 +33,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.Appointment
 import domain.Enums.ServiceStatusEnum
-import domain.Models.UserAppointmentsData
-import presentation.appointments.AppointmentPresenter
-import presentation.dialogs.PostponeDialog
-import presentation.viewmodels.ActionUIStateViewModel
-import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.PostponementViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import theme.styles.Colors

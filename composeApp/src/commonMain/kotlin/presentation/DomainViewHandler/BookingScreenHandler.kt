@@ -7,7 +7,7 @@ import UIStates.ActionUIStates
 import presentation.viewmodels.BookingViewModel
 import UIStates.ScreenUIStates
 import domain.Models.PlatformTime
-import domain.Models.UserAppointmentsData
+import domain.Models.UserAppointments
 import domain.Models.VendorTime
 
 class BookingScreenHandler(
@@ -88,7 +88,7 @@ class BookingScreenHandler(
         bookingViewModel.setPlatformTimes(platformTime)
     }
 
-    override fun showPendingAppointment(pendingAppointments: List<UserAppointmentsData>) {
+    override fun showPendingAppointment(pendingAppointments: List<UserAppointments>) {
         bookingViewModel.setPendingAppointments(pendingAppointments)
     }
 

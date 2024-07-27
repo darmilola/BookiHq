@@ -1,7 +1,6 @@
 package presentation.therapist
 
 import StackedSnackbarHost
-import UIStates.ActionUIStates
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,14 +28,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import domain.Models.Appointment
-import domain.Models.AppointmentItemUIModel
 import domain.Models.TherapistAppointmentItemUIModel
-import domain.Models.UserAppointmentsData
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
-import presentation.dialogs.LoadingDialog
 import presentation.viewmodels.ActionUIStateViewModel
-import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.TherapistAppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.UIStateViewModel

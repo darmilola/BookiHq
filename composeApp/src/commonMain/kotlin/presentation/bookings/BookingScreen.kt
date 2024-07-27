@@ -60,7 +60,7 @@ import domain.Enums.BookingStatus
 import domain.Enums.PaymentMethod
 import domain.Enums.ServiceLocationEnum
 import domain.Models.PlatformNavigator
-import domain.Models.UserAppointmentsData
+import domain.Models.UserAppointments
 import kotlinx.serialization.Transient
 import presentation.viewmodels.ActionUIStateViewModel
 import presentation.widgets.ShowSnackBar
@@ -261,7 +261,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
                             },
                             onEditItem = {
                                  bookingViewModel!!.setCurrentBooking(it.resources!!)
-                                 bookingPresenter.silentDelete(it.resources.appointmentId!!)
+                                 bookingPresenter.silentDeletePendingAppointment(it.resources.appointmentId!!)
                                  bookingViewModel!!.setSelectedServiceType(it.resources.serviceTypeItem!!)
                                  bookingViewModel!!.setIsMobileService(it.resources.isMobileService!!)
                                  bookingViewModel!!.setSelectedDay(it.resources.appointmentDay!!)
@@ -309,7 +309,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
             .fillMaxWidth()
             .fillMaxHeight(),
             horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,) {
+            verticalAlignment = Alignment.CenterVertically) {
 
             val bookingNavText = if(currentPage == 2) "Go To Payments" else "Continue"
 
@@ -367,7 +367,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun AttachBookingPages(pagerState: PagerState, uiStateViewModel: UIStateViewModel, mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, services: Services, onAddMoreServiceClicked:() -> Unit, onLastItemRemoved:() -> Unit, onEditItem: (UserAppointmentsData) -> Unit){
+    fun AttachBookingPages(pagerState: PagerState, uiStateViewModel: UIStateViewModel, mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, services: Services, onAddMoreServiceClicked:() -> Unit, onLastItemRemoved:() -> Unit, onEditItem: (UserAppointments) -> Unit){
 
         val  boxModifier =
             Modifier

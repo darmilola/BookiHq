@@ -1,11 +1,9 @@
 package presentation.widgets
 
-import GGSansRegular
 import GGSansSemiBold
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,13 +14,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,24 +31,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import domain.Enums.AppointmentType
-import domain.Enums.MeetingStatus
-import domain.Enums.ServiceStatusEnum
-import domain.Models.Appointment
-import domain.Models.PlatformNavigator
-import domain.Models.TherapistInfo
-import domain.Models.UserAppointmentsData
-import presentation.appointments.AppointmentPresenter
-import presentation.dialogs.PostponeDialog
-import presentation.viewmodels.ActionUIStateViewModel
-import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.PostponementViewModel
+import domain.Models.UserAppointments
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import theme.styles.Colors
 
 @Composable
-fun PendingAppointmentWidget(appointment: UserAppointmentsData, onDeleteAppointment: (UserAppointmentsData) -> Unit, onEditAppointment: (UserAppointmentsData) -> Unit) {
+fun PendingAppointmentWidget(appointment: UserAppointments, onDeleteAppointment: (UserAppointments) -> Unit, onEditAppointment: (UserAppointments) -> Unit) {
 
     val serviceMenuItems = arrayListOf<String>()
 
@@ -100,8 +84,8 @@ fun PendingAppointmentWidget(appointment: UserAppointmentsData, onDeleteAppointm
 
 
 @Composable
-fun AttachPendingAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: UserAppointmentsData, menuItems: ArrayList<String>,
-                                   onDeleteAppointment: (UserAppointmentsData) -> Unit, onEditAppointment: (UserAppointmentsData) -> Unit) {
+fun AttachPendingAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: UserAppointments, menuItems: ArrayList<String>,
+                                   onDeleteAppointment: (UserAppointments) -> Unit, onEditAppointment: (UserAppointments) -> Unit) {
     val expandedMenuItem = remember { mutableStateOf(false) }
 
     Row(

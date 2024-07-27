@@ -1,6 +1,7 @@
 package domain.bookings
 
 import com.badoo.reaktive.single.Single
+import domain.Enums.BookingStatus
 import domain.Models.PendingAppointmentResponse
 import domain.Models.ServerResponse
 import domain.Models.ServiceTherapistsResponse
@@ -18,10 +19,10 @@ class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
         return bookingNetworkService.getTherapists(param)
     }
 
-    override suspend fun createPendingAppointment(userId: Long, vendorId: Long, service_id: Int, serviceTypeId: Int, therapist_id: Int,
+    override suspend fun createPendingAppointment(userId: Long, vendorId: Long, serviceId: Int, serviceTypeId: Int, therapistId: Int,
                                                   appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, serviceStatus: String,
                                                   appointmentType: String, paymentAmount: Double, paymentMethod: String, bookingStatus: String): Single<PendingAppointmentResponse> {
-        val param = CreatePendingAppointmentRequest(userId, vendorId, service_id, serviceTypeId, therapist_id,
+        val param = CreatePendingAppointmentRequest(userId, vendorId, serviceId, serviceTypeId, therapistId,
             appointmentTime, day, month, year, serviceLocation, serviceStatus, appointmentType, bookingStatus, paymentMethod)
         return bookingNetworkService.createPendingAppointment(param)
     }
@@ -36,7 +37,7 @@ class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
         month: Int,
         year: Int
     ): Single<ServerResponse> {
-        val param = CreateAppointmentRequest(userId, vendorId, day, month, year, bookingStatus, paymentAmount, paymentMethod)
+        val param = CreateAppointmentRequest(userId, vendorId, day, month, year, bookingStatus, oldBookingStatus = BookingStatus.PENDING.toPath(), paymentAmount, paymentMethod)
         return bookingNetworkService.createAppointment(param)
     }
 

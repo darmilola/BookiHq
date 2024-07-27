@@ -3,9 +3,8 @@ package presentation.viewmodels
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Models.Appointment
-import domain.Models.CustomerOrder
 import domain.Models.Product
-import domain.Models.UserAppointmentsData
+import domain.Models.UserAppointments
 import domain.Models.UserOrders
 import domain.Models.Vendor
 import kotlinx.coroutines.flow.StateFlow
@@ -115,7 +114,7 @@ class ResourceListEnvelopeViewModel<in T : Any>(private val savedStateHandle: Sa
 
 class AppointmentResourceListEnvelopeViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
-    private var _resources =  savedStateHandle.getStateFlow("resources", mutableListOf<UserAppointmentsData>())
+    private var _resources =  savedStateHandle.getStateFlow("resources", mutableListOf<UserAppointments>())
 
     private var _nextPageUrl =  savedStateHandle.getStateFlow("nextPageUrl", "")
 
@@ -134,7 +133,7 @@ class AppointmentResourceListEnvelopeViewModel(private val savedStateHandle: Sav
     private var _isRefreshing =  savedStateHandle.getStateFlow("isRefreshing", false)
 
 
-    val resources: StateFlow<MutableList<UserAppointmentsData>>
+    val resources: StateFlow<MutableList<UserAppointments>>
         get() = _resources
 
     val prevPageUrl: StateFlow<String>
@@ -162,7 +161,7 @@ class AppointmentResourceListEnvelopeViewModel(private val savedStateHandle: Sav
         get() = _isRefreshing
 
 
-    fun setResources(resources: MutableList<UserAppointmentsData>?) {
+    fun setResources(resources: MutableList<UserAppointments>?) {
         savedStateHandle["resources"] = resources
     }
 
@@ -198,7 +197,7 @@ class AppointmentResourceListEnvelopeViewModel(private val savedStateHandle: Sav
         savedStateHandle["isRefreshing"] = isRefreshing
     }
 
-    fun clearData(data: MutableList<UserAppointmentsData>) {
+    fun clearData(data: MutableList<UserAppointments>) {
         setResources(data)
         setCurrentPage(-1)
         setDisplayedItemCount(-1)

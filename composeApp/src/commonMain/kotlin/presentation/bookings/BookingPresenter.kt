@@ -11,11 +11,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import UIStates.ActionUIStates
 import UIStates.ScreenUIStates
-import domain.Models.PlatformNavigator
-import domain.Models.PlatformTime
-import domain.Models.ServiceTypeItem
-import domain.Models.User
-import domain.Models.Vendor
 
 class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
 
@@ -75,6 +70,7 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
                     bookingRepositoryImpl.createAppointment(userId, vendorId, paymentAmount, paymentMethod, bookingStatus, day, month, year)
                         .subscribe(
                             onSuccess = { result ->
+                                println("Result $result")
                                 if (result.status == "success"){
                                     contractView?.showCreateAppointmentActionLce(ActionUIStates(isSuccess = true))
                                 }
@@ -83,12 +79,14 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
                                 }
                             },
                             onError = {
+                                println("Result 2 ${it.message}")
                                 contractView?.showCreateAppointmentActionLce(ActionUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
+                println("Result 3 ${e.message}")
                 contractView?.showActionLce(ActionUIStates(isFailed = true))
             }
         }
@@ -149,7 +147,7 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
         }
     }
 
-    override fun silentDelete(pendingAppointmentId: Long) {
+    override fun silentDeletePendingAppointment(pendingAppointmentId: Long) {
         println(pendingAppointmentId)
         scope.launch(Dispatchers.Main) {
             try {

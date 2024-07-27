@@ -35,7 +35,7 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.AppointmentItemUIModel
 import domain.Enums.AppointmentType
 import domain.Models.PlatformNavigator
-import domain.Models.UserAppointmentsData
+import domain.Models.UserAppointments
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -54,14 +54,11 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
-import com.russhwolf.settings.set
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.SuccessDialog
 import presentation.widgets.MeetingAppointmentWidget
 import presentation.widgets.AppointmentWidget
 import utils.getAppointmentViewHeight
-import presentation.widgets.ShowSnackBar
-import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
 import theme.Colors
 
@@ -185,7 +182,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
         val joinMeetingActionUIStates = joinMeetingActionUIStateViewModel!!.joinMeetingStateInfo.collectAsState()
 
         val lastIndex = appointmentList?.value?.size?.minus(1)
-        val selectedAppointment = remember { mutableStateOf(UserAppointmentsData()) }
+        val selectedAppointment = remember { mutableStateOf(UserAppointments()) }
 
 
         LaunchedEffect(true) {
