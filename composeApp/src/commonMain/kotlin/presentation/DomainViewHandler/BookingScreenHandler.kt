@@ -7,6 +7,7 @@ import UIStates.ActionUIStates
 import presentation.viewmodels.BookingViewModel
 import UIStates.ScreenUIStates
 import domain.Models.PlatformTime
+import domain.Models.UserAppointmentsData
 import domain.Models.VendorTime
 
 class BookingScreenHandler(
@@ -18,7 +19,10 @@ class BookingScreenHandler(
     private val onErrorVisible: () -> Unit,
     private val onCreateAppointmentStarted: () -> Unit,
     private val onCreateAppointmentSuccess: () -> Unit,
-    private val onCreateAppointmentFailed: () -> Unit
+    private val onCreateAppointmentFailed: () -> Unit,
+    private val onActionStarted: () -> Unit,
+    private val onActionSuccess: () -> Unit,
+    private val onActionFailed: () -> Unit,
 ) : BookingContract.View {
     fun init() {
         bookingPresenter.registerUIContract(this)
@@ -46,6 +50,24 @@ class BookingScreenHandler(
         uiState.let {
             when {
                 it.isLoading -> {
+                    onActionStarted()
+                }
+                it.isSuccess -> {
+                    onActionSuccess()
+                }
+
+                it.isFailed -> {
+                    onActionFailed()
+                }
+
+            }
+        }
+    }
+
+    override fun showCreateAppointmentActionLce(uiState: ActionUIStates, message: String) {
+        uiState.let {
+            when {
+                it.isLoading -> {
                     onCreateAppointmentStarted()
                 }
                 it.isSuccess -> {
@@ -64,6 +86,10 @@ class BookingScreenHandler(
         bookingViewModel.setTherapists(serviceTherapists)
         bookingViewModel.setVendorTimes(vendorTime)
         bookingViewModel.setPlatformTimes(platformTime)
+    }
+
+    override fun showPendingAppointment(pendingAppointments: List<UserAppointmentsData>) {
+        bookingViewModel.setPendingAppointments(pendingAppointments)
     }
 
 

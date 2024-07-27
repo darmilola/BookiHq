@@ -2,6 +2,7 @@ package presentation.bookings
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,10 +12,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,148 +28,142 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import domain.Models.CurrentAppointmentBooking
-import domain.Models.CurrentAppointmentBookingItemUIModel
+import domain.Enums.AppointmentType
+import domain.Enums.BookingStatus
+import domain.Enums.PaymentMethod
+import domain.Enums.ServiceLocationEnum
+import domain.Models.Appointment
 import domain.Models.OrderItem
 import domain.Models.OrderItemUIModel
+import domain.Models.UserAppointmentsData
 import presentation.components.ButtonComponent
+import presentation.components.IndeterminateCircularProgressBar
+import presentation.dialogs.ErrorDialog
+import presentation.dialogs.LoadingDialog
+import presentation.dialogs.SuccessDialog
+import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.UIStateViewModel
-import presentation.widgets.UnsavedAppointmentWidget
+import presentation.widgets.AppointmentWidget
+import presentation.widgets.MeetingAppointmentWidget
+import presentation.widgets.PendingAppointmentWidget
 import theme.styles.Colors
-import utils.getUnSavedAppointmentViewHeight
+import utils.getAppointmentViewHeight
 
 
 @Composable
-fun BookingOverview(mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, onAddMoreServiceClicked:() -> Unit, onLastItemRemoved: () -> Unit) {
+fun BookingOverview(mainViewModel: MainViewModel, actionUIStateViewModel: ActionUIStateViewModel, bookingPresenter: BookingPresenter, bookingViewModel: BookingViewModel,uiStateViewModel: UIStateViewModel,onAddMoreServiceClicked:() -> Unit, onLastItemRemoved: () -> Unit, onEditItem: (UserAppointmentsData) -> Unit) {
 
-    val currentBooking = bookingViewModel.currentAppointmentBooking.value
-    val currentKeys = arrayListOf<Int>()
-    mainViewModel.clearUnsavedAppointments()
-    var unsavedAppointments = remember {  mutableStateOf(mainViewModel.unSavedAppointments.value) }
-    unsavedAppointments.value.map {
-        currentKeys.add(it.bookingKey)
+
+    val pendingAppointments = bookingViewModel.pendingAppointments.collectAsState()
+    val uiState = uiStateViewModel.uiStateInfo.collectAsState()
+    val actionState = actionUIStateViewModel.uiStateInfo.collectAsState()
+
+
+    if (actionState.value.isLoading){
+        LoadingDialog("deleting Appointment")
     }
-    println(currentKeys)
-    println(currentBooking.bookingKey)
+    else if (actionState.value.isSuccess){
+        SuccessDialog("success", actionTitle = "", onConfirmation = {
+            bookingPresenter.getPendingAppointment(mainViewModel.currentUserInfo.value.userId!!)
+        })
+    }
+    else if (actionState.value.isFailed){
+        ErrorDialog("success", actionTitle = "", onConfirmation = {})
+    }
 
-    println(unsavedAppointments.value.size)
 
-    if (unsavedAppointments.value.isNotEmpty()) {
-        println("Here 2")
-       if(!currentKeys.contains(currentBooking.bookingKey)){
-           println("My size is ${unsavedAppointments.value.size}")
-           val editedIndex = unsavedAppointments.value.find {
-               it.bookingKey == currentBooking.bookingKey
-           }
-           unsavedAppointments.value.remove(editedIndex)
-           unsavedAppointments.value.add(currentBooking)
-          // mainViewModel.setCurrentUnsavedAppointment(unsavedAppointments.value)
-       }
-    } else {
-        println("Here 4")
-        if (currentBooking.bookingKey != -1) {
-            unsavedAppointments.value.add(currentBooking)
-          //  mainViewModel.setCurrentUnsavedAppointment(unsavedAppointments.value)
+
+    if (uiState.value.loadingVisible) {
+        // Content Loading
+        Box(
+            modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                .padding(top = 40.dp, start = 50.dp, end = 50.dp)
+                .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            IndeterminateCircularProgressBar()
         }
-    }
+    } else if (uiState.value.errorOccurred) {
+        // error occurred, refresh
+    } else if (uiState.value.contentVisible) {
 
 
-    // display one item
-    val displayOneItem = arrayListOf<CurrentAppointmentBooking>()
-    displayOneItem.add(currentBooking)
+        val columnModifier = Modifier
+            .padding(top = 5.dp, bottom = 30.dp)
+            .fillMaxHeight()
+            .fillMaxWidth()
 
-
-    var currentAppointmentBookingItemUIModel by remember {
-        mutableStateOf(
-            CurrentAppointmentBookingItemUIModel(
-                currentBooking,
-                displayOneItem
-            )
-        )
-    }
-
-
-
-    println("Unsaved $unsavedAppointments")
-
-    val columnModifier = Modifier
-        .padding(top = 5.dp, bottom = 30.dp)
-        .fillMaxHeight()
-        .fillMaxWidth()
-
-    Column(
-        modifier = columnModifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.90f), contentAlignment = Alignment.TopStart) {
-            PopulateAppointmentScreen(
-                currentAppointmentBookingItemUIModel.itemList, onRemoveItem = { it ->
-                    val index = unsavedAppointments.value.indexOf(it)
-                    currentAppointmentBookingItemUIModel.itemList.remove(it)
-                    currentAppointmentBookingItemUIModel = currentAppointmentBookingItemUIModel.copy(
-                        selectedItem = CurrentAppointmentBooking(),
-                        itemList = currentAppointmentBookingItemUIModel.itemList
-                    )
-                  //  mainViewModel.setCurrentUnsavedAppointment(currentAppointmentBookingItemUIModel.itemList)
-                    if (unsavedAppointments.value.size == 0){
-                        onLastItemRemoved()
-                    }
-                    else{
-                        bookingViewModel.setCurrentBooking(unsavedAppointments.value.last())
-                        bookingViewModel.setSelectedServiceType(unsavedAppointments.value.last().serviceTypeItem!!)
-                        bookingViewModel.setSelectedDay(unsavedAppointments.value.last().day)
-                        bookingViewModel.setSelectedMonth(unsavedAppointments.value.last().month)
-                        bookingViewModel.setSelectedYear(unsavedAppointments.value.last().year)
-                        mainViewModel.setSelectedService(unsavedAppointments.value.last().services!!)
-                    }
-                }
-            )
-        }
-
-
-
-      /*  Box(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight(),
-            contentAlignment = Alignment.BottomCenter
+        Column(
+            modifier = columnModifier,
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            val buttonStyle = Modifier
-                .fillMaxWidth(0.90f)
-                .height(50.dp)
-                .padding(top = 10.dp)
-
-            ButtonComponent(
-                modifier = buttonStyle,
-                buttonText = "Add More Service",
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-                fontSize = 16,
-                shape = RoundedCornerShape(10.dp),
-                textColor = Colors.primaryColor,
-                borderStroke = BorderStroke(width = 1.dp, color = Colors.primaryColor),
-                style = MaterialTheme.typography.h6
+            Box(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(0.90f),
+                contentAlignment = Alignment.TopStart
             ) {
-                onAddMoreServiceClicked()
+                PopulateAppointmentScreen(appointmentList = pendingAppointments.value,
+                    onEditItem = {
+                        onEditItem(it)
+                    }, onDeleteItem = {
+                        bookingPresenter.deletePendingAppointment(it.resources!!.appointmentId!!)
+                    })
             }
-        }*/
-    }
 
-    }
 
-@Composable
-fun PopulateAppointmentScreen(itemList: MutableList<CurrentAppointmentBooking>, onRemoveItem: (CurrentAppointmentBooking) -> Unit) {
-    LazyColumn(modifier = Modifier.fillMaxWidth().height(getUnSavedAppointmentViewHeight(itemList).dp), userScrollEnabled = true) {
-        items(key = { it -> it.bookingKey
-        }, items = itemList) {item ->
-            UnsavedAppointmentWidget(currentAppointmentBooking = item, onRemoveItem = {
-                onRemoveItem(it)
-            })
+
+            Box(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+
+                val buttonStyle = Modifier
+                    .fillMaxWidth(0.90f)
+                    .height(50.dp)
+                    .padding(top = 10.dp)
+
+                ButtonComponent(
+                    modifier = buttonStyle,
+                    buttonText = "Add More Service",
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                    fontSize = 16,
+                    shape = RoundedCornerShape(10.dp),
+                    textColor = Colors.primaryColor,
+                    borderStroke = BorderStroke(width = 1.dp, color = Colors.primaryColor),
+                    style = MaterialTheme.typography.h6
+                ) {
+                    onAddMoreServiceClicked()
+                }
+            }
         }
     }
-}
+
+ }
+
+@Composable
+fun PopulateAppointmentScreen(appointmentList: List<UserAppointmentsData>, onDeleteItem: (UserAppointmentsData) -> Unit, onEditItem: (UserAppointmentsData) -> Unit) {
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth()
+            .height(getAppointmentViewHeight(appointmentList.size).dp),
+        userScrollEnabled = true
+    ) {
+        itemsIndexed(items = appointmentList) { it, item ->
+                PendingAppointmentWidget(
+                    item!!,
+                    onEditAppointment = {
+                        onEditItem(it)
+                    },
+                    onDeleteAppointment = {
+                        onDeleteItem(it)
+                    })
+            }
+
+        }
+    }
+
 
 
 

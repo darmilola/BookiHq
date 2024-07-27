@@ -2,16 +2,18 @@ package presentation.viewmodels
 
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
+import domain.Models.Appointment
 import domain.Models.PlatformTime
 import domain.Models.ServiceTypeItem
 import domain.Models.ServiceTypeTherapists
-import domain.Models.CurrentAppointmentBooking
+import domain.Models.UserAppointmentsData
 import domain.Models.VendorTime
 import kotlinx.coroutines.flow.StateFlow
 
 class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
     private var _therapists =  savedStateHandle.getStateFlow("therapists", arrayListOf<ServiceTypeTherapists>())
+    private var _pendingAppointments =  savedStateHandle.getStateFlow("pendingAppointments", listOf<UserAppointmentsData>())
     private var _selectedServiceType =  savedStateHandle.getStateFlow("selectedServiceType", ServiceTypeItem())
     private var _currentBookingKey =  savedStateHandle.getStateFlow("currentBookingId", -1)
     private var _day =  savedStateHandle.getStateFlow("day", -1)
@@ -19,7 +21,7 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
     private var _monthName =  savedStateHandle.getStateFlow("monthName", "")
     private var _year =  savedStateHandle.getStateFlow("year", -1)
     private var _isMobileService =  savedStateHandle.getStateFlow("isMobileService", false)
-    private var _currentAppointmentBooking =  savedStateHandle.getStateFlow("currentAppointmentBooking", CurrentAppointmentBooking(bookingKey = -1))
+    private var _currentAppointmentBooking =  savedStateHandle.getStateFlow("currentAppointmentBooking", Appointment())
     private var _vendorTimes = savedStateHandle.getStateFlow("vendorTimes", listOf<VendorTime>())
     private var _platformTimes = savedStateHandle.getStateFlow("platformTimes", listOf<PlatformTime>())
 
@@ -31,6 +33,10 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
 
     val platformTimes: StateFlow<List<PlatformTime>>
         get() = _platformTimes
+
+    val pendingAppointments: StateFlow<List<UserAppointmentsData>>
+        get() = _pendingAppointments
+
     val selectedServiceType: StateFlow<ServiceTypeItem>
         get() = _selectedServiceType
 
@@ -46,8 +52,6 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
     val year: StateFlow<Int>
         get() = _year
 
-    val currentBookingKey: StateFlow<Int>
-        get() = _currentBookingKey
 
     fun setTherapists(serviceTherapists: List<ServiceTypeTherapists>) {
         savedStateHandle["therapists"] = serviceTherapists
@@ -62,10 +66,14 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
         savedStateHandle["isMobileService"] = isMobileService
     }
 
+    fun setPendingAppointments(pendingAppointments: List<UserAppointmentsData>) {
+        savedStateHandle["pendingAppointments"] = pendingAppointments
+    }
+
     val isMobileService: StateFlow<Boolean>
         get() = _isMobileService
 
-    val currentAppointmentBooking: StateFlow<CurrentAppointmentBooking>
+    val currentAppointmentBooking: StateFlow<Appointment>
         get() = _currentAppointmentBooking
 
     fun setSelectedServiceType(selectedServiceType: ServiceTypeItem) {
@@ -88,12 +96,8 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
         savedStateHandle["year"] = year
     }
 
-    fun setCurrentBooking(currentAppointmentBooking: CurrentAppointmentBooking) {
+    fun setCurrentBooking(currentAppointmentBooking: Appointment) {
         savedStateHandle["currentAppointmentBooking"] = currentAppointmentBooking
-    }
-
-    fun setCurrentBookingKey(bookingId: Int) {
-        savedStateHandle["currentBookingId"] = bookingId
     }
 
     fun undoSelectedServiceType() {
@@ -105,10 +109,5 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
         savedStateHandle["therapists"] = arrayListOf<ServiceTypeTherapists>()
     }
 
-    fun clearCurrentBooking(){
-        savedStateHandle["selectedServiceType"] = ServiceTypeItem()
-        savedStateHandle["currentAppointmentBooking"] = CurrentAppointmentBooking(bookingKey = -1)
-        savedStateHandle["therapists"] = arrayListOf<ServiceTypeTherapists>()
-    }
 
 }

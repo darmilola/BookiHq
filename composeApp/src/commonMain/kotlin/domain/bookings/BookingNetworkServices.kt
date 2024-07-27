@@ -1,6 +1,7 @@
 package domain.bookings
 
 import com.badoo.reaktive.single.toSingle
+import domain.Models.PendingAppointmentResponse
 import domain.Models.ServerResponse
 import domain.Models.ServiceTherapistsResponse
 import io.ktor.client.HttpClient
@@ -31,6 +32,36 @@ open class BookingNetworkService(private val apiService: HttpClient) {
             }*/
             contentType(ContentType.Application.Json)
             setBody(createAppointmentRequest)
+        }.body<ServerResponse>().toSingle()
+
+    suspend fun createPendingAppointment(createPendingAppointmentRequest: CreatePendingAppointmentRequest) =
+        apiService.post {
+            url("/services/appointment/pending/create")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(createPendingAppointmentRequest)
+        }.body<PendingAppointmentResponse>().toSingle()
+
+    suspend fun getPendingAppointment(getPendingAppointmentRequest: GetPendingAppointmentRequest) =
+        apiService.post {
+            url("/services/appointment/pending/get")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(getPendingAppointmentRequest)
+        }.body<PendingAppointmentResponse>().toSingle()
+
+    suspend fun deletePendingAppointment(deletePendingAppointmentRequest: DeletePendingAppointmentRequest) =
+        apiService.post {
+            url("/services/appointment/pending/delete")
+            /*headers {
+                append(HttpHeaders.Authorization, "abc123")
+            }*/
+            contentType(ContentType.Application.Json)
+            setBody(deletePendingAppointmentRequest)
         }.body<ServerResponse>().toSingle()
 
 }

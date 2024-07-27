@@ -44,7 +44,6 @@ class UserAppointmentsData(
     @SerialName("id") val id: Int = -1,
     @SerialName("user_id") val userId: Int = -1,
     @SerialName("appointment_id") val appointmentId: Int = -1,
-    @SerialName("created_at") val created_at: String? = "",
     @SerialName("appointments") val resources: Appointment? = null): Parcelable
 
 

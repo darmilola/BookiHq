@@ -11,7 +11,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import UIStates.ActionUIStates
 import UIStates.ScreenUIStates
-import applications.date.getMonth
 import domain.Models.PlatformNavigator
 import domain.Models.PlatformTime
 import domain.Models.ServiceTypeItem
@@ -39,7 +38,6 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
                     bookingRepositoryImpl.getServiceTherapist(serviceTypeId, vendorId)
                         .subscribe(
                             onSuccess = { result ->
-                                println("Result is $result")
                                 if (result.status == "success"){
                                     contractView?.showScreenLce(ScreenUIStates(contentVisible = true))
                                     contractView?.showTherapists(result.serviceTherapists, result.platformTimes!!, result.vendorTimes!!)
@@ -60,23 +58,79 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
         }
     }
 
-    override fun createAppointment(userId: Long, vendorId: Long, service_id: Int, serviceTypeId: Int, therapist_id: Int,
-                                   appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, serviceStatus: String,
-                                   appointmentType: String, platformNavigator: PlatformNavigator, user: User, vendor: Vendor, monthName: String,platformTime: PlatformTime
-                                   ,serviceType: ServiceTypeItem, paymentAmount: Double, paymentMethod: String) {
+    override fun createAppointment(
+        userId: Long,
+        vendorId: Long,
+        paymentAmount: Double,
+        paymentMethod: String,
+        bookingStatus: String,
+        day: Int,
+        month: Int,
+        year: Int
+    ) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    contractView?.showCreateAppointmentActionLce(ActionUIStates(isLoading = true))
+                    bookingRepositoryImpl.createAppointment(userId, vendorId, paymentAmount, paymentMethod, bookingStatus, day, month, year)
+                        .subscribe(
+                            onSuccess = { result ->
+                                if (result.status == "success"){
+                                    contractView?.showCreateAppointmentActionLce(ActionUIStates(isSuccess = true))
+                                }
+                                else{
+                                    contractView?.showCreateAppointmentActionLce(ActionUIStates(isFailed = true))
+                                }
+                            },
+                            onError = {
+                                contractView?.showCreateAppointmentActionLce(ActionUIStates(isFailed = true))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.showActionLce(ActionUIStates(isFailed = true))
+            }
+        }
+    }
+
+    override fun getPendingAppointment(userId: Long) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    contractView?.showScreenLce(ScreenUIStates(loadingVisible = true))
+                    bookingRepositoryImpl.getPendingAppointment(userId)
+                        .subscribe(
+                            onSuccess = { result ->
+                                if (result.status == "success"){
+                                    contractView?.showPendingAppointment(result.appointments!!)
+                                    contractView?.showScreenLce(ScreenUIStates(contentVisible = true))
+                                }
+                                else{
+                                    contractView?.showScreenLce(ScreenUIStates(errorOccurred = true))
+                                }
+                            },
+                            onError = {
+                                contractView?.showScreenLce(ScreenUIStates(errorOccurred = true))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.showScreenLce(ScreenUIStates(errorOccurred = true))
+            }
+        }
+    }
+
+    override fun deletePendingAppointment(pendingAppointmentId: Long) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showActionLce(ActionUIStates(isLoading = true))
-                    bookingRepositoryImpl.createAppointment(userId, vendorId, service_id, serviceTypeId, therapist_id, appointmentTime,
-                        day, month, year, serviceLocation, serviceStatus, appointmentType, paymentAmount, paymentMethod)
+                    bookingRepositoryImpl.deletePendingAppointment(pendingAppointmentId)
                         .subscribe(
                             onSuccess = { result ->
-                                println("Result $result")
                                 if (result.status == "success"){
-                                    val time = if (platformTime.isAm) platformTime.time+"AM" else platformTime.time+"PM"
-                                    platformNavigator.sendAppointmentBookingNotification(customerName = user.firstname!!, vendorLogoUrl = vendor.businessLogo!!, businessName = vendor.businessName!!, appointmentDay = day.toString(),
-                                        appointmentMonth = monthName, appointmentYear = year.toString(), appointmentTime = time, fcmToken = vendor.fcmToken!!, serviceType = serviceType.title)
                                     contractView?.showActionLce(ActionUIStates(isSuccess = true))
                                 }
                                 else{
@@ -84,15 +138,67 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
                                 }
                             },
                             onError = {
-                                println(it)
-                                it.message?.let { it1 -> contractView?.showActionLce(ActionUIStates(isFailed = true))}
+                                contractView?.showActionLce(ActionUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println(e.message)
                 contractView?.showActionLce(ActionUIStates(isFailed = true))
+            }
+        }
+    }
+
+    override fun silentDelete(pendingAppointmentId: Long) {
+        println(pendingAppointmentId)
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    bookingRepositoryImpl.deletePendingAppointment(pendingAppointmentId)
+                        .subscribe(
+                            onSuccess = { result ->
+                                if (result.status == "success"){}
+                                else{}
+                            },
+                            onError = {},
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {}
+        }
+    }
+
+
+    override fun createPendingAppointment(userId: Long, vendorId: Long, serviceId: Int, serviceTypeId: Int, therapistId: Int,
+                                    appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String,
+                                    serviceStatus: String, appointmentType: String,
+                                    paymentAmount: Double, paymentMethod: String, bookingStatus: String) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    contractView?.showScreenLce(ScreenUIStates(loadingVisible = true))
+                    bookingRepositoryImpl.createPendingAppointment(userId, vendorId, serviceId, serviceTypeId, therapistId, appointmentTime,
+                        day, month, year, serviceLocation, serviceStatus, appointmentType, paymentAmount, paymentMethod, bookingStatus)
+                        .subscribe(
+                            onSuccess = { result ->
+                                if (result.status == "success"){
+                                    contractView?.showScreenLce(ScreenUIStates(contentVisible = true))
+                                    contractView?.showPendingAppointment(result.appointments!!)
+                                }
+                                else{
+                                    contractView?.showScreenLce(ScreenUIStates(errorOccurred = true))
+                                }
+                            },
+                            onError = {
+                                println("Result 1 ${it.message}")
+                                contractView?.showScreenLce(ScreenUIStates(errorOccurred = true))
+                            },
+                        )
+                   }
+                result.dispose()
+            } catch(e: Exception) {
+                println("Result 2 ${e.message}")
+                contractView?.showScreenLce(ScreenUIStates(errorOccurred = true))
             }
         }
     }

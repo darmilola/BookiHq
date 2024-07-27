@@ -2,6 +2,7 @@ package presentation.bookings
 
 import StackedSnackbarHost
 import StackedSnakbarHostState
+import UIStates.ActionUIStates
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -55,10 +56,13 @@ import UIStates.ScreenUIStates
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.AppointmentType
+import domain.Enums.BookingStatus
 import domain.Enums.PaymentMethod
 import domain.Enums.ServiceLocationEnum
 import domain.Models.PlatformNavigator
+import domain.Models.UserAppointmentsData
 import kotlinx.serialization.Transient
+import presentation.viewmodels.ActionUIStateViewModel
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
@@ -68,6 +72,7 @@ import rememberStackedSnackbarHostState
 class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
     @Transient private val bookingPresenter: BookingPresenter by inject()
     @Transient private var uiStateViewModel: UIStateViewModel? = null
+    @Transient private var actionUIStateViewModel: ActionUIStateViewModel? = null
     @Transient private var bookingViewModel: BookingViewModel? = null
     @Transient private var mainViewModel: MainViewModel? = null
 
@@ -95,6 +100,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
 
         val pagerState = rememberPagerState(pageCount = { 3 })
         val addMoreService = remember { mutableStateOf(false) }
+        val editItemClicked = remember { mutableStateOf(false) }
         val lastItemRemoved = remember { mutableStateOf(false) }
         val coroutineScope = rememberCoroutineScope()
 
@@ -110,6 +116,14 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
             )
         }
 
+        if (actionUIStateViewModel == null) {
+            actionUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
     if(bookingViewModel == null) {
         bookingViewModel = kmpViewModel(
             factory = viewModelFactory {
@@ -121,7 +135,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
 
         val handler = BookingScreenHandler(
             bookingViewModel!!, bookingPresenter,
-           onPageLoading = {
+            onPageLoading = {
                uiStateViewModel!!.switchScreenUIState(ScreenUIStates(loadingVisible = true))
             },
             onShowUnsavedAppointment = {},
@@ -140,6 +154,12 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
             onCreateAppointmentFailed = {
                 creatingAppointmentProgress.value = false
                 creatingAppointmentFailed.value = true
+            }, onActionStarted = {
+                 actionUIStateViewModel!!.switchActionUIState(ActionUIStates(isLoading = true))
+            }, onActionSuccess = {
+                actionUIStateViewModel!!.switchActionUIState(ActionUIStates(isSuccess = true))
+            }, onActionFailed = {
+                actionUIStateViewModel!!.switchActionUIState(ActionUIStates(isFailed = true))
             })
         handler.init()
 
@@ -154,10 +174,6 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
         else if (creatingAppointmentSuccess.value){
             Box(modifier = Modifier.fillMaxWidth()) {
                 SuccessDialog("Creating Appointment Successful", actionTitle = "Done", onConfirmation = {
-                    bookingViewModel!!.clearCurrentBooking()
-                    mainViewModel!!.clearVendorRecommendation()
-                    mainViewModel!!.clearUnsavedAppointments()
-                    bookingViewModel!!.clearCurrentBooking()
                     coroutineScope.launch {
                         pagerState.scrollToPage(0)
                         mainViewModel!!.setScreenNav(
@@ -176,12 +192,8 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
                     val userId = mainViewModel!!.currentUserInfo.value.userId
                     val vendorId = mainViewModel!!.connectedVendor.value.vendorId
                     val appointment = bookingViewModel!!.currentAppointmentBooking.value
-                    bookingPresenter.createAppointment(userId = userId!!, vendorId = vendorId!!, service_id = appointment.serviceId, serviceTypeId = appointment.serviceTypeId!!,
-                        therapist_id = appointment.serviceTypeTherapists?.therapistInfo?.therapistId!!, appointmentTime = appointment.appointmentTime?.id!!,
-                        day = appointment.day, month = appointment.month, year = appointment.year, serviceLocation = if (appointment.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
-                        serviceStatus = appointment.serviceStatus, appointmentType = AppointmentType.SERVICE.toPath(),
-                        platformNavigator = platformNavigator,user = mainViewModel!!.currentUserInfo.value, vendor = mainViewModel!!.connectedVendor.value, monthName = bookingViewModel!!.monthName.value,appointment.appointmentTime!!, serviceType = appointment.serviceTypeItem!!,
-                        paymentAmount = appointment.serviceTypeItem!!.price.toDouble(), paymentMethod = PaymentMethod.CARD_PAYMENT.toPath())
+
+
                 })
             }
         }
@@ -201,8 +213,12 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
         if (lastItemRemoved.value){
             rememberCoroutineScope().launch {
                 pagerState.scrollToPage(0)
-                mainViewModel!!.clearUnsavedAppointments()
                 mainViewModel!!.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.MAIN_TAB.toPath()))
+            }
+        }
+        if (editItemClicked.value){
+            rememberCoroutineScope().launch {
+                pagerState.scrollToPage(1)
             }
         }
 
@@ -217,7 +233,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
                     .background(color = Color.White)
             Column(modifier = layoutModifier) {
 
-                BookingScreenTopBar(pagerState, mainViewModel!!, bookingViewModel!!)
+                BookingScreenTopBar(pagerState, mainViewModel!!, bookingViewModel!!,bookingPresenter)
 
                 val bgStyle = Modifier
                     .fillMaxWidth()
@@ -242,6 +258,16 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
                             services = mainViewModel!!.selectedService.value,
                             onAddMoreServiceClicked = {
                                 addMoreService.value = true
+                            },
+                            onEditItem = {
+                                 bookingViewModel!!.setCurrentBooking(it.resources!!)
+                                 bookingPresenter.silentDelete(it.resources.appointmentId!!)
+                                 bookingViewModel!!.setSelectedServiceType(it.resources.serviceTypeItem!!)
+                                 bookingViewModel!!.setIsMobileService(it.resources.isMobileService!!)
+                                 bookingViewModel!!.setSelectedDay(it.resources.appointmentDay!!)
+                                 bookingViewModel!!.setSelectedMonth(it.resources.appointmentMonth!!)
+                                 bookingViewModel!!.setSelectedYear(it.resources.appointmentYear!!)
+                                 editItemClicked.value = true
                             },
                             onLastItemRemoved = {
                                 lastItemRemoved.value = true
@@ -270,7 +296,6 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
             0f
         }
 
-
         val coroutineScope = rememberCoroutineScope()
 
         val buttonStyle = Modifier
@@ -278,7 +303,6 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
             .fillMaxWidth()
             .clip(CircleShape)
             .height(45.dp)
-
 
         Row (modifier = Modifier
             .padding(bottom = 10.dp,start = 10.dp, end = 10.dp)
@@ -298,14 +322,8 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
                     val userId = mainViewModel.currentUserInfo.value.userId
                     val vendorId = mainViewModel.connectedVendor.value.vendorId
                     val appointment = bookingViewModel?.currentAppointmentBooking!!.value
-                    bookingPresenter.createAppointment(userId = userId!!, vendorId = vendorId!!, service_id = appointment.serviceId, serviceTypeId = appointment.serviceTypeId!!,
-                        therapist_id = appointment.serviceTypeTherapists?.therapistInfo?.therapistId!!, appointmentTime = appointment.appointmentTime?.id!!,
-                        day = appointment.day, month = appointment.month, year = appointment.year, serviceLocation = if (appointment.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
-                        serviceStatus = appointment.serviceStatus, appointmentType = AppointmentType.SERVICE.toPath(), platformNavigator = platformNavigator,
-                        user = mainViewModel.currentUserInfo.value, vendor = mainViewModel.connectedVendor.value, monthName = bookingViewModel!!.monthName.value, platformTime = appointment.appointmentTime!!,serviceType = appointment.serviceTypeItem!!,
-                        paymentAmount = appointment.serviceTypeItem!!.price.toDouble(), paymentMethod = PaymentMethod.CARD_PAYMENT.toPath())
+                    bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.DONE.toPath(), day = bookingViewModel!!.day.value!!, month = bookingViewModel!!.month.value, year = bookingViewModel!!.year.value, paymentAmount = 4500.0, paymentMethod = PaymentMethod.CARD_PAYMENT.toPath())
                 }
-                else {
 
                     coroutineScope.launch {
                         if (currentPage == 0) {
@@ -329,7 +347,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
                                     snackBarType = SnackBarType.ERROR,
                                     stackedSnackBarHostState,
                                     onActionClick = {})
-                            } else if (bookingViewModel?.currentAppointmentBooking?.value?.appointmentTime == null) {
+                            } else if (bookingViewModel?.currentAppointmentBooking?.value?.platformTime == null) {
                                 ShowSnackBar(title = "No Time Selected",
                                     description = "Please Select Appointment Time to proceed",
                                     actionLabel = "",
@@ -346,12 +364,10 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
             }
         }
 
-    }
-
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun AttachBookingPages(pagerState: PagerState, uiStateViewModel: UIStateViewModel, mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, services: Services, onAddMoreServiceClicked:() -> Unit, onLastItemRemoved:() -> Unit){
+    fun AttachBookingPages(pagerState: PagerState, uiStateViewModel: UIStateViewModel, mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, services: Services, onAddMoreServiceClicked:() -> Unit, onLastItemRemoved:() -> Unit, onEditItem: (UserAppointmentsData) -> Unit){
 
         val  boxModifier =
             Modifier
@@ -370,14 +386,30 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
                 when (page) {
                     0 -> BookingSelectServices(mainViewModel, bookingViewModel,services)
                     1 -> if(page == pagerState.targetPage) {
-                        BookingSelectTherapists(mainViewModel,uiStateViewModel,bookingViewModel,bookingPresenter)
+                         BookingSelectTherapists(mainViewModel,uiStateViewModel,bookingViewModel,bookingPresenter)
                     }
                     2 -> if(page == pagerState.targetPage) {
+                        val userId = mainViewModel.currentUserInfo.value.userId
+                        val vendorId = mainViewModel.connectedVendor.value.vendorId
+                        val appointment = bookingViewModel?.currentAppointmentBooking!!.value
+
+                        bookingPresenter.createPendingAppointment(userId = userId!!, vendorId = vendorId!!, serviceId = appointment.serviceId, serviceTypeId = appointment.serviceTypeId!!,
+                            therapistId = appointment.serviceTypeTherapists?.therapistInfo?.therapistId!!, appointmentTime = appointment.pendingTime?.id!!,
+                            day = appointment.appointmentDay!!, month = appointment.appointmentMonth!!, year = appointment.appointmentYear!!, serviceLocation = if (appointment.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
+                            serviceStatus = appointment.serviceStatus, appointmentType = AppointmentType.SERVICE.toPath(),
+                            paymentAmount = appointment.serviceTypeItem!!.price.toDouble(), paymentMethod = PaymentMethod.CARD_PAYMENT.toPath(), bookingStatus = BookingStatus.PENDING.toPath())
+
                         BookingOverview(
                             mainViewModel,
+                            actionUIStateViewModel!!,
+                            bookingPresenter,
                             bookingViewModel,
+                            uiStateViewModel,
                             onAddMoreServiceClicked = {
                                 onAddMoreServiceClicked()
+                            },
+                            onEditItem = {
+                                onEditItem(it)
                             },
                             onLastItemRemoved = {
                                 onLastItemRemoved()

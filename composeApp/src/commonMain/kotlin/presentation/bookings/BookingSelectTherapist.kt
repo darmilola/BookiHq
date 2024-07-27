@@ -53,8 +53,7 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, uiStateViewModel: UISt
     val vendorTimes = bookingViewModel.vendorTimes.collectAsState()
     val platformTimes = bookingViewModel.platformTimes.collectAsState()
     LaunchedEffect(Unit, block = {
-        if (therapists.value.isEmpty()
-            || (bookingViewModel.currentBookingKey.value != bookingViewModel.currentAppointmentBooking.value.bookingKey)) {
+        if (therapists.value.isEmpty()) {
             bookingPresenter.getServiceTherapists(bookingViewModel.selectedServiceType.value.serviceTypeId,
                 mainViewModel.connectedVendor.value.vendorId!!)
         }
@@ -68,9 +67,9 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, uiStateViewModel: UISt
     }
     currentBooking.serviceTypeItem = bookingViewModel.selectedServiceType.value
     currentBooking.isMobileService = bookingViewModel.isMobileService.value
-    currentBooking.day = bookingViewModel.day.value
-    currentBooking.month = bookingViewModel.month.value
-    currentBooking.year = bookingViewModel.year.value
+    currentBooking.appointmentDay = bookingViewModel.day.value
+    currentBooking.appointmentMonth = bookingViewModel.month.value
+    currentBooking.appointmentYear = bookingViewModel.year.value
 
 
     if (uiStates.value.loadingVisible) {
@@ -106,7 +105,7 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, uiStateViewModel: UISt
                     platformTimes = platformTimes.value, day = bookingViewModel.day.value, month = bookingViewModel.month.value, year = bookingViewModel.year.value)
 
                 AvailableTimeContent(workHours,bookingViewModel, onWorkHourClickListener = {
-                     currentBooking.appointmentTime = it
+                     currentBooking.pendingTime = it
                      bookingViewModel.setCurrentBooking(currentBooking)
                 })
                 if (selectedTherapist.value.therapistInfo?.therapistReviews?.isNotEmpty() == true) {
@@ -182,10 +181,9 @@ fun AvailableTimeContent(availableHours: ArrayList<PlatformTime>, bookingViewMod
         }
 
         val currentBooking = bookingViewModel.currentAppointmentBooking.collectAsState()
-
         Row(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
             Column(modifier = Modifier.weight(1f).wrapContentHeight()) {
-                TimeGrid(platformTimes = availableHours,selectedTime = currentBooking.value.appointmentTime, onWorkHourClickListener = {
+                TimeGrid(platformTimes = availableHours,selectedTime = currentBooking.value.pendingTime, onWorkHourClickListener = {
                     onWorkHourClickListener(it)
                 })
             }

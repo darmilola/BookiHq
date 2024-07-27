@@ -38,9 +38,9 @@ import applications.date.getDay
 import applications.date.getMonth
 import applications.date.getYear
 import domain.Enums.Screens
+import domain.Models.Appointment
 import domain.Models.ServiceTypeItem
 import domain.Models.Services
-import domain.Models.CurrentAppointmentBooking
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.BookingCalendar
@@ -56,22 +56,20 @@ import rememberStackedSnackbarHostState
 fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: BookingViewModel,
                           services: Services) {
 
-    val savedBooking = bookingViewModel.currentAppointmentBooking.value
     val mobileServicesAvailable = mainViewModel.connectedVendor.value.isMobileServiceAvailable
 
-    val currentBooking = CurrentAppointmentBooking()
+    val currentBooking = Appointment()
     currentBooking.services = services
     currentBooking.serviceId = services.serviceId
 
-    currentBooking.year = getYear()
-    currentBooking.month = getMonth()
-    currentBooking.day = getDay()
-    currentBooking.bookingKey = (0..100000000).random()
+    currentBooking.appointmentYear = getYear()
+    currentBooking.appointmentMonth = getMonth()
+    currentBooking.appointmentDay = getDay()
 
     bookingViewModel.setCurrentBooking(currentBooking)
-    bookingViewModel.setSelectedDay(currentBooking.day)
-    bookingViewModel.setSelectedMonth(currentBooking.month)
-    bookingViewModel.setSelectedYear(currentBooking.year)
+    bookingViewModel.setSelectedDay(currentBooking.appointmentDay!!)
+    bookingViewModel.setSelectedMonth(currentBooking.appointmentMonth!!)
+    bookingViewModel.setSelectedYear(currentBooking.appointmentYear!!)
 
     val stackedSnackBarHostState = rememberStackedSnackbarHostState(
         maxStack = 5,
@@ -124,7 +122,6 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
                     bookingViewModel.undoSelectedServiceType()
                     bookingViewModel.setSelectedServiceType(it)
                     currentBooking.serviceTypeItem = it
-                    currentBooking.serviceTypeTherapists = null
                     currentBooking.serviceTypeId = it.serviceTypeId
                     bookingViewModel.setCurrentBooking(currentBooking)
                 }
@@ -142,10 +139,9 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
             }
             BookingCalendar(bookingViewModel = bookingViewModel) {
                 bookingViewModel.undoTherapists()
-                currentBooking.day = it.dayOfMonth
-                currentBooking.month = it.monthNumber
-                currentBooking.year = it.year
-                currentBooking.serviceTypeTherapists = null
+                currentBooking.appointmentDay = it.dayOfMonth
+                currentBooking.appointmentMonth = it.monthNumber
+                currentBooking.appointmentYear = it.year
                 bookingViewModel.setCurrentBooking(currentBooking)
                 bookingViewModel.setSelectedDay(it.dayOfMonth)
                 bookingViewModel.setSelectedMonth(it.monthNumber)

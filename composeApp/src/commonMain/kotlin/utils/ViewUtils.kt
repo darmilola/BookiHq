@@ -11,8 +11,6 @@ import domain.Models.PlatformTime
 import domain.Models.Product
 import domain.Models.ScreenSizeInfo
 import domain.Models.Services
-import domain.Models.CurrentAppointmentBooking
-import domain.Models.UserAppointmentsData
 import domain.Models.VendorStatusModel
 import domain.Models.VendorTime
 import kotlin.math.ceil
@@ -37,16 +35,6 @@ fun getRecentAppointmentViewHeight(
     val itemCount = itemList.size
 
     return itemCount * 200
-}
-
-
-
-fun getUnSavedAppointmentViewHeight(
-    itemList: List<CurrentAppointmentBooking>
-): Int {
-    val itemCount = itemList.size
-
-    return itemCount * 190
 }
 
 fun getPopularProductViewHeight(
