@@ -31,13 +31,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import domain.Models.UserAppointments
+import domain.Models.UserAppointment
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import theme.styles.Colors
 
 @Composable
-fun PendingAppointmentWidget(appointment: UserAppointments, onDeleteAppointment: (UserAppointments) -> Unit, onEditAppointment: (UserAppointments) -> Unit) {
+fun PendingAppointmentWidget(appointment: UserAppointment, onDeleteAppointment: (UserAppointment) -> Unit, onEditAppointment: (UserAppointment) -> Unit) {
 
     val serviceMenuItems = arrayListOf<String>()
 
@@ -84,8 +84,8 @@ fun PendingAppointmentWidget(appointment: UserAppointments, onDeleteAppointment:
 
 
 @Composable
-fun AttachPendingAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: UserAppointments, menuItems: ArrayList<String>,
-                                   onDeleteAppointment: (UserAppointments) -> Unit, onEditAppointment: (UserAppointments) -> Unit) {
+fun AttachPendingAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: UserAppointment, menuItems: ArrayList<String>,
+                                   onDeleteAppointment: (UserAppointment) -> Unit, onEditAppointment: (UserAppointment) -> Unit) {
     val expandedMenuItem = remember { mutableStateOf(false) }
 
     Row(

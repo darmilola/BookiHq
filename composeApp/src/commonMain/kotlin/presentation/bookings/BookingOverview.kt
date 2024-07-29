@@ -20,7 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import domain.Models.UserAppointments
+import domain.Models.UserAppointment
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.dialogs.ErrorDialog
@@ -36,7 +36,7 @@ import utils.getAppointmentViewHeight
 
 
 @Composable
-fun BookingOverview(mainViewModel: MainViewModel, actionUIStateViewModel: ActionUIStateViewModel, bookingPresenter: BookingPresenter, bookingViewModel: BookingViewModel,uiStateViewModel: UIStateViewModel,onAddMoreServiceClicked:() -> Unit, onLastItemRemoved: () -> Unit, onEditItem: (UserAppointments) -> Unit) {
+fun BookingOverview(mainViewModel: MainViewModel, actionUIStateViewModel: ActionUIStateViewModel, bookingPresenter: BookingPresenter, bookingViewModel: BookingViewModel,uiStateViewModel: UIStateViewModel,onAddMoreServiceClicked:() -> Unit, onLastItemRemoved: () -> Unit, onEditItem: (UserAppointment) -> Unit) {
 
 
     val pendingAppointments = bookingViewModel.pendingAppointments.collectAsState()
@@ -127,7 +127,7 @@ fun BookingOverview(mainViewModel: MainViewModel, actionUIStateViewModel: Action
  }
 
 @Composable
-fun PopulateAppointmentScreen(appointmentList: List<UserAppointments>, onDeleteItem: (UserAppointments) -> Unit, onEditItem: (UserAppointments) -> Unit) {
+fun PopulateAppointmentScreen(appointmentList: List<UserAppointment>, onDeleteItem: (UserAppointment) -> Unit, onEditItem: (UserAppointment) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth()
             .height(getAppointmentViewHeight(appointmentList.size).dp),

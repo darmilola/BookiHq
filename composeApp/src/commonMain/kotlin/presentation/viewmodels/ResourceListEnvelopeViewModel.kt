@@ -4,7 +4,7 @@ import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Models.Appointment
 import domain.Models.Product
-import domain.Models.UserAppointments
+import domain.Models.UserAppointment
 import domain.Models.UserOrders
 import domain.Models.Vendor
 import kotlinx.coroutines.flow.StateFlow
@@ -114,7 +114,7 @@ class ResourceListEnvelopeViewModel<in T : Any>(private val savedStateHandle: Sa
 
 class AppointmentResourceListEnvelopeViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
-    private var _resources =  savedStateHandle.getStateFlow("resources", mutableListOf<UserAppointments>())
+    private var _resources =  savedStateHandle.getStateFlow("resources", mutableListOf<UserAppointment>())
 
     private var _nextPageUrl =  savedStateHandle.getStateFlow("nextPageUrl", "")
 
@@ -133,7 +133,7 @@ class AppointmentResourceListEnvelopeViewModel(private val savedStateHandle: Sav
     private var _isRefreshing =  savedStateHandle.getStateFlow("isRefreshing", false)
 
 
-    val resources: StateFlow<MutableList<UserAppointments>>
+    val resources: StateFlow<MutableList<UserAppointment>>
         get() = _resources
 
     val prevPageUrl: StateFlow<String>
@@ -161,7 +161,7 @@ class AppointmentResourceListEnvelopeViewModel(private val savedStateHandle: Sav
         get() = _isRefreshing
 
 
-    fun setResources(resources: MutableList<UserAppointments>?) {
+    fun setResources(resources: MutableList<UserAppointment>?) {
         savedStateHandle["resources"] = resources
     }
 
@@ -197,7 +197,7 @@ class AppointmentResourceListEnvelopeViewModel(private val savedStateHandle: Sav
         savedStateHandle["isRefreshing"] = isRefreshing
     }
 
-    fun clearData(data: MutableList<UserAppointments>) {
+    fun clearData(data: MutableList<UserAppointment>) {
         setResources(data)
         setCurrentPage(-1)
         setDisplayedItemCount(-1)

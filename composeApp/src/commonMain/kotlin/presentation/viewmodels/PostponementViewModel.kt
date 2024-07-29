@@ -6,6 +6,7 @@ import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Models.Appointment
 import domain.Models.AvailableTime
 import domain.Models.PlatformTime
+import domain.Models.UserAppointment
 import domain.Models.Vendor
 import domain.Models.VendorTime
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,7 @@ import presentation.dataModeller.CalendarDataSource
 class PostponementViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
     private var _therapistBookedTimes = savedStateHandle.getStateFlow("therapistBookedAppointment", arrayListOf<Appointment>())
-    private var _currentAppointment = savedStateHandle.getStateFlow("currentAppointment",Appointment())
+    private var _currentAppointment = savedStateHandle.getStateFlow("currentAppointment",UserAppointment())
     private var _platformTimes = savedStateHandle.getStateFlow("platformTimes", listOf<PlatformTime>())
     private var _vendorTimes = savedStateHandle.getStateFlow("vendorTimes", listOf<VendorTime>())
     private var _postponementViewUIState = savedStateHandle.getStateFlow("postponementViewUIState", ActionUIStates())
@@ -29,7 +30,7 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
     val therapistBookedTimes: StateFlow<List<Appointment>>
         get() = _therapistBookedTimes
 
-    val currentAppointment: StateFlow<Appointment>
+    val currentAppointment: StateFlow<UserAppointment>
         get() = _currentAppointment
 
     val postponementViewUIState: StateFlow<ActionUIStates>
@@ -54,8 +55,8 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
         get() = _year
     val selectedTime: StateFlow<PlatformTime>
         get() = _newSelectedTime
-    fun setCurrentAppointment(currentAppointment: Appointment) {
-        savedStateHandle["currentAppointment"] = currentAppointment
+    fun setCurrentAppointment(userAppointment: UserAppointment) {
+        savedStateHandle["currentAppointment"] = userAppointment
     }
 
     fun setTherapistBookedAppointment(bookedAppointment: List<Appointment>) {

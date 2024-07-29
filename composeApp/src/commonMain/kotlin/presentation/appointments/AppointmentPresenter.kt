@@ -16,6 +16,7 @@ import domain.Enums.ServerResponseEnum
 import domain.Models.PlatformNavigator
 import domain.Models.PlatformTime
 import domain.Models.User
+import domain.Models.UserAppointment
 import domain.Models.Vendor
 
 class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presenter() {
@@ -90,25 +91,24 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
         }
     }
     override fun postponeAppointment(
-        appointment: Appointment,
+        userAppointment: UserAppointment,
         newAppointmentTime: Int,
         day: Int,
         month: Int,
         year: Int,
-        vendor: Vendor, user: User, monthName: String, platformNavigator: PlatformNavigator, platformTime: PlatformTime
-    ) {
+        vendor: Vendor, user: User, monthName: String, platformNavigator: PlatformNavigator, platformTime: PlatformTime) {
         contractView?.showPostponeActionLce(ActionUIStates(isLoading = true, loadingMessage = "Postponing Your Appointment"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    appointmentRepositoryImpl.postponeAppointment(appointment, newAppointmentTime, day,month,year)
+                    appointmentRepositoryImpl.postponeAppointment(userAppointment, newAppointmentTime, day,month,year)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     val time = if (platformTime.isAm) platformTime.time+"AM" else platformTime.time+"PM"
                                     contractView?.showPostponeActionLce(ActionUIStates(isSuccess = true, successMessage = "Appointment Postponed"))
                                     platformNavigator.sendPostponedAppointmentNotification(customerName = user.firstname!!, vendorLogoUrl = vendor.businessLogo!!, businessName = vendor.businessName!!, appointmentDay = day.toString(), appointmentMonth = monthName, appointmentYear = year.toString(),
-                                        appointmentTime = time, fcmToken = vendor.fcmToken!!, serviceType = appointment.serviceTypeItem!!.title)
+                                        appointmentTime = time, fcmToken = vendor.fcmToken!!, serviceType = userAppointment.resources?.serviceTypeItem!!.title)
                                 }
                                 else{
                                     contractView?.showPostponeActionLce(ActionUIStates(isFailed = true, errorMessage = "Error Postponing Appointment Please Try Again"))

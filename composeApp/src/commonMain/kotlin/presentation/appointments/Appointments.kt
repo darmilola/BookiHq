@@ -35,7 +35,7 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.AppointmentItemUIModel
 import domain.Enums.AppointmentType
 import domain.Models.PlatformNavigator
-import domain.Models.UserAppointments
+import domain.Models.UserAppointment
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -166,8 +166,6 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
 
         }
 
-
-
         val loadMoreState =
             appointmentResourceListEnvelopeViewModel?.isLoadingMore?.collectAsState()
         val appointmentList = appointmentResourceListEnvelopeViewModel?.resources?.collectAsState()
@@ -182,7 +180,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
         val joinMeetingActionUIStates = joinMeetingActionUIStateViewModel!!.joinMeetingStateInfo.collectAsState()
 
         val lastIndex = appointmentList?.value?.size?.minus(1)
-        val selectedAppointment = remember { mutableStateOf(UserAppointments()) }
+        val selectedAppointment = remember { mutableStateOf(UserAppointment()) }
 
 
         LaunchedEffect(true) {
@@ -315,13 +313,13 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                                 itemsIndexed(items = appointmentUIModel.appointmentList) { it, item ->
                                     if (item.resources?.appointmentType == AppointmentType.MEETING.toPath()) {
                                         MeetingAppointmentWidget(
-                                            appointment = item.resources,
+                                            userAppointment = item,
                                             appointmentPresenter = appointmentPresenter,
                                             isFromHomeTab = false
                                         )
                                     } else {
                                         AppointmentWidget(
-                                            item.resources!!,
+                                            item,
                                             appointmentPresenter = appointmentPresenter,
                                             postponementViewModel = postponementViewModel,
                                             mainViewModel = mainViewModel!!,

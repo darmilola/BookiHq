@@ -36,6 +36,7 @@ import domain.Models.Appointment
 import domain.Models.PlatformTime
 import domain.Models.AvailableTime
 import domain.Models.PlatformNavigator
+import domain.Models.UserAppointment
 import presentation.appointments.AppointmentPresenter
 import presentation.bookings.AvailableTimeContent
 import presentation.components.IndeterminateCircularProgressBar
@@ -52,7 +53,7 @@ import presentations.components.TextComponent
 import utils.calculateTherapistServiceTimes
 
 @Composable
-fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPresenter,
+fun PostponeDialog(userAppointment: UserAppointment,appointmentPresenter: AppointmentPresenter,
                    postponementViewModel: PostponementViewModel,mainViewModel: MainViewModel,
                   availabilityActionUIStateViewModel: ActionUIStateViewModel, onDismissRequest: () -> Unit,platformNavigator: PlatformNavigator,
     onConfirmation: (Appointment) -> Unit) {
@@ -70,18 +71,18 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
         val newSelectedMonth = postponementViewModel.month.collectAsState()
         val newSelectedYear = postponementViewModel.year.collectAsState()
         val newSelectedTime = postponementViewModel.selectedTime.collectAsState()
-        val therapistId = postponementViewModel.currentAppointment.value.therapistId
+        val therapistId = postponementViewModel.currentAppointment.value.resources?.therapistId
         val isNewDateSelected = remember { mutableStateOf(true) }
         val availabilityUIStates = availabilityActionUIStateViewModel.availabilityStateInfo.collectAsState()
 
 
 
         appointmentPresenter.getTherapistAvailability(
-            therapistId,
+            therapistId!!,
             day = newSelectedDay.value,
             month = newSelectedMonth.value,
             year = newSelectedYear.value,
-            vendorId = appointment.vendor?.vendorId!!)
+            vendorId = userAppointment.resources?.vendor?.vendorId!!)
 
         if (isNewDateSelected.value) {
             appointmentPresenter.getTherapistAvailability(
@@ -89,7 +90,7 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
                 day = newSelectedDay.value,
                 month = newSelectedMonth.value,
                 year = newSelectedYear.value,
-                vendorId = appointment.vendor?.vendorId!!
+                vendorId = userAppointment.resources?.vendor?.vendorId!!
             )
             isNewDateSelected.value = false
         }
@@ -157,19 +158,19 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
                         }, onConfirmation = {
                           if (newSelectedTime.value.id != null) {
                                 appointmentPresenter.postponeAppointment(
-                                    appointment,
+                                    userAppointment,
                                     newSelectedTime.value.id!!,
                                     day = newSelectedDay.value,
                                     month = newSelectedMonth.value,
                                     year = newSelectedYear.value,
-                                    vendor = appointment.vendor,
+                                    vendor = userAppointment.resources?.vendor,
                                     user = mainViewModel.currentUserInfo.value,
                                     monthName = postponementViewModel.monthName.value,
                                     platformNavigator = platformNavigator,
                                     platformTime = newSelectedTime.value
                                 )
                               postponementViewModel.clearPostponementSelection()
-                              onConfirmation(appointment)
+                              onConfirmation(userAppointment.resources)
                             }
                         })
                     }

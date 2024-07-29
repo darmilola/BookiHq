@@ -89,6 +89,7 @@ import presentation.widgets.HomeServicesWidget
 import presentation.widgets.MeetingAppointmentWidget
 import presentation.widgets.RecommendedServiceItem
 import presentation.widgets.AppointmentWidget
+import presentation.widgets.HomeAppointmentWidget
 import presentation.widgets.ProductDetailBottomSheet
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
@@ -504,8 +505,8 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                             isFromHomeTab = true
                         )
                     } else {
-                        AppointmentWidget(
-                            item,
+                        HomeAppointmentWidget(
+                            appointment = item,
                             appointmentPresenter = null,
                             postponementViewModel = null,
                             mainViewModel = mainViewModel!!,

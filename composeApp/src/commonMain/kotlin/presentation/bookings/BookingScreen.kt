@@ -60,7 +60,7 @@ import domain.Enums.BookingStatus
 import domain.Enums.PaymentMethod
 import domain.Enums.ServiceLocationEnum
 import domain.Models.PlatformNavigator
-import domain.Models.UserAppointments
+import domain.Models.UserAppointment
 import kotlinx.serialization.Transient
 import presentation.viewmodels.ActionUIStateViewModel
 import presentation.widgets.ShowSnackBar
@@ -367,7 +367,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinCompone
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun AttachBookingPages(pagerState: PagerState, uiStateViewModel: UIStateViewModel, mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, services: Services, onAddMoreServiceClicked:() -> Unit, onLastItemRemoved:() -> Unit, onEditItem: (UserAppointments) -> Unit){
+    fun AttachBookingPages(pagerState: PagerState, uiStateViewModel: UIStateViewModel, mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, services: Services, onAddMoreServiceClicked:() -> Unit, onLastItemRemoved:() -> Unit, onEditItem: (UserAppointment) -> Unit){
 
         val  boxModifier =
             Modifier

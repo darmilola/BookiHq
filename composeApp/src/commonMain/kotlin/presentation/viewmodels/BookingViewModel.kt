@@ -6,14 +6,14 @@ import domain.Models.Appointment
 import domain.Models.PlatformTime
 import domain.Models.ServiceTypeItem
 import domain.Models.ServiceTypeTherapists
-import domain.Models.UserAppointments
+import domain.Models.UserAppointment
 import domain.Models.VendorTime
 import kotlinx.coroutines.flow.StateFlow
 
 class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
     private var _therapists =  savedStateHandle.getStateFlow("therapists", arrayListOf<ServiceTypeTherapists>())
-    private var _pendingAppointments =  savedStateHandle.getStateFlow("pendingAppointments", listOf<UserAppointments>())
+    private var _pendingAppointments =  savedStateHandle.getStateFlow("pendingAppointments", listOf<UserAppointment>())
     private var _selectedServiceType =  savedStateHandle.getStateFlow("selectedServiceType", ServiceTypeItem())
     private var _currentBookingKey =  savedStateHandle.getStateFlow("currentBookingId", -1)
     private var _day =  savedStateHandle.getStateFlow("day", -1)
@@ -34,7 +34,7 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
     val platformTimes: StateFlow<List<PlatformTime>>
         get() = _platformTimes
 
-    val pendingAppointments: StateFlow<List<UserAppointments>>
+    val pendingAppointments: StateFlow<List<UserAppointment>>
         get() = _pendingAppointments
 
     val selectedServiceType: StateFlow<ServiceTypeItem>
@@ -66,7 +66,7 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
         savedStateHandle["isMobileService"] = isMobileService
     }
 
-    fun setPendingAppointments(pendingAppointments: List<UserAppointments>) {
+    fun setPendingAppointments(pendingAppointments: List<UserAppointment>) {
         savedStateHandle["pendingAppointments"] = pendingAppointments
     }
 

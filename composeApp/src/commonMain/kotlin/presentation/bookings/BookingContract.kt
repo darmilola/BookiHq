@@ -4,7 +4,7 @@ import domain.Models.ServiceTypeTherapists
 import UIStates.ActionUIStates
 import UIStates.ScreenUIStates
 import domain.Models.PlatformTime
-import domain.Models.UserAppointments
+import domain.Models.UserAppointment
 import domain.Models.VendorTime
 
 class BookingContract {
@@ -13,7 +13,7 @@ class BookingContract {
         fun showActionLce(uiState: ActionUIStates, message: String = "")
         fun showCreateAppointmentActionLce(uiState: ActionUIStates, message: String = "")
         fun showTherapists(serviceTherapists: List<ServiceTypeTherapists>, platformTime: List<PlatformTime>, vendorTime: List<VendorTime>)
-        fun showPendingAppointment(pendingAppointments: List<UserAppointments>)
+        fun showPendingAppointment(pendingAppointments: List<UserAppointment>)
         fun showUnsavedAppointment()
     }
 
