@@ -1,4 +1,4 @@
-package presentation.Splashscreen
+package presentation.Screens
 
 import domain.Models.PlatformNavigator
 import androidx.compose.foundation.background
@@ -18,27 +18,21 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import di.initKoin
 import domain.Enums.AuthType
 import presentation.components.SplashScreenBackground
 import kotlinx.coroutines.delay
-import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.authentication.AuthenticationPresenter
-import presentation.authentication.CompleteProfileScreen
-import presentation.connectVendor.ConnectVendorScreen
-import presentation.authentication.WelcomeScreen
-import presentation.main.MainScreen
+import presentation.viewmodels.MainViewModel
 import presentation.widgets.SplashScreenWidget
-import utils.ParcelableScreen
 
 @Composable
-fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPresenter: AuthenticationPresenter) {
+fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPresenter: AuthenticationPresenter, mainViewModel: MainViewModel) {
 
     val preferenceSettings: Settings = Settings()
     val navigateToWelcomeScreen = remember { mutableStateOf(false) }
@@ -73,13 +67,19 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
     handler.init()
 
     if (navigateToConnectVendor.value){
-        navigator.replaceAll(ConnectVendorScreen(platformNavigator))
+        val connectVendorScreen = ConnectVendorScreen(platformNavigator)
+        connectVendorScreen.setMainViewModel(mainViewModel)
+        navigator.replaceAll(connectVendorScreen)
     }
     else if (navigateToPlatform.value){
-        navigator.replaceAll(MainScreen(platformNavigator))
+        val mainScreen = MainScreen(platformNavigator)
+        mainScreen.setMainViewModel(mainViewModel)
+        navigator.replaceAll(mainScreen)
     }
     else if (navigateToWelcomeScreen.value){
-        navigator.replaceAll(WelcomeScreen(platformNavigator))
+        val welcomeScreen = WelcomeScreen(platformNavigator)
+        welcomeScreen.setMainViewModel(mainViewModel)
+        navigator.replaceAll(welcomeScreen)
     }
 
 
@@ -109,8 +109,11 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
                    authType.value = AuthType.EMAIL.toPath()
                    authenticationPresenter.validateEmail(it)
              }, onWelcome = {
-                 navigator.replaceAll(WelcomeScreen(platformNavigator))
-                  })
+                    val welcomeScreen = WelcomeScreen(platformNavigator)
+                    welcomeScreen.setMainViewModel(mainViewModel)
+                    navigator.replaceAll(welcomeScreen)
+
+             })
         }
     }
 
@@ -129,14 +132,14 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
      }
  }
 
-@Parcelize
-class SplashScreen(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinComponent {
+class SplashScreen(val platformNavigator: PlatformNavigator, val mainViewModel: MainViewModel) : Screen, KoinComponent {
 
-    @Transient private val  authenticationPresenter: AuthenticationPresenter by inject()
+    private val  authenticationPresenter: AuthenticationPresenter by inject()
+
     @Composable
     override fun Content() {
         initKoin()
-        SplashScreenCompose(platformNavigator = platformNavigator, authenticationPresenter)
+        SplashScreenCompose(platformNavigator = platformNavigator, authenticationPresenter,mainViewModel)
     }
 }
 

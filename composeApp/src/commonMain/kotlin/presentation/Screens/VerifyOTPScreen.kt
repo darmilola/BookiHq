@@ -1,4 +1,4 @@
-package presentation.authentication
+package presentation.Screens
 
 import StackedSnackbarHost
 import androidx.compose.foundation.background
@@ -16,6 +16,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
@@ -38,10 +38,10 @@ import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.AuthenticationScreenHandler
+import presentation.authentication.AuthenticationPresenter
 import presentation.components.ButtonComponent
-import presentation.connectVendor.ConnectVendorScreen
 import presentation.dialogs.LoadingDialog
-import presentation.main.MainScreen
+import presentation.viewmodels.MainViewModel
 import presentation.widgets.AuthenticationBackNav
 import presentation.widgets.OTPTextField
 import presentation.widgets.ShowSnackBar
@@ -57,6 +57,12 @@ import utils.ParcelableScreen
 class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verificationPhone: String) : ParcelableScreen, KoinComponent {
 
     @Transient private val authenticationPresenter : AuthenticationPresenter by inject()
+    @Transient private var mainViewModel: MainViewModel? = null
+
+    fun setMainViewModel(mainViewModel: MainViewModel) {
+        this.mainViewModel = mainViewModel
+    }
+
     @Composable
     override fun Content() {
 
@@ -67,6 +73,16 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
         val authPhone = remember { mutableStateOf("") }
         val preferenceSettings = Settings()
         val navigator = LocalNavigator.currentOrThrow
+
+        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+
+        if (onBackPressed.value){
+            val navigator = LocalNavigator.currentOrThrow
+            val phoneInputScreen = PhoneInputScreen(platformNavigator)
+            mainViewModel!!.setOnBackPressed(false)
+            phoneInputScreen.setMainViewModel(mainViewModel!!)
+            navigator.replaceAll(phoneInputScreen)
+        }
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -109,10 +125,14 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                 navigator.replaceAll(CompleteProfileScreen(platformNavigator, authPhone = authPhone.value, authEmail = ""))
         }
         else if (navigateToConnectVendor.value){
-            navigator.replaceAll(ConnectVendorScreen(platformNavigator))
+            val connectScreen = ConnectVendorScreen(platformNavigator)
+            connectScreen.setMainViewModel(mainViewModel!!)
+            navigator.replaceAll(connectScreen)
         }
         else if (navigateToPlatform.value){
-            navigator.replaceAll(MainScreen(platformNavigator))
+            val mainScreen = MainScreen(platformNavigator)
+            mainScreen.setMainViewModel(mainViewModel!!)
+            navigator.replaceAll(mainScreen)
         }
 
         var otpValue by remember {
@@ -150,7 +170,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
         ) {
             Column(modifier = rootModifier) {
                 Column(modifier = topLayoutModifier) {
-                    AuthenticationBackNav(AuthSSOScreenNav.PHONE_SCREEN.toPath(), platformNavigator)
+                    AuthenticationBackNav(mainViewModel!!)
                     EnterVerificationCodeTitle()
                     AttachVerificationCodeText(verificationPhone)
 

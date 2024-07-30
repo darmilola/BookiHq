@@ -1,4 +1,4 @@
-package presentation.authentication
+package presentation.Screens
 
 import StackedSnackbarHost
 import androidx.compose.foundation.background
@@ -15,6 +15,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -22,13 +23,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.AuthSSOScreenNav
 import domain.Models.PlatformNavigator
+import kotlinx.serialization.Transient
+import presentation.Screens.VerifyOTPScreen
 import presentation.components.ButtonComponent
+import presentation.viewmodels.MainViewModel
 import presentation.widgets.AuthenticationBackNav
 import presentation.widgets.PhoneInputWidget
 import presentation.widgets.ShowSnackBar
@@ -42,6 +45,13 @@ import utils.makeValidPhone
 
 @Parcelize
 class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScreen {
+    @Transient
+    private var mainViewModel: MainViewModel? = null
+
+    fun setMainViewModel(mainViewModel: MainViewModel) {
+        this.mainViewModel = mainViewModel
+    }
+
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -71,6 +81,15 @@ class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScr
         var phone = remember { mutableStateOf("") }
         var countryCode = remember { mutableStateOf("+234") }
 
+        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+        if (onBackPressed.value){
+            val navigator = LocalNavigator.currentOrThrow
+            val welcomeScreen = WelcomeScreen(platformNavigator)
+            mainViewModel!!.setOnBackPressed(false)
+            welcomeScreen.setMainViewModel(mainViewModel!!)
+            navigator.replaceAll(welcomeScreen)
+        }
+
 
 
         Scaffold(
@@ -79,10 +98,7 @@ class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScr
 
         Column(modifier = rootModifier) {
             Column(modifier = topLayoutModifier) {
-                AuthenticationBackNav(
-                    goToScreen = AuthSSOScreenNav.WELCOME_SCREEN.toPath(),
-                    platformNavigator = platformNavigator
-                )
+                AuthenticationBackNav(mainViewModel = mainViewModel!!)
                 EnterPhoneNumberTitle()
                 AttachSendCodeDescription()
                 PhoneInputWidget(onValueChange = {
@@ -112,7 +128,9 @@ class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScr
                         val validPhone = makeValidPhone(phone.value)
                         var verificationPhone =  countryCode.value+""+validPhone
                         platformNavigator.startPhoneSS0(verificationPhone)
-                        navigator.replaceAll(VerifyOTPScreen(platformNavigator, verificationPhone))
+                        val verifyOTPScreen = VerifyOTPScreen(platformNavigator, verificationPhone)
+                        verifyOTPScreen.setMainViewModel(mainViewModel = mainViewModel!!)
+                        navigator.replaceAll(verifyOTPScreen)
                     }
                 }
 

@@ -1,4 +1,4 @@
-package presentation.connectVendor
+package presentation.Screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -48,6 +48,9 @@ import presentation.viewmodels.UIStateViewModel
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.ConnectPageHandler
+import presentation.connectVendor.ConnectVendorPresenter
+import presentation.connectVendor.SwitchVendorBusinessItemComponent
+import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.VendorsResourceListEnvelopeViewModel
 import presentation.widgets.ConnectVendorHeader
 import theme.Colors
@@ -61,8 +64,14 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
     @Transient private val connectVendorPresenter: ConnectVendorPresenter by inject()
     @Transient private var uiStateViewModel: UIStateViewModel? = null
     @Transient private var connectPageViewModel: ConnectPageViewModel? = null
+    @Transient private var mainViewModel: MainViewModel? = null
     @Transient private var vendorResourceListEnvelopeViewModel: VendorsResourceListEnvelopeViewModel? = null
     private var country: String = ""
+
+    fun setMainViewModel(mainViewModel: MainViewModel) {
+        this.mainViewModel = mainViewModel
+    }
+
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -71,6 +80,11 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
         val errorVisible = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
         country = preferenceSettings["country", ""]
+
+        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+        if (onBackPressed.value){
+            mainViewModel!!.setExitApp(true)
+        }
 
         if (vendorResourceListEnvelopeViewModel == null) {
             vendorResourceListEnvelopeViewModel = kmpViewModel(

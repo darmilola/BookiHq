@@ -5,9 +5,6 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
 import com.russhwolf.settings.Settings
 import domain.Models.Auth0ConnectionResponse
-import domain.Enums.AuthSSOScreenNav
-import domain.Enums.AuthenticationAction
-import domain.Enums.AuthenticationStatus
 import domain.Models.PlatformNavigator
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
@@ -15,8 +12,8 @@ import kotlinx.cinterop.usePinned
 import platform.Foundation.NSData
 import platform.Foundation.create
 import platform.UIKit.UIViewController
-import presentation.Splashscreen.SplashScreen
-import presentation.main.MainScreen
+import presentation.Screens.SplashScreen
+import presentation.Screens.MainScreen
 
 
 class MainViewController: PlatformNavigator {
@@ -27,8 +24,6 @@ class MainViewController: PlatformNavigator {
     private var onLocationEvent: (() -> Unit)? = null
     private var onUploadImageEvent: ((data: NSData) -> Unit)? = null
     private val preferenceSettings: Settings = Settings()
-    //Handles All Screens Used For Authentication
-    //Handles All Other Screens in the System
     private val mainScreen = MainScreen(platformNavigator = this)
     fun MainViewController(onLoginEvent:(connectionType: String) -> Unit,
                            onLogoutEvent:(connectionType: String) -> Unit,

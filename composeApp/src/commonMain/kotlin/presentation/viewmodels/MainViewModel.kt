@@ -1,5 +1,6 @@
 package presentation.viewmodels
 
+import cafe.adriel.voyager.navigator.OnBackPressed
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Enums.MainTabEnum
@@ -30,6 +31,8 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _switchVendor =  savedStateHandle.getStateFlow("switchVendor", Vendor())
     private var _joinSpa =  savedStateHandle.getStateFlow("joinSpaVendor", Vendor())
     private var _restartApp =  savedStateHandle.getStateFlow("restartApp", false)
+    private var _onBackPressed =  savedStateHandle.getStateFlow("onBackPressed", false)
+    private var _exitApp =  savedStateHandle.getStateFlow("exitApp", false)
 
 
     val screenTitle: StateFlow<String>
@@ -47,22 +50,25 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     val restartApp: StateFlow<Boolean>
         get() = _restartApp
 
+    val exitApp: StateFlow<Boolean>
+        get() = _exitApp
+
+
     val isSearchProduct: StateFlow<Boolean>
         get() = _isSearchProductState
 
     val displayedTab: StateFlow<String>
         get() = _currentMainDisplayTab
-
+    val onBackPressed: StateFlow<Boolean>
+        get() = _onBackPressed
     val unSavedOrderSize: StateFlow<Int>
         get() = _currentUnsavedOrderSize
     val connectedVendor: StateFlow<Vendor>
         get() = _connectedVendor
-
     val switchVendorId: StateFlow<Long>
         get() = _switchVendorId
     val switchVendorReason: StateFlow<String>
         get() = _switchVendorReason
-
     val joinSpaVendor: StateFlow<Vendor>
         get() = _joinSpa
 
@@ -102,6 +108,10 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     fun setSwitchVendorReason(switchReason: String) {
         savedStateHandle["switchVendorReason"] = switchReason
+    }
+
+    fun setOnBackPressed(onBackPressed: Boolean) {
+        savedStateHandle["onBackPressed"] = onBackPressed
     }
 
     fun setIsSearchProduct(isSearching: Boolean) {
@@ -167,8 +177,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
         savedStateHandle["currentUnsavedOrders"] = ArrayList<OrderItem>()
     }
 
-
-    fun clearVendorRecommendation() {
-        savedStateHandle["vendorRecommendation"] = VendorRecommendation()
+    fun setExitApp(exitApp: Boolean) {
+        savedStateHandle["exitApp"] = exitApp
     }
+
+
 }

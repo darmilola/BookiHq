@@ -1,4 +1,4 @@
-package presentation.authentication
+package presentation.Screens
 
 import GGSansRegular
 import domain.Models.PlatformNavigator
@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -28,23 +29,20 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.lifecycle.JavaSerializable
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.Settings
-import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import domain.Enums.AuthType
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.AuthenticationScreenHandler
+import presentation.authentication.AuthenticationPresenter
 import presentation.components.IconButtonComponent
-import presentation.connectVendor.ConnectVendorScreen
 import presentation.dialogs.LoadingDialog
-import presentation.main.MainScreen
+import presentation.viewmodels.MainViewModel
 import presentation.widgets.welcomeScreenScrollWidget
 import presentations.components.TextComponent
 import utils.ParcelableScreen
@@ -54,15 +52,27 @@ import utils.ParcelableScreen
 class WelcomeScreen(val platformNavigator: PlatformNavigator, val googleAuthEmail: String = "") : ParcelableScreen, KoinComponent {
 
     @Transient private val  authenticationPresenter: AuthenticationPresenter by inject()
+    @Transient private var mainViewModel: MainViewModel? = null
+
+    fun setMainViewModel(mainViewModel: MainViewModel) {
+        this.mainViewModel = mainViewModel
+    }
+
     @Composable
     override fun Content() {
-        WelcomeScreenCompose(platformNavigator, googleAuthEmail, authenticationPresenter = authenticationPresenter)
+
+        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+
+        if (onBackPressed.value){
+            mainViewModel!!.setExitApp(true)
+        }
+
+        WelcomeScreenCompose(platformNavigator, googleAuthEmail, authenticationPresenter = authenticationPresenter, mainViewModel = mainViewModel!!)
     }
 }
 
-
 @Composable
-fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: String = "", authenticationPresenter: AuthenticationPresenter) {
+fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: String = "", authenticationPresenter: AuthenticationPresenter, mainViewModel: MainViewModel) {
 
     val verificationInProgress = remember { mutableStateOf(false) }
     val authEmail = remember { mutableStateOf("") }
@@ -112,13 +122,19 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
 
 
     if (navigateToCompleteProfile.value){
-        navigator.replaceAll(CompleteProfileScreen(platformNavigator, authPhone = "", authEmail = authEmail.value))
+        val completeProfile = CompleteProfileScreen(platformNavigator, authPhone = "", authEmail = authEmail.value)
+        completeProfile.setMainViewModel(mainViewModel = mainViewModel)
+        navigator.replaceAll(completeProfile)
     }
     else if (navigateToConnectVendor.value){
-        navigator.replaceAll(ConnectVendorScreen(platformNavigator))
+        val connectVendorScreen = ConnectVendorScreen(platformNavigator)
+        connectVendorScreen.setMainViewModel(mainViewModel)
+        navigator.replaceAll(connectVendorScreen)
     }
     else if (navigateToPlatform.value){
-        navigator.replaceAll(MainScreen(platformNavigator))
+        val mainScreen = MainScreen(platformNavigator)
+        mainScreen.setMainViewModel(mainViewModel!!)
+        navigator.replaceAll(mainScreen)
     }
 
     Box(contentAlignment = Alignment.TopCenter, modifier = Modifier
@@ -155,7 +171,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                         AttachActionButtons(platformNavigator, onAuthSuccessful = {
                             authEmail.value = it
                             authenticationPresenter.validateEmail(it)
-                        }, onAuthFailed = {})
+                        }, onAuthFailed = {}, mainViewModel = mainViewModel)
 
                     }
                     Box(
@@ -189,7 +205,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
 
 @Composable
 fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful: (String) -> Unit,
-                        onAuthFailed: () -> Unit){
+                        onAuthFailed: () -> Unit, mainViewModel: MainViewModel){
     val navigator = LocalNavigator.currentOrThrow
     val buttonStyle = Modifier
         .padding(bottom = 15.dp)
@@ -224,7 +240,9 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful:
         }
 
         IconButtonComponent(modifier = phoneButtonStyle, buttonText = "Continue with phone number", borderStroke = BorderStroke((0.01).dp, Colors.primaryColor), iconSize = 24, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor = Color.White, style = MaterialTheme.typography.h4, iconRes = "drawable/care_icon.png", colorFilter = ColorFilter.tint(color = Color.White)){
-           navigator.replaceAll(PhoneInputScreen(platformNavigator))
+           val continueWithPhone = PhoneInputScreen(platformNavigator)
+            continueWithPhone.setMainViewModel(mainViewModel = mainViewModel)
+            navigator.replaceAll(continueWithPhone)
         }
 
         IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with X", borderStroke = BorderStroke(0.8.dp, Color.White), iconSize = 20, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 16, shape = CircleShape, textColor = Color.Black, style = MaterialTheme.typography.h4, iconRes = "drawable/x_icon.png", colorFilter = ColorFilter.tint(color = Color.Black)){
@@ -238,9 +256,4 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful:
 
 
     }
-
-
-       /* ButtonComponent(modifier = buttonStyle, buttonText = "Continue", borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = CircleShape, textColor = Color.White, style = TextStyle()) {
-            navigator.replace(AuthenticationScreen(currentPosition = AuthSSOScreenNav.AUTH_LOGIN.toPath(), platformNavigator = platformNavigator))
-        }*/
-    }
+}

@@ -16,7 +16,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,7 +39,7 @@ import presentation.viewmodels.MainViewModel
 
 
 @Parcelize
-class ConsultationScreen() : Tab, Parcelable {
+class ConsultationScreenTab() : Tab, Parcelable {
 
     @Transient
     private var mainViewModel: MainViewModel? = null

@@ -83,7 +83,7 @@ fun BusinessInfoTitle(mainViewModel: MainViewModel?){
             Box(modifier =  Modifier.weight(1.0f)
                 .fillMaxHeight(),
                 contentAlignment = Alignment.CenterStart) {
-                InfoPageLeftTopBarItem(mainViewModel)
+                VendorInfoTopBarItem(mainViewModel)
             }
 
             Box(modifier =  Modifier.weight(3.0f)
@@ -110,7 +110,7 @@ fun leftTopBarItem(mainViewModel: MainViewModel) {
 
 
 @Composable
-fun InfoPageLeftTopBarItem(mainViewModel: MainViewModel?) {
+fun VendorInfoTopBarItem(mainViewModel: MainViewModel?) {
     PageBackNavWidget {
         when (mainViewModel?.screenNav?.value?.first) {
             Screens.MAIN_TAB.toPath() -> {

@@ -10,9 +10,11 @@ import android.os.Parcelable
 import android.provider.OpenableColumns
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.collectAsState
 import cafe.adriel.voyager.navigator.Navigator
 import com.application.zazzy.firebase.NotificationMessage
 import com.application.zazzy.firebase.NotificationService
@@ -35,12 +37,17 @@ import com.google.firebase.storage.storage
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
+import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
+import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.PlatformNavigator
 import kotlinx.parcelize.Parcelize
-import presentation.Splashscreen.SplashScreen
-import presentation.authentication.WelcomeScreen
+import presentation.Screens.SplashScreen
+import presentation.Screens.WelcomeScreen
+import presentation.viewmodels.MainViewModel
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+
 
 @Parcelize
 
@@ -54,16 +61,38 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     @Transient var imagePickerActivityResult: ActivityResultLauncher<Intent>? = null
     @Transient private var preferences: SharedPreferences? = null
     private var notificationServiceAccessToken: String? = ""
+    private var mainViewModel: MainViewModel? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-          preferences = getSharedPreferences("TokenSharedPref", MODE_PRIVATE);
+        val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                mainViewModel!!.setOnBackPressed(true)
+            }
+        }
 
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
+
+        preferences = getSharedPreferences("TokenSharedPref", MODE_PRIVATE);
           firebaseAuth = FirebaseAuth.getInstance()
           setContent {
-                Navigator(SplashScreen(this))
+              if (mainViewModel == null) {
+                  mainViewModel = kmpViewModel(
+                      factory = viewModelFactory {
+                          MainViewModel(savedStateHandle = createSavedStateHandle())
+                      },
+                  )
+               }
+                Navigator(SplashScreen(this,mainViewModel!!))
+               val isFinished = mainViewModel!!.exitApp.collectAsState()
+               if (isFinished.value){
+                  finish()
+              }
             }
+
 
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {}
@@ -87,7 +116,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account.idToken!!, onAuthSuccessful = {
                     setContent {
-                        Navigator(WelcomeScreen(this, googleAuthEmail = it))
+                        val welcomeScreen = WelcomeScreen(this, googleAuthEmail = it)
+                        welcomeScreen.setMainViewModel(mainViewModel!!)
+                        Navigator(welcomeScreen)
                     }
                 }, onAuthFailed = {
 

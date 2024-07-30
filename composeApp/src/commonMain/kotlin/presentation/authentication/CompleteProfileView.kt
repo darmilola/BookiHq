@@ -37,7 +37,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import com.russhwolf.settings.Settings
-import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import countryList
 import domain.Enums.AuthType
@@ -46,9 +45,10 @@ import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.DomainViewHandler.PlatformHandler
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
-import presentation.connectVendor.ConnectVendorScreen
+import presentation.Screens.ConnectVendorScreen
 import presentation.dialogs.LoadingDialog
 import presentation.profile.ProfilePresenter
+import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PlatformViewModel
 import presentation.widgets.DropDownWidget
 import presentation.widgets.AccountProfileImage
@@ -62,7 +62,7 @@ import utils.InputValidator
 
 @Composable
 fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail: String, authPhone: String,
-                    platformNavigator: PlatformNavigator, platformViewModel: PlatformViewModel, profilePresenter: ProfilePresenter) {
+                    platformNavigator: PlatformNavigator, platformViewModel: PlatformViewModel, profilePresenter: ProfilePresenter, mainViewModel: MainViewModel) {
 
     val placeHolderImage = "drawable/user_icon.png"
     val firstname = remember { mutableStateOf("") }
@@ -149,7 +149,9 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
     }
 
     else if (navigateToConnectVendor.value){
-        navigator.replaceAll(ConnectVendorScreen(platformNavigator))
+        val connectVendor = ConnectVendorScreen(platformNavigator)
+        connectVendor.setMainViewModel(mainViewModel)
+        navigator.replaceAll(connectVendor)
     }
 
     Scaffold(

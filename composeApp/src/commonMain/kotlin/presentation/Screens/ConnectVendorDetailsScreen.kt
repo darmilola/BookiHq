@@ -1,9 +1,10 @@
-package presentation.connectVendor
+package presentation.Screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -20,14 +21,14 @@ import domain.Models.Vendor
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.dialogs.LoadingDialog
-import presentation.main.MainScreen
 import presentation.viewmodels.UIStateViewModel
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.set
 import domain.Enums.CustomerMovementEnum
-import domain.Models.User
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.VendorInfoPageHandler
+import presentation.connectVendor.ConnectVendorPresenter
+import presentation.viewmodels.MainViewModel
 import presentation.widgets.BusinessInfoContent
 import presentation.widgets.BusinessInfoTitle
 import utils.ParcelableScreen
@@ -38,6 +39,11 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
    @Transient private val preferenceSettings: Settings = Settings()
    @Transient private val connectVendorPresenter: ConnectVendorPresenter by inject()
    @Transient private var uiStateViewModel: UIStateViewModel? = null
+   @Transient private var mainViewModel: MainViewModel? = null
+
+    fun setMainViewModel(mainViewModel: MainViewModel) {
+        this.mainViewModel = mainViewModel
+    }
 
     @Composable
     override fun Content() {
@@ -49,6 +55,15 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
         val userId = preferenceSettings["profileId", -1L]
         val userFirstname = preferenceSettings["firstname",""]
         preferenceSettings["profileId"] = vendor.vendorId
+
+        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+        if (onBackPressed.value){
+            val navigator = LocalNavigator.currentOrThrow
+            val connectVendor = ConnectVendorScreen(platformNavigator)
+            mainViewModel!!.setOnBackPressed(false)
+            connectVendor.setMainViewModel(mainViewModel!!)
+            navigator.replaceAll(connectVendor)
+        }
 
 
         if (uiStateViewModel == null) {
@@ -88,7 +103,9 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
                 LoadingDialog("Connecting Vendor")
             }
         } else if (vendorConnected.value) {
-            navigator.replaceAll(MainScreen(platformNavigator))
+            val mainScreen = MainScreen(platformNavigator)
+            mainScreen.setMainViewModel(mainViewModel!!)
+            navigator.replaceAll(mainScreen)
         }
 
 
@@ -96,7 +113,7 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
         Scaffold(
             topBar = {
                 BusinessInfoTitle(onBackPressed = {
-                    navigator.replace(ConnectVendorScreen(platformNavigator))
+                    mainViewModel!!.setOnBackPressed(true)
                 })
             },
             content = {

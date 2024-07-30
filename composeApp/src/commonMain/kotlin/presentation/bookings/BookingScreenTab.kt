@@ -69,7 +69,7 @@ import rememberStackedSnackbarHostState
 
 
 @Parcelize
-class BookingScreen(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
+class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
     @Transient private val bookingPresenter: BookingPresenter by inject()
     @Transient private var uiStateViewModel: UIStateViewModel? = null
     @Transient private var actionUIStateViewModel: ActionUIStateViewModel? = null
