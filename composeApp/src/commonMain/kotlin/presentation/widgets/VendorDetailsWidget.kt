@@ -114,10 +114,7 @@ fun VendorInfoTopBarItem(mainViewModel: MainViewModel?) {
     PageBackNavWidget {
         when (mainViewModel?.screenNav?.value?.first) {
             Screens.MAIN_TAB.toPath() -> {
-                mainViewModel.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.MAIN_TAB.toPath()))
-            }
-            Screens.BOOKING.toPath() -> {
-                mainViewModel.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.BOOKING.toPath()))
+                mainViewModel.setScreenNav(Pair(Screens.CONNECTED_VENDOR_DETAILS.toPath(), Screens.MAIN_TAB.toPath()))
             }
             Screens.CART.toPath() -> {
                 mainViewModel.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.CART.toPath()))
@@ -128,9 +125,7 @@ fun VendorInfoTopBarItem(mainViewModel: MainViewModel?) {
             Screens.CONNECT_VENDOR_TAB.toPath() -> {
                 mainViewModel.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.CONNECT_VENDOR_TAB.toPath()))
             }
-            else -> {
-                // navigator.current = MainTab(mainViewModel)
-            }
+            else -> {}
         }
     }
 }

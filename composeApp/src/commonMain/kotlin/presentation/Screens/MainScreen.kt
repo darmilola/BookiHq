@@ -87,7 +87,27 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
                 }
 
                 Screens.EDIT_PROFILE.toPath() -> {
-                    mainViewModel!!.setScreenNav(Pair(Screens.EDIT_PROFILE.toPath(), Screens.MAIN_TAB.toPath()))
+                    when (mainViewModel?.screenNav?.value?.first) {
+            Screens.MAIN_TAB.toPath() -> {
+                mainViewModel!!.setScreenNav(
+                    Pair(
+                        Screens.EDIT_PROFILE.toPath(),
+                        Screens.MAIN_TAB.toPath()
+                    )
+                )
+            }
+
+            Screens.CART.toPath() -> {
+                mainViewModel!!.setScreenNav(
+                    Pair(
+                        Screens.EDIT_PROFILE.toPath(),
+                        Screens.CART.toPath()
+                    )
+                )
+            }
+
+            else -> {}
+        }
                 }
 
                   Screens.ORDERS.toPath() -> {
@@ -111,28 +131,27 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
                 }
 
                 Screens.CONNECTED_VENDOR_DETAILS.toPath() -> {
-                    println("First ${mainViewModel?.screenNav?.value?.first}")
                     when (screenNav?.value?.first) {
                         Screens.MAIN_TAB.toPath() -> {
-                            mainViewModel!!.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.MAIN_TAB.toPath()))
+                            mainViewModel!!.setScreenNav(Pair(Screens.CONNECTED_VENDOR_DETAILS.toPath(), Screens.MAIN_TAB.toPath()))
                         }
-                        Screens.BOOKING.toPath() -> {
-                            mainViewModel!!.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.BOOKING.toPath()))
-                        }
-                        Screens.CART.toPath() -> {
-                            mainViewModel!!.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.CART.toPath()))
-                        }
-                        Screens.JOIN_SPA.toPath() -> {
-                            mainViewModel!!.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.JOIN_SPA.toPath()))
-                        }
-                        Screens.CONNECT_VENDOR_TAB.toPath() -> {
-                            mainViewModel!!.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.CONNECT_VENDOR_TAB.toPath()))
-                        }
-                        else -> {
-                            // navigator.current = MainTab(mainViewModel)
-                        }
+                        else -> {}
                     }
-                }
+                  }
+                  Screens.VENDOR_INFO.toPath() -> {
+                      when (screenNav?.value?.first) {
+                          Screens.CART.toPath() -> {
+                              mainViewModel!!.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.CART.toPath()))
+                          }
+                          Screens.JOIN_SPA.toPath() -> {
+                              mainViewModel!!.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.JOIN_SPA.toPath()))
+                          }
+                          Screens.CONNECT_VENDOR_TAB.toPath() -> {
+                              mainViewModel!!.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.CONNECT_VENDOR_TAB.toPath()))
+                          }
+                          else -> {}
+                      }
+                  }
 
                 Screens.JOIN_SPA_INFO.toPath() -> {
                     mainViewModel!!.setScreenNav(Pair(Screens.JOIN_SPA_INFO.toPath(), Screens.JOIN_SPA.toPath()))

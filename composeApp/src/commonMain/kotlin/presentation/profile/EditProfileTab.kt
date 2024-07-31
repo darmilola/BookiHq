@@ -490,16 +490,6 @@ fun leftTopBarItem(mainViewModel: MainViewModel) {
                     )
                 )
             }
-
-            Screens.BOOKING.toPath() -> {
-                mainViewModel.setScreenNav(
-                    Pair(
-                        Screens.EDIT_PROFILE.toPath(),
-                        Screens.BOOKING.toPath()
-                    )
-                )
-            }
-
             Screens.CART.toPath() -> {
                 mainViewModel.setScreenNav(
                     Pair(
@@ -509,9 +499,7 @@ fun leftTopBarItem(mainViewModel: MainViewModel) {
                 )
             }
 
-            else -> {
-                // navigator.current = MainTab(mainViewModel)
-            }
+            else -> {}
         }
     }
 }
