@@ -173,6 +173,18 @@ class MainViewController: PlatformNavigator {
     ) {
         TODO("Not yet implemented")
     }
+
+    override fun sendMeetingBookingNotification(
+        customerName: String,
+        vendorLogoUrl: String,
+        meetingDay: String,
+        meetingMonth: String,
+        meetingYear: String,
+        meetingTime: String,
+        fcmToken: String
+    ) {
+        TODO("Not yet implemented")
+    }
 }
 
 

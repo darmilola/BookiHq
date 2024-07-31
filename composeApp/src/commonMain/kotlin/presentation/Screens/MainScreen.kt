@@ -106,6 +106,15 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
                 )
             }
 
+                        Screens.BOOKING.toPath() -> {
+                            mainViewModel!!.setScreenNav(
+                                Pair(
+                                    Screens.EDIT_PROFILE.toPath(),
+                                    Screens.BOOKING.toPath()
+                                )
+                            )
+                        }
+
             else -> {}
         }
                 }

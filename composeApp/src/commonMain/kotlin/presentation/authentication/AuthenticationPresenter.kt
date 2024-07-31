@@ -41,17 +41,17 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                                     contractView?.onCompleteProfileDone(country, result.profileId)
                                 }
                                 else{
-                                    contractView?.onCompleteProfileDone(country, -1)
+                                    contractView?.onCompleteProfileDone(country, -1L)
                                 }
                             },
                             onError = {
-                                contractView?.onCompleteProfileDone(country, -1)
+                                contractView?.onCompleteProfileDone(country, -1L)
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.onCompleteProfileDone(country, -1)
+                contractView?.onCompleteProfileDone(country, -1L)
             }
         }
     }

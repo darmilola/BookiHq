@@ -190,7 +190,9 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
                         ) {
                             items(vendorUIModel.vendorsList.size) { i ->
                                 SwitchVendorBusinessItemComponent(vendor = vendorUIModel.vendorsList[i]) {
-                                    navigator.replace(ConnectVendorDetailsScreen(vendor = it, platformNavigator = platformNavigator!!))
+                                    val connectVendorDetailsScreen = ConnectVendorDetailsScreen(vendor = it, platformNavigator = platformNavigator!!)
+                                    connectVendorDetailsScreen.setMainViewModel(mainViewModel!!)
+                                    navigator.replace(connectVendorDetailsScreen)
                                 }
                                 if (i == lastIndex && loadMoreState.value) {
                                     Box(

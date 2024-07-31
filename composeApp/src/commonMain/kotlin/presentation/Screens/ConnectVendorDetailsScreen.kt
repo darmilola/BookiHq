@@ -54,7 +54,6 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
         val vendorConnected = remember { mutableStateOf(false) }
         val userId = preferenceSettings["profileId", -1L]
         val userFirstname = preferenceSettings["firstname",""]
-        preferenceSettings["profileId"] = vendor.vendorId
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
         if (onBackPressed.value){

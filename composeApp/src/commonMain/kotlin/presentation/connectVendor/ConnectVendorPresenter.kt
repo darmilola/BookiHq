@@ -29,9 +29,9 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                     connectVendorRepositoryImpl.connectVendor(userId,vendorId,action)
                         .subscribe(
                             onSuccess = { result ->
+                                print("Response is $result")
                                 if (result.status == "success"){
                                     contractView?.showLce(ScreenUIStates(contentVisible = true))
-                                    platformNavigator.sendConnectVendorNotification(customerName = userFirstname, vendorLogoUrl = vendor.businessLogo!!, fcmToken = vendor.fcmToken!!)
                                     contractView?.onVendorConnected(userId)
                                 }
                                 else{
@@ -39,12 +39,14 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                                 }
                             },
                             onError = {
+                                print("Response 2 is ${it.message}")
                                 it.message?.let { it1 -> contractView?.showLce(ScreenUIStates(errorOccurred = true)) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
+                print("Response is ${e.message}")
                 contractView?.showLce(ScreenUIStates(errorOccurred = true))
             }
         }

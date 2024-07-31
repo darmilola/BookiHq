@@ -165,7 +165,7 @@ fun ConnectTitle(title: String){
 
 
 @Composable
-fun BusinessInfoContent(vendor: Vendor, isViewOnly: Boolean = false, onConnectedListener: () -> Unit, ) {
+fun BusinessInfoContent(vendor: Vendor, isViewOnly: Boolean = false, onConnectedListener: () -> Unit) {
     val columnModifier = Modifier
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .padding(start = 10.dp, end = 10.dp)

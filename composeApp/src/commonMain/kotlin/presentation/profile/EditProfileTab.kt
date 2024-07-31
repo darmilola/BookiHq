@@ -481,12 +481,20 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
 @Composable
 fun leftTopBarItem(mainViewModel: MainViewModel) {
     PageBackNavWidget {
-        when (mainViewModel?.screenNav?.value?.first) {
+        when (mainViewModel.screenNav?.value?.first) {
             Screens.MAIN_TAB.toPath() -> {
                 mainViewModel.setScreenNav(
                     Pair(
                         Screens.EDIT_PROFILE.toPath(),
                         Screens.MAIN_TAB.toPath()
+                    )
+                )
+            }
+            Screens.BOOKING.toPath() -> {
+                mainViewModel.setScreenNav(
+                    Pair(
+                        Screens.EDIT_PROFILE.toPath(),
+                        Screens.BOOKING.toPath()
                     )
                 )
             }

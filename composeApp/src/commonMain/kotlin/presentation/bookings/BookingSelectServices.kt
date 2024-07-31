@@ -174,14 +174,14 @@ fun AttachServiceTypeToggle(mainViewModel: MainViewModel,bookingViewModel: Booki
             lineHeight = 30,
             textModifier = Modifier
                 .fillMaxWidth().padding(start = 10.dp))
-        AttachDropDownWidget(mainViewModel,bookingViewModel, onServiceSelected = {
+        AttachServiceDropDownWidget(mainViewModel,bookingViewModel, onServiceSelected = {
                onServiceSelected(it)
         })
     }
 }
 
 @Composable
-fun AttachDropDownWidget(mainViewModel: MainViewModel,bookingViewModel: BookingViewModel, onServiceSelected: (ServiceTypeItem) -> Unit) {
+fun AttachServiceDropDownWidget(mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, onServiceSelected: (ServiceTypeItem) -> Unit) {
     val serviceState = mainViewModel.selectedService.collectAsState()
     val recommendationServiceType = mainViewModel.selectedServiceType.value
     val isRecommendationType = recommendationServiceType.serviceTypeId != -1
