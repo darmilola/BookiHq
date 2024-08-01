@@ -79,10 +79,7 @@ fun ShopStatusWidget(whatsAppStatusList: List<VendorStatusModel>, onStatusViewCh
                 LoadStatusView(
                     statusModel = currentStatus,
                     currentPage = currentPage,
-                    settledPage = pagerState.settledPage,
-                    onStatusChanged = onStatusViewChanged,
-                    pagerState = pagerState
-                )
+                    settledPage = pagerState.settledPage)
             }
             if (pagerState.isScrollInProgress){
                 if (pagerState.currentPage == pagerState.settledPage) {
@@ -95,21 +92,17 @@ fun ShopStatusWidget(whatsAppStatusList: List<VendorStatusModel>, onStatusViewCh
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun LoadStatusView(statusModel: VendorStatusModel, currentPage: Int, settledPage: Int,onStatusChanged: (Boolean) -> Unit, pagerState: PagerState) {
+private fun LoadStatusView(statusModel: VendorStatusModel, currentPage: Int, settledPage: Int) {
     if (statusModel.statusImage != null) {
         BusinessStatusItemWidget().getImageStatusWidget(
             statusModel.statusImage.imageUrl,
-            vendorStatusModel = statusModel,
-            onStatusChanged)
+            vendorStatusModel = statusModel)
     } else if (statusModel.statusVideoModel != null) {
         val videoStatusViewMeta =
             VideoStatusViewMeta(currentPage = currentPage, settledPage = settledPage)
         BusinessStatusItemWidget().getVideoStatusWidget(statusModel.statusVideoModel,
-            videoStatusViewMeta = videoStatusViewMeta,
-            vendorStatusModel =   statusModel,
-            onStatusViewChanged = onStatusChanged)
+            videoStatusViewMeta = videoStatusViewMeta)
     }
     else if (statusModel.statusText != null){
         BusinessStatusItemWidget().getTextStatusWidget(vendorStatusModel = statusModel)

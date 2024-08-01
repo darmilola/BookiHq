@@ -42,28 +42,32 @@ import presentations.components.TextComponent
 import theme.styles.Colors
 
 class BusinessStatusItemWidget {
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun getImageStatusWidget(
         imageUrl: String,
-        vendorStatusModel: VendorStatusModel,
-        onStatusViewChanged: (Boolean) -> Unit
-    ) {
+        vendorStatusModel: VendorStatusModel) {
 
         val isStatusExpanded = remember { mutableStateOf(false) }
-        val imageRes =
-            if (isStatusExpanded.value) "drawable/collapse_icon.png" else "drawable/expand_icon.png"
-        val likeImageRes =
-            if (isStatusExpanded.value) "drawable/like_icon_filled.png" else "drawable/like_icon.png"
-        val imageHeight = if (vendorStatusModel.statusImage?.caption!!.isNotEmpty()) 0.85f else 1f
+        val statusImage = vendorStatusModel.statusImage
+        val imageHeight = if (statusImage?.caption!!.isNotEmpty() && (statusImage.height > statusImage.width)) {
+            0.85f
+        } else if (statusImage.caption.isNotEmpty() && (statusImage.height <= statusImage.width)) {
+            0.70f
+        }
+        else if (statusImage.height <= statusImage.width){
+            0.70f
+        } else {
+            1f
+        }
 
         Column(
             modifier = Modifier
                 .padding(top = 5.dp)
                 .fillMaxWidth()
-                .fillMaxHeight(),
+                .fillMaxHeight()
+                .background(color = Colors.primaryColor),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+            verticalArrangement = Arrangement.Center
         ) {
             Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(imageHeight)) {
                 ImageComponent(
@@ -72,20 +76,6 @@ class BusinessStatusItemWidget {
                     contentScale = ContentScale.Crop,
                     isAsync = true
                 )
-                Box(
-                    modifier = Modifier.fillMaxWidth().height(80.dp)
-                        .padding(end = 10.dp, top = 10.dp), contentAlignment = Alignment.TopStart
-                ) {
-                }
-                Box(
-                    modifier = Modifier.fillMaxWidth().height(80.dp)
-                        .padding(end = 10.dp, top = 10.dp), contentAlignment = Alignment.TopEnd
-                ) {
-                    AttachExpandCollapseIcon(imageRes = imageRes) {
-                        isStatusExpanded.value = !isStatusExpanded.value
-                        onStatusViewChanged(isStatusExpanded.value)
-                    }
-                }
             }
             if (vendorStatusModel.statusImage?.caption!!.isNotEmpty()) {
                 Column(modifier = Modifier.fillMaxSize()) {
@@ -101,51 +91,6 @@ class BusinessStatusItemWidget {
             }
         }
     }
-
-
-
-
-
-    @Composable
-    fun AttachExpandCollapseIcon(imageRes: String, onClick: () -> Unit) {
-        Box(
-            modifier = Modifier.size(40.dp).background(color = Color.White, shape = CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
-            val modifier = Modifier
-                .padding(top = 2.dp)
-                .clickable {
-                    onClick()
-                }
-                .size(20.dp)
-            ImageComponent(
-                imageModifier = modifier,
-                imageRes = imageRes,
-                colorFilter = ColorFilter.tint(color = Colors.darkPrimary)
-            )
-        }
-    }
-
-    @Composable
-    fun AttachLikeIcon(imageRes: String, onClick: () -> Unit) {
-        Box(
-            modifier = Modifier.size(40.dp).background(color = Color.White, shape = CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
-            val modifier = Modifier
-                .padding(top = 2.dp)
-                .clickable {
-                    onClick()
-                }
-                .size(24.dp)
-            ImageComponent(
-                imageModifier = modifier,
-                imageRes = imageRes,
-                colorFilter = ColorFilter.tint(color = Colors.pinkColor)
-            )
-        }
-    }
-
     @Composable
     fun ImageStatusCaption(imageModel: StatusImageModel) {
         Box(
@@ -160,7 +105,7 @@ class BusinessStatusItemWidget {
                 text = imageModel.caption!!,
                 fontSize = 17, fontFamily = GGSansRegular,
                 textStyle = MaterialTheme.typography.h6,
-                textColor = Colors.darkPrimary,
+                textColor = Color.White,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.ExtraBold,
                 lineHeight = 23,
@@ -198,11 +143,20 @@ class BusinessStatusItemWidget {
 
 
     @Composable
-    fun getVideoStatusWidget(videoModel: StatusVideoModel, vendorStatusModel: VendorStatusModel, videoStatusViewMeta: VideoStatusViewMeta, onStatusViewChanged: (Boolean) -> Unit) {
+    fun getVideoStatusWidget(videoModel: StatusVideoModel, videoStatusViewMeta: VideoStatusViewMeta) {
 
         val isStatusExpanded = remember { mutableStateOf(false) }
-        val imageRes =
-            if (isStatusExpanded.value) "drawable/collapse_icon.png" else "drawable/expand_icon.png"
+        val videoHeight = if (videoModel?.caption!!.isNotEmpty() && (videoModel.height > videoModel.width)) {
+            0.85f
+        } else if (videoModel.caption.isNotEmpty() && (videoModel.height <= videoModel.width)) {
+            0.70f
+        }
+        else if (videoModel.height <= videoModel.width){
+            0.70f
+        } else {
+            1f
+        }
+
 
         Column(
             modifier = Modifier
@@ -214,7 +168,7 @@ class BusinessStatusItemWidget {
         ) {
             Box(
                 modifier = Modifier.fillMaxWidth()
-                    .fillMaxHeight(if (isStatusExpanded.value) 0.85f else 1f)
+                    .fillMaxHeight(videoHeight)
             ) {
                 // Video Playback
                 VideoPlayer(
@@ -222,15 +176,6 @@ class BusinessStatusItemWidget {
                     url = videoModel.videoUrl,
                     videoStatusViewMeta = videoStatusViewMeta
                 )
-                Box(
-                    modifier = Modifier.fillMaxWidth().height(80.dp)
-                        .padding(end = 10.dp, top = 10.dp), contentAlignment = Alignment.TopEnd
-                ) {
-                    AttachExpandCollapseIcon(imageRes = imageRes) {
-                        isStatusExpanded.value = !isStatusExpanded.value
-                        onStatusViewChanged(isStatusExpanded.value)
-                    }
-                }
             }
             Box(
                 modifier = Modifier.fillMaxWidth()
@@ -245,13 +190,6 @@ class BusinessStatusItemWidget {
     @Composable
     fun getTextStatusWidget(
         vendorStatusModel: VendorStatusModel) {
-
-        val isStatusExpanded = remember { mutableStateOf(false) }
-        val imageRes =
-            if (isStatusExpanded.value) "drawable/collapse_icon.png" else "drawable/expand_icon.png"
-        val likeImageRes =
-            if (isStatusExpanded.value) "drawable/like_icon_filled.png" else "drawable/like_icon.png"
-
         Column(
             modifier = Modifier
                 .padding(top = 5.dp)
