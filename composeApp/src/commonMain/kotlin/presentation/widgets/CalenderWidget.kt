@@ -23,7 +23,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,54 +33,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
-import domain.Models.Date
-import kotlinx.datetime.format.MonthNames
-import presentation.viewmodels.BookingViewModel
+import domain.Models.PlatformDate
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 30.dp),bookingViewModel: BookingViewModel? = null, onDateSelected: (LocalDate) -> Unit) {
+fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 30.dp),onDateSelected: (LocalDate) -> Unit) {
     val dataSource = CalendarDataSource()
     val calendarUiModel = dataSource.getDate(lastSelectedDate = dataSource.today)
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
-    // date selected on appointment booking process
-
-
 
     Column(modifier = modifier) {
-        // get CalendarUiModel from CalendarDataSource, and the lastSelectedDate is Today.
         var selectedUIModel by remember { mutableStateOf(calendarUiModel) }
         var initialVisibleDates by remember { mutableStateOf(5) }
-
-        /*if (bookingViewModel != null) {
-            // date selected on appointment booking process
-            val unsavedAppointmentDay = bookingViewModel.currentAppointmentBooking.value.day
-            val unsavedAppointmentMonth = bookingViewModel.currentAppointmentBooking.value.month
-            val unsavedAppointmentYear = bookingViewModel.currentAppointmentBooking.value.year
-
-            val unsavedAppointmentDate = LocalDate(unsavedAppointmentYear, unsavedAppointmentMonth, unsavedAppointmentDay)
-
-               selectedUIModel = selectedUIModel.copy(selectedDate = Date(date = unsavedAppointmentDate, isSelected = true, isToday = false),visibleDates = selectedUIModel.visibleDates.map { it2 ->
-                   it2.copy(
-                       isSelected = it2.date == unsavedAppointmentDate
-                   )
-               })
-              onDateSelected(selectedUIModel.selectedDate.date)
-            }
-        else{
-            // onDateSelected(calendarUiModel.selectedDate.date)
-         }*/
 
         CalenderHeader(selectedUIModel, onPrevClickListener = { startDate ->
             coroutineScope.launch {
@@ -97,24 +68,23 @@ fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 
             })
         CalenderContent(selectedUIModel, onDateClickListener = { it ->
             selectedUIModel = selectedUIModel.copy(
-                selectedDate = it,
-                visibleDates = selectedUIModel.visibleDates.map { it2 ->
+                selectedPlatformDate = it,
+                visiblePlatformDates = selectedUIModel.visiblePlatformDates.map { it2 ->
                     it2.copy(
                         isSelected = it2.date == it.date
                     )
                 }
             )
-            onDateSelected(selectedUIModel.selectedDate.date)
+            onDateSelected(selectedUIModel.selectedPlatformDate.date)
         }, listState = listState)
     }
 }
 
 @Composable
-fun CalenderContent(calendarUiModel: CalendarUiModel, onDateClickListener: (Date) -> Unit, listState: LazyListState) {
+fun CalenderContent(calendarUiModel: CalendarUiModel, onDateClickListener: (PlatformDate) -> Unit, listState: LazyListState) {
 
     LazyRow(modifier = Modifier.padding( top = 10.dp).fillMaxWidth(), state = listState) {
-        // pass the visibleDates to the UI
-        items(items = calendarUiModel.visibleDates) { date ->
+        items(items = calendarUiModel.visiblePlatformDates) { date ->
             ContentItem(date, onDateClickListener)
         }
     }
@@ -123,15 +93,15 @@ fun CalenderContent(calendarUiModel: CalendarUiModel, onDateClickListener: (Date
 
 
 @Composable
-fun ContentItem(date: Date, onClickListener: (Date) -> Unit) {
-    val textColor: Color = if(date.isSelected){
+fun ContentItem(platformDate: PlatformDate, onClickListener: (PlatformDate) -> Unit) {
+    val textColor: Color = if(platformDate.isSelected){
         Color.White
     }
     else{
         Colors.darkPrimary
     }
 
-    val bgColor: Color = if(date.isSelected){
+    val bgColor: Color = if(platformDate.isSelected){
         Colors.primaryColor
     }
     else{
@@ -151,14 +121,14 @@ fun ContentItem(date: Date, onClickListener: (Date) -> Unit) {
                 .width(70.dp)
                 .height(80.dp)
                 .clickable {
-                    onClickListener(date)
+                    onClickListener(platformDate)
                 }
                 .padding(4.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             TextComponent(
-                text = date.date.dayOfMonth.toString(),
+                text = platformDate.date.dayOfMonth.toString(),
                 textModifier = Modifier.align(Alignment.CenterHorizontally),
                 fontSize = 23,
                 fontFamily = GGSansSemiBold,
@@ -168,7 +138,7 @@ fun ContentItem(date: Date, onClickListener: (Date) -> Unit) {
                 textStyle = MaterialTheme.typography.h6
             )
             TextComponent(
-                text = date.date.dayOfWeek.toString().substring(0,3),
+                text = platformDate.date.dayOfWeek.toString().substring(0,3),
                 textModifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 10.dp),
                 fontSize = 13,
                 fontFamily = GGSansSemiBold,
@@ -192,7 +162,7 @@ fun CalenderHeader(calendarUiModel: CalendarUiModel, onPrevClickListener: (Local
         Row(modifier = Modifier
             .weight(1f)
             .clickable {
-                onPrevClickListener(calendarUiModel.startDate.date)
+                onPrevClickListener(calendarUiModel.startPlatformDate.date)
             }) {
             ImageComponent(
                 imageModifier = imageModifier.rotate(180f),
@@ -204,15 +174,24 @@ fun CalenderHeader(calendarUiModel: CalendarUiModel, onPrevClickListener: (Local
         Row(modifier = Modifier.weight(2f),horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Top) {
             TextComponent(
-                text = if (calendarUiModel.selectedDate.isToday) {
+                text = if (calendarUiModel.selectedPlatformDate.isToday) {
                     "Today"
-                } else {
-                    val formattedMonth = calendarUiModel.selectedDate.date.month.toString()
+                }
+                else if (calendarUiModel.selectedPlatformDate.isTomorrow){
+                    val formattedMonth = calendarUiModel.selectedPlatformDate.date.month.toString()
+                        .lowercase()
+                        .replaceFirstChar {
+                                char -> char.titlecase()
+                        }
+                    "Tomorrow, " + formattedMonth + " " + calendarUiModel.selectedPlatformDate.date.dayOfMonth.toString()
+                }
+                else {
+                    val formattedMonth = calendarUiModel.selectedPlatformDate.date.month.toString()
                         .lowercase()
                         .replaceFirstChar {
                         char -> char.titlecase()
                     }
-                    formattedMonth + ", " + calendarUiModel.selectedDate.date.dayOfMonth.toString()
+                    formattedMonth + ", " + calendarUiModel.selectedPlatformDate.date.dayOfMonth.toString()
                 },
                 textModifier = Modifier
                     .align(Alignment.CenterVertically),
@@ -228,7 +207,7 @@ fun CalenderHeader(calendarUiModel: CalendarUiModel, onPrevClickListener: (Local
         Row(modifier = Modifier
             .weight(1f)
             .clickable {
-                onNextClickListener(calendarUiModel.endDate.date)
+                onNextClickListener(calendarUiModel.endPlatformDate.date)
             },
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.Top) {

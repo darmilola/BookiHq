@@ -4,9 +4,10 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.plus
 import domain.Models.CalendarUiModel
-import domain.Models.Date
+import domain.Models.PlatformDate
 import domain.Models.DateRange
 import kotlinx.datetime.Clock
+import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -16,6 +17,7 @@ class CalendarDataSource {
 
     private val currentMoment: Instant = Clock.System.now()
     val today: LocalDate = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault()).date
+    val tomorrow: LocalDate = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault()).date.plus(DatePeriod(days = 1))
 
     fun getDate(startDate: LocalDate = today, lastSelectedDate: LocalDate): CalendarUiModel {
         val endDayOfWeek = today.plus(30, DateTimeUnit.DAY)
@@ -37,16 +39,17 @@ class CalendarDataSource {
         lastSelectedDate: LocalDate
     ): CalendarUiModel {
         return CalendarUiModel(
-            selectedDate = toItemUiModel(lastSelectedDate, true),
-            visibleDates = dateList.map {
+            selectedPlatformDate = toItemUiModel(lastSelectedDate, true),
+            visiblePlatformDates = dateList.map {
                 toItemUiModel(it, it == lastSelectedDate)
             },
         )
     }
 
-    private fun toItemUiModel(date: LocalDate, isSelectedDate: Boolean) = Date(
+    private fun toItemUiModel(date: LocalDate, isSelectedDate: Boolean) = PlatformDate(
         isSelected = isSelectedDate,
         isToday = date == today,
+        isTomorrow = date == tomorrow,
         date = date,
     )
 }

@@ -131,13 +131,13 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
                     currentBooking.isMobileService = false
                     bookingViewModel.setIsMobileService(false)
                     bookingViewModel.setCurrentBooking(currentBooking)
-                }, onHomeSelectedListener = {
+                }, onMobileSelectedListener = {
                     currentBooking.isMobileService = true
                     bookingViewModel.setIsMobileService(true)
                     bookingViewModel.setCurrentBooking(currentBooking)
                 })
             }
-            BookingCalendar(bookingViewModel = bookingViewModel) {
+            BookingCalendar {
                 bookingViewModel.undoTherapists()
                 currentBooking.appointmentDay = it.dayOfMonth
                 currentBooking.appointmentMonth = it.monthNumber

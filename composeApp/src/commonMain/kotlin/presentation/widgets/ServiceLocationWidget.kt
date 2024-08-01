@@ -22,18 +22,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import presentation.components.ToggleButton
 import presentation.viewmodels.BookingViewModel
-import presentation.viewmodels.MainViewModel
 import presentations.components.TextComponent
 
 @Composable
 fun ServiceLocationToggle(bookingViewModel: BookingViewModel, isDisabled: Boolean = false, onSpaSelectedListener:() -> Unit,
-                          onHomeSelectedListener:() -> Unit){
+                          onMobileSelectedListener:() -> Unit){
 
     var locationType by remember { mutableStateOf(0) }
     val isMobileService = bookingViewModel.currentAppointmentBooking.value.isMobileService
     if(isMobileService){
         locationType = 1
-        onHomeSelectedListener()
+        onMobileSelectedListener()
     }
     else{
         locationType = 0
@@ -71,7 +70,7 @@ fun ServiceLocationToggle(bookingViewModel: BookingViewModel, isDisabled: Boolea
             onSpaSelectedListener()
             locationType = 0
         }, onRightClicked = {
-            onHomeSelectedListener()
+            onMobileSelectedListener()
             locationType = 1
         }, leftText = "Parlor", rightText = "My Address", isRightSelection = locationType != 0, isDisabled = !selectedServiceTypeState.value.mobileServiceAvailable || isDisabled)
 
