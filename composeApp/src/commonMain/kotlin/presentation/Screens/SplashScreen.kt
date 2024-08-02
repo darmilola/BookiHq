@@ -132,14 +132,14 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
      }
  }
 
-class SplashScreen(val platformNavigator: PlatformNavigator, val mainViewModel: MainViewModel) : Screen, KoinComponent {
+class SplashScreen(val platformNavigator: PlatformNavigator?, val mainViewModel: MainViewModel) : Screen, KoinComponent {
 
     private val  authenticationPresenter: AuthenticationPresenter by inject()
 
     @Composable
     override fun Content() {
         initKoin()
-        SplashScreenCompose(platformNavigator = platformNavigator, authenticationPresenter,mainViewModel)
+        SplashScreenCompose(platformNavigator = platformNavigator!!, authenticationPresenter,mainViewModel)
     }
 }
 

@@ -114,15 +114,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                 .fillMaxHeight()
                 .background(color = Color.White)
 
-    val imagePicker = rememberImagePickerLauncher(
-        selectionMode = SelectionMode.Single,
-        scope = imagePickerScope,
-        onResult = { byteArrays ->
-            byteArrays.firstOrNull()?.let {
-                platformNavigator.startImageUpload(it)
-            }
-        }
-    )
+
 
     val authHandler = AuthenticationScreenHandler(authenticationPresenter,
         onUserLocationReady = {},
@@ -167,7 +159,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                     profileImageUrl = profileImageUrl.value,
                     isAsync = profileImageUrl.value != placeHolderImage,
                     onUploadImageClicked = {
-                        imagePicker.launch()
+
                     })
                 Row(modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp)) {
                     Box(

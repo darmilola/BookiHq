@@ -73,3 +73,8 @@
       --- service-account cloud_messaging_v1.json in android assets controls cloud messaging for android to generate access key for making
       upstream messaging and downstream receiving notification
       the files has to be in assets folder because we will be reading with code not google plugin, so it has to be in accessible location
+
+
+      // deployment
+
+      https://jyotibhambhu.medium.com/part-3-how-to-integrate-kotlin-multiplatform-kmp-into-your-ios-project-7dc4016f7fb5

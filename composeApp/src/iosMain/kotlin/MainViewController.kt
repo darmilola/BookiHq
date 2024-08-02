@@ -3,6 +3,9 @@ import androidx.compose.ui.uikit.OnFocusBehavior
 import androidx.compose.ui.window.ComposeUIViewController
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
+import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
+import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import domain.Models.Auth0ConnectionResponse
 import domain.Models.PlatformNavigator
@@ -14,6 +17,7 @@ import platform.Foundation.create
 import platform.UIKit.UIViewController
 import presentation.Screens.SplashScreen
 import presentation.Screens.MainScreen
+import presentation.viewmodels.MainViewModel
 
 
 class MainViewController: PlatformNavigator {
@@ -24,8 +28,9 @@ class MainViewController: PlatformNavigator {
     private var onLocationEvent: (() -> Unit)? = null
     private var onUploadImageEvent: ((data: NSData) -> Unit)? = null
     private val preferenceSettings: Settings = Settings()
-    private val mainScreen = MainScreen(platformNavigator = this)
-    fun MainViewController(onLoginEvent:(connectionType: String) -> Unit,
+    private var mainViewModel: MainViewModel? = null
+    //private val mainScreen = MainScreen(platformNavigator = this)
+     fun MainUIViewController(onLoginEvent:(connectionType: String) -> Unit,
                            onLogoutEvent:(connectionType: String) -> Unit,
                            onSignupEvent: ((connectionType: String) -> Unit)?,
                            onUploadImageEvent: (data: NSData) -> Unit,
@@ -33,7 +38,14 @@ class MainViewController: PlatformNavigator {
 
             val view = ComposeUIViewController(configure = {
                 onFocusBehavior = OnFocusBehavior. DoNothing }) {
-                Navigator(SplashScreen(this)) { navigator ->
+                if (mainViewModel == null) {
+                    mainViewModel = kmpViewModel(
+                        factory = viewModelFactory {
+                            MainViewModel(savedStateHandle = createSavedStateHandle())
+                        },
+                    )
+                }
+                Navigator(SplashScreen(this,mainViewModel = mainViewModel!!)) { navigator ->
                     SlideTransition(navigator)
 
                  }

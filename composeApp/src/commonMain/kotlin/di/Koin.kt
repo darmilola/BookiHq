@@ -32,7 +32,6 @@ fun initKoin(){
     startKoin {
         modules(KtorModule)
         modules(AuthenticationModule)
-        modules(viewModelModule)
         modules(ConnectVendorModule.ConnectVendorModule)
         modules(HomepageModule.HomepageModule)
         modules(ProfileModule.ProfileModule)
@@ -69,8 +68,4 @@ private val KtorModule = module {
             }
         }
     }
-}
-
-private val viewModelModule = module {
-    singleOf(::MainViewModel)
 }

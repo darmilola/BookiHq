@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557BA273AAA24004C7B11 /* Assets.xcassets */; };
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
-		594DCA802B95A1CB00991A2B /* Auth0 in Frameworks */ = {isa = PBXBuildFile; productRef = 594DCA7F2B95A1CB00991A2B /* Auth0 */; };
-		594DCA822B95A58600991A2B /* Auth0.plist in Resources */ = {isa = PBXBuildFile; fileRef = 594DCA812B95A58600991A2B /* Auth0.plist */; };
 		5955C07D2BB5B0FC002DDE7C /* ZazzyAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C07C2BB5B0FC002DDE7C /* ZazzyAppDelegate.swift */; };
 		5955C07F2BB5B123002DDE7C /* ZazzyAppSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C07E2BB5B123002DDE7C /* ZazzyAppSceneDelegate.swift */; };
 		5955C0812BB5B220002DDE7C /* UiSetupApplicationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C0802BB5B220002DDE7C /* UiSetupApplicationService.swift */; };
@@ -22,14 +20,25 @@
 		5975F9852BB6C28A0026F9B5 /* ZazzyApp+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5975F9842BB6C28A0026F9B5 /* ZazzyApp+Colors.swift */; };
 		5975F9872BB6C30F0026F9B5 /* ZazzyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5975F9862BB6C30F0026F9B5 /* ZazzyApp.swift */; };
 		5975F9892BB6C3850026F9B5 /* UiColor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5975F9882BB6C3850026F9B5 /* UiColor+Ext.swift */; };
-		59CF0B752B9B5EE000A1E7E5 /* Cloudinary in Frameworks */ = {isa = PBXBuildFile; productRef = 59CF0B742B9B5EE000A1E7E5 /* Cloudinary */; };
 		7555FF83242A565900829871 /* AppStartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* AppStartViewController.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		597356A52C5CFEEC009F6426 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		058557BA273AAA24004C7B11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		594DCA812B95A58600991A2B /* Auth0.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Auth0.plist; sourceTree = "<group>"; };
 		5955C07C2BB5B0FC002DDE7C /* ZazzyAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZazzyAppDelegate.swift; sourceTree = "<group>"; };
 		5955C07E2BB5B123002DDE7C /* ZazzyAppSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZazzyAppSceneDelegate.swift; sourceTree = "<group>"; };
 		5955C0802BB5B220002DDE7C /* UiSetupApplicationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiSetupApplicationService.swift; sourceTree = "<group>"; };
@@ -55,8 +64,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				59CF0B752B9B5EE000A1E7E5 /* Cloudinary in Frameworks */,
-				594DCA802B95A1CB00991A2B /* Auth0 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,12 +85,20 @@
 			path = Colors;
 			sourceTree = "<group>";
 		};
+		597356A12C5CFEEB009F6426 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		7555FF72242A565900829871 = {
 			isa = PBXGroup;
 			children = (
 				AB1DB47929225F7C00F7AF9C /* Configuration */,
 				7555FF7D242A565900829871 /* iosApp */,
 				7555FF7C242A565900829871 /* Products */,
+				597356A12C5CFEEB009F6426 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -106,7 +121,6 @@
 				7555FF82242A565900829871 /* AppStartViewController.swift */,
 				7555FF8C242A565B00829871 /* Info.plist */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
-				594DCA812B95A58600991A2B /* Auth0.plist */,
 				5955C07C2BB5B0FC002DDE7C /* ZazzyAppDelegate.swift */,
 				5955C07E2BB5B123002DDE7C /* ZazzyAppSceneDelegate.swift */,
 				5955C0802BB5B220002DDE7C /* UiSetupApplicationService.swift */,
@@ -141,6 +155,8 @@
 				7555FF77242A565900829871 /* Sources */,
 				7555FF79242A565900829871 /* Resources */,
 				6F3AF6CE2390F7E7888FC030 /* Frameworks */,
+				597356A52C5CFEEC009F6426 /* Embed Frameworks */,
+				597356A62C5CFF9B009F6426 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -148,8 +164,6 @@
 			);
 			name = iosApp;
 			packageProductDependencies = (
-				594DCA7F2B95A1CB00991A2B /* Auth0 */,
-				59CF0B742B9B5EE000A1E7E5 /* Cloudinary */,
 			);
 			productName = iosApp;
 			productReference = 7555FF7B242A565900829871 /* Zazzy.app */;
@@ -181,8 +195,6 @@
 			);
 			mainGroup = 7555FF72242A565900829871;
 			packageReferences = (
-				594DCA7E2B95A1CB00991A2B /* XCRemoteSwiftPackageReference "Auth0" */,
-				59CF0B732B9B5EE000A1E7E5 /* XCRemoteSwiftPackageReference "cloudinary_ios" */,
 			);
 			productRefGroup = 7555FF7C242A565900829871 /* Products */;
 			projectDirPath = "";
@@ -199,7 +211,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */,
-				594DCA822B95A58600991A2B /* Auth0.plist in Resources */,
 				058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -207,6 +218,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		597356A62C5CFF9B009F6426 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd \"$SRCROOT/..\"\n./gradlew :composeApp:packForXCode -PXCODE_CONFIGURATION=${CONFIGURATION}\n";
+		};
 		F36B1CEB2AD83DDC00CB74D5 /* Compile Kotlin Framework */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -379,9 +407,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 8266TMZH4F;
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\n$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				INFOPLIST_FILE = iosApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -411,9 +437,10 @@
 				DEVELOPMENT_TEAM = "${TEAM_ID}";
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\n$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
+					"$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
+					"$(inherited)",
 				);
-				"FRAMEWORK_SEARCH_PATHS[arch=*]" = /Users/damilola/AndroidStudioProjects/Zazzy/iosApp/Pods/Auth0;
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "";
 				INFOPLIST_FILE = iosApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -455,38 +482,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		594DCA7E2B95A1CB00991A2B /* XCRemoteSwiftPackageReference "Auth0" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/auth0/Auth0.swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
-			};
-		};
-		59CF0B732B9B5EE000A1E7E5 /* XCRemoteSwiftPackageReference "cloudinary_ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/cloudinary/cloudinary_ios.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		594DCA7F2B95A1CB00991A2B /* Auth0 */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 594DCA7E2B95A1CB00991A2B /* XCRemoteSwiftPackageReference "Auth0" */;
-			productName = Auth0;
-		};
-		59CF0B742B9B5EE000A1E7E5 /* Cloudinary */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 59CF0B732B9B5EE000A1E7E5 /* XCRemoteSwiftPackageReference "cloudinary_ios" */;
-			productName = Cloudinary;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 7555FF73242A565900829871 /* Project object */;
 }

@@ -1,4 +1,3 @@
-rootProject.name = "Zazzy"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
@@ -22,3 +21,4 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
+rootProject.name = "Zazzy"

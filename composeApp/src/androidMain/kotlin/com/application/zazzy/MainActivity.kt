@@ -50,7 +50,6 @@ import java.util.concurrent.TimeUnit
 
 
 @Parcelize
-
 class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
     @Transient var firebaseAuth: FirebaseAuth? = null
@@ -130,21 +129,12 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             registerForActivityResult( ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.data?.data != null) {
                     val storageRef = Firebase.storage.reference;
-                    // getting URI of selected Image
                     val imageUri: Uri? = result.data?.data
-                    // extract the file name with extension
                     val imageName = getFileName(applicationContext, imageUri!!)
 
-                    // Upload Task with upload to directory 'file'
-                    // and name of the file remains same
                     val uploadTask = storageRef.child("file/$imageName").putFile(imageUri)
-
-                    // On success, download the file URL and display it
                     uploadTask.addOnSuccessListener {
-                        // using glide library to display the image
                         storageRef.child("file/$imageName").downloadUrl.addOnSuccessListener {
-                            println(it)
-                            // Creating an Editor object to edit(write to the file)
                             val myEdit: SharedPreferences.Editor = preferences!!.edit()
                             myEdit.putString("imageUrl",it.toString())
                             myEdit.apply()
@@ -178,8 +168,6 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                 }
             }
         }.start()
-
-
     }
 
     override fun startVideoCall(authToken: String) {
@@ -206,10 +194,10 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
     override fun startPhoneSS0(phone: String) {
         val options = PhoneAuthOptions.newBuilder(firebaseAuth!!)
-            .setPhoneNumber(phone) // Phone number to verify
-            .setTimeout(30L, TimeUnit.SECONDS) // Timeout and unit
-            .setActivity(this) // Activity (for callback binding)
-            .setCallbacks(callbacks!!) // OnVerificationStateChangedCallbacks
+            .setPhoneNumber(phone)
+            .setTimeout(30L, TimeUnit.SECONDS)
+            .setActivity(this)
+            .setCallbacks(callbacks!!)
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
