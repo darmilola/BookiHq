@@ -57,19 +57,6 @@ class MainViewController: PlatformNavigator {
         TODO("Not yet implemented")
     }
 
-    @OptIn(ExperimentalForeignApi::class)
-    override fun startImageUpload(imageByteArray: ByteArray) {
-        val data = imageByteArray.usePinned {
-            NSData.create(
-                bytes = it.addressOf(0),
-                length = imageByteArray.size.toULong()
-            )
-        }
-        onUploadImageEvent?.let {
-            it(data)
-        }
-    }
-
 
     override fun getUserLocation() {
        onLocationEvent?.let {
@@ -112,19 +99,6 @@ class MainViewController: PlatformNavigator {
     override fun sendOrderBookingNotification(
         customerName: String,
         vendorLogoUrl: String,
-        fcmToken: String
-    ) {
-        TODO("Not yet implemented")
-    }
-
-    override fun sendMeetingBookingNotification(
-        customerName: String,
-        vendorLogoUrl: String,
-        businessName: String,
-        meetingDay: String,
-        meetingMonth: String,
-        meetingYear: String,
-        meetingTime: String,
         fcmToken: String
     ) {
         TODO("Not yet implemented")

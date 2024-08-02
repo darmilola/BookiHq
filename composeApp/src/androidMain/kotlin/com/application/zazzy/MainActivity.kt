@@ -189,12 +189,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         startActivity(intent)
     }
 
-    override fun startImageUpload(imageByteArray: ByteArray) {}
-
     override fun getUserLocation() {}
 
     override fun startGoogleSSO(onAuthSuccessful: (String) -> Unit, onAuthFailed: () -> Unit) {
-        // web client id
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken("114387254114-knn5thuj39m2hgnns9vnl8ic35f15nhp.apps.googleusercontent.com")
             .requestEmail()
