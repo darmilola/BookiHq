@@ -57,11 +57,8 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
         if (onBackPressed.value){
-            val navigator = LocalNavigator.currentOrThrow
-            val connectVendor = ConnectVendorScreen(platformNavigator)
             mainViewModel!!.setOnBackPressed(false)
-            connectVendor.setMainViewModel(mainViewModel!!)
-            navigator.replaceAll(connectVendor)
+            navigator.pop()
         }
 
 

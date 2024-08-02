@@ -102,7 +102,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
             delay(3000L)
             authenticateSplashScreen(preferenceSettings,
              onPhoneAuthentication = {
-                 authType.value = AuthType.PHONE.toPath()
+                  authType.value = AuthType.PHONE.toPath()
                   authenticationPresenter.validatePhone(it, requireValidation = false)
              },
              onEmailAuthentication = {

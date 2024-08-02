@@ -83,11 +83,8 @@ class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScr
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
         if (onBackPressed.value){
-            val navigator = LocalNavigator.currentOrThrow
-            val welcomeScreen = WelcomeScreen(platformNavigator)
             mainViewModel!!.setOnBackPressed(false)
-            welcomeScreen.setMainViewModel(mainViewModel!!)
-            navigator.replaceAll(welcomeScreen)
+            navigator.pop()
         }
 
 
@@ -130,7 +127,7 @@ class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScr
                         platformNavigator.startPhoneSS0(verificationPhone)
                         val verifyOTPScreen = VerifyOTPScreen(platformNavigator, verificationPhone)
                         verifyOTPScreen.setMainViewModel(mainViewModel = mainViewModel!!)
-                        navigator.replaceAll(verifyOTPScreen)
+                        navigator.push(verifyOTPScreen)
                     }
                 }
 

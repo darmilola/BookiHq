@@ -77,11 +77,8 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
 
         if (onBackPressed.value){
-            val navigator = LocalNavigator.currentOrThrow
-            val phoneInputScreen = PhoneInputScreen(platformNavigator)
             mainViewModel!!.setOnBackPressed(false)
-            phoneInputScreen.setMainViewModel(mainViewModel!!)
-            navigator.replaceAll(phoneInputScreen)
+            navigator.pop()
         }
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(

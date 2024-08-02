@@ -242,7 +242,7 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful:
         IconButtonComponent(modifier = phoneButtonStyle, buttonText = "Sign In with Phone Number", borderStroke = BorderStroke((0.01).dp, Colors.primaryColor), iconSize = 24, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor = Color.White, style = MaterialTheme.typography.h4, iconRes = "drawable/care_icon.png", colorFilter = ColorFilter.tint(color = Color.White)){
            val continueWithPhone = PhoneInputScreen(platformNavigator)
             continueWithPhone.setMainViewModel(mainViewModel = mainViewModel)
-            navigator.replaceAll(continueWithPhone)
+            navigator.push(continueWithPhone)
         }
 
         IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Apple", borderStroke = BorderStroke(0.8.dp, Color.White), iconSize = 26, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 16, shape = CircleShape, textColor = Color.Black, style = MaterialTheme.typography.h4, iconRes = "drawable/apple.png", colorFilter = ColorFilter.tint(color = Color.Black)){
