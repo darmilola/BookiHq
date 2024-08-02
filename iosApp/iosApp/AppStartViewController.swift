@@ -6,7 +6,7 @@ import composeApp
 
 
 
-class AppStartViewController: UIViewController  {
+class AppStartViewController: UIViewController, PlatformNavigator  {
     
     var locationManager: CLLocationManager?
     var mainController: MainViewController?
@@ -20,54 +20,99 @@ class AppStartViewController: UIViewController  {
     
     override func viewDidAppear(_ animated: Bool){
         super.viewDidAppear(animated)
-        handleLoadData()
+        showStartScreen()
     }
     
-    private func handleLoadData() {
-        mainController = getMainController()
-        let appStartView = UIHostingController(rootView: AppStartView().edgesIgnoringSafeArea(.all))
+    private func showStartScreen() {
+        let appStartView = UIHostingController(rootView: AppStartView(platformNavigator: self).edgesIgnoringSafeArea(.all))
         showNextScreen(nextViewController: appStartView)
     }
     
     func showNextScreen(nextViewController: UIViewController?) {
-        guard let viewController = nextViewController else { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
+        guard nextViewController != nil else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
             self.navigationController?.pushViewController(nextViewController!, animated: true)
         })
     }
     
-    func getMainController() -> MainViewController {
-        return MainViewController()
-    }
-    
-    
     struct AppStartView: UIViewControllerRepresentable {
+        var platformNavigator: PlatformNavigator
         func makeUIViewController(context: Context) -> UIViewController {
-            return MainViewController().MainUIViewController(
-                onLoginEvent: { connectionType in
-                    
-                },
-                onLogoutEvent: {connectionType in
-                    
-                },
-                onSignupEvent: { connectionType in
-                    
-                },
-                
-                onUploadImageEvent: { data in
-                    
-                },
-                onLocationEvent : {
-                    
-                    
-                }
-                
-            )
-            
+            return MainViewController().appStartUiView(platformNavigator: platformNavigator)
         }
         
         func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
         
+    }
+    
+    struct WelcomeScreenView: UIViewControllerRepresentable {
+        var platformNavigator: PlatformNavigator
+        func makeUIViewController(context: Context) -> UIViewController {
+            return MainViewController().welcomePageUiView(platformNavigator: platformNavigator)
+        }
+        
+        func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+        
+    }
+    
+    func getUserLocation() {
+        print("Here")
+    }
+    
+    func sendAppointmentBookingNotification(customerName: String, vendorLogoUrl: String, businessName: String, appointmentDay: String, appointmentMonth: String, appointmentYear: String, appointmentTime: String, serviceType: String, fcmToken: String) {
+        print("Here")
+    }
+    
+    func sendConnectVendorNotification(customerName: String, vendorLogoUrl: String, fcmToken: String) {
+        print("Here")
+    }
+    
+    func sendCustomerExitNotification(exitReason: String, vendorLogoUrl: String, fcmToken: String) {
+        print("Here")
+    }
+    
+    func sendMeetingBookingNotification(customerName: String, vendorLogoUrl: String, meetingDay: String, meetingMonth: String, meetingYear: String, meetingTime: String, fcmToken: String) {
+        print("Here")
+    }
+    
+    func sendOrderBookingNotification(customerName: String, vendorLogoUrl: String, fcmToken: String) {
+        print("Here")
+    }
+    
+    func sendPostponedAppointmentNotification(customerName: String, vendorLogoUrl: String, businessName: String, appointmentDay: String, appointmentMonth: String, appointmentYear: String, appointmentTime: String, serviceType: String, fcmToken: String) {
+        print("Here")
+    }
+    
+    func startGoogleSSO(onAuthSuccessful: @escaping (String) -> Void, onAuthFailed: @escaping () -> Void) {
+       print("Here")
+    }
+    
+    func startImageUpload(onUploadDone: @escaping (String) -> Void) {
+        print("Here")
+    }
+    
+    func startNotificationService(onTokenReady: @escaping (String) -> Void) {
+        print("Here")
+    }
+    
+    func startPhoneSS0(phone: String) {
+        print("Here")
+    }
+    
+    func startScanningBarCode(onCodeReady: @escaping (String) -> Void) {
+        print("Here")
+    }
+    
+    func startVideoCall(authToken: String) {
+        print("Here")
+    }
+    
+    func startXSSO(onAuthSuccessful: @escaping (String) -> Void, onAuthFailed: @escaping () -> Void) {
+        print("Here")
+    }
+    
+    func verifyOTP(verificationCode: String, onVerificationSuccessful: @escaping (String) -> Void, onVerificationFailed: @escaping () -> Void) {
+        print("Here")
     }
 }
 

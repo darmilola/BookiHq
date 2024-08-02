@@ -44,9 +44,7 @@ import kotlin.math.absoluteValue
 @Composable
 fun welcomeScreenScrollWidget() {
     val pagerState = rememberPagerState(pageCount = { 3 })
-
     val textList = arrayListOf<String>()
-
     val imgList = arrayListOf<String>()
 
     textList.add("Lorem Ipsum is a dummy in typesetting industry")
@@ -142,7 +140,6 @@ fun welcomeScreenScrollWidget() {
 fun Modifier.pagerFadeTransition(page: Int, pagerState: PagerState) =
     graphicsLayer {
         val pageOffset = pagerState.calculateCurrentOffsetForPage(page)
-        println(pageOffset.absoluteValue)
         translationX = pageOffset * size.width
         alpha = 1 - pageOffset.absoluteValue
     }
