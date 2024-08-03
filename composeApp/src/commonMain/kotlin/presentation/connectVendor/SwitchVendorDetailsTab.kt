@@ -90,9 +90,8 @@ class SwitchVendorDetailsTab(val platformNavigator: PlatformNavigator) : Tab, Ko
                     LoadingDialog("Connecting New Vendor")
                 } else if (uiState.value.isSuccess) {
                     preferenceSettings["whatsappPhone"] = mainViewModel!!.switchVendor.value.whatsAppPhone
-                    mainViewModel!!.setRestartApp(true)
+                    platformNavigator.restartApp()
                     actionUIStateViewModel!!.switchVendorActionUIState(ActionUIStates(isDefault = true))
-                    mainViewModel!!.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.MAIN_TAB.toPath()))
                 } else if (uiState.value.isFailed) {
                     ErrorDialog(dialogTitle = "Error Occurred Please Try Again", actionTitle = "Retry"){}
                 }

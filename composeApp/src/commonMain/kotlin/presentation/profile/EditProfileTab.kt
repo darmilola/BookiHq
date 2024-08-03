@@ -226,8 +226,8 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
             LoadingDialog(dialogTitle = "Updating Your Profile")
         }
         else if (updateProfileEnded.value && updateProfileSuccessful.value){
-            mainViewModel!!.setRestartApp(isRestart = true)
-            mainViewModel!!.setScreenNav(Pair(Screens.EDIT_PROFILE.toPath(), Screens.MAIN_TAB.toPath()))
+            println("Called")
+            platformNavigator!!.restartApp()
         }
         else if(updateProfileEnded.value && !updateProfileSuccessful.value){
             ErrorDialog(dialogTitle = "Error Occurred", actionTitle = "", onConfirmation = {})

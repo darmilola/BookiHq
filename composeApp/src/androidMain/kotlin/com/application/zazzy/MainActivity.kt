@@ -15,7 +15,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.collectAsState
+import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.SlideTransition
 import com.application.zazzy.firebase.NotificationMessage
 import com.application.zazzy.firebase.NotificationService
@@ -62,7 +64,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     @Transient var imagePickerActivityResult: ActivityResultLauncher<Intent>? = null
     @Transient private var preferences: SharedPreferences? = null
     private var notificationServiceAccessToken: String? = ""
-    private var mainViewModel: MainViewModel? = null
+    @Transient private var mainViewModel: MainViewModel? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,9 +89,8 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                           MainViewModel(savedStateHandle = createSavedStateHandle())
                       },
                   )
+                  Navigator(SplashScreen(this,mainViewModel!!))
                }
-
-               Navigator(SplashScreen(this,mainViewModel!!))
                val isFinished = mainViewModel!!.exitApp.collectAsState()
                if (isFinished.value){
                   finish()
@@ -97,8 +98,18 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
               val goToMainScreen = mainViewModel!!.goToMainScreen.collectAsState()
               if (goToMainScreen.value) {
+                  mainViewModel!!.setGoToMainScreen(false)
                   val mainScreen = MainScreen(this)
                   mainScreen.setMainViewModel(mainViewModel!!)
+                  val navigator = LocalNavigator.currentOrThrow
+                  navigator.replaceAll(mainScreen)
+              }
+
+              val restartApp = mainViewModel!!.restartApp.collectAsState()
+              if (restartApp.value) {
+                  mainViewModel!!.setRestartApp(false)
+                  val navigator = LocalNavigator.currentOrThrow
+                  navigator.replaceAll(SplashScreen(this, mainViewModel!!))
               }
             }
 
@@ -433,6 +444,10 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
     override fun goToMainScreen() {
        mainViewModel!!.setGoToMainScreen(true)
+    }
+
+    override fun restartApp() {
+        mainViewModel!!.setRestartApp(true)
     }
 
 

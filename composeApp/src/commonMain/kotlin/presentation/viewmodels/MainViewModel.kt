@@ -102,8 +102,6 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     fun setRestartApp(isRestart: Boolean) {
         savedStateHandle["restartApp"] = isRestart
-        savedStateHandle["switchVendor"] = Vendor()
-        savedStateHandle["joinSpaVendor"] = Vendor()
     }
 
     fun setSwitchVendorID(vendorId: Long) {

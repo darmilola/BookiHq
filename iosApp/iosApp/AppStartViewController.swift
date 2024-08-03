@@ -139,6 +139,12 @@ class AppStartViewController: UIViewController, PlatformNavigator  {
        let mainScreenView = UIHostingController(rootView: mainView)
        showNextScreen(nextViewController: mainScreenView)
    }
+    
+   func restartApp() {
+       rootView = AppStartView(platformNavigator: self)
+       let appStartView = UIHostingController(rootView: rootView.edgesIgnoringSafeArea(.all))
+       showNextScreen(nextViewController: appStartView)
+    }
 }
 
 

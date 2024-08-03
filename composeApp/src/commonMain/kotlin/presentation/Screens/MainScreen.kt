@@ -57,20 +57,13 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
     override fun Content() {
         userId = preferenceSettings.getLong("profileId", 0L)
 
-
         platformNavigator!!.startNotificationService {
             authenticationPresenter.updateFcmToken(userId = userId, fcmToken = it)
         }
 
 
         screenNav = mainViewModel?.screenNav?.collectAsState()
-        val restartApp = mainViewModel!!.restartApp.collectAsState()
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
-
-        if (restartApp.value) {
-            val navigator = LocalNavigator.currentOrThrow
-            navigator.replaceAll(SplashScreen(platformNavigator!!, mainViewModel!!))
-        }
 
         if (onBackPressed.value) {
               mainViewModel!!.setOnBackPressed(false)
@@ -88,7 +81,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
 
                 Screens.EDIT_PROFILE.toPath() -> {
                     when (mainViewModel?.screenNav?.value?.first) {
-            Screens.MAIN_TAB.toPath() -> {
+                Screens.MAIN_TAB.toPath() -> {
                 mainViewModel!!.setScreenNav(
                     Pair(
                         Screens.EDIT_PROFILE.toPath(),
@@ -242,7 +235,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
                     it.current = details
                 }
                 Screens.JOIN_SPA_INFO.toPath() -> {
-                    val details = JoinDetailsTab()
+                    val details = JoinDetailsTab(platformNavigator)
                     details.setMainViewModel(mainViewModel!!)
                     it.current = details
                 }

@@ -72,9 +72,6 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
         navigator.replaceAll(connectVendorScreen)
     }
     else if (navigateToPlatform.value){
-        /*val mainScreen = MainScreen(platformNavigator)
-        mainScreen.setMainViewModel(mainViewModel)
-        navigator.replaceAll(mainScreen)*/
         platformNavigator.goToMainScreen()
     }
     else if (navigateToWelcomeScreen.value){

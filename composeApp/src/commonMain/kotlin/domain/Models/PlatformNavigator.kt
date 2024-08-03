@@ -33,6 +33,6 @@ interface PlatformNavigator: Parcelable {
     fun sendCustomerExitNotification(exitReason: String, vendorLogoUrl: String, fcmToken: String)
 
     fun exitApp()
-
+    fun restartApp()
     fun goToMainScreen()
  }

@@ -18,6 +18,8 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import domain.Enums.CustomerMovementEnum
 import domain.Enums.Screens
+import domain.Models.PlatformNavigator
+import domain.Models.Vendor
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -31,7 +33,7 @@ import presentation.widgets.BusinessInfoContent
 import presentation.widgets.BusinessInfoTitle
 
 @Parcelize
-class JoinDetailsTab() : Tab, KoinComponent, Parcelable {
+class JoinDetailsTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
     @Transient
     private var actionUIStateViewModel: ActionUIStateViewModel? = null
     @Transient
@@ -88,8 +90,9 @@ class JoinDetailsTab() : Tab, KoinComponent, Parcelable {
                     LoadingDialog("Joining Spa")
                 } else if (uiState.value.isSuccess) {
                     actionUIStateViewModel!!.switchActionUIState(ActionUIStates(isDefault = true))
-                    mainViewModel!!.setRestartApp(true)
-                    mainViewModel!!.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.MAIN_TAB.toPath()))
+                    platformNavigator.restartApp()
+                    mainViewModel!!.setSwitchVendor(vendor = Vendor())
+                    mainViewModel!!.setJoinSpaVendor(vendor = Vendor())
                 } else if (uiState.value.isFailed) {
                     ErrorDialog(dialogTitle = "Error Occurred Please Try Again", actionTitle = "Retry"){}
                 }
