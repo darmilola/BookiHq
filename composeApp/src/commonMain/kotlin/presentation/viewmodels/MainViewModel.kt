@@ -33,6 +33,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _restartApp =  savedStateHandle.getStateFlow("restartApp", false)
     private var _onBackPressed =  savedStateHandle.getStateFlow("onBackPressed", false)
     private var _exitApp =  savedStateHandle.getStateFlow("exitApp", false)
+    private var _goToMainScreen =  savedStateHandle.getStateFlow("goToMainScreen", false)
 
 
     val screenTitle: StateFlow<String>
@@ -52,6 +53,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     val exitApp: StateFlow<Boolean>
         get() = _exitApp
+
+    val goToMainScreen: StateFlow<Boolean>
+        get() = _goToMainScreen
 
 
     val isSearchProduct: StateFlow<Boolean>
@@ -179,6 +183,10 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     fun setExitApp(exitApp: Boolean) {
         savedStateHandle["exitApp"] = exitApp
+    }
+
+    fun setGoToMainScreen(goToMainScreen: Boolean) {
+        savedStateHandle["goToMainScreen"] = goToMainScreen
     }
 
 

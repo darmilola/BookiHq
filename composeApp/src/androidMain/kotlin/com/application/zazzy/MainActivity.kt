@@ -16,6 +16,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.collectAsState
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideTransition
 import com.application.zazzy.firebase.NotificationMessage
 import com.application.zazzy.firebase.NotificationService
 import com.application.zazzy.firebase.NotificationType
@@ -42,6 +43,7 @@ import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.PlatformNavigator
 import kotlinx.parcelize.Parcelize
+import presentation.Screens.MainScreen
 import presentation.Screens.SplashScreen
 import presentation.Screens.WelcomeScreen
 import presentation.viewmodels.MainViewModel
@@ -75,8 +77,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
 
-        preferences = getSharedPreferences("TokenSharedPref", MODE_PRIVATE);
+          preferences = getSharedPreferences("TokenSharedPref", MODE_PRIVATE);
           firebaseAuth = FirebaseAuth.getInstance()
+
           setContent {
               if (mainViewModel == null) {
                   mainViewModel = kmpViewModel(
@@ -85,10 +88,17 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                       },
                   )
                }
-                Navigator(SplashScreen(this,mainViewModel!!))
+
+               Navigator(SplashScreen(this,mainViewModel!!))
                val isFinished = mainViewModel!!.exitApp.collectAsState()
                if (isFinished.value){
                   finish()
+              }
+
+              val goToMainScreen = mainViewModel!!.goToMainScreen.collectAsState()
+              if (goToMainScreen.value) {
+                  val mainScreen = MainScreen(this)
+                  mainScreen.setMainViewModel(mainViewModel!!)
               }
             }
 
@@ -415,6 +425,14 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             type = NotificationType.CONNECT_BUSINESS.toPath())
         NotificationService().sendAppNotification(fcmToken = fcmToken,
             accessToken = notificationServiceAccessToken!!, data = data)
+    }
+
+    override fun exitApp() {
+        mainViewModel!!.setExitApp(true)
+    }
+
+    override fun goToMainScreen() {
+       mainViewModel!!.setGoToMainScreen(true)
     }
 
 

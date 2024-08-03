@@ -127,9 +127,10 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
             navigator.replaceAll(connectScreen)
         }
         else if (navigateToPlatform.value){
-            val mainScreen = MainScreen(platformNavigator)
+            /*val mainScreen = MainScreen(platformNavigator)
             mainScreen.setMainViewModel(mainViewModel!!)
-            navigator.replaceAll(mainScreen)
+            navigator.replaceAll(mainScreen)*/
+            platformNavigator.goToMainScreen()
         }
 
         var otpValue by remember {

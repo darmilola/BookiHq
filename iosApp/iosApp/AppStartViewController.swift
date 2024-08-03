@@ -3,6 +3,9 @@ import UIKit
 import SwiftUI
 import CloudKit
 import composeApp
+import GoogleSignIn
+import FirebaseCore
+import FirebaseAuth
 
 
 
@@ -10,6 +13,8 @@ class AppStartViewController: UIViewController, PlatformNavigator  {
     
     var locationManager: CLLocationManager?
     var mainController: MainViewController?
+    var rootView: AppStartView?
+    var mainView: MainScreenView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,11 +25,13 @@ class AppStartViewController: UIViewController, PlatformNavigator  {
     
     override func viewDidAppear(_ animated: Bool){
         super.viewDidAppear(animated)
+        self.navigationController?.isNavigationBarHidden = true
         showStartScreen()
     }
     
     private func showStartScreen() {
-        let appStartView = UIHostingController(rootView: AppStartView(platformNavigator: self).edgesIgnoringSafeArea(.all))
+        rootView = AppStartView(platformNavigator: self)
+        let appStartView = UIHostingController(rootView: rootView.edgesIgnoringSafeArea(.all))
         showNextScreen(nextViewController: appStartView)
     }
     
@@ -45,10 +52,10 @@ class AppStartViewController: UIViewController, PlatformNavigator  {
         
     }
     
-    struct WelcomeScreenView: UIViewControllerRepresentable {
+    struct MainScreenView: UIViewControllerRepresentable {
         var platformNavigator: PlatformNavigator
         func makeUIViewController(context: Context) -> UIViewController {
-            return MainViewController().welcomePageUiView(platformNavigator: platformNavigator)
+            return MainViewController().mainScreenUiView(platformNavigator: platformNavigator)
         }
         
         func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
@@ -56,64 +63,82 @@ class AppStartViewController: UIViewController, PlatformNavigator  {
     }
     
     func getUserLocation() {
-        print("Here")
+      
     }
     
     func sendAppointmentBookingNotification(customerName: String, vendorLogoUrl: String, businessName: String, appointmentDay: String, appointmentMonth: String, appointmentYear: String, appointmentTime: String, serviceType: String, fcmToken: String) {
-        print("Here")
+        
     }
     
     func sendConnectVendorNotification(customerName: String, vendorLogoUrl: String, fcmToken: String) {
-        print("Here")
+        
     }
     
     func sendCustomerExitNotification(exitReason: String, vendorLogoUrl: String, fcmToken: String) {
-        print("Here")
+        
     }
     
     func sendMeetingBookingNotification(customerName: String, vendorLogoUrl: String, meetingDay: String, meetingMonth: String, meetingYear: String, meetingTime: String, fcmToken: String) {
-        print("Here")
+        
     }
     
     func sendOrderBookingNotification(customerName: String, vendorLogoUrl: String, fcmToken: String) {
-        print("Here")
+        
     }
     
     func sendPostponedAppointmentNotification(customerName: String, vendorLogoUrl: String, businessName: String, appointmentDay: String, appointmentMonth: String, appointmentYear: String, appointmentTime: String, serviceType: String, fcmToken: String) {
-        print("Here")
+        
     }
     
     func startGoogleSSO(onAuthSuccessful: @escaping (String) -> Void, onAuthFailed: @escaping () -> Void) {
-       print("Here")
+       
+        guard let clientID = FirebaseApp.app()?.options.clientID else { return }
+
+        // Create Google Sign In configuration object.
+        let config = GIDConfiguration(clientID: clientID)
+        GIDSignIn.sharedInstance.configuration = config
+        GIDSignIn.sharedInstance.signIn(withPresenting: self) { signInResult, error in
+            onAuthSuccessful("damilolaakinterinwa@gmail.com")
+        }
+        
+        
     }
     
     func startImageUpload(onUploadDone: @escaping (String) -> Void) {
-        print("Here")
+        
     }
     
     func startNotificationService(onTokenReady: @escaping (String) -> Void) {
-        print("Here")
+       
     }
     
     func startPhoneSS0(phone: String) {
-        print("Here")
+        
     }
     
     func startScanningBarCode(onCodeReady: @escaping (String) -> Void) {
-        print("Here")
+        
     }
     
     func startVideoCall(authToken: String) {
-        print("Here")
+        
     }
     
     func startXSSO(onAuthSuccessful: @escaping (String) -> Void, onAuthFailed: @escaping () -> Void) {
-        print("Here")
+        
     }
     
     func verifyOTP(verificationCode: String, onVerificationSuccessful: @escaping (String) -> Void, onVerificationFailed: @escaping () -> Void) {
-        print("Here")
+       
     }
+    
+   func exitApp() {}
+
+   func goToMainScreen() {
+       mainView = MainScreenView(platformNavigator: self)
+       let mainScreenView = UIHostingController(rootView: mainView)
+       showNextScreen(nextViewController: mainScreenView)
+   }
 }
 
 

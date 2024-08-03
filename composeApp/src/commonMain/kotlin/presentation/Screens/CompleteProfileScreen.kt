@@ -36,7 +36,7 @@ data class CompleteProfileScreen(val platformNavigator: PlatformNavigator, val a
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
 
         if (onBackPressed.value){
-            mainViewModel!!.setExitApp(true)
+            platformNavigator.exitApp()
         }
 
         if (platformViewModel == null) {

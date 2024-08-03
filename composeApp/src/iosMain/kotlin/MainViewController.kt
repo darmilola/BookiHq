@@ -48,7 +48,21 @@ class MainViewController {
         }
     }
 
-    fun welcomePageUiView(platformNavigator: PlatformNavigator): UIViewController {
+    fun welcomePageUiView(platformNavigator: PlatformNavigator, googleAuthEmail: String): UIViewController {
+        return ComposeUIViewController(configure = {
+            onFocusBehavior = OnFocusBehavior.DoNothing
+        }) {
+            val welcomeScreen =  WelcomeScreen(platformNavigator, googleAuthEmail = googleAuthEmail)
+            welcomeScreen.setMainViewModel(mainViewModel!!)
+            Navigator(welcomeScreen) { navigator ->
+                SlideTransition(navigator)
+
+            }
+        }
+    }
+
+
+    fun mainScreenUiView(platformNavigator: PlatformNavigator): UIViewController {
         return ComposeUIViewController(configure = {
             onFocusBehavior = OnFocusBehavior.DoNothing
         }) {
@@ -59,9 +73,9 @@ class MainViewController {
                     },
                 )
             }
-            val welcomeScreen =  WelcomeScreen(platformNavigator)
-            welcomeScreen.setMainViewModel(mainViewModel!!)
-            Navigator(welcomeScreen) { navigator ->
+            val mainScreen =  MainScreen(platformNavigator)
+            mainScreen.setMainViewModel(mainViewModel!!)
+            Navigator(mainScreen) { navigator ->
                 SlideTransition(navigator)
 
             }

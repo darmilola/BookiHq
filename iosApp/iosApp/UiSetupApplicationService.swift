@@ -10,6 +10,7 @@
 import UIKit
 import SwiftUI
 import Foundation
+import Firebase
 
 
 class UISetupApplicationService: NSObject, ApplicationService {
@@ -17,10 +18,6 @@ class UISetupApplicationService: NSObject, ApplicationService {
     
     init(windowProvider: WindowProvider) {
         self.windowProvider = windowProvider
-    }
-    
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        return true
     }
     
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession,

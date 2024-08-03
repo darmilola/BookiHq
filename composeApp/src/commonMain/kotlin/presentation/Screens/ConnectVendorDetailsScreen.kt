@@ -99,9 +99,10 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
                 LoadingDialog("Connecting Vendor")
             }
         } else if (vendorConnected.value) {
-            val mainScreen = MainScreen(platformNavigator)
-            mainScreen.setMainViewModel(mainViewModel!!)
-            navigator.replaceAll(mainScreen)
+            //val mainScreen = MainScreen(platformNavigator)
+            //mainScreen.setMainViewModel(mainViewModel!!)
+            //navigator.replaceAll(mainScreen)
+            platformNavigator!!.goToMainScreen()
         }
 
 

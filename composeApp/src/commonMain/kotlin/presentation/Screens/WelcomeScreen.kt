@@ -64,7 +64,7 @@ class WelcomeScreen(val platformNavigator: PlatformNavigator, val googleAuthEmai
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
 
         if (onBackPressed.value){
-            mainViewModel!!.setExitApp(true)
+            platformNavigator.exitApp()
         }
 
         WelcomeScreenCompose(platformNavigator, googleAuthEmail, authenticationPresenter = authenticationPresenter, mainViewModel = mainViewModel!!)
@@ -132,9 +132,10 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
         navigator.replaceAll(connectVendorScreen)
     }
     else if (navigateToPlatform.value){
-        val mainScreen = MainScreen(platformNavigator)
-        mainScreen.setMainViewModel(mainViewModel!!)
-        navigator.replaceAll(mainScreen)
+        platformNavigator.goToMainScreen()
+        //val mainScreen = MainScreen(platformNavigator)
+        //mainScreen.setMainViewModel(mainViewModel!!)
+        //navigator.replaceAll(mainScreen)
     }
 
     Box(contentAlignment = Alignment.TopCenter, modifier = Modifier
@@ -169,6 +170,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                             .background(color = Color.Black), contentAlignment = Alignment.TopCenter
                     ) {
                         AttachActionButtons(platformNavigator, onAuthSuccessful = {
+                            print("Success $it")
                             authEmail.value = it
                             authenticationPresenter.validateEmail(it)
                         }, onAuthFailed = {}, mainViewModel = mainViewModel)
@@ -193,7 +195,6 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                 }
 
                 if (userEmailFromGoogleAuth.value.isNotEmpty()) {
-                    // from google auth
                     authEmail.value = googleAuthEmail
                     authenticationPresenter.validateEmail(googleAuthEmail)
                 }
@@ -245,7 +246,7 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful:
             navigator.push(continueWithPhone)
         }
 
-        IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Apple", borderStroke = BorderStroke(0.8.dp, Color.White), iconSize = 26, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 16, shape = CircleShape, textColor = Color.Black, style = MaterialTheme.typography.h4, iconRes = "drawable/apple.png", colorFilter = ColorFilter.tint(color = Color.Black)){
+        IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with X", borderStroke = BorderStroke(0.8.dp, Color.White), iconSize = 20, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 16, shape = CircleShape, textColor = Color.Black, style = MaterialTheme.typography.h4, iconRes = "drawable/x_icon.png", colorFilter = ColorFilter.tint(color = Color.Black)){
             platformNavigator.startXSSO(onAuthSuccessful = {
                 onAuthSuccessful(it)
             }, onAuthFailed = {

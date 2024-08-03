@@ -83,7 +83,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
         if (onBackPressed.value){
-            mainViewModel!!.setExitApp(true)
+            platformNavigator!!.exitApp()
         }
 
         if (vendorResourceListEnvelopeViewModel == null) {

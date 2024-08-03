@@ -31,4 +31,8 @@ interface PlatformNavigator: Parcelable {
     fun sendConnectVendorNotification(customerName: String, vendorLogoUrl: String, fcmToken: String)
 
     fun sendCustomerExitNotification(exitReason: String, vendorLogoUrl: String, fcmToken: String)
+
+    fun exitApp()
+
+    fun goToMainScreen()
  }
