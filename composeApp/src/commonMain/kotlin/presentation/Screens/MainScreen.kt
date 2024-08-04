@@ -63,7 +63,15 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
 
 
         screenNav = mainViewModel?.screenNav?.collectAsState()
+        val restartApp = mainViewModel!!.restartApp.collectAsState()
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+
+        if (restartApp.value) {
+            mainViewModel!!.setRestartApp(false)
+            val navigator = LocalNavigator.currentOrThrow
+            navigator.replaceAll(SplashScreen(platformNavigator, mainViewModel!!))
+        }
+
 
         if (onBackPressed.value) {
               mainViewModel!!.setOnBackPressed(false)
@@ -205,7 +213,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
                     it.current = editProfileTab
                 }
                 Screens.VENDOR_INFO.toPath() -> {
-                    val switchVendor = SwitchVendorDetailsTab(platformNavigator!!)
+                    val switchVendor = SwitchVendorDetailsTab(platformNavigator)
                     switchVendor.setMainViewModel(mainViewModel!!)
                     it.current = switchVendor
                 }

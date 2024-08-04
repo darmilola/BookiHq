@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import applications.device.deviceInfo
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -22,6 +23,7 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import di.initKoin
 import domain.Enums.AuthType
+import domain.Enums.DeviceType
 import presentation.components.SplashScreenBackground
 import kotlinx.coroutines.delay
 import org.koin.core.component.KoinComponent
@@ -71,14 +73,22 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
         connectVendorScreen.setMainViewModel(mainViewModel)
         navigator.replaceAll(connectVendorScreen)
     }
-    else if (navigateToPlatform.value){
-        platformNavigator.goToMainScreen()
+    else if (navigateToPlatform.value) {
+        if (deviceInfo() == DeviceType.IOS.toPath()) {
+            platformNavigator.goToMainScreen()
+        }
+        else {
+            val mainScreen = MainScreen(platformNavigator)
+            mainScreen.setMainViewModel(mainViewModel)
+            navigator.replaceAll(mainScreen)
+        }
     }
     else if (navigateToWelcomeScreen.value){
         val welcomeScreen = WelcomeScreen(platformNavigator)
         welcomeScreen.setMainViewModel(mainViewModel)
         navigator.replaceAll(welcomeScreen)
     }
+
 
 
    val  modifier =

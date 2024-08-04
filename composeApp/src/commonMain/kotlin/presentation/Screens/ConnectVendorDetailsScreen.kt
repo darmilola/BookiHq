@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import applications.device.deviceInfo
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
@@ -25,6 +26,7 @@ import presentation.viewmodels.UIStateViewModel
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.set
 import domain.Enums.CustomerMovementEnum
+import domain.Enums.DeviceType
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.VendorInfoPageHandler
 import presentation.connectVendor.ConnectVendorPresenter
@@ -99,10 +101,14 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
                 LoadingDialog("Connecting Vendor")
             }
         } else if (vendorConnected.value) {
-            //val mainScreen = MainScreen(platformNavigator)
-            //mainScreen.setMainViewModel(mainViewModel!!)
-            //navigator.replaceAll(mainScreen)
-            platformNavigator!!.goToMainScreen()
+            if (deviceInfo() == DeviceType.IOS.toPath()) {
+                platformNavigator!!.goToMainScreen()
+            }
+            else {
+                val mainScreen = MainScreen(platformNavigator)
+                mainScreen.setMainViewModel(mainViewModel!!)
+                navigator.replaceAll(mainScreen)
+            }
         }
 
 

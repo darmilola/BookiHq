@@ -29,12 +29,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import applications.device.deviceInfo
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import domain.Enums.AuthType
+import domain.Enums.DeviceType
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -131,11 +133,15 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
         connectVendorScreen.setMainViewModel(mainViewModel)
         navigator.replaceAll(connectVendorScreen)
     }
-    else if (navigateToPlatform.value){
-        platformNavigator.goToMainScreen()
-        //val mainScreen = MainScreen(platformNavigator)
-        //mainScreen.setMainViewModel(mainViewModel!!)
-        //navigator.replaceAll(mainScreen)
+    else if (navigateToPlatform.value) {
+        if (deviceInfo() == DeviceType.IOS.toPath()) {
+            platformNavigator.goToMainScreen()
+        }
+        else {
+            val mainScreen = MainScreen(platformNavigator)
+            mainScreen.setMainViewModel(mainViewModel)
+            navigator.replaceAll(mainScreen)
+        }
     }
 
     Box(contentAlignment = Alignment.TopCenter, modifier = Modifier

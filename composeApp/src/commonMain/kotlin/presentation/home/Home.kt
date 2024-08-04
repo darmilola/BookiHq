@@ -180,7 +180,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             handler.init()
 
             if (homePageViewModel!!.homePageInfo.value.userInfo == null) {
-                val vendorPhone: String = preferenceSettings["whatsappPhone","2349074558406"]
+                val vendorPhone: String = preferenceSettings["whatsappPhone",""]
                 if (vendorPhone.isNotEmpty()){
                     homepagePresenter.getUserHomepageWithStatus(userId, vendorPhone)
                 }

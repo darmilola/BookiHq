@@ -17,6 +17,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.collectAsState
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.LocalNavigatorSaver
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.application.zazzy.firebase.NotificationMessage
@@ -90,29 +91,12 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                           MainViewModel(savedStateHandle = createSavedStateHandle())
                       },
                   )
-                  Navigator(SplashScreen(this,mainViewModel!!))
               }
-
-               val isFinished = mainViewModel!!.exitApp.collectAsState()
-               val goToMainScreen = mainViewModel!!.goToMainScreen.collectAsState()
-               val restartApp = mainViewModel!!.restartApp.collectAsState()
-
+              Navigator(SplashScreen(this,mainViewModel!!))
+              val isFinished = mainViewModel!!.exitApp.collectAsState()
               if (isFinished.value){
                   finish()
               }
-              else if (goToMainScreen.value) {
-                  mainViewModel!!.setGoToMainScreen(false)
-                  val mainScreen = MainScreen(this)
-                  mainScreen.setMainViewModel(mainViewModel!!)
-                  val navigator = LocalNavigator.currentOrThrow
-                  navigator.replaceAll(mainScreen)
-              }
-              else if (restartApp.value) {
-                  mainViewModel!!.setRestartApp(false)
-                  val navigator = LocalNavigator.currentOrThrow
-                  navigator.replaceAll(SplashScreen(this, mainViewModel!!))
-              }
-
           }
 
 
@@ -140,12 +124,8 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                     gmailAuthPreferences!!.putString("gmailAccount",it)
                     gmailAuthPreferences!!.apply()
 
-                }, onAuthFailed = {
-                    println("Firebase Error")
-                })
-            } catch (e: ApiException) {
-                println("Firebase ${e.localizedMessage}")
-            }
+                }, onAuthFailed = {})
+            } catch (e: ApiException) {}
         }
 
          imagePickerActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -160,12 +140,8 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                             imageUploadPreferences!!.putString("imageUrl",it.toString())
                             imageUploadPreferences!!.apply()
 
-                        }.addOnFailureListener {
-                            Log.e("Firebase", "Failed in downloading")
-                        }
-                    }.addOnFailureListener {
-                        Log.e("Firebase", "Image Upload fail")
-                    }
+                        }.addOnFailureListener {}
+                    }.addOnFailureListener {}
                 }
             }
 
@@ -254,7 +230,6 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                     onAuthFailed()
                 }
         } else {
-
             firebaseAuth!!
                 .startActivityForSignInWithProvider(this, provider.build())
                 .addOnSuccessListener {
@@ -454,13 +429,12 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     override fun exitApp() {
         mainViewModel!!.setExitApp(true)
     }
-
-    override fun goToMainScreen() {
-       mainViewModel!!.setGoToMainScreen(true)
+    override fun restartApp() {
+        // No Android Implementation
     }
 
-    override fun restartApp() {
-        mainViewModel!!.setRestartApp(true)
+    override fun goToMainScreen() {
+        // No Android Implementation
     }
 
 }

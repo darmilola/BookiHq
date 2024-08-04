@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import applications.device.deviceInfo
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
@@ -41,6 +42,7 @@ import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import domain.Enums.AuthType
+import domain.Enums.DeviceType
 import domain.Enums.Gender
 import domain.Models.PlatformNavigator
 import domain.Enums.Screens
@@ -215,8 +217,16 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
         if (updateProfileStarted.value){
             LoadingDialog(dialogTitle = "Updating Your Profile")
         }
-        else if (updateProfileEnded.value && updateProfileSuccessful.value){
-            platformNavigator!!.restartApp()
+        else if (updateProfileEnded.value && updateProfileSuccessful.value) {
+            if (deviceInfo() == DeviceType.IOS.toPath()) {
+                // iOS App Restart Process
+                platformNavigator!!.restartApp()
+            }
+            else if (deviceInfo() == DeviceType.ANDROID.toPath()){
+                // App Restart for Process Android
+                mainViewModel!!.setRestartApp(isRestart = true)
+                mainViewModel!!.setScreenNav(Pair(Screens.EDIT_PROFILE.toPath(), Screens.MAIN_TAB.toPath()))
+            }
         }
         else if(updateProfileEnded.value && !updateProfileSuccessful.value){
             ErrorDialog(dialogTitle = "Error Occurred", actionTitle = "", onConfirmation = {})

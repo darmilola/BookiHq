@@ -7,6 +7,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import applications.device.deviceInfo
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
@@ -17,6 +18,7 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import domain.Enums.CustomerMovementEnum
+import domain.Enums.DeviceType
 import domain.Enums.Screens
 import domain.Models.PlatformNavigator
 import kotlinx.serialization.Transient
@@ -85,13 +87,22 @@ class SwitchVendorDetailsTab(val platformNavigator: PlatformNavigator) : Tab, Ko
                 presentation.widgets.BusinessInfoTitle(mainViewModel = mainViewModel)
             },
             content = {
-
                 if (uiState.value.isLoading) {
                     LoadingDialog("Connecting New Vendor")
                 } else if (uiState.value.isSuccess) {
                     preferenceSettings["whatsappPhone"] = mainViewModel!!.switchVendor.value.whatsAppPhone
-                    platformNavigator.restartApp()
                     actionUIStateViewModel!!.switchVendorActionUIState(ActionUIStates(isDefault = true))
+
+                    if (deviceInfo() == DeviceType.IOS.toPath()) {
+                        // iOS App Restart Process
+                        platformNavigator.restartApp()
+                    }
+                    else if (deviceInfo() == DeviceType.ANDROID.toPath()){
+                        // App Restart for Process Android
+                        mainViewModel!!.setRestartApp(isRestart = true)
+                        mainViewModel!!.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.MAIN_TAB.toPath()))
+                    }
+
                 } else if (uiState.value.isFailed) {
                     ErrorDialog(dialogTitle = "Error Occurred Please Try Again", actionTitle = "Retry"){}
                 }
