@@ -103,24 +103,24 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                     authenticationRepositoryImpl.validateEmail(userEmail)
                         .subscribe(
                             onSuccess = { result ->
-                                println("Result $result")
                                 if (result.status == "success"){
-                                    if (result.profileStatus == ProfileStatus.DONE.toPath()) {
-                                        contractView?.onProfileValidationEnded()
-                                        contractView?.goToMainScreen(result.userInfo, result.whatsAppPhone)
-                                    }
-                                    else if(result.profileStatus == ProfileStatus.CONNECT_VENDOR.toPath()){
-                                        contractView?.onProfileValidationEnded()
-                                        contractView?.goToConnectVendor(result.userInfo)
-                                    }
-                                    else if(result.profileStatus == ProfileStatus.COMPLETE_PROFILE.toPath()){
-                                        contractView?.onProfileValidationEnded()
-                                        contractView?.goToCompleteProfileWithEmail(userEmail)
+                                    when (result.profileStatus) {
+                                        ProfileStatus.DONE.toPath() -> {
+                                            contractView?.onProfileValidationEnded()
+                                            contractView?.goToMainScreen(result.userInfo, result.whatsAppPhone)
+                                        }
+                                        ProfileStatus.CONNECT_VENDOR.toPath() -> {
+                                            contractView?.onProfileValidationEnded()
+                                            contractView?.goToConnectVendor(result.userInfo)
+                                        }
+                                        ProfileStatus.COMPLETE_PROFILE.toPath() -> {
+                                            contractView?.onProfileValidationEnded()
+                                            contractView?.goToCompleteProfileWithEmail(userEmail)
+                                        }
                                     }
                                 }
                                 else{
                                     contractView?.onProfileValidationEnded()
-
                                 }
                             },
                             onError = {

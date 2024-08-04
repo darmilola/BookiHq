@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
@@ -18,7 +19,6 @@ import androidx.compose.runtime.collectAsState
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import cafe.adriel.voyager.transitions.SlideTransition
 import com.application.zazzy.firebase.NotificationMessage
 import com.application.zazzy.firebase.NotificationService
 import com.application.zazzy.firebase.NotificationType
@@ -47,11 +47,9 @@ import domain.Models.PlatformNavigator
 import kotlinx.parcelize.Parcelize
 import presentation.Screens.MainScreen
 import presentation.Screens.SplashScreen
-import presentation.Screens.WelcomeScreen
 import presentation.viewmodels.MainViewModel
 import java.io.IOException
 import java.util.concurrent.TimeUnit
-
 
 @Parcelize
 class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
@@ -65,7 +63,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     @Transient private var preferences: SharedPreferences? = null
     private var notificationServiceAccessToken: String? = ""
     @Transient private var mainViewModel: MainViewModel? = null
-
+    @Transient private var gmailAuthPreferences: SharedPreferences.Editor? = null
+    @Transient private var imageUploadPreferences: SharedPreferences.Editor? = null
+    @Transient private var sharedPreferenceChangeListener: OnSharedPreferenceChangeListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,10 +76,11 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             }
         }
 
-        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+          onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+          preferences = getSharedPreferences("PlatformSharedPref", MODE_PRIVATE)
+          gmailAuthPreferences = preferences!!.edit()
+          imageUploadPreferences = preferences!!.edit()
 
-
-          preferences = getSharedPreferences("TokenSharedPref", MODE_PRIVATE);
           firebaseAuth = FirebaseAuth.getInstance()
 
           setContent {
@@ -90,28 +91,29 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                       },
                   )
                   Navigator(SplashScreen(this,mainViewModel!!))
-               }
-               val isFinished = mainViewModel!!.exitApp.collectAsState()
-               if (isFinished.value){
-                  finish()
               }
 
-              val goToMainScreen = mainViewModel!!.goToMainScreen.collectAsState()
-              if (goToMainScreen.value) {
+               val isFinished = mainViewModel!!.exitApp.collectAsState()
+               val goToMainScreen = mainViewModel!!.goToMainScreen.collectAsState()
+               val restartApp = mainViewModel!!.restartApp.collectAsState()
+
+              if (isFinished.value){
+                  finish()
+              }
+              else if (goToMainScreen.value) {
                   mainViewModel!!.setGoToMainScreen(false)
                   val mainScreen = MainScreen(this)
                   mainScreen.setMainViewModel(mainViewModel!!)
                   val navigator = LocalNavigator.currentOrThrow
                   navigator.replaceAll(mainScreen)
               }
-
-              val restartApp = mainViewModel!!.restartApp.collectAsState()
-              if (restartApp.value) {
+              else if (restartApp.value) {
                   mainViewModel!!.setRestartApp(false)
                   val navigator = LocalNavigator.currentOrThrow
                   navigator.replaceAll(SplashScreen(this, mainViewModel!!))
               }
-            }
+
+          }
 
 
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -127,7 +129,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         }
 
 
-        mainActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        mainActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 result ->
             val data = result.data
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
@@ -135,19 +137,18 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                 // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account.idToken!!, onAuthSuccessful = {
-                    setContent {
-                        val welcomeScreen = WelcomeScreen(this, googleAuthEmail = it)
-                        welcomeScreen.setMainViewModel(mainViewModel!!)
-                        Navigator(welcomeScreen)
-                    }
-                }, onAuthFailed = {
+                    gmailAuthPreferences!!.putString("gmailAccount",it)
+                    gmailAuthPreferences!!.apply()
 
+                }, onAuthFailed = {
+                    println("Firebase Error")
                 })
-            } catch (e: ApiException) {}
+            } catch (e: ApiException) {
+                println("Firebase ${e.localizedMessage}")
+            }
         }
 
-         imagePickerActivityResult =
-            registerForActivityResult( ActivityResultContracts.StartActivityForResult()) { result ->
+         imagePickerActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.data?.data != null) {
                     val storageRef = Firebase.storage.reference;
                     val imageUri: Uri? = result.data?.data
@@ -156,9 +157,8 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                     val uploadTask = storageRef.child("file/$imageName").putFile(imageUri)
                     uploadTask.addOnSuccessListener {
                         storageRef.child("file/$imageName").downloadUrl.addOnSuccessListener {
-                            val myEdit: SharedPreferences.Editor = preferences!!.edit()
-                            myEdit.putString("imageUrl",it.toString())
-                            myEdit.apply()
+                            imageUploadPreferences!!.putString("imageUrl",it.toString())
+                            imageUploadPreferences!!.apply()
 
                         }.addOnFailureListener {
                             Log.e("Firebase", "Failed in downloading")
@@ -183,9 +183,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
            notificationServiceAccessToken =  getAccessToken()
             runOnUiThread {
                 if (!notificationServiceAccessToken.isNullOrEmpty()){
-                    val myEdit: SharedPreferences.Editor = preferences!!.edit()
-                    myEdit.putString("accessToken",notificationServiceAccessToken)
-                    myEdit.apply()
+                    val accessTokenPreferences: SharedPreferences.Editor = preferences!!.edit()
+                    accessTokenPreferences.putString("accessToken",notificationServiceAccessToken)
+                    accessTokenPreferences.apply()
                 }
             }
         }.start()
@@ -209,8 +209,16 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
         val mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         val signInIntent = mGoogleSignInClient.signInIntent
-
         mainActivityResultLauncher!!.launch(signInIntent)
+
+        sharedPreferenceChangeListener = OnSharedPreferenceChangeListener { sharedPreferences, s ->
+            val gmailAccount = sharedPreferences.getString("gmailAccount","")
+            if (gmailAccount!!.isNotEmpty()) {
+                gmailAuthPreferences!!.clear().apply()
+                onAuthSuccessful(gmailAccount)
+            }
+        }
+        preferences!!.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
     }
 
     override fun startPhoneSS0(phone: String) {
@@ -316,10 +324,15 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         val galleryIntent = Intent(Intent.ACTION_PICK)
         galleryIntent.type = "image/*"
         imagePickerActivityResult!!.launch(galleryIntent)
-        preferences!!.registerOnSharedPreferenceChangeListener { sharedPreferences, s ->
-          val imageUrl = sharedPreferences.getString("imageUrl","")
-          onUploadDone(imageUrl!!)
+
+        sharedPreferenceChangeListener = OnSharedPreferenceChangeListener { sharedPreferences, s ->
+            val imageUrl = sharedPreferences.getString("imageUrl","")
+            if (imageUrl!!.isNotEmpty()) {
+                imageUploadPreferences!!.clear().apply()
+                onUploadDone(imageUrl)
+            }
         }
+        preferences!!.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
     }
 
 
@@ -449,6 +462,5 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     override fun restartApp() {
         mainViewModel!!.setRestartApp(true)
     }
-
 
 }

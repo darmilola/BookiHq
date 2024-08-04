@@ -188,16 +188,6 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
                 .fillMaxHeight()
                 .background(color = Color.White)
 
-        val imagePicker = rememberImagePickerLauncher(
-            selectionMode = SelectionMode.Single,
-            scope = imagePickerScope,
-            onResult = { byteArrays ->
-                byteArrays.firstOrNull()?.let {
-                 //   platformNavigator.startImageUpload(it)
-                }
-            }
-        )
-
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 1,
             animation = StackedSnackbarAnimation.Bounce
@@ -226,7 +216,6 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
             LoadingDialog(dialogTitle = "Updating Your Profile")
         }
         else if (updateProfileEnded.value && updateProfileSuccessful.value){
-            println("Called")
             platformNavigator!!.restartApp()
         }
         else if(updateProfileEnded.value && !updateProfileSuccessful.value){
