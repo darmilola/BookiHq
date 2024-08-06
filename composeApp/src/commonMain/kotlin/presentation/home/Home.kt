@@ -2,9 +2,6 @@ package presentation.home
 
 import GGSansRegular
 import StackedSnackbarHost
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -15,13 +12,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -72,7 +67,6 @@ import domain.Models.OrderItem
 import domain.Models.PlatformNavigator
 import domain.Models.Product
 import domain.Models.Services
-import domain.Models.StatusImageModel
 import domain.Models.VendorStatusModel
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
@@ -88,17 +82,14 @@ import presentation.widgets.ShopStatusWidget
 import presentation.widgets.HomeServicesWidget
 import presentation.widgets.MeetingAppointmentWidget
 import presentation.widgets.RecommendedServiceItem
-import presentation.widgets.AppointmentWidget
 import presentation.widgets.HomeAppointmentWidget
 import presentation.widgets.ProductDetailBottomSheet
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import utils.calculateHomePageScreenHeight
-import utils.getPercentOfScreenHeight
 import utils.getRecentAppointmentViewHeight
 import utils.getServicesViewHeight
-import utils.pxToDp
 
 @Parcelize
 class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
@@ -215,7 +206,8 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 //Error Occurred
 
             } else if (uiState.value.contentVisible) {
-                val recentAppointments = homepageInfo.value.recentAppointment
+                val pastAppointments = homepageInfo.value.pastAppointment
+                val upcomingAppointments = homepageInfo.value.upcomingAppointment
                 val vendorServices = homepageInfo.value.vendorServices
                 val vendorRecommendations = homepageInfo.value.recommendationRecommendations
 
@@ -257,12 +249,16 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                 AttachOurServices()
                                 ServiceGridScreen(vendorServices)
                             }
+                            if (!upcomingAppointments.isNullOrEmpty()) {
+                                AttachAppointmentsTitle("Upcoming")
+                                AppointmentsScreen(appointmentList = upcomingAppointments, platformNavigator = platformNavigator)
+                            }
                             if (!vendorRecommendations.isNullOrEmpty()) {
                                 RecommendedSessions(vendorRecommendations!!, mainViewModel!!)
                             }
-                            if (!recentAppointments.isNullOrEmpty()) {
-                                AttachAppointments()
-                                RecentAppointmentScreen(appointmentList = recentAppointments, platformNavigator = platformNavigator)
+                            if (!pastAppointments.isNullOrEmpty()) {
+                                AttachAppointmentsTitle("Past")
+                                AppointmentsScreen(appointmentList = pastAppointments, platformNavigator = platformNavigator)
                             }
                         }
                     })
@@ -358,7 +354,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
 
     @Composable
-    fun AttachAppointments(){
+    fun AttachAppointmentsTitle(title: String){
         val rowModifier = Modifier
             .padding(start = 10.dp, top = 20.dp, bottom = 20.dp)
             .fillMaxWidth()
@@ -368,7 +364,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 modifier = rowModifier
             ) {
                 TextComponent(
-                    text = "Recently",
+                    text = title,
                     fontSize = 16,
                     fontFamily = GGSansRegular,
                     textStyle = MaterialTheme.typography.h6,
@@ -490,7 +486,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
     }
 
     @Composable
-    fun RecentAppointmentScreen(appointmentList: List<Appointment>?, platformNavigator: PlatformNavigator) {
+    fun AppointmentsScreen(appointmentList: List<Appointment>?, platformNavigator: PlatformNavigator) {
         if (appointmentList != null) {
             val viewHeight = getRecentAppointmentViewHeight(appointmentList)
             LazyColumn(

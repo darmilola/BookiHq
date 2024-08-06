@@ -3,7 +3,6 @@ package utils
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import domain.Models.Appointment
 import domain.Models.BookedTimes
 import domain.Models.HomepageInfo
@@ -70,11 +69,9 @@ fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
 
 fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo, screenSizeInfo: ScreenSizeInfo, statusList: List<VendorStatusModel>): Int{
     val serviceCount = homepageInfo.vendorServices!!.size
-    val recentAppointmentCount = homepageInfo.recentAppointment!!.size
+    val pastAppointmentCount = homepageInfo.pastAppointment!!.size
+    val upcomingAppointmentCount = homepageInfo.upcomingAppointment!!.size
     var statusHeight = 0
-
-    val heightAtExpanded = getPercentOfScreenHeight(screenSizeInfo.heightPx.dp, percentChange = 80)
-    val heightAtCollapsed = getPercentOfScreenHeight(screenSizeInfo.heightPx.dp, percentChange = 60)
 
     if (statusList.isNotEmpty()){
         statusHeight = 800
@@ -82,9 +79,10 @@ fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo, screenSizeInfo: Sc
 
     val servicesHeight = (ceil((serviceCount/4).toDouble()) * 140).toInt()
     val recommendationsHeight = 450
-    val recentAppointmentHeight = recentAppointmentCount * 200
+    val pastAppointmentHeight = pastAppointmentCount * 200
+    val upcomingAppointmentHeight = upcomingAppointmentCount * 200
 
-    return servicesHeight + recentAppointmentHeight + recommendationsHeight + statusHeight
+    return servicesHeight + pastAppointmentHeight + recommendationsHeight + statusHeight + upcomingAppointmentHeight
 }
 
 fun calculateBookingServiceTimes(platformTimes: List<PlatformTime>, vendorTimes: List<VendorTime>, bookedTimes: List<BookedTimes>, day: Int, month: Int, year: Int):
