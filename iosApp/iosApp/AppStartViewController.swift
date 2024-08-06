@@ -6,15 +6,20 @@ import composeApp
 import GoogleSignIn
 import FirebaseCore
 import FirebaseAuth
+import FirebaseStorage
 
 
 
-class AppStartViewController: UIViewController, PlatformNavigator  {
+class AppStartViewController: UIViewController, PlatformNavigator, UINavigationControllerDelegate, UIImagePickerControllerDelegate  {
     
     var locationManager: CLLocationManager?
     var mainController: MainViewController?
     var rootView: AppStartView?
     var mainView: MainScreenView?
+    var uploadImage: UIImage?
+    var imagePicker = UIImagePickerController()
+    @objc dynamic var imageUploadUrl: String = ""
+    var observation: NSKeyValueObservation?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +32,31 @@ class AppStartViewController: UIViewController, PlatformNavigator  {
         super.viewDidAppear(animated)
         self.navigationController?.isNavigationBarHidden = true
         showStartScreen()
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let pickedImage = info[.originalImage] as? UIImage {
+            guard let imageData = pickedImage.jpegData(compressionQuality: 0.75) else {return}
+                   let fileName = NSUUID().uuidString
+                   let ref = Storage.storage().reference(withPath: "/file/\(fileName)")
+                   ref.putData(imageData, metadata: nil) { metadata, error in
+                       if let error = error {
+                           print("Err: Failed to upload image \(error.localizedDescription)")
+                           return
+                       }
+                       
+                      ref.downloadURL { url, error in
+                           guard let imageURL = url?.absoluteString else {return}
+                           self.imageUploadUrl = imageURL
+                       }
+                   }
+        }
+        dismiss(animated: true, completion: nil)
+    }
+
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        // Handle the user canceling the image picker, if needed.
+        dismiss(animated: true, completion: nil)
     }
     
     private func showStartScreen() {
@@ -101,11 +131,20 @@ class AppStartViewController: UIViewController, PlatformNavigator  {
             onAuthSuccessful("damilolaakinterinwa@gmail.com")
         }
         
-        
     }
     
     func startImageUpload(onUploadDone: @escaping (String) -> Void) {
-        
+        if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum){
+                   imagePicker.delegate = self
+                   imagePicker.sourceType = .savedPhotosAlbum
+                   imagePicker.allowsEditing = false
+
+            present(imagePicker, animated: true, completion: {})
+        }
+    
+        observation = self.observe(\.imageUploadUrl, options: [.old, .new]) { controller, value in
+                   onUploadDone(value.newValue!)
+            }
     }
     
     func startNotificationService(onTokenReady: @escaping (String) -> Void) {
@@ -113,7 +152,6 @@ class AppStartViewController: UIViewController, PlatformNavigator  {
     }
     
     func startPhoneSS0(phone: String) {
-        print("Started")
         PhoneAuthProvider.provider()
           .verifyPhoneNumber(phone, uiDelegate: nil) { verificationID, error in
               if let error = error {
