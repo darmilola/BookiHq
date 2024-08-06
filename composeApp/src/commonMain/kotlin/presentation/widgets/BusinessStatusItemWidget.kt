@@ -45,20 +45,12 @@ class BusinessStatusItemWidget {
     @Composable
     fun getImageStatusWidget(
         imageUrl: String,
-        vendorStatusModel: VendorStatusModel) {
-
-        val isStatusExpanded = remember { mutableStateOf(false) }
+        vendorStatusModel: VendorStatusModel
+    ) {
         val statusImage = vendorStatusModel.statusImage
-        val imageHeight = if (statusImage?.caption!!.isNotEmpty() && (statusImage.height > statusImage.width)) {
-            0.85f
-        } else if (statusImage.caption.isNotEmpty() && (statusImage.height <= statusImage.width)) {
-            0.70f
-        }
-        else if (statusImage.height <= statusImage.width){
-            0.70f
-        } else {
+        val imageHeight = if (statusImage!!.height > statusImage.width) {
             1f
-        }
+        } else 0.50f
 
         Column(
             modifier = Modifier
@@ -69,33 +61,35 @@ class BusinessStatusItemWidget {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(imageHeight)) {
-                ImageComponent(
-                    imageModifier = Modifier.fillMaxSize(),
-                    imageRes = imageUrl,
-                    contentScale = ContentScale.Crop,
-                    isAsync = true
-                )
-            }
-            if (vendorStatusModel.statusImage?.caption!!.isNotEmpty()) {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth()
-                            .fillMaxHeight(if (isStatusExpanded.value) 0.5f else 1f)
-                            .padding(top = 5.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        ImageStatusCaption(vendorStatusModel.statusImage)
-                    }
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(imageHeight)) {
+                    ImageComponent(
+                        imageModifier = Modifier.fillMaxSize(),
+                        imageRes = imageUrl,
+                        contentScale = ContentScale.Crop,
+                        isAsync = true
+                    )
+                }
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+                   if (statusImage.caption!!.isNotEmpty()) {
+                       Box(
+                           modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                               .background(color = Color(0x80000000)),
+                           contentAlignment = Alignment.BottomCenter
+                       ) {
+                           ImageStatusCaption(vendorStatusModel.statusImage)
+                       }
+                   }
                 }
             }
         }
     }
+
     @Composable
     fun ImageStatusCaption(imageModel: StatusImageModel) {
         Box(
             modifier = Modifier
-                .padding(start = 20.dp, end = 20.dp)
+                .padding(10.dp)
                 .fillMaxWidth()
                 .wrapContentHeight(),
             contentAlignment = Alignment.Center
@@ -120,7 +114,7 @@ class BusinessStatusItemWidget {
     fun VideoStatusCaption(videoModel: StatusVideoModel) {
         Box(
             modifier = Modifier
-                .padding(start = 20.dp, end = 20.dp)
+                .padding(10.dp)
                 .fillMaxWidth()
                 .wrapContentHeight(),
             contentAlignment = Alignment.Center
@@ -143,20 +137,13 @@ class BusinessStatusItemWidget {
 
 
     @Composable
-    fun getVideoStatusWidget(videoModel: StatusVideoModel, videoStatusViewMeta: VideoStatusViewMeta) {
-
-        val isStatusExpanded = remember { mutableStateOf(false) }
-        val videoHeight = if (videoModel?.caption!!.isNotEmpty() && (videoModel.height > videoModel.width)) {
-            0.85f
-        } else if (videoModel.caption.isNotEmpty() && (videoModel.height <= videoModel.width)) {
-            0.70f
-        }
-        else if (videoModel.height <= videoModel.width){
-            0.70f
-        } else {
+    fun getVideoStatusWidget(
+        videoModel: StatusVideoModel,
+        videoStatusViewMeta: VideoStatusViewMeta
+    ) {
+        val videoHeight = if (videoModel.height > videoModel.width) {
             1f
-        }
-
+        } else 0.50f
 
         Column(
             modifier = Modifier
@@ -166,30 +153,35 @@ class BusinessStatusItemWidget {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Box(
-                modifier = Modifier.fillMaxWidth()
-                    .fillMaxHeight(videoHeight)
-            ) {
-                // Video Playback
-                VideoPlayer(
-                    modifier = Modifier.fillMaxSize(),
-                    url = videoModel.videoUrl,
-                    videoStatusViewMeta = videoStatusViewMeta
-                )
-            }
-            Box(
-                modifier = Modifier.fillMaxWidth()
-                    .fillMaxHeight(if (isStatusExpanded.value) 0.5f else 1f).padding(top = 5.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                VideoStatusCaption(videoModel)
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(videoHeight)) {
+                    VideoPlayer(
+                        modifier = Modifier.fillMaxSize(),
+                        url = videoModel.videoUrl,
+                        videoStatusViewMeta = videoStatusViewMeta
+                    )
+                }
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+                    if (videoModel.caption.isNotEmpty()) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                                .background(color = Color(0x80000000)),
+                            contentAlignment = Alignment.BottomCenter
+                        ) {
+                            if (videoModel.caption.isNotEmpty()) {
+                                VideoStatusCaption(videoModel)
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 
     @Composable
     fun getTextStatusWidget(
-        vendorStatusModel: VendorStatusModel) {
+        vendorStatusModel: VendorStatusModel
+    ) {
         Column(
             modifier = Modifier
                 .padding(top = 5.dp)
@@ -199,7 +191,10 @@ class BusinessStatusItemWidget {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.Center) {
+            Box(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                contentAlignment = Alignment.Center
+            ) {
 
                 TextComponent(
                     text = vendorStatusModel.statusText?.body!!,
@@ -212,11 +207,13 @@ class BusinessStatusItemWidget {
                     lineHeight = 30,
                     letterSpacing = 1,
                     textModifier = Modifier
-                        .fillMaxWidth().padding(start = 40.dp, end = 40.dp))
+                        .fillMaxWidth().padding(start = 40.dp, end = 40.dp)
+                )
             }
         }
     }
 }
+
 
 
 

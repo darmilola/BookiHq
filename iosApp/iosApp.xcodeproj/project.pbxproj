@@ -61,6 +61,7 @@
 		5975F9862BB6C30F0026F9B5 /* ZazzyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZazzyApp.swift; sourceTree = "<group>"; };
 		5975F9882BB6C3850026F9B5 /* UiColor+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UiColor+Ext.swift"; sourceTree = "<group>"; };
 		597800C02C5E8A4000314D60 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		599B83902C6118E90023358D /* iosApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iosApp.entitlements; sourceTree = "<group>"; };
 		59E3DBD92B10856400FDD23C /* ggsans_bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ggsans_bold.ttf; sourceTree = "<group>"; };
 		59E3DBDA2B10856400FDD23C /* ggsans_regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ggsans_regular.ttf; sourceTree = "<group>"; };
 		59E3DBDB2B10856400FDD23C /* ggsans_semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ggsans_semibold.ttf; sourceTree = "<group>"; };
@@ -133,6 +134,7 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
+				599B83902C6118E90023358D /* iosApp.entitlements */,
 				597800C02C5E8A4000314D60 /* GoogleService-Info.plist */,
 				59E3DBD92B10856400FDD23C /* ggsans_bold.ttf */,
 				59E3DBDA2B10856400FDD23C /* ggsans_regular.ttf */,
@@ -437,6 +439,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
@@ -467,6 +470,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";

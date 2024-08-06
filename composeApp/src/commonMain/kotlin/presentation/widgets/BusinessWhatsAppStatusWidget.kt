@@ -74,7 +74,8 @@ fun ShopStatusWidget(whatsAppStatusList: List<VendorStatusModel>, onStatusViewCh
             val currentStatus = whatsAppStatusList[currentPage]
             Box(
                 modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                    .background(color = Color.Transparent)
+                    .background(color = Color.Transparent),
+                contentAlignment = Alignment.Center
             ) {
                 LoadStatusView(
                     statusModel = currentStatus,

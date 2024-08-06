@@ -209,7 +209,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
     override fun verifyOTP(verificationCode: String, onVerificationSuccessful: (String) -> Unit,
                            onVerificationFailed: () -> Unit) {
-        val credential = PhoneAuthProvider.getCredential(storedVerificationId!!, verificationCode)
+        val credential = PhoneAuthProvider.getCredential(storedVerificationId, verificationCode)
         signInWithPhoneAuthCredential(credential, onVerificationSuccessful = {
             onVerificationSuccessful(it)
         }, onVerificationFailed = {
@@ -277,7 +277,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             .setBarcodeFormats(
                 Barcode.FORMAT_QR_CODE,
                 Barcode.FORMAT_AZTEC)
-        .enableAutoZoom() // available on 16.1.0 and higher
+        .enableAutoZoom()
             .build()
 
         val scanner = GmsBarcodeScanning.getClient(this, options)

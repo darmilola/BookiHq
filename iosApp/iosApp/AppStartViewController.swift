@@ -113,7 +113,15 @@ class AppStartViewController: UIViewController, PlatformNavigator  {
     }
     
     func startPhoneSS0(phone: String) {
-        
+        print("Started")
+        PhoneAuthProvider.provider()
+          .verifyPhoneNumber(phone, uiDelegate: nil) { verificationID, error in
+              if let error = error {
+                return
+              }
+           UserDefaults.standard.set(verificationID, forKey: "authVerificationID")
+              print(verificationID!)
+        }
     }
     
     func startScanningBarCode(onCodeReady: @escaping (String) -> Void) {
@@ -129,7 +137,20 @@ class AppStartViewController: UIViewController, PlatformNavigator  {
     }
     
     func verifyOTP(verificationCode: String, onVerificationSuccessful: @escaping (String) -> Void, onVerificationFailed: @escaping () -> Void) {
-       
+        let verificationID = UserDefaults.standard.string(forKey: "authVerificationID")
+        
+        let credential = PhoneAuthProvider.provider().credential(
+          withVerificationID: verificationID!,
+          verificationCode: verificationCode)
+        
+        Auth.auth().signIn(with: credential) { (authResult, error) in
+            if let error = error {
+                let authError = error as NSError
+                onVerificationFailed()
+            }
+            let currentUser = Auth.auth().currentUser
+            onVerificationSuccessful(currentUser!.phoneNumber!)
+        }
     }
     
    func exitApp() {}

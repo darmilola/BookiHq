@@ -527,10 +527,9 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
     fun BusinessStatusDisplay(statusList: List<VendorStatusModel>, onViewHeightChanged: (Float, Boolean) -> Unit) {
         val isStatusExpanded = remember { mutableStateOf(false) }
 
-        val screenSizeInfo = ScreenSizeInfo()
+      /*  val screenSizeInfo = ScreenSizeInfo()
         val percentChangeExpanded =  1f
         val percentChangeCollapsed = 0.7f
-
 
         val heightAtExpanded =  screenSizeInfo.heightPx * percentChangeExpanded
         val heightAtCollapsed = screenSizeInfo.heightPx * percentChangeCollapsed
@@ -540,10 +539,11 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             animationSpec = tween(durationMillis = 600, easing = LinearOutSlowInEasing)
         )
 
-        onViewHeightChanged(heightChange, isStatusExpanded.value)
+        onViewHeightChanged(heightChange, isStatusExpanded.value)  */
+
         val modifier =
             Modifier.fillMaxWidth()
-                .height(heightChange.toInt().pxToDp())
+                .height(600.dp) // heightChange.toInt().pxToDp()
                 .background(color = Color.White)
         Box(modifier = modifier, contentAlignment = Alignment.TopCenter) {
             ShopStatusWidget(statusList, onStatusViewChanged = {

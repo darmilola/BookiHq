@@ -29,6 +29,10 @@ kotlin {
             baseName = "composeApp"
             isStatic = true
         }
+        iosTarget.compilations.getByName("main") {
+            // The default file path is src/nativeInterop/cinterop/<interop-name>.def
+            val nskeyvalueobserving by cinterops.creating
+        }
     }
 
 
@@ -173,6 +177,7 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
             implementation("co.touchlab:stately-common:2.0.5")
+            implementation("uk.co.caprica:vlcj:4.7.0")
         }
     }
 }
