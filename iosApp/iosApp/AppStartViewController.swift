@@ -20,6 +20,7 @@ class AppStartViewController: UIViewController, PlatformNavigator, UINavigationC
     var imagePicker = UIImagePickerController()
     @objc dynamic var imageUploadUrl: String = ""
     var observation: NSKeyValueObservation?
+    let preferences = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -148,7 +149,15 @@ class AppStartViewController: UIViewController, PlatformNavigator, UINavigationC
     }
     
     func startNotificationService(onTokenReady: @escaping (String) -> Void) {
-       
+        let fcmTokenKey = "fcmToken"
+        if preferences.object(forKey: fcmTokenKey) == nil {
+            print("Nothing Here")
+        } else {
+            let fcmToken = preferences.string(forKey: fcmTokenKey)
+            print("Token is")
+            print(fcmToken!)
+            onTokenReady(fcmToken!)
+        }
     }
     
     func startPhoneSS0(phone: String) {

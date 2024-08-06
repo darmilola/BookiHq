@@ -58,6 +58,7 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
         userId = preferenceSettings.getLong("profileId", 0L)
 
         platformNavigator!!.startNotificationService {
+            println("Token is here $it")
             authenticationPresenter.updateFcmToken(userId = userId, fcmToken = it)
         }
 
