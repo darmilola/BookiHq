@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -47,6 +48,7 @@ import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.ConnectPageViewModel
 import presentation.viewmodels.UIStateViewModel
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import com.russhwolf.settings.set
 import domain.Enums.SharedPreferenceEnum
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.ConnectPageHandler
@@ -69,6 +71,8 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
     @Transient private var mainViewModel: MainViewModel? = null
     @Transient private var vendorResourceListEnvelopeViewModel: VendorsResourceListEnvelopeViewModel? = null
     private var country: String = ""
+    private var latitude: String = ""
+    private var longitude: String = ""
 
     fun setMainViewModel(mainViewModel: MainViewModel) {
         this.mainViewModel = mainViewModel
@@ -79,14 +83,10 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
 
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val contentVisible = remember { mutableStateOf(false) }
-        val contentLoading = remember { mutableStateOf(false) }
-        val errorVisible = remember { mutableStateOf(false) }
-        val searchQuery = remember { mutableStateOf("") }
-        country = preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""]
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+        country = preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""]
+
         if (onBackPressed.value){
             platformNavigator!!.exitApp()
         }
@@ -105,9 +105,29 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
                     UIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
-            vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-            connectVendorPresenter.getVendor(country = country)
         }
+
+        LifecycleEffect(onStarted = {
+            if (preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), ""].isNotEmpty()
+                && preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""].isNotEmpty()){
+                println(preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), ""])
+                println(preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""])
+                connectVendorPresenter.getVendor(country = country)
+                vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+            }
+            else{
+                platformNavigator.getUserLocation(onLocationReady = { longitude: String, latitude: String ->
+                    println("Ready Location $latitude $longitude")
+                    preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
+                    preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
+                    connectVendorPresenter.getVendor(country = country)
+                    vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                })
+            }
+
+        }, onDisposed = {})
+
+
 
         if (connectPageViewModel == null) {
             connectPageViewModel = kmpViewModel(
@@ -116,6 +136,13 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
                 },
             )
         }
+
+
+        val navigator = LocalNavigator.currentOrThrow
+        val contentVisible = remember { mutableStateOf(false) }
+        val contentLoading = remember { mutableStateOf(false) }
+        val errorVisible = remember { mutableStateOf(false) }
+        val searchQuery = remember { mutableStateOf("") }
 
         val loadMoreState = vendorResourceListEnvelopeViewModel!!.isLoadingMore.collectAsState()
         val vendorList = vendorResourceListEnvelopeViewModel?.resources?.collectAsState()

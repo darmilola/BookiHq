@@ -102,6 +102,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
                 preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = vendorWhatsAppPhone
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
+                preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
                 preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.PHONE.toPath()
                 preferenceSettings[SharedPreferenceEnum.AUTH_PHONE.toPath()] = user.authPhone
                 navigateToPlatform.value = true
@@ -116,6 +117,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                 preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.PHONE.toPath()
                 preferenceSettings[SharedPreferenceEnum.AUTH_PHONE.toPath()] = user.authPhone
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
+                preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
                 preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
                 navigateToConnectVendor.value = true
             },

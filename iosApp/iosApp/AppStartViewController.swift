@@ -11,7 +11,7 @@ import FirebaseStorage
 
 
 class AppStartViewController: UIViewController, PlatformNavigator, UINavigationControllerDelegate, UIImagePickerControllerDelegate  {
-    
+  
     var locationManager: CLLocationManager?
     var mainController: MainViewController?
     var rootView: AppStartView?
@@ -91,10 +91,6 @@ class AppStartViewController: UIViewController, PlatformNavigator, UINavigationC
         
         func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
         
-    }
-    
-    func getUserLocation() {
-      
     }
     
     func sendAppointmentBookingNotification(customerName: String, vendorLogoUrl: String, businessName: String, appointmentDay: String, appointmentMonth: String, appointmentYear: String, appointmentTime: String, serviceType: String, fcmToken: String) {
@@ -182,6 +178,11 @@ class AppStartViewController: UIViewController, PlatformNavigator, UINavigationC
     func startXSSO(onAuthSuccessful: @escaping (String) -> Void, onAuthFailed: @escaping () -> Void) {
         
     }
+    
+    func getUserLocation(onLocationReady: @escaping (String, String) -> Void) {
+        <#code#>
+    }
+    
     
     func verifyOTP(verificationCode: String, onVerificationSuccessful: @escaping (String) -> Void, onVerificationFailed: @escaping () -> Void) {
         let verificationID = UserDefaults.standard.string(forKey: "authVerificationID")

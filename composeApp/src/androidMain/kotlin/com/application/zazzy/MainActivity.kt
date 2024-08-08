@@ -1,25 +1,27 @@
 package com.application.zazzy
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.OpenableColumns
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.collectAsState
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.LocalNavigatorSaver
+import androidx.core.app.ActivityCompat
 import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import com.application.zazzy.firebase.NotificationMessage
 import com.application.zazzy.firebase.NotificationService
 import com.application.zazzy.firebase.NotificationType
@@ -46,17 +48,18 @@ import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.PlatformNavigator
 import kotlinx.parcelize.Parcelize
-import presentation.Screens.MainScreen
 import presentation.Screens.SplashScreen
 import presentation.viewmodels.MainViewModel
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+
 
 @Parcelize
 class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
     @Transient var firebaseAuth: FirebaseAuth? = null
     @Transient private var mainActivityResultLauncher: ActivityResultLauncher<Intent>? = null
+    @Transient private var requestPermissionLauncher: ActivityResultLauncher<String>? = null
     @Transient var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks? = null
     @Transient private var storedVerificationId: String = ""
     @Transient private var resendToken: PhoneAuthProvider.ForceResendingToken? = null
@@ -65,12 +68,32 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     private var notificationServiceAccessToken: String? = ""
     @Transient private var mainViewModel: MainViewModel? = null
     @Transient private var gmailAuthPreferences: SharedPreferences.Editor? = null
+    @Transient private var locationAuthPreferences: SharedPreferences.Editor? = null
     @Transient private var imageUploadPreferences: SharedPreferences.Editor? = null
     @Transient private var sharedPreferenceChangeListener: OnSharedPreferenceChangeListener? = null
+    @Transient lateinit var locationManager: LocationManager
+    @Transient var networkLocationListener: LocationListener? = null
+    private var hasNetwork = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        setContent {
+            if (mainViewModel == null) {
+                mainViewModel = kmpViewModel(
+                    factory = viewModelFactory {
+                        MainViewModel(savedStateHandle = createSavedStateHandle())
+                    },
+                )
+            }
+            Navigator(SplashScreen(this,mainViewModel!!))
+            val isFinished = mainViewModel!!.exitApp.collectAsState()
+            if (isFinished.value){
+                finish()
+            }
+        }
+
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 mainViewModel!!.setOnBackPressed(true)
@@ -81,23 +104,20 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
           preferences = getSharedPreferences("PlatformSharedPref", MODE_PRIVATE)
           gmailAuthPreferences = preferences!!.edit()
           imageUploadPreferences = preferences!!.edit()
+          locationAuthPreferences = preferences!!.edit()
 
-          firebaseAuth = FirebaseAuth.getInstance()
+        firebaseAuth = FirebaseAuth.getInstance()
 
-          setContent {
-              if (mainViewModel == null) {
-                  mainViewModel = kmpViewModel(
-                      factory = viewModelFactory {
-                          MainViewModel(savedStateHandle = createSavedStateHandle())
-                      },
-                  )
-              }
-              Navigator(SplashScreen(this,mainViewModel!!))
-              val isFinished = mainViewModel!!.exitApp.collectAsState()
-              if (isFinished.value){
-                  finish()
-              }
-          }
+        hasNetwork = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+
+        networkLocationListener = object : LocationListener {
+            override fun onLocationChanged(location: Location) {
+
+            }
+            override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
+            override fun onProviderEnabled(provider: String) {}
+            override fun onProviderDisabled(provider: String) {}
+        }
 
 
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -112,6 +132,39 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             }
         }
 
+
+        requestPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
+            if (isGranted) {
+                if (ActivityCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    return@registerForActivityResult
+                }
+                else {
+                    locationManager.requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER,
+                        5000,
+                        0F,
+                        networkLocationListener!!
+                    )
+                    val lastKnownLocationByNetwork =
+                        locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+
+                    lastKnownLocationByNetwork?.let {
+                        locationAuthPreferences!!.putString("latitude",lastKnownLocationByNetwork.latitude.toString())
+                        locationAuthPreferences!!.putString("longitude",lastKnownLocationByNetwork.longitude.toString())
+                        locationAuthPreferences!!.apply()
+                    }
+                }
+            }
+        }
 
         mainActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 result ->
@@ -172,8 +225,6 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         intent.putExtra("authToken", authToken)
         startActivity(intent)
     }
-
-    override fun getUserLocation() {}
 
     override fun startGoogleSSO(onAuthSuccessful: (String) -> Unit, onAuthFailed: () -> Unit) {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -434,6 +485,51 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
     override fun goToMainScreen() {
         // No Android Implementation
+    }
+
+    override fun getUserLocation(onLocationReady: (String, String) -> Unit) {
+        println("Requested")
+        if (hasNetwork) {
+               requestNetworkLocation()
+            }
+        sharedPreferenceChangeListener = OnSharedPreferenceChangeListener { sharedPreferences, s ->
+            val latitude = sharedPreferences.getString("latitude","")
+            val longitude = sharedPreferences.getString("longitude","")
+            if (latitude!!.isNotEmpty() && longitude!!.isNotEmpty()) {
+                locationAuthPreferences!!.clear().apply()
+                onLocationReady(latitude,longitude)
+            }
+        }
+        preferences!!.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
+    }
+
+    private fun requestNetworkLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissionLauncher!!.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+        else {
+            locationManager.requestLocationUpdates(
+                LocationManager.NETWORK_PROVIDER,
+                5000,
+                0F,
+                networkLocationListener!!
+            )
+            val lastKnownLocationByNetwork =
+                locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+
+            lastKnownLocationByNetwork?.let {
+                locationAuthPreferences!!.putString("latitude",lastKnownLocationByNetwork.latitude.toString())
+                locationAuthPreferences!!.putString("longitude",lastKnownLocationByNetwork.longitude.toString())
+                locationAuthPreferences!!.apply()
+            }
+        }
     }
 
 }

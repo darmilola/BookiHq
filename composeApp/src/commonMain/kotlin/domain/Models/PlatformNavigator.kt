@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 interface PlatformNavigator: Parcelable {
      fun startVideoCall(authToken: String)
      fun startScanningBarCode(onCodeReady: (String) -> Unit)
-     fun getUserLocation()
+     fun getUserLocation(onLocationReady: (String, String) -> Unit)
      fun startGoogleSSO(onAuthSuccessful: (String) -> Unit,
                         onAuthFailed: () -> Unit)
      fun startPhoneSS0(phone: String)

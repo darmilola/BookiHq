@@ -70,7 +70,7 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                                 }
                             },
                             onError = {
-                                println("Error ${it.message}")
+                                println("Error 2 ${it.message}")
                                 it.message?.let { it1 -> contractView?.showLce(ScreenUIStates(errorOccurred = true)) }
                             },
                         )

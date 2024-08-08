@@ -53,6 +53,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
             preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
             preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
             preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
+            preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
             preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = whatsAppPhone
                 navigateToPlatform.value = true
         },
@@ -64,6 +65,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
             preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
             preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
             preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
+            preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
             navigateToConnectVendor.value = true
         },
         onVerificationStarted = {},

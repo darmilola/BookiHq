@@ -12,6 +12,6 @@ data class User(
     @SerialName("country") val country: String? = null, @SerialName("city") val city: String? = null, @SerialName("gender") val gender: String? = null,
     @SerialName("imageUrl") val profileImageUrl: String? = null,
     @SerialName("authPhone") val authPhone: String? = null, @SerialName("connectedVendor") val connectedVendor: Int? = null,
-    @SerialName("fcmToken") val fcmToken: String? = null,
+    @SerialName("fcmToken") val fcmToken: String? = null, @SerialName("apiKey") val apiKey: String? = null,
     @SerialName("isTherapist") val isTherapist: Boolean? = false, @SerialName("isProfileCompleted") val isProfileCompleted: Boolean? = false): Parcelable
 
