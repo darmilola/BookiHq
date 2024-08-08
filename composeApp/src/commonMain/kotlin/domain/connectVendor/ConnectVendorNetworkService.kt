@@ -17,7 +17,7 @@ import io.ktor.http.contentType
 class ConnectVendorNetworkService (private val apiService: HttpClient) {
     suspend fun connectVendor(connectVendorRequest: ConnectVendorRequest) =
         apiService.post {
-            url("/auth/user/vendor/connect")
+            url("/user/vendor/connect")
             /*headers {
                 append(HttpHeaders.Authorization, "abc123")
             }*/

@@ -20,6 +20,7 @@ import com.russhwolf.settings.set
 import domain.Enums.CustomerMovementEnum
 import domain.Enums.DeviceType
 import domain.Enums.Screens
+import domain.Enums.SharedPreferenceEnum
 import domain.Models.PlatformNavigator
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
@@ -90,7 +91,7 @@ class SwitchVendorDetailsTab(val platformNavigator: PlatformNavigator) : Tab, Ko
                 if (uiState.value.isLoading) {
                     LoadingDialog("Connecting New Vendor")
                 } else if (uiState.value.isSuccess) {
-                    preferenceSettings["whatsappPhone"] = mainViewModel!!.switchVendor.value.whatsAppPhone
+                    preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = mainViewModel!!.switchVendor.value.whatsAppPhone
                     actionUIStateViewModel!!.switchVendorActionUIState(ActionUIStates(isDefault = true))
 
                     if (deviceInfo() == DeviceType.IOS.toPath()) {

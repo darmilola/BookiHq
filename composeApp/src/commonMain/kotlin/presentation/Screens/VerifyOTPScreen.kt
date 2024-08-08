@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import applications.device.deviceInfo
+import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
@@ -35,6 +36,7 @@ import com.russhwolf.settings.set
 import domain.Enums.AuthSSOScreenNav
 import domain.Enums.AuthType
 import domain.Enums.DeviceType
+import domain.Enums.SharedPreferenceEnum
 import domain.Models.PlatformNavigator
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
@@ -60,6 +62,9 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
 
     @Transient private val authenticationPresenter : AuthenticationPresenter by inject()
     @Transient private var mainViewModel: MainViewModel? = null
+
+    override val key: ScreenKey
+        get() = "verifyOTPScreen"
 
     fun setMainViewModel(mainViewModel: MainViewModel) {
         this.mainViewModel = mainViewModel
@@ -90,24 +95,28 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
 
         val handler = AuthenticationScreenHandler(authenticationPresenter,
             onUserLocationReady = {},
-            enterPlatform = { user, whatsappPhone ->
-                preferenceSettings["country"] = user.country
-                preferenceSettings["profileId"] = user.userId
-                preferenceSettings["authType"] = AuthType.PHONE.toPath()
-                preferenceSettings["authPhone"] = user.authPhone
-                preferenceSettings["whatsappPhone"] = whatsappPhone
+            enterPlatform = { user, vendorWhatsAppPhone ->
+                preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
+                preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
+                preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
+                preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
+                preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = vendorWhatsAppPhone
+                preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
+                preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.PHONE.toPath()
+                preferenceSettings[SharedPreferenceEnum.AUTH_PHONE.toPath()] = user.authPhone
                 navigateToPlatform.value = true
             },
             completeProfile = { userEmail, userPhone ->
-                preferenceSettings["authType"] = AuthType.PHONE.toPath()
-                preferenceSettings["authPhone"] = userPhone
+                preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.PHONE.toPath()
+                preferenceSettings[SharedPreferenceEnum.AUTH_PHONE.toPath()] = userPhone
+                preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = userEmail
                 navigateToCompleteProfile.value = true
             },
             connectVendor = { user ->
-                preferenceSettings["authType"] = AuthType.PHONE.toPath()
-                preferenceSettings["authPhone"] = user.authPhone
-                preferenceSettings["country"] = user.country
-                preferenceSettings["profileId"] = user.userId
+                preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.PHONE.toPath()
+                preferenceSettings[SharedPreferenceEnum.AUTH_PHONE.toPath()] = user.authPhone
+                preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
+                preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
                 navigateToConnectVendor.value = true
             },
             onVerificationStarted = {
@@ -115,7 +124,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
             },
             onVerificationEnded = {
                 verificationInProgress.value = false
-            }, onCompleteStarted = {}, onCompleteEnded = {},connectVendorOnProfileCompleted = { country, profileId -> },
+            }, onCompleteStarted = {}, onCompleteEnded = {},connectVendorOnProfileCompleted = { country, profileId, apiKey -> },
             onUpdateStarted = {}, onUpdateEnded = {})
         handler.init()
 

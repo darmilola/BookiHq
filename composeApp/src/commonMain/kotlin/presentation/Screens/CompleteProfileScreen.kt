@@ -2,6 +2,7 @@ package presentation.Screens
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
@@ -29,6 +30,9 @@ data class CompleteProfileScreen(val platformNavigator: PlatformNavigator, val a
     fun setMainViewModel(mainViewModel: MainViewModel) {
         this.mainViewModel = mainViewModel
     }
+
+    override val key: ScreenKey
+        get() = "completeProfileScreen"
 
     @Composable
     override fun Content() {

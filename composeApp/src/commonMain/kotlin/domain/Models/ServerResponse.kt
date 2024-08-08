@@ -18,7 +18,7 @@ data class AuthenticationResponse(@SerialName("status") val status: String = "",
 
 @Serializable
 data class CompleteProfileResponse(@SerialName("status") val status: String = "", @SerialName("message") val message: String = "",
-                                   @SerialName("profileId") val profileId: Long = -1L)
+                                   @SerialName("profileId") val profileId: Long = -1L, @SerialName("apiKey") val apiKey: String = "")
 
 @Serializable
 data class HomePageResponse(@SerialName("status") val status: String = "", @SerialName("homePage") val homepageInfo: HomepageInfo = HomepageInfo())

@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import applications.device.deviceInfo
+import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
@@ -25,8 +26,10 @@ import presentation.dialogs.LoadingDialog
 import presentation.viewmodels.UIStateViewModel
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.set
+import domain.Enums.AuthType
 import domain.Enums.CustomerMovementEnum
 import domain.Enums.DeviceType
+import domain.Enums.SharedPreferenceEnum
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.VendorInfoPageHandler
 import presentation.connectVendor.ConnectVendorPresenter
@@ -36,7 +39,7 @@ import presentation.widgets.BusinessInfoTitle
 import utils.ParcelableScreen
 
 @Parcelize
-class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: PlatformNavigator? = null) : ParcelableScreen, KoinComponent {
+class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: PlatformNavigator) : ParcelableScreen, KoinComponent {
 
    @Transient private val preferenceSettings: Settings = Settings()
    @Transient private val connectVendorPresenter: ConnectVendorPresenter by inject()
@@ -47,6 +50,9 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
         this.mainViewModel = mainViewModel
     }
 
+    override val key: ScreenKey
+        get() = "vendorDetailScreen"
+
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -54,8 +60,8 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
         val pageLoading = remember { mutableStateOf(false) }
         val errorVisible = remember { mutableStateOf(false) }
         val vendorConnected = remember { mutableStateOf(false) }
-        val userId = preferenceSettings["profileId", -1L]
-        val userFirstname = preferenceSettings["firstname",""]
+        val userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(), -1L]
+        val userFirstname = preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath(),""]
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
         if (onBackPressed.value){
@@ -90,8 +96,8 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
                 pageLoading.value = false
             },
             onConnected = {
-                preferenceSettings["vendorId"] = vendor.vendorId
-                preferenceSettings["whatsappPhone"] = vendor.whatsAppPhone
+                preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = vendor.vendorId
+                preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = vendor.whatsAppPhone
                 vendorConnected.value = true
             })
         handler.init()

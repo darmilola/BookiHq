@@ -4,6 +4,8 @@ import applications.ktor.httpClient
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
+import com.russhwolf.settings.Settings
+import domain.Enums.SharedPreferenceEnum
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import io.ktor.client.plugins.contentnegotiation.*
@@ -11,6 +13,8 @@ import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.header
+import io.ktor.client.request.headers
 import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
@@ -44,6 +48,7 @@ fun initKoin(){
 }
 
 private val KtorModule = module {
+    val preferenceSettings = Settings()
     single {
         httpClient {
             defaultRequest {
@@ -52,12 +57,13 @@ private val KtorModule = module {
                     protocol = URLProtocol.HTTPS
                     port = 443
                 }
+                header("Authorization", preferenceSettings.getString(SharedPreferenceEnum.API_KEY.toPath(), ""))
             }
             install(Logging) {
                 level = LogLevel.BODY
             }
             install(HttpTimeout) {
-                requestTimeoutMillis = 30_000
+                requestTimeoutMillis = 45_000
             }
             install(ContentNegotiation) {
                 json(Json {

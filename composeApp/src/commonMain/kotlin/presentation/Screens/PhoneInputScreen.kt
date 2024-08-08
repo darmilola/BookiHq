@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
@@ -51,6 +52,9 @@ class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScr
     fun setMainViewModel(mainViewModel: MainViewModel) {
         this.mainViewModel = mainViewModel
     }
+
+    override val key: ScreenKey
+        get() = "phoneInputScreen"
 
     @Composable
     override fun Content() {

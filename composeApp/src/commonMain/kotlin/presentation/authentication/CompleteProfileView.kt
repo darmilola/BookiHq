@@ -40,6 +40,7 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import countryList
 import domain.Enums.AuthType
+import domain.Enums.SharedPreferenceEnum
 import domain.Models.PlatformNavigator
 import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.DomainViewHandler.PlatformHandler
@@ -126,9 +127,10 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
             completeProfileInProgress.value = true
         }, onCompleteEnded = { isSuccessful -> completeProfileInProgress.value = false },
         connectVendorOnProfileCompleted = {
-                country, profileId ->
-                preferenceSettings["country"] = country
-                preferenceSettings["profileId"] = profileId
+                country, profileId, apiKey ->
+                preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = country
+                preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = profileId
+                preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = apiKey
                 navigateToConnectVendor.value = true
 
         }, onUpdateStarted = {}, onUpdateEnded = {})

@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
@@ -46,6 +47,7 @@ import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.ConnectPageViewModel
 import presentation.viewmodels.UIStateViewModel
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import domain.Enums.SharedPreferenceEnum
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.ConnectPageHandler
 import presentation.connectVendor.ConnectVendorPresenter
@@ -58,7 +60,7 @@ import utils.ParcelableScreen
 
 
 @Parcelize
-class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableScreen, KoinComponent {
+class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinComponent {
 
     @Transient private val preferenceSettings: Settings = Settings()
     @Transient private val connectVendorPresenter: ConnectVendorPresenter by inject()
@@ -72,6 +74,9 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
         this.mainViewModel = mainViewModel
     }
 
+    override val key: ScreenKey
+        get() = "connectVendorScreen"
+
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -79,7 +84,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator? = null) : Pa
         val contentLoading = remember { mutableStateOf(false) }
         val errorVisible = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
-        country = preferenceSettings["country", ""]
+        country = preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""]
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
         if (onBackPressed.value){

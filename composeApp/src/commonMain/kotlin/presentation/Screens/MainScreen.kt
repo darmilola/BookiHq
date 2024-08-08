@@ -4,6 +4,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.CurrentTab
@@ -37,7 +38,7 @@ import presentation.widgets.PageBackNavWidget
 import utils.ParcelableScreen
 
 @Parcelize
-class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableScreen, KoinComponent {
+class MainScreen(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinComponent {
 
      @Transient private var mainViewModel: MainViewModel? = null
      @Transient private val preferenceSettings: Settings = Settings()
@@ -52,6 +53,9 @@ class MainScreen(val platformNavigator: PlatformNavigator? = null) : ParcelableS
     fun setMainViewModel(mainViewModel: MainViewModel){
         this.mainViewModel = mainViewModel
     }
+
+    override val key: ScreenKey
+        get() = "mainScreen"
 
     @Composable
     override fun Content() {

@@ -22,7 +22,6 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
 
     private val scope: CoroutineScope = MainScope()
     private var contractView: ProfileContract.View? = null
-    private var meetingView: ProfileContract.MeetingViewContract? = null
     private var platformContractView: ProfileContract.PlatformContract? = null
     private var meetingViewContract: ProfileContract.MeetingViewContract? = null
     private var switchVendorContract: ProfileContract.SwitchVendorContract? = null
@@ -176,7 +175,7 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                         .subscribe(
                             onSuccess = { result ->
                                 if (result?.status == ServerResponseEnum.SUCCESS.toPath()){
-                                    platformNavigator.sendCustomerExitNotification(exitReason = exitReason, vendorLogoUrl = vendor.businessLogo!!, fcmToken = vendor.fcmToken!!)
+                                    //platformNavigator.sendCustomerExitNotification(exitReason = exitReason, vendorLogoUrl = vendor.businessLogo!!, fcmToken = vendor.fcmToken!!)
                                     switchVendorContract?.showActionLce(ActionUIStates(isSuccess = true))
                                 }
                                 else{

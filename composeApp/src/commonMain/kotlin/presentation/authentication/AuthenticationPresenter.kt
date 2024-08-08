@@ -38,20 +38,20 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.onCompleteProfileDone(country, result.profileId)
+                                    contractView?.onCompleteProfileDone(country, result.profileId, result.apiKey)
                                 }
                                 else{
-                                    contractView?.onCompleteProfileDone(country, -1L)
+                                    contractView?.onCompleteProfileError()
                                 }
                             },
                             onError = {
-                                contractView?.onCompleteProfileDone(country, -1L)
+                                contractView?.onCompleteProfileError()
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.onCompleteProfileDone(country, -1L)
+                contractView?.onCompleteProfileError()
             }
         }
     }
@@ -90,7 +90,6 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Error 2 ${e.message}")
                 contractView?.onProfileUpdateEnded(isSuccessful = false)
             }
         }
@@ -103,6 +102,7 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                     authenticationRepositoryImpl.validateEmail(userEmail)
                         .subscribe(
                             onSuccess = { result ->
+                                println(result.toString())
                                 if (result.status == "success"){
                                     when (result.profileStatus) {
                                         ProfileStatus.DONE.toPath() -> {

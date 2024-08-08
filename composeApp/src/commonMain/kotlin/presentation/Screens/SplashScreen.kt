@@ -17,6 +17,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import applications.device.deviceInfo
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.russhwolf.settings.Settings
@@ -24,6 +25,7 @@ import com.russhwolf.settings.set
 import di.initKoin
 import domain.Enums.AuthType
 import domain.Enums.DeviceType
+import domain.Enums.SharedPreferenceEnum
 import presentation.components.SplashScreenBackground
 import kotlinx.coroutines.delay
 import org.koin.core.component.KoinComponent
@@ -47,25 +49,26 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
     val handler = AuthenticationScreenHandler(authenticationPresenter,
         onUserLocationReady = {},
         enterPlatform = { user, whatsAppPhone ->
-            preferenceSettings["country"] = user.country
-            preferenceSettings["profileId"] = user.userId
-            preferenceSettings["firstname"] = user.firstname
-            preferenceSettings["vendorId"] = user.connectedVendor
-            preferenceSettings["whatsappPhone"] = whatsAppPhone
-            preferenceSettings["country"] = user.country
+            preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
+            preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
+            preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
+            preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
+            preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = whatsAppPhone
                 navigateToPlatform.value = true
         },
         completeProfile = { _,_ ->
                navigateToWelcomeScreen.value = true
         },
         connectVendor = { user ->
-            preferenceSettings["country"] = user.country
-            preferenceSettings["profileId"] = user.userId
+            preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
+            preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
+            preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
+            preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
             navigateToConnectVendor.value = true
         },
         onVerificationStarted = {},
         onVerificationEnded = {}, onCompleteStarted = {}, onCompleteEnded = {},
-        connectVendorOnProfileCompleted = { _,_ ->}, onUpdateStarted = {}, onUpdateEnded = {})
+        connectVendorOnProfileCompleted = { _,_,_ ->}, onUpdateStarted = {}, onUpdateEnded = {})
     handler.init()
 
     if (navigateToConnectVendor.value){
@@ -126,8 +129,8 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
     }
 
  private fun authenticateSplashScreen(settings: Settings, onPhoneAuthentication: (String) -> Unit, onEmailAuthentication :(String) -> Unit, onWelcome :() -> Unit){
-     val authEmail = settings.getString("authEmail", "")
-     val authPhone = settings.getString("authPhone", "")
+     val authEmail = settings.getString(SharedPreferenceEnum.AUTH_EMAIL.toPath(), "")
+     val authPhone = settings.getString(SharedPreferenceEnum.AUTH_PHONE.toPath(), "")
 
      if (authEmail.isNotEmpty()){
          onEmailAuthentication(authEmail)
@@ -140,14 +143,17 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
      }
  }
 
-class SplashScreen(val platformNavigator: PlatformNavigator?, val mainViewModel: MainViewModel) : Screen, KoinComponent {
+class SplashScreen(val platformNavigator: PlatformNavigator, val mainViewModel: MainViewModel) : Screen, KoinComponent {
 
     private val  authenticationPresenter: AuthenticationPresenter by inject()
+
+    override val key: ScreenKey
+        get() = "splashScreen"
 
     @Composable
     override fun Content() {
         initKoin()
-        SplashScreenCompose(platformNavigator = platformNavigator!!, authenticationPresenter,mainViewModel)
+        SplashScreenCompose(platformNavigator = platformNavigator, authenticationPresenter,mainViewModel)
     }
 }
 
