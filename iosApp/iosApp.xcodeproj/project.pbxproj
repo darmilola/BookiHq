@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557BA273AAA24004C7B11 /* Assets.xcassets */; };
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
+		5915E7E62C6581CE0034999D /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5915E7E52C6581CE0034999D /* LocationManager.swift */; };
 		5955C07D2BB5B0FC002DDE7C /* ZazzyAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C07C2BB5B0FC002DDE7C /* ZazzyAppDelegate.swift */; };
 		5955C07F2BB5B123002DDE7C /* ZazzyAppSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C07E2BB5B123002DDE7C /* ZazzyAppSceneDelegate.swift */; };
 		5955C0812BB5B220002DDE7C /* UiSetupApplicationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C0802BB5B220002DDE7C /* UiSetupApplicationService.swift */; };
@@ -49,6 +50,7 @@
 /* Begin PBXFileReference section */
 		058557BA273AAA24004C7B11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		5915E7E52C6581CE0034999D /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		5955C07C2BB5B0FC002DDE7C /* ZazzyAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZazzyAppDelegate.swift; sourceTree = "<group>"; };
 		5955C07E2BB5B123002DDE7C /* ZazzyAppSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZazzyAppSceneDelegate.swift; sourceTree = "<group>"; };
 		5955C0802BB5B220002DDE7C /* UiSetupApplicationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiSetupApplicationService.swift; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 				5975F9842BB6C28A0026F9B5 /* ZazzyApp+Colors.swift */,
 				5975F9862BB6C30F0026F9B5 /* ZazzyApp.swift */,
 				5975F9882BB6C3850026F9B5 /* UiColor+Ext.swift */,
+				5915E7E52C6581CE0034999D /* LocationManager.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -303,6 +306,7 @@
 				5955C07D2BB5B0FC002DDE7C /* ZazzyAppDelegate.swift in Sources */,
 				5955C0812BB5B220002DDE7C /* UiSetupApplicationService.swift in Sources */,
 				5955C0892BB5B420002DDE7C /* Coordinator.swift in Sources */,
+				5915E7E62C6581CE0034999D /* LocationManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

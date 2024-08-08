@@ -10,17 +10,18 @@ import FirebaseStorage
 
 
 
-class AppStartViewController: UIViewController, PlatformNavigator, UINavigationControllerDelegate, UIImagePickerControllerDelegate  {
+class AppStartViewController: UIViewController, PlatformNavigator, UINavigationControllerDelegate, UIImagePickerControllerDelegate, CLLocationManagerDelegate  {
   
-    var locationManager: CLLocationManager?
     var mainController: MainViewController?
     var rootView: AppStartView?
     var mainView: MainScreenView?
     var uploadImage: UIImage?
     var imagePicker = UIImagePickerController()
     @objc dynamic var imageUploadUrl: String = ""
+    @objc dynamic var locationArray: [String] = []
     var observation: NSKeyValueObservation?
     let preferences = UserDefaults.standard
+    let locationManager = CLLocationManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +33,22 @@ class AppStartViewController: UIViewController, PlatformNavigator, UINavigationC
     override func viewDidAppear(_ animated: Bool){
         super.viewDidAppear(animated)
         self.navigationController?.isNavigationBarHidden = true
+
+
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            locationManager.startUpdatingLocation()
+        }
         showStartScreen()
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let locValue: CLLocationCoordinate2D = manager.location?.coordinate else { return }
+        var mLocations: [String] = []
+        mLocations.append(String(locValue.latitude))
+        mLocations.append(String(locValue.longitude))
+        self.locationArray = mLocations
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -53,6 +69,10 @@ class AppStartViewController: UIViewController, PlatformNavigator, UINavigationC
                    }
         }
         dismiss(animated: true, completion: nil)
+    }
+    
+    func getCurrentLocation(){
+        locationManager.requestWhenInUseAuthorization()
     }
 
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -125,7 +145,7 @@ class AppStartViewController: UIViewController, PlatformNavigator, UINavigationC
         let config = GIDConfiguration(clientID: clientID)
         GIDSignIn.sharedInstance.configuration = config
         GIDSignIn.sharedInstance.signIn(withPresenting: self) { signInResult, error in
-            onAuthSuccessful("damilolaakinterinwa@gmail.com")
+            onAuthSuccessful("bellashopdevprocess@gmail.com")
         }
         
     }
@@ -180,7 +200,13 @@ class AppStartViewController: UIViewController, PlatformNavigator, UINavigationC
     }
     
     func getUserLocation(onLocationReady: @escaping (String, String) -> Void) {
-        <#code#>
+        self.locationManager.requestAlwaysAuthorization()
+        self.locationManager.requestWhenInUseAuthorization()
+        
+        observation = self.observe(\.locationArray, options: [.old, .new]) { controller, value in
+            onLocationReady(self.locationArray[0],self.locationArray[1])
+        }
+       
     }
     
     
