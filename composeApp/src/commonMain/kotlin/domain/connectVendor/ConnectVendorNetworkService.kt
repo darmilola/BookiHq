@@ -18,9 +18,6 @@ class ConnectVendorNetworkService (private val apiService: HttpClient) {
     suspend fun connectVendor(connectVendorRequest: ConnectVendorRequest) =
         apiService.post {
             url("/user/vendor/connect")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(connectVendorRequest)
         }.body<ServerResponse>().toSingle()
@@ -28,9 +25,6 @@ class ConnectVendorNetworkService (private val apiService: HttpClient) {
     suspend fun searchVendor(searchVendorRequest: SearchVendorRequest, nextPage: Int = 1) =
         apiService.post {
             url("/profile/vendor/search?page=$nextPage")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(searchVendorRequest)
         }.body<VendorListDataResponse>().toSingle()
@@ -38,9 +32,6 @@ class ConnectVendorNetworkService (private val apiService: HttpClient) {
     suspend fun getVendor(getVendorRequest: GetVendorRequest, nextPage: Int = 1) =
         apiService.post {
             url("/profile/vendor/get?page=$nextPage")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(getVendorRequest)
         }.body<VendorListDataResponse>().toSingle()

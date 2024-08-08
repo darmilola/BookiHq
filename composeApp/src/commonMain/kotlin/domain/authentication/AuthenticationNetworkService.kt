@@ -17,18 +17,12 @@ open class AuthenticationNetworkService(private val apiService: HttpClient) {
     suspend fun completeProfile(completeProfileRequest: CompleteProfileRequest) =
         apiService.post {
             url("/auth/user/profile/complete")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(completeProfileRequest)
         }.body<CompleteProfileResponse>().toSingle()
     suspend fun updateProfile(updateProfileRequest: UpdateProfileRequest) =
         apiService.post {
             url("/user/profile/update")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(updateProfileRequest)
         }.body<ServerResponse>().toSingle()
@@ -36,9 +30,6 @@ open class AuthenticationNetworkService(private val apiService: HttpClient) {
     suspend fun updateFcmToken(updateFcmRequest: UpdateFcmRequest) =
         apiService.post {
             url("/user/profile/fcm/update")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(updateFcmRequest)
         }.body<ServerResponse>().toSingle()
@@ -46,9 +37,6 @@ open class AuthenticationNetworkService(private val apiService: HttpClient) {
     suspend fun validateProfile(validateProfileRequest: ValidateProfileRequest) =
         apiService.post {
             url("/user/profile/get")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(validateProfileRequest)
         }.body<AuthenticationResponse>().toSingle()
@@ -56,9 +44,6 @@ open class AuthenticationNetworkService(private val apiService: HttpClient) {
     suspend fun validateEmail(validateProfileRequest: ValidateProfileRequest) =
         apiService.post {
             url("/auth/user/email")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(validateProfileRequest)
         }.body<AuthenticationResponse>().toSingle()
@@ -66,9 +51,6 @@ open class AuthenticationNetworkService(private val apiService: HttpClient) {
     suspend fun validatePhone(phoneValidateProfileRequest: PhoneValidateProfileRequest) =
         apiService.post {
             url("/auth/user/phone")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(phoneValidateProfileRequest)
         }.body<AuthenticationResponse>().toSingle()

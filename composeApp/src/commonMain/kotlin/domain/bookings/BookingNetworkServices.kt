@@ -17,9 +17,6 @@ open class BookingNetworkService(private val apiService: HttpClient) {
     suspend fun getTherapists(getTherapistsRequest: GetTherapistsRequest) =
         apiService.post {
             url("/services/therapists")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(getTherapistsRequest)
         }.body<ServiceTherapistsResponse>().toSingle()
@@ -27,9 +24,6 @@ open class BookingNetworkService(private val apiService: HttpClient) {
     suspend fun createAppointment(createAppointmentRequest: CreateAppointmentRequest) =
         apiService.post {
             url("/services/appointment/create")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(createAppointmentRequest)
         }.body<ServerResponse>().toSingle()
@@ -37,9 +31,6 @@ open class BookingNetworkService(private val apiService: HttpClient) {
     suspend fun createPendingAppointment(createPendingAppointmentRequest: CreatePendingAppointmentRequest) =
         apiService.post {
             url("/services/appointment/pending/create")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(createPendingAppointmentRequest)
         }.body<PendingAppointmentResponse>().toSingle()
@@ -47,9 +38,6 @@ open class BookingNetworkService(private val apiService: HttpClient) {
     suspend fun getPendingAppointment(getPendingAppointmentRequest: GetPendingAppointmentRequest) =
         apiService.post {
             url("/services/appointment/pending/get")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(getPendingAppointmentRequest)
         }.body<PendingAppointmentResponse>().toSingle()
@@ -57,9 +45,6 @@ open class BookingNetworkService(private val apiService: HttpClient) {
     suspend fun deletePendingAppointment(deletePendingAppointmentRequest: DeletePendingAppointmentRequest) =
         apiService.post {
             url("/services/appointment/pending/delete")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(deletePendingAppointmentRequest)
         }.body<ServerResponse>().toSingle()

@@ -18,9 +18,6 @@ open class TherapistNetworkService(private val apiService: HttpClient) {
     suspend fun getReviews(getReviewsRequest: GetReviewsRequest) =
         apiService.post {
             url("/therapist/reviews/get")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(getReviewsRequest)
         }.body<TherapistReviewsResponse>().toSingle()
@@ -29,9 +26,6 @@ open class TherapistNetworkService(private val apiService: HttpClient) {
     suspend fun getTherapistAppointments(getTherapistAppointmentRequest: GetTherapistAppointmentRequest, nextPage: Int = 1) =
         apiService.post {
             url("/therapist/appointments/get?page=$nextPage")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(getTherapistAppointmentRequest)
         }.body<TherapistAppointmentListDataResponse>().toSingle()
@@ -39,9 +33,6 @@ open class TherapistNetworkService(private val apiService: HttpClient) {
     suspend fun doneAppointment(doneAppointmentRequest: DoneAppointmentRequest) =
         apiService.post {
             url("/therapist/appointment/done")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(doneAppointmentRequest)
         }.body<ServerResponse>().toSingle()
@@ -49,9 +40,6 @@ open class TherapistNetworkService(private val apiService: HttpClient) {
     suspend fun archiveAppointment(archiveAppointmentRequest: ArchiveAppointmentRequest) =
         apiService.post {
             url("/therapist/appointment/archive")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(archiveAppointmentRequest)
         }.body<ServerResponse>().toSingle()

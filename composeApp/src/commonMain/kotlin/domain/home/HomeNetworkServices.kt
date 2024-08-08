@@ -16,9 +16,6 @@ open class HomeNetworkService(private val apiService: HttpClient) {
     suspend fun getHomePage(getHomeRequest: GetHomeRequest) =
         apiService.post {
             url("/home")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(getHomeRequest)
         }.body<HomePageResponse>().toSingle()
@@ -26,9 +23,6 @@ open class HomeNetworkService(private val apiService: HttpClient) {
     suspend fun getHomePageWithStatus(getHomeRequestWithStatus: GetHomeRequestWithStatus) =
         apiService.post {
             url("/home/status")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(getHomeRequestWithStatus)
         }.body<HomePageWithStatusResponse>().toSingle()

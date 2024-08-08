@@ -15,9 +15,6 @@ open class OrderNetworkService(private val apiService: HttpClient) {
     suspend fun getUserOrders(getOrderRequest: GetOrderRequest, nextPage: Int = 1) =
         apiService.post {
             url("/orders/get?page=$nextPage")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(getOrderRequest)
         }.body<OrderListDataResponse>().toSingle()

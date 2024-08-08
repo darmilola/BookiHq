@@ -18,9 +18,6 @@ open class AppointmentNetworkService(private val apiService: HttpClient) {
     suspend fun getAppointments(getAppointmentRequest: GetAppointmentRequest, nextPage: Int = 1) =
         apiService.post {
             url("/appointments?page=$nextPage")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(getAppointmentRequest)
         }.body<AppointmentListDataResponse>().toSingle()
@@ -28,9 +25,6 @@ open class AppointmentNetworkService(private val apiService: HttpClient) {
     suspend fun postponeAppointment(postponeAppointmentRequest: PostponeAppointmentRequest) =
         apiService.post {
             url("/services/appointment/postpone")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(postponeAppointmentRequest)
         }.body<ServerResponse>().toSingle()
@@ -38,9 +32,6 @@ open class AppointmentNetworkService(private val apiService: HttpClient) {
     suspend fun deleteAppointment(deleteAppointmentRequest: DeleteAppointmentRequest) =
         apiService.post {
             url("/services/appointment/delete")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(deleteAppointmentRequest)
         }.body<ServerResponse>().toSingle()
@@ -48,9 +39,6 @@ open class AppointmentNetworkService(private val apiService: HttpClient) {
     suspend fun joinMeeting(joinMeetingRequest: JoinMeetingRequest) =
         apiService.post {
             url("/appointment/meeting/join")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(joinMeetingRequest)
         }.body<JoinMeetingResponse>().toSingle()
@@ -58,9 +46,6 @@ open class AppointmentNetworkService(private val apiService: HttpClient) {
     suspend fun getTherapistAvailability(getTherapistAvailabilityRequest: GetTherapistAvailabilityRequest) =
         apiService.post {
             url("/services/therapist/availability")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(getTherapistAvailabilityRequest)
         }.body<TherapistAvailabilityResponse>().toSingle()

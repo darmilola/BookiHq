@@ -18,9 +18,6 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
     suspend fun updateProfile(updateProfileRequest: UpdateProfileRequest) =
         apiService.post {
             url("/auth/user/profile/update")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(updateProfileRequest)
         }.body<ServerResponse>().toSingle()
@@ -28,9 +25,6 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
     suspend fun deleteProfile(deleteProfileRequest: DeleteProfileRequest) =
         apiService.post {
             url("/auth/user/profile/delete")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(deleteProfileRequest)
         }.body<ServerResponse>().toSingle()
@@ -39,9 +33,6 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
     suspend fun getVendorAvailableTimes(getVendorAvailabilityRequest: GetVendorAvailabilityRequest) =
         apiService.post {
             url("/profile/vendor/availability/get")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(getVendorAvailabilityRequest)
         }.body<VendorAvailabilityResponse>().toSingle()
@@ -49,9 +40,6 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
     suspend fun getPlatformCities(getPlatformCitiesRequest: GetPlatformCitiesRequest) =
         apiService.post {
             url("/platform/city/get")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(getPlatformCitiesRequest)
         }.body<PlatformCountryCitiesResponse>().toSingle()
@@ -59,9 +47,6 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
     suspend fun createMeeting(createMeetingRequest: CreateMeetingRequest) =
         apiService.post {
             url("/appointment/meeting/create")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(createMeetingRequest)
         }.body<ServerResponse>().toSingle()
@@ -69,9 +54,6 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
     suspend fun switchVendor(switchVendorRequest: SwitchVendorRequest) =
         apiService.post {
             url("/profile/vendor/switch")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(switchVendorRequest)
         }.body<ServerResponse>().toSingle()
@@ -79,9 +61,6 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
     suspend fun getVendorInfo(getVendorInfoRequest: GetVendorInfoRequest) =
         apiService.post {
             url("/vendor/account/get")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(getVendorInfoRequest)
         }.body<VendorAccountResponse>().toSingle()
@@ -89,9 +68,6 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
     suspend fun joinSpa(joinSpaRequest: JoinSpaRequest) =
         apiService.post {
             url("/vendor/therapist/add")
-            /*headers {
-                append(HttpHeaders.Authorization, "abc123")
-            }*/
             contentType(ContentType.Application.Json)
             setBody(joinSpaRequest)
         }.body<ServerResponse>().toSingle()
