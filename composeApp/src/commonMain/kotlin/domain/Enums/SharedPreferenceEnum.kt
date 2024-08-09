@@ -3,6 +3,7 @@ package domain.Enums
 enum class SharedPreferenceEnum {
 
     COUNTRY,
+    CITY,
     PROFILE_ID,
     FIRSTNAME,
     VENDOR_ID,
@@ -16,6 +17,7 @@ enum class SharedPreferenceEnum {
 
     fun toPath() = when (this) {
         COUNTRY -> "country"
+        CITY -> "city"
         PROFILE_ID -> "profileId"
         FIRSTNAME -> "firstname"
         VENDOR_ID -> "vendorId"

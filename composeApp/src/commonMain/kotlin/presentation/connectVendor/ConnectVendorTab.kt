@@ -37,6 +37,7 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import domain.Enums.Screens
+import domain.Enums.SharedPreferenceEnum
 import domain.Models.PlatformNavigator
 import domain.Models.Vendor
 import domain.Models.VendorItemUIModel
@@ -67,8 +68,8 @@ class ConnectVendorTab(val platformNavigator: PlatformNavigator? = null) : Tab, 
     private var connectPageViewModel: ConnectPageViewModel? = null
     @Transient
     private var vendorResourceListEnvelopeViewModel: VendorsResourceListEnvelopeViewModel? = null
-    @Transient
     private var country: String = ""
+    private var city: String = ""
     @Transient
     private val preferenceSettings: Settings = Settings()
     @Transient
@@ -97,7 +98,8 @@ class ConnectVendorTab(val platformNavigator: PlatformNavigator? = null) : Tab, 
         val contentLoading = remember { mutableStateOf(false) }
         val errorVisible = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
-        country = preferenceSettings["country", ""]
+        country = preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""]
+        city = preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""]
 
         if (vendorResourceListEnvelopeViewModel == null) {
             vendorResourceListEnvelopeViewModel = kmpViewModel(
@@ -114,7 +116,7 @@ class ConnectVendorTab(val platformNavigator: PlatformNavigator? = null) : Tab, 
                 },
             )
             vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-            connectVendorPresenter.getVendor(country = country)
+            connectVendorPresenter.getVendor(country = country, city = city)
         }
 
         if (connectPageViewModel == null) {
@@ -190,10 +192,10 @@ class ConnectVendorTab(val platformNavigator: PlatformNavigator? = null) : Tab, 
                     SearchBar(placeholderText = "search @vendor", onValueChange = {
                         vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                         searchQuery.value = it
-                        connectVendorPresenter.searchVendor(country, searchQuery = it)
+                        connectVendorPresenter.searchVendor(country,city, searchQuery = it)
                     }, onBackPressed = {
                         vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
-                        connectVendorPresenter.getVendor(country = country)
+                        connectVendorPresenter.getVendor(country = country, city = city)
                     })
                 }
             },
@@ -253,12 +255,14 @@ class ConnectVendorTab(val platformNavigator: PlatformNavigator? = null) : Tab, 
                                         if (searchQuery.value.isNotEmpty()) {
                                             connectVendorPresenter.searchMoreVendors(
                                                 country,
+                                                city,
                                                 searchQuery.value,
                                                 vendorResourceListEnvelopeViewModel?.currentPage?.value!! + 1
                                             )
                                         } else {
                                             connectVendorPresenter.getMoreVendor(
                                                 country,
+                                                city,
                                                 vendorResourceListEnvelopeViewModel?.currentPage?.value!! + 1
                                             )
                                         }

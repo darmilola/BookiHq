@@ -203,7 +203,7 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
             connectVendor = { user -> },
             onVerificationStarted = {},
             onVerificationEnded = {}, onCompleteStarted = {}, onCompleteEnded = {},
-            connectVendorOnProfileCompleted = { country, profileId, apiKey -> },
+            connectVendorOnProfileCompleted = { country,city,profileId, apiKey -> },
             onUpdateStarted = {
                  updateProfileStarted.value = true
                  updateProfileEnded.value = false

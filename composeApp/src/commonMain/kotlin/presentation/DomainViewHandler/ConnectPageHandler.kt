@@ -54,7 +54,7 @@ class ConnectPageHandler(
             vendors.totalItemCount?.let { vendorResourceListEnvelopeViewModel.setTotalItemCount(it) }
             vendors.displayedItemCount?.let { vendorResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
         } else {
-            vendorResourceListEnvelopeViewModel.setResources(vendors?.resources)
+            vendorResourceListEnvelopeViewModel.setResources(vendors?.resources!!.toMutableList())
             vendors?.prevPageUrl?.let { vendorResourceListEnvelopeViewModel.setPrevPageUrl(it) }
             vendors?.nextPageUrl?.let { vendorResourceListEnvelopeViewModel.setNextPageUrl(it) }
             vendors?.currentPage?.let { vendorResourceListEnvelopeViewModel.setCurrentPage(it) }

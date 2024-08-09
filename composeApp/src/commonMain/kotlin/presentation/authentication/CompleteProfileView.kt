@@ -127,8 +127,9 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
             completeProfileInProgress.value = true
         }, onCompleteEnded = { isSuccessful -> completeProfileInProgress.value = false },
         connectVendorOnProfileCompleted = {
-                country, profileId, apiKey ->
+                country,city, profileId, apiKey ->
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = country
+                preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = city
                 preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = profileId
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = apiKey
                 navigateToConnectVendor.value = true

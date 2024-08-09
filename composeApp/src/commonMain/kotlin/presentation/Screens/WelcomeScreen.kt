@@ -95,6 +95,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
         onUserLocationReady = {},
         enterPlatform = { user, vendorWhatsAppPhone ->
             preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
+            preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
             preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
             preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
             preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
@@ -112,6 +113,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
         },
         connectVendor = { user ->
             preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
+            preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
             preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
             preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
             preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
@@ -127,7 +129,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
             userEmailFromGoogleAuth.value = ""
             verificationInProgress.value = false
         }, onCompleteStarted = {}, onCompleteEnded = {},
-        connectVendorOnProfileCompleted = { country, profileId, apiKey -> },
+        connectVendorOnProfileCompleted = { country,city,profileId, apiKey -> },
         onUpdateStarted = {}, onUpdateEnded = {})
     handler.init()
 

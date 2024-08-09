@@ -97,6 +97,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
             onUserLocationReady = {},
             enterPlatform = { user, vendorWhatsAppPhone ->
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
+                preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
                 preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
                 preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
@@ -117,6 +118,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                 preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.PHONE.toPath()
                 preferenceSettings[SharedPreferenceEnum.AUTH_PHONE.toPath()] = user.authPhone
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
+                preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
                 preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
                 navigateToConnectVendor.value = true
@@ -126,7 +128,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
             },
             onVerificationEnded = {
                 verificationInProgress.value = false
-            }, onCompleteStarted = {}, onCompleteEnded = {},connectVendorOnProfileCompleted = { country, profileId, apiKey -> },
+            }, onCompleteStarted = {}, onCompleteEnded = {},connectVendorOnProfileCompleted = { country,city, profileId, apiKey -> },
             onUpdateStarted = {}, onUpdateEnded = {})
         handler.init()
 

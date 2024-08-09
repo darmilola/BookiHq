@@ -50,6 +50,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
         onUserLocationReady = {},
         enterPlatform = { user, whatsAppPhone ->
             preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
+            preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
             preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
             preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
             preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
@@ -62,6 +63,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
         },
         connectVendor = { user ->
             preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
+            preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
             preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
             preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
             preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
@@ -70,7 +72,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
         },
         onVerificationStarted = {},
         onVerificationEnded = {}, onCompleteStarted = {}, onCompleteEnded = {},
-        connectVendorOnProfileCompleted = { _,_,_ ->}, onUpdateStarted = {}, onUpdateEnded = {})
+        connectVendorOnProfileCompleted = { _,_,_,_ ->}, onUpdateStarted = {}, onUpdateEnded = {})
     handler.init()
 
     if (navigateToConnectVendor.value){

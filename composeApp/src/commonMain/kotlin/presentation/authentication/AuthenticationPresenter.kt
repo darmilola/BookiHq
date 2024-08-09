@@ -38,7 +38,7 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.onCompleteProfileDone(country, result.profileId, result.apiKey)
+                                    contractView?.onCompleteProfileDone(country,city, result.profileId, result.apiKey)
                                 }
                                 else{
                                     contractView?.onCompleteProfileError()

@@ -203,9 +203,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                 return@OnCompleteListener
             }
             val token = task.result
-            val myEdit: SharedPreferences.Editor = preferences!!.edit()
-            myEdit.putString("fcmToken",token)
-            myEdit.apply()
+            val tokenEdit: SharedPreferences.Editor = preferences!!.edit()
+            tokenEdit.putString("fcmToken",token)
+            tokenEdit.apply()
         })
 
         Thread {
@@ -488,9 +488,31 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     }
 
     override fun getUserLocation(onLocationReady: (String, String) -> Unit) {
-        println("Requested")
         if (hasNetwork) {
-               requestNetworkLocation()
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestPermissionLauncher!!.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+            else {
+                locationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER,
+                    5000,
+                    0F,
+                    networkLocationListener!!
+                )
+                val lastKnownLocationByNetwork =
+                    locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+
+                lastKnownLocationByNetwork?.let {
+                    onLocationReady(lastKnownLocationByNetwork.latitude.toString(), lastKnownLocationByNetwork.longitude.toString())
+                }
+            }
             }
         sharedPreferenceChangeListener = OnSharedPreferenceChangeListener { sharedPreferences, s ->
             val latitude = sharedPreferences.getString("latitude","")
@@ -501,35 +523,6 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             }
         }
         preferences!!.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
-    }
-
-    private fun requestNetworkLocation() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissionLauncher!!.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
-        else {
-            locationManager.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER,
-                5000,
-                0F,
-                networkLocationListener!!
-            )
-            val lastKnownLocationByNetwork =
-                locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-
-            lastKnownLocationByNetwork?.let {
-                locationAuthPreferences!!.putString("latitude",lastKnownLocationByNetwork.latitude.toString())
-                locationAuthPreferences!!.putString("longitude",lastKnownLocationByNetwork.longitude.toString())
-                locationAuthPreferences!!.apply()
-            }
-        }
     }
 
 }
