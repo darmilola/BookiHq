@@ -69,10 +69,8 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                     connectVendorRepositoryImpl.getVendor(country, city)
                         .subscribe(
                             onSuccess = { result ->
-                                userLatitude = preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), "0.0"].toDouble()
-                                userLongitude = preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), "0.0"].toDouble()
-                                println("Lat $userLatitude")
-                                println("long $userLongitude")
+                               userLatitude =  preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), "0.0"].toDouble()
+                               userLongitude =  preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), "0.0"].toDouble()
                                 if (result.status == "success"){
                                     val updatedVendorDistance = result.listItem.resources!!.map { vendor ->
                                         val distance = getDistanceFromCustomer(userLat = userLatitude, userLong = userLongitude, vendorLat = vendor.latitude, vendorLong = vendor.longitude)
@@ -80,7 +78,6 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                                         vendor
                                     }
                                     result.listItem.resources = updatedVendorDistance
-                                    println(result.listItem.resources)
                                     contractView?.showLce(ScreenUIStates(contentVisible = true))
                                     contractView?.showVendors(result.listItem)
                                 }
@@ -108,7 +105,15 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                     connectVendorRepositoryImpl.getVendor(country,city,nextPage)
                         .subscribe(
                             onSuccess = { result ->
+                                userLatitude =  preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), "0.0"].toDouble()
+                                userLongitude =  preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), "0.0"].toDouble()
                                 if (result.status == "success"){
+                                    val updatedVendorDistance = result.listItem.resources!!.map { vendor ->
+                                        val distance = getDistanceFromCustomer(userLat = userLatitude, userLong = userLongitude, vendorLat = vendor.latitude, vendorLong = vendor.longitude)
+                                        vendor.distanceFromCustomer = distance
+                                        vendor
+                                    }
+                                    result.listItem.resources = updatedVendorDistance
                                     contractView?.onLoadMoreVendorEnded(true)
                                     contractView?.showVendors(result.listItem)
                                 }
@@ -136,7 +141,15 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                     connectVendorRepositoryImpl.searchVendor(country,city,searchQuery)
                         .subscribe(
                             onSuccess = { result ->
+                                userLatitude =  preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), "0.0"].toDouble()
+                                userLongitude =  preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), "0.0"].toDouble()
                                 if (result.status == "success"){
+                                    val updatedVendorDistance = result.listItem.resources!!.map { vendor ->
+                                        val distance = getDistanceFromCustomer(userLat = userLatitude, userLong = userLongitude, vendorLat = vendor.latitude, vendorLong = vendor.longitude)
+                                        vendor.distanceFromCustomer = distance
+                                        vendor
+                                    }
+                                    result.listItem.resources = updatedVendorDistance
                                     contractView?.showLce(ScreenUIStates(contentVisible = true))
                                     contractView?.showVendors(result.listItem, isFromSearch = true)
                                 }
@@ -164,7 +177,15 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                     connectVendorRepositoryImpl.searchVendor(country,city,searchQuery,nextPage)
                         .subscribe(
                             onSuccess = { result ->
+                                userLatitude =  preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), "0.0"].toDouble()
+                                userLongitude =  preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), "0.0"].toDouble()
                                 if (result.status == "success"){
+                                    val updatedVendorDistance = result.listItem.resources!!.map { vendor ->
+                                        val distance = getDistanceFromCustomer(userLat = userLatitude, userLong = userLongitude, vendorLat = vendor.latitude, vendorLong = vendor.longitude)
+                                        vendor.distanceFromCustomer = distance
+                                        vendor
+                                    }
+                                    result.listItem.resources = updatedVendorDistance
                                     contractView?.onLoadMoreVendorEnded(true)
                                     contractView?.showVendors(result.listItem, isFromSearch = true)
                                 }

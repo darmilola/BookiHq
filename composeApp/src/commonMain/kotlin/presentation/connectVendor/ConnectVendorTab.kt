@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
@@ -36,6 +37,7 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
+import com.russhwolf.settings.set
 import domain.Enums.Screens
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.PlatformNavigator
@@ -57,7 +59,7 @@ import presentation.widgets.SwitchVendorBottomSheet
 import theme.Colors
 
 @Parcelize
-class ConnectVendorTab(val platformNavigator: PlatformNavigator? = null) : Tab, KoinComponent, Parcelable {
+class ConnectVendorTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
 
 
     @Transient
@@ -115,8 +117,6 @@ class ConnectVendorTab(val platformNavigator: PlatformNavigator? = null) : Tab, 
                     UIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
-            vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-            connectVendorPresenter.getVendor(country = country, city = city)
         }
 
         if (connectPageViewModel == null) {
@@ -126,6 +126,23 @@ class ConnectVendorTab(val platformNavigator: PlatformNavigator? = null) : Tab, 
                 },
             )
         }
+
+        LifecycleEffect(onStarted = {
+            if (preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), ""].isNotEmpty()
+                && preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""].isNotEmpty()){
+                connectVendorPresenter.getVendor(country = country, city = city)
+                vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+            }
+            else{
+                platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String ->
+                    preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
+                    preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
+                    connectVendorPresenter.getVendor(country = country, city = city)
+                    vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                })
+            }
+
+        }, onDisposed = {})
 
         val loadMoreState = vendorResourceListEnvelopeViewModel!!.isLoadingMore.collectAsState()
         val vendorList = vendorResourceListEnvelopeViewModel?.resources?.collectAsState()

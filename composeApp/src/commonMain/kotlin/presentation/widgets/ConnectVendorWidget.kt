@@ -289,7 +289,7 @@ fun BusinessInfoContent(vendor: Vendor, isViewOnly: Boolean = false, onConnected
                             .size(24.dp)
                         ImageComponent(
                             imageModifier = modifier,
-                            imageRes = "drawable/home_service.png",
+                            imageRes = "drawable/mobile_service.png",
                             colorFilter = ColorFilter.tint(color = Colors.primaryColor)
                         )
                     }

@@ -110,14 +110,11 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
         LifecycleEffect(onStarted = {
             if (preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), ""].isNotEmpty()
                 && preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""].isNotEmpty()){
-                println(preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), ""])
-                println(preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""])
                 connectVendorPresenter.getVendor(country = country, city = city)
                 vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
             }
             else{
-                platformNavigator.getUserLocation(onLocationReady = { longitude: String, latitude: String ->
-                    println("Ready Location $latitude $longitude")
+                platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String ->
                     preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
                     preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
                     connectVendorPresenter.getVendor(country = country, city = city)

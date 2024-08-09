@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -111,19 +112,39 @@ import presentations.components.TextComponent
                     maxLines = 2,
                     textModifier = modifier)
 
+                Row(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
 
-                TextComponent(
-                    text = "@"+vendor.businessHandle,
-                    fontSize = 14,
-                    fontFamily = GGSansRegular,
-                    textStyle = TextStyle(),
-                    textColor = Colors.primaryColor,
-                    textAlign = TextAlign.Right,
-                    fontWeight = FontWeight.Normal,
-                    lineHeight = 30,
-                    textModifier = Modifier
-                        .padding(end = 10.dp, top = 10.dp)
-                        .wrapContentSize())
+                    TextComponent(
+                        text = "@"+vendor.businessHandle,
+                        fontSize = 14,
+                        fontFamily = GGSansRegular,
+                        textStyle = TextStyle(),
+                        textColor = Colors.primaryColor,
+                        textAlign = TextAlign.Right,
+                        fontWeight = FontWeight.Normal,
+                        lineHeight = 30,
+                        textModifier = Modifier
+                            .padding(end = 20.dp, top = 10.dp)
+                            .wrapContentSize())
+
+                    val modifier = Modifier
+                        .padding(top = 10.dp)
+                        .size(20.dp)
+                    ImageComponent(imageModifier = modifier, imageRes = "drawable/location_icon_filled.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+                    TextComponent(
+                        text = vendor.distanceFromCustomer!!.toInt().toString() +" KM Away",
+                        fontSize = 14,
+                        fontFamily = GGSansRegular,
+                        textStyle = TextStyle(),
+                        textColor = Colors.primaryColor,
+                        textAlign = TextAlign.Right,
+                        fontWeight = FontWeight.Normal,
+                        lineHeight = 30,
+                        textModifier = Modifier
+                            .padding(end = 20.dp, top = 10.dp)
+                            .wrapContentSize())
+
+                }
                 Box(modifier = Modifier.fillMaxWidth().height(15.dp), contentAlignment = Alignment.BottomCenter) {
                     StraightLine()
                 }

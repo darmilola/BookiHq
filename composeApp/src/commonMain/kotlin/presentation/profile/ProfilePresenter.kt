@@ -175,7 +175,7 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                         .subscribe(
                             onSuccess = { result ->
                                 if (result?.status == ServerResponseEnum.SUCCESS.toPath()){
-                                    //platformNavigator.sendCustomerExitNotification(exitReason = exitReason, vendorLogoUrl = vendor.businessLogo!!, fcmToken = vendor.fcmToken!!)
+                                    platformNavigator.sendCustomerExitNotification(exitReason = exitReason, vendorLogoUrl = vendor.businessLogo!!, fcmToken = vendor.fcmToken!!)
                                     switchVendorContract?.showActionLce(ActionUIStates(isSuccess = true))
                                 }
                                 else{
