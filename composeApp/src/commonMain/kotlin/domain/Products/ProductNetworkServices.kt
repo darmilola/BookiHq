@@ -36,7 +36,7 @@ open class ProductNetworkService(private val apiService: HttpClient) {
 
     suspend fun getProductType(getProductTypeRequest: GetProductTypeRequest,nextPage: Int = 1) =
         apiService.post {
-            url("/vendor/product/get/type?page=$nextPage")
+            url("/products?page=$nextPage")
             contentType(ContentType.Application.Json)
             setBody(getProductTypeRequest)
         }.body<ProductListDataResponse>().toSingle()

@@ -17,6 +17,7 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
         userId: Long,
         nextPage: Int
     ): Single<AppointmentListDataResponse> {
+        println(userId)
         val param = GetAppointmentRequest(userId)
         return appointmentNetworkService.getAppointments(param, nextPage)
     }

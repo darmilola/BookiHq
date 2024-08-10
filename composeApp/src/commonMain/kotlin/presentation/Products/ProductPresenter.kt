@@ -143,6 +143,7 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                     productRepositoryImpl.getProductsByType(vendorId, productType)
                         .subscribe(
                             onSuccess = { response ->
+                                println("Result $response")
                                 if (response.status == "success") {
                                     contractView?.showLce(ScreenUIStates(contentVisible = true, loadingVisible = false))
                                     contractView?.showProducts(response.listItem)
@@ -152,12 +153,14 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                                 }
                             },
                             onError = {
+                                println("Result 2 ${it.message}")
                                 contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = it.message.toString()))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
+                println("Result32 ${e.message}")
                 contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = e.message.toString()))
             }
         }

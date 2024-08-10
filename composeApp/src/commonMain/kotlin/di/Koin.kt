@@ -49,6 +49,7 @@ fun initKoin(){
 
 private val KtorModule = module {
     val preferenceSettings = Settings()
+    val apiKey = preferenceSettings.getString(SharedPreferenceEnum.API_KEY.toPath(), "")
     single {
         httpClient {
             defaultRequest {
@@ -57,7 +58,7 @@ private val KtorModule = module {
                     protocol = URLProtocol.HTTPS
                     port = 443
                 }
-                header("Authorization", preferenceSettings.getString(SharedPreferenceEnum.API_KEY.toPath(), ""))
+                header("Authorization", apiKey)
             }
             install(Logging) {
                 level = LogLevel.BODY

@@ -36,6 +36,7 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                     appointmentRepositoryImpl.getAppointments(userId)
                         .subscribe(
                             onSuccess = { result ->
+                                println("Result Here ${result.listItem.totalItemCount}")
                                 when (result.status) {
                                     ServerResponseEnum.SUCCESS.toPath() -> {
                                         contractView?.showLce(ScreenUIStates(contentVisible = true))
@@ -50,14 +51,14 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                                 }
                             },
                             onError = {
-                                println("Error 1 ${it.message}")
+                                println("Result 2 ${it.message}")
                                 contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Error 2 ${e.message}")
+                println("Result 3 ${e.message}")
                 contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
             }
         }
