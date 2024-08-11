@@ -240,10 +240,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                         ) {
                             if (homePageViewModel!!.vendorStatus.value.isNotEmpty()) {
                                 BusinessStatusDisplay(
-                                    statusList = homePageViewModel!!.vendorStatus.value,
-                                    onViewHeightChanged = { _: Float, isStatusExpanded: Boolean ->
-                                        isStatusViewExpanded.value = isStatusExpanded
-                                    })
+                                    statusList = homePageViewModel!!.vendorStatus.value)
                             }
                             if (!vendorServices.isNullOrEmpty()) {
                                 AttachOurServices()
@@ -520,31 +517,13 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
 
     @Composable
-    fun BusinessStatusDisplay(statusList: List<VendorStatusModel>, onViewHeightChanged: (Float, Boolean) -> Unit) {
-        val isStatusExpanded = remember { mutableStateOf(false) }
-
-      /*  val screenSizeInfo = ScreenSizeInfo()
-        val percentChangeExpanded =  1f
-        val percentChangeCollapsed = 0.7f
-
-        val heightAtExpanded =  screenSizeInfo.heightPx * percentChangeExpanded
-        val heightAtCollapsed = screenSizeInfo.heightPx * percentChangeCollapsed
-
-
-        val heightChange: Float by animateFloatAsState(targetValue = if (isStatusExpanded.value) heightAtExpanded else heightAtCollapsed,
-            animationSpec = tween(durationMillis = 600, easing = LinearOutSlowInEasing)
-        )
-
-        onViewHeightChanged(heightChange, isStatusExpanded.value)  */
-
+    fun BusinessStatusDisplay(statusList: List<VendorStatusModel>) {
         val modifier =
             Modifier.fillMaxWidth()
-                .height(600.dp) // heightChange.toInt().pxToDp()
+                .height(800.dp)
                 .background(color = Color.White)
         Box(modifier = modifier, contentAlignment = Alignment.TopCenter) {
-            ShopStatusWidget(statusList, onStatusViewChanged = {
-                    isStatusViewExpanded -> isStatusExpanded.value = isStatusViewExpanded
-            })
+            ShopStatusWidget(statusList)
         }
     }
 }

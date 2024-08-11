@@ -40,6 +40,7 @@ import domain.Models.VideoStatusViewMeta
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import theme.styles.Colors
+import utils.calculateStatusViewHeightPercent
 
 class BusinessStatusItemWidget {
     @Composable
@@ -48,29 +49,29 @@ class BusinessStatusItemWidget {
         vendorStatusModel: VendorStatusModel
     ) {
         val statusImage = vendorStatusModel.statusImage
-        val imageHeight = if (statusImage!!.height > statusImage.width) {
-            1f
-        } else 0.50f
-
+        val heightRatio = calculateStatusViewHeightPercent(height = statusImage!!.height, width = statusImage.width)
         Column(
             modifier = Modifier
-                .padding(top = 5.dp)
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .background(color = Colors.primaryColor),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(imageHeight)) {
-                    ImageComponent(
-                        imageModifier = Modifier.fillMaxSize(),
-                        imageRes = imageUrl,
-                        contentScale = ContentScale.Crop,
-                        isAsync = true
-                    )
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().fillMaxHeight(heightRatio.toFloat()),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        ImageComponent(
+                            imageModifier = Modifier.fillMaxSize(),
+                            imageRes = imageUrl,
+                            contentScale = ContentScale.Crop,
+                            isAsync = true
+                        )
+                    }
                 }
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
                    if (statusImage.caption!!.isNotEmpty()) {
                        Box(
                            modifier = Modifier.fillMaxWidth().wrapContentHeight()
@@ -80,7 +81,6 @@ class BusinessStatusItemWidget {
                            ImageStatusCaption(vendorStatusModel.statusImage)
                        }
                    }
-                }
             }
         }
     }
@@ -124,7 +124,7 @@ class BusinessStatusItemWidget {
                 text = videoModel.caption!!,
                 fontSize = 17, fontFamily = GGSansRegular,
                 textStyle = MaterialTheme.typography.h6,
-                textColor = Colors.darkPrimary,
+                textColor = Color.White,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.ExtraBold,
                 lineHeight = 23,
@@ -141,27 +141,30 @@ class BusinessStatusItemWidget {
         videoModel: StatusVideoModel,
         videoStatusViewMeta: VideoStatusViewMeta
     ) {
-        val videoHeight = if (videoModel.height > videoModel.width) {
-            1f
-        } else 0.50f
+        val heightRatio = calculateStatusViewHeightPercent(height = videoModel.height!!, width = videoModel.width)
 
         Column(
             modifier = Modifier
                 .padding(top = 5.dp)
                 .fillMaxWidth()
+                .background(color = Colors.primaryColor)
                 .fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(videoHeight)) {
-                    VideoPlayer(
-                        modifier = Modifier.fillMaxSize(),
-                        url = videoModel.videoUrl,
-                        videoStatusViewMeta = videoStatusViewMeta
-                    )
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().fillMaxHeight(heightRatio.toFloat()),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        VideoPlayer(
+                            modifier = Modifier.fillMaxSize(),
+                            url = videoModel.videoUrl,
+                            videoStatusViewMeta = videoStatusViewMeta
+                        )
+                    }
                 }
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
                     if (videoModel.caption.isNotEmpty()) {
                         Box(
                             modifier = Modifier.fillMaxWidth().wrapContentHeight()
@@ -173,7 +176,6 @@ class BusinessStatusItemWidget {
                             }
                         }
                     }
-                }
             }
         }
     }

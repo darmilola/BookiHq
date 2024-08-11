@@ -168,3 +168,29 @@ fun calculateVendorServiceTimes(platformTimes: List<PlatformTime>, vendorTimes: 
 
 }
 
+
+fun calculateStatusViewHeightPercent(height: Int, width: Int): Double {
+    var heightRatio = 0.0
+    if (height < width){
+        val difference = width - height
+        var ratio: Double = difference.toDouble()/width.toDouble()
+        if (ratio > 0.40){
+          ratio = 0.2
+        }
+        heightRatio = 0.5 - ratio
+    }
+    else if (height > width){
+        val difference = height - width
+        val ratio: Double = difference.toDouble()/width.toDouble()
+        heightRatio = ratio + 0.5
+        if (heightRatio > 1.00){
+            heightRatio = 1.00
+        }
+    }
+    else{
+        heightRatio = 0.50
+    }
+
+    return heightRatio
+}
+
