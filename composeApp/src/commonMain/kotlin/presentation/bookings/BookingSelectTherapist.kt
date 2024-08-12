@@ -113,8 +113,7 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, uiStateViewModel: UISt
                 }
             }
           }
-
-      }
+     }
 }
 
 

@@ -88,7 +88,7 @@ class BookingScreenHandler(
         bookingViewModel.setPlatformTimes(platformTime)
     }
 
-    override fun showPendingAppointment(pendingAppointments: List<UserAppointment>) {
+    override fun showPendingBookingAppointment(pendingAppointments: List<UserAppointment>) {
         bookingViewModel.setPendingAppointments(pendingAppointments)
     }
 

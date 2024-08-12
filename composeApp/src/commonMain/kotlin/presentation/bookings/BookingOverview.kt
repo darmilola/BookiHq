@@ -49,7 +49,7 @@ fun BookingOverview(mainViewModel: MainViewModel, actionUIStateViewModel: Action
     }
     else if (actionState.value.isSuccess){
         SuccessDialog("success", actionTitle = "", onConfirmation = {
-            bookingPresenter.getPendingAppointment(mainViewModel.currentUserInfo.value.userId!!)
+            bookingPresenter.getPendingBookingAppointment(mainViewModel.currentUserInfo.value.userId!!)
         })
     }
     else if (actionState.value.isFailed){
@@ -88,11 +88,11 @@ fun BookingOverview(mainViewModel: MainViewModel, actionUIStateViewModel: Action
                 modifier = Modifier.fillMaxWidth().fillMaxHeight(0.90f),
                 contentAlignment = Alignment.TopStart
             ) {
-                PopulateAppointmentScreen(appointmentList = pendingAppointments.value,
+                PopulateBookingAppointmentScreen(appointmentList = pendingAppointments.value,
                     onEditItem = {
                         onEditItem(it)
                     }, onDeleteItem = {
-                        bookingPresenter.deletePendingAppointment(it.resources!!.appointmentId!!)
+                        bookingPresenter.deletePendingBookingAppointment(it.resources!!.appointmentId!!)
                     })
             }
 
@@ -127,7 +127,7 @@ fun BookingOverview(mainViewModel: MainViewModel, actionUIStateViewModel: Action
  }
 
 @Composable
-fun PopulateAppointmentScreen(appointmentList: List<UserAppointment>, onDeleteItem: (UserAppointment) -> Unit, onEditItem: (UserAppointment) -> Unit) {
+fun PopulateBookingAppointmentScreen(appointmentList: List<UserAppointment>, onDeleteItem: (UserAppointment) -> Unit, onEditItem: (UserAppointment) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth()
             .height(getAppointmentViewHeight(appointmentList.size).dp),
@@ -135,7 +135,7 @@ fun PopulateAppointmentScreen(appointmentList: List<UserAppointment>, onDeleteIt
     ) {
         itemsIndexed(items = appointmentList) { it, item ->
                 PendingAppointmentWidget(
-                    item!!,
+                    item,
                     onEditAppointment = {
                         onEditItem(it)
                     },

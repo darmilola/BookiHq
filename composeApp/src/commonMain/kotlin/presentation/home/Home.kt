@@ -236,7 +236,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                 .verticalScroll(state = rememberScrollState())
                                 .height(homePageViewHeight.value.dp)
                                 .fillMaxWidth()
-                                .padding(top = 5.dp)
+                                .padding(top = 5.dp, bottom = 100.dp)
 
                         ) {
                             if (!vendorServices.isNullOrEmpty()) {

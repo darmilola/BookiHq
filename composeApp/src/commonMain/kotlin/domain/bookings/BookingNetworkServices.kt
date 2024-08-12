@@ -1,7 +1,7 @@
 package domain.bookings
 
 import com.badoo.reaktive.single.toSingle
-import domain.Models.PendingAppointmentResponse
+import domain.Models.PendingBookingAppointmentResponse
 import domain.Models.ServerResponse
 import domain.Models.ServiceTherapistsResponse
 import io.ktor.client.HttpClient
@@ -28,25 +28,25 @@ open class BookingNetworkService(private val apiService: HttpClient) {
             setBody(createAppointmentRequest)
         }.body<ServerResponse>().toSingle()
 
-    suspend fun createPendingAppointment(createPendingAppointmentRequest: CreatePendingAppointmentRequest) =
+    suspend fun createPendingBookingAppointment(createPendingBookingAppointmentRequest: CreatePendingBookingAppointmentRequest) =
         apiService.post {
-            url("/services/appointment/pending/create")
+            url("/services/appointment/pending/booking/create")
             contentType(ContentType.Application.Json)
-            setBody(createPendingAppointmentRequest)
-        }.body<PendingAppointmentResponse>().toSingle()
+            setBody(createPendingBookingAppointmentRequest)
+        }.body<PendingBookingAppointmentResponse>().toSingle()
 
-    suspend fun getPendingAppointment(getPendingAppointmentRequest: GetPendingAppointmentRequest) =
+    suspend fun getPendingBookingAppointment(getPendingBookingAppointmentRequest: GetPendingBookingAppointmentRequest) =
         apiService.post {
-            url("/services/appointment/pending/get")
+            url("/services/appointment/pending/booking/get")
             contentType(ContentType.Application.Json)
-            setBody(getPendingAppointmentRequest)
-        }.body<PendingAppointmentResponse>().toSingle()
+            setBody(getPendingBookingAppointmentRequest)
+        }.body<PendingBookingAppointmentResponse>().toSingle()
 
-    suspend fun deletePendingAppointment(deletePendingAppointmentRequest: DeletePendingAppointmentRequest) =
+    suspend fun deletePendingBookingAppointment(deletePendingBookingAppointmentRequest: DeletePendingBookingAppointmentRequest) =
         apiService.post {
-            url("/services/appointment/pending/delete")
+            url("/services/appointment/pending/booking/delete")
             contentType(ContentType.Application.Json)
-            setBody(deletePendingAppointmentRequest)
+            setBody(deletePendingBookingAppointmentRequest)
         }.body<ServerResponse>().toSingle()
 
 }

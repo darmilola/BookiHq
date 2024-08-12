@@ -24,6 +24,8 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
     }
 
     override fun getUserHomepageWithStatus(userId: Long, vendorWhatsAppPhone: String) {
+        println("User ID $userId")
+        println(vendorWhatsAppPhone)
         contractView?.showLce(ScreenUIStates(loadingVisible = true))
         scope.launch(Dispatchers.Main) {
             try {
@@ -31,7 +33,7 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
                     homeRepositoryImpl.getUserHomePageWithStatus(userId, vendorWhatsAppPhone)
                         .subscribe(
                             onSuccess = { response ->
-                                println("My response ${response.vendorStatusList}")
+                                println("My response ${response}")
                                 if (response.status == "success") {
                                     contractView?.showLce(ScreenUIStates(contentVisible = true))
                                     contractView?.showHomeWithStatus(response.homepageInfo, response.vendorStatusList)
@@ -62,6 +64,7 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
                     homeRepositoryImpl.getUserHomePage(userId)
                         .subscribe(
                             onSuccess = { response ->
+                                println("Response $response")
                                 if (response.status == "success") {
                                     contractView?.showLce(ScreenUIStates(contentVisible = true))
                                     contractView?.showHome(response.homepageInfo)

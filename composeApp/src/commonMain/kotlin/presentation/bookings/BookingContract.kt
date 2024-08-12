@@ -13,7 +13,7 @@ class BookingContract {
         fun showActionLce(uiState: ActionUIStates, message: String = "")
         fun showCreateAppointmentActionLce(uiState: ActionUIStates, message: String = "")
         fun showTherapists(serviceTherapists: List<ServiceTypeTherapists>, platformTime: List<PlatformTime>, vendorTime: List<VendorTime>)
-        fun showPendingAppointment(pendingAppointments: List<UserAppointment>)
+        fun showPendingBookingAppointment(pendingAppointments: List<UserAppointment>)
         fun showUnsavedAppointment()
     }
 
@@ -22,12 +22,12 @@ class BookingContract {
         abstract fun getUnSavedAppointment()
         abstract fun getServiceTherapists(serviceTypeId: Int, vendorId: Long)
         abstract fun createAppointment(userId: Long, vendorId: Long, paymentAmount: Double, paymentMethod: String, bookingStatus: String, day: Int, month: Int, year: Int)
-        abstract fun getPendingAppointment(userId: Long)
-        abstract fun deletePendingAppointment(pendingAppointmentId: Long)
-        abstract fun silentDeletePendingAppointment(pendingAppointmentId: Long)
-        abstract fun createPendingAppointment(userId: Long, vendorId: Long, serviceId: Int, serviceTypeId: Int, therapistId: Int,
-                                              appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String,
-                                              serviceStatus: String, appointmentType: String,
-                                              paymentAmount: Double, paymentMethod: String, bookingStatus: String)
+        abstract fun getPendingBookingAppointment(userId: Long)
+        abstract fun deletePendingBookingAppointment(pendingAppointmentId: Long)
+        abstract fun silentDeletePendingBookingAppointment(pendingAppointmentId: Long)
+        abstract fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Int, serviceTypeId: Int, therapistId: Int,
+                                                     appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String,
+                                                     serviceStatus: String, appointmentType: String,
+                                                     paymentAmount: Double, paymentMethod: String, bookingStatus: String)
     }
 }

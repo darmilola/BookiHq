@@ -60,4 +60,4 @@ data class VendorAvailabilityResponse(@SerialName("status") val status: String =
                                           @SerialName("platformTimes") val platformTimes: List<PlatformTime>)
 
 @Serializable
-data class PendingAppointmentResponse(@SerialName("status") val status: String = "", @SerialName("message") val message: String = "", @SerialName("appointments") val appointments: List<UserAppointment>? = null)
+data class PendingBookingAppointmentResponse(@SerialName("status") val status: String = "", @SerialName("message") val message: String = "", @SerialName("appointments") val appointments: List<UserAppointment>? = null)

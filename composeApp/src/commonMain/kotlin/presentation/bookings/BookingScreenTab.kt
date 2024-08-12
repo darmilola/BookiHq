@@ -59,6 +59,7 @@ import domain.Enums.AppointmentType
 import domain.Enums.BookingStatus
 import domain.Enums.PaymentMethod
 import domain.Enums.ServiceLocationEnum
+import domain.Enums.ServiceStatusEnum
 import domain.Models.PlatformNavigator
 import domain.Models.UserAppointment
 import kotlinx.serialization.Transient
@@ -261,7 +262,7 @@ class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
                             },
                             onEditItem = {
                                  bookingViewModel!!.setCurrentBooking(it.resources!!)
-                                 bookingPresenter.silentDeletePendingAppointment(it.resources.appointmentId!!)
+                                 bookingPresenter.silentDeletePendingBookingAppointment(it.resources.appointmentId!!)
                                  bookingViewModel!!.setSelectedServiceType(it.resources.serviceTypeItem!!)
                                  bookingViewModel!!.setIsMobileService(it.resources.isMobileService!!)
                                  bookingViewModel!!.setSelectedDay(it.resources.appointmentDay!!)
@@ -327,7 +328,7 @@ class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
 
                     coroutineScope.launch {
                         if (currentPage == 0) {
-                            if (bookingViewModel?.selectedServiceType?.value?.serviceId == -1) {
+                            if (bookingViewModel?.currentAppointmentBooking?.value?.serviceTypeId == -1) {
                                 ShowSnackBar(title = "No Service Selected",
                                     description = "Please Select a Service to proceed",
                                     actionLabel = "",
@@ -347,7 +348,7 @@ class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
                                     snackBarType = SnackBarType.ERROR,
                                     stackedSnackBarHostState,
                                     onActionClick = {})
-                            } else if (bookingViewModel?.currentAppointmentBooking?.value?.platformTime == null) {
+                            } else if (bookingViewModel?.currentAppointmentBooking?.value?.pendingTime == null) {
                                 ShowSnackBar(title = "No Time Selected",
                                     description = "Please Select Appointment Time to proceed",
                                     actionLabel = "",
@@ -369,7 +370,7 @@ class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
     @Composable
     fun AttachBookingPages(pagerState: PagerState, uiStateViewModel: UIStateViewModel, mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, services: Services, onAddMoreServiceClicked:() -> Unit, onLastItemRemoved:() -> Unit, onEditItem: (UserAppointment) -> Unit){
 
-        val  boxModifier =
+        val boxModifier =
             Modifier
                 .padding(top = 5.dp)
                 .background(color = Color.White)
@@ -391,12 +392,12 @@ class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
                     2 -> if(page == pagerState.targetPage) {
                         val userId = mainViewModel.currentUserInfo.value.userId
                         val vendorId = mainViewModel.connectedVendor.value.vendorId
-                        val appointment = bookingViewModel?.currentAppointmentBooking!!.value
+                        val appointment = bookingViewModel.currentAppointmentBooking.value
 
-                        bookingPresenter.createPendingAppointment(userId = userId!!, vendorId = vendorId!!, serviceId = appointment.serviceId, serviceTypeId = appointment.serviceTypeId!!,
+                        bookingPresenter.createPendingBookingAppointment(userId = userId!!, vendorId = vendorId!!, serviceId = appointment.serviceId, serviceTypeId = appointment.serviceTypeId!!,
                             therapistId = appointment.serviceTypeTherapists?.therapistInfo?.therapistId!!, appointmentTime = appointment.pendingTime?.id!!,
                             day = appointment.appointmentDay!!, month = appointment.appointmentMonth!!, year = appointment.appointmentYear!!, serviceLocation = if (appointment.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
-                            serviceStatus = appointment.serviceStatus, appointmentType = AppointmentType.SERVICE.toPath(),
+                            serviceStatus = ServiceStatusEnum.BOOKING.toPath(), appointmentType = AppointmentType.SERVICE.toPath(),
                             paymentAmount = appointment.serviceTypeItem!!.price.toDouble(), paymentMethod = PaymentMethod.CARD_PAYMENT.toPath(), bookingStatus = BookingStatus.PENDING.toPath())
 
                         BookingOverview(

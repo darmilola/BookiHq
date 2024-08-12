@@ -87,8 +87,9 @@ fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo, screenSizeInfo: Sc
     val recommendationsHeight = 450
     val pastAppointmentHeight = pastAppointmentCount * 200
     val upcomingAppointmentHeight = upcomingAppointmentCount * 200
+    val bottomBarPadding = 200
 
-    return servicesHeight + pastAppointmentHeight + recommendationsHeight + statusHeight + upcomingAppointmentHeight
+    return servicesHeight + pastAppointmentHeight + recommendationsHeight + statusHeight + upcomingAppointmentHeight + bottomBarPadding
 }
 
 fun calculateBookingServiceTimes(platformTimes: List<PlatformTime>, vendorTimes: List<VendorTime>, bookedTimes: List<BookedTimes>, day: Int, month: Int, year: Int):

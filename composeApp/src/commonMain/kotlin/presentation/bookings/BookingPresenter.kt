@@ -92,16 +92,16 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
         }
     }
 
-    override fun getPendingAppointment(userId: Long) {
+    override fun getPendingBookingAppointment(userId: Long) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showScreenLce(ScreenUIStates(loadingVisible = true))
-                    bookingRepositoryImpl.getPendingAppointment(userId)
+                    bookingRepositoryImpl.getPendingBookingAppointment(userId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showPendingAppointment(result.appointments!!)
+                                    contractView?.showPendingBookingAppointment(result.appointments!!)
                                     contractView?.showScreenLce(ScreenUIStates(contentVisible = true))
                                 }
                                 else{
@@ -120,12 +120,12 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
         }
     }
 
-    override fun deletePendingAppointment(pendingAppointmentId: Long) {
+    override fun deletePendingBookingAppointment(pendingAppointmentId: Long) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showActionLce(ActionUIStates(isLoading = true))
-                    bookingRepositoryImpl.deletePendingAppointment(pendingAppointmentId)
+                    bookingRepositoryImpl.deletePendingBookingAppointment(pendingAppointmentId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
@@ -147,12 +147,12 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
         }
     }
 
-    override fun silentDeletePendingAppointment(pendingAppointmentId: Long) {
+    override fun silentDeletePendingBookingAppointment(pendingAppointmentId: Long) {
         println(pendingAppointmentId)
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    bookingRepositoryImpl.deletePendingAppointment(pendingAppointmentId)
+                    bookingRepositoryImpl.deletePendingBookingAppointment(pendingAppointmentId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){}
@@ -167,21 +167,21 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
     }
 
 
-    override fun createPendingAppointment(userId: Long, vendorId: Long, serviceId: Int, serviceTypeId: Int, therapistId: Int,
-                                    appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String,
-                                    serviceStatus: String, appointmentType: String,
-                                    paymentAmount: Double, paymentMethod: String, bookingStatus: String) {
+    override fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Int, serviceTypeId: Int, therapistId: Int,
+                                                 appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String,
+                                                 serviceStatus: String, appointmentType: String,
+                                                 paymentAmount: Double, paymentMethod: String, bookingStatus: String) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showScreenLce(ScreenUIStates(loadingVisible = true))
-                    bookingRepositoryImpl.createPendingAppointment(userId, vendorId, serviceId, serviceTypeId, therapistId, appointmentTime,
+                    bookingRepositoryImpl.createPendingBookingAppointment(userId, vendorId, serviceId, serviceTypeId, therapistId, appointmentTime,
                         day, month, year, serviceLocation, serviceStatus, appointmentType, paymentAmount, paymentMethod, bookingStatus)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     contractView?.showScreenLce(ScreenUIStates(contentVisible = true))
-                                    contractView?.showPendingAppointment(result.appointments!!)
+                                    contractView?.showPendingBookingAppointment(result.appointments!!)
                                 }
                                 else{
                                     contractView?.showScreenLce(ScreenUIStates(errorOccurred = true))

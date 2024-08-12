@@ -99,7 +99,7 @@ fun leftTopBarItem(pagerState: PagerState, mainViewModel: MainViewModel, booking
                     val lastItem = bookingViewModel.pendingAppointments.value[0]
                     if (lastItem != null) {
                         bookingViewModel!!.setCurrentBooking(lastItem.resources!!)
-                        bookingPresenter.silentDeletePendingAppointment(lastItem.resources.appointmentId!!)
+                        bookingPresenter.silentDeletePendingBookingAppointment(lastItem.resources.appointmentId!!)
                         bookingViewModel!!.setSelectedServiceType(lastItem.resources.serviceTypeItem!!)
                         bookingViewModel!!.setIsMobileService(lastItem.resources.isMobileService!!)
                         bookingViewModel!!.setSelectedDay(lastItem.resources.appointmentDay!!)

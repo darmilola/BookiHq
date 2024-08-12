@@ -1,8 +1,7 @@
 package domain.bookings
 
 import com.badoo.reaktive.single.Single
-import domain.Enums.BookingStatus
-import domain.Models.PendingAppointmentResponse
+import domain.Models.PendingBookingAppointmentResponse
 import domain.Models.ServerResponse
 import domain.Models.ServiceTherapistsResponse
 import io.ktor.client.HttpClient
@@ -19,12 +18,12 @@ class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
         return bookingNetworkService.getTherapists(param)
     }
 
-    override suspend fun createPendingAppointment(userId: Long, vendorId: Long, serviceId: Int, serviceTypeId: Int, therapistId: Int,
-                                                  appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, serviceStatus: String,
-                                                  appointmentType: String, paymentAmount: Double, paymentMethod: String, bookingStatus: String): Single<PendingAppointmentResponse> {
-        val param = CreatePendingAppointmentRequest(userId, vendorId, serviceId, serviceTypeId, therapistId,
+    override suspend fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Int, serviceTypeId: Int, therapistId: Int,
+                                                         appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, serviceStatus: String,
+                                                         appointmentType: String, paymentAmount: Double, paymentMethod: String, bookingStatus: String): Single<PendingBookingAppointmentResponse> {
+        val param = CreatePendingBookingAppointmentRequest(userId, vendorId, serviceId, serviceTypeId, therapistId,
             appointmentTime, day, month, year, serviceLocation, serviceStatus, appointmentType, bookingStatus, paymentMethod)
-        return bookingNetworkService.createPendingAppointment(param)
+        return bookingNetworkService.createPendingBookingAppointment(param)
     }
 
     override suspend fun createAppointment(
@@ -41,14 +40,14 @@ class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
         return bookingNetworkService.createAppointment(param)
     }
 
-    override suspend fun getPendingAppointment(userId: Long): Single<PendingAppointmentResponse> {
-        val param = GetPendingAppointmentRequest(userId)
-        return bookingNetworkService.getPendingAppointment(param)
+    override suspend fun getPendingBookingAppointment(userId: Long): Single<PendingBookingAppointmentResponse> {
+        val param = GetPendingBookingAppointmentRequest(userId)
+        return bookingNetworkService.getPendingBookingAppointment(param)
     }
 
-    override suspend fun deletePendingAppointment(pendingAppointmentId: Long): Single<ServerResponse> {
-        val param = DeletePendingAppointmentRequest(pendingAppointmentId)
-        return bookingNetworkService.deletePendingAppointment(param)
+    override suspend fun deletePendingBookingAppointment(pendingAppointmentId: Long): Single<ServerResponse> {
+        val param = DeletePendingBookingAppointmentRequest(pendingAppointmentId)
+        return bookingNetworkService.deletePendingBookingAppointment(param)
     }
 
 }
