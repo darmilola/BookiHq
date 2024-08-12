@@ -95,7 +95,7 @@ fun VendorLogo(imageUrl: String, onVendorLogoClicked: () -> Unit) {
                 .padding(2.dp)
                 .clip(CircleShape)
                 .border(
-                    width = 0.2.dp,
+                    width = 0.4.dp,
                     color = Color.White,
                     shape = CircleShape)
                 .fillMaxSize()

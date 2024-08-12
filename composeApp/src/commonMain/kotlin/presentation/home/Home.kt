@@ -67,6 +67,7 @@ import domain.Models.OrderItem
 import domain.Models.PlatformNavigator
 import domain.Models.Product
 import domain.Models.Services
+import domain.Models.Vendor
 import domain.Models.VendorStatusModel
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
@@ -238,13 +239,12 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                 .padding(top = 5.dp)
 
                         ) {
-                            if (homePageViewModel!!.vendorStatus.value.isNotEmpty()) {
-                                BusinessStatusDisplay(
-                                    statusList = homePageViewModel!!.vendorStatus.value)
-                            }
                             if (!vendorServices.isNullOrEmpty()) {
                                 AttachOurServices()
                                 ServiceGridScreen(vendorServices)
+                            }
+                            if (homePageViewModel!!.vendorStatus.value.isNotEmpty()) {
+                                BusinessStatusDisplay(statusList = homePageViewModel!!.vendorStatus.value, vendorInfo = mainViewModel!!.connectedVendor.value)
                             }
                             if (!upcomingAppointments.isNullOrEmpty()) {
                                 AttachAppointmentsTitle("Upcoming")
@@ -517,13 +517,13 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
 
     @Composable
-    fun BusinessStatusDisplay(statusList: List<VendorStatusModel>) {
+    fun BusinessStatusDisplay(statusList: List<VendorStatusModel>, vendorInfo: Vendor) {
         val modifier =
             Modifier.fillMaxWidth()
                 .height(800.dp)
-                .background(color = Color.White)
-        Box(modifier = modifier, contentAlignment = Alignment.TopCenter) {
-            ShopStatusWidget(statusList)
+                .background(color = Color.Black)
+        Box(modifier = modifier, contentAlignment = Alignment.Center) {
+            ShopStatusWidget(statusList, vendorInfo)
         }
     }
 }

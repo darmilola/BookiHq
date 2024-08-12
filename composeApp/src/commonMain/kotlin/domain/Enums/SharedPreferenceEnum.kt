@@ -6,6 +6,7 @@ enum class SharedPreferenceEnum {
     CITY,
     PROFILE_ID,
     FIRSTNAME,
+    VENDOR_BUSINESS_LOGO,
     VENDOR_ID,
     VENDOR_WHATSAPP_PHONE,
     AUTH_TYPE,
@@ -28,6 +29,7 @@ enum class SharedPreferenceEnum {
         API_KEY -> "apiKey"
         LATITUDE -> "latitude"
         LONGITUDE -> "longitude"
+        VENDOR_BUSINESS_LOGO -> "businessLogo"
 
     }
 

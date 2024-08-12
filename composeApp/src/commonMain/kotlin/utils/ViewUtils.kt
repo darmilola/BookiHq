@@ -12,6 +12,12 @@ import domain.Models.ScreenSizeInfo
 import domain.Models.Services
 import domain.Models.VendorStatusModel
 import domain.Models.VendorTime
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlin.math.ceil
 
 fun getAppointmentViewHeight(
@@ -170,21 +176,101 @@ fun calculateVendorServiceTimes(platformTimes: List<PlatformTime>, vendorTimes: 
 
 
 fun calculateStatusViewHeightPercent(height: Int, width: Int): Double {
-    var heightRatio = 0.0
+    println("Height is $height width is $width")
+    var heightRatio = 0.50 // initial height ratio
     if (height < width){
-        val difference = width - height
-        var ratio: Double = difference.toDouble()/width.toDouble()
-        if (ratio > 0.40){
-          ratio = 0.2
+        val difference = width - height // how much width greater than the height
+        var ratio: Double = difference.toDouble()/width.toDouble() // how much width greater than the height
+        if (ratio > 0.80){
+            ratio = 0.38  // 47% + 50% width more than height
+            heightRatio = 0.5 - ratio
+            return heightRatio
         }
-        heightRatio = 0.5 - ratio
+        else if (ratio > 0.76){
+            ratio = 0.37  // 37% width more than height
+            heightRatio = 0.5 - ratio
+            return heightRatio
+        }
+        else if (ratio > 0.70){
+            ratio = 0.36  // 35% width more than height
+            heightRatio = 0.5 - ratio
+            return heightRatio
+        }
+        else if (ratio > 0.66){
+            ratio = 0.34  // 30% width more than height
+            heightRatio = 0.5 - ratio
+            return heightRatio
+        }
+        else if (ratio > 0.60){
+            ratio = 0.32  // 25% width more than height
+            heightRatio = 0.5 - ratio
+            return heightRatio
+        }
+        else if (ratio > 0.56){
+            ratio = 0.30 // 20%  width more than height
+            heightRatio = 0.5 - ratio
+            return heightRatio
+        }
+        else if (ratio > 0.50){
+            ratio = 0.28  // 15%  width more than height
+            heightRatio = 0.5 - ratio
+            return heightRatio
+        }
+        else if (ratio > 0.46){
+            ratio = 0.24  // 10%  width more than height Almost Square
+            heightRatio = 0.5 - ratio
+            return heightRatio
+        }
+        else if (ratio > 0.40){
+            ratio = 0.22  // 10%  width more than height Almost Square
+            heightRatio = 0.5 - ratio
+            return heightRatio
+        }
+        else if (ratio > 0.36){
+            ratio = 0.20  // 8%  width more than height
+            heightRatio = 0.5 - ratio
+            return heightRatio
+        }
+        else if (ratio > 0.30){
+            ratio = 0.18  // 8%  width more than height
+            heightRatio = 0.5 - ratio
+            return heightRatio
+        }
+        else if (ratio > 0.26){
+            ratio = 0.16  // 6%  width more than height
+            heightRatio = 0.5 - ratio
+            return heightRatio
+        }
+        else if (ratio > 0.20){
+            ratio = 0.14  // 6%  width more than height
+            heightRatio = 0.5 - ratio
+            return heightRatio
+        }
+        else if (ratio > 0.16){
+            ratio = 0.12  // 4%  width more than height
+            heightRatio = 0.5 - ratio
+            return heightRatio
+        }
+        else if (ratio > 0.10){
+            ratio = 0.10  // 2%  width more than height
+            heightRatio = 0.5 - ratio
+            return heightRatio
+        }
+        else{
+            heightRatio = 0.5 - ratio
+        }
+
+
     }
-    else if (height > width){
-        val difference = height - width
-        val ratio: Double = difference.toDouble()/width.toDouble()
-        heightRatio = ratio + 0.5
-        if (heightRatio > 1.00){
-            heightRatio = 1.00
+    else if (height > width) {
+        val difference = height - width // how much height greater than the width
+        val ratio: Double = difference.toDouble()/height.toDouble()
+        heightRatio = ratio + 0.5 // height grow 50% + changes  more than width
+        if (heightRatio > 1.00){  //Perfect Portrait Ratio
+           return 1.00
+        }
+        else {
+            return heightRatio
         }
     }
     else{
@@ -192,5 +278,36 @@ fun calculateStatusViewHeightPercent(height: Int, width: Int): Double {
     }
 
     return heightRatio
+}
+
+fun getDateTimeFromTimeStamp(timeStamp: Long): LocalDateTime {
+    val dt = Instant.fromEpochSeconds(timeStamp)
+        .toLocalDateTime(TimeZone.currentSystemDefault())
+    return dt
+}
+
+fun getStatusDisplayTime(localDateTime: LocalDateTime): String {
+    val hour = localDateTime.hour
+    val minute = localDateTime.minute
+    val minuteText = if (minute < 10) "0$minute" else minute.toString()
+    val currentMoment: Instant = Clock.System.now()
+    var isAm: Boolean
+    var displayHour = 0
+    val today: LocalDate = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault()).date
+    val isToday = today == localDateTime.date
+    if (hour > 12) {
+        isAm = false
+        displayHour = hour - 12
+    } else {
+        isAm = true
+        displayHour = hour
+    }
+    val todayText = if (isToday) {
+        "Today"
+    } else {
+        "Yesterday"
+    }
+    val meridian = if (isAm) "AM" else "PM"
+    return "$displayHour:$minuteText$meridian, $todayText"
 }
 

@@ -41,6 +41,7 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import theme.styles.Colors
 import utils.calculateStatusViewHeightPercent
+import utils.getDateTimeFromTimeStamp
 
 class BusinessStatusItemWidget {
     @Composable
@@ -54,10 +55,12 @@ class BusinessStatusItemWidget {
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .background(color = Colors.primaryColor),
+                .background(color = Color.Black),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+       Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.CenterStart){
+
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Box(
@@ -72,15 +75,16 @@ class BusinessStatusItemWidget {
                         )
                     }
                 }
-                   if (statusImage.caption!!.isNotEmpty()) {
-                       Box(
-                           modifier = Modifier.fillMaxWidth().wrapContentHeight()
-                               .background(color = Color(0x80000000)),
-                           contentAlignment = Alignment.BottomCenter
-                       ) {
-                           ImageStatusCaption(vendorStatusModel.statusImage)
-                       }
-                   }
+                if (statusImage.caption!!.isNotEmpty()) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                            .background(color = Color(0x80000000)),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        ImageStatusCaption(vendorStatusModel.statusImage)
+                    }
+                }
+            }
             }
         }
     }
@@ -147,7 +151,7 @@ class BusinessStatusItemWidget {
             modifier = Modifier
                 .padding(top = 5.dp)
                 .fillMaxWidth()
-                .background(color = Colors.primaryColor)
+                .background(color = Color.Black)
                 .fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
@@ -165,7 +169,7 @@ class BusinessStatusItemWidget {
                         )
                     }
                 }
-                    if (videoModel.caption.isNotEmpty()) {
+                if (videoModel.caption.isNotEmpty()) {
                         Box(
                             modifier = Modifier.fillMaxWidth().wrapContentHeight()
                                 .background(color = Color(0x80000000)),
@@ -189,7 +193,7 @@ class BusinessStatusItemWidget {
                 .padding(top = 5.dp)
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .background(color = Colors.primaryColor),
+                .background(color = Color.Black),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {

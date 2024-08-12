@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import applications.videoplayer.VideoPlayer
+import domain.Models.Vendor
 import domain.Models.VendorStatusModel
 import domain.Models.VideoStatusViewMeta
 import theme.styles.Colors
@@ -32,10 +33,11 @@ import utils.calculateStatusViewHeightPercent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ShopStatusWidget(whatsAppStatusList: List<VendorStatusModel>) {
+fun ShopStatusWidget(whatsAppStatusList: List<VendorStatusModel>,vendorInfo: Vendor) {
     val pagerState = rememberPagerState(pageCount = {
         whatsAppStatusList.size
     })
+    var currentTimeStamp = remember { mutableStateOf(0L) }
 
     Box(
         modifier = Modifier
@@ -46,20 +48,23 @@ fun ShopStatusWidget(whatsAppStatusList: List<VendorStatusModel>) {
                 state = pagerState,
                 modifier = Modifier.fillMaxWidth().fillMaxHeight()
             ) { currentPage ->
-                val currentStatus = whatsAppStatusList[currentPage]
-                Box(
-                    modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                        .background(color = Color.Transparent),
-                    contentAlignment = Alignment.TopCenter
-                ) {
-                    LoadStatusView(
-                        statusModel = currentStatus,
-                        currentPage = currentPage,
-                        settledPage = pagerState.settledPage
-                    )
+                if (currentPage == pagerState.settledPage) {
+                    val currentStatus = whatsAppStatusList[currentPage]
+                    currentTimeStamp.value = currentStatus.timeStamp
+                    Box(
+                        modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                            .background(color = Color.Transparent),
+                        contentAlignment = Alignment.TopCenter
+                    ) {
+                        LoadStatusView(
+                            statusModel = currentStatus,
+                            currentPage = currentPage,
+                            settledPage = pagerState.settledPage
+                        )
+                    }
                 }
         }
-        Box(modifier = Modifier.fillMaxWidth().height(50.dp), contentAlignment = Alignment.TopCenter) {
+        Column(modifier = Modifier.fillMaxWidth().height(80.dp), horizontalAlignment = Alignment.Start, verticalArrangement = Arrangement.Center) {
             if (whatsAppStatusList.size > 1) {
                 Row(
                     Modifier
@@ -70,9 +75,7 @@ fun ShopStatusWidget(whatsAppStatusList: List<VendorStatusModel>) {
                 ) {
                     repeat(whatsAppStatusList.size) { iteration ->
                         val color =
-                            if (pagerState.currentPage == iteration) Colors.darkPrimary else Colors.darkPrimary.copy(
-                                alpha = 0.2f
-                            )
+                            if (pagerState.currentPage == iteration) Color.White else Color.White.copy(alpha = 0.5f)
                         Box(
                             modifier = Modifier
                                 .padding(start = 4.dp, end = 4.dp, top = 4.dp)
@@ -83,6 +86,9 @@ fun ShopStatusWidget(whatsAppStatusList: List<VendorStatusModel>) {
                         )
                     }
                 }
+            }
+            Box(modifier = Modifier.fillMaxWidth().height(100.dp), contentAlignment = Alignment.TopStart){
+                StatusInfoWidget(vendorInfo, currentTimeStamp.value)
             }
         }
 
