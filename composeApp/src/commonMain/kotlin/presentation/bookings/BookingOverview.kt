@@ -41,6 +41,7 @@ fun BookingCheckOut(mainViewModel: MainViewModel, bookingPresenter: BookingPrese
     val userId = mainViewModel.currentUserInfo.value.userId
     val vendorId = mainViewModel.connectedVendor.value.vendorId
     val currentAppointmentBooking = bookingViewModel.currentAppointmentBooking.value
+
     val isPendingAppointmentLoaded = bookingViewModel.isPendingAppointmentLoaded.collectAsState()
     val customerPendingBookingAppointments = bookingViewModel.pendingAppointments.collectAsState()
 
