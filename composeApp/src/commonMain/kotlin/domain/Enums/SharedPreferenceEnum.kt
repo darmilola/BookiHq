@@ -1,11 +1,14 @@
 package domain.Enums
 
-enum class SharedPreferenceEnum {
+import com.russhwolf.settings.Settings
 
+enum class SharedPreferenceEnum {
     COUNTRY,
     CITY,
     PROFILE_ID,
+    USER_EMAIL,
     FIRSTNAME,
+    VENDOR_EMAIL,
     VENDOR_BUSINESS_LOGO,
     VENDOR_ID,
     VENDOR_WHATSAPP_PHONE,
@@ -30,6 +33,8 @@ enum class SharedPreferenceEnum {
         LATITUDE -> "latitude"
         LONGITUDE -> "longitude"
         VENDOR_BUSINESS_LOGO -> "businessLogo"
+        USER_EMAIL -> "userEmail"
+        VENDOR_EMAIL -> "vendorEmail"
 
     }
 

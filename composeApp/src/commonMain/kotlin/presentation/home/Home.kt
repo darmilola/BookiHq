@@ -63,6 +63,7 @@ import domain.Models.HomepageInfo
 import domain.Models.VendorRecommendation
 import domain.Enums.RecommendationType
 import domain.Enums.Screens
+import domain.Enums.SharedPreferenceEnum
 import domain.Models.OrderItem
 import domain.Models.PlatformNavigator
 import domain.Models.Product
@@ -95,11 +96,10 @@ import utils.getServicesViewHeight
 @Parcelize
 class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
 
-    @Transient private var uiStateViewModel: UIStateViewModel? = null
     @Transient private val homepagePresenter: HomepagePresenter by inject()
     private var userId: Long = -1L
     @Transient private val preferenceSettings: Settings = Settings()
-    @Transient private var availabilityActionUIStateViewModel: ActionUIStateViewModel? = null
+    @Transient private var actionUIStateViewModel: ActionUIStateViewModel? = null
     @Transient private var mainViewModel: MainViewModel? = null
     @Transient private var homePageViewModel: HomePageViewModel? = null
 
@@ -130,18 +130,12 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
     @Composable
     override fun Content() {
-        userId = preferenceSettings["profileId", -1L]
-        val isStatusViewExpanded = remember { mutableStateOf(false) }
+           userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(), -1L]
+           val isStatusViewExpanded = remember { mutableStateOf(false) }
 
-        val screenSizeInfo = ScreenSizeInfo()
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
-                factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
-                },
-            )
-            if (availabilityActionUIStateViewModel == null) {
-                availabilityActionUIStateViewModel = kmpViewModel(
+            val screenSizeInfo = ScreenSizeInfo()
+            if (actionUIStateViewModel == null) {
+                actionUIStateViewModel = kmpViewModel(
                     factory = viewModelFactory {
                         ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                     },
@@ -149,7 +143,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             }
 
 
-            val handler = HomepageHandler(uiStateViewModel!!, homepagePresenter,
+            val handler = HomepageHandler(actionUIStateViewModel!!, homepagePresenter,
                 onHomeInfoAvailable = { homePageInfo, vendorStatus ->
                     val viewHeight = calculateHomePageScreenHeight(
                         homepageInfo = homePageInfo,
@@ -172,7 +166,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             handler.init()
 
             if (homePageViewModel!!.homePageInfo.value.userInfo == null) {
-                val vendorPhone: String = preferenceSettings["whatsappPhone",""]
+                val vendorPhone: String = preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath(),""]
                 if (vendorPhone.isNotEmpty()){
                     homepagePresenter.getUserHomepageWithStatus(userId, vendorPhone)
                 }
@@ -180,9 +174,9 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                     homepagePresenter.getUserHomepage(userId)
                 }
             }
-        }
 
-        val uiState = uiStateViewModel!!.uiStateInfo.collectAsState()
+
+        val uiState = actionUIStateViewModel!!.loadHomepageUiState.collectAsState()
         val homepageInfo = homePageViewModel!!.homePageInfo.collectAsState()
         val homePageViewHeight = homePageViewModel!!.homePageViewHeight.collectAsState()
 
@@ -191,7 +185,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 .background(color = Color.White),
             contentAlignment = Alignment.Center
         ) {
-            if (uiState.value.loadingVisible) {
+            if (uiState.value.isLoading) {
                 Box(
                     modifier = Modifier.fillMaxWidth().fillMaxHeight()
                         .padding(top = 40.dp, start = 50.dp, end = 50.dp)
@@ -200,13 +194,11 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 ) {
                     IndeterminateCircularProgressBar()
                 }
-            } else if (uiState.value.errorOccurred) {
+            } else if (uiState.value.isFailed) {
 
-                val message = uiState.value.errorMessage
 
-                //Error Occurred
 
-            } else if (uiState.value.contentVisible) {
+            } else if (uiState.value.isSuccess) {
                 val pastAppointments = homepageInfo.value.pastAppointment
                 val upcomingAppointments = homepageInfo.value.upcomingAppointment
                 val vendorServices = homepageInfo.value.vendorServices
@@ -265,12 +257,12 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
     private fun saveAccountInfoFromServer(homePageInfo: HomepageInfo){
         val preferenceSettings = Settings()
-        preferenceSettings["userEmail"] = homePageInfo.userInfo?.email
-        preferenceSettings["profileId"] = homePageInfo.userInfo?.userId
-        preferenceSettings["userFirstname"] = homePageInfo.userInfo?.firstname
-        preferenceSettings["vendorEmail"] = homePageInfo.vendorInfo?.businessEmail
-        preferenceSettings["vendorId"] = homePageInfo.vendorInfo?.vendorId
-        preferenceSettings["vendorBusinessLogoUrl"] = homePageInfo.vendorInfo?.businessLogo
+        preferenceSettings[SharedPreferenceEnum.USER_EMAIL.toPath()] = homePageInfo.userInfo?.email
+        preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = homePageInfo.userInfo?.userId
+        preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = homePageInfo.userInfo?.firstname
+        preferenceSettings[SharedPreferenceEnum.VENDOR_EMAIL.toPath()] = homePageInfo.vendorInfo?.businessEmail
+        preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = homePageInfo.vendorInfo?.vendorId
+        preferenceSettings[SharedPreferenceEnum.VENDOR_BUSINESS_LOGO.toPath()] = homePageInfo.vendorInfo?.businessLogo
     }
 
     @Composable
@@ -503,7 +495,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                             appointmentPresenter = null,
                             postponementViewModel = null,
                             mainViewModel = mainViewModel!!,
-                            availabilityActionUIStateViewModel!!,
+                            actionUIStateViewModel!!,
                             isFromHomeTab = true,
                             onDeleteAppointment = {},
                             platformNavigator = platformNavigator

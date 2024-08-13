@@ -24,6 +24,7 @@ class ActionUIStateViewModel(private val savedStateHandle: SavedStateHandle): Vi
     private var _postponeUiState = savedStateHandle.getStateFlow("postponeUiState", ActionUIStates())
     private var _deleteUiState = savedStateHandle.getStateFlow("deleteActionUiState", ActionUIStates())
     private var _availabilityUiState = savedStateHandle.getStateFlow("availabilityUiState", ActionUIStates())
+    private var _loadHomepageUiState = savedStateHandle.getStateFlow("loadHomepageUiState", ActionUIStates())
     private var _switchVendorUiState = savedStateHandle.getStateFlow("switchVendorUiState", ActionUIStates())
     private var _getTherapistUiState = savedStateHandle.getStateFlow("getTherapistUiState", ActionUIStates())
     private var _loadPendingAppointmentUiState = savedStateHandle.getStateFlow("loadPendingAppointmentUiState", ActionUIStates())
@@ -45,6 +46,9 @@ class ActionUIStateViewModel(private val savedStateHandle: SavedStateHandle): Vi
 
     val therapistDashboardUiState: StateFlow<ActionUIStates>
         get() = _therapistDashboardUiState
+
+    val loadHomepageUiState: StateFlow<ActionUIStates>
+        get() = _loadHomepageUiState
 
     val getTherapistUiState: StateFlow<ActionUIStates>
         get() = _getTherapistUiState
@@ -76,6 +80,9 @@ class ActionUIStateViewModel(private val savedStateHandle: SavedStateHandle): Vi
 
     fun switchActionLoadPendingAppointmentUiState(actionUIStates: ActionUIStates) {
         savedStateHandle["loadPendingAppointmentUiState"] = actionUIStates
+    }
+    fun switchActionLoadHomepageUiState(actionUIStates: ActionUIStates) {
+        savedStateHandle["loadHomepageUiState"] = actionUIStates
     }
 
     fun switchActionAvailabilityUIState(actionUIStates: ActionUIStates) {

@@ -1,5 +1,6 @@
 package presentation.home
 
+import UIStates.ActionUIStates
 import domain.home.HomeRepositoryImpl
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
@@ -10,7 +11,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import UIStates.ScreenUIStates
 import com.badoo.reaktive.single.subscribe
-import domain.Models.VendorStatusModel
 
 
 class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
@@ -24,65 +24,57 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
     }
 
     override fun getUserHomepageWithStatus(userId: Long, vendorWhatsAppPhone: String) {
-        println("User ID $userId")
-        println(vendorWhatsAppPhone)
-        contractView?.showLce(ScreenUIStates(loadingVisible = true))
+        contractView?.showLoadHomePageLce(ActionUIStates(isLoading = true))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     homeRepositoryImpl.getUserHomePageWithStatus(userId, vendorWhatsAppPhone)
                         .subscribe(
                             onSuccess = { response ->
-                                println("My response ${response}")
                                 if (response.status == "success") {
-                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
+                                    contractView?.showLoadHomePageLce(ActionUIStates(isSuccess = true))
                                     contractView?.showHomeWithStatus(response.homepageInfo, response.vendorStatusList)
                                 }
                                 else{
-                                    contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
+                                    contractView?.showLoadHomePageLce(ActionUIStates(isFailed = true))
                                 }
                             },
                             onError = {
-                                println("Response 2 ${it.message}")
-                                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
+                                contractView?.showLoadHomePageLce(ActionUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Response 3 ${e.message}")
-                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
+                contractView?.showLoadHomePageLce(ActionUIStates(isFailed = true))
             }
         }
     }
 
     override fun getUserHomepage(userId: Long) {
-        contractView?.showLce(ScreenUIStates(loadingVisible = true))
+        contractView?.showLoadHomePageLce(ActionUIStates(isLoading = true))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     homeRepositoryImpl.getUserHomePage(userId)
                         .subscribe(
                             onSuccess = { response ->
-                                println("Response $response")
                                 if (response.status == "success") {
-                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
+                                    contractView?.showLoadHomePageLce(ActionUIStates(isSuccess = true))
                                     contractView?.showHome(response.homepageInfo)
                                 }
                                 else{
-                                    contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
+                                    contractView?.showLoadHomePageLce(ActionUIStates(isFailed = true))
                                 }
                             },
                             onError = {
-                                println("Response 2 ${it.message}")
-                                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
+                                contractView?.showLoadHomePageLce(ActionUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Response 3 ${e.message}")
-                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
+                contractView?.showLoadHomePageLce(ActionUIStates(isFailed = true))
             }
         }
     }

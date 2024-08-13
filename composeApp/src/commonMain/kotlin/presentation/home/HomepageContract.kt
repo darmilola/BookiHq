@@ -1,12 +1,13 @@
 package presentation.home
 
+import UIStates.ActionUIStates
 import domain.Models.HomepageInfo
 import domain.Models.VendorStatusModel
 import UIStates.ScreenUIStates
 
 class HomepageContract {
     interface View {
-        fun showLce(uiState: ScreenUIStates)
+        fun showLoadHomePageLce(actionUIStates: ActionUIStates)
         fun showHomeWithStatus(homePageInfo: HomepageInfo, vendorStatus: List<VendorStatusModel>)
         fun showHome(homePageInfo: HomepageInfo)
     }
