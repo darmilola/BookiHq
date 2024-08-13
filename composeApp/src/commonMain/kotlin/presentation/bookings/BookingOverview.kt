@@ -71,21 +71,19 @@ fun BookingCheckOut(mainViewModel: MainViewModel, bookingPresenter: BookingPrese
 
     if (deleteActionUiState.value.isLoading) {
         LoadingDialog("Deleting Appointment")
-    } else if (deleteActionUiState.value.isSuccess) {
-        if (bookingViewModel.pendingAppointments.value.isEmpty()) {
-            onLastItemRemoved()
-        }
+    }
+    else if (deleteActionUiState.value.isSuccess) {
         SuccessDialog("success", actionTitle = "", onConfirmation = {
-            actionUIStateViewModel.switchActionUIState(ActionUIStates(isDefault = true))
+            actionUIStateViewModel.switchDeletePendingAppointmentUiState(ActionUIStates(isDefault = true))
             bookingPresenter.getPendingBookingAppointment(
                 mainViewModel.currentUserInfo.value.userId!!,
                 bookingStatus = BookingStatus.PENDING.toPath()
             )
         })
-
-    } else if (deleteActionUiState.value.isFailed) {
+    }
+    else if (deleteActionUiState.value.isFailed) {
         ErrorDialog("success", actionTitle = "", onConfirmation = {})
- }
+    }
 
 
 
@@ -102,6 +100,10 @@ fun BookingCheckOut(mainViewModel: MainViewModel, bookingPresenter: BookingPrese
     } else if (loadingPendingActionUiState.value.isFailed) {
         // error occurred, refresh
     } else if (loadingPendingActionUiState.value.isSuccess) {
+        if (bookingViewModel.pendingAppointments.value.isEmpty()) {
+            actionUIStateViewModel.switchActionLoadPendingAppointmentUiState(ActionUIStates(isDefault = true))
+            onLastItemRemoved()
+        }
         Column(
             modifier = Modifier
                 .fillMaxHeight()

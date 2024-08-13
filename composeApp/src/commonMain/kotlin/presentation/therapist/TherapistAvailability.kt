@@ -39,11 +39,6 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
                           uiStateViewModel: UIStateViewModel, actionUIStateViewModel: ActionUIStateViewModel){
 
     val screenUiState = uiStateViewModel.uiStateInfo.collectAsState()
-    val actionUIState = actionUIStateViewModel.uiStateInfo.collectAsState()
-
-    val newSelectedDay = therapistViewModel.day.collectAsState()
-    val newSelectedMonth = therapistViewModel.month.collectAsState()
-    val newSelectedYear = therapistViewModel.year.collectAsState()
     val isNewDateSelected = remember { mutableStateOf(true) }
     val isSaveVisible = remember { mutableStateOf(false) }
     val currentDate = remember { mutableStateOf(CalendarDataSource().today) }
