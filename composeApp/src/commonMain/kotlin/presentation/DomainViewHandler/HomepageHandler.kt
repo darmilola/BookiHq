@@ -28,8 +28,16 @@ class HomepageHandler(
     override fun showHomeWithStatus(homePageInfo: HomepageInfo, vendorStatus: List<VendorStatusModel>) {
         val filteredStatusList = arrayListOf<VendorStatusModel>()
         vendorStatus.map {
-            if (it.statusText != null || it.statusVideoModel != null || it.statusImage != null){
+            if (it.statusText != null){
                 filteredStatusList.add(it)
+            }
+            else if (it.statusVideoModel != null && it.statusVideoModel.videoUrl.isNotEmpty()){
+                filteredStatusList.add(it)
+            }
+            else if (it.statusImage != null && it.statusImage.imageUrl.isNotEmpty()){
+                filteredStatusList.add(it)
+            } else {
+
             }
         }
         onHomeInfoAvailable(homePageInfo, filteredStatusList)

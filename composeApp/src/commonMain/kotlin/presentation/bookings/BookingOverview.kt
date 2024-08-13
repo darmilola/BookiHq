@@ -1,6 +1,6 @@
 package presentation.bookings
 
-import androidx.compose.foundation.BorderStroke
+import UIStates.ActionUIStates
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,16 +12,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import domain.Enums.AppointmentType
+import domain.Enums.BookingStatus
+import domain.Enums.PaymentMethod
+import domain.Enums.ServiceLocationEnum
+import domain.Enums.ServiceStatusEnum
 import domain.Models.UserAppointment
-import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
@@ -29,36 +31,65 @@ import presentation.dialogs.SuccessDialog
 import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.PendingAppointmentWidget
-import theme.styles.Colors
 import utils.getAppointmentViewHeight
 
 
 @Composable
-fun BookingOverview(mainViewModel: MainViewModel, actionUIStateViewModel: ActionUIStateViewModel, bookingPresenter: BookingPresenter, bookingViewModel: BookingViewModel,uiStateViewModel: UIStateViewModel,onAddMoreServiceClicked:() -> Unit, onLastItemRemoved: () -> Unit, onEditItem: (UserAppointment) -> Unit) {
+fun BookingCheckOut(mainViewModel: MainViewModel, bookingPresenter: BookingPresenter, bookingViewModel: BookingViewModel, actionUIStateViewModel: ActionUIStateViewModel, onLastItemRemoved: () -> Unit) {
 
+    val userId = mainViewModel.currentUserInfo.value.userId
+    val vendorId = mainViewModel.connectedVendor.value.vendorId
+    val currentAppointmentBooking = bookingViewModel.currentAppointmentBooking.value
+    val isPendingAppointmentLoaded = bookingViewModel.isPendingAppointmentLoaded.collectAsState()
+    val customerPendingBookingAppointments = bookingViewModel.pendingAppointments.collectAsState()
 
-    val pendingAppointments = bookingViewModel.pendingAppointments.collectAsState()
-    val uiState = uiStateViewModel.uiStateInfo.collectAsState()
-    val actionState = actionUIStateViewModel.uiStateInfo.collectAsState()
+    val deleteActionUiState = actionUIStateViewModel.deletePendingAppointmentUiState.collectAsState()
+    val loadingPendingActionUiState = actionUIStateViewModel.loadPendingAppointmentUiState.collectAsState()
 
-
-    if (actionState.value.isLoading){
-        LoadingDialog("deleting Appointment")
+    if (!isPendingAppointmentLoaded.value) {
+        bookingPresenter.createPendingBookingAppointment(
+            userId = userId!!,
+            vendorId = vendorId!!,
+            serviceId = currentAppointmentBooking.serviceId,
+            serviceTypeId = currentAppointmentBooking.serviceTypeId!!,
+            therapistId = currentAppointmentBooking.serviceTypeTherapists?.therapistInfo?.therapistId!!,
+            appointmentTime = currentAppointmentBooking.pendingTime?.id!!,
+            day = currentAppointmentBooking.appointmentDay!!,
+            month = currentAppointmentBooking.appointmentMonth!!,
+            year = currentAppointmentBooking.appointmentYear!!,
+            serviceLocation = if (currentAppointmentBooking.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
+            serviceStatus = ServiceStatusEnum.BOOKING.toPath(),
+            appointmentType = AppointmentType.SERVICE.toPath(),
+            paymentAmount = currentAppointmentBooking.serviceTypeItem!!.price.toDouble(),
+            paymentMethod = PaymentMethod.CARD_PAYMENT.toPath(),
+            bookingStatus = BookingStatus.PENDING.toPath()
+        )
+        bookingViewModel.setPendingAppointmentLoaded(isLoaded = true)
     }
-    else if (actionState.value.isSuccess){
+
+
+    if (deleteActionUiState.value.isLoading) {
+        LoadingDialog("Deleting Appointment")
+    } else if (deleteActionUiState.value.isSuccess) {
+        if (bookingViewModel.pendingAppointments.value.isEmpty()) {
+            onLastItemRemoved()
+        }
         SuccessDialog("success", actionTitle = "", onConfirmation = {
-            bookingPresenter.getPendingBookingAppointment(mainViewModel.currentUserInfo.value.userId!!)
+            actionUIStateViewModel.switchActionUIState(ActionUIStates(isDefault = true))
+            bookingPresenter.getPendingBookingAppointment(
+                mainViewModel.currentUserInfo.value.userId!!,
+                bookingStatus = BookingStatus.PENDING.toPath()
+            )
         })
-    }
-    else if (actionState.value.isFailed){
+
+    } else if (deleteActionUiState.value.isFailed) {
         ErrorDialog("success", actionTitle = "", onConfirmation = {})
-    }
+ }
 
 
 
-    if (uiState.value.loadingVisible) {
+    if (loadingPendingActionUiState.value.isLoading) {
         // Content Loading
         Box(
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -68,66 +99,33 @@ fun BookingOverview(mainViewModel: MainViewModel, actionUIStateViewModel: Action
         ) {
             IndeterminateCircularProgressBar()
         }
-    } else if (uiState.value.errorOccurred) {
+    } else if (loadingPendingActionUiState.value.isFailed) {
         // error occurred, refresh
-    } else if (uiState.value.contentVisible) {
-
-
-        val columnModifier = Modifier
-            .padding(top = 5.dp, bottom = 30.dp)
-            .fillMaxHeight()
-            .fillMaxWidth()
-
+    } else if (loadingPendingActionUiState.value.isSuccess) {
         Column(
-            modifier = columnModifier,
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Box(
-                modifier = Modifier.fillMaxWidth().fillMaxHeight(0.90f),
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(),
                 contentAlignment = Alignment.TopStart
             ) {
-                PopulateBookingAppointmentScreen(appointmentList = pendingAppointments.value,
-                    onEditItem = {
-                        onEditItem(it)
-                    }, onDeleteItem = {
+                PopulateBookingAppointmentScreen(appointmentList = customerPendingBookingAppointments.value,
+                    onDeleteItem = {
                         bookingPresenter.deletePendingBookingAppointment(it.resources!!.appointmentId!!)
                     })
             }
-
-
-
-            Box(
-                modifier = Modifier.fillMaxWidth().fillMaxHeight(),
-                contentAlignment = Alignment.BottomCenter
-            ) {
-
-                val buttonStyle = Modifier
-                    .fillMaxWidth(0.90f)
-                    .height(50.dp)
-                    .padding(top = 10.dp)
-
-                ButtonComponent(
-                    modifier = buttonStyle,
-                    buttonText = "Add More Service",
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-                    fontSize = 16,
-                    shape = RoundedCornerShape(10.dp),
-                    textColor = Colors.primaryColor,
-                    borderStroke = BorderStroke(width = 1.dp, color = Colors.primaryColor),
-                    style = MaterialTheme.typography.h6
-                ) {
-                    onAddMoreServiceClicked()
-                }
-            }
         }
     }
+}
 
- }
+
 
 @Composable
-fun PopulateBookingAppointmentScreen(appointmentList: List<UserAppointment>, onDeleteItem: (UserAppointment) -> Unit, onEditItem: (UserAppointment) -> Unit) {
+fun PopulateBookingAppointmentScreen(appointmentList: List<UserAppointment>, onDeleteItem: (UserAppointment) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth()
             .height(getAppointmentViewHeight(appointmentList.size).dp),
@@ -136,13 +134,10 @@ fun PopulateBookingAppointmentScreen(appointmentList: List<UserAppointment>, onD
         itemsIndexed(items = appointmentList) { it, item ->
                 PendingAppointmentWidget(
                     item,
-                    onEditAppointment = {
-                        onEditItem(it)
-                    },
                     onDeleteAppointment = {
                         onDeleteItem(it)
                     })
-            }
+              }
 
         }
     }

@@ -40,8 +40,8 @@ class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
         return bookingNetworkService.createAppointment(param)
     }
 
-    override suspend fun getPendingBookingAppointment(userId: Long): Single<PendingBookingAppointmentResponse> {
-        val param = GetPendingBookingAppointmentRequest(userId)
+    override suspend fun getPendingBookingAppointment(userId: Long, bookingStatus: String): Single<PendingBookingAppointmentResponse> {
+        val param = GetPendingBookingAppointmentRequest(userId,bookingStatus)
         return bookingNetworkService.getPendingBookingAppointment(param)
     }
 

@@ -37,16 +37,14 @@ import presentations.components.TextComponent
 import theme.styles.Colors
 
 @Composable
-fun PendingAppointmentWidget(appointment: UserAppointment, onDeleteAppointment: (UserAppointment) -> Unit, onEditAppointment: (UserAppointment) -> Unit) {
+fun PendingAppointmentWidget(appointment: UserAppointment, onDeleteAppointment: (UserAppointment) -> Unit) {
 
     val serviceMenuItems = arrayListOf<String>()
+    serviceMenuItems.add("Cancel Booking")
 
-    serviceMenuItems.add("Edit")
-    serviceMenuItems.add("Delete")
-
-    var serviceIconRes = "drawable/schedule.png"
-    var serviceStatusText = "Pending"
-    var serviceStatusColor: Color = Colors.primaryColor
+    val serviceIconRes = "drawable/schedule.png"
+    val serviceStatusText = "Pending"
+    val serviceStatusColor: Color = Colors.primaryColor
 
     val boxBgModifier =
         Modifier
@@ -73,9 +71,6 @@ fun PendingAppointmentWidget(appointment: UserAppointment, onDeleteAppointment: 
                 serviceMenuItems,
                 onDeleteAppointment = {
                     onDeleteAppointment(it)
-                },
-                onEditAppointment = {
-                    onEditAppointment(it)
                 })
             AttachAppointmentContent(appointment.resources!!)
         }
@@ -85,7 +80,7 @@ fun PendingAppointmentWidget(appointment: UserAppointment, onDeleteAppointment: 
 
 @Composable
 fun AttachPendingAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: UserAppointment, menuItems: ArrayList<String>,
-                                   onDeleteAppointment: (UserAppointment) -> Unit, onEditAppointment: (UserAppointment) -> Unit) {
+                                   onDeleteAppointment: (UserAppointment) -> Unit) {
     val expandedMenuItem = remember { mutableStateOf(false) }
 
     Row(
@@ -139,15 +134,13 @@ fun AttachPendingAppointmentHeader(statusText: String, statusDrawableRes: String
                     expanded = expandedMenuItem.value,
                     onDismissRequest = { expandedMenuItem.value = false },
                     modifier = Modifier
-                        .fillMaxWidth(0.40f)
+                        .fillMaxWidth(0.50f)
                         .background(Color.White)
                 ) {
                     menuItems.forEachIndexed { index, title ->
                         DropdownMenuItem(
                             onClick = {
-                                if (title.contentEquals("Edit", true)) {
-                                    onEditAppointment(appointment)
-                                } else if (title.contentEquals("Delete", true)) {
+                                if (title.contentEquals("Cancel Booking", true)) {
                                     onDeleteAppointment(appointment)
                                 }
                             }) {

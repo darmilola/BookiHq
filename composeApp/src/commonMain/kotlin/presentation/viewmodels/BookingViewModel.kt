@@ -15,7 +15,7 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
     private var _therapists =  savedStateHandle.getStateFlow("therapists", arrayListOf<ServiceTypeTherapists>())
     private var _pendingAppointments =  savedStateHandle.getStateFlow("pendingAppointments", listOf<UserAppointment>())
     private var _selectedServiceType =  savedStateHandle.getStateFlow("selectedServiceType", ServiceTypeItem())
-    private var _currentBookingKey =  savedStateHandle.getStateFlow("currentBookingId", -1)
+    private var _isPendingAppointmentLoaded =  savedStateHandle.getStateFlow("isPendingAppointmentLoaded", false)
     private var _day =  savedStateHandle.getStateFlow("day", -1)
     private var _month =  savedStateHandle.getStateFlow("month", -1)
     private var _monthName =  savedStateHandle.getStateFlow("monthName", "")
@@ -33,6 +33,9 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
 
     val platformTimes: StateFlow<List<PlatformTime>>
         get() = _platformTimes
+
+    val isPendingAppointmentLoaded: StateFlow<Boolean>
+        get() = _isPendingAppointmentLoaded
 
     val pendingAppointments: StateFlow<List<UserAppointment>>
         get() = _pendingAppointments
@@ -53,6 +56,9 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
         get() = _year
 
 
+    fun setPendingAppointmentLoaded(isLoaded: Boolean) {
+        savedStateHandle["isPendingAppointmentLoaded"] = isLoaded
+    }
     fun setTherapists(serviceTherapists: List<ServiceTypeTherapists>) {
         savedStateHandle["therapists"] = serviceTherapists
     }

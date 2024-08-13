@@ -266,12 +266,16 @@ fun calculateStatusViewHeightPercent(height: Int, width: Int): Double {
     else if (height > width) {
         val difference = height - width // how much height greater than the width
         val ratio: Double = difference.toDouble()/height.toDouble()
-        heightRatio = ratio + 0.5 // height grow 50% + changes  more than width
-        if (heightRatio > 1.00){  //Perfect Portrait Ratio
-           return 1.00
+        println("mRatio is $ratio")
+        heightRatio = if (ratio > 0.30){
+            ratio + 0.47 // height grow 47% + changes  more than width 50% is the meeting point
+        } else {
+            ratio + 0.5 // height grow 50% + changes  more than width 50% is the meeting point
         }
-        else {
-            return heightRatio
+        return if (heightRatio > 1.00){  //Perfect Portrait Ratio
+            1.00
+        } else {
+            heightRatio
         }
     }
     else{

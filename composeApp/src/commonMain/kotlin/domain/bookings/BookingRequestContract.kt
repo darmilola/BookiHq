@@ -34,7 +34,7 @@ data class CreateAppointmentRequest(@SerialName("user_id") val userId: Long,
                                            @SerialName("paymentMethod") val paymentMethod: String)
 
 @Serializable
-data class GetPendingBookingAppointmentRequest(@SerialName("user_id") val userId: Long)
+data class GetPendingBookingAppointmentRequest(@SerialName("user_id") val userId: Long, @SerialName("bookingStatus") val bookingStatus: String)
 
 @Serializable
 data class DeletePendingBookingAppointmentRequest(@SerialName("id") val pendingAppointmentId: Long)

@@ -29,26 +29,26 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showScreenLce(ScreenUIStates(loadingVisible = true))
+                    contractView?.getTherapistActionLce(ActionUIStates(isLoading  = true))
                     bookingRepositoryImpl.getServiceTherapist(serviceTypeId, vendorId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showScreenLce(ScreenUIStates(contentVisible = true))
+                                    contractView?.getTherapistActionLce(ActionUIStates(isSuccess  = true))
                                     contractView?.showTherapists(result.serviceTherapists, result.platformTimes!!, result.vendorTimes!!)
                                 }
                                 else{
-                                    contractView?.showScreenLce(ScreenUIStates(errorOccurred = true))
+                                    contractView?.getTherapistActionLce(ActionUIStates(isFailed  = true))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showScreenLce(ScreenUIStates(errorOccurred = true), message = it1) }
+                                contractView?.getTherapistActionLce(ActionUIStates(isFailed  = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showScreenLce(ScreenUIStates(errorOccurred = true))
+                contractView?.getTherapistActionLce(ActionUIStates(isFailed  = true))
             }
         }
     }
@@ -87,35 +87,38 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
                 result.dispose()
             } catch(e: Exception) {
                 println("Result 3 ${e.message}")
-                contractView?.showActionLce(ActionUIStates(isFailed = true))
+                contractView?.showCreateAppointmentActionLce(ActionUIStates(isFailed = true))
             }
         }
     }
 
-    override fun getPendingBookingAppointment(userId: Long) {
+    override fun getPendingBookingAppointment(userId: Long, bookingStatus: String) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showScreenLce(ScreenUIStates(loadingVisible = true))
-                    bookingRepositoryImpl.getPendingBookingAppointment(userId)
+                    contractView?.showLoadPendingAppointmentLce(ActionUIStates(isLoading  = true))
+                    bookingRepositoryImpl.getPendingBookingAppointment(userId, bookingStatus)
                         .subscribe(
                             onSuccess = { result ->
+                                println("Response $result")
                                 if (result.status == "success"){
                                     contractView?.showPendingBookingAppointment(result.appointments!!)
-                                    contractView?.showScreenLce(ScreenUIStates(contentVisible = true))
+                                    contractView?.showLoadPendingAppointmentLce(ActionUIStates(isSuccess = true))
                                 }
                                 else{
-                                    contractView?.showScreenLce(ScreenUIStates(errorOccurred = true))
+                                    contractView?.showLoadPendingAppointmentLce(ActionUIStates(isFailed = true))
                                 }
                             },
                             onError = {
-                                contractView?.showScreenLce(ScreenUIStates(errorOccurred = true))
+                                println("Response 0 ${it.message}")
+                                contractView?.showLoadPendingAppointmentLce(ActionUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showScreenLce(ScreenUIStates(errorOccurred = true))
+                println("Response 1 ${e.message}")
+                contractView?.showLoadPendingAppointmentLce(ActionUIStates(isFailed = true))
             }
         }
     }
@@ -124,25 +127,25 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showActionLce(ActionUIStates(isLoading = true))
+                    contractView?.showDeleteActionLce(ActionUIStates(isLoading = true))
                     bookingRepositoryImpl.deletePendingBookingAppointment(pendingAppointmentId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showActionLce(ActionUIStates(isSuccess = true))
+                                    contractView?.showDeleteActionLce(ActionUIStates(isSuccess = true))
                                 }
                                 else{
-                                    contractView?.showActionLce(ActionUIStates(isFailed = true))
+                                    contractView?.showDeleteActionLce(ActionUIStates(isFailed = true))
                                 }
                             },
                             onError = {
-                                contractView?.showActionLce(ActionUIStates(isFailed = true))
+                                contractView?.showDeleteActionLce(ActionUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showActionLce(ActionUIStates(isFailed = true))
+                contractView?.showDeleteActionLce(ActionUIStates(isFailed = true))
             }
         }
     }
@@ -174,29 +177,29 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showScreenLce(ScreenUIStates(loadingVisible = true))
+                    contractView?.showLoadPendingAppointmentLce(ActionUIStates(isLoading = true))
                     bookingRepositoryImpl.createPendingBookingAppointment(userId, vendorId, serviceId, serviceTypeId, therapistId, appointmentTime,
                         day, month, year, serviceLocation, serviceStatus, appointmentType, paymentAmount, paymentMethod, bookingStatus)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showScreenLce(ScreenUIStates(contentVisible = true))
+                                    contractView?.showLoadPendingAppointmentLce(ActionUIStates(isSuccess = true))
                                     contractView?.showPendingBookingAppointment(result.appointments!!)
                                 }
                                 else{
-                                    contractView?.showScreenLce(ScreenUIStates(errorOccurred = true))
+                                    contractView?.showLoadPendingAppointmentLce(ActionUIStates(isFailed = true))
                                 }
                             },
                             onError = {
                                 println("Result 1 ${it.message}")
-                                contractView?.showScreenLce(ScreenUIStates(errorOccurred = true))
+                                contractView?.showLoadPendingAppointmentLce(ActionUIStates(isFailed = true))
                             },
                         )
                    }
                 result.dispose()
             } catch(e: Exception) {
                 println("Result 2 ${e.message}")
-                contractView?.showScreenLce(ScreenUIStates(errorOccurred = true))
+                contractView?.showLoadPendingAppointmentLce(ActionUIStates(isFailed = true))
             }
         }
     }

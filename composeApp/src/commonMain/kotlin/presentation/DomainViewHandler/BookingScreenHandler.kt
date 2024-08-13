@@ -5,59 +5,50 @@ import presentation.bookings.BookingContract
 import presentation.bookings.BookingPresenter
 import UIStates.ActionUIStates
 import presentation.viewmodels.BookingViewModel
-import UIStates.ScreenUIStates
 import domain.Models.PlatformTime
 import domain.Models.UserAppointment
 import domain.Models.VendorTime
+import presentation.viewmodels.ActionUIStateViewModel
 
 class BookingScreenHandler(
     private val bookingViewModel: BookingViewModel,
+    private val actionUIStateViewModel: ActionUIStateViewModel,
     private val bookingPresenter: BookingPresenter,
-    private val onPageLoading: () -> Unit,
-    private val onShowUnsavedAppointment: () -> Unit,
-    private val onContentVisible: () -> Unit,
-    private val onErrorVisible: () -> Unit,
-    private val onCreateAppointmentStarted: () -> Unit,
-    private val onCreateAppointmentSuccess: () -> Unit,
-    private val onCreateAppointmentFailed: () -> Unit,
-    private val onActionStarted: () -> Unit,
-    private val onActionSuccess: () -> Unit,
-    private val onActionFailed: () -> Unit,
-) : BookingContract.View {
+    private val onShowUnsavedAppointment: () -> Unit) : BookingContract.View {
     fun init() {
         bookingPresenter.registerUIContract(this)
     }
 
-    override fun showScreenLce(uiState: ScreenUIStates, message: String) {
+    override fun showLoadPendingAppointmentLce(uiState: ActionUIStates, message: String) {
         uiState.let {
             when{
-                it.loadingVisible -> {
-                    onPageLoading()
+                it.isLoading -> {
+                    actionUIStateViewModel.switchActionLoadPendingAppointmentUiState(ActionUIStates(isLoading = true))
                 }
 
-                it.contentVisible -> {
-                    onContentVisible()
+                it.isSuccess -> {
+                    actionUIStateViewModel.switchActionLoadPendingAppointmentUiState(ActionUIStates(isSuccess = true))
                 }
 
-                it.errorOccurred -> {
-                    onErrorVisible()
+                it.isFailed -> {
+                    actionUIStateViewModel.switchActionLoadPendingAppointmentUiState(ActionUIStates(isFailed = true))
                 }
             }
         }
     }
 
-    override fun showActionLce(uiState: ActionUIStates, message: String) {
+    override fun showDeleteActionLce(uiState: ActionUIStates, message: String) {
         uiState.let {
             when {
                 it.isLoading -> {
-                    onActionStarted()
+                    actionUIStateViewModel.switchDeletePendingAppointmentUiState(ActionUIStates(isLoading = true))
                 }
                 it.isSuccess -> {
-                    onActionSuccess()
+                    actionUIStateViewModel.switchDeletePendingAppointmentUiState(ActionUIStates(isSuccess = true))
                 }
 
                 it.isFailed -> {
-                    onActionFailed()
+                    actionUIStateViewModel.switchDeletePendingAppointmentUiState(ActionUIStates(isFailed = true))
                 }
 
             }
@@ -68,14 +59,32 @@ class BookingScreenHandler(
         uiState.let {
             when {
                 it.isLoading -> {
-                    onCreateAppointmentStarted()
+                    actionUIStateViewModel.switchCreateAppointmentUiState(ActionUIStates(isLoading = true))
                 }
                 it.isSuccess -> {
-                    onCreateAppointmentSuccess()
+                    actionUIStateViewModel.switchCreateAppointmentUiState(ActionUIStates(isSuccess = true))
                 }
 
                 it.isFailed -> {
-                    onCreateAppointmentFailed()
+                    actionUIStateViewModel.switchCreateAppointmentUiState(ActionUIStates(isFailed = true))
+                }
+
+            }
+        }
+    }
+
+    override fun getTherapistActionLce(uiState: ActionUIStates, message: String) {
+        uiState.let {
+            when {
+                it.isLoading -> {
+                    actionUIStateViewModel.switchGetTherapistUiState(ActionUIStates(isLoading = true))
+                }
+                it.isSuccess -> {
+                    actionUIStateViewModel.switchGetTherapistUiState(ActionUIStates(isSuccess = true))
+                }
+
+                it.isFailed -> {
+                    actionUIStateViewModel.switchGetTherapistUiState(ActionUIStates(isFailed = true))
                 }
 
             }

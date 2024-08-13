@@ -31,7 +31,7 @@ import presentations.components.TextComponent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun BookingScreenTopBar(pagerState: PagerState, mainViewModel: MainViewModel, bookingViewModel: BookingViewModel,bookingPresenter: BookingPresenter) {
+fun BookingScreenTopBar(pagerState: PagerState, mainViewModel: MainViewModel) {
 
     val rowModifier = Modifier
         .fillMaxWidth()
@@ -58,7 +58,9 @@ fun BookingScreenTopBar(pagerState: PagerState, mainViewModel: MainViewModel, bo
                 .fillMaxHeight()
                 .padding(start = 10.dp),
                 contentAlignment = Alignment.CenterStart) {
-                leftTopBarItem(pagerState, mainViewModel, bookingViewModel,bookingPresenter)
+                if (pagerState.targetPage != 2) {
+                    leftTopBarItem(pagerState, mainViewModel)
+                }
             }
 
             Box(modifier =  Modifier.weight(3.0f)
@@ -88,24 +90,13 @@ fun BookingScreenTopBar(pagerState: PagerState, mainViewModel: MainViewModel, bo
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun leftTopBarItem(pagerState: PagerState, mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, bookingPresenter: BookingPresenter) {
+fun leftTopBarItem(pagerState: PagerState, mainViewModel: MainViewModel) {
     val coroutineScope = rememberCoroutineScope()
-    val navigator = LocalTabNavigator.current
     val currentPage = pagerState.currentPage
     PageBackNavWidget(){
         coroutineScope.launch {
             when (currentPage) {
                 2 -> {
-                    val lastItem = bookingViewModel.pendingAppointments.value[0]
-                    if (lastItem != null) {
-                        bookingViewModel!!.setCurrentBooking(lastItem.resources!!)
-                        bookingPresenter.silentDeletePendingBookingAppointment(lastItem.resources.appointmentId!!)
-                        bookingViewModel!!.setSelectedServiceType(lastItem.resources.serviceTypeItem!!)
-                        bookingViewModel!!.setIsMobileService(lastItem.resources.isMobileService!!)
-                        bookingViewModel!!.setSelectedDay(lastItem.resources.appointmentDay!!)
-                        bookingViewModel!!.setSelectedMonth(lastItem.resources.appointmentMonth!!)
-                        bookingViewModel!!.setSelectedYear(lastItem.resources.appointmentYear!!)
-                    }
                     pagerState.animateScrollToPage(1)
                 }
                 1 -> {

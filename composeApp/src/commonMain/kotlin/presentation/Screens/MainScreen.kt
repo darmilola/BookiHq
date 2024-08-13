@@ -178,12 +178,12 @@ class MainScreen(val platformNavigator: PlatformNavigator) : ParcelableScreen, K
         TabNavigator(showDefaultTab(mainViewModel!!)) {
             when (screenNav?.value?.second) {
                 Screens.MAIN_TAB.toPath() -> {
-                    mainTab =  MainTab(platformNavigator!!)
+                    mainTab =  MainTab(platformNavigator)
                     mainTab!!.setMainViewModel(mainViewModel!!)
                     it.current = mainTab!!
                 }
                 Screens.BOOKING.toPath() -> {
-                    val bookingTab = BookingScreenTab(platformNavigator!!)
+                    val bookingTab = BookingScreenTab(platformNavigator)
                     bookingTab.setMainViewModel(mainViewModel!!)
                     it.current = bookingTab
                 }

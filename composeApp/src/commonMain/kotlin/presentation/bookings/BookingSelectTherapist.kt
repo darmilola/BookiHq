@@ -35,9 +35,9 @@ import domain.Models.PlatformTime
 import domain.Models.ServiceTypeTherapists
 import domain.Models.ServiceTypeTherapistUIModel
 import presentation.components.IndeterminateCircularProgressBar
+import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.AttachTherapistWidget
 import presentation.widgets.TherapistReviewScreen
 import presentation.widgets.TimeGrid
@@ -45,7 +45,7 @@ import presentations.components.TextComponent
 import utils.calculateBookingServiceTimes
 
 @Composable
-fun BookingSelectTherapists(mainViewModel: MainViewModel, uiStateViewModel: UIStateViewModel,
+fun BookingSelectTherapists(mainViewModel: MainViewModel, actionUIStateViewModel: ActionUIStateViewModel,
                             bookingViewModel: BookingViewModel,
                             bookingPresenter: BookingPresenter) {
 
@@ -59,7 +59,7 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, uiStateViewModel: UISt
         }
     })
 
-    val uiStates = uiStateViewModel.uiStateInfo.collectAsState()
+    val getTherapistActionUiStates = actionUIStateViewModel.getTherapistUiState.collectAsState()
     val currentBooking = bookingViewModel.currentAppointmentBooking.value
     val selectedTherapist = remember { mutableStateOf(ServiceTypeTherapists()) }
     if (currentBooking.serviceTypeTherapists != null) {
@@ -72,7 +72,7 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, uiStateViewModel: UISt
     currentBooking.appointmentYear = bookingViewModel.year.value
 
 
-    if (uiStates.value.loadingVisible) {
+    if (getTherapistActionUiStates.value.isLoading) {
         // Content Loading
         Box(
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -82,9 +82,9 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, uiStateViewModel: UISt
         ) {
             IndeterminateCircularProgressBar()
         }
-    } else if (uiStates.value.errorOccurred) {
+    } else if (getTherapistActionUiStates.value.isFailed) {
        // error occurred, refresh
-    } else if (uiStates.value.contentVisible) {
+    } else if (getTherapistActionUiStates.value.isSuccess) {
         Column(
             Modifier
                 .fillMaxSize()
