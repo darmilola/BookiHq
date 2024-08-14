@@ -2,8 +2,7 @@ package presentation.appointments
 
 import domain.Models.Appointment
 import domain.Models.AppointmentResourceListEnvelope
-import UIStates.ActionUIStates
-import UIStates.ScreenUIStates
+import UIStates.AppUIStates
 import domain.Models.PlatformNavigator
 import domain.Models.PlatformTime
 import domain.Models.User
@@ -13,11 +12,11 @@ import domain.Models.VendorTime
 
 interface AppointmentContract {
     interface View {
-        fun showLce(screenUiState: ScreenUIStates)
-        fun showDeleteActionLce(actionUIStates: ActionUIStates)
-        fun showPostponeActionLce(actionUIStates: ActionUIStates)
-        fun showJoinMeetingActionLce(actionUIStates: ActionUIStates)
-        fun showGetAvailabilityActionLce(actionUIStates: ActionUIStates)
+        fun showLce(screenUiState: AppUIStates)
+        fun showDeleteActionLce(appUIStates: AppUIStates)
+        fun showPostponeActionLce(appUIStates: AppUIStates)
+        fun showJoinMeetingActionLce(appUIStates: AppUIStates)
+        fun showGetAvailabilityActionLce(appUIStates: AppUIStates)
         fun showAppointments(appointments: AppointmentResourceListEnvelope)
         fun showTherapistAvailability(bookedAppointment: List<Appointment>,platformTime: List<PlatformTime>,
                                       vendorTime: List<VendorTime>)

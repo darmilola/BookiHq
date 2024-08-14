@@ -1,6 +1,6 @@
 package presentation.viewmodels
 
-import UIStates.ActionUIStates
+import UIStates.AppUIStates
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Models.Appointment
@@ -13,7 +13,7 @@ class TherapistViewModel(private val savedStateHandle: SavedStateHandle): ViewMo
 
     private var _therapistAvailableTimes = savedStateHandle.getStateFlow("therapistAvailableTimes", arrayListOf<AvailableTime>())
     private var _therapistReviews = savedStateHandle.getStateFlow("therapistReviews", arrayListOf<TherapistReviews>())
-    private var _therapistAvailabilityViewUIState = savedStateHandle.getStateFlow("therapistAvailabilityViewUIState", ActionUIStates())
+    private var _therapistAvailabilityViewUIState = savedStateHandle.getStateFlow("therapistAvailabilityViewUIState", AppUIStates())
     private var _newSelectedTime = savedStateHandle.getStateFlow("newSelectedTime", AvailableTime())
     private var _day =  savedStateHandle.getStateFlow("day", -1)
     private var _month =  savedStateHandle.getStateFlow("month", -1)
@@ -26,7 +26,7 @@ class TherapistViewModel(private val savedStateHandle: SavedStateHandle): ViewMo
     val therapistReviews: StateFlow<List<TherapistReviews>>
         get() = _therapistReviews
 
-    val therapistAvailabilityViewUIState: StateFlow<ActionUIStates>
+    val therapistAvailabilityViewUIState: StateFlow<AppUIStates>
         get() = _therapistAvailabilityViewUIState
 
     val day: StateFlow<Int>
@@ -51,8 +51,8 @@ class TherapistViewModel(private val savedStateHandle: SavedStateHandle): ViewMo
     fun setCurrentAppointment(currentAppointment: Appointment) {
         savedStateHandle["currentAppointment"] = currentAppointment
     }
-    fun setTherapistAvailabilityViewUIState(actionUIStates: ActionUIStates) {
-        savedStateHandle["therapistAvailabilityViewUIState"] = actionUIStates
+    fun setTherapistAvailabilityViewUIState(appUIStates: AppUIStates) {
+        savedStateHandle["therapistAvailabilityViewUIState"] = appUIStates
     }
 
     fun setNewSelectedDate(localDate: LocalDate) {

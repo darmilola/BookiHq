@@ -37,11 +37,6 @@ import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
-import com.preat.peekaboo.image.picker.SelectionMode
-import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
-import com.russhwolf.settings.Settings
-import com.russhwolf.settings.set
-import domain.Enums.AuthType
 import domain.Enums.DeviceType
 import domain.Enums.Gender
 import domain.Models.PlatformNavigator
@@ -60,7 +55,7 @@ import presentation.components.ToggleButton
 import presentation.consultation.rightTopBarItem
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
-import presentation.viewmodels.ActionUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PlatformViewModel
 import presentation.widgets.PageBackNavWidget
@@ -78,7 +73,7 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
     @Transient
     private val profilePresenter: ProfilePresenter by inject()
     @Transient
-    private var actionUIStateViewModel: ActionUIStateViewModel? = null
+    private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
     private val authenticationPresenter : AuthenticationPresenter by inject()
     @Transient
@@ -139,10 +134,10 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
         val updateProfileEnded = remember { mutableStateOf(false) }
         val updateProfileSuccessful = remember { mutableStateOf(false) }
 
-        if (actionUIStateViewModel == null) {
-            actionUIStateViewModel= kmpViewModel(
+        if (performedActionUIStateViewModel == null) {
+            performedActionUIStateViewModel= kmpViewModel(
                 factory = viewModelFactory {
-                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -161,7 +156,7 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
                 country.value = it.country.toString()
             },
             onVendorInfoReady = {},
-            actionUIStateViewModel!!)
+            performedActionUIStateViewModel!!)
         profileHandler.init()
 
         //View Contract Handler Initialisation

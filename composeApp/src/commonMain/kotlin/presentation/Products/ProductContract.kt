@@ -2,8 +2,7 @@ package presentation.Products
 
 import domain.Models.OrderItem
 import domain.Models.ProductResourceListEnvelope
-import UIStates.ActionUIStates
-import UIStates.ScreenUIStates
+import UIStates.AppUIStates
 import domain.Enums.ProductType
 import domain.Models.PlatformNavigator
 import domain.Models.User
@@ -11,7 +10,7 @@ import domain.Models.Vendor
 
 class ProductContract {
     interface View {
-        fun showLce(uiState: ScreenUIStates)
+        fun showLce(appUIStates: AppUIStates)
         fun showProducts(products: ProductResourceListEnvelope?)
         fun showSearchProducts(products: ProductResourceListEnvelope?, isLoadMore: Boolean = false)
         fun onLoadMoreProductStarted()
@@ -37,7 +36,7 @@ class ProductContract {
 
 class CartContract {
     interface View {
-        fun showLce(actionUIStates: ActionUIStates)
+        fun showLce(appUIStates: AppUIStates)
     }
 
     abstract class Presenter {

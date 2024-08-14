@@ -1,18 +1,17 @@
 package presentation.bookings
 
 import domain.Models.ServiceTypeTherapists
-import UIStates.ActionUIStates
-import UIStates.ScreenUIStates
+import UIStates.AppUIStates
 import domain.Models.PlatformTime
 import domain.Models.UserAppointment
 import domain.Models.VendorTime
 
 class BookingContract {
     interface View {
-        fun showLoadPendingAppointmentLce(uiState: ActionUIStates, message: String = "")
-        fun showDeleteActionLce(uiState: ActionUIStates, message: String = "")
-        fun showCreateAppointmentActionLce(uiState: ActionUIStates, message: String = "")
-        fun getTherapistActionLce(uiState: ActionUIStates, message: String = "")
+        fun showLoadPendingAppointmentLce(uiState: AppUIStates, message: String = "")
+        fun showDeleteActionLce(uiState: AppUIStates, message: String = "")
+        fun showCreateAppointmentActionLce(uiState: AppUIStates, message: String = "")
+        fun getTherapistActionLce(uiState: AppUIStates, message: String = "")
         fun showTherapists(serviceTherapists: List<ServiceTypeTherapists>, platformTime: List<PlatformTime>, vendorTime: List<VendorTime>)
         fun showPendingBookingAppointment(pendingAppointments: List<UserAppointment>)
         fun showUnsavedAppointment()

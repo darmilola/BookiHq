@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
@@ -47,14 +46,14 @@ import domain.Models.TherapistInfo
 import domain.Models.UserAppointment
 import presentation.appointments.AppointmentPresenter
 import presentation.dialogs.PostponeDialog
-import presentation.viewmodels.ActionUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, mainViewModel: MainViewModel, availabilityActionUIStateViewModel: ActionUIStateViewModel, isFromHomeTab: Boolean,onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
+fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, mainViewModel: MainViewModel, availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, isFromHomeTab: Boolean, onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
 
     val appointment = userAppointment!!.resources
     val serviceAppointmentStatus = appointment?.serviceStatus
@@ -130,7 +129,7 @@ fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPrese
                         serviceMenuItems,
                         appointmentPresenter,
                         postponementViewModel,
-                        availabilityActionUIStateViewModel,
+                        availabilityPerformedActionUIStateViewModel,
                         mainViewModel = mainViewModel,
                          onDeleteAppointment = {
                             onDeleteAppointment(it)
@@ -142,7 +141,7 @@ fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPrese
 
 
 @Composable
-fun HomeAppointmentWidget(appointment: Appointment? = null, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, mainViewModel: MainViewModel, availabilityActionUIStateViewModel: ActionUIStateViewModel, isFromHomeTab: Boolean,onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
+fun HomeAppointmentWidget(appointment: Appointment? = null, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, mainViewModel: MainViewModel, availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, isFromHomeTab: Boolean, onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
 
     val serviceAppointmentStatus = appointment?.serviceStatus
     val serviceMenuItems = arrayListOf<String>()
@@ -217,7 +216,7 @@ fun HomeAppointmentWidget(appointment: Appointment? = null, appointmentPresenter
                 serviceMenuItems,
                 appointmentPresenter,
                 postponementViewModel,
-                availabilityActionUIStateViewModel,
+                availabilityPerformedActionUIStateViewModel,
                 mainViewModel = mainViewModel,
                 onDeleteAppointment = {
                     onDeleteAppointment(it)
@@ -293,7 +292,7 @@ fun MeetingAppointmentWidget(userAppointment: UserAppointment? = null, appointme
 
 @Composable
 fun AttachHomeServiceAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment, menuItems: ArrayList<String>, presenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null,
-                                   availabilityActionUIStateViewModel: ActionUIStateViewModel, mainViewModel: MainViewModel, onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
+                                       availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, mainViewModel: MainViewModel, onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
 
     Row(
         horizontalArrangement = Arrangement.Start,
@@ -338,7 +337,7 @@ fun AttachHomeServiceAppointmentHeader(statusText: String, statusDrawableRes: St
 
 @Composable
 fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, userAppointment: UserAppointment, menuItems: ArrayList<String>, presenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null,
-                                   availabilityActionUIStateViewModel: ActionUIStateViewModel, mainViewModel: MainViewModel, onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
+                                   availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, mainViewModel: MainViewModel, onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
     val expandedMenuItem = remember { mutableStateOf(false) }
     val openPostponeDialog = remember { mutableStateOf(false) }
 
@@ -346,7 +345,7 @@ fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String
         openPostponeDialog.value -> {
             if (presenter != null && postponementViewModel != null) {
                 postponementViewModel.setCurrentAppointment(userAppointment)
-                PostponeDialog(userAppointment,presenter, postponementViewModel, mainViewModel = mainViewModel, availabilityActionUIStateViewModel, onDismissRequest = {
+                PostponeDialog(userAppointment,presenter, postponementViewModel, mainViewModel = mainViewModel, availabilityPerformedActionUIStateViewModel, onDismissRequest = {
                     openPostponeDialog.value = false
                 }, onConfirmation = {
                     openPostponeDialog.value = false

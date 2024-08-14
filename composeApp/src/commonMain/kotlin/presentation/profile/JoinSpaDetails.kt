@@ -1,10 +1,9 @@
 package presentation.profile
 
-import UIStates.ActionUIStates
+import UIStates.AppUIStates
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import applications.device.deviceInfo
@@ -16,8 +15,6 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
-import com.russhwolf.settings.set
-import domain.Enums.CustomerMovementEnum
 import domain.Enums.DeviceType
 import domain.Enums.Screens
 import domain.Models.PlatformNavigator
@@ -26,10 +23,9 @@ import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.ProfileHandler
-import presentation.DomainViewHandler.SwitchVendorHandler
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
-import presentation.viewmodels.ActionUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.BusinessInfoContent
 import presentation.widgets.BusinessInfoTitle
@@ -37,7 +33,7 @@ import presentation.widgets.BusinessInfoTitle
 @Parcelize
 class JoinDetailsTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
     @Transient
-    private var actionUIStateViewModel: ActionUIStateViewModel? = null
+    private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
     private val profilePresenter: ProfilePresenter by inject()
     @Transient
@@ -63,10 +59,10 @@ class JoinDetailsTab(val platformNavigator: PlatformNavigator) : Tab, KoinCompon
 
     @Composable
     override fun Content() {
-        if (actionUIStateViewModel == null) {
-            actionUIStateViewModel= kmpViewModel(
+        if (performedActionUIStateViewModel == null) {
+            performedActionUIStateViewModel= kmpViewModel(
                 factory = viewModelFactory {
-                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -74,12 +70,12 @@ class JoinDetailsTab(val platformNavigator: PlatformNavigator) : Tab, KoinCompon
         val profileHandler = ProfileHandler(profilePresenter,
             onUserLocationReady = {},
             onVendorInfoReady = { it -> },
-            actionUIStateViewModel!!)
+            performedActionUIStateViewModel!!)
         profileHandler.init()
 
 
         val userInfo = mainViewModel!!.currentUserInfo.value
-        val uiState = actionUIStateViewModel!!.uiStateInfo.collectAsState()
+        val joinSpaUiState = performedActionUIStateViewModel!!.uiStateInfo.collectAsState()
 
 
         Scaffold(
@@ -88,10 +84,10 @@ class JoinDetailsTab(val platformNavigator: PlatformNavigator) : Tab, KoinCompon
             },
             content = {
                 val joinVendor = mainViewModel!!.joinSpaVendor.value
-                if (uiState.value.isLoading) {
+                if (joinSpaUiState.value.isLoading) {
                     LoadingDialog("Joining Spa")
-                } else if (uiState.value.isSuccess) {
-                    actionUIStateViewModel!!.switchActionUIState(ActionUIStates(isDefault = true))
+                } else if (joinSpaUiState.value.isSuccess) {
+                    performedActionUIStateViewModel!!.switchActionUIState(AppUIStates(isDefault = true))
                     mainViewModel!!.setSwitchVendor(vendor = Vendor())
                     mainViewModel!!.setJoinSpaVendor(vendor = Vendor())
 
@@ -105,7 +101,7 @@ class JoinDetailsTab(val platformNavigator: PlatformNavigator) : Tab, KoinCompon
                         mainViewModel!!.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.MAIN_TAB.toPath()))
                     }
 
-                } else if (uiState.value.isFailed) {
+                } else if (joinSpaUiState.value.isFailed) {
                     ErrorDialog(dialogTitle = "Error Occurred Please Try Again", actionTitle = "Retry"){}
                 }
 

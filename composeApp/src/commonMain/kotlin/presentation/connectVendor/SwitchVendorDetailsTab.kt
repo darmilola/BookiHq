@@ -1,6 +1,6 @@
 package presentation.connectVendor
 
-import UIStates.ActionUIStates
+import UIStates.AppUIStates
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -29,14 +29,14 @@ import presentation.DomainViewHandler.SwitchVendorHandler
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
 import presentation.profile.ProfilePresenter
-import presentation.viewmodels.ActionUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.BusinessInfoContent
 
 @Parcelize
 class SwitchVendorDetailsTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
     @Transient
-    private var actionUIStateViewModel: ActionUIStateViewModel? = null
+    private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
     private val profilePresenter: ProfilePresenter by inject()
     @Transient
@@ -62,24 +62,24 @@ class SwitchVendorDetailsTab(val platformNavigator: PlatformNavigator) : Tab, Ko
 
     @Composable
     override fun Content() {
-        if (actionUIStateViewModel == null) {
-            actionUIStateViewModel= kmpViewModel(
+        if (performedActionUIStateViewModel == null) {
+            performedActionUIStateViewModel= kmpViewModel(
                 factory = viewModelFactory {
-                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
 
 
         val handler = SwitchVendorHandler(profilePresenter,
-            actionUIStateViewModel!!)
+            performedActionUIStateViewModel!!)
         handler.init()
 
         val switchVendorId = mainViewModel!!.switchVendorId.value
         val switchVendorReason = mainViewModel!!.switchVendorReason.value
         val userInfo = mainViewModel!!.currentUserInfo.value
-        val uiState = actionUIStateViewModel!!.switchVendorUiState.collectAsState()
-        actionUIStateViewModel!!.switchVendorActionUIState(ActionUIStates(isDefault = true))
+        val switchVendorUiState = performedActionUIStateViewModel!!.switchVendorUiState.collectAsState()
+        performedActionUIStateViewModel!!.switchVendorActionUIState(AppUIStates(isDefault = true))
         var switchVendorSuccess = remember { mutableStateOf(false) }
 
 
@@ -88,11 +88,11 @@ class SwitchVendorDetailsTab(val platformNavigator: PlatformNavigator) : Tab, Ko
                 presentation.widgets.BusinessInfoTitle(mainViewModel = mainViewModel)
             },
             content = {
-                if (uiState.value.isLoading) {
+                if (switchVendorUiState.value.isLoading) {
                     LoadingDialog("Connecting New Vendor")
-                } else if (uiState.value.isSuccess) {
+                } else if (switchVendorUiState.value.isSuccess) {
                     preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = mainViewModel!!.switchVendor.value.whatsAppPhone
-                    actionUIStateViewModel!!.switchVendorActionUIState(ActionUIStates(isDefault = true))
+                    performedActionUIStateViewModel!!.switchVendorActionUIState(AppUIStates(isDefault = true))
 
                     if (deviceInfo() == DeviceType.IOS.toPath()) {
                         // iOS App Restart Process
@@ -104,7 +104,7 @@ class SwitchVendorDetailsTab(val platformNavigator: PlatformNavigator) : Tab, Ko
                         mainViewModel!!.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.MAIN_TAB.toPath()))
                     }
 
-                } else if (uiState.value.isFailed) {
+                } else if (switchVendorUiState.value.isFailed) {
                     ErrorDialog(dialogTitle = "Error Occurred Please Try Again", actionTitle = "Retry"){}
                 }
 

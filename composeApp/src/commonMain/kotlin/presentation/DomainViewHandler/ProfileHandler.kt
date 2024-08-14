@@ -3,15 +3,15 @@ package presentation.DomainViewHandler
 import dev.jordond.compass.Place
 import presentation.profile.ProfileContract
 import presentation.profile.ProfilePresenter
-import presentation.viewmodels.ActionUIStateViewModel
-import UIStates.ActionUIStates
+import presentation.viewmodels.PerformedActionUIStateViewModel
+import UIStates.AppUIStates
 import domain.Models.Vendor
 
 class ProfileHandler(
     private val profilePresenter: ProfilePresenter,
     private val onUserLocationReady:(Place)-> Unit,
     private val onVendorInfoReady:(Vendor)-> Unit,
-    private val actionUIStateViewModel: ActionUIStateViewModel
+    private val performedActionUIStateViewModel: PerformedActionUIStateViewModel
 ) : ProfileContract.View {
     fun init() {
         profilePresenter.registerUIContract(this)
@@ -27,8 +27,8 @@ class ProfileHandler(
         onVendorInfoReady(vendor)
     }
 
-    override fun showActionLce(actionUIStates: ActionUIStates) {
-        actionUIStateViewModel.switchActionUIState(actionUIStates)
+    override fun showActionLce(appUIStates: AppUIStates) {
+        performedActionUIStateViewModel.switchActionUIState(appUIStates)
     }
 
 }

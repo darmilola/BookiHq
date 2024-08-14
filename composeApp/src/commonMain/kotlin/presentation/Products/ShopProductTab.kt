@@ -2,7 +2,6 @@ package presentation.Products
 
 import GGSansRegular
 import StackedSnackbarHost
-import StackedSnakbarHostState
 import androidx.compose.foundation.BorderStroke
 import theme.styles.Colors
 import androidx.compose.foundation.background
@@ -49,25 +48,20 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
-import com.russhwolf.settings.set
-import domain.Enums.CRUD
 import domain.Enums.ProductType
 import domain.Models.OrderItem
 import domain.Models.Product
 import domain.Models.ProductItemUIModel
 import domain.Enums.Screens
-import domain.Models.NetworkState
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.ShopProductsHandler
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.components.ToggleButton
-import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ProductResourceListEnvelopeViewModel
-import presentation.viewmodels.ProductViewModel
-import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.widgets.ProductItem
 import presentation.widgets.ProductDetailBottomSheet
 import presentation.widgets.SearchBar
@@ -80,7 +74,7 @@ import utils.getPopularProductViewHeight
 class ShopProductTab : Tab, KoinComponent, Parcelable {
 
     private val productPresenter: ProductPresenter by inject()
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
     private var mainViewModel: MainViewModel? = null
     val preferenceSettings = Settings()
     private var productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel? = null
@@ -121,10 +115,10 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
             animation = StackedSnackbarAnimation.Bounce
         )
 
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        if (loadingScreenUiStateViewModel == null) {
+            loadingScreenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -139,7 +133,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
 
 
         val productHandler = ShopProductsHandler(
-            uiStateViewModel!!, productResourceListEnvelopeViewModel!!, productPresenter)
+            loadingScreenUiStateViewModel!!, productResourceListEnvelopeViewModel!!, productPresenter)
         productHandler.init()
 
 
@@ -199,8 +193,8 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                         onRemoveFromCart = {})
                 }
 
-                val uiState = uiStateViewModel!!.uiStateInfo.collectAsState()
-                if (uiState.value.loadingVisible) {
+                val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
+                if (uiState.value.isLoading) {
                     Box(
                         modifier = Modifier.fillMaxWidth().fillMaxHeight()
                             .padding(top = 40.dp, start = 50.dp, end = 50.dp)
@@ -209,10 +203,10 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                     ) {
                         IndeterminateCircularProgressBar()
                     }
-                } else if (uiState.value.errorOccurred) {
+                } else if (uiState.value.isFailed) {
                       val message = uiState.value.errorMessage
 
-                } else if (uiState.value.contentVisible) {
+                } else if (uiState.value.isSuccess) {
                     ProductContent(
                         productResourceListEnvelopeViewModel = productResourceListEnvelopeViewModel!!,
                         searchQuery = searchQuery.value,

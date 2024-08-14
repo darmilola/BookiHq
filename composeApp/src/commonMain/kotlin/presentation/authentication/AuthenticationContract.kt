@@ -2,12 +2,6 @@ package presentation.authentication
 
 import dev.jordond.compass.Place
 import domain.Models.User
-import UIStates.ActionUIStates
-import UIStates.ScreenUIStates
-import com.badoo.reaktive.single.Single
-import domain.Models.ServerResponse
-import domain.Models.Vendor
-import presentation.profile.ProfileContract
 
 class AuthenticationContract {
     interface View {

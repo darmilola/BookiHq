@@ -10,7 +10,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import UIStates.ActionUIStates
+import UIStates.AppUIStates
 import domain.Models.PlatformNavigator
 import domain.Models.User
 import domain.Models.Vendor
@@ -38,30 +38,30 @@ class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(ActionUIStates(isLoading = true, loadingMessage = "Creating Order"))
+                    contractView?.showLce(AppUIStates(isLoading = true, loadingMessage = "Creating Order"))
                     val orderItemsJson = getUnSavedOrders(orderItemList)
                     productRepositoryImpl.createOrder(vendorId,userId,deliveryMethod,paymentMethod,day, month, year, orderItemsJson,paymentAmount)
                         .subscribe(
                             onSuccess = { result ->
                                 println(result)
                                 if (result.status == "success"){
-                                    contractView?.showLce(ActionUIStates(isSuccess = true, successMessage = "Order Created Successfully"))
+                                    contractView?.showLce(AppUIStates(isSuccess = true, successMessage = "Order Created Successfully"))
                                     platformNavigator.sendOrderBookingNotification(customerName = user.firstname!!, vendorLogoUrl = vendor.businessLogo!!, fcmToken = vendor.fcmToken!!)
                                 }
                                 else{
-                                    contractView?.showLce(ActionUIStates(isFailed = true, errorMessage = "Error Creating Order"))
+                                    contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Order"))
                                 }
                             },
                             onError = {
                                 println("Error 1 ${it.message}")
-                                contractView?.showLce(ActionUIStates(isFailed = true, errorMessage = "Error Creating Order"))
+                                contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Order"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
                 println("Error 2 ${e.message}")
-                contractView?.showLce(ActionUIStates(isFailed = true, errorMessage = "Error Creating Order"))
+                contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Order"))
             }
         }
     }

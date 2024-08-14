@@ -1,6 +1,6 @@
 package presentation.bookings
 
-import UIStates.ActionUIStates
+import UIStates.AppUIStates
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,7 +28,7 @@ import presentation.components.IndeterminateCircularProgressBar
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
 import presentation.dialogs.SuccessDialog
-import presentation.viewmodels.ActionUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.PendingAppointmentWidget
@@ -36,7 +36,7 @@ import utils.getAppointmentViewHeight
 
 
 @Composable
-fun BookingCheckOut(mainViewModel: MainViewModel, bookingPresenter: BookingPresenter, bookingViewModel: BookingViewModel, actionUIStateViewModel: ActionUIStateViewModel, onLastItemRemoved: () -> Unit) {
+fun BookingCheckOut(mainViewModel: MainViewModel, bookingPresenter: BookingPresenter, bookingViewModel: BookingViewModel, performedActionUIStateViewModel: PerformedActionUIStateViewModel, onLastItemRemoved: () -> Unit) {
 
     val userId = mainViewModel.currentUserInfo.value.userId
     val vendorId = mainViewModel.connectedVendor.value.vendorId
@@ -45,8 +45,8 @@ fun BookingCheckOut(mainViewModel: MainViewModel, bookingPresenter: BookingPrese
     val isPendingAppointmentLoaded = bookingViewModel.isPendingAppointmentLoaded.collectAsState()
     val customerPendingBookingAppointments = bookingViewModel.pendingAppointments.collectAsState()
 
-    val deleteActionUiState = actionUIStateViewModel.deletePendingAppointmentUiState.collectAsState()
-    val loadingPendingActionUiState = actionUIStateViewModel.loadPendingAppointmentUiState.collectAsState()
+    val deleteActionUiState = performedActionUIStateViewModel.deletePendingAppointmentUiState.collectAsState()
+    val loadingPendingActionUiState = performedActionUIStateViewModel.loadPendingAppointmentUiState.collectAsState()
 
     if (!isPendingAppointmentLoaded.value) {
         bookingPresenter.createPendingBookingAppointment(
@@ -75,7 +75,7 @@ fun BookingCheckOut(mainViewModel: MainViewModel, bookingPresenter: BookingPrese
     }
     else if (deleteActionUiState.value.isSuccess) {
         SuccessDialog("success", actionTitle = "", onConfirmation = {
-            actionUIStateViewModel.switchDeletePendingAppointmentUiState(ActionUIStates(isDefault = true))
+            performedActionUIStateViewModel.switchDeletePendingAppointmentUiState(AppUIStates(isDefault = true))
             bookingPresenter.getPendingBookingAppointment(
                 mainViewModel.currentUserInfo.value.userId!!,
                 bookingStatus = BookingStatus.PENDING.toPath()
@@ -102,7 +102,7 @@ fun BookingCheckOut(mainViewModel: MainViewModel, bookingPresenter: BookingPrese
         // error occurred, refresh
     } else if (loadingPendingActionUiState.value.isSuccess) {
         if (bookingViewModel.pendingAppointments.value.isEmpty()) {
-            actionUIStateViewModel.switchActionLoadPendingAppointmentUiState(ActionUIStates(isDefault = true))
+            performedActionUIStateViewModel.switchActionLoadPendingAppointmentUiState(AppUIStates(isDefault = true))
             onLastItemRemoved()
         }
         Column(

@@ -10,7 +10,7 @@ import com.russhwolf.settings.Settings
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.home.HomepagePresenter
-import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.widgets.LiveVideoActionWidget
 import presentation.widgets.RemoteVideoWidget
 import presentations.components.ImageComponent
@@ -18,7 +18,7 @@ import presentations.components.ImageComponent
 class VideoCallTab() : Screen,
     KoinComponent {
 
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
     private val homepagePresenter: HomepagePresenter by inject()
     private var userEmail: String = ""
     private val preferenceSettings: Settings = Settings()

@@ -31,19 +31,19 @@ import domain.Models.Appointment
 import domain.Models.TherapistAppointmentItemUIModel
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
-import presentation.viewmodels.ActionUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.TherapistAppointmentResourceListEnvelopeViewModel
-import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.widgets.TherapistDashboardAppointmentWidget
 import rememberStackedSnackbarHostState
 import theme.Colors
 import utils.getAppointmentViewHeight
 
 @Composable
-fun TherapistAppointment(mainViewModel: MainViewModel, uiStateViewModel: UIStateViewModel,
+fun TherapistAppointment(mainViewModel: MainViewModel, loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel,
                          appointmentResourceListEnvelopeViewModel: TherapistAppointmentResourceListEnvelopeViewModel?, therapistPresenter: TherapistPresenter,
-                         actionUIStateViewModel: ActionUIStateViewModel) {
+                         performedActionUIStateViewModel: PerformedActionUIStateViewModel) {
 
 
     val stackedSnackBarHostState = rememberStackedSnackbarHostState(
@@ -60,7 +60,7 @@ fun TherapistAppointment(mainViewModel: MainViewModel, uiStateViewModel: UIState
         appointmentResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
     val displayedAppointmentsCount =
         appointmentResourceListEnvelopeViewModel?.displayedItemCount?.collectAsState()
-    val uiState = uiStateViewModel.uiStateInfo.collectAsState()
+    val uiState = loadingScreenUiStateViewModel.uiStateInfo.collectAsState()
     val lastIndex = appointmentList?.value?.size?.minus(1)
     val selectedAppointment = remember { mutableStateOf(Appointment()) }
     val therapistInfo = mainViewModel.currentUserInfo.value
@@ -87,7 +87,7 @@ fun TherapistAppointment(mainViewModel: MainViewModel, uiStateViewModel: UIState
         topBar = {},
         content = {
 
-            if (uiState.value.loadingVisible) {
+            if (uiState.value.isLoading) {
                 //Content Loading
                 Box(
                     modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -98,12 +98,12 @@ fun TherapistAppointment(mainViewModel: MainViewModel, uiStateViewModel: UIState
                     IndeterminateCircularProgressBar()
                     println("Error 1")
                 }
-            } else if (uiState.value.errorOccurred) {
+            } else if (uiState.value.isFailed) {
 
                 println("Error ")
                 //Error Occurred display reload
 
-            } else if (uiState.value.contentVisible) {
+            } else if (uiState.value.isSuccess) {
                 println("Error 2")
 
                 val columnModifier = Modifier

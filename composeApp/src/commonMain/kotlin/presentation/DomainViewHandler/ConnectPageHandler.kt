@@ -1,46 +1,28 @@
 package presentation.DomainViewHandler
 
-import UIStates.ScreenUIStates
+import UIStates.AppUIStates
 import domain.Models.VendorResourceListEnvelope
 import presentation.connectVendor.ConnectVendorContract
 import presentation.connectVendor.ConnectVendorPresenter
-import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.LoadingScreenUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.VendorsResourceListEnvelopeViewModel
 
 class ConnectPageHandler(
     private val vendorResourceListEnvelopeViewModel: VendorsResourceListEnvelopeViewModel,
-    private val uiStateViewModel: UIStateViewModel,
-    private val connectVendorPresenter: ConnectVendorPresenter,
-    private val onPageLoading: () -> Unit,
-    private val onContentVisible: () -> Unit,
-    private val onConnected: (userId: Long) -> Unit,
-    private val onErrorVisible: () -> Unit
-) : ConnectVendorContract.View {
+    private val loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel,
+    private val actionUIStateViewModel: PerformedActionUIStateViewModel,
+    private val connectVendorPresenter: ConnectVendorPresenter) : ConnectVendorContract.View {
     fun init() {
         connectVendorPresenter.registerUIContract(this)
     }
 
-    override fun showLce(uiState: ScreenUIStates) {
-        uiStateViewModel.switchScreenUIState(uiState)
-        uiState.let {
-            when{
-                it.loadingVisible -> {
-                    onPageLoading()
-                }
-
-                it.contentVisible -> {
-                    onContentVisible()
-                }
-
-                it.errorOccurred -> {
-                    onErrorVisible()
-                }
-            }
-        }
+    override fun showScreenLce(appUIStates: AppUIStates) {
+        loadingScreenUiStateViewModel.switchScreenUIState(appUIStates)
     }
 
-    override fun onVendorConnected(userId: Long) {
-        onConnected(userId)
+    override fun showActionLce(appUIStates: AppUIStates, message: String) {
+        actionUIStateViewModel.switchActionUIState(appUIStates)
     }
 
     override fun showVendors(vendors: VendorResourceListEnvelope?, isFromSearch: Boolean) {
@@ -55,11 +37,11 @@ class ConnectPageHandler(
             vendors.displayedItemCount?.let { vendorResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
         } else {
             vendorResourceListEnvelopeViewModel.setResources(vendors?.resources!!.toMutableList())
-            vendors?.prevPageUrl?.let { vendorResourceListEnvelopeViewModel.setPrevPageUrl(it) }
-            vendors?.nextPageUrl?.let { vendorResourceListEnvelopeViewModel.setNextPageUrl(it) }
-            vendors?.currentPage?.let { vendorResourceListEnvelopeViewModel.setCurrentPage(it) }
-            vendors?.totalItemCount?.let { vendorResourceListEnvelopeViewModel.setTotalItemCount(it) }
-            vendors?.displayedItemCount?.let { vendorResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
+            vendors.prevPageUrl?.let { vendorResourceListEnvelopeViewModel.setPrevPageUrl(it) }
+            vendors.nextPageUrl?.let { vendorResourceListEnvelopeViewModel.setNextPageUrl(it) }
+            vendors.currentPage?.let { vendorResourceListEnvelopeViewModel.setCurrentPage(it) }
+            vendors.totalItemCount?.let { vendorResourceListEnvelopeViewModel.setTotalItemCount(it) }
+            vendors.displayedItemCount?.let { vendorResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
         }
     }
 

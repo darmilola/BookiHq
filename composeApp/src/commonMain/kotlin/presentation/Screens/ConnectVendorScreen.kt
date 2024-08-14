@@ -46,7 +46,7 @@ import presentation.widgets.SearchBar
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.ConnectPageViewModel
-import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.set
 import domain.Enums.SharedPreferenceEnum
@@ -55,6 +55,7 @@ import presentation.DomainViewHandler.ConnectPageHandler
 import presentation.connectVendor.ConnectVendorPresenter
 import presentation.connectVendor.SwitchVendorBusinessItemComponent
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.VendorsResourceListEnvelopeViewModel
 import presentation.widgets.ConnectVendorHeader
 import theme.Colors
@@ -66,10 +67,12 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
 
     @Transient private val preferenceSettings: Settings = Settings()
     @Transient private val connectVendorPresenter: ConnectVendorPresenter by inject()
-    @Transient private var uiStateViewModel: UIStateViewModel? = null
+    @Transient private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
     @Transient private var connectPageViewModel: ConnectPageViewModel? = null
     @Transient private var mainViewModel: MainViewModel? = null
     @Transient private var vendorResourceListEnvelopeViewModel: VendorsResourceListEnvelopeViewModel? = null
+    @Transient
+    private var actionPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     private var country: String = ""
     private var city: String = ""
 
@@ -98,11 +101,19 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
                 })
         }
 
-
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        if (actionPerformedActionUIStateViewModel == null) {
+            actionPerformedActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+
+        if (loadingScreenUiStateViewModel == null) {
+            loadingScreenUiStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -136,12 +147,10 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
 
 
         val navigator = LocalNavigator.currentOrThrow
-        val contentVisible = remember { mutableStateOf(false) }
-        val contentLoading = remember { mutableStateOf(false) }
-        val errorVisible = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
 
         val loadMoreState = vendorResourceListEnvelopeViewModel!!.isLoadingMore.collectAsState()
+        val initializingScreen = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
         val vendorList = vendorResourceListEnvelopeViewModel?.resources?.collectAsState()
         val selectedVendor = connectPageViewModel?.selectedVendor?.collectAsState()
         val totalVendorsCount = vendorResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
@@ -163,20 +172,9 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
         // View Contract Handler Initialisation
         val handler = ConnectPageHandler(
             vendorResourceListEnvelopeViewModel!!,
-            uiStateViewModel!!,
-            connectVendorPresenter,
-            onPageLoading = {
-                contentLoading.value = true
-            },
-            onContentVisible = {
-                contentLoading.value = false
-                contentVisible.value = true
-            },
-            onErrorVisible = {
-                errorVisible.value = true
-                contentLoading.value = false
-            },
-            onConnected = {})
+            loadingScreenUiStateViewModel!!,
+            actionPerformedActionUIStateViewModel!!,
+            connectVendorPresenter)
         handler.init()
 
            Scaffold(
@@ -196,7 +194,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
                     }
                 },
                 content = {
-                    if (contentLoading.value) {
+                    if (initializingScreen.value.isLoading) {
                         //Content Loading
                         Box(
                             modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -206,11 +204,11 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
                         ) {
                             IndeterminateCircularProgressBar()
                         }
-                    } else if (errorVisible.value) {
+                    } else if (initializingScreen.value.isFailed) {
 
                      // Error Occurred display reload
 
-                    } else if (contentVisible.value) {
+                    } else if (initializingScreen.value.isSuccess) {
                         LazyColumn(
                             modifier = Modifier.padding(top = 10.dp).fillMaxWidth()
                                 .height(getVendorListItemViewHeight(vendorUIModel.vendorsList).dp),

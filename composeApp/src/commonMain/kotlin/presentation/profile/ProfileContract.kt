@@ -2,15 +2,11 @@ package presentation.profile
 
 import dev.jordond.compass.Place
 import domain.Models.VendorTime
-import UIStates.ActionUIStates
-import UIStates.ScreenUIStates
-import com.badoo.reaktive.single.Single
+import UIStates.AppUIStates
 import domain.Models.PlatformNavigator
 import domain.Models.PlatformTime
-import domain.Models.ServerResponse
 import domain.Models.User
 import domain.Models.Vendor
-import domain.Models.VendorAccountResponse
 
 class ProfileContract {
     interface View {
@@ -18,18 +14,18 @@ class ProfileContract {
         fun onProfileUpdated()
         fun showUserLocation(place: Place)
         fun showVendorInfo(vendor: Vendor)
-        fun showActionLce(actionUIStates: ActionUIStates)
+        fun showActionLce(appUIStates: AppUIStates)
     }
 
     interface MeetingViewContract {
         fun showAvailability(vendorTimes: List<VendorTime>, platformTimes: List<PlatformTime>)
-        fun showLce(screenUIStates: ScreenUIStates, message: String = "")
-        fun showActionLce(actionUIStates: ActionUIStates, message: String = "")
+        fun showScreenLce(appUIStates: AppUIStates, message: String = "")
+        fun showActionLce(appUIStates: AppUIStates, message: String = "")
 
     }
 
     interface SwitchVendorContract {
-        fun showActionLce(actionUIStates: ActionUIStates, message: String = "")
+        fun showActionLce(appUIStates: AppUIStates, message: String = "")
 
     }
 

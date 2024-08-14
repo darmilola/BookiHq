@@ -1,13 +1,9 @@
 package presentation.DomainViewHandler
 
-import com.russhwolf.settings.Settings
 import dev.jordond.compass.Place
 import domain.Models.User
 import presentation.authentication.AuthenticationContract
 import presentation.authentication.AuthenticationPresenter
-import UIStates.ActionUIStates
-import presentation.viewmodels.AuthenticationViewModel
-import UIStates.ScreenUIStates
 
 class AuthenticationScreenHandler(
     private val authenticationPresenter: AuthenticationPresenter,

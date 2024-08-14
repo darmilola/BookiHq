@@ -1,6 +1,6 @@
 package presentation.home
 
-import UIStates.ActionUIStates
+import UIStates.AppUIStates
 import domain.home.HomeRepositoryImpl
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
@@ -9,7 +9,6 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import UIStates.ScreenUIStates
 import com.badoo.reaktive.single.subscribe
 
 
@@ -24,7 +23,7 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
     }
 
     override fun getUserHomepageWithStatus(userId: Long, vendorWhatsAppPhone: String) {
-        contractView?.showLoadHomePageLce(ActionUIStates(isLoading = true))
+        contractView?.showLoadHomePageLce(AppUIStates(isLoading = true))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
@@ -32,27 +31,27 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
                         .subscribe(
                             onSuccess = { response ->
                                 if (response.status == "success") {
-                                    contractView?.showLoadHomePageLce(ActionUIStates(isSuccess = true))
+                                    contractView?.showLoadHomePageLce(AppUIStates(isSuccess = true))
                                     contractView?.showHomeWithStatus(response.homepageInfo, response.vendorStatusList)
                                 }
                                 else{
-                                    contractView?.showLoadHomePageLce(ActionUIStates(isFailed = true))
+                                    contractView?.showLoadHomePageLce(AppUIStates(isFailed = true))
                                 }
                             },
                             onError = {
-                                contractView?.showLoadHomePageLce(ActionUIStates(isFailed = true))
+                                contractView?.showLoadHomePageLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLoadHomePageLce(ActionUIStates(isFailed = true))
+                contractView?.showLoadHomePageLce(AppUIStates(isFailed = true))
             }
         }
     }
 
     override fun getUserHomepage(userId: Long) {
-        contractView?.showLoadHomePageLce(ActionUIStates(isLoading = true))
+        contractView?.showLoadHomePageLce(AppUIStates(isLoading = true))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
@@ -60,21 +59,21 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
                         .subscribe(
                             onSuccess = { response ->
                                 if (response.status == "success") {
-                                    contractView?.showLoadHomePageLce(ActionUIStates(isSuccess = true))
+                                    contractView?.showLoadHomePageLce(AppUIStates(isSuccess = true))
                                     contractView?.showHome(response.homepageInfo)
                                 }
                                 else{
-                                    contractView?.showLoadHomePageLce(ActionUIStates(isFailed = true))
+                                    contractView?.showLoadHomePageLce(AppUIStates(isFailed = true))
                                 }
                             },
                             onError = {
-                                contractView?.showLoadHomePageLce(ActionUIStates(isFailed = true))
+                                contractView?.showLoadHomePageLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLoadHomePageLce(ActionUIStates(isFailed = true))
+                contractView?.showLoadHomePageLce(AppUIStates(isFailed = true))
             }
         }
     }

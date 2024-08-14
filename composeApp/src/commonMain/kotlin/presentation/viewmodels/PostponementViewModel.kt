@@ -1,13 +1,12 @@
 package presentation.viewmodels
 
-import UIStates.ActionUIStates
+import UIStates.AppUIStates
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Models.Appointment
 import domain.Models.AvailableTime
 import domain.Models.PlatformTime
 import domain.Models.UserAppointment
-import domain.Models.Vendor
 import domain.Models.VendorTime
 import kotlinx.coroutines.flow.StateFlow
 import presentation.dataModeller.CalendarDataSource
@@ -18,7 +17,7 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
     private var _currentAppointment = savedStateHandle.getStateFlow("currentAppointment",UserAppointment())
     private var _platformTimes = savedStateHandle.getStateFlow("platformTimes", listOf<PlatformTime>())
     private var _vendorTimes = savedStateHandle.getStateFlow("vendorTimes", listOf<VendorTime>())
-    private var _postponementViewUIState = savedStateHandle.getStateFlow("postponementViewUIState", ActionUIStates())
+    private var _postponementViewUIState = savedStateHandle.getStateFlow("postponementViewUIState", AppUIStates())
     private var _day =  savedStateHandle.getStateFlow("day", -1)
     private var _month =  savedStateHandle.getStateFlow("month", -1)
     private var _monthName =  savedStateHandle.getStateFlow("monthName", "")
@@ -33,7 +32,7 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
     val currentAppointment: StateFlow<UserAppointment>
         get() = _currentAppointment
 
-    val postponementViewUIState: StateFlow<ActionUIStates>
+    val postponementViewUIState: StateFlow<AppUIStates>
         get() = _postponementViewUIState
 
     val platformTimes: StateFlow<List<PlatformTime>>
@@ -63,8 +62,8 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
         savedStateHandle["therapistBookedAppointment"] = bookedAppointment
     }
 
-    fun setPostponementViewUIState(actionUIStates: ActionUIStates) {
-        savedStateHandle["postponementViewUIState"] = actionUIStates
+    fun setPostponementViewUIState(appUIStates: AppUIStates) {
+        savedStateHandle["postponementViewUIState"] = appUIStates
     }
 
     fun clearServiceTimes() {

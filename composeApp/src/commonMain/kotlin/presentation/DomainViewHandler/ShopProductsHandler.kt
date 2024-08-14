@@ -1,14 +1,14 @@
 package presentation.DomainViewHandler
 
+import UIStates.AppUIStates
 import domain.Models.ProductResourceListEnvelope
 import presentation.Products.ProductContract
 import presentation.Products.ProductPresenter
-import presentation.viewmodels.UIStateViewModel
-import UIStates.ScreenUIStates
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.ProductResourceListEnvelopeViewModel
 
 class ShopProductsHandler(
-    private val uiStateViewModel: UIStateViewModel,
+    private val loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel,
     private val productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel,
     private val productPresenter: ProductPresenter
 ) : ProductContract.View {
@@ -16,8 +16,8 @@ class ShopProductsHandler(
         productPresenter.registerUIContract(this)
     }
 
-    override fun showLce(uiState: ScreenUIStates) {
-        uiStateViewModel.switchScreenUIState(uiState)
+    override fun showLce(appUIStates: AppUIStates) {
+        loadingScreenUiStateViewModel.switchScreenUIState(appUIStates)
     }
 
     override fun showProducts(products: ProductResourceListEnvelope?) {

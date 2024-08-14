@@ -3,26 +3,25 @@ package presentation.DomainViewHandler
 import domain.Models.OrderResourceListEnvelope
 import presentation.Orders.OrderContract
 import presentation.Orders.OrderPresenter
-import UIStates.ActionUIStates
+import UIStates.AppUIStates
 import presentation.viewmodels.OrdersResourceListEnvelopeViewModel
-import presentation.viewmodels.UIStateViewModel
-import UIStates.ScreenUIStates
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 
 class OrderHandler(
     private val ordersResourceListEnvelopeViewModel: OrdersResourceListEnvelopeViewModel,
-    private val uiStateViewModel: UIStateViewModel,
+    private val loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel,
     private val orderPresenter: OrderPresenter
 ) : OrderContract.View {
     fun init() {
         orderPresenter.registerUIContract(this)
     }
 
-    override fun showLce(uiState: ScreenUIStates, message: String) {
+    override fun showLce(appUIStates: AppUIStates, message: String) {
         ordersResourceListEnvelopeViewModel.clearData(mutableListOf())
-        uiStateViewModel.switchScreenUIState(uiState)
+        loadingScreenUiStateViewModel.switchScreenUIState(appUIStates)
     }
 
-    override fun showAsyncLce(uiState: ActionUIStates, message: String) {
+    override fun showAsyncLce(uiState: AppUIStates, message: String) {
         TODO("Not yet implemented")
     }
 

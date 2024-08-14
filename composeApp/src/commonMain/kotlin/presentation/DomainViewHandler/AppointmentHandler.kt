@@ -4,22 +4,21 @@ import domain.Models.Appointment
 import domain.Models.AppointmentResourceListEnvelope
 import presentation.appointments.AppointmentContract
 import presentation.appointments.AppointmentPresenter
-import presentation.viewmodels.ActionUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
-import UIStates.ActionUIStates
+import UIStates.AppUIStates
 import presentation.viewmodels.PostponementViewModel
-import presentation.viewmodels.UIStateViewModel
-import UIStates.ScreenUIStates
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import domain.Models.PlatformTime
 import domain.Models.VendorTime
 
 
 class AppointmentsHandler(
     private val appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel,
-    private val uiStateViewModel: UIStateViewModel,
-    private val deleteActionUIStateViewModel: ActionUIStateViewModel,
-    private val joinMeetingActionUIStateViewModel: ActionUIStateViewModel,
-    private val getAvailabilityActionUIStateViewModel: ActionUIStateViewModel,
+    private val loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel,
+    private val deletePerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
+    private val joinMeetingPerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
+    private val getAvailabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val postponementViewModel: PostponementViewModel,
     private val appointmentPresenter: AppointmentPresenter,
     private val onMeetingTokenReady: (meetingToken: String) -> Unit) : AppointmentContract.View {
@@ -27,24 +26,24 @@ class AppointmentsHandler(
         appointmentPresenter.registerUIContract(this)
     }
 
-    override fun showLce(screenUiState: ScreenUIStates) {
-        uiStateViewModel.switchScreenUIState(screenUiState)
+    override fun showLce(appUIStates: AppUIStates) {
+        loadingScreenUiStateViewModel.switchScreenUIState(appUIStates)
     }
 
-    override fun showDeleteActionLce(actionUIStates: ActionUIStates) {
-        deleteActionUIStateViewModel.switchActionDeleteUIState(actionUIStates)
+    override fun showDeleteActionLce(appUIStates: AppUIStates) {
+        deletePerformedActionUIStateViewModel.switchActionDeleteUIState(appUIStates)
     }
 
-    override fun showPostponeActionLce(actionUIStates: ActionUIStates) {
-        postponementViewModel.setPostponementViewUIState(actionUIStates)
+    override fun showPostponeActionLce(appUIStates: AppUIStates) {
+        postponementViewModel.setPostponementViewUIState(appUIStates)
     }
 
-    override fun showJoinMeetingActionLce(actionUIStates: ActionUIStates) {
-        joinMeetingActionUIStateViewModel.switchActionMeetingUIState(actionUIStates)
+    override fun showJoinMeetingActionLce(appUIStates: AppUIStates) {
+        joinMeetingPerformedActionUIStateViewModel.switchActionMeetingUIState(appUIStates)
     }
 
-    override fun showGetAvailabilityActionLce(actionUIStates: ActionUIStates) {
-        getAvailabilityActionUIStateViewModel.switchActionAvailabilityUIState(actionUIStates)
+    override fun showGetAvailabilityActionLce(appUIStates: AppUIStates) {
+        getAvailabilityPerformedActionUIStateViewModel.switchActionAvailabilityUIState(appUIStates)
     }
 
     override fun showAppointments(appointments: AppointmentResourceListEnvelope) {

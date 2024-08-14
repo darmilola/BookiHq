@@ -1,17 +1,13 @@
 package presentation.therapist
 
-import domain.Models.AppointmentResourceListEnvelope
 import domain.Models.TherapistReviews
-import UIStates.ActionUIStates
-import UIStates.ScreenUIStates
-import com.badoo.reaktive.single.Single
-import domain.Models.ServerResponse
+import UIStates.AppUIStates
 import domain.Models.TherapistAppointmentResourceListEnvelope
 
 interface TherapistContract {
     interface View {
-        fun showScreenLce(screenUIStates: ScreenUIStates)
-        fun showActionLce(actionUiState: ActionUIStates)
+        fun showScreenLce(actionUiState: AppUIStates)
+        fun showActionLce(actionUiState: AppUIStates)
         fun showReviews(reviews: List<TherapistReviews>)
         fun showAppointments(appointments: TherapistAppointmentResourceListEnvelope)
         fun onLoadMoreAppointmentStarted()

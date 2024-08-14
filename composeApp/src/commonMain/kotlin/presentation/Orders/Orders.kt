@@ -34,8 +34,6 @@ import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
-import domain.Models.CustomerItemUIModel
-import domain.Models.CustomerOrder
 import domain.Enums.Screens
 import domain.Models.UserOrderItemUIModel
 import domain.Models.UserOrders
@@ -50,7 +48,7 @@ import presentation.components.IndeterminateCircularProgressBar
 import presentation.consultation.rightTopBarItem
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.OrdersResourceListEnvelopeViewModel
-import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget
 import rememberStackedSnackbarHostState
@@ -64,7 +62,7 @@ class Orders() : Tab, KoinComponent, Parcelable {
     @Transient
     private val orderPresenter: OrderPresenter by inject()
     @Transient
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
     @Transient
     private var ordersResourceListEnvelopeViewModel: OrdersResourceListEnvelopeViewModel? = null
     @Transient
@@ -99,10 +97,10 @@ class Orders() : Tab, KoinComponent, Parcelable {
         )
 
 
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        if (loadingScreenUiStateViewModel == null) {
+            loadingScreenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -127,7 +125,7 @@ class Orders() : Tab, KoinComponent, Parcelable {
             ordersResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
         val displayedOrdersCount =
             ordersResourceListEnvelopeViewModel!!.displayedItemCount.collectAsState()
-        val uiState = uiStateViewModel!!.uiStateInfo.collectAsState()
+        val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
         val lastIndex = ordersList?.value?.size?.minus(1)
         val userId = mainViewModel!!.currentUserInfo.value.userId
         val selectedOrder = remember { mutableStateOf(UserOrders()) }
@@ -162,12 +160,12 @@ class Orders() : Tab, KoinComponent, Parcelable {
             content = {
                 val handler = OrderHandler(
                     ordersResourceListEnvelopeViewModel!!,
-                    uiStateViewModel!!,
+                    loadingScreenUiStateViewModel!!,
                     orderPresenter
                 )
                 handler.init()
 
-                if (uiState.value.loadingVisible) {
+                if (uiState.value.isLoading) {
                     //Content Loading
                     Box(
                         modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -177,10 +175,10 @@ class Orders() : Tab, KoinComponent, Parcelable {
                     ) {
                         IndeterminateCircularProgressBar()
                     }
-                } else if (uiState.value.errorOccurred) {
+                } else if (uiState.value.isFailed) {
                     // Error Occurred Try Again
 
-                } else if (uiState.value.contentVisible) {
+                } else if (uiState.value.isSuccess) {
                     LazyColumn(
                         modifier = Modifier.fillMaxWidth()
                             .padding(bottom = 50.dp)

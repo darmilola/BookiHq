@@ -1,7 +1,7 @@
 package presentation.appointments
 
 import StackedSnackbarHost
-import UIStates.ActionUIStates
+import UIStates.AppUIStates
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -44,12 +44,11 @@ import presentation.DomainViewHandler.AppointmentsHandler
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.dialogs.LoadingDialog
-import presentation.viewmodels.ActionUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
-import presentation.viewmodels.UIStateViewModel
-import UIStates.ScreenUIStates
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.Settings
@@ -66,11 +65,11 @@ import theme.Colors
 class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
 
     private val appointmentPresenter: AppointmentPresenter by inject()
-    private var uiStateViewModel: UIStateViewModel? = null
-    private var deleteActionUIStateViewModel: ActionUIStateViewModel? = null
-    private var postponeActionUIStateViewModel: ActionUIStateViewModel? = null
-    private var postponeTimeUIStateViewModel: ActionUIStateViewModel? = null
-    private var joinMeetingActionUIStateViewModel: ActionUIStateViewModel? = null
+    private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
+    private var deletePerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    private var postponePerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    private var postponeTimeUIStateViewModel: PerformedActionUIStateViewModel? = null
+    private var joinMeetingPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     private var postponementViewModel: PostponementViewModel? = null
     private var mainViewModel: MainViewModel? = null
     val preferenceSettings = Settings()
@@ -117,26 +116,26 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
             animation = StackedSnackbarAnimation.Bounce
         )
 
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        if (loadingScreenUiStateViewModel == null) {
+            loadingScreenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
 
-        if (deleteActionUIStateViewModel == null) {
-            deleteActionUIStateViewModel = kmpViewModel(
+        if (deletePerformedActionUIStateViewModel == null) {
+            deletePerformedActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
 
-        if (postponeActionUIStateViewModel == null) {
-            postponeActionUIStateViewModel = kmpViewModel(
+        if (postponePerformedActionUIStateViewModel == null) {
+            postponePerformedActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -144,15 +143,15 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
         if (postponeTimeUIStateViewModel == null) {
             postponeTimeUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
 
-        if (joinMeetingActionUIStateViewModel == null) {
-            joinMeetingActionUIStateViewModel = kmpViewModel(
+        if (joinMeetingPerformedActionUIStateViewModel == null) {
+            joinMeetingPerformedActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -174,10 +173,10 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
         val displayedAppointmentsCount =
             appointmentResourceListEnvelopeViewModel?.displayedItemCount?.collectAsState()
 
-        val uiState = uiStateViewModel!!.uiStateInfo.collectAsState()
-        val deleteActionUIStates = deleteActionUIStateViewModel!!.deleteUIStateInfo.collectAsState()
+        val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
+        val deleteActionUIStates = deletePerformedActionUIStateViewModel!!.deleteUIStateInfo.collectAsState()
         val postponeActionUIStates = postponementViewModel!!.postponementViewUIState.collectAsState()
-        val joinMeetingActionUIStates = joinMeetingActionUIStateViewModel!!.joinMeetingStateInfo.collectAsState()
+        val joinMeetingActionUIStates = joinMeetingPerformedActionUIStateViewModel!!.joinMeetingStateInfo.collectAsState()
 
         val lastIndex = appointmentList?.value?.size?.minus(1)
         val selectedAppointment = remember { mutableStateOf(UserAppointment()) }
@@ -185,11 +184,11 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
 
         LaunchedEffect(true) {
             if (appointmentResourceListEnvelopeViewModel!!.resources.value.isNotEmpty()){
-                uiStateViewModel!!.switchScreenUIState(ScreenUIStates(contentVisible = true))
+                loadingScreenUiStateViewModel!!.switchScreenUIState(AppUIStates(isSuccess = true))
             }
             else {
                 appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                appointmentPresenter.getUserAppointments(userId!!)
+                appointmentPresenter.getUserAppointments(userId)
             }
 
         }
@@ -221,7 +220,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                 SuccessDialog("Appointment Postponed", "Close", onConfirmation = {
                     appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                     appointmentPresenter.getUserAppointments(userId!!)
-                    postponementViewModel!!.setPostponementViewUIState(ActionUIStates(isDefault = true))
+                    postponementViewModel!!.setPostponementViewUIState(AppUIStates(isDefault = true))
                 })
             }
         }
@@ -241,7 +240,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                 SuccessDialog("Delete Successful", "Close", onConfirmation = {
                     appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                     appointmentPresenter.getUserAppointments(userId!!)
-                    deleteActionUIStateViewModel!!.switchActionDeleteUIState(ActionUIStates(isDefault = true))
+                    deletePerformedActionUIStateViewModel!!.switchActionDeleteUIState(AppUIStates(isDefault = true))
                 })
             }
         }
@@ -272,9 +271,9 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
             content = {
                 val handler = AppointmentsHandler(
                     appointmentResourceListEnvelopeViewModel!!,
-                    uiStateViewModel!!,
-                    deleteActionUIStateViewModel!!,
-                    joinMeetingActionUIStateViewModel!!,
+                    loadingScreenUiStateViewModel!!,
+                    deletePerformedActionUIStateViewModel!!,
+                    joinMeetingPerformedActionUIStateViewModel!!,
                     postponeTimeUIStateViewModel!!,
                     postponementViewModel!!,
                     appointmentPresenter,
@@ -284,7 +283,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                 )
                 handler.init()
 
-                if (uiState.value.loadingVisible) {
+                if (uiState.value.isLoading) {
                     //Content Loading
                     Box(
                         modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -294,16 +293,16 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                     ) {
                         IndeterminateCircularProgressBar()
                     }
-                } else if (uiState.value.errorOccurred) {
+                } else if (uiState.value.isFailed) {
 
                     //Error Occurred display reload
 
-                } else if (uiState.value.emptyContent) {
+                } /*else if (uiState.value.emptyContent) {
 
                     //Error Occurred display reload
 
-                }
-                else if (uiState.value.contentVisible) {
+                }*/
+                else if (uiState.value.isSuccess) {
                        LazyColumn(
                                 modifier = Modifier.fillMaxWidth()
                                     .height(getAppointmentViewHeight(appointmentUIModel.appointmentList.size).dp)
@@ -365,10 +364,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                                         }
                                     }
                                 }
-
-
-
-                    }
+                       }
 
                 }
             })

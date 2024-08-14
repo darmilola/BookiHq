@@ -1,13 +1,12 @@
 package presentation.Orders
 
 import domain.Models.OrderResourceListEnvelope
-import UIStates.ActionUIStates
-import UIStates.ScreenUIStates
+import UIStates.AppUIStates
 
 interface OrderContract {
     interface View {
-        fun showLce(uiState: ScreenUIStates, message: String = "")
-        fun showAsyncLce(uiState: ActionUIStates, message: String = "")
+        fun showLce(appUIStates: AppUIStates, message: String = "")
+        fun showAsyncLce(uiState: AppUIStates, message: String = "")
         fun showUserOrders(orders: OrderResourceListEnvelope)
         fun onLoadMoreOrderStarted(isSuccess: Boolean = false)
         fun onLoadMoreOrderEnded(isSuccess: Boolean = false)

@@ -23,10 +23,9 @@ import domain.Models.Vendor
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.dialogs.LoadingDialog
-import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.set
-import domain.Enums.AuthType
 import domain.Enums.CustomerMovementEnum
 import domain.Enums.DeviceType
 import domain.Enums.SharedPreferenceEnum
@@ -34,6 +33,7 @@ import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.VendorInfoPageHandler
 import presentation.connectVendor.ConnectVendorPresenter
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.widgets.BusinessInfoContent
 import presentation.widgets.BusinessInfoTitle
 import utils.ParcelableScreen
@@ -43,7 +43,8 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
 
    @Transient private val preferenceSettings: Settings = Settings()
    @Transient private val connectVendorPresenter: ConnectVendorPresenter by inject()
-   @Transient private var uiStateViewModel: UIStateViewModel? = null
+   @Transient private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
+   @Transient private var actionPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
    @Transient private var mainViewModel: MainViewModel? = null
 
     fun setMainViewModel(mainViewModel: MainViewModel) {
@@ -56,12 +57,10 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val pageVisible = remember { mutableStateOf(false) }
-        val pageLoading = remember { mutableStateOf(false) }
-        val errorVisible = remember { mutableStateOf(false) }
         val vendorConnected = remember { mutableStateOf(false) }
         val userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(), -1L]
         val userFirstname = preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath(),""]
+        val connectVendorAction = actionPerformedActionUIStateViewModel!!.uiStateInfo.collectAsState()
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
         if (onBackPressed.value){
@@ -70,10 +69,18 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
         }
 
 
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        if (loadingScreenUiStateViewModel == null) {
+            loadingScreenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+        if (actionPerformedActionUIStateViewModel == null) {
+            actionPerformedActionUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -81,40 +88,31 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
 
         // View Contract Handler Initialisation
         val handler = VendorInfoPageHandler(
-            null,
-            uiStateViewModel!!,
-            connectVendorPresenter,
-            onPageLoading = {
-                pageLoading.value = true
-            },
-            onContentVisible = {
-                pageLoading.value = false
-                pageVisible.value = true
-            },
-            onErrorVisible = {
-                errorVisible.value = true
-                pageLoading.value = false
-            },
-            onConnected = {
-                preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = vendor.vendorId
-                preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = vendor.whatsAppPhone
-                vendorConnected.value = true
-            })
+            loadingScreenUiStateViewModel!!,
+            actionPerformedActionUIStateViewModel!!,
+            connectVendorPresenter)
         handler.init()
 
-        if (pageLoading.value) {
+        if (connectVendorAction.value.isLoading) {
             Box(modifier = Modifier.fillMaxWidth(0.90f)) {
                 LoadingDialog("Connecting Vendor")
             }
-        } else if (vendorConnected.value) {
+        } else if (connectVendorAction.value.isSuccess) {
+            preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = vendor.vendorId
+            preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = vendor.whatsAppPhone
+            vendorConnected.value = true
+
             if (deviceInfo() == DeviceType.IOS.toPath()) {
-                platformNavigator!!.goToMainScreen()
+                platformNavigator.goToMainScreen()
             }
             else {
                 val mainScreen = MainScreen(platformNavigator)
                 mainScreen.setMainViewModel(mainViewModel!!)
                 navigator.replaceAll(mainScreen)
             }
+        }
+        else if (connectVendorAction.value.isFailed){
+            // error occurred
         }
 
 
@@ -129,7 +127,7 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
                 BusinessInfoContent(vendor) {
                     if (userId != -1L) {
                         connectVendorPresenter.connectVendor(userId, vendor.vendorId!!, action = CustomerMovementEnum.Entry.toPath(),
-                            userFirstname = userFirstname, vendor = vendor, platformNavigator = platformNavigator!!)
+                            userFirstname = userFirstname)
                     }
                 }
             },

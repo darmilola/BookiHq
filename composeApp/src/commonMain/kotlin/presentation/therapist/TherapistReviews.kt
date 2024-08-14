@@ -19,14 +19,14 @@ import androidx.compose.ui.unit.dp
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.TherapistViewModel
-import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.widgets.TherapistReviewScreen
 import rememberStackedSnackbarHostState
 
 @Composable
 fun TherapistReviews(mainViewModel: MainViewModel, therapistPresenter: TherapistPresenter, therapistViewModel: TherapistViewModel,
-                     uiStateViewModel: UIStateViewModel){
-    val uiState = uiStateViewModel.uiStateInfo.collectAsState()
+                     loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel){
+    val uiState = loadingScreenUiStateViewModel.uiStateInfo.collectAsState()
     val reviews = therapistViewModel.therapistReviews.collectAsState()
 
     val stackedSnackBarHostState = rememberStackedSnackbarHostState(
@@ -44,7 +44,7 @@ fun TherapistReviews(mainViewModel: MainViewModel, therapistPresenter: Therapist
         snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
         topBar = {},
         content = {
-            if (uiState.value.loadingVisible) {
+            if (uiState.value.isLoading) {
                 // Content Loading
                 Box(
                     modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -54,11 +54,11 @@ fun TherapistReviews(mainViewModel: MainViewModel, therapistPresenter: Therapist
                 ) {
                     IndeterminateCircularProgressBar()
                 }
-            } else if (uiState.value.errorOccurred) {
+            } else if (uiState.value.isFailed) {
 
                 // Error Occurred display reload
 
-            } else if (uiState.value.contentVisible) {
+            } else if (uiState.value.isSuccess) {
                    Column(
                         Modifier
                             .fillMaxHeight(0.30f)

@@ -76,10 +76,9 @@ import org.koin.core.component.inject
 import presentation.DomainViewHandler.HomepageHandler
 import presentation.components.StraightLine
 import presentation.components.IndeterminateCircularProgressBar
-import presentation.viewmodels.ActionUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.UIStateViewModel
 import presentation.widgets.ShopStatusWidget
 import presentation.widgets.HomeServicesWidget
 import presentation.widgets.MeetingAppointmentWidget
@@ -99,7 +98,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
     @Transient private val homepagePresenter: HomepagePresenter by inject()
     private var userId: Long = -1L
     @Transient private val preferenceSettings: Settings = Settings()
-    @Transient private var actionUIStateViewModel: ActionUIStateViewModel? = null
+    @Transient private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient private var mainViewModel: MainViewModel? = null
     @Transient private var homePageViewModel: HomePageViewModel? = null
 
@@ -134,16 +133,16 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
            val isStatusViewExpanded = remember { mutableStateOf(false) }
 
             val screenSizeInfo = ScreenSizeInfo()
-            if (actionUIStateViewModel == null) {
-                actionUIStateViewModel = kmpViewModel(
+            if (performedActionUIStateViewModel == null) {
+                performedActionUIStateViewModel = kmpViewModel(
                     factory = viewModelFactory {
-                        ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                        PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                     },
                 )
             }
 
 
-            val handler = HomepageHandler(actionUIStateViewModel!!, homepagePresenter,
+            val handler = HomepageHandler(performedActionUIStateViewModel!!, homepagePresenter,
                 onHomeInfoAvailable = { homePageInfo, vendorStatus ->
                     val viewHeight = calculateHomePageScreenHeight(
                         homepageInfo = homePageInfo,
@@ -176,7 +175,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             }
 
 
-        val uiState = actionUIStateViewModel!!.loadHomepageUiState.collectAsState()
+        val uiState = performedActionUIStateViewModel!!.loadHomepageUiState.collectAsState()
         val homepageInfo = homePageViewModel!!.homePageInfo.collectAsState()
         val homePageViewHeight = homePageViewModel!!.homePageViewHeight.collectAsState()
 
@@ -495,7 +494,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                             appointmentPresenter = null,
                             postponementViewModel = null,
                             mainViewModel = mainViewModel!!,
-                            actionUIStateViewModel!!,
+                            performedActionUIStateViewModel!!,
                             isFromHomeTab = true,
                             onDeleteAppointment = {},
                             platformNavigator = platformNavigator

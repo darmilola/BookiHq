@@ -1,5 +1,6 @@
 package presentation.Orders
 
+import UIStates.AppUIStates
 import com.badoo.reaktive.single.subscribe
 import domain.Orders.OrderRepositoryImpl
 import io.ktor.client.HttpClient
@@ -9,7 +10,6 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import UIStates.ScreenUIStates
 
 class OrderPresenter(apiService: HttpClient): OrderContract.Presenter() {
 
@@ -24,26 +24,26 @@ class OrderPresenter(apiService: HttpClient): OrderContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(ScreenUIStates(loadingVisible = true))
+                    contractView?.showLce(AppUIStates(isLoading = true))
                     orderRepositoryImpl.getUserOrders(userId, 1)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
+                                    contractView?.showLce(AppUIStates(isSuccess = true))
                                     contractView?.showUserOrders(result.listItem)
                                 }
                                 else{
-                                    contractView?.showLce(ScreenUIStates(errorOccurred = true))
+                                    contractView?.showLce(AppUIStates(isFailed = true))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(ScreenUIStates(errorOccurred = true)) }
+                                contractView?.showLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(ScreenUIStates(errorOccurred = true))
+                contractView?.showLce(AppUIStates(isFailed = true))
             }
         }
     }

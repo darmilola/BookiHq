@@ -2,7 +2,6 @@ package presentation.bookings
 
 import StackedSnackbarHost
 import StackedSnakbarHostState
-import UIStates.ActionUIStates
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -50,8 +49,6 @@ import presentation.dialogs.LoadingDialog
 import presentation.dialogs.SuccessDialog
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.UIStateViewModel
-import UIStates.ScreenUIStates
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.runtime.collectAsState
@@ -61,7 +58,7 @@ import domain.Enums.BookingStatus
 import domain.Enums.PaymentMethod
 import domain.Models.PlatformNavigator
 import kotlinx.serialization.Transient
-import presentation.viewmodels.ActionUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
@@ -70,7 +67,7 @@ import rememberStackedSnackbarHostState
 @Parcelize
 class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
     @Transient private val bookingPresenter: BookingPresenter by inject()
-    @Transient private var actionUIStateViewModel: ActionUIStateViewModel? = null
+    @Transient private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient private var bookingViewModel: BookingViewModel? = null
     @Transient private var mainViewModel: MainViewModel? = null
 
@@ -102,10 +99,10 @@ class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
 
 
 
-        if (actionUIStateViewModel == null) {
-            actionUIStateViewModel = kmpViewModel(
+        if (performedActionUIStateViewModel == null) {
+            performedActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -120,11 +117,11 @@ class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
 
 
         val handler = BookingScreenHandler(
-            bookingViewModel!!, actionUIStateViewModel = actionUIStateViewModel!! ,bookingPresenter, onShowUnsavedAppointment = {})
+            bookingViewModel!!, performedActionUIStateViewModel = performedActionUIStateViewModel!! ,bookingPresenter, onShowUnsavedAppointment = {})
         handler.init()
 
 
-        val createAppointmentActionUiStates = actionUIStateViewModel!!.createAppointmentUiState.collectAsState()
+        val createAppointmentActionUiStates = performedActionUIStateViewModel!!.createAppointmentUiState.collectAsState()
 
         if (createAppointmentActionUiStates.value.isLoading) {
             Box(modifier = Modifier.fillMaxWidth(0.90f)) {
@@ -200,7 +197,7 @@ class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
                     ) {
                         AttachBookingPages(
                             pagerState,
-                            actionUIStateViewModel!!,
+                            performedActionUIStateViewModel!!,
                             mainViewModel!!,
                             bookingViewModel!!,
                             services = mainViewModel!!.selectedService.value,
@@ -316,7 +313,7 @@ class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun AttachBookingPages(pagerState: PagerState, actionUIStateViewModel: ActionUIStateViewModel,mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, services: Services,onLastItemRemoved:() -> Unit){
+    fun AttachBookingPages(pagerState: PagerState, performedActionUIStateViewModel: PerformedActionUIStateViewModel, mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, services: Services, onLastItemRemoved:() -> Unit){
         val pageHeight = remember { mutableStateOf(0.90f) }
         val boxModifier =
             Modifier
@@ -339,7 +336,7 @@ class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
                     }
                     1 -> if(page == pagerState.targetPage) {
                          pageHeight.value = 0.90f
-                         BookingSelectTherapists(mainViewModel,actionUIStateViewModel,bookingViewModel,bookingPresenter)
+                         BookingSelectTherapists(mainViewModel,performedActionUIStateViewModel,bookingViewModel,bookingPresenter)
                     }
                     2 -> if(page == pagerState.targetPage) {
                         pageHeight.value = 0.80f
@@ -347,7 +344,7 @@ class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
                             mainViewModel,
                             bookingPresenter,
                             bookingViewModel,
-                            actionUIStateViewModel,
+                            performedActionUIStateViewModel,
                             onLastItemRemoved = {
                                 onLastItemRemoved()
                            })

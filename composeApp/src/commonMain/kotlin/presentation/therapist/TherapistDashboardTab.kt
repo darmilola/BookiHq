@@ -2,7 +2,7 @@ package presentation.therapist
 
 import GGSansSemiBold
 import StackedSnackbarHost
-import UIStates.ActionUIStates
+import UIStates.AppUIStates
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,12 +42,11 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.TherapistHandler
 import presentation.dialogs.LoadingDialog
-import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
-import presentation.viewmodels.ActionUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.TherapistAppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.TherapistViewModel
-import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
@@ -57,17 +56,17 @@ class TherapistDashboardTab() : Tab, KoinComponent {
     @Transient
     private val therapistPresenter: TherapistPresenter by inject()
     @Transient
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
     @Transient
-    private var actionUiStateViewModel: ActionUIStateViewModel? = null
+    private var performedActionUiStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
     private var therapistViewModel: TherapistViewModel? = null
     @Transient
     private var appointmentResourceListEnvelopeViewModel: TherapistAppointmentResourceListEnvelopeViewModel? = null
     @Transient
-    private var availabilityActionUIStateViewModel: ActionUIStateViewModel? = null
+    private var availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
-    private var joinMeetingActionUIStateViewModel: ActionUIStateViewModel? = null
+    private var joinMeetingPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
     private var mainViewModel: MainViewModel? = null
 
@@ -95,44 +94,44 @@ class TherapistDashboardTab() : Tab, KoinComponent {
     @Composable
     override fun Content() {
 
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        if (loadingScreenUiStateViewModel == null) {
+            loadingScreenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
 
 
-        if (availabilityActionUIStateViewModel == null) {
-            availabilityActionUIStateViewModel = kmpViewModel(
+        if (availabilityPerformedActionUIStateViewModel == null) {
+            availabilityPerformedActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
 
-        if (joinMeetingActionUIStateViewModel == null) {
-            joinMeetingActionUIStateViewModel = kmpViewModel(
+        if (joinMeetingPerformedActionUIStateViewModel == null) {
+            joinMeetingPerformedActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
 
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        if (loadingScreenUiStateViewModel == null) {
+            loadingScreenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
 
         }
 
-        if (actionUiStateViewModel == null) {
-            actionUiStateViewModel = kmpViewModel(
+        if (performedActionUiStateViewModel == null) {
+            performedActionUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
 
@@ -158,8 +157,8 @@ class TherapistDashboardTab() : Tab, KoinComponent {
         }
 
         val handler = TherapistHandler(therapistPresenter,
-             uiStateViewModel = uiStateViewModel!!,
-             actionUiStateViewModel!!,
+             loadingScreenUiStateViewModel = loadingScreenUiStateViewModel!!,
+             performedActionUiStateViewModel!!,
             onReviewsReady = {
                 therapistViewModel!!.setTherapistReviews(it)
              },
@@ -168,7 +167,7 @@ class TherapistDashboardTab() : Tab, KoinComponent {
         handler.init()
 
         val therapistInfo = mainViewModel!!.currentUserInfo.value
-        val actionState = actionUiStateViewModel!!.therapistDashboardUiState.collectAsState()
+        val actionState = performedActionUiStateViewModel!!.therapistDashboardUiState.collectAsState()
 
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
@@ -183,7 +182,7 @@ class TherapistDashboardTab() : Tab, KoinComponent {
         }
         else if (actionState.value.isSuccess){
             appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-            actionUiStateViewModel!!.switchActionUIState(ActionUIStates(isDefault = true))
+            performedActionUiStateViewModel!!.switchActionUIState(AppUIStates(isDefault = true))
             therapistPresenter.getTherapistAppointments(therapistInfo.userId!!)
         }
 
@@ -247,8 +246,8 @@ class TherapistDashboardTab() : Tab, KoinComponent {
                 contentAlignment = Alignment.Center
             ) {
                 when(tabIndex){
-                    0 -> TherapistAppointment(mainViewModel!!, uiStateViewModel!!, appointmentResourceListEnvelopeViewModel, therapistPresenter, actionUiStateViewModel!!)
-                    1 -> TherapistReviews(mainViewModel!!, therapistPresenter, therapistViewModel!!, uiStateViewModel!!)
+                    0 -> TherapistAppointment(mainViewModel!!, loadingScreenUiStateViewModel!!, appointmentResourceListEnvelopeViewModel, therapistPresenter, performedActionUiStateViewModel!!)
+                    1 -> TherapistReviews(mainViewModel!!, therapistPresenter, therapistViewModel!!, loadingScreenUiStateViewModel!!)
                 }
 
             }

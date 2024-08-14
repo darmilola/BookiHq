@@ -9,8 +9,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.badoo.reaktive.single.subscribe
-import UIStates.ActionUIStates
-import UIStates.ScreenUIStates
+import UIStates.AppUIStates
 import domain.Enums.ServerResponseEnum
 import domain.Models.PlatformNavigator
 import domain.Models.PlatformTime
@@ -58,26 +57,25 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showActionLce(ActionUIStates(isLoading = true))
+                    contractView?.showActionLce(AppUIStates(isLoading = true))
                     profileRepositoryImpl.updateProfile(firstname, lastname, userEmail, address, contactPhone, countryId, cityId, gender,profileImageUrl)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showActionLce(ActionUIStates(isSuccess = true))
-                                    //contractView?.onProfileUpdated()
+                                    contractView?.showActionLce(AppUIStates(isSuccess = true))
                                 }
                                 else{
-                                    contractView?.showActionLce(ActionUIStates(isSuccess = false))
+                                    contractView?.showActionLce(AppUIStates(isSuccess = false))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showActionLce(ActionUIStates(isSuccess = false)) }
+                                it.message?.let { it1 -> contractView?.showActionLce(AppUIStates(isSuccess = false)) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showActionLce(ActionUIStates(isSuccess = false))
+                contractView?.showActionLce(AppUIStates(isSuccess = false))
             }
         }
     }
@@ -86,26 +84,26 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showActionLce(ActionUIStates(isLoading = true))
+                    contractView?.showActionLce(AppUIStates(isLoading = true))
                     profileRepositoryImpl.deleteProfile(userEmail)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showActionLce(ActionUIStates( isSuccess = true))
+                                    contractView?.showActionLce(AppUIStates(isSuccess = true))
                                     contractView?.onProfileDeleted()
                                 }
                                 else{
-                                    contractView?.showActionLce(ActionUIStates(isSuccess = false))
+                                    contractView?.showActionLce(AppUIStates(isSuccess = false))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showActionLce(ActionUIStates(isSuccess = false)) }
+                                it.message?.let { it1 -> contractView?.showActionLce(AppUIStates(isSuccess = false)) }
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showActionLce(ActionUIStates(isSuccess = false))
+                contractView?.showActionLce(AppUIStates(isSuccess = false))
             }
         }
     }
@@ -138,37 +136,37 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    meetingViewContract?.showLce(ScreenUIStates(loadingVisible = true, loadingMessage = "Loading Vendor Availability"))
+                    meetingViewContract?.showScreenLce(AppUIStates(isLoading = true, loadingMessage = "Loading Vendor Availability"))
                     profileRepositoryImpl.getVendorAvailableTimes(vendorId = vendorId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     println("Success ${result.vendorTimes}")
-                                    meetingViewContract?.showLce(ScreenUIStates(contentVisible = true))
+                                    meetingViewContract?.showScreenLce(AppUIStates(isSuccess = true))
                                     meetingViewContract?.showAvailability(result.vendorTimes, result.platformTimes)
                                 }
                                 else{
                                     println("Error 1")
-                                    meetingViewContract?.showLce(ScreenUIStates(errorOccurred = true))
+                                    meetingViewContract?.showScreenLce(AppUIStates(isFailed = true))
                                 }
                             },
                             onError = {
                                 println("Error 2")
-                                meetingViewContract?.showLce(ScreenUIStates(errorOccurred = true))
+                                meetingViewContract?.showScreenLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
                 println("Error 3 ${e.message}")
-                meetingViewContract?.showLce(ScreenUIStates(errorOccurred = true))
+                meetingViewContract?.showScreenLce(AppUIStates(isFailed = true))
             }
         }
     }
 
     override fun switchVendor(userId: Long, vendorId: Long, action: String, exitReason: String, vendor: Vendor, platformNavigator: PlatformNavigator) {
         scope.launch(Dispatchers.Main) {
-            switchVendorContract?.showActionLce(ActionUIStates(isLoading = true))
+            switchVendorContract?.showActionLce(AppUIStates(isLoading = true))
             try {
                 val result = withContext(Dispatchers.IO) {
                     profileRepositoryImpl.switchVendor(userId, vendorId, action, exitReason)
@@ -176,29 +174,29 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                             onSuccess = { result ->
                                 if (result?.status == ServerResponseEnum.SUCCESS.toPath()){
                                     platformNavigator.sendCustomerExitNotification(exitReason = exitReason, vendorLogoUrl = vendor.businessLogo!!, fcmToken = vendor.fcmToken!!)
-                                    switchVendorContract?.showActionLce(ActionUIStates(isSuccess = true))
+                                    switchVendorContract?.showActionLce(AppUIStates(isSuccess = true))
                                 }
                                 else{
-                                    switchVendorContract?.showActionLce(ActionUIStates(isFailed = true))
+                                    switchVendorContract?.showActionLce(AppUIStates(isFailed = true))
                                 }
                             },
                             onError = {
                                 println("Error 2 ${it.message}")
-                                switchVendorContract?.showActionLce(ActionUIStates(isFailed = true))
+                                switchVendorContract?.showActionLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
                 println("Error 2 ${e.message}")
-                switchVendorContract?.showActionLce(ActionUIStates(isFailed = true))
+                switchVendorContract?.showActionLce(AppUIStates(isFailed = true))
             }
         }
     }
 
     override fun getVendorAccountInfo(vendorId: Long) {
         scope.launch(Dispatchers.Main) {
-            contractView?.showActionLce(ActionUIStates(isLoading = true, loadingMessage = "Searching Vendor"))
+            contractView?.showActionLce(AppUIStates(isLoading = true, loadingMessage = "Searching Vendor"))
             try {
                 val result = withContext(Dispatchers.IO) {
                     profileRepositoryImpl.getVendorAccountInfo(vendorId)
@@ -206,30 +204,30 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                             onSuccess = { result ->
                                 println("My Result is $result")
                                 if (result.status == ServerResponseEnum.SUCCESS.toPath()){
-                                    contractView?.showActionLce(ActionUIStates(isSuccess = true))
+                                    contractView?.showActionLce(AppUIStates(isSuccess = true))
                                     contractView?.showVendorInfo(result.vendorInfo)
                                 }
                                 else if (result.status == ServerResponseEnum.FAILURE.toPath()){
-                                    contractView?.showActionLce(ActionUIStates(isFailed = true))
+                                    contractView?.showActionLce(AppUIStates(isFailed = true))
                                 }
                             },
                             onError = {
                                 println("My Result is Error ${it.message}")
-                                contractView?.showActionLce(ActionUIStates(isFailed = true))
+                                contractView?.showActionLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
                 println("My Result is Error 2 ${e.message}")
-                contractView?.showActionLce(ActionUIStates(isFailed = true))
+                contractView?.showActionLce(AppUIStates(isFailed = true))
             }
         }
     }
 
     override fun joinSpa(vendorId: Long, therapistId: Long) {
         scope.launch(Dispatchers.Main) {
-            contractView?.showActionLce(ActionUIStates(isLoading = true, loadingMessage = "Joining Spa"))
+            contractView?.showActionLce(AppUIStates(isLoading = true, loadingMessage = "Joining Spa"))
             try {
                 val result = withContext(Dispatchers.IO) {
                     profileRepositoryImpl.joinSpa(vendorId, therapistId)
@@ -237,22 +235,22 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                             onSuccess = { result ->
                                 println("My Result 1 $result")
                                 if (result.status == ServerResponseEnum.SUCCESS.toPath()){
-                                    contractView?.showActionLce(ActionUIStates(isSuccess = true))
+                                    contractView?.showActionLce(AppUIStates(isSuccess = true))
                                 }
                                 else{
-                                    contractView?.showActionLce(ActionUIStates(isFailed = true))
+                                    contractView?.showActionLce(AppUIStates(isFailed = true))
                                 }
                             },
                             onError = {
                                 println("My Result 2 ${it.message}")
-                                contractView?.showActionLce(ActionUIStates(isFailed = true))
+                                contractView?.showActionLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
                 println("My Result 3  ${e.message}")
-                contractView?.showActionLce(ActionUIStates(isFailed = true))
+                contractView?.showActionLce(AppUIStates(isFailed = true))
             }
         }
     }
@@ -261,12 +259,12 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showActionLce(ActionUIStates(isLoading = true))
+                    contractView?.showActionLce(AppUIStates(isLoading = true))
                     profileRepositoryImpl.reverseGeocode(lat, lng)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result?.country?.isNotEmpty() == true){
-                                    contractView?.showActionLce(ActionUIStates(isSuccess = true))
+                                    contractView?.showActionLce(AppUIStates(isSuccess = true))
                                     contractView?.showUserLocation(result)
                                 }
                                 else{
@@ -303,7 +301,7 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    meetingViewContract?.showActionLce(ActionUIStates(isLoading = true))
+                    meetingViewContract?.showActionLce(AppUIStates(isLoading = true))
                     profileRepositoryImpl.createMeetingAppointment(meetingTitle, userId, vendorId, serviceStatus, appointmentType,
                         appointmentTime, day, month, year, meetingDescription, paymentAmount, paymentMethod)
                         .subscribe(
@@ -313,22 +311,22 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                                     val time = if (platformTime.isAm) platformTime.time+"AM" else platformTime.time+"PM"
                                     platformNavigator.sendMeetingBookingNotification(customerName = user.firstname!!, vendorLogoUrl = vendor.businessLogo!!,
                                         meetingDay = day.toString(), meetingMonth = monthName, meetingYear = year.toString(), meetingTime = time, fcmToken = vendor.fcmToken!!)
-                                    meetingViewContract?.showActionLce(ActionUIStates(isSuccess = true))
+                                    meetingViewContract?.showActionLce(AppUIStates(isSuccess = true))
                                 }
                                 else{
-                                    meetingViewContract?.showActionLce(ActionUIStates(isFailed = true))
+                                    meetingViewContract?.showActionLce(AppUIStates(isFailed = true))
                                 }
                             },
                             onError = {
                                 println("Result 2  ${it.message}")
-                                it.message?.let { it1 -> meetingViewContract?.showActionLce(ActionUIStates(isFailed = true))}
+                                it.message?.let { it1 -> meetingViewContract?.showActionLce(AppUIStates(isFailed = true))}
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
                 println("Result ${e.message}")
-                meetingViewContract?.showActionLce(ActionUIStates(isFailed = true))
+                meetingViewContract?.showActionLce(AppUIStates(isFailed = true))
             }
         }
     }

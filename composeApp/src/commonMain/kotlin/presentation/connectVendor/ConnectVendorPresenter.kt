@@ -1,6 +1,7 @@
 package presentation.connectVendor
 
 
+import UIStates.AppUIStates
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -10,15 +11,9 @@ import domain.connectVendor.ConnectVendorRepositoryImpl
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import UIStates.ScreenUIStates
-import com.badoo.reaktive.single.doOnAfterSuccess
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import domain.Enums.SharedPreferenceEnum
-import domain.Models.City
-import domain.Models.PlatformNavigator
-import domain.Models.Vendor
-import kotlinx.serialization.Transient
 import utils.getDistanceFromCustomer
 
 class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Presenter() {
@@ -31,32 +26,29 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
     override fun registerUIContract(view: ConnectVendorContract.View?) {
          contractView = view
     }
-    override fun connectVendor(userId: Long, vendorId: Long, action: String, userFirstname: String, vendor: Vendor, platformNavigator: PlatformNavigator) {
+    override fun connectVendor(userId: Long, vendorId: Long, action: String, userFirstname: String) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(ScreenUIStates(loadingVisible = true))
+                    contractView?.showActionLce(AppUIStates(isLoading = true))
                     connectVendorRepositoryImpl.connectVendor(userId,vendorId,action)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
-                                    contractView?.onVendorConnected(userId)
+                                    contractView?.showActionLce(AppUIStates(isSuccess = true))
                                 }
                                 else{
-                                    contractView?.showLce(ScreenUIStates(errorOccurred = true))
+                                    contractView?.showActionLce(AppUIStates(isFailed = true))
                                 }
                             },
                             onError = {
-                                print("Response 2 is ${it.message}")
-                                it.message?.let { it1 -> contractView?.showLce(ScreenUIStates(errorOccurred = true)) }
+                                contractView?.showActionLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                print("Response is ${e.message}")
-                contractView?.showLce(ScreenUIStates(errorOccurred = true))
+                contractView?.showActionLce(AppUIStates(isFailed = true))
             }
         }
     }
@@ -65,7 +57,7 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(ScreenUIStates(loadingVisible = true))
+                    contractView?.showScreenLce(AppUIStates(isLoading = true))
                     connectVendorRepositoryImpl.getVendor(country, city)
                         .subscribe(
                             onSuccess = { result ->
@@ -78,21 +70,21 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                                         vendor
                                     }
                                     result.listItem.resources = updatedVendorDistance
-                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
+                                    contractView?.showScreenLce(AppUIStates(isSuccess = true))
                                     contractView?.showVendors(result.listItem)
                                 }
                                 else{
-                                    contractView?.showLce(ScreenUIStates(errorOccurred = true))
+                                    contractView?.showScreenLce(AppUIStates(isFailed = true))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(ScreenUIStates(errorOccurred = true)) }
+                                contractView?.showScreenLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(ScreenUIStates(errorOccurred = true))
+                contractView?.showScreenLce(AppUIStates(isFailed = true))
             }
         }
     }
@@ -137,7 +129,7 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(ScreenUIStates(loadingVisible = true))
+                    contractView?.showScreenLce(AppUIStates(isLoading = true))
                     connectVendorRepositoryImpl.searchVendor(country,city,searchQuery)
                         .subscribe(
                             onSuccess = { result ->
@@ -150,21 +142,21 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                                         vendor
                                     }
                                     result.listItem.resources = updatedVendorDistance
-                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
+                                    contractView?.showScreenLce(AppUIStates(isSuccess = true))
                                     contractView?.showVendors(result.listItem, isFromSearch = true)
                                 }
                                 else{
-                                    contractView?.showLce(ScreenUIStates(errorOccurred = true))
+                                    contractView?.showScreenLce(AppUIStates(isFailed = true))
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(ScreenUIStates(errorOccurred = true)) }
+                                contractView?.showScreenLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(ScreenUIStates(errorOccurred = true))
+                contractView?.showScreenLce(AppUIStates(isFailed = true))
             }
         }
     }

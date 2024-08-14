@@ -2,13 +2,12 @@ package presentation.account
 
 import GGSansSemiBold
 import StackedSnackbarHost
-import UIStates.ActionUIStates
+import UIStates.AppUIStates
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,10 +23,8 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,7 +44,6 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Enums.Screens
 import domain.Models.PlatformNavigator
 import domain.Models.Vendor
-import domain.Models.VendorTime
 import kotlinx.serialization.Transient
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -57,12 +53,10 @@ import presentation.DomainViewHandler.ProfileHandler
 import presentation.components.RightIconButtonComponent
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
-import presentation.dialogs.SuccessDialog
 import presentation.profile.ProfilePresenter
-import presentation.viewmodels.ActionUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.UIStateViewModel
-import presentation.widgets.OTPTextField
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
@@ -75,9 +69,9 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : Tab,KoinCompo
     @Transient
     private val profilePresenter: ProfilePresenter by inject()
     @Transient
-    private var actionUIStateViewModel: ActionUIStateViewModel? = null
+    private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
         @Composable
@@ -101,31 +95,31 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : Tab,KoinCompo
     @Composable
     override fun Content() {
 
-        if (actionUIStateViewModel == null) {
-            actionUIStateViewModel= kmpViewModel(
+        if (performedActionUIStateViewModel == null) {
+            performedActionUIStateViewModel= kmpViewModel(
                 factory = viewModelFactory {
-                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
 
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        if (loadingScreenUiStateViewModel == null) {
+            loadingScreenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
 
         val vendorInfo = remember { mutableStateOf(Vendor()) }
-        val uiState = actionUIStateViewModel!!.uiStateInfo.collectAsState()
+        val uiState = performedActionUIStateViewModel!!.uiStateInfo.collectAsState()
 
         val profileHandler = ProfileHandler(profilePresenter,
             onUserLocationReady = {},
             onVendorInfoReady = { it ->
                vendorInfo.value = it
             },
-            actionUIStateViewModel!!)
+            performedActionUIStateViewModel!!)
         profileHandler.init()
 
 
@@ -149,7 +143,7 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : Tab,KoinCompo
                 }
                 else if (uiState.value.isSuccess) {
                     Box(modifier = Modifier.fillMaxWidth()) {
-                        actionUIStateViewModel!!.switchActionUIState(ActionUIStates(isDefault = true))
+                        performedActionUIStateViewModel!!.switchActionUIState(AppUIStates(isDefault = true))
                         mainViewModel!!.setJoinSpaVendor(vendorInfo.value)
                         mainViewModel!!.setScreenNav(Pair(Screens.JOIN_SPA.toPath(), Screens.JOIN_SPA_INFO.toPath()))
                     }

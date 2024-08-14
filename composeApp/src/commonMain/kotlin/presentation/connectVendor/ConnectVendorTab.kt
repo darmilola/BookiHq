@@ -53,7 +53,8 @@ import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.ConnectPageViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.LoadingScreenUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.VendorsResourceListEnvelopeViewModel
 import presentation.widgets.SwitchVendorBottomSheet
 import theme.Colors
@@ -65,7 +66,9 @@ class ConnectVendorTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
     @Transient
     private val connectVendorPresenter: ConnectVendorPresenter by inject()
     @Transient
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
+    @Transient
+    private var actionPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
     private var connectPageViewModel: ConnectPageViewModel? = null
     @Transient
@@ -96,9 +99,6 @@ class ConnectVendorTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
 
     @Composable
     override fun Content() {
-        val contentVisible = remember { mutableStateOf(false) }
-        val contentLoading = remember { mutableStateOf(false) }
-        val errorVisible = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
         country = preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""]
         city = preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""]
@@ -111,10 +111,10 @@ class ConnectVendorTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
         }
 
 
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        if (loadingScreenUiStateViewModel == null) {
+            loadingScreenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -126,6 +126,16 @@ class ConnectVendorTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
                 },
             )
         }
+
+        if (actionPerformedActionUIStateViewModel == null) {
+            actionPerformedActionUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+
 
         LifecycleEffect(onStarted = {
             if (preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), ""].isNotEmpty()
@@ -145,6 +155,7 @@ class ConnectVendorTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
         }, onDisposed = {})
 
         val loadMoreState = vendorResourceListEnvelopeViewModel!!.isLoadingMore.collectAsState()
+        val initializingScreen = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
         val vendorList = vendorResourceListEnvelopeViewModel?.resources?.collectAsState()
         val selectedVendor = connectPageViewModel?.selectedVendor?.collectAsState()
         val totalVendorsCount = vendorResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
@@ -165,20 +176,9 @@ class ConnectVendorTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
         // View Contract Handler Initialisation
         val handler = ConnectPageHandler(
             vendorResourceListEnvelopeViewModel!!,
-            uiStateViewModel!!,
-            connectVendorPresenter,
-            onPageLoading = {
-                contentLoading.value = true
-            },
-            onContentVisible = {
-                contentLoading.value = false
-                contentVisible.value = true
-            },
-            onErrorVisible = {
-                errorVisible.value = true
-                contentLoading.value = false
-            },
-            onConnected = {})
+            loadingScreenUiStateViewModel!!,
+            actionPerformedActionUIStateViewModel!!,
+            connectVendorPresenter)
         handler.init()
 
         var showSwitchReasonBottomSheet by remember { mutableStateOf(false) }
@@ -217,7 +217,7 @@ class ConnectVendorTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
                 }
             },
             content = {
-                if (contentLoading.value) {
+                if (initializingScreen.value.isLoading) {
                     //Content Loading
                     Box(
                         modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -227,11 +227,11 @@ class ConnectVendorTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
                     ) {
                         IndeterminateCircularProgressBar()
                     }
-                } else if (errorVisible.value) {
+                } else if (initializingScreen.value.isFailed) {
 
                     // Error Occurred display reload
 
-                } else if (contentVisible.value) {
+                } else if (initializingScreen.value.isSuccess) {
                     LazyColumn(
                         modifier = Modifier.padding(top = 10.dp).fillMaxWidth()
                             .height(getVendorListItemViewHeight(vendorUIModel.vendorsList).dp),

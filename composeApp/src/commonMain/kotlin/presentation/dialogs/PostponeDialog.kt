@@ -34,29 +34,25 @@ import applications.date.getMonth
 import applications.date.getYear
 import domain.Models.Appointment
 import domain.Models.PlatformTime
-import domain.Models.AvailableTime
 import domain.Models.PlatformNavigator
 import domain.Models.UserAppointment
 import presentation.appointments.AppointmentPresenter
-import presentation.bookings.AvailableTimeContent
 import presentation.components.IndeterminateCircularProgressBar
-import presentation.viewmodels.ActionUIStateViewModel
-import presentation.viewmodels.BookingViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
 import presentation.widgets.NewDateContent
 import presentation.widgets.PostponeTimeGrid
-import presentation.widgets.TimeGrid
 import presentation.widgets.TitleWidget
 import presentation.widgets.buttonContent
 import presentations.components.TextComponent
 import utils.calculateTherapistServiceTimes
 
 @Composable
-fun PostponeDialog(userAppointment: UserAppointment,appointmentPresenter: AppointmentPresenter,
-                   postponementViewModel: PostponementViewModel,mainViewModel: MainViewModel,
-                  availabilityActionUIStateViewModel: ActionUIStateViewModel, onDismissRequest: () -> Unit,platformNavigator: PlatformNavigator,
-    onConfirmation: (Appointment) -> Unit) {
+fun PostponeDialog(userAppointment: UserAppointment, appointmentPresenter: AppointmentPresenter,
+                   postponementViewModel: PostponementViewModel, mainViewModel: MainViewModel,
+                   availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, onDismissRequest: () -> Unit, platformNavigator: PlatformNavigator,
+                   onConfirmation: (Appointment) -> Unit) {
     Dialog( properties = DialogProperties(usePlatformDefaultWidth = false), onDismissRequest = { onDismissRequest() }) {
 
         val currentDay = getDay()
@@ -73,7 +69,7 @@ fun PostponeDialog(userAppointment: UserAppointment,appointmentPresenter: Appoin
         val newSelectedTime = postponementViewModel.selectedTime.collectAsState()
         val therapistId = postponementViewModel.currentAppointment.value.resources?.therapistId
         val isNewDateSelected = remember { mutableStateOf(true) }
-        val availabilityUIStates = availabilityActionUIStateViewModel.availabilityStateInfo.collectAsState()
+        val availabilityUIStates = availabilityPerformedActionUIStateViewModel.availabilityStateInfo.collectAsState()
 
 
 

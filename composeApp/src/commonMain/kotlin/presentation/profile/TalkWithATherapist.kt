@@ -2,7 +2,7 @@ package presentation.profile
 
 import GGSansSemiBold
 import StackedSnackbarHost
-import UIStates.ActionUIStates
+import UIStates.AppUIStates
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -54,9 +54,9 @@ import presentation.DomainViewHandler.TalkWithTherapistHandler
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
 import presentation.dialogs.SuccessDialog
-import presentation.viewmodels.ActionUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.UIStateViewModel
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.widgets.BookingCalendar
 import presentation.widgets.MultilineInputWidget
 import presentation.widgets.PageBackNavWidget
@@ -76,9 +76,9 @@ class TalkWithATherapist(val platformNavigator: PlatformNavigator) : Tab,
     @Transient
     private val profilePresenter: ProfilePresenter by inject()
     @Transient
-    private var actionUIStateViewModel: ActionUIStateViewModel? = null
+    private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
-    private var uiStateViewModel: UIStateViewModel? = null
+    private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
     @Transient
     private var mainViewModel: MainViewModel? = null
 
@@ -105,18 +105,18 @@ class TalkWithATherapist(val platformNavigator: PlatformNavigator) : Tab,
         val vendorTimes = remember { mutableStateOf(listOf<VendorTime>()) }
         val platformTimes = remember { mutableStateOf(listOf<PlatformTime>()) }
 
-        if (actionUIStateViewModel == null) {
-            actionUIStateViewModel= kmpViewModel(
+        if (performedActionUIStateViewModel == null) {
+            performedActionUIStateViewModel= kmpViewModel(
                 factory = viewModelFactory {
-                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
 
-        if (uiStateViewModel == null) {
-            uiStateViewModel = kmpViewModel(
+        if (loadingScreenUiStateViewModel == null) {
+            loadingScreenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    UIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -130,14 +130,14 @@ class TalkWithATherapist(val platformNavigator: PlatformNavigator) : Tab,
                 vendorTimes.value = it1
                 platformTimes.value = it2
             },
-            uiStateViewModel = uiStateViewModel!!,
-            actionUIStateViewModel = actionUIStateViewModel!!)
+            loadingScreenUiStateViewModel = loadingScreenUiStateViewModel!!,
+            performedActionUIStateViewModel = performedActionUIStateViewModel!!)
         handler.init()
 
 
 
-        val actionUIState = actionUIStateViewModel!!.uiStateInfo.collectAsState()
-        val screenUIStates = uiStateViewModel!!.uiStateInfo.collectAsState()
+        val createAppointmentActionUIState = performedActionUIStateViewModel!!.uiStateInfo.collectAsState()
+        val loadingScreenUIStates = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
 
 
 
@@ -162,7 +162,7 @@ class TalkWithATherapist(val platformNavigator: PlatformNavigator) : Tab,
             },
             content = {
 
-                if (screenUIStates.value.loadingVisible) {
+                if (loadingScreenUIStates.value.isLoading) {
                     //Content Loading
                     Box(
                         modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -172,22 +172,22 @@ class TalkWithATherapist(val platformNavigator: PlatformNavigator) : Tab,
                     ) {
                         IndeterminateCircularProgressBar()
                     }
-                } else if (screenUIStates.value.errorOccurred) {
+                } else if (loadingScreenUIStates.value.isFailed) {
 
                     //Error Occurred display reload
 
-                } else if (screenUIStates.value.contentVisible) {
+                } else if (loadingScreenUIStates.value.isSuccess) {
 
 
-                    if (actionUIState.value.isLoading) {
+                    if (createAppointmentActionUIState.value.isLoading) {
                         Box(modifier = Modifier.fillMaxWidth()) {
                             LoadingDialog("Creating Appointment")
                         }
                     }
-                    else if (actionUIState.value.isSuccess) {
+                    else if (createAppointmentActionUIState.value.isSuccess) {
                         Box(modifier = Modifier.fillMaxWidth()) {
                             SuccessDialog("Appointment Created Successfully", "Close", onConfirmation = {
-                                actionUIStateViewModel!!.switchActionUIState(ActionUIStates(isDefault = true))
+                                performedActionUIStateViewModel!!.switchActionUIState(AppUIStates(isDefault = true))
                                 mainViewModel!!.setScreenNav(
                                     Pair(
                                         Screens.BOOKING.toPath(),
@@ -195,7 +195,7 @@ class TalkWithATherapist(val platformNavigator: PlatformNavigator) : Tab,
                             })
                         }
                     }
-                    else if (actionUIState.value.isFailed) {
+                    else if (createAppointmentActionUIState.value.isFailed) {
                         ErrorDialog("Error Occurred", "Close", onConfirmation = {})
                     }
 

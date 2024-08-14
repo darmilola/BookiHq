@@ -1,5 +1,6 @@
 package presentation.Products
 
+import UIStates.AppUIStates
 import com.badoo.reaktive.single.subscribe
 import domain.Products.ProductRepositoryImpl
 import io.ktor.client.HttpClient
@@ -9,7 +10,6 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import UIStates.ScreenUIStates
 
 class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
 
@@ -24,26 +24,26 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(ScreenUIStates(loadingVisible = true))
+                    contractView?.showLce(AppUIStates(isLoading = true))
                     productRepositoryImpl.getAllProducts(vendorId)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(ScreenUIStates(contentVisible = true, loadingVisible = false))
+                                    contractView?.showLce(AppUIStates(isSuccess = true))
                                     contractView?.showProducts(result.listItem)
                                 }
                                 else{
-                                    contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Unknown"))
+                                    contractView?.showLce(AppUIStates(isFailed = true))
                                 }
                             },
                             onError = {
-                                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Loading Products Please Try Again"))
+                                contractView?.showLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = e.message.toString()))
+                contractView?.showLce(AppUIStates(isFailed = true))
             }
         }
     }
@@ -78,8 +78,7 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
     }
 
     override fun searchProducts(vendorId: Long, searchQuery: String) {
-        contractView?.showLce(ScreenUIStates(loadingVisible = true))
-
+        contractView?.showLce(AppUIStates(isLoading = true))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
@@ -87,21 +86,21 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){
-                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
+                                    contractView?.showLce(AppUIStates(isSuccess = true))
                                     contractView?.showSearchProducts(result.listItem, isLoadMore = false)
                                 }
                                 else{
-                                    contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
+                                    contractView?.showLce(AppUIStates(isFailed = true))
                                 }
                             },
                             onError = {
-                                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
+                                contractView?.showLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Error Occurred Please Try Again"))
+                contractView?.showLce(AppUIStates(isFailed = true))
             }
         }
     }
@@ -139,29 +138,29 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(ScreenUIStates(loadingVisible = true))
+                    contractView?.showLce(AppUIStates(isLoading = true))
                     productRepositoryImpl.getProductsByType(vendorId, productType)
                         .subscribe(
                             onSuccess = { response ->
                                 println("Result $response")
                                 if (response.status == "success") {
-                                    contractView?.showLce(ScreenUIStates(contentVisible = true, loadingVisible = false))
+                                    contractView?.showLce(AppUIStates(isSuccess = true))
                                     contractView?.showProducts(response.listItem)
                                 }
                                 else{
-                                    contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = "Unknown"))
+                                    contractView?.showLce(AppUIStates(isFailed = true))
                                 }
                             },
                             onError = {
                                 println("Result 2 ${it.message}")
-                                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = it.message.toString()))
+                                contractView?.showLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
                 println("Result32 ${e.message}")
-                contractView?.showLce(ScreenUIStates(errorOccurred = true, errorMessage = e.message.toString()))
+                contractView?.showLce(AppUIStates(isFailed = true))
             }
         }
     }

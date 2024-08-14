@@ -35,7 +35,7 @@ import domain.Models.PlatformTime
 import domain.Models.ServiceTypeTherapists
 import domain.Models.ServiceTypeTherapistUIModel
 import presentation.components.IndeterminateCircularProgressBar
-import presentation.viewmodels.ActionUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.AttachTherapistWidget
@@ -45,7 +45,7 @@ import presentations.components.TextComponent
 import utils.calculateBookingServiceTimes
 
 @Composable
-fun BookingSelectTherapists(mainViewModel: MainViewModel, actionUIStateViewModel: ActionUIStateViewModel,
+fun BookingSelectTherapists(mainViewModel: MainViewModel, performedActionUIStateViewModel: PerformedActionUIStateViewModel,
                             bookingViewModel: BookingViewModel,
                             bookingPresenter: BookingPresenter) {
 
@@ -59,7 +59,7 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, actionUIStateViewModel
         }
     })
 
-    val getTherapistActionUiStates = actionUIStateViewModel.getTherapistUiState.collectAsState()
+    val getTherapistActionUiStates = performedActionUIStateViewModel.getTherapistUiState.collectAsState()
     val currentBooking = bookingViewModel.currentAppointmentBooking.value
     val selectedTherapist = remember { mutableStateOf(ServiceTypeTherapists()) }
     if (currentBooking.serviceTypeTherapists != null) {

@@ -1,21 +1,18 @@
 package presentation.DomainViewHandler
 
-import domain.Models.AppointmentResourceListEnvelope
 import domain.Models.TherapistReviews
 import presentation.therapist.TherapistContract
 import presentation.therapist.TherapistPresenter
-import presentation.viewmodels.ActionUIStateViewModel
-import UIStates.ActionUIStates
-import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
-import presentation.viewmodels.UIStateViewModel
-import UIStates.ScreenUIStates
+import presentation.viewmodels.PerformedActionUIStateViewModel
+import UIStates.AppUIStates
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import domain.Models.TherapistAppointmentResourceListEnvelope
 import presentation.viewmodels.TherapistAppointmentResourceListEnvelopeViewModel
 
 class TherapistHandler(
     private val therapistPresenter: TherapistPresenter,
-    private val uiStateViewModel: UIStateViewModel,
-    private val actionUIStateViewModel: ActionUIStateViewModel,
+    private val loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel,
+    private val performedActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val onReviewsReady: (List<TherapistReviews>) -> Unit,
     private val onMeetingTokenReady: (meetingToken: String) -> Unit,
     private val appointmentResourceListEnvelopeViewModel: TherapistAppointmentResourceListEnvelopeViewModel) :
@@ -24,12 +21,12 @@ class TherapistHandler(
         therapistPresenter.registerUIContract(this)
     }
 
-    override fun showScreenLce(screenUIStates: ScreenUIStates) {
-        uiStateViewModel.switchScreenUIState(screenUIStates)
+    override fun showScreenLce(actionUiState: AppUIStates) {
+        loadingScreenUiStateViewModel.switchScreenUIState(actionUiState)
     }
 
-    override fun showActionLce(actionUiState: ActionUIStates) {
-         actionUIStateViewModel.switchActionTherapistDashboardUIState(actionUiState)
+    override fun showActionLce(actionUiState: AppUIStates) {
+         performedActionUIStateViewModel.switchActionTherapistDashboardUIState(actionUiState)
     }
 
     override fun showReviews(reviews: List<TherapistReviews>) {

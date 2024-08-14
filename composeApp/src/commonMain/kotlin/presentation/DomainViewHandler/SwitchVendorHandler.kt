@@ -1,21 +1,20 @@
 package presentation.DomainViewHandler
 
-import UIStates.ActionUIStates
+import UIStates.AppUIStates
 import presentation.profile.ProfileContract
 import presentation.profile.ProfilePresenter
-import presentation.viewmodels.ActionUIStateViewModel
-import presentation.viewmodels.PlatformViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 
 class SwitchVendorHandler (
     private val profilePresenter: ProfilePresenter,
-    private val actionUIStateViewModel: ActionUIStateViewModel
+    private val performedActionUIStateViewModel: PerformedActionUIStateViewModel
 ) : ProfileContract.SwitchVendorContract {
     fun init() {
         profilePresenter.registerSwitchVendorContract(this)
     }
 
-    override fun showActionLce(actionUIStates: ActionUIStates, message: String) {
-        actionUIStateViewModel.switchVendorActionUIState(actionUIStates)
+    override fun showActionLce(appUIStates: AppUIStates, message: String) {
+        performedActionUIStateViewModel.switchVendorActionUIState(appUIStates)
     }
 
 
