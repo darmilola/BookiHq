@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
@@ -38,12 +37,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.OrderItem
@@ -52,32 +49,25 @@ import domain.Enums.ValuesLimit
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
 import presentation.viewmodels.MainViewModel
-import presentation.widgets.CartIncrementDecrementWidget
+import presentation.widgets.productItemIncrementDecrementWidget
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, selectedProduct: OrderItem, onAddToCart: (Boolean) -> Unit,
-                         onRemoveFromCart: (OrderItem) -> Unit) {
+fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, selectedProduct: OrderItem, onAddToCart: (Boolean) -> Unit) {
     val itemKey = (ValuesLimit.MIN_VALUE.toValue() ..ValuesLimit.MAX_VALUE.toValue()).random()
     val currentOrder = mainViewModel.unSavedOrders.collectAsState()
     val orderItem = remember { mutableStateOf(OrderItem()) }
 
     if (isViewedFromCart){
-        println("Yes here 1")
         orderItem.value = selectedProduct
     }
     else {
-        println("Yes here 2")
         orderItem.value = OrderItem()
-       // orderItem.value.orderId = orderReference
         orderItem.value.itemKey = itemKey
         orderItem.value.itemProduct = selectedProduct.itemProduct
         orderItem.value.productId = selectedProduct.itemProduct?.productId!!
     }
-
-    println("Yes here")
-
 
     Scaffold(
         content = {
@@ -101,29 +91,7 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
                     .fillMaxWidth()
                     .fillMaxHeight()
 
-                if (isViewedFromCart) {
-                    Row(
-                        modifier = bgStyle,
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        ButtonComponent(
-                            modifier = buttonStyle2,
-                            buttonText = "Remove From Cart",
-                            colors = ButtonDefaults.buttonColors(backgroundColor = Colors.pinkColor),
-                            fontSize = 16,
-                            shape = RoundedCornerShape(15.dp),
-                            textColor = Color(color = 0xFFFFFFFF),
-                            style = TextStyle(),
-                            borderStroke = null
-                        ) {
-                            onRemoveFromCart(selectedProduct)
-                        }
-                    }
-
-                }
-
-                else {
+                if (!isViewedFromCart) {
                     Row(
                         modifier = bgStyle,
                         horizontalArrangement = Arrangement.Center,
@@ -134,7 +102,7 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            CartIncrementDecrementWidget(orderItem.value,onItemCountChanged = {
+                            productItemIncrementDecrementWidget(orderItem.value,onItemCountChanged = {
                                 orderItem.value.itemCount = it.itemCount
                             }, onItemRemovedFromCart = {})
                         }
@@ -149,7 +117,6 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
                             style = TextStyle(),
                             borderStroke = null
                         ) {
-                            println(orderItem.value)
                             currentOrder.value.add(orderItem.value)
                             mainViewModel.setUnsavedOrderSize(currentOrder.value.size)
                             mainViewModel.setCurrentUnsavedOrders(currentOrder.value)
@@ -254,9 +221,6 @@ fun ProductNameInfoContent(product: Product) {
 
 @Composable
 fun ProductPriceInfoContent(product: Product) {
-
-    val price = if(product.isDiscounted) product.discount else product.productPrice
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -265,25 +229,8 @@ fun ProductPriceInfoContent(product: Product) {
         horizontalAlignment = Alignment.End,
     ) {
 
-        if(product.isDiscounted) {
-            TextComponent(
-                text = "$" + product.productPrice,
-                fontSize = 16,
-                fontFamily = GGSansRegular,
-                textStyle = TextStyle(textDecoration = TextDecoration.LineThrough),
-                textColor = Color.LightGray,
-                textAlign = TextAlign.Right,
-                fontWeight = FontWeight.ExtraBold,
-                lineHeight = 20,
-                textModifier = Modifier
-                    .padding(top = 5.dp)
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-            )
-        }
-
         TextComponent(
-            text = "$$price",
+            text = "$${product.productPrice}",
             fontSize = 20,
             fontFamily = GGSansBold,
             textStyle = TextStyle(),
@@ -301,28 +248,6 @@ fun ProductPriceInfoContent(product: Product) {
 
 
 
-}
-
-@Composable
-fun ProductFavInfoContent(product: Product) {
-   Row(modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(bottom = 10.dp)) {
-       ImageComponent(imageModifier = Modifier.size(20.dp), imageRes = "drawable/like_icon.png", colorFilter = ColorFilter.tint(color = Colors.pinkColor))
-       TextComponent(
-           text = product.favoriteCount.toString(),
-           fontSize = 18,
-           fontFamily = GGSansRegular,
-           textStyle = MaterialTheme.typography.h6,
-           textColor = Colors.darkPrimary,
-           textAlign = TextAlign.Left,
-           fontWeight = FontWeight.ExtraBold,
-           lineHeight = 20,
-           textModifier = Modifier
-               .padding(start = 5.dp)
-               .fillMaxWidth()
-               .wrapContentHeight()
-       )
-
-   }
 }
 
 @Composable

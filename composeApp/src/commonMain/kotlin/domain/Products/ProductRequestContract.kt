@@ -25,7 +25,7 @@ data class OrderItemRequest(@SerialName("product_id") val productId: Int,
                             @SerialName("product_name") val productName: String,
                             @SerialName("imageUrl") val imageUrl: String,
                             @SerialName("description") val productDescription: String,
-                            @SerialName("price") val price: Int,
+                            @SerialName("price") val price: Long,
                             @SerialName("itemCount") val itemCount: Int)
 
 @Serializable

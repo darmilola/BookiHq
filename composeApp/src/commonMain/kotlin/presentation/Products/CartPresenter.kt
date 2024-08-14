@@ -14,7 +14,7 @@ import UIStates.AppUIStates
 import domain.Models.PlatformNavigator
 import domain.Models.User
 import domain.Models.Vendor
-import utils.getUnSavedOrders
+import utils.getUnSavedOrdersRequestJson
 
 class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
 
@@ -39,7 +39,7 @@ class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showLce(AppUIStates(isLoading = true, loadingMessage = "Creating Order"))
-                    val orderItemsJson = getUnSavedOrders(orderItemList)
+                    val orderItemsJson = getUnSavedOrdersRequestJson(orderItemList)
                     productRepositoryImpl.createOrder(vendorId,userId,deliveryMethod,paymentMethod,day, month, year, orderItemsJson,paymentAmount)
                         .subscribe(
                             onSuccess = { result ->

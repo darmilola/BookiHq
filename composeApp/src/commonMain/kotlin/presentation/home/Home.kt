@@ -380,8 +380,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 OrderItem(itemProduct = selectedProduct.value),
                 onDismiss = { isAddToCart, item ->
                     showProductDetailBottomSheet = false
-                },
-                onRemoveFromCart = {})
+                })
         }
 
         val pagerState = rememberPagerState(pageCount = {

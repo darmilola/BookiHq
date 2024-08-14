@@ -1,6 +1,9 @@
 package utils
 
 import domain.Models.OrderItem
+import domain.Products.OrderItemRequest
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import kotlin.math.PI
 import kotlin.math.acos
 import kotlin.math.cos
@@ -12,10 +15,10 @@ fun calculateDiscount(price: Int, discount: Int): Int {
     return (ratioDecrease * 100).toInt()
 }
 
-fun calculateCheckoutSubTotal(orderItems: MutableList<OrderItem>): Int {
-   var subtotal: Int = 0
+fun calculateCartCheckoutSubTotal(orderItems: MutableList<OrderItem>): Long {
+   var subtotal: Long = 0
   for (item in orderItems){
-      val price = if (item.itemProduct?.isDiscounted!!) item.itemProduct?.discount else item.itemProduct?.productPrice
+      val price = item.itemProduct?.productPrice
       val qty = item.itemCount
       val qtyPrice = price?.times(qty)
       subtotal += qtyPrice!!
@@ -23,7 +26,22 @@ fun calculateCheckoutSubTotal(orderItems: MutableList<OrderItem>): Int {
     return subtotal
 }
 
-fun calculateTotal(subtotal: Int, deliveryFee: Int): Int {
+fun getUnSavedOrdersRequestJson(orders: List<OrderItem>): String {
+    val orderRequestList = arrayListOf<String>()
+    for (item in orders) {
+        val itemRequest = OrderItemRequest(
+            productId = item.productId, productName = item.itemProduct?.productName!!,
+            productDescription = item.itemProduct!!.productDescription,
+            price = item.itemProduct!!.productPrice, itemCount = item.itemCount,
+            imageUrl = item.itemProduct!!.productImages.get(0).imageUrl
+        )
+        val jsonStrRequest = Json.encodeToString(itemRequest)
+        orderRequestList.add(jsonStrRequest)
+    }
+    return orderRequestList.toString()
+}
+
+fun calculateTotal(subtotal: Long, deliveryFee: Long): Long {
     return subtotal + deliveryFee
 }
  fun getDistanceFromCustomer(userLat: Double, userLong: Double, vendorLat: Double, vendorLong: Double): Double {

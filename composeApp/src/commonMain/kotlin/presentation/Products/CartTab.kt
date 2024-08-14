@@ -73,7 +73,7 @@ import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
-import utils.calculateCheckoutSubTotal
+import utils.calculateCartCheckoutSubTotal
 import utils.calculateTotal
 
 
@@ -133,14 +133,23 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
         }
 
         val cartItems = mainViewModel!!.unSavedOrders.collectAsState()
-        val uiActionState = performedActionUIStateViewModel!!.uiStateInfo.collectAsState()
+        val vendorDeliveryFee = mainViewModel!!.connectedVendor.value.deliveryFee
+        cartViewModel!!.setDeliveryFee(vendorDeliveryFee)
+        val createOrderActionUiState = performedActionUIStateViewModel!!.uiStateInfo.collectAsState()
 
-        val subtotal = calculateCheckoutSubTotal(cartItems.value)
+        val subtotal = calculateCartCheckoutSubTotal(cartItems.value)
         val total = calculateTotal(subtotal, cartViewModel!!.deliveryFee.value)
-
-
         cartViewModel!!.setTotal(total)
         cartViewModel!!.setSubTotal(subtotal)
+
+        if (cartItems.value.isEmpty()) {
+            mainViewModel!!.setScreenNav(
+                Pair(
+                    Screens.CART.toPath(),
+                    Screens.MAIN_TAB.toPath()
+                )
+            )
+        }
 
 
 
@@ -156,12 +165,12 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 handler.init()
 
 
-                if (uiActionState.value.isLoading) {
+                if (createOrderActionUiState.value.isLoading) {
                     Box(modifier = Modifier.fillMaxWidth(0.90f)) {
                         LoadingDialog("Creating Order...")
                     }
                 }
-                else if (uiActionState.value.isSuccess) {
+                else if (createOrderActionUiState.value.isSuccess) {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         SuccessDialog("Creating Order Successful", actionTitle = "Done", onConfirmation = {
                             mainViewModel!!.clearUnsavedOrders()
@@ -177,19 +186,9 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                         })
                     }
                 }
-                else if (uiActionState.value.isFailed) {
+                else if (createOrderActionUiState.value.isFailed) {
                     Box(modifier = Modifier.fillMaxWidth()) {
-                        ErrorDialog("Creating Order Failed", actionTitle = "Retry", onConfirmation = {
-                            val orderItemList = mainViewModel!!.unSavedOrders.value
-                            val vendorId = mainViewModel!!.connectedVendor.value.vendorId
-                            val userId = mainViewModel!!.currentUserInfo.value.userId
-                            //val orderReference = mainViewModel.currentOrderReference.value
-                            val deliveryLocation = cartViewModel!!.deliveryLocation.value
-                            val paymentMethod = cartViewModel!!.paymentMethod.value
-
-                           // cartPresenter.createOrder(orderItemList,vendorId!!,userId!!,orderReference,deliveryLocation,paymentMethod)
-
-                        })
+                        ErrorDialog("Creating Order Failed", actionTitle = "Retry", onConfirmation = {})
                     }
                 }
 
@@ -255,7 +254,7 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
                         PopulateCartItemList(mainViewModel!!,stackedSnackBarHostState)
                         ProductDeliveryAddressWidget(mainViewModel!!,
-                            cartViewModel!!, onHomeSelectedListener = {
+                            cartViewModel!!, onMobileSelectedListener = {
 
                                   cartViewModel!!.setDeliveryLocation(DeliveryMethodEnum.MOBILE.toPath())
 
@@ -271,8 +270,7 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                             cartViewModel!!.setPaymentMethod(PaymentMethod.CARD_PAYMENT.toPath())
                         })
                         StraightLine()
-                        CheckOutSummaryWidget(cartViewModel!!, onCreateOrderStarted = {
-
+                        CheckOutSummaryWidget(cartViewModel!!,onCreateOrderStarted = {
                              val orderItemList = mainViewModel!!.unSavedOrders.value
                              val vendorId = mainViewModel!!.connectedVendor.value.vendorId
                              val userId = mainViewModel!!.currentUserInfo.value.userId
@@ -298,10 +296,7 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
     private fun PopulateCartItemList(mainViewModel: MainViewModel,stackedSnackBarHostState: StackedSnakbarHostState) {
 
         val cartItems = mainViewModel.unSavedOrders.collectAsState()
-        println(cartItems)
-
         if (cartItems.value.isNotEmpty()){
-
 
         val cartList = cartItems.value
         val selectedItem = remember { mutableStateOf(OrderItem()) }
@@ -319,22 +314,9 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
         if (showProductDetailBottomSheet) {
             ProductDetailBottomSheet(mainViewModel,isViewedFromCart = true,
                 selectedProduct = orderItemUIModel.selectedItem!!,
-                onDismiss = { isAddToCart, item -> showProductDetailBottomSheet = false },
-                onRemoveFromCart = { orderItem ->
-                    showProductDetailBottomSheet = false
-                    orderItemUIModel.itemList.remove(orderItem)
-                    orderItemUIModel = orderItemUIModel.copy(selectedItem = OrderItem(), itemList = orderItemUIModel.itemList)
-                    mainViewModel.setCurrentUnsavedOrders(orderItemUIModel.itemList)
-                    mainViewModel.setUnsavedOrderSize(orderItemUIModel.itemList.size)
-                        ShowSnackBar(title = "Product Removed",
-                            description = "Product has been Removed from Cart",
-                            actionLabel = "",
-                            duration = StackedSnackbarDuration.Short,
-                            snackBarType = SnackBarType.SUCCESS,
-                            stackedSnackBarHostState,
-                            onActionClick = {})
-                     })
-                }
+                onDismiss = { isAddToCart, item -> showProductDetailBottomSheet = false })
+
+        }
 
 
             LazyColumn(
@@ -365,6 +347,10 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                         ))
                         mainViewModel.setCurrentUnsavedOrders(orderItemUIModel.itemList)
                         mainViewModel.setUnsavedOrderSize(orderItemUIModel.itemList.size)
+                        val subtotal = calculateCartCheckoutSubTotal(cartItems.value)
+                        val total = calculateTotal(subtotal, cartViewModel!!.deliveryFee.value)
+                        cartViewModel!!.setTotal(total)
+                        cartViewModel!!.setSubTotal(subtotal)
 
                     }, onItemRemovedFromCart = {
                         orderItemUIModel.itemList.remove(it)
@@ -380,7 +366,11 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                             stackedSnackBarHostState,
                             onActionClick = {})
                          mainViewModel.setCurrentUnsavedOrders(orderItemUIModel.itemList)
-                        mainViewModel.setUnsavedOrderSize(orderItemUIModel.itemList.size)
+                         mainViewModel.setUnsavedOrderSize(orderItemUIModel.itemList.size)
+                         val subtotal = calculateCartCheckoutSubTotal(cartItems.value)
+                         val total = calculateTotal(subtotal, cartViewModel!!.deliveryFee.value)
+                         cartViewModel!!.setTotal(total)
+                         cartViewModel!!.setSubTotal(subtotal)
                     })
                     StraightLine()
                 }
@@ -421,7 +411,7 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, selectedProduct: OrderItem, onDismiss: (isAddToCart: Boolean, OrderItem) -> Unit, onRemoveFromCart: (OrderItem) -> Unit) {
+    fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, selectedProduct: OrderItem, onDismiss: (isAddToCart: Boolean, OrderItem) -> Unit) {
         val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         ModalBottomSheet(
             modifier = Modifier.padding(top = 20.dp),
@@ -431,11 +421,7 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             containerColor = Color(0xFFF3F3F3),
             dragHandle = {},
         ) {
-            ProductDetailContent(mainViewModel,isViewedFromCart,selectedProduct, onAddToCart = {
-                onDismiss(it,selectedProduct)
-            }, onRemoveFromCart = {
-                onRemoveFromCart(it)
-            })
+            ProductDetailContent(mainViewModel,isViewedFromCart,selectedProduct, onAddToCart = { onDismiss(it,selectedProduct) })
         }
     }
 

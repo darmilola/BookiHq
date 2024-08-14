@@ -197,8 +197,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                             }
                             showProductDetailBottomSheet = false
 
-                        },
-                        onRemoveFromCart = {})
+                        })
                 }
 
                 val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()

@@ -111,7 +111,7 @@ fun IncrementDecrementWidget(){
 
 
 @Composable
-fun CartIncrementDecrementWidget(orderItem: OrderItem, isFromCart: Boolean = false, onItemCountChanged:(OrderItem) -> Unit, onItemRemovedFromCart: (OrderItem) -> Unit){
+fun productItemIncrementDecrementWidget(orderItem: OrderItem, isFromCart: Boolean = false, onItemCountChanged:(OrderItem) -> Unit, onItemRemovedFromCart: (OrderItem) -> Unit){
     var counter by remember { mutableStateOf(orderItem.itemCount) }
     val decrementBorderColor: Color = if(counter == 1) {
         if (isFromCart){
@@ -160,12 +160,12 @@ fun CartIncrementDecrementWidget(orderItem: OrderItem, isFromCart: Boolean = fal
         ) {
 
             ImageComponent(imageModifier = Modifier.padding(12.dp).fillMaxSize()
-                .clickable { if(counter > 1) {
+                .clickable { if(counter > 1) { // keep reducing item count
                     counter -= 1
                     orderItem.itemCount = counter
                     onItemCountChanged(orderItem)
                   }
-                 else if (isFromCart){
+                 else if (isFromCart){ // item count is 1, remove from cart
                      onItemRemovedFromCart(orderItem)
                  }
                }, imageRes = decrementImgRes, colorFilter = ColorFilter.tint(color = decrementImgTint))

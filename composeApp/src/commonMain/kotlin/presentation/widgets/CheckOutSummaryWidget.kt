@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Enums.DeliveryMethodEnum
 import presentation.components.ButtonComponent
 import presentation.viewmodels.CartViewModel
 import presentation.viewmodels.MainViewModel
@@ -29,6 +31,12 @@ import presentations.components.TextComponent
 
 @Composable
 fun CheckOutSummaryWidget(cartViewModel: CartViewModel, onCreateOrderStarted:() -> Unit) {
+
+    val deliveryLocation = cartViewModel.deliveryLocation.collectAsState()
+    val subtotal = cartViewModel.subtotal.collectAsState()
+    val total = cartViewModel.total.collectAsState()
+    val deliveryFee = if (cartViewModel.deliveryFee.value == 0L) "Free" else cartViewModel.deliveryFee.value.toString()
+
     val columnModifier = Modifier
         .padding(start = 10.dp, bottom = 10.dp, end = 10.dp)
         .height(200.dp)
@@ -55,7 +63,7 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel, onCreateOrderStarted:() 
                  textModifier = Modifier.fillMaxWidth(0.50f)
              )
              TextComponent(
-                 text = "$"+cartViewModel.subtotal.value,
+                 text = "$"+subtotal.value.toString(),
                  fontSize = 18,
                  fontFamily = GGSansSemiBold,
                  textStyle = MaterialTheme.typography.h6,
@@ -70,33 +78,35 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel, onCreateOrderStarted:() 
          }
 
 
-        Row(modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)) {
-            TextComponent(
-                text = "Delivery Fee",
-                fontSize = 18,
-                fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.Gray,
-                textAlign = TextAlign.Right,
-                fontWeight = FontWeight.Bold,
-                lineHeight = 20,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                textModifier = Modifier.fillMaxWidth(0.50f)
-            )
-            TextComponent(
-                text = "Free",
-                fontSize = 18,
-                fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.Gray,
-                textAlign = TextAlign.Right,
-                fontWeight = FontWeight.Bold,
-                lineHeight = 20,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                textModifier = Modifier.fillMaxWidth()
-            )
+        if (deliveryLocation.value == DeliveryMethodEnum.MOBILE.toPath()) {
+            Row(modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)) {
+                TextComponent(
+                    text = "Delivery Fee",
+                    fontSize = 18,
+                    fontFamily = GGSansSemiBold,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Color.Gray,
+                    textAlign = TextAlign.Right,
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 20,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textModifier = Modifier.fillMaxWidth(0.50f)
+                )
+                TextComponent(
+                    text = "$$deliveryFee",
+                    fontSize = 18,
+                    fontFamily = GGSansSemiBold,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Color.Gray,
+                    textAlign = TextAlign.Right,
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 20,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textModifier = Modifier.fillMaxWidth()
+                )
+            }
         }
 
         Row(modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)) {
@@ -114,7 +124,7 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel, onCreateOrderStarted:() 
                 textModifier = Modifier.fillMaxWidth(0.50f)
             )
             TextComponent(
-                text = "$"+cartViewModel.total.value,
+                text = "$"+total.value.toString(),
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
                 textStyle = MaterialTheme.typography.h6,

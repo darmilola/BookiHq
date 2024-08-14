@@ -8,20 +8,20 @@ import kotlinx.coroutines.flow.StateFlow
 
 class CartViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
-    private var _subtotal =  savedStateHandle.getStateFlow("subtotal", 0)
-    private var _total =  savedStateHandle.getStateFlow("total", 0)
-    private var _deliveryFee =  savedStateHandle.getStateFlow("deliveryFee", 0)
+    private var _subtotal =  savedStateHandle.getStateFlow("subtotal", 0L)
+    private var _total =  savedStateHandle.getStateFlow("total", 0L)
+    private var _deliveryFee =  savedStateHandle.getStateFlow("deliveryFee", 0L)
     private var _deliveryLocation = savedStateHandle.getStateFlow("deliveryLocation", DeliveryMethodEnum.MOBILE.toPath())
     private var _paymentMethod = savedStateHandle.getStateFlow("paymentMethod", PaymentMethod.CARD_PAYMENT.toPath())
 
 
-    val subtotal: StateFlow<Int>
+    val subtotal: StateFlow<Long>
         get() = _subtotal
 
-    val total: StateFlow<Int>
+    val total: StateFlow<Long>
         get() = _total
 
-    val deliveryFee: StateFlow<Int>
+    val deliveryFee: StateFlow<Long>
         get() = _deliveryFee
 
     val deliveryLocation: StateFlow<String>
@@ -30,15 +30,15 @@ class CartViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     val paymentMethod: StateFlow<String>
         get() = _paymentMethod
 
-    fun setSubTotal(subtotal: Int) {
+    fun setSubTotal(subtotal: Long) {
         savedStateHandle["subtotal"] = subtotal
     }
 
-    fun setTotal(total: Int) {
+    fun setTotal(total: Long) {
         savedStateHandle["total"] = total
     }
 
-    fun setDeliveryFee(deliveryFee: Int) {
+    fun setDeliveryFee(deliveryFee: Long) {
         savedStateHandle["deliveryFee"] = deliveryFee
     }
 

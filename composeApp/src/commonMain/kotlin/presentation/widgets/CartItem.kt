@@ -23,10 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.OrderItem
@@ -120,7 +118,7 @@ fun CartItemDetail(orderItem: OrderItem,onItemCountChanged:(OrderItem) -> Unit, 
                 textModifier = modifier
             )
             CartProductPriceInfoContent(orderItem)
-            CartIncrementDecrementWidget(orderItem,isFromCart = true,onItemCountChanged = {
+            productItemIncrementDecrementWidget(orderItem,isFromCart = true,onItemCountChanged = {
                 onItemCountChanged(it)
             }, onItemRemovedFromCart = {
                 onItemRemovedFromCart(it)
@@ -131,7 +129,6 @@ fun CartItemDetail(orderItem: OrderItem,onItemCountChanged:(OrderItem) -> Unit, 
 @Composable
 fun CartProductPriceInfoContent(orderItem: OrderItem) {
     val product = orderItem.itemProduct
-    val price = if(product?.isDiscounted == true) product.discount else product?.productPrice
     Row(
         modifier = Modifier
             .height(40.dp)
@@ -139,7 +136,7 @@ fun CartProductPriceInfoContent(orderItem: OrderItem) {
             .fillMaxHeight(),
     ) {
         TextComponent(
-            text = "$$price",
+            text = "$${product!!.productPrice}",
             fontSize = 16,
             fontFamily = GGSansSemiBold,
             textStyle = MaterialTheme.typography.h6,
@@ -151,23 +148,6 @@ fun CartProductPriceInfoContent(orderItem: OrderItem) {
             overflow = TextOverflow.Ellipsis,
             textModifier = Modifier
                 .wrapContentSize())
-
-        if (product?.isDiscounted == true) {
-            TextComponent(
-                text = "$"+product.productPrice,
-                fontSize = 14,
-                textStyle = TextStyle(textDecoration = TextDecoration.LineThrough),
-                textColor = Color.LightGray,
-                fontFamily = GGSansSemiBold,
-                textAlign = TextAlign.Left,
-                fontWeight = FontWeight.Medium,
-                lineHeight = 20,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                textModifier = Modifier
-                    .wrapContentSize().padding(start = 10.dp)
-            )
-        }
 
     }
 }

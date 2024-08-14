@@ -27,8 +27,8 @@ import presentations.components.TextComponent
 import utils.getDeliveryMethodDisplayName
 
 @Composable
-fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel,cartViewModel: CartViewModel,
-                                 onPickupSelectedListener:() -> Unit, onHomeSelectedListener:() -> Unit){
+fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel, cartViewModel: CartViewModel,
+                                 onPickupSelectedListener:() -> Unit, onMobileSelectedListener:() -> Unit){
 
     val deliveryLocation =  remember { mutableStateOf(cartViewModel.deliveryLocation.value) }
     val columnModifier = Modifier
@@ -53,7 +53,7 @@ fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel,cartViewModel: Car
         Row(modifier = Modifier.fillMaxWidth()) {
             ToggleButton(shape = CircleShape, onLeftClicked = {
                 deliveryLocation.value = DeliveryMethodEnum.MOBILE.toPath()
-                onHomeSelectedListener()
+                onMobileSelectedListener()
             }, onRightClicked = {
                 deliveryLocation.value = DeliveryMethodEnum.PICKUP.toPath()
                 onPickupSelectedListener()
