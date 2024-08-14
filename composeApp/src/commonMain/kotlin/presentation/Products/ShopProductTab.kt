@@ -153,9 +153,11 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                                )
                            }
                }, onBackPressed = {
-                   mainViewModel!!.setIsSearchProduct(false)
-                   productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                        productPresenter.getProductsByType(vendorId, productType = selectedProductType.value)
+                    mainViewModel!!.setIsSearchProduct(false)
+                    searchQuery.value = ""
+                    productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                    selectedProductType.value = ProductType.COSMETICS.toPath()
+                    productPresenter.getProductsByType(vendorId, productType = selectedProductType.value)
                })
               }
                 else {
@@ -170,8 +172,8 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                             selectedProductType.value = ProductType.ACCESSORIES.toPath()
                             productPresenter.getProductsByType(vendorId, productType = selectedProductType.value)
                         },
-                        leftText = "Cosmetics",
-                        rightText = "Accessories")
+                        leftText = ProductType.COSMETICS.toPath(),
+                        rightText = ProductType.ACCESSORIES.toPath())
                 }
             },
             content = {

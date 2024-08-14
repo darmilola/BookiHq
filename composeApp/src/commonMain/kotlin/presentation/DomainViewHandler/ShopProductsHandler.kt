@@ -21,6 +21,7 @@ class ShopProductsHandler(
     }
 
     override fun showProducts(products: ProductResourceListEnvelope?) {
+        println("Products $products")
         productResourceListEnvelopeViewModel.setIsRefreshing(false)
         if (productResourceListEnvelopeViewModel.resources.value.isNotEmpty()) {
             val productList = productResourceListEnvelopeViewModel.resources.value
