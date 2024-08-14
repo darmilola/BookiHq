@@ -5,6 +5,7 @@ import com.russhwolf.settings.Settings
 enum class SharedPreferenceEnum {
     COUNTRY,
     CITY,
+    SELECTED_PRODUCT_TYPE,
     PROFILE_ID,
     USER_EMAIL,
     FIRSTNAME,
@@ -35,7 +36,7 @@ enum class SharedPreferenceEnum {
         VENDOR_BUSINESS_LOGO -> "businessLogo"
         USER_EMAIL -> "userEmail"
         VENDOR_EMAIL -> "vendorEmail"
-
+        SELECTED_PRODUCT_TYPE -> "selectedProductType"
     }
 
 }

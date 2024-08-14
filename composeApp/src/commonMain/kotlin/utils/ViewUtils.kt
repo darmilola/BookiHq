@@ -3,6 +3,7 @@ package utils
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import domain.Enums.DeliveryMethodEnum
 import domain.Models.Appointment
 import domain.Models.BookedTimes
 import domain.Models.HomepageInfo
@@ -173,6 +174,14 @@ fun calculateVendorServiceTimes(platformTimes: List<PlatformTime>, vendorTimes: 
 
     return workingHours
 
+}
+
+fun getDeliveryMethodDisplayName(deliveryMethod: String): String {
+    return when(deliveryMethod){
+        DeliveryMethodEnum.MOBILE.toPath() -> "Mobile Delivery"
+        DeliveryMethodEnum.PICKUP.toPath() -> "Pickup"
+        else -> "Pickup"
+    }
 }
 
 

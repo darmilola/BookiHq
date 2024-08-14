@@ -257,7 +257,7 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                         ProductDeliveryAddressWidget(mainViewModel!!,
                             cartViewModel!!, onHomeSelectedListener = {
 
-                                  cartViewModel!!.setDeliveryLocation(DeliveryMethodEnum.HOME_DELIVERY.toPath())
+                                  cartViewModel!!.setDeliveryLocation(DeliveryMethodEnum.MOBILE.toPath())
 
                             }, onPickupSelectedListener = {
 

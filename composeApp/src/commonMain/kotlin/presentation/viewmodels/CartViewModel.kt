@@ -11,7 +11,7 @@ class CartViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     private var _subtotal =  savedStateHandle.getStateFlow("subtotal", 0)
     private var _total =  savedStateHandle.getStateFlow("total", 0)
     private var _deliveryFee =  savedStateHandle.getStateFlow("deliveryFee", 0)
-    private var _deliveryLocation = savedStateHandle.getStateFlow("deliveryLocation", DeliveryMethodEnum.HOME_DELIVERY.toPath())
+    private var _deliveryLocation = savedStateHandle.getStateFlow("deliveryLocation", DeliveryMethodEnum.MOBILE.toPath())
     private var _paymentMethod = savedStateHandle.getStateFlow("paymentMethod", PaymentMethod.CARD_PAYMENT.toPath())
 
 

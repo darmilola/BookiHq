@@ -48,11 +48,13 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
+import com.russhwolf.settings.set
 import domain.Enums.ProductType
 import domain.Models.OrderItem
 import domain.Models.Product
 import domain.Models.ProductItemUIModel
 import domain.Enums.Screens
+import domain.Enums.SharedPreferenceEnum
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.ShopProductsHandler
@@ -78,6 +80,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
     private var mainViewModel: MainViewModel? = null
     val preferenceSettings = Settings()
     private var productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel? = null
+    private var selectedProductType: String = preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath(),""]
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -104,11 +107,10 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
 
     @Composable
     override fun Content() {
-        val vendorId: Long = preferenceSettings["vendorId",-1L]
+        val vendorId: Long = preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath(),-1L]
         val onCartChanged = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
-        val isSearchProduct = mainViewModel!!.isSearchProduct.collectAsState()
-        val selectedProductType = remember { mutableStateOf(ProductType.COSMETICS.toPath()) }
+        val isClickedSearchProduct = mainViewModel!!.clickedSearchProduct.collectAsState()
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -128,9 +130,8 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                 factory = viewModelFactory {
                     ProductResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
                 })
-            productPresenter.getProductsByType(vendorId, productType = selectedProductType.value)
+            productPresenter.getProductsByType(vendorId, productType = selectedProductType)
         }
-
 
         val productHandler = ShopProductsHandler(
             loadingScreenUiStateViewModel!!, productResourceListEnvelopeViewModel!!, productPresenter)
@@ -142,7 +143,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                 .background(color = Color.White),
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {
-                if (isSearchProduct.value){
+                if (isClickedSearchProduct.value){
                     SearchBar(onValueChange = {
                     if (it.isNotEmpty()) {
                                productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
@@ -153,24 +154,28 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                                )
                            }
                }, onBackPressed = {
-                    mainViewModel!!.setIsSearchProduct(false)
+                    mainViewModel!!.setIsClickedSearchProduct(false)
                     searchQuery.value = ""
                     productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                    selectedProductType.value = ProductType.COSMETICS.toPath()
-                    productPresenter.getProductsByType(vendorId, productType = selectedProductType.value)
+                    preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath()] = ProductType.COSMETICS.toPath()
+                    productPresenter.getProductsByType(vendorId, productType = selectedProductType)
                })
               }
                 else {
+                    val isRightSelected = selectedProductType == ProductType.ACCESSORIES.toPath()
                     ToggleButton(shape = CircleShape,
+                        isRightSelection = isRightSelected,
                         onLeftClicked = {
+                            preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath()] = ProductType.COSMETICS.toPath()
                             productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                            selectedProductType.value = ProductType.COSMETICS.toPath()
-                            productPresenter.getProductsByType(vendorId, productType = selectedProductType.value)
+                            selectedProductType = ProductType.COSMETICS.toPath()
+                            productPresenter.getProductsByType(vendorId, productType = selectedProductType)
                         },
                         onRightClicked = {
+                            preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath()] = ProductType.ACCESSORIES.toPath()
                             productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                            selectedProductType.value = ProductType.ACCESSORIES.toPath()
-                            productPresenter.getProductsByType(vendorId, productType = selectedProductType.value)
+                            selectedProductType = ProductType.ACCESSORIES.toPath()
+                            productPresenter.getProductsByType(vendorId, productType = selectedProductType)
                         },
                         leftText = ProductType.COSMETICS.toPath(),
                         rightText = ProductType.ACCESSORIES.toPath())
@@ -218,7 +223,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                          showProductDetailBottomSheet = true
 
                         },
-                        selectedProductType.value
+                        selectedProductType
                     )
                 }
             },

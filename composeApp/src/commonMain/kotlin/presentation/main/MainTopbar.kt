@@ -44,7 +44,7 @@ fun MainTopBar(mainViewModel: MainViewModel) {
                    .background(color = Color.White)
            ) {
                appLogoTitleItem(mainViewModel)
-               connectedBusinessLogoItem(mainViewModel)
+               mainTopBarItem(mainViewModel)
            }
        }
 }
@@ -107,7 +107,7 @@ fun VendorLogo(imageUrl: String, onVendorLogoClicked: () -> Unit) {
 
 
 @Composable
-fun connectedBusinessLogoItem(mainViewModel: MainViewModel) {
+fun mainTopBarItem(mainViewModel: MainViewModel) {
     val vendorInfo = mainViewModel.connectedVendor.value
     val displayedTab = mainViewModel.displayedTab.collectAsState()
     val modifier = Modifier
@@ -129,7 +129,7 @@ fun connectedBusinessLogoItem(mainViewModel: MainViewModel) {
                 val iconModifier = Modifier
                     .padding(top = 5.dp)
                     .clickable {
-                        mainViewModel.setIsSearchProduct(true)
+                        mainViewModel.setIsClickedSearchProduct(true)
                     }
                     .size(24.dp)
                 ImageComponent(imageModifier = iconModifier, imageRes = "drawable/search_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))

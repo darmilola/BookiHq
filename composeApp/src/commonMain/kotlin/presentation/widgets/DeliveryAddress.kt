@@ -24,6 +24,7 @@ import presentation.components.ToggleButton
 import presentation.viewmodels.CartViewModel
 import presentation.viewmodels.MainViewModel
 import presentations.components.TextComponent
+import utils.getDeliveryMethodDisplayName
 
 @Composable
 fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel,cartViewModel: CartViewModel,
@@ -51,15 +52,15 @@ fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel,cartViewModel: Car
 
         Row(modifier = Modifier.fillMaxWidth()) {
             ToggleButton(shape = CircleShape, onLeftClicked = {
-                deliveryLocation.value = DeliveryMethodEnum.HOME_DELIVERY.toPath()
+                deliveryLocation.value = DeliveryMethodEnum.MOBILE.toPath()
                 onHomeSelectedListener()
             }, onRightClicked = {
                 deliveryLocation.value = DeliveryMethodEnum.PICKUP.toPath()
                 onPickupSelectedListener()
-            }, leftText = "Home", rightText = "Pick Up")
+            }, leftText = getDeliveryMethodDisplayName(DeliveryMethodEnum.MOBILE.toPath()), rightText = getDeliveryMethodDisplayName(DeliveryMethodEnum.PICKUP.toPath()))
         }
 
-       if(deliveryLocation.value == DeliveryMethodEnum.HOME_DELIVERY.toPath()) {
+       if(deliveryLocation.value == DeliveryMethodEnum.MOBILE.toPath()) {
             MobileDeliveryWidget(mainViewModel = mainViewModel)
        }
         else{

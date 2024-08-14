@@ -2,21 +2,13 @@ package domain.Enums
 
 enum class DeliveryMethodEnum {
     PICKUP,
-    HOME_DELIVERY;
+    MOBILE;
     fun toPath() = when (this) {
         PICKUP -> "pickup"
-        HOME_DELIVERY -> "home_delivery"
+        MOBILE -> "mobile_delivery"
     }
     fun toEventPropertyName() = when (this) {
         PICKUP -> "pickup"
-        HOME_DELIVERY -> "home_delivery"
-    }
-}
-
-fun getDeliveryMethodDisplayName(deliveryMethod: String): String{
-    when(deliveryMethod){
-        DeliveryMethodEnum.HOME_DELIVERY.toPath() -> return "Home Delivery"
-        DeliveryMethodEnum.PICKUP.toPath() -> return "Pickup"
-        else -> return "Pickup"
+        MOBILE -> "mobile_delivery"
     }
 }

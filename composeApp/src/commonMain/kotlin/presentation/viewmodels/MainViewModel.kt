@@ -1,11 +1,9 @@
 package presentation.viewmodels
 
-import cafe.adriel.voyager.navigator.OnBackPressed
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Enums.MainTabEnum
 import domain.Models.OrderItem
-import domain.Models.VendorRecommendation
 import domain.Models.Services
 import domain.Models.User
 import domain.Models.Vendor
@@ -25,7 +23,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _currentUnsavedOrders =  savedStateHandle.getStateFlow("currentUnsavedOrders", ArrayList<OrderItem>())
     private var _currentUnsavedOrderSize =  savedStateHandle.getStateFlow("currentUnsavedOrderSize", 0)
     private var _currentMainDisplayTab =  savedStateHandle.getStateFlow("displayedTab", MainTabEnum.HOME.toPath())
-    private var _isSearchProductState =  savedStateHandle.getStateFlow("isSearchProduct", false)
+    private var _isClickedSearchProductState =  savedStateHandle.getStateFlow("isClickedSearchProduct", false)
     private var _switchVendorId =  savedStateHandle.getStateFlow("switchVendorId", -1L)
     private var _switchVendorReason =  savedStateHandle.getStateFlow("switchVendorReason", "")
     private var _switchVendor =  savedStateHandle.getStateFlow("switchVendor", Vendor())
@@ -33,7 +31,6 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _restartApp =  savedStateHandle.getStateFlow("restartApp", false)
     private var _onBackPressed =  savedStateHandle.getStateFlow("onBackPressed", false)
     private var _exitApp =  savedStateHandle.getStateFlow("exitApp", false)
-    private var _goToMainScreen =  savedStateHandle.getStateFlow("goToMainScreen", false)
 
 
     val screenTitle: StateFlow<String>
@@ -54,12 +51,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     val exitApp: StateFlow<Boolean>
         get() = _exitApp
 
-    val goToMainScreen: StateFlow<Boolean>
-        get() = _goToMainScreen
 
-
-    val isSearchProduct: StateFlow<Boolean>
-        get() = _isSearchProductState
+    val clickedSearchProduct: StateFlow<Boolean>
+        get() = _isClickedSearchProductState
 
     val displayedTab: StateFlow<String>
         get() = _currentMainDisplayTab
@@ -116,8 +110,8 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
         savedStateHandle["onBackPressed"] = onBackPressed
     }
 
-    fun setIsSearchProduct(isSearching: Boolean) {
-        savedStateHandle["isSearchProduct"] = isSearching
+    fun setIsClickedSearchProduct(isSearching: Boolean) {
+        savedStateHandle["isClickedSearchProduct"] = isSearching
     }
 
     fun setDisplayedTab(displayedTab: String) {
@@ -181,10 +175,6 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     fun setExitApp(exitApp: Boolean) {
         savedStateHandle["exitApp"] = exitApp
-    }
-
-    fun setGoToMainScreen(goToMainScreen: Boolean) {
-        savedStateHandle["goToMainScreen"] = goToMainScreen
     }
 
 

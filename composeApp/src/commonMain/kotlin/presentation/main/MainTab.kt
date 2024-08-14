@@ -104,8 +104,9 @@ class MainTab(private val platformNavigator: PlatformNavigator): Tab, KoinCompon
                 it2 ->
                 Scaffold(
                     topBar = {
-                        if (userInfo.value.userId != null && vendorInfo.value.vendorId != null)
-                        MainTopBar(mainViewModel!!)
+                        if (userInfo.value.userId != null && vendorInfo.value.vendorId != null) {
+                            MainTopBar(mainViewModel!!)
+                        }
 
                     },
                     content = {
@@ -116,71 +117,79 @@ class MainTab(private val platformNavigator: PlatformNavigator): Tab, KoinCompon
                     },
                     backgroundColor = Color.White,
                     bottomBar = {
-                        Box(modifier = Modifier.fillMaxWidth().height(80.dp),
-                            contentAlignment = Alignment.Center) {
-                            BottomNavigation(
-                                modifier = Modifier.height(60.dp).padding(start = 10.dp, end = 10.dp)
-                                    .background(shape = RoundedCornerShape(15.dp), color = Colors.darkPrimary),
-                                backgroundColor = Color.Transparent,
-                                elevation = 0.dp
-                            )
-                            {
-                                homeTab = HomeTab(platformNavigator)
-                                homeTab!!.setMainViewModel(mainViewModel!!)
-                                homeTab!!.setHomePageViewModel(homePageViewModel)
-                                TabNavigationItem(
-                                    homeTab!!,
-                                    selectedImage = "drawable/home_icon.png",
-                                    unselectedImage = "drawable/home_outline.png",
-                                    labelText = "Home",
-                                    imageSize = 22,
-                                    currentTabId = 0,
-                                    tabNavigator = it2,
-                                    mainViewModel = mainViewModel!!
-                                ) {
-                                    isBottomNavSelected = true
-                                }
-                                shopProductTab = ShopProductTab()
-                                shopProductTab!!.setMainViewModel(mainViewModel!!)
-                                TabNavigationItem(
-                                    shopProductTab!!,
-                                    selectedImage = "drawable/shopping_basket.png",
-                                    unselectedImage = "drawable/shopping_basket_outline.png",
-                                    labelText = "Shop",
-                                    imageSize = 22,
-                                    currentTabId = 1,
-                                    tabNavigator = it2,
-                                    mainViewModel = mainViewModel!!
-                                ) {
-                                    isBottomNavSelected = true
-                                }
-                                appointmentsTab = AppointmentsTab(platformNavigator)
-                                appointmentsTab!!.setMainViewModel(mainViewModel!!)
-                                TabNavigationItem(
-                                    appointmentsTab!!,
-                                    selectedImage = "drawable/appointment_icon.png",
-                                    unselectedImage = "drawable/appointment_outline.png",
-                                    labelText = "History",
-                                    imageSize = 25,
-                                    currentTabId = 2,
-                                    tabNavigator = it2,
-                                    mainViewModel = mainViewModel!!
-                                ) {
-                                    isBottomNavSelected = true
-                                }
-                                accountTab = AccountTab()
-                                accountTab!!.setMainViewModel(mainViewModel!!)
-                                TabNavigationItem(
-                                    accountTab!!,
-                                    selectedImage = "drawable/user_icon_filled.png",
-                                    unselectedImage = "drawable/user_icon_outline.png",
-                                    labelText = "More",
-                                    imageSize = 25,
-                                    currentTabId = 3,
-                                    tabNavigator = it2,
-                                    mainViewModel = mainViewModel!!
-                                ) {
-                                    isBottomNavSelected = true
+                        if (userInfo.value.userId != null && vendorInfo.value.vendorId != null) {
+                            Box(
+                                modifier = Modifier.fillMaxWidth().height(80.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                BottomNavigation(
+                                    modifier = Modifier.height(60.dp)
+                                        .padding(start = 10.dp, end = 10.dp)
+                                        .background(
+                                            shape = RoundedCornerShape(15.dp),
+                                            color = Colors.darkPrimary
+                                        ),
+                                    backgroundColor = Color.Transparent,
+                                    elevation = 0.dp
+                                )
+                                {
+                                    homeTab = HomeTab(platformNavigator)
+                                    homeTab!!.setMainViewModel(mainViewModel!!)
+                                    homeTab!!.setHomePageViewModel(homePageViewModel)
+                                    TabNavigationItem(
+                                        homeTab!!,
+                                        selectedImage = "drawable/home_icon.png",
+                                        unselectedImage = "drawable/home_outline.png",
+                                        labelText = "Home",
+                                        imageSize = 22,
+                                        currentTabId = 0,
+                                        tabNavigator = it2,
+                                        mainViewModel = mainViewModel!!
+                                    ) {
+                                        isBottomNavSelected = true
+                                    }
+                                    shopProductTab = ShopProductTab()
+                                    shopProductTab!!.setMainViewModel(mainViewModel!!)
+                                    TabNavigationItem(
+                                        shopProductTab!!,
+                                        selectedImage = "drawable/shopping_basket.png",
+                                        unselectedImage = "drawable/shopping_basket_outline.png",
+                                        labelText = "Shop",
+                                        imageSize = 22,
+                                        currentTabId = 1,
+                                        tabNavigator = it2,
+                                        mainViewModel = mainViewModel!!
+                                    ) {
+                                        isBottomNavSelected = true
+                                    }
+                                    appointmentsTab = AppointmentsTab(platformNavigator)
+                                    appointmentsTab!!.setMainViewModel(mainViewModel!!)
+                                    TabNavigationItem(
+                                        appointmentsTab!!,
+                                        selectedImage = "drawable/appointment_icon.png",
+                                        unselectedImage = "drawable/appointment_outline.png",
+                                        labelText = "History",
+                                        imageSize = 25,
+                                        currentTabId = 2,
+                                        tabNavigator = it2,
+                                        mainViewModel = mainViewModel!!
+                                    ) {
+                                        isBottomNavSelected = true
+                                    }
+                                    accountTab = AccountTab()
+                                    accountTab!!.setMainViewModel(mainViewModel!!)
+                                    TabNavigationItem(
+                                        accountTab!!,
+                                        selectedImage = "drawable/user_icon_filled.png",
+                                        unselectedImage = "drawable/user_icon_outline.png",
+                                        labelText = "More",
+                                        imageSize = 25,
+                                        currentTabId = 3,
+                                        tabNavigator = it2,
+                                        mainViewModel = mainViewModel!!
+                                    ) {
+                                        isBottomNavSelected = true
+                                    }
                                 }
                             }
                         }
