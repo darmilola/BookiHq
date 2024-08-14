@@ -229,6 +229,7 @@ class MainTab(private val platformNavigator: PlatformNavigator): Tab, KoinCompon
             val screenTitle = "Products"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
+            mainViewModel.setIsClickedSearchProduct(false)
             mainViewModel.setDisplayedTab(MainTabEnum.SHOP.toPath())
         } else if (tabNavigator.current is AppointmentsTab && currentTabId == 2) {
             imageStr = selectedImage

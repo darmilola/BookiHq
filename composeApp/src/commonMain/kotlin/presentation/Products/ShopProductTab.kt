@@ -130,6 +130,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                 factory = viewModelFactory {
                     ProductResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
                 })
+            productResourceListEnvelopeViewModel!!.setResources(mutableListOf())
             productPresenter.getProductsByType(vendorId, productType = selectedProductType)
         }
 
