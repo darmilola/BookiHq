@@ -37,7 +37,7 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                                 when (result.status) {
                                     ServerResponseEnum.SUCCESS.toPath() -> {
                                         contractView?.showLce(AppUIStates(isSuccess = true))
-                                        contractView?.showAppointments(result.listItem)
+                                        contractView?.showAppointments(result.listItem, isRefresh = false)
                                     }
                                     ServerResponseEnum.EMPTY.toPath() -> {
                                         contractView?.showLce(AppUIStates(isFailed = true))
@@ -61,6 +61,41 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
         }
     }
 
+    override fun refreshUserAppointments(userId: Long) {
+        contractView?.showRefreshing(AppUIStates(isLoading = true))
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    appointmentRepositoryImpl.getAppointments(userId)
+                        .subscribe(
+                            onSuccess = { result ->
+                                when (result.status) {
+                                    ServerResponseEnum.SUCCESS.toPath() -> {
+                                        contractView?.showRefreshing(AppUIStates(isSuccess = true))
+                                        contractView?.showAppointments(result.listItem, isRefresh = true)
+                                    }
+                                    ServerResponseEnum.EMPTY.toPath() -> {
+                                        contractView?.showRefreshing(AppUIStates(isFailed = true))
+                                    }
+                                    else -> {
+                                        contractView?.showRefreshing(AppUIStates(isFailed = true))
+                                    }
+                                }
+                            },
+                            onError = {
+                                println("Result 2 ${it.message}")
+                                contractView?.showRefreshing(AppUIStates(isFailed = true))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                println("Result 3 ${e.message}")
+                contractView?.showRefreshing(AppUIStates(isFailed = true))
+            }
+        }
+    }
+
     override fun getMoreAppointments(userId: Long, nextPage: Int) {
         contractView?.onLoadMoreAppointmentStarted()
         scope.launch(Dispatchers.Main) {
@@ -71,7 +106,7 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     contractView?.onLoadMoreAppointmentEnded()
-                                    contractView?.showAppointments(result.listItem)
+                                    contractView?.showAppointments(result.listItem, isRefresh = false)
                                 }
                                 else{
                                     contractView?.onLoadMoreAppointmentEnded()

@@ -30,6 +30,7 @@ class PerformedActionUIStateViewModel(private val savedStateHandle: SavedStateHa
     private var _loadHomepageUiState = savedStateHandle.getStateFlow("loadHomepageUiState", AppUIStates())
     private var _switchVendorUiState = savedStateHandle.getStateFlow("switchVendorUiState", AppUIStates())
     private var _getTherapistUiState = savedStateHandle.getStateFlow("getTherapistUiState", AppUIStates())
+    private var _refreshAppointmentUiState = savedStateHandle.getStateFlow("refreshAppointmentUiState", AppUIStates())
     private var _loadPendingAppointmentUiState = savedStateHandle.getStateFlow("loadPendingAppointmentUiState", AppUIStates())
     private var _deletePendingAppointmentUiState = savedStateHandle.getStateFlow("deletePendingAppointmentUiState", AppUIStates())
     private var _createAppointmentUiState = savedStateHandle.getStateFlow("createAppointmentUiState", AppUIStates())
@@ -49,6 +50,9 @@ class PerformedActionUIStateViewModel(private val savedStateHandle: SavedStateHa
 
     val therapistDashboardUiState: StateFlow<AppUIStates>
         get() = _therapistDashboardUiState
+
+    val refreshAppointmentActionUiState: StateFlow<AppUIStates>
+        get() = _refreshAppointmentUiState
 
     val loadHomepageUiState: StateFlow<AppUIStates>
         get() = _loadHomepageUiState
@@ -72,6 +76,9 @@ class PerformedActionUIStateViewModel(private val savedStateHandle: SavedStateHa
 
     fun switchActionPostponeUIState(appUIStates: AppUIStates) {
         savedStateHandle["postponeUiState"] = appUIStates
+    }
+    fun switchRefreshAppointmentUiState(appUIStates: AppUIStates) {
+        savedStateHandle["refreshAppointmentUiState"] = appUIStates
     }
     fun switchActionDeleteUIState(appUIStates: AppUIStates) {
         savedStateHandle["deleteActionUiState"] = appUIStates

@@ -171,6 +171,9 @@ kotlin {
             //savedState
             api("io.github.hoc081098:kmp-viewmodel-savedstate:0.7.1")
 
+            // pull to refresh
+            implementation("dev.materii.pullrefresh:pullrefresh:1.3.0")
+
 
         }
 

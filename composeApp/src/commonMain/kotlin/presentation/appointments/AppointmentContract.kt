@@ -13,11 +13,12 @@ import domain.Models.VendorTime
 interface AppointmentContract {
     interface View {
         fun showLce(screenUiState: AppUIStates)
+        fun showRefreshing(screenUiState: AppUIStates)
         fun showDeleteActionLce(appUIStates: AppUIStates)
         fun showPostponeActionLce(appUIStates: AppUIStates)
         fun showJoinMeetingActionLce(appUIStates: AppUIStates)
         fun showGetAvailabilityActionLce(appUIStates: AppUIStates)
-        fun showAppointments(appointments: AppointmentResourceListEnvelope)
+        fun showAppointments(appointments: AppointmentResourceListEnvelope, isRefresh: Boolean)
         fun showTherapistAvailability(bookedAppointment: List<Appointment>,platformTime: List<PlatformTime>,
                                       vendorTime: List<VendorTime>)
         fun onLoadMoreAppointmentStarted()
@@ -28,6 +29,7 @@ interface AppointmentContract {
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
         abstract fun getUserAppointments(userId: Long)
+        abstract fun refreshUserAppointments(userId: Long)
         abstract fun getMoreAppointments(userId: Long, nextPage: Int = 1)
         abstract fun postponeAppointment(userAppointment: UserAppointment, newAppointmentTime: Int, day: Int, month: Int, year: Int, vendor: Vendor, user: User, monthName: String, platformNavigator: PlatformNavigator,
                                          platformTime: PlatformTime)

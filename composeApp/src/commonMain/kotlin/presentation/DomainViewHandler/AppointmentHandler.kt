@@ -15,6 +15,7 @@ import domain.Models.VendorTime
 
 class AppointmentsHandler(
     private val appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel,
+    private val refreshActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel,
     private val deletePerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val joinMeetingPerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
@@ -28,6 +29,10 @@ class AppointmentsHandler(
 
     override fun showLce(appUIStates: AppUIStates) {
         loadingScreenUiStateViewModel.switchScreenUIState(appUIStates)
+    }
+
+    override fun showRefreshing(appUiState: AppUIStates) {
+        refreshActionUIStateViewModel.switchRefreshAppointmentUiState(appUiState)
     }
 
     override fun showDeleteActionLce(appUIStates: AppUIStates) {
@@ -46,8 +51,16 @@ class AppointmentsHandler(
         getAvailabilityPerformedActionUIStateViewModel.switchActionAvailabilityUIState(appUIStates)
     }
 
-    override fun showAppointments(appointments: AppointmentResourceListEnvelope) {
-        if (appointmentResourceListEnvelopeViewModel.resources.value.isNotEmpty()) {
+    override fun showAppointments(appointments: AppointmentResourceListEnvelope, isRefresh: Boolean) {
+        if (isRefresh || appointmentResourceListEnvelopeViewModel.resources.value.isEmpty()){
+            appointmentResourceListEnvelopeViewModel.setResources(appointments.data)
+            appointments?.prevPageUrl?.let { appointmentResourceListEnvelopeViewModel.setPrevPageUrl(it) }
+            appointments?.nextPageUrl?.let { appointmentResourceListEnvelopeViewModel.setNextPageUrl(it) }
+            appointments?.currentPage?.let { appointmentResourceListEnvelopeViewModel.setCurrentPage(it) }
+            appointments?.totalItemCount?.let { appointmentResourceListEnvelopeViewModel.setTotalItemCount(it) }
+            appointments?.displayedItemCount?.let { appointmentResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
+        }
+        else {
             val appointmentList = appointmentResourceListEnvelopeViewModel.resources.value
             appointmentList.addAll(appointments.data!!)
             appointmentResourceListEnvelopeViewModel.setResources(appointmentList)
@@ -56,13 +69,6 @@ class AppointmentsHandler(
             appointments.currentPage?.let { appointmentResourceListEnvelopeViewModel.setCurrentPage(it) }
             appointments.totalItemCount?.let { appointmentResourceListEnvelopeViewModel.setTotalItemCount(it) }
             appointments.displayedItemCount?.let { appointmentResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
-        } else {
-            appointmentResourceListEnvelopeViewModel.setResources(appointments.data)
-            appointments?.prevPageUrl?.let { appointmentResourceListEnvelopeViewModel.setPrevPageUrl(it) }
-            appointments?.nextPageUrl?.let { appointmentResourceListEnvelopeViewModel.setNextPageUrl(it) }
-            appointments?.currentPage?.let { appointmentResourceListEnvelopeViewModel.setCurrentPage(it) }
-            appointments?.totalItemCount?.let { appointmentResourceListEnvelopeViewModel.setTotalItemCount(it) }
-            appointments?.displayedItemCount?.let { appointmentResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
         }
     }
 
