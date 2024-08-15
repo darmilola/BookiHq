@@ -78,6 +78,7 @@ class ProfileRepositoryImpl(apiService: HttpClient): ProfileRepository {
         userId: Long,
         vendorId: Long,
         serviceStatus: String,
+        bookingStatus: String,
         appointmentType: String,
         appointmentTime: Int,
         day: Int,
@@ -86,7 +87,7 @@ class ProfileRepositoryImpl(apiService: HttpClient): ProfileRepository {
         meetingDescription: String,
         paymentAmount: Double, paymentMethod: String
     ): Single<ServerResponse> {
-        val param = CreateMeetingRequest(meetingTitle,userId,vendorId,appointmentTime, day, month, year, serviceStatus, meetingDescription,
+        val param = CreateMeetingRequest(meetingTitle,userId,vendorId,appointmentTime, day, month, year,serviceStatus,bookingStatus,meetingDescription,
             appointmentType, paymentAmount, paymentMethod)
         return profileNetworkService.createMeeting(param)
     }

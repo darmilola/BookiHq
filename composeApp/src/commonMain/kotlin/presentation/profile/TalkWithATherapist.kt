@@ -38,6 +38,7 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Enums.AppointmentType
+import domain.Enums.BookingStatus
 import domain.Enums.PaymentMethod
 import domain.Enums.Screens
 import domain.Enums.ServiceStatusEnum
@@ -295,6 +296,7 @@ class TalkWithATherapist(val platformNavigator: PlatformNavigator) : Tab,
                             userId = mainViewModel!!.currentUserInfo.value.userId!!,
                             vendorId = mainViewModel!!.connectedVendor.value.vendorId!!,
                             serviceStatus = ServiceStatusEnum.PENDING.toPath(),
+                            bookingStatus = BookingStatus.DONE.toPath(),
                             appointmentType = AppointmentType.MEETING.toPath(),
                             appointmentTime = currentBooking.appointmentTime?.id!!,
                             day = currentBooking.day,

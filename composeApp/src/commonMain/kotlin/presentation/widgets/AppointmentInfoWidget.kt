@@ -276,10 +276,11 @@ fun MeetingInfoWidget(appointment: Appointment) {
             textStyle = MaterialTheme.typography.h6,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Start,
+            lineHeight = 20,
             maxLines = 3,
             fontWeight = FontWeight.Bold,
             textModifier = Modifier
-                .fillMaxWidth().padding(start = 5.dp)
+                .fillMaxWidth().height(40.dp).padding(start = 5.dp)
         )
 
         Row(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {

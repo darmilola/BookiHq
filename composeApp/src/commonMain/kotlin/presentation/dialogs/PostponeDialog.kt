@@ -55,14 +55,6 @@ fun PostponeDialog(userAppointment: UserAppointment, appointmentPresenter: Appoi
                    onConfirmation: (Appointment) -> Unit) {
     Dialog( properties = DialogProperties(usePlatformDefaultWidth = false), onDismissRequest = { onDismissRequest() }) {
 
-        val currentDay = getDay()
-        val currentMonth = getMonth()
-        val currentYear = getYear()
-
-        postponementViewModel.setSelectedDay(currentDay)
-        postponementViewModel.setSelectedMonth(currentMonth)
-        postponementViewModel.setSelectedYear(currentYear)
-
         val newSelectedDay = postponementViewModel.day.collectAsState()
         val newSelectedMonth = postponementViewModel.month.collectAsState()
         val newSelectedYear = postponementViewModel.year.collectAsState()
@@ -108,6 +100,7 @@ fun PostponeDialog(userAppointment: UserAppointment, appointmentPresenter: Appoi
                         }
 
                         NewDateContent(onDateSelected = {
+                            println("Select Day $it")
                            postponementViewModel.setSelectedDay(it.dayOfMonth)
                            postponementViewModel.setSelectedYear(it.year)
                            postponementViewModel.setSelectedMonth(it.monthNumber)
@@ -140,6 +133,7 @@ fun PostponeDialog(userAppointment: UserAppointment, appointmentPresenter: Appoi
                             ) {
 
                                PostponeTimeContent(workHours, onWorkHourClickListener = {
+                                      println("Select Time $it")
                                       postponementViewModel.setNewSelectedTime(it)
                                })
                             }
@@ -152,7 +146,7 @@ fun PostponeDialog(userAppointment: UserAppointment, appointmentPresenter: Appoi
                             postponementViewModel.clearPostponementSelection()
                             onDismissRequest()
                         }, onConfirmation = {
-                          if (newSelectedTime.value.id != null) {
+                          if (newSelectedTime.value.id != null && newSelectedDay.value != -1 && newSelectedMonth.value != -1 && newSelectedYear.value != -1) {
                                 appointmentPresenter.postponeAppointment(
                                     userAppointment,
                                     newSelectedTime.value.id!!,

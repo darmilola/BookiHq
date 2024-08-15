@@ -289,6 +289,7 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         userId: Long,
         vendorId: Long,
         serviceStatus: String,
+        bookingStatus: String,
         appointmentType: String,
         appointmentTime: Int,
         day: Int,
@@ -302,7 +303,7 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
             try {
                 val result = withContext(Dispatchers.IO) {
                     meetingViewContract?.showActionLce(AppUIStates(isLoading = true))
-                    profileRepositoryImpl.createMeetingAppointment(meetingTitle, userId, vendorId, serviceStatus, appointmentType,
+                    profileRepositoryImpl.createMeetingAppointment(meetingTitle, userId, vendorId, serviceStatus,bookingStatus, appointmentType,
                         appointmentTime, day, month, year, meetingDescription, paymentAmount, paymentMethod)
                         .subscribe(
                             onSuccess = { result ->

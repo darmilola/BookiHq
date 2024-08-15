@@ -52,6 +52,7 @@ class AppointmentsHandler(
     }
 
     override fun showAppointments(appointments: AppointmentResourceListEnvelope, isRefresh: Boolean) {
+        println(appointments.data!!.size)
         if (isRefresh || appointmentResourceListEnvelopeViewModel.resources.value.isEmpty()){
             appointmentResourceListEnvelopeViewModel.setResources(appointments.data)
             appointments?.prevPageUrl?.let { appointmentResourceListEnvelopeViewModel.setPrevPageUrl(it) }

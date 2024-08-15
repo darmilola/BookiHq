@@ -41,6 +41,7 @@ data class CreateMeetingRequest(@SerialName("meeting_title") val meetingTitle: S
                                 @SerialName("month") val month: Int,
                                 @SerialName("year") val year: Int,
                                 @SerialName("serviceStatus") val serviceStatus: String,
+                                @SerialName("bookingStatus") val bookingStatus: String,
                                 @SerialName("meetingDescription") val meetingDescription: String,
                                 @SerialName("appointmentType") val appointmentType: String,
                                 @SerialName("paymentAmount") val paymentAmount: Double,

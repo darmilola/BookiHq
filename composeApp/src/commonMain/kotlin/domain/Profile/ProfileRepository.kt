@@ -34,7 +34,7 @@ interface ProfileRepository {
         country: String
     ): Single<PlatformCountryCitiesResponse>
 
-    suspend fun createMeetingAppointment(meetingTitle: String,userId: Long, vendorId: Long, serviceStatus: String, appointmentType: String,
+    suspend fun createMeetingAppointment(meetingTitle: String,userId: Long, vendorId: Long, serviceStatus: String,bookingStatus: String,appointmentType: String,
                                          appointmentTime: Int, day: Int, month: Int, year: Int, meetingDescription: String,
                                          paymentAmount: Double, paymentMethod: String): Single<ServerResponse>
 }
