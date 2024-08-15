@@ -165,8 +165,8 @@ fun productItemIncrementDecrementWidget(orderItem: OrderItem, isFromCart: Boolea
                     orderItem.itemCount = counter
                     onItemCountChanged(orderItem)
                   }
-                 else if (isFromCart){ // item count is 1, remove from cart
-                     onItemRemovedFromCart(orderItem)
+                 else if (isFromCart && counter == 1){
+                    onItemRemovedFromCart(orderItem)
                  }
                }, imageRes = decrementImgRes, colorFilter = ColorFilter.tint(color = decrementImgTint))
         }

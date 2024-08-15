@@ -133,6 +133,7 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
         }
 
         val cartItems = mainViewModel!!.unSavedOrders.collectAsState()
+        val cartSize = mainViewModel!!.unSavedOrderSize.collectAsState()
         val vendorDeliveryFee = mainViewModel!!.connectedVendor.value.deliveryFee
         cartViewModel!!.setDeliveryFee(vendorDeliveryFee)
         val createOrderActionUiState = performedActionUIStateViewModel!!.uiStateInfo.collectAsState()
@@ -142,7 +143,7 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
         cartViewModel!!.setTotal(total)
         cartViewModel!!.setSubTotal(subtotal)
 
-        if (cartItems.value.isEmpty()) {
+        if (cartSize.value == 0) {
             mainViewModel!!.setScreenNav(
                 Pair(
                     Screens.CART.toPath(),
