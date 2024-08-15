@@ -1,6 +1,5 @@
 package presentation.widgets
 
-import GGSansBold
 import GGSansSemiBold
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
@@ -26,13 +25,12 @@ import androidx.compose.ui.unit.dp
 import domain.Enums.DeliveryMethodEnum
 import presentation.components.ButtonComponent
 import presentation.viewmodels.CartViewModel
-import presentation.viewmodels.MainViewModel
 import presentations.components.TextComponent
 
 @Composable
 fun CheckOutSummaryWidget(cartViewModel: CartViewModel, onCreateOrderStarted:() -> Unit) {
 
-    val deliveryLocation = cartViewModel.deliveryLocation.collectAsState()
+    val deliveryMethod = cartViewModel.deliveryMethod.collectAsState()
     val subtotal = cartViewModel.subtotal.collectAsState()
     val total = cartViewModel.total.collectAsState()
     val deliveryFee = if (cartViewModel.deliveryFee.value == 0L) "Free" else cartViewModel.deliveryFee.value.toString()
@@ -78,7 +76,7 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel, onCreateOrderStarted:() 
          }
 
 
-        if (deliveryLocation.value == DeliveryMethodEnum.MOBILE.toPath()) {
+        if (deliveryMethod.value == DeliveryMethodEnum.MOBILE.toPath()) {
             Row(modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)) {
                 TextComponent(
                     text = "Delivery Fee",

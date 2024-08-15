@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -30,7 +31,8 @@ import utils.getDeliveryMethodDisplayName
 fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel, cartViewModel: CartViewModel,
                                  onPickupSelectedListener:() -> Unit, onMobileSelectedListener:() -> Unit){
 
-    val deliveryLocation =  remember { mutableStateOf(cartViewModel.deliveryLocation.value) }
+    val deliveryMethod =  mainViewModel.deliveryMethod.collectAsState()
+    val isRightSelection = deliveryMethod.value == DeliveryMethodEnum.PICKUP.toPath()
     val columnModifier = Modifier
         .padding(start = 10.dp, bottom = 10.dp, top = 15.dp, end = 10.dp)
         .wrapContentHeight()
@@ -51,16 +53,16 @@ fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel, cartViewModel: Ca
         )
 
         Row(modifier = Modifier.fillMaxWidth()) {
-            ToggleButton(shape = CircleShape, onLeftClicked = {
-                deliveryLocation.value = DeliveryMethodEnum.MOBILE.toPath()
+            ToggleButton(shape = CircleShape, isRightSelection = isRightSelection, onLeftClicked = {
+                mainViewModel.setDeliveryMethod(DeliveryMethodEnum.MOBILE.toPath())
                 onMobileSelectedListener()
             }, onRightClicked = {
-                deliveryLocation.value = DeliveryMethodEnum.PICKUP.toPath()
+                mainViewModel.setDeliveryMethod(DeliveryMethodEnum.PICKUP.toPath())
                 onPickupSelectedListener()
             }, leftText = getDeliveryMethodDisplayName(DeliveryMethodEnum.MOBILE.toPath()), rightText = getDeliveryMethodDisplayName(DeliveryMethodEnum.PICKUP.toPath()))
         }
 
-       if(deliveryLocation.value == DeliveryMethodEnum.MOBILE.toPath()) {
+       if(deliveryMethod.value == DeliveryMethodEnum.MOBILE.toPath()) {
             MobileDeliveryWidget(mainViewModel = mainViewModel)
        }
         else{

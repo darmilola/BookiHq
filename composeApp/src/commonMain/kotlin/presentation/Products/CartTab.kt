@@ -132,10 +132,18 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             )
         }
 
+        cartViewModel!!.setPaymentMethod(PaymentMethod.CARD_PAYMENT.toPath())
         val cartItems = mainViewModel!!.unSavedOrders.collectAsState()
         val cartSize = mainViewModel!!.unSavedOrderSize.collectAsState()
+        val deliveryMethod = cartViewModel!!.deliveryMethod.collectAsState()
         val vendorDeliveryFee = mainViewModel!!.connectedVendor.value.deliveryFee
-        cartViewModel!!.setDeliveryFee(vendorDeliveryFee)
+        if (deliveryMethod.value == DeliveryMethodEnum.MOBILE.toPath()){
+            cartViewModel!!.setDeliveryFee(vendorDeliveryFee)
+        }
+        else{
+            cartViewModel!!.setDeliveryFee(0L)
+        }
+
         val createOrderActionUiState = performedActionUIStateViewModel!!.uiStateInfo.collectAsState()
 
         val subtotal = calculateCartCheckoutSubTotal(cartItems.value)
@@ -257,11 +265,11 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                         ProductDeliveryAddressWidget(mainViewModel!!,
                             cartViewModel!!, onMobileSelectedListener = {
 
-                                  cartViewModel!!.setDeliveryLocation(DeliveryMethodEnum.MOBILE.toPath())
+                                  cartViewModel!!.setDeliveryMethod(DeliveryMethodEnum.MOBILE.toPath())
 
                             }, onPickupSelectedListener = {
 
-                                cartViewModel!!.setDeliveryLocation(DeliveryMethodEnum.PICKUP.toPath())
+                                cartViewModel!!.setDeliveryMethod(DeliveryMethodEnum.PICKUP.toPath())
 
                             })
                         StraightLine()
@@ -275,7 +283,7 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                              val orderItemList = mainViewModel!!.unSavedOrders.value
                              val vendorId = mainViewModel!!.connectedVendor.value.vendorId
                              val userId = mainViewModel!!.currentUserInfo.value.userId
-                             val deliveryLocation = cartViewModel!!.deliveryLocation.value
+                             val deliveryLocation = cartViewModel!!.deliveryMethod.value
                              val paymentMethod = cartViewModel!!.paymentMethod.value
                              val year = getYear()
                              val month = getMonth()
