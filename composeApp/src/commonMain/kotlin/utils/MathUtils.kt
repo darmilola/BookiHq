@@ -1,6 +1,7 @@
 package utils
 
 import domain.Models.OrderItem
+import domain.Models.PlacedOrderItemComponent
 import domain.Products.OrderItemRequest
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -24,6 +25,17 @@ fun calculateCartCheckoutSubTotal(orderItems: MutableList<OrderItem>): Long {
       subtotal += qtyPrice!!
   }
     return subtotal
+}
+
+fun calculatePlacedOrderTotalPrice(placedOrderItemComponent: ArrayList<PlacedOrderItemComponent>): Long {
+    var total: Long = 0
+    for (item in placedOrderItemComponent){
+        val price = item?.productPrice
+        val qty = item.itemCount
+        val qtyPrice = price?.times(qty)
+        total += qtyPrice!!
+    }
+    return total
 }
 
 fun getUnSavedOrdersRequestJson(orders: List<OrderItem>): String {

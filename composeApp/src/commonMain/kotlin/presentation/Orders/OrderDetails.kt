@@ -13,17 +13,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import domain.Enums.Screens
-import domain.Models.CustomerOrder
-import domain.Models.ItemComponent
+import domain.Models.PlacedOrderItemComponent
+import kotlinx.serialization.Transient
 import presentation.widgets.OrderDetailList
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.PageBackNavWidget
 
-class OrderDetails(private val mainViewModel: MainViewModel,private val itemList: ArrayList<ItemComponent>) : Tab {
+class OrderDetails() : Tab {
 
     override val options: TabOptions
         @Composable
@@ -37,6 +36,13 @@ class OrderDetails(private val mainViewModel: MainViewModel,private val itemList
                 )
             }
         }
+    @Transient
+    private var mainViewModel: MainViewModel? = null
+
+    fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
+
 
     @Composable
     override fun Content() {
@@ -63,11 +69,12 @@ class OrderDetails(private val mainViewModel: MainViewModel,private val itemList
                         .fillMaxHeight(),
                     contentAlignment = Alignment.CenterStart
                 ) {
-                    leftTopBarItem(mainViewModel)
+                    leftTopBarItem(mainViewModel!!)
                 }
 
             }
-            OrderDetailList(mainViewModel, itemList)
+            val itemList = mainViewModel!!.orderItemComponents.value
+            OrderDetailList(itemList)
         }
     }
 }
@@ -76,8 +83,6 @@ class OrderDetails(private val mainViewModel: MainViewModel,private val itemList
 fun leftTopBarItem(mainViewModel: MainViewModel) {
     PageBackNavWidget {
         mainViewModel.setScreenNav(Pair(Screens.ORDER_DETAILS.toPath(), Screens.ORDERS.toPath()))
-
-       }
-
-    }
+      }
+  }
 

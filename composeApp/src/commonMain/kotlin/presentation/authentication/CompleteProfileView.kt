@@ -40,6 +40,7 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import countryList
 import domain.Enums.AuthType
+import domain.Enums.Gender
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.PlatformNavigator
 import presentation.DomainViewHandler.AuthenticationScreenHandler
@@ -68,13 +69,12 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
     val placeHolderImage = "drawable/user_icon.png"
     val firstname = remember { mutableStateOf("") }
     val lastname = remember { mutableStateOf("") }
-    val gender = remember { mutableStateOf("male") }
+    val gender = remember { mutableStateOf(Gender.MALE.toPath()) }
     val city = remember { mutableStateOf("") }
     val country = remember { mutableStateOf("") }
     val completeProfileInProgress = remember { mutableStateOf(false) }
     val navigateToConnectVendor = remember { mutableStateOf(false) }
     val profileImageUrl = remember { mutableStateOf(placeHolderImage) }
-    val imagePickerScope = rememberCoroutineScope()
     val preferenceSettings = Settings()
     val authType = if (authEmail.isNotEmpty()) AuthType.EMAIL.toPath() else AuthType.PHONE.toPath()
     val inputList =  ArrayList<String>()
@@ -93,6 +93,8 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
 
     inputList.add(firstname.value)
     inputList.add(lastname.value)
+    inputList.add(city.value)
+    inputList.add(country.value)
 
 
 
@@ -201,6 +203,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                 }
                 AttachCountryDropDownWidget() {
                     profilePresenter.getPlatformCities(country = it)
+                    city.value = ""
                     country.value = it
                 }
 

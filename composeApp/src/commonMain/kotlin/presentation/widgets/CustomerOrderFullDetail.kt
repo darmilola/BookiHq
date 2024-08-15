@@ -28,14 +28,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import domain.Models.CustomerOrder
-import domain.Models.ItemComponent
+import domain.Models.PlacedOrderItemComponent
 import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun OrderDetailList(mainViewModel: MainViewModel, itemList: ArrayList<ItemComponent>) {
+fun OrderDetailList(itemList: ArrayList<PlacedOrderItemComponent>) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
         .clickable {}
@@ -43,19 +42,12 @@ fun OrderDetailList(mainViewModel: MainViewModel, itemList: ArrayList<ItemCompon
         .background(color = Color.Transparent, shape = RoundedCornerShape(10.dp))
         .height(((130 * 3)+500).dp)
 
-
         Column(modifier = columnModifier,
             verticalArrangement = Arrangement.Top
         ) {
-            Column(modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                OrderDetailsStatusView(itemList)
-            }
 
             Box(modifier = Modifier.padding(top = 10.dp).fillMaxWidth().fillMaxHeight(),) {
-                    OrderItemDetail(mainViewModel = mainViewModel, itemList)
+                    OrderItemDetail(itemList)
             }
 
             Row(
@@ -67,52 +59,3 @@ fun OrderDetailList(mainViewModel: MainViewModel, itemList: ArrayList<ItemCompon
             }
         }
 }
-
-
-
-
-@Composable
-fun OrderDetailsStatusView(itemList: ArrayList<ItemComponent>){
-    val columnModifier = Modifier
-        .padding(start = 10.dp, end = 10.dp)
-        .wrapContentHeight()
-        Column(
-            modifier = columnModifier,
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment  = Alignment.Start,
-        ) {
-
-            val modifier = Modifier
-                .padding(top = 5.dp)
-                .fillMaxWidth()
-                .wrapContentHeight()
-
-            ImageComponent(imageModifier = Modifier.size(150.dp).clickable {
-            }, imageRes = "drawable/celebrate_icon.png", colorFilter = ColorFilter.tint(color = Color.DarkGray))
-
-
-            TextComponent(
-                text = "SATURDAY DEC 23, 2023 05:11 AM",
-                fontSize = 15,
-                fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
-                textColor = Color.LightGray,
-                textAlign = TextAlign.Right,
-                fontWeight = FontWeight.Medium,
-                lineHeight = 30,
-                textModifier = Modifier
-                    .wrapContentSize())
-
-            TextComponent(
-                text = "Congratulations, \nYour Order Has Arrived",
-                fontSize = 23,
-                fontFamily = GGSansRegular,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
-                textAlign = TextAlign.Left,
-                fontWeight = FontWeight.Black,
-                lineHeight = 35,
-                textModifier = modifier
-            )
-        }
-    }

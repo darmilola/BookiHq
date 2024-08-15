@@ -33,25 +33,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import domain.Models.CustomerOrder
-import domain.Models.OrderItem
 import domain.Enums.Screens
-import domain.Models.ItemComponent
+import domain.Models.PlacedOrderItemComponent
 import kotlinx.serialization.json.Json
 import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
+import utils.calculatePlacedOrderTotalPrice
 
 @Composable
-fun OrderItemList(mainViewModel: MainViewModel, customerOrder: CustomerOrder) {
+fun UserOrderComponent(mainViewModel: MainViewModel, customerOrder: CustomerOrder) {
 
-      var itemList: ArrayList<ItemComponent> = arrayListOf<ItemComponent>()
-      itemList = Json.decodeFromString<ArrayList<ItemComponent>>(customerOrder.orderItems?.orderItemJson!!)
-
-
-
-
-    val navigator = LocalTabNavigator.current
-    val columnModifier = Modifier
+      var itemList: ArrayList<PlacedOrderItemComponent>
+      itemList = Json.decodeFromString<ArrayList<PlacedOrderItemComponent>>(customerOrder.orderItems?.orderItemJson!!)
+      val totalCost = calculatePlacedOrderTotalPrice(itemList)
+      val navigator = LocalTabNavigator.current
+      val columnModifier = Modifier
         .padding(start = 10.dp, top = 35.dp, bottom = 10.dp, end = 10.dp)
         .clickable {
             mainViewModel.setScreenNav(Pair(Screens.ORDERS.toPath(), Screens.ORDER_DETAILS.toPath()))
@@ -85,7 +82,8 @@ fun OrderItemList(mainViewModel: MainViewModel, customerOrder: CustomerOrder) {
                         textModifier = Modifier.wrapContentHeight().fillMaxWidth(0.50f))
 
                     Box(modifier = Modifier.fillMaxWidth().clickable {
-                          navigator.current = OrderDetails(mainViewModel, itemList)
+                          mainViewModel.setOrderItemComponents(itemList)
+                          mainViewModel.setScreenNav(Pair(Screens.ORDERS.toPath(), Screens.ORDER_DETAILS.toPath()))
                     },
                         contentAlignment = Alignment.CenterEnd) {
                         ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
@@ -101,9 +99,7 @@ fun OrderItemList(mainViewModel: MainViewModel, customerOrder: CustomerOrder) {
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 itemsIndexed(items = itemList) { it, item ->
-
-                      OrderItemImage(item)
-
+                    OrderItemImage(item)
                 }
             }
             Row(
@@ -122,7 +118,7 @@ fun OrderItemList(mainViewModel: MainViewModel, customerOrder: CustomerOrder) {
                     textModifier = Modifier.padding(top = 5.dp).height(30.dp).fillMaxWidth(0.20f)
                 )
                 TextComponent(
-                    text = "$2,300",
+                    text = "$$totalCost",
                     fontSize = 20,
                     fontFamily = GGSansRegular,
                     textStyle = TextStyle(),
@@ -150,7 +146,7 @@ fun StraightLine() {
 }
 
 @Composable
-fun OrderItemImage(itemComponent: ItemComponent) {
+fun OrderItemImage(placedOrderItemComponent: PlacedOrderItemComponent) {
     val imageModifier = Modifier
             .height(100.dp)
             .width(100.dp)
@@ -160,7 +156,7 @@ fun OrderItemImage(itemComponent: ItemComponent) {
             ImageComponent(
                 imageModifier = imageModifier,
                 isAsync = true,
-                imageRes = itemComponent.imageUrl!!,
+                imageRes = placedOrderItemComponent.imageUrl!!,
                 contentScale = ContentScale.Crop)
         }
 

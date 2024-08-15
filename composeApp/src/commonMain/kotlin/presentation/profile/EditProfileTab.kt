@@ -111,8 +111,6 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
             )
         }
 
-
-
         val userInfo = mainViewModel!!.currentUserInfo.value
         val userGender = if (userInfo.gender == Gender.MALE.toPath()) Gender.MALE.toPath()
         else Gender.FEMALE.toPath()
@@ -126,7 +124,6 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
         val contactPhone = remember { mutableStateOf(userPhone) }
         val address = remember { mutableStateOf(userAddress) }
         val profileImageUrl = remember { mutableStateOf(userInfo.profileImageUrl) }
-        val imagePickerScope = rememberCoroutineScope()
         val inputList =  ArrayList<String>()
         val country = remember { mutableStateOf(userInfo.country) }
         val isSavedClicked = remember { mutableStateOf(false) }
@@ -169,6 +166,8 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
         inputList.add(lastname.value!!)
         inputList.add(address.value)
         inputList.add(contactPhone.value)
+        inputList.add(city.value.toString())
+        inputList.add(country.value.toString())
 
         val rootModifier =
             Modifier
@@ -303,6 +302,7 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
                     AttachCountryDropDownWidget(defaultValue = country.value!!) {
                         profilePresenter.getPlatformCities(country = it)
                         country.value = it
+                        city.value = ""
                     }
 
                     AttachCityDropDownWidget(defaultValue = city.value!!,platformViewModel = platformViewModel!!) {
@@ -375,12 +375,12 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
                         val buttonStyle = Modifier
                             .padding(end = 10.dp, top = 30.dp)
                             .weight(1f)
-                            .height(50.dp)
+                            .height(45.dp)
 
                         val buttonStyle2 = Modifier
                             .padding(start = 10.dp, end = 10.dp, top = 30.dp)
                             .weight(1f)
-                            .height(50.dp)
+                            .height(45.dp)
 
                         ButtonComponent(
                             modifier = buttonStyle2,

@@ -83,7 +83,7 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
     @Transient
     private val cartPresenter: CartPresenter by inject()
     @Transient
-    private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    private var createOrderActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
     private var cartViewModel: CartViewModel? = null
     @Transient
@@ -116,8 +116,8 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
         )
         val coroutineScope = rememberCoroutineScope()
 
-        if (performedActionUIStateViewModel == null) {
-            performedActionUIStateViewModel = kmpViewModel(
+        if (createOrderActionUIStateViewModel == null) {
+            createOrderActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
@@ -144,7 +144,7 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             cartViewModel!!.setDeliveryFee(0L)
         }
 
-        val createOrderActionUiState = performedActionUIStateViewModel!!.uiStateInfo.collectAsState()
+        val createOrderActionUiState = createOrderActionUIStateViewModel!!.uiStateInfo.collectAsState()
 
         val subtotal = calculateCartCheckoutSubTotal(cartItems.value)
         val total = calculateTotal(subtotal, cartViewModel!!.deliveryFee.value)
@@ -170,7 +170,7 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 // View Contract Handler Initialisation
                 val handler = CreateOrderScreenHandler(
                     cartPresenter,
-                    performedActionUIStateViewModel!!)
+                    createOrderActionUIStateViewModel!!)
                 handler.init()
 
 

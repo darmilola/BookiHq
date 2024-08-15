@@ -6,6 +6,7 @@ import domain.Enums.DeliveryMethodEnum
 import domain.Enums.MainTabEnum
 import domain.Enums.ProductType
 import domain.Models.OrderItem
+import domain.Models.PlacedOrderItemComponent
 import domain.Models.Services
 import domain.Models.User
 import domain.Models.Vendor
@@ -35,7 +36,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _restartApp =  savedStateHandle.getStateFlow("restartApp", false)
     private var _onBackPressed =  savedStateHandle.getStateFlow("onBackPressed", false)
     private var _exitApp =  savedStateHandle.getStateFlow("exitApp", false)
-
+    private var _orderItemComponents =  savedStateHandle.getStateFlow("orderItemComponents", arrayListOf<PlacedOrderItemComponent>())
 
     val screenTitle: StateFlow<String>
         get() = _screenTitle
@@ -48,6 +49,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     val unSavedOrders: StateFlow<ArrayList<OrderItem>>
         get() = _currentUnsavedOrders
+
+    val orderItemComponents: StateFlow<ArrayList<PlacedOrderItemComponent>>
+        get() = _orderItemComponents
 
     val restartApp: StateFlow<Boolean>
         get() = _restartApp
@@ -99,7 +103,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     fun setJoinSpaVendor(vendor: Vendor) {
         savedStateHandle["joinSpaVendor"] = vendor
     }
-
+    fun setOrderItemComponents(orderItemComponents: ArrayList<PlacedOrderItemComponent>) {
+        savedStateHandle["orderItemComponents"] = orderItemComponents
+    }
     fun setSwitchVendor(vendor: Vendor) {
         savedStateHandle["switchVendor"] = vendor
     }
@@ -187,6 +193,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     fun clearUnsavedOrders() {
         savedStateHandle["currentUnsavedOrders"] = ArrayList<OrderItem>()
+        savedStateHandle["currentUnsavedOrderSize"] = 0
     }
 
     fun setExitApp(exitApp: Boolean) {

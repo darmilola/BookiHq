@@ -186,7 +186,7 @@ class Orders() : Tab, KoinComponent, Parcelable {
                         userScrollEnabled = true
                     ) {
                         itemsIndexed(items = userOrderItemUIModel.userOrderList) { it, item ->
-                            OrderItemList(mainViewModel!!, item.customerOrder!!)
+                            UserOrderComponent(mainViewModel!!, item.customerOrder!!)
                             if (it == lastIndex && loadMoreState.value) {
                                 Box(
                                     modifier = Modifier.fillMaxWidth().height(60.dp),
@@ -218,11 +218,10 @@ class Orders() : Tab, KoinComponent, Parcelable {
                                 }
                             }
                         }
-
                     }
                 }
             })
-            }
+         }
 
 
     @Composable

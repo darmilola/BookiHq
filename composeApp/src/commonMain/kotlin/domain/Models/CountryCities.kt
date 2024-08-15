@@ -8,5 +8,4 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Parcelize
 data class CountryCities(@SerialName("id") val cityId: Int = -1, @SerialName("name") val countryName: String = "",
-                         @SerialName("cities") val cities: ArrayList<City> = arrayListOf()):
-    Parcelable
+                         @SerialName("cities") val cities: ArrayList<City> = arrayListOf()): Parcelable

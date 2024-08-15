@@ -32,14 +32,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import domain.Models.ItemComponent
+import domain.Models.PlacedOrderItemComponent
 import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
+import utils.calculatePlacedOrderTotalPrice
 
 
 @Composable
-fun OrderItemDetail(mainViewModel: MainViewModel, itemList: ArrayList<ItemComponent>) {
+fun OrderItemDetail(itemList: ArrayList<PlacedOrderItemComponent>) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
@@ -72,7 +73,7 @@ fun OrderItemDetail(mainViewModel: MainViewModel, itemList: ArrayList<ItemCompon
                     textModifier = Modifier.padding(top = 5.dp).height(30.dp).fillMaxWidth(0.20f)
                 )
                 TextComponent(
-                    text = "$2,300",
+                    text = calculatePlacedOrderTotalPrice(itemList).toString(),
                     fontSize = 20,
                     fontFamily = GGSansRegular,
                     textStyle = TextStyle(),
@@ -87,7 +88,7 @@ fun OrderItemDetail(mainViewModel: MainViewModel, itemList: ArrayList<ItemCompon
     }
 
 @Composable
-fun OrderProductItemComponent(itemComponent: ItemComponent) {
+fun OrderProductItemComponent(placedOrderItemComponent: PlacedOrderItemComponent) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 10.dp, bottom = 10.dp)
         .height(110.dp)
@@ -95,14 +96,14 @@ fun OrderProductItemComponent(itemComponent: ItemComponent) {
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Top
         ) {
-            OrderProductItemImage()
-            OrderProductItemName(itemComponent)
+            OrderProductItemImage(placedOrderItemComponent)
+            OrderProductItemName(placedOrderItemComponent)
         }
     }
 
 
 @Composable
-fun OrderProductItemImage() {
+fun OrderProductItemImage(placedOrderItemComponent: PlacedOrderItemComponent) {
     val imageModifier =
         Modifier
             .fillMaxHeight()
@@ -123,8 +124,9 @@ fun OrderProductItemImage() {
             contentAlignment = Alignment.Center
         ) {
             ImageComponent(
+                isAsync = true,
                 imageModifier = imageModifier,
-                imageRes = "drawable/woman2.jpg",
+                imageRes = placedOrderItemComponent.imageUrl,
                 contentScale = ContentScale.Crop
             )
         }
@@ -133,7 +135,7 @@ fun OrderProductItemImage() {
 
 
 @Composable
-fun OrderProductItemName(itemComponent: ItemComponent){
+fun OrderProductItemName(placedOrderItemComponent: PlacedOrderItemComponent){
     val columnModifier = Modifier
         .padding(start = 10.dp, end = 10.dp)
         .fillMaxHeight()
@@ -149,7 +151,7 @@ fun OrderProductItemName(itemComponent: ItemComponent){
                 .wrapContentHeight()
 
             TextComponent(
-                text = itemComponent.productName,
+                text = placedOrderItemComponent.productName,
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
                 textStyle = TextStyle(),
@@ -160,13 +162,13 @@ fun OrderProductItemName(itemComponent: ItemComponent){
                 textModifier = modifier,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis)
-            OrderProductItemQty(itemComponent)
+            OrderProductItemQty(placedOrderItemComponent)
         }
     }
 
 
 @Composable
-fun OrderProductItemQty(itemComponent: ItemComponent) {
+fun OrderProductItemQty(placedOrderItemComponent: PlacedOrderItemComponent) {
     Row(
         modifier = Modifier
             .height(40.dp)
@@ -175,7 +177,7 @@ fun OrderProductItemQty(itemComponent: ItemComponent) {
     ) {
 
         TextComponent(
-            text = itemComponent.itemCount.toString()+"x",
+            text = placedOrderItemComponent.itemCount.toString()+"x",
             fontSize = 18,
             fontFamily = GGSansSemiBold,
             textStyle = TextStyle(),
@@ -188,7 +190,7 @@ fun OrderProductItemQty(itemComponent: ItemComponent) {
                 .wrapContentSize())
 
         TextComponent(
-            text = itemComponent!!.productPrice.toString()+"$",
+            text = placedOrderItemComponent!!.productPrice.toString()+"$",
             fontSize = 20,
             fontFamily = GGSansRegular,
             textStyle = TextStyle(),
@@ -200,64 +202,6 @@ fun OrderProductItemQty(itemComponent: ItemComponent) {
                 .wrapContentSize())
     }
 }
-
-
-@Composable
-fun OrderID(orderReference: Int) {
-    Row(
-        modifier = Modifier
-            .height(100.dp)
-            .fillMaxHeight(),
-    ) {
-        Column(modifier = Modifier.weight(1f).fillMaxHeight(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.Start) {
-
-            TextComponent(
-                text = "ORDER ID",
-                fontSize = 15,
-                fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
-                textColor = Color.LightGray,
-                textAlign = TextAlign.Right,
-                fontWeight = FontWeight.Medium,
-                lineHeight = 30,
-                textModifier = Modifier
-                    .wrapContentSize())
-
-            TextComponent(
-                text = orderReference.toString(),
-                fontSize = 17,
-                fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
-                textAlign = TextAlign.Right,
-                fontWeight = FontWeight.Black,
-                lineHeight = 30,
-                textModifier = Modifier
-                    .padding(end = 10.dp, top = 5.dp)
-                    .wrapContentSize())
-        }
-
-        Column(modifier = Modifier.weight(1f).fillMaxHeight(),
-               verticalArrangement = Arrangement.Center,
-               horizontalAlignment = Alignment.End) {
-            TextComponent(
-                text = "Copy",
-                fontSize = 16,
-                fontFamily = GGSansRegular,
-                textStyle = TextStyle(),
-                textColor = Colors.primaryColor,
-                textAlign = TextAlign.Right,
-                fontWeight = FontWeight.Black,
-                lineHeight = 30,
-                textModifier = Modifier
-                    .wrapContentSize())
-        }
-
-    }
-}
-
 
 
 

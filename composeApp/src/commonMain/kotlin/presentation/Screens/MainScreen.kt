@@ -17,6 +17,7 @@ import domain.Models.PlatformNavigator
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import presentation.Orders.OrderDetails
 import presentation.Orders.Orders
 import presentation.Products.CartTab
 import presentation.account.JoinASpa
@@ -199,6 +200,11 @@ class MainScreen(val platformNavigator: PlatformNavigator) : ParcelableScreen, K
                 }
                 Screens.ORDERS.toPath() -> {
                     val orders = Orders()
+                    orders.setMainViewModel(mainViewModel!!)
+                    it.current = orders
+                }
+                Screens.ORDER_DETAILS.toPath() -> {
+                    val orders = OrderDetails()
                     orders.setMainViewModel(mainViewModel!!)
                     it.current = orders
                 }

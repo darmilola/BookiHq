@@ -227,8 +227,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
         else if (postponeActionUIStates.value.isSuccess) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 SuccessDialog("Appointment Postponed", "Close", onConfirmation = {
-                    appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                    appointmentPresenter.getUserAppointments(userId!!)
+                    appointmentPresenter.refreshUserAppointments(userId)
                     postponementViewModel!!.setPostponementViewUIState(AppUIStates(isDefault = true))
                 })
             }
