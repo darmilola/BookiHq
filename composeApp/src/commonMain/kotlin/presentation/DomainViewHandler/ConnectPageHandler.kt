@@ -2,6 +2,7 @@ package presentation.DomainViewHandler
 
 import UIStates.AppUIStates
 import domain.Models.VendorResourceListEnvelope
+import kotlinx.coroutines.runBlocking
 import presentation.connectVendor.ConnectVendorContract
 import presentation.connectVendor.ConnectVendorPresenter
 import presentation.viewmodels.LoadingScreenUIStateViewModel
@@ -25,23 +26,63 @@ class ConnectPageHandler(
         actionUIStateViewModel.switchActionUIState(appUIStates)
     }
 
-    override fun showVendors(vendors: VendorResourceListEnvelope?, isFromSearch: Boolean) {
-        if (vendorResourceListEnvelopeViewModel.resources.value.isNotEmpty()) {
-            val vendorList = vendorResourceListEnvelopeViewModel.resources.value
-            vendorList.addAll(vendors?.resources!!)
-            vendorResourceListEnvelopeViewModel.setResources(vendorList)
-            vendors.prevPageUrl?.let { vendorResourceListEnvelopeViewModel.setPrevPageUrl(it) }
-            vendors.nextPageUrl?.let { vendorResourceListEnvelopeViewModel.setNextPageUrl(it) }
-            vendors.currentPage?.let { vendorResourceListEnvelopeViewModel.setCurrentPage(it) }
-            vendors.totalItemCount?.let { vendorResourceListEnvelopeViewModel.setTotalItemCount(it) }
-            vendors.displayedItemCount?.let { vendorResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
-        } else {
-            vendorResourceListEnvelopeViewModel.setResources(vendors?.resources!!.toMutableList())
-            vendors.prevPageUrl?.let { vendorResourceListEnvelopeViewModel.setPrevPageUrl(it) }
-            vendors.nextPageUrl?.let { vendorResourceListEnvelopeViewModel.setNextPageUrl(it) }
-            vendors.currentPage?.let { vendorResourceListEnvelopeViewModel.setCurrentPage(it) }
-            vendors.totalItemCount?.let { vendorResourceListEnvelopeViewModel.setTotalItemCount(it) }
-            vendors.displayedItemCount?.let { vendorResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
+    override fun showVendors(vendors: VendorResourceListEnvelope?, isFromSearch: Boolean, isLoadMore: Boolean) {
+        println("True size is ${vendors!!.resources!!.size}")
+        runBlocking {
+            if (isFromSearch && !isLoadMore) {
+                vendorResourceListEnvelopeViewModel.clearData(mutableListOf())
+                vendors.prevPageUrl?.let { vendorResourceListEnvelopeViewModel.setPrevPageUrl(it) }
+                vendors.nextPageUrl?.let { vendorResourceListEnvelopeViewModel.setNextPageUrl(it) }
+                vendors.currentPage?.let { vendorResourceListEnvelopeViewModel.setCurrentPage(it) }
+                vendors.totalItemCount?.let {
+                    vendorResourceListEnvelopeViewModel.setTotalItemCount(
+                        it
+                    )
+                }
+                vendors.displayedItemCount?.let {
+                    vendorResourceListEnvelopeViewModel.setDisplayedItemCount(
+                        it
+                    )
+                }
+                vendorResourceListEnvelopeViewModel.setResources(
+                    vendors?.resources!!.distinct().toMutableList()
+                )
+            } else if (isLoadMore) {
+                vendors.prevPageUrl?.let { vendorResourceListEnvelopeViewModel.setPrevPageUrl(it) }
+                vendors.nextPageUrl?.let { vendorResourceListEnvelopeViewModel.setNextPageUrl(it) }
+                vendors.currentPage?.let { vendorResourceListEnvelopeViewModel.setCurrentPage(it) }
+                vendors.totalItemCount?.let {
+                    vendorResourceListEnvelopeViewModel.setTotalItemCount(
+                        it
+                    )
+                }
+                vendors.displayedItemCount?.let {
+                    vendorResourceListEnvelopeViewModel.setDisplayedItemCount(
+                        it
+                    )
+                }
+                val vendorList = vendorResourceListEnvelopeViewModel.resources.value
+                vendorList.addAll(vendors?.resources!!.distinct()!!)
+                vendorResourceListEnvelopeViewModel.setResources(vendorList)
+
+            } else {
+                vendors.prevPageUrl?.let { vendorResourceListEnvelopeViewModel.setPrevPageUrl(it) }
+                vendors.nextPageUrl?.let { vendorResourceListEnvelopeViewModel.setNextPageUrl(it) }
+                vendors.currentPage?.let { vendorResourceListEnvelopeViewModel.setCurrentPage(it) }
+                vendors.totalItemCount?.let {
+                    vendorResourceListEnvelopeViewModel.setTotalItemCount(
+                        it
+                    )
+                }
+                vendors.displayedItemCount?.let {
+                    vendorResourceListEnvelopeViewModel.setDisplayedItemCount(
+                        it
+                    )
+                }
+                vendorResourceListEnvelopeViewModel.setResources(
+                    vendors?.resources!!.distinct().toMutableList()
+                )
+            }
         }
     }
 

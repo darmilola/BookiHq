@@ -11,8 +11,7 @@ import domain.Models.Vendor
 class ProductContract {
     interface View {
         fun showLce(appUIStates: AppUIStates)
-        fun showProducts(products: ProductResourceListEnvelope?)
-        fun showSearchProducts(products: ProductResourceListEnvelope?, isLoadMore: Boolean = false)
+        fun showProducts(products: ProductResourceListEnvelope?, isFromSearch: Boolean = false, isLoadMore: Boolean = false)
         fun onLoadMoreProductStarted()
         fun onLoadMoreProductEnded()
         fun onProductTypeChangeStarted()

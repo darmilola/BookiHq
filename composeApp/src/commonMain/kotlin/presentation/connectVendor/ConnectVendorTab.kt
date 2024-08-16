@@ -44,10 +44,12 @@ import domain.Models.PlatformNavigator
 import domain.Models.Vendor
 import domain.Models.VendorItemUIModel
 import domain.Models.getVendorListItemViewHeight
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.ConnectPageHandler
+import presentation.Screens.ConnectVendorDetailsScreen
 import presentation.widgets.SearchBar
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
@@ -238,6 +240,7 @@ class ConnectVendorTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
                         contentPadding = PaddingValues(6.dp),
                         verticalArrangement = Arrangement.spacedBy(5.dp), userScrollEnabled = true
                     ) {
+                     runBlocking {
                         items(vendorUIModel.vendorsList.size) { i ->
                             SwitchVendorBusinessItemComponent(vendor = vendorUIModel.vendorsList[i]) {
                                 mainViewModel!!.setSwitchVendorID(it.vendorId!!)
@@ -272,19 +275,20 @@ class ConnectVendorTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
                                         if (searchQuery.value.isNotEmpty()) {
                                             connectVendorPresenter.searchMoreVendors(
                                                 country,
-                                                city,
+                                                city = city,
                                                 searchQuery.value,
                                                 vendorResourceListEnvelopeViewModel?.currentPage?.value!! + 1
                                             )
                                         } else {
                                             connectVendorPresenter.getMoreVendor(
                                                 country,
-                                                city,
+                                                city = city,
                                                 vendorResourceListEnvelopeViewModel?.currentPage?.value!! + 1
                                             )
                                         }
                                     }
                                 }
+                            }
                             }
                         }
                     }

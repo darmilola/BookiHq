@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import domain.Enums.SharedPreferenceEnum
+import kotlinx.coroutines.runBlocking
 import utils.getDistanceFromCustomer
 
 class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Presenter() {
@@ -71,7 +72,7 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                                     }
                                     result.listItem.resources = updatedVendorDistance
                                     contractView?.showScreenLce(AppUIStates(isSuccess = true))
-                                    contractView?.showVendors(result.listItem)
+                                    contractView?.showVendors(result.listItem,isFromSearch = false, isLoadMore = false)
                                 }
                                 else{
                                     contractView?.showScreenLce(AppUIStates(isFailed = true))
@@ -107,7 +108,7 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                                     }
                                     result.listItem.resources = updatedVendorDistance
                                     contractView?.onLoadMoreVendorEnded(true)
-                                    contractView?.showVendors(result.listItem)
+                                    contractView?.showVendors(result.listItem, isFromSearch = false, isLoadMore = true)
                                 }
                                 else{
                                     contractView?.onLoadMoreVendorEnded(false)
@@ -141,9 +142,11 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                                         vendor.distanceFromCustomer = distance
                                         vendor
                                     }
+                                    println("Response ${result.listItem.nextPageUrl}")
+                                    println("Response ${result.listItem.prevPageUrl}")
                                     result.listItem.resources = updatedVendorDistance
                                     contractView?.showScreenLce(AppUIStates(isSuccess = true))
-                                    contractView?.showVendors(result.listItem, isFromSearch = true)
+                                    contractView?.showVendors(result.listItem, isFromSearch = true, isLoadMore = false)
                                 }
                                 else{
                                     contractView?.showScreenLce(AppUIStates(isFailed = true))
@@ -169,20 +172,34 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                     connectVendorRepositoryImpl.searchVendor(country,city,searchQuery,nextPage)
                         .subscribe(
                             onSuccess = { result ->
-                                userLatitude =  preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), "0.0"].toDouble()
-                                userLongitude =  preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), "0.0"].toDouble()
-                                if (result.status == "success"){
-                                    val updatedVendorDistance = result.listItem.resources!!.map { vendor ->
-                                        val distance = getDistanceFromCustomer(userLat = userLatitude, userLong = userLongitude, vendorLat = vendor.latitude, vendorLong = vendor.longitude)
-                                        vendor.distanceFromCustomer = distance
-                                        vendor
+                                runBlocking {
+                                    userLatitude =
+                                        preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), "0.0"].toDouble()
+                                    userLongitude =
+                                        preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), "0.0"].toDouble()
+                                    if (result.status == "success") {
+                                        val updatedVendorDistance =
+                                            result.listItem.resources!!.map { vendor ->
+                                                val distance = getDistanceFromCustomer(
+                                                    userLat = userLatitude,
+                                                    userLong = userLongitude,
+                                                    vendorLat = vendor.latitude,
+                                                    vendorLong = vendor.longitude
+                                                )
+                                                vendor.distanceFromCustomer = distance
+                                                vendor
+                                            }
+                                        println(result.listItem.resources)
+                                        result.listItem.resources = updatedVendorDistance
+                                        contractView?.onLoadMoreVendorEnded(true)
+                                        contractView?.showVendors(
+                                            result.listItem,
+                                            isFromSearch = true,
+                                            isLoadMore = true
+                                        )
+                                    } else {
+                                        contractView?.onLoadMoreVendorEnded(false)
                                     }
-                                    result.listItem.resources = updatedVendorDistance
-                                    contractView?.onLoadMoreVendorEnded(true)
-                                    contractView?.showVendors(result.listItem, isFromSearch = true)
-                                }
-                                else{
-                                    contractView?.onLoadMoreVendorEnded(false)
                                 }
                             },
                             onError = {

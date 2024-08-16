@@ -55,6 +55,7 @@ import domain.Models.Product
 import domain.Models.ProductItemUIModel
 import domain.Enums.Screens
 import domain.Enums.SharedPreferenceEnum
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.ShopProductsHandler
@@ -356,6 +357,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                             verticalArrangement = Arrangement.spacedBy(5.dp),
                             userScrollEnabled = true
                         ) {
+                            runBlocking {
                             items(productUIModel.productList.size) { it ->
                                 ProductItem(
                                     productUIModel.productList[it],
@@ -409,6 +411,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                                             }
                                         }
                                     }
+                                }
                                 }
                             }
                         }

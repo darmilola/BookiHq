@@ -50,6 +50,7 @@ import presentation.viewmodels.LoadingScreenUIStateViewModel
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.set
 import domain.Enums.SharedPreferenceEnum
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.ConnectPageHandler
 import presentation.connectVendor.ConnectVendorPresenter
@@ -215,50 +216,52 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
                             contentPadding = PaddingValues(6.dp),
                             verticalArrangement = Arrangement.spacedBy(5.dp), userScrollEnabled = true
                         ) {
-                            items(vendorUIModel.vendorsList.size) { i ->
-                                SwitchVendorBusinessItemComponent(vendor = vendorUIModel.vendorsList[i]) {
-                                    val connectVendorDetailsScreen = ConnectVendorDetailsScreen(vendor = it, platformNavigator = platformNavigator!!)
-                                    connectVendorDetailsScreen.setMainViewModel(mainViewModel!!)
-                                    navigator.push(connectVendorDetailsScreen)
-                                }
-                                if (i == lastIndex && loadMoreState.value) {
-                                    Box(
-                                        modifier = Modifier.fillMaxWidth().height(60.dp),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        IndeterminateCircularProgressBar()
+                            runBlocking {
+                                items(vendorUIModel.vendorsList.size) { i ->
+                                    SwitchVendorBusinessItemComponent(vendor = vendorUIModel.vendorsList[i]) {
+                                        val connectVendorDetailsScreen = ConnectVendorDetailsScreen(vendor = it, platformNavigator = platformNavigator!!)
+                                        connectVendorDetailsScreen.setMainViewModel(mainViewModel!!)
+                                        navigator.push(connectVendorDetailsScreen)
                                     }
-                                }
-                                else if (i == lastIndex && (displayedVendorsCount!!.value < totalVendorsCount!!.value)) {
-                                    val buttonStyle = Modifier
-                                        .height(50.dp)
-                                        .fillMaxWidth()
-                                        .padding(top = 10.dp, start = 10.dp, end = 10.dp)
+                                    if (i == lastIndex && loadMoreState.value) {
+                                        Box(
+                                            modifier = Modifier.fillMaxWidth().height(60.dp),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            IndeterminateCircularProgressBar()
+                                        }
+                                    }
+                                    else if (i == lastIndex && (displayedVendorsCount!!.value < totalVendorsCount!!.value)) {
+                                        val buttonStyle = Modifier
+                                            .height(50.dp)
+                                            .fillMaxWidth()
+                                            .padding(top = 10.dp, start = 10.dp, end = 10.dp)
 
-                                    ButtonComponent(
-                                        modifier = buttonStyle,
-                                        buttonText = "Show More",
-                                        borderStroke = BorderStroke(1.dp, Colors.primaryColor),
-                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-                                        fontSize = 16,
-                                        shape = CircleShape,
-                                        textColor = Colors.primaryColor,
-                                        style = TextStyle()
-                                    ) {
-                                        if (!vendorResourceListEnvelopeViewModel?.nextPageUrl?.value.isNullOrEmpty()) {
-                                            if (searchQuery.value.isNotEmpty()) {
-                                                connectVendorPresenter.searchMoreVendors(
-                                                    country,
-                                                    city = city,
-                                                    searchQuery.value,
-                                                    vendorResourceListEnvelopeViewModel?.currentPage?.value!! + 1
-                                                )
-                                            } else {
-                                                connectVendorPresenter.getMoreVendor(
-                                                    country,
-                                                    city = city,
-                                                    vendorResourceListEnvelopeViewModel?.currentPage?.value!! + 1
-                                                )
+                                        ButtonComponent(
+                                            modifier = buttonStyle,
+                                            buttonText = "Show More",
+                                            borderStroke = BorderStroke(1.dp, Colors.primaryColor),
+                                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                                            fontSize = 16,
+                                            shape = CircleShape,
+                                            textColor = Colors.primaryColor,
+                                            style = TextStyle()
+                                        ) {
+                                            if (!vendorResourceListEnvelopeViewModel?.nextPageUrl?.value.isNullOrEmpty()) {
+                                                if (searchQuery.value.isNotEmpty()) {
+                                                    connectVendorPresenter.searchMoreVendors(
+                                                        country,
+                                                        city = city,
+                                                        searchQuery.value,
+                                                        vendorResourceListEnvelopeViewModel?.currentPage?.value!! + 1
+                                                    )
+                                                } else {
+                                                    connectVendorPresenter.getMoreVendor(
+                                                        country,
+                                                        city = city,
+                                                        vendorResourceListEnvelopeViewModel?.currentPage?.value!! + 1
+                                                    )
+                                                }
                                             }
                                         }
                                     }

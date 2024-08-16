@@ -7,7 +7,7 @@ class ConnectVendorContract {
     interface View {
         fun showScreenLce(appUIStates: AppUIStates)
         fun showActionLce(appUIStates: AppUIStates, message: String = "")
-        fun showVendors(vendors: VendorResourceListEnvelope?, isFromSearch: Boolean = false)
+        fun showVendors(vendors: VendorResourceListEnvelope?, isFromSearch: Boolean = false, isLoadMore: Boolean = false)
         fun onLoadMoreVendorStarted(isSuccess: Boolean = false)
         fun onLoadMoreVendorEnded(isSuccess: Boolean = false)
     }

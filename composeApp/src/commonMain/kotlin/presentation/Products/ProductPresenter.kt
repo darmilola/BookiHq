@@ -30,7 +30,7 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     contractView?.showLce(AppUIStates(isSuccess = true))
-                                    contractView?.showProducts(result.listItem)
+                                    contractView?.showProducts(result.listItem, isFromSearch = false, isLoadMore = false)
                                 }
                                 else{
                                     contractView?.showLce(AppUIStates(isFailed = true))
@@ -87,7 +87,7 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     contractView?.showLce(AppUIStates(isSuccess = true))
-                                    contractView?.showSearchProducts(result.listItem, isLoadMore = false)
+                                    contractView?.showProducts(result.listItem, isLoadMore = false, isFromSearch = true)
                                 }
                                 else{
                                     contractView?.showLce(AppUIStates(isFailed = true))
@@ -116,7 +116,7 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                             onSuccess = { result ->
                                 if (result.status == "success"){
                                     contractView?.onLoadMoreProductEnded()
-                                    contractView?.showSearchProducts(result.listItem, isLoadMore = true)
+                                    contractView?.showProducts(result.listItem, isLoadMore = true, isFromSearch = true)
                                 }
                                 else{
                                     contractView?.onLoadMoreProductEnded()
@@ -145,7 +145,7 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                                 println("Result $response")
                                 if (response.status == "success") {
                                     contractView?.showLce(AppUIStates(isSuccess = true))
-                                    contractView?.showProducts(response.listItem)
+                                    contractView?.showProducts(response.listItem, isFromSearch = false, isLoadMore = false)
                                 }
                                 else{
                                     contractView?.showLce(AppUIStates(isFailed = true))
@@ -175,7 +175,7 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                             onSuccess = { response ->
                                 if (response.status == "success") {
                                     contractView?.onProductTypeChangeEnded(isSuccess = true)
-                                    contractView?.showProducts(response.listItem)
+                                    contractView?.showProducts(response.listItem, isFromSearch = false, isLoadMore = false)
                                 }
                                 else{
                                     contractView?.onProductTypeChangeEnded(isSuccess = false)
@@ -203,7 +203,7 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                             onSuccess = { response ->
                                 if (response.status == "success") {
                                     contractView?.onLoadMoreProductEnded()
-                                    contractView?.showProducts(response.listItem)
+                                    contractView?.showProducts(response.listItem, isFromSearch = false, isLoadMore = true)
                                 }
                                 else{
                                     contractView?.onLoadMoreProductEnded()

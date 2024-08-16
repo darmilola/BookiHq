@@ -2,6 +2,7 @@ package presentation.DomainViewHandler
 
 import UIStates.AppUIStates
 import domain.Models.ProductResourceListEnvelope
+import kotlinx.coroutines.runBlocking
 import presentation.Products.ProductContract
 import presentation.Products.ProductPresenter
 import presentation.viewmodels.LoadingScreenUIStateViewModel
@@ -20,48 +21,64 @@ class ShopProductsHandler(
         loadingScreenUiStateViewModel.switchScreenUIState(appUIStates)
     }
 
-    override fun showProducts(products: ProductResourceListEnvelope?) {
+    override fun showProducts(products: ProductResourceListEnvelope?, isFromSearch: Boolean, isLoadMore: Boolean) {
         println("Products $products")
-        productResourceListEnvelopeViewModel.setIsRefreshing(false)
-        if (productResourceListEnvelopeViewModel.resources.value.isNotEmpty()) {
-            val productList = productResourceListEnvelopeViewModel.resources.value
-            productList.addAll(products?.resources!!)
-            productResourceListEnvelopeViewModel.setResources(productList)
-            products.prevPageUrl?.let { productResourceListEnvelopeViewModel.setPrevPageUrl(it) }
-            products.nextPageUrl?.let { productResourceListEnvelopeViewModel.setNextPageUrl(it) }
-            products.currentPage?.let { productResourceListEnvelopeViewModel.setCurrentPage(it) }
-            products.totalItemCount?.let { productResourceListEnvelopeViewModel.setTotalItemCount(it) }
-            products.displayedItemCount?.let { productResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
-        } else {
-            productResourceListEnvelopeViewModel.setResources(products?.resources)
-            products?.prevPageUrl?.let { productResourceListEnvelopeViewModel.setPrevPageUrl(it) }
-            products?.nextPageUrl?.let { productResourceListEnvelopeViewModel.setNextPageUrl(it) }
-            products?.currentPage?.let { productResourceListEnvelopeViewModel.setCurrentPage(it) }
-            products?.totalItemCount?.let { productResourceListEnvelopeViewModel.setTotalItemCount(it) }
-            products?.displayedItemCount?.let { productResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
-        }
-    }
+        runBlocking {
+            productResourceListEnvelopeViewModel.setIsRefreshing(false)
+            if (isFromSearch && !isLoadMore) {
+                productResourceListEnvelopeViewModel.clearData(mutableListOf())
+                productResourceListEnvelopeViewModel.setResources(products!!.resources)
+                products.prevPageUrl?.let { productResourceListEnvelopeViewModel.setPrevPageUrl(it) }
+                products.nextPageUrl?.let { productResourceListEnvelopeViewModel.setNextPageUrl(it) }
+                products.currentPage?.let { productResourceListEnvelopeViewModel.setCurrentPage(it) }
+                products.totalItemCount?.let {
+                    productResourceListEnvelopeViewModel.setTotalItemCount(
+                        it
+                    )
+                }
+                products.displayedItemCount?.let {
+                    productResourceListEnvelopeViewModel.setDisplayedItemCount(
+                        it
+                    )
+                }
+            }
+            else if (isLoadMore) {
+                products!!.prevPageUrl?.let { productResourceListEnvelopeViewModel.setPrevPageUrl(it) }
+                products!!.nextPageUrl?.let { productResourceListEnvelopeViewModel.setNextPageUrl(it) }
+                products!!.currentPage?.let { productResourceListEnvelopeViewModel.setCurrentPage(it) }
+                products!!.totalItemCount?.let {
+                    productResourceListEnvelopeViewModel.setTotalItemCount(
+                        it
+                    )
+                }
+                products.displayedItemCount?.let {
+                    productResourceListEnvelopeViewModel.setDisplayedItemCount(
+                        it
+                    )
+                }
+                val productList = productResourceListEnvelopeViewModel.resources.value
+                productList.addAll(products?.resources!!.distinct()!!)
+                productResourceListEnvelopeViewModel.setResources(productList)
 
-    override fun showSearchProducts(products: ProductResourceListEnvelope?, isLoadMore: Boolean) {
-        productResourceListEnvelopeViewModel.setIsRefreshing(false)
-        if (isLoadMore) {
-            val productList = productResourceListEnvelopeViewModel.resources.value
-            productList.addAll(products?.resources!!)
-            productResourceListEnvelopeViewModel.setResources(productList)
-            products.prevPageUrl?.let { productResourceListEnvelopeViewModel.setPrevPageUrl(it) }
-            products.nextPageUrl?.let { productResourceListEnvelopeViewModel.setNextPageUrl(it) }
-            products.currentPage?.let { productResourceListEnvelopeViewModel.setCurrentPage(it) }
-            products.totalItemCount?.let { productResourceListEnvelopeViewModel.setTotalItemCount(it) }
-            products.displayedItemCount?.let { productResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
-        } else {
-            productResourceListEnvelopeViewModel.setResources(products?.resources)
-            products?.prevPageUrl?.let { productResourceListEnvelopeViewModel.setPrevPageUrl(it) }
-            products?.nextPageUrl?.let { productResourceListEnvelopeViewModel.setNextPageUrl(it) }
-            products?.currentPage?.let { productResourceListEnvelopeViewModel.setCurrentPage(it) }
-            products?.totalItemCount?.let { productResourceListEnvelopeViewModel.setTotalItemCount(it) }
-            products?.displayedItemCount?.let { productResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
+            }
+            else {
+                products!!.prevPageUrl?.let { productResourceListEnvelopeViewModel.setPrevPageUrl(it) }
+                products!!.nextPageUrl?.let { productResourceListEnvelopeViewModel.setNextPageUrl(it) }
+                products!!.currentPage?.let { productResourceListEnvelopeViewModel.setCurrentPage(it) }
+                products!!.totalItemCount?.let {
+                    productResourceListEnvelopeViewModel.setTotalItemCount(
+                        it
+                    )
+                }
+                products.displayedItemCount?.let {
+                    productResourceListEnvelopeViewModel.setDisplayedItemCount(
+                        it
+                    )
+                }
+                productResourceListEnvelopeViewModel.setResources(products.resources)
+            }
+         }
         }
-    }
 
     override fun onLoadMoreProductStarted() {
         productResourceListEnvelopeViewModel.setLoadingMore(true)

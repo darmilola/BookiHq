@@ -25,7 +25,7 @@ class VendorInfoPageHandler(
         actionUIStateViewModel.switchActionUIState(appUIStates)
     }
 
-    override fun showVendors(vendors: VendorResourceListEnvelope?, isFromSearch: Boolean) {}
+    override fun showVendors(vendors: VendorResourceListEnvelope?, isFromSearch: Boolean, isLoadMore: Boolean) {}
 
     override fun onLoadMoreVendorStarted(isSuccess: Boolean) {}
 
