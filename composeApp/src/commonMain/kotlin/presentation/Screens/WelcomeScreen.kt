@@ -39,6 +39,7 @@ import com.russhwolf.settings.set
 import domain.Enums.AuthType
 import domain.Enums.DeviceType
 import domain.Enums.SharedPreferenceEnum
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -94,32 +95,43 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
     val handler = AuthenticationScreenHandler(authenticationPresenter,
         onUserLocationReady = {},
         enterPlatform = { user, vendorWhatsAppPhone ->
-            preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
-            preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
-            preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
-            preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
-            preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
-            preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = vendorWhatsAppPhone
-            preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
-            preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
-            preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.EMAIL.toPath()
+            runBlocking {
+                preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
+                preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
+                preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
+                preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
+                preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
+                preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] =
+                    vendorWhatsAppPhone
+                preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
+                preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
+                preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] =
+                    AuthType.EMAIL.toPath()
+            }
             navigateToPlatform.value = true
         },
         completeProfile = { userEmail, vendorWhatsAppPhone ->
-            preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.EMAIL.toPath()
-            preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = userEmail
-            preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = vendorWhatsAppPhone
+            runBlocking {
+                preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] =
+                    AuthType.EMAIL.toPath()
+                preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = userEmail
+                preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] =
+                    vendorWhatsAppPhone
+            }
             navigateToCompleteProfile.value = true
         },
         connectVendor = { user ->
-            preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
-            preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
-            preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
-            preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
-            preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
-            preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
-            preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
-            preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.EMAIL.toPath()
+            runBlocking {
+                preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
+                preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
+                preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
+                preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
+                preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
+                preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
+                preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
+                preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] =
+                    AuthType.EMAIL.toPath()
+            }
             navigateToConnectVendor.value = true
         },
         onVerificationStarted = {
@@ -187,7 +199,6 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                             .background(color = Color.Black), contentAlignment = Alignment.TopCenter
                     ) {
                         AttachActionButtons(platformNavigator, onAuthSuccessful = {
-                            print("Success $it")
                             authEmail.value = it
                             authenticationPresenter.validateEmail(it)
                         }, onAuthFailed = {}, mainViewModel = mainViewModel)

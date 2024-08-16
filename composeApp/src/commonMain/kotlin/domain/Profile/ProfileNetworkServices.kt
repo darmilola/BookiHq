@@ -1,12 +1,15 @@
 package domain.Profile
 
 import com.badoo.reaktive.single.toSingle
+import com.russhwolf.settings.Settings
+import domain.Enums.SharedPreferenceEnum
 import domain.Models.PlatformCountryCitiesResponse
 import domain.Models.ServerResponse
 import domain.Models.VendorAccountResponse
 import domain.Models.VendorAvailabilityResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
@@ -14,12 +17,14 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
 open class ProfileNetworkService(private val apiService: HttpClient) {
-
+    val preferenceSettings = Settings()
+    val apiKey = preferenceSettings.getString(SharedPreferenceEnum.API_KEY.toPath(), "")
     suspend fun updateProfile(updateProfileRequest: UpdateProfileRequest) =
         apiService.post {
             url("/auth/user/profile/update")
             contentType(ContentType.Application.Json)
             setBody(updateProfileRequest)
+            header("Authorization", apiKey)
         }.body<ServerResponse>().toSingle()
 
     suspend fun deleteProfile(deleteProfileRequest: DeleteProfileRequest) =
@@ -27,6 +32,7 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
             url("/auth/user/profile/delete")
             contentType(ContentType.Application.Json)
             setBody(deleteProfileRequest)
+            header("Authorization", apiKey)
         }.body<ServerResponse>().toSingle()
 
 
@@ -35,6 +41,7 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
             url("/profile/vendor/availability/get")
             contentType(ContentType.Application.Json)
             setBody(getVendorAvailabilityRequest)
+            header("Authorization", apiKey)
         }.body<VendorAvailabilityResponse>().toSingle()
 
     suspend fun getPlatformCities(getPlatformCitiesRequest: GetPlatformCitiesRequest) =
@@ -42,6 +49,7 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
             url("/platform/city/get")
             contentType(ContentType.Application.Json)
             setBody(getPlatformCitiesRequest)
+            header("Authorization", apiKey)
         }.body<PlatformCountryCitiesResponse>().toSingle()
 
     suspend fun createMeeting(createMeetingRequest: CreateMeetingRequest) =
@@ -49,6 +57,7 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
             url("/appointment/meeting/create")
             contentType(ContentType.Application.Json)
             setBody(createMeetingRequest)
+            header("Authorization", apiKey)
         }.body<ServerResponse>().toSingle()
 
     suspend fun switchVendor(switchVendorRequest: SwitchVendorRequest) =
@@ -56,6 +65,7 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
             url("/profile/vendor/switch")
             contentType(ContentType.Application.Json)
             setBody(switchVendorRequest)
+            header("Authorization", apiKey)
         }.body<ServerResponse>().toSingle()
 
     suspend fun getVendorInfo(getVendorInfoRequest: GetVendorInfoRequest) =
@@ -63,6 +73,7 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
             url("/vendor/account/get")
             contentType(ContentType.Application.Json)
             setBody(getVendorInfoRequest)
+            header("Authorization", apiKey)
         }.body<VendorAccountResponse>().toSingle()
 
     suspend fun joinSpa(joinSpaRequest: JoinSpaRequest) =
@@ -70,6 +81,7 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
             url("/vendor/therapist/add")
             contentType(ContentType.Application.Json)
             setBody(joinSpaRequest)
+            header("Authorization", apiKey)
         }.body<ServerResponse>().toSingle()
 
 }

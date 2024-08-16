@@ -17,13 +17,6 @@ import presentations.components.ImageComponent
 
 class VideoCallTab() : Screen,
     KoinComponent {
-
-    private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
-    private val homepagePresenter: HomepagePresenter by inject()
-    private var userEmail: String = ""
-    private val preferenceSettings: Settings = Settings()
-
-
     @Composable
     override fun Content() {
 

@@ -12,8 +12,5 @@ actual fun httpClient(config: HttpClientConfig<*>.() -> Unit) = HttpClient(OkHtt
         config {
             followRedirects(false)
         }
-        //addInterceptor(RequestInterceptor())
-        //addNetworkInterceptor(RequestInterceptor())
-
     }
 }

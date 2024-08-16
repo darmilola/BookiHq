@@ -1,9 +1,6 @@
 package di
 
 import applications.ktor.httpClient
-import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
-import com.hoc081098.kmp.viewmodel.createSavedStateHandle
-import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import domain.Enums.SharedPreferenceEnum
 import org.koin.core.context.startKoin
@@ -14,12 +11,12 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.header
-import io.ktor.client.request.headers
 import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import org.koin.core.context.loadKoinModules
 import org.koin.core.context.stopKoin
-import org.koin.core.module.dsl.singleOf
+import org.koin.core.context.unloadKoinModules
 import presentation.Orders.OrderModule
 import presentation.bookings.BookingModule
 import presentation.Products.ProductModule
@@ -29,7 +26,6 @@ import presentation.appointments.AppointmentModule
 import presentation.authentication.AuthenticationModule.AuthenticationModule
 import presentation.home.HomepageModule
 import presentation.therapist.TherapistModule
-import presentation.viewmodels.MainViewModel
 
 fun initKoin(){
     stopKoin()
@@ -48,8 +44,7 @@ fun initKoin(){
 }
 
 private val KtorModule = module {
-    val preferenceSettings = Settings()
-    val apiKey = preferenceSettings.getString(SharedPreferenceEnum.API_KEY.toPath(), "")
+
     single {
         httpClient {
             defaultRequest {
@@ -58,7 +53,6 @@ private val KtorModule = module {
                     protocol = URLProtocol.HTTPS
                     port = 443
                 }
-                header("Authorization", apiKey)
             }
             install(Logging) {
                 level = LogLevel.BODY

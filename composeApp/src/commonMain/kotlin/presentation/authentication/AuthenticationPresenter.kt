@@ -201,34 +201,6 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
         }
     }
 
-    override fun getUserLocation(lat: Double, lng: Double) {
-        /*scope.launch(Dispatchers.Main) {
-            try {
-                val result = withContext(Dispatchers.IO) {
-                    contractView?.showAsyncLce(ActionUIStates(isLoading = true))
-                    authenticationRepositoryImpl.reverseGeocode(lat, lng)
-                        .subscribe(
-                            onSuccess = { result ->
-                                if (result?.country?.isNotEmpty() == true){
-                                    contractView?.showAsyncLce(ActionUIStates(isSuccess = true))
-                                    contractView?.showUserLocation(result)
-                                }
-                                else{
-                                    contractView?.showAsyncLce(ActionUIStates(isFailed = true))
-                                }
-                            },
-                            onError = {
-                                it.message?.let { it1 -> contractView?.showAsyncLce(ActionUIStates(isFailed = true)) }
-                            },
-                        )
-                }
-                result.dispose()
-            } catch(e: Exception) {
-                contractView?.showAsyncLce(ActionUIStates(isFailed = true))
-            }
-        }*/
-    }
-
     override fun registerUIContract(view: AuthenticationContract.View?) {
         contractView = view
     }

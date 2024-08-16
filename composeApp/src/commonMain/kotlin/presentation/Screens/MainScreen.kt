@@ -2,17 +2,18 @@ package presentation.Screens
 
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.CurrentTab
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.russhwolf.settings.Settings
 import dev.icerock.moko.parcelize.Parcelize
 import domain.Enums.Screens
+import domain.Enums.SharedPreferenceEnum
 import domain.Models.PlatformNavigator
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
@@ -35,7 +36,6 @@ import presentation.profile.JoinDetailsTab
 import presentation.profile.TalkWithATherapist
 import presentation.therapist.TherapistDashboardTab
 import presentation.viewmodels.MainViewModel
-import presentation.widgets.PageBackNavWidget
 import utils.ParcelableScreen
 
 @Parcelize
@@ -60,14 +60,10 @@ class MainScreen(val platformNavigator: PlatformNavigator) : ParcelableScreen, K
 
     @Composable
     override fun Content() {
-        userId = preferenceSettings.getLong("profileId", 0L)
-
-        platformNavigator!!.startNotificationService {
-            println("Token is here $it")
+        userId = preferenceSettings.getLong(SharedPreferenceEnum.PROFILE_ID.toPath(), 0L)
+        platformNavigator.startNotificationService {
             authenticationPresenter.updateFcmToken(userId = userId, fcmToken = it)
         }
-
-
         screenNav = mainViewModel?.screenNav?.collectAsState()
         val restartApp = mainViewModel!!.restartApp.collectAsState()
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()

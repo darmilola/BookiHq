@@ -21,13 +21,19 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import di.initKoin
 import domain.Enums.AuthType
 import domain.Enums.DeviceType
 import domain.Enums.SharedPreferenceEnum
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import presentation.components.SplashScreenBackground
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.AuthenticationScreenHandler
@@ -49,26 +55,32 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
     val handler = AuthenticationScreenHandler(authenticationPresenter,
         onUserLocationReady = {},
         enterPlatform = { user, whatsAppPhone ->
-            preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
-            preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
-            preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
-            preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
-            preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
-            preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
-            preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = whatsAppPhone
+            runBlocking {
+                preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
+                preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
+                preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
+                preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
+                preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
+                preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
+                preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = whatsAppPhone
+                val apiKey = preferenceSettings.getString(SharedPreferenceEnum.API_KEY.toPath(),"")
+                println("key is $apiKey")
                 navigateToPlatform.value = true
+            }
         },
         completeProfile = { _,_ ->
                navigateToWelcomeScreen.value = true
         },
         connectVendor = { user ->
-            preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
-            preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
-            preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
-            preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
-            preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
-            preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
-            navigateToConnectVendor.value = true
+            runBlocking {
+                preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
+                preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
+                preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
+                preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
+                preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
+                preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
+                navigateToConnectVendor.value = true
+            }
         },
         onVerificationStarted = {},
         onVerificationEnded = {}, onCompleteStarted = {}, onCompleteEnded = {},

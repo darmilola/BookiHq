@@ -2,6 +2,7 @@ package presentation.home
 
 import GGSansRegular
 import StackedSnackbarHost
+import UIStates.AppUIStates
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -30,6 +31,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -141,6 +143,20 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 )
             }
 
+        LaunchedEffect(true) {
+            if (homePageViewModel!!.homePageInfo.value.userInfo == null) {
+                val vendorPhone: String = preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath(),""]
+                if (vendorPhone.isNotEmpty()){
+                    println("Response $vendorPhone")
+                    homepagePresenter.getUserHomepageWithStatus(userId, vendorPhone)
+                }
+                else {
+                    println("Response Called here")
+                    homepagePresenter.getUserHomepage(userId)
+                }
+            }
+        }
+
 
             val handler = HomepageHandler(performedActionUIStateViewModel!!, homepagePresenter,
                 onHomeInfoAvailable = { homePageInfo, vendorStatus ->
@@ -163,16 +179,6 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                     saveAccountInfoFromServer(homePageInfo)
                 })
             handler.init()
-
-            if (homePageViewModel!!.homePageInfo.value.userInfo == null) {
-                val vendorPhone: String = preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath(),""]
-                if (vendorPhone.isNotEmpty()){
-                    homepagePresenter.getUserHomepageWithStatus(userId, vendorPhone)
-                }
-                else {
-                    homepagePresenter.getUserHomepage(userId)
-                }
-            }
 
 
         val uiState = performedActionUIStateViewModel!!.loadHomepageUiState.collectAsState()
@@ -336,7 +342,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
         }
 
         RecommendedAppointmentList(recommendations, mainViewModel)
-    }
+       }
 
     }
 
