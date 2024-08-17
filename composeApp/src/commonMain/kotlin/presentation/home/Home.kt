@@ -2,7 +2,6 @@ package presentation.home
 
 import GGSansRegular
 import StackedSnackbarHost
-import UIStates.AppUIStates
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -380,14 +379,27 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
         var showProductDetailBottomSheet by remember { mutableStateOf(false) }
 
         if (showProductDetailBottomSheet) {
+            mainViewModel!!.showProductBottomSheet(true)
+        }
+        else{
+            mainViewModel!!.showProductBottomSheet(false)
+        }
+
+        if (selectedProduct.value.productId != -1) {
             ProductDetailBottomSheet(
-                mainViewModel,
+                mainViewModel!!,
                 isViewedFromCart = false,
                 OrderItem(itemProduct = selectedProduct.value),
-                onDismiss = { isAddToCart, item ->
+                onDismiss = {
+                    selectedProduct.value = Product()
+                },
+                onAddToCart = { isAddToCart, item ->
                     showProductDetailBottomSheet = false
+
                 })
         }
+
+
 
         val pagerState = rememberPagerState(pageCount = {
             recommendations.size

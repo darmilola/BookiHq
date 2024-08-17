@@ -34,6 +34,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _switchVendor =  savedStateHandle.getStateFlow("switchVendor", Vendor())
     private var _joinSpa =  savedStateHandle.getStateFlow("joinSpaVendor", Vendor())
     private var _restartApp =  savedStateHandle.getStateFlow("restartApp", false)
+    private var _showProductBottomsheet =  savedStateHandle.getStateFlow("showProductBottomsheet", false)
     private var _onBackPressed =  savedStateHandle.getStateFlow("onBackPressed", false)
     private var _exitApp =  savedStateHandle.getStateFlow("exitApp", false)
     private var _orderItemComponents =  savedStateHandle.getStateFlow("orderItemComponents", arrayListOf<PlacedOrderItemComponent>())
@@ -61,6 +62,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     val selectedProductType: StateFlow<String>
         get() = _selectedProductType
+
+    val showProductBottomsheet: StateFlow<Boolean>
+        get() = _showProductBottomsheet
 
     val exitApp: StateFlow<Boolean>
         get() = _exitApp
@@ -118,6 +122,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     }
     fun setRestartApp(isRestart: Boolean) {
         savedStateHandle["restartApp"] = isRestart
+    }
+    fun showProductBottomSheet(show: Boolean) {
+        savedStateHandle["showProductBottomsheet"] = show
     }
 
     fun setSwitchVendorID(vendorId: Long) {

@@ -34,6 +34,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.draw.clip
@@ -131,13 +132,19 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                 factory = viewModelFactory {
                     ProductResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
                 })
-            productResourceListEnvelopeViewModel!!.setResources(mutableListOf())
-            productPresenter.getProductsByType(vendorId, productType = selectedProductType)
+
         }
 
         val productHandler = ShopProductsHandler(
             loadingScreenUiStateViewModel!!, productResourceListEnvelopeViewModel!!, productPresenter)
         productHandler.init()
+
+        LaunchedEffect(true) {
+            if (productResourceListEnvelopeViewModel!!.resources.value.isEmpty()){
+                productResourceListEnvelopeViewModel!!.setResources(mutableListOf())
+                productPresenter.getProductsByType(vendorId, productType = selectedProductType)
+            }
+        }
 
 
         Scaffold(
@@ -188,11 +195,21 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                 val selectedProduct = remember { mutableStateOf(Product()) }
 
                 if (showProductDetailBottomSheet) {
+                    mainViewModel!!.showProductBottomSheet(true)
+                }
+                else{
+                    mainViewModel!!.showProductBottomSheet(false)
+                }
+
+                if (selectedProduct.value.productId != -1) {
                     ProductDetailBottomSheet(
                         mainViewModel!!,
                         isViewedFromCart = false,
                         OrderItem(itemProduct = selectedProduct.value),
-                        onDismiss = { isAddToCart, item ->
+                        onDismiss = {
+                            selectedProduct.value = Product()
+                        },
+                        onAddToCart = { isAddToCart, item ->
                             if (isAddToCart) {
                                 onCartChanged.value
                             }
@@ -200,6 +217,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
 
                         })
                 }
+
 
                 val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
                 if (uiState.value.isLoading) {

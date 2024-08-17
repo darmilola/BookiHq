@@ -78,7 +78,7 @@ kotlin {
             implementation(compose.material3)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
-            val voyagerVersion = "1.0.0-rc10"
+            val voyagerVersion = "1.1.0-beta02"
             val compassVersion = "1.0.0"
 
             // Navigator

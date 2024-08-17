@@ -145,7 +145,7 @@ class AppStartViewController: UIViewController, PlatformNavigator, UINavigationC
         let config = GIDConfiguration(clientID: clientID)
         GIDSignIn.sharedInstance.configuration = config
         GIDSignIn.sharedInstance.signIn(withPresenting: self) { signInResult, error in
-            onAuthSuccessful("bellashopdevprocess@gmail.com")
+            onAuthSuccessful("damilolaakinterinwa@gmail.com")
         }
         
     }
