@@ -1,16 +1,27 @@
 package presentation.Screens
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.unit.IntOffset
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
+import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
+import cafe.adriel.voyager.transitions.ScreenTransition
 import com.russhwolf.settings.Settings
+import dev.icerock.moko.parcelize.Parcelable
 import dev.icerock.moko.parcelize.Parcelize
 import domain.Enums.Screens
 import domain.Enums.SharedPreferenceEnum
@@ -38,14 +49,15 @@ import presentation.therapist.TherapistDashboardTab
 import presentation.viewmodels.MainViewModel
 import utils.ParcelableScreen
 
+@OptIn(ExperimentalVoyagerApi::class)
 @Parcelize
-class MainScreen(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinComponent {
+class MainScreen(val platformNavigator: PlatformNavigator) : ParcelableScreen, ScreenTransition, KoinComponent {
 
      @Transient private var mainViewModel: MainViewModel? = null
      @Transient private val preferenceSettings: Settings = Settings()
      private var userId: Long = 0L
-     private var mainTab: MainTab? = null
-     private var joinASpa: JoinASpa? = null
+     @Transient private var mainTab: MainTab? = null
+     @Transient private var joinASpa: JoinASpa? = null
      @Transient
      private val  authenticationPresenter: AuthenticationPresenter by inject()
      @Transient
@@ -55,8 +67,7 @@ class MainScreen(val platformNavigator: PlatformNavigator) : ParcelableScreen, K
         this.mainViewModel = mainViewModel
     }
 
-    override val key: ScreenKey
-        get() = "mainScreen"
+    override val key: ScreenKey = uniqueScreenKey
 
     @Composable
     override fun Content() {
@@ -265,6 +276,22 @@ class MainScreen(val platformNavigator: PlatformNavigator) : ParcelableScreen, K
         mainTab =  MainTab(platformNavigator!!)
         mainTab!!.setMainViewModel(mainViewModel)
         return mainTab!!
+    }
+
+    override fun enter(lastEvent: StackEvent): EnterTransition {
+        println("Enter")
+        return slideIn { size ->
+            val x = if (lastEvent == StackEvent.Pop) -size.width else size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
+    override fun exit(lastEvent: StackEvent): ExitTransition {
+        println("Enter 2")
+        return slideOut { size ->
+            val x = if (lastEvent == StackEvent.Pop) size.width else -size.width
+            IntOffset(x = x, y = 0)
+        }
     }
 
 

@@ -99,7 +99,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
         else {
             val mainScreen = MainScreen(platformNavigator)
             mainScreen.setMainViewModel(mainViewModel)
-            navigator.replaceAll(mainScreen)
+            navigator.push(mainScreen)
         }
     }
     else if (navigateToWelcomeScreen.value){

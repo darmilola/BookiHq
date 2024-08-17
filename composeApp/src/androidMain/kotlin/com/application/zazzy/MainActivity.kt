@@ -22,6 +22,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.collectAsState
 import androidx.core.app.ActivityCompat
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideTransition
 import com.application.zazzy.firebase.NotificationMessage
 import com.application.zazzy.firebase.NotificationService
 import com.application.zazzy.firebase.NotificationType
@@ -86,7 +87,15 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                     },
                 )
             }
-            Navigator(SplashScreen(this,mainViewModel!!))
+            Navigator(
+                SplashScreen(
+                    this,
+                    mainViewModel = mainViewModel!!
+                )
+            ) { navigator ->
+                SlideTransition(navigator)
+
+            }
             val isFinished = mainViewModel!!.exitApp.collectAsState()
             if (isFinished.value){
                 finish()

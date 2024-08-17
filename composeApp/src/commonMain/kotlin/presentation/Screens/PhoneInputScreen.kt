@@ -1,6 +1,10 @@
 package presentation.Screens
 
 import StackedSnackbarHost
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,10 +26,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.AuthSSOScreenNav
 import domain.Models.PlatformNavigator
@@ -44,8 +52,9 @@ import theme.styles.Colors
 import utils.ParcelableScreen
 import utils.makeValidPhone
 
+@OptIn(ExperimentalVoyagerApi::class)
 @Parcelize
-class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScreen {
+class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScreen, ScreenTransition {
     @Transient
     private var mainViewModel: MainViewModel? = null
 
@@ -174,5 +183,22 @@ class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScr
                     " phone via text message", textAlign = TextAlign.Center)
         }
     }
+
+    override fun enter(lastEvent: StackEvent): EnterTransition {
+        println("Enter")
+        return slideIn { size ->
+            val x = if (lastEvent == StackEvent.Pop) -size.width else size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
+    override fun exit(lastEvent: StackEvent): ExitTransition {
+        println("Enter 2")
+        return slideOut { size ->
+            val x = if (lastEvent == StackEvent.Pop) size.width else -size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
 
 }

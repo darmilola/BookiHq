@@ -32,7 +32,9 @@ import androidx.compose.ui.unit.dp
 import applications.device.deviceInfo
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.transitions.SlideTransition
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
@@ -163,7 +165,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
         else {
             val mainScreen = MainScreen(platformNavigator)
             mainScreen.setMainViewModel(mainViewModel)
-            navigator.replaceAll(mainScreen)
+            navigator.push(mainScreen)
         }
     }
 
