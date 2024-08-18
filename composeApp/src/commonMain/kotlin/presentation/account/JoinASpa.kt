@@ -3,6 +3,10 @@ package presentation.account
 import GGSansSemiBold
 import StackedSnackbarHost
 import UIStates.AppUIStates
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -33,9 +37,17 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.core.stack.StackEvent
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
@@ -61,9 +73,12 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
+import utils.ParcelableScreen
 
+@OptIn(ExperimentalVoyagerApi::class)
 @Parcelize
-class JoinASpa(private val platformNavigator: PlatformNavigator) : Tab,KoinComponent, Parcelable {
+class JoinASpa(private val platformNavigator: PlatformNavigator) : ParcelableScreen,KoinComponent,
+    ScreenTransition {
 
     @Transient private var mainViewModel: MainViewModel? = null
     @Transient
@@ -72,21 +87,8 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : Tab,KoinCompo
     private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
     private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
-    @OptIn(ExperimentalResourceApi::class)
-    override val options: TabOptions
-        @Composable
-        get() {
-            val title = "Join A Spa"
-            val icon = painterResource("profile_icon.png")
 
-            return remember {
-                TabOptions(
-                    index = 0u,
-                    title = title,
-                    icon = icon
-                )
-            }
-        }
+    override val key: ScreenKey = uniqueScreenKey
 
     fun setMainViewModel(mainViewModel: MainViewModel){
         this.mainViewModel = mainViewModel
@@ -95,6 +97,7 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : Tab,KoinCompo
     @Composable
     override fun Content() {
 
+        val navigator = LocalNavigator.currentOrThrow
         if (performedActionUIStateViewModel == null) {
             performedActionUIStateViewModel= kmpViewModel(
                 factory = viewModelFactory {
@@ -109,6 +112,12 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : Tab,KoinCompo
                     LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
+        }
+
+        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+        if (onBackPressed.value){
+            mainViewModel!!.setOnBackPressed(false)
+            navigator.pop()
         }
 
         val vendorInfo = remember { mutableStateOf(Vendor()) }
@@ -130,7 +139,9 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : Tab,KoinCompo
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {
-                JoinASpaTopBar(mainViewModel!!)
+                JoinASpaTopBar(onBackPressed = {
+                    navigator.pop()
+                })
             },
             backgroundColor = Color.White,
             floatingActionButton = {},
@@ -145,7 +156,7 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : Tab,KoinCompo
                     Box(modifier = Modifier.fillMaxWidth()) {
                         performedActionUIStateViewModel!!.switchActionUIState(AppUIStates(isDefault = true))
                         mainViewModel!!.setJoinSpaVendor(vendorInfo.value)
-                        mainViewModel!!.setScreenNav(Pair(Screens.JOIN_SPA.toPath(), Screens.JOIN_SPA_INFO.toPath()))
+
                     }
                 }
                 else if (uiState.value.isFailed) {
@@ -238,7 +249,23 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : Tab,KoinCompo
             }
         )
     }
+
+    override fun enter(lastEvent: StackEvent): EnterTransition {
+        return slideIn { size ->
+            val x = if (lastEvent == StackEvent.Pop) -size.width else size.width
+            IntOffset(x = x, y = 0)
+        }
     }
+
+    override fun exit(lastEvent: StackEvent): ExitTransition {
+        return slideOut { size ->
+            val x = if (lastEvent == StackEvent.Pop) size.width else -size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
+
+}
 
     @Composable
     fun AppLogo(logoUrl: String) {

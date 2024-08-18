@@ -16,7 +16,7 @@ import presentation.viewmodels.MainViewModel
 import presentation.widgets.PageBackNavWidget
 
 @Composable
-fun JoinASpaTopBar(mainViewModel: MainViewModel) {
+fun JoinASpaTopBar(onBackPressed: () -> Unit) {
 
     val rowModifier = Modifier
         .fillMaxWidth()
@@ -31,7 +31,9 @@ fun JoinASpaTopBar(mainViewModel: MainViewModel) {
             .fillMaxHeight()
             .padding(start = 10.dp),
             contentAlignment = Alignment.CenterStart) {
-            leftTopBarItem(mainViewModel)
+            leftTopBarItem(onBackPressed = {
+                onBackPressed()
+            })
         }
 
         Box(modifier =  Modifier.weight(3.0f)
@@ -49,8 +51,8 @@ fun JoinASpaTopBar(mainViewModel: MainViewModel) {
 }
 
 @Composable
-fun leftTopBarItem(mainViewModel: MainViewModel) {
+fun leftTopBarItem(onBackPressed: () -> Unit) {
     PageBackNavWidget(){
-        mainViewModel.setScreenNav(Pair(Screens.JOIN_SPA.toPath(), Screens.MAIN_TAB.toPath()))
+        onBackPressed()
     }
 }

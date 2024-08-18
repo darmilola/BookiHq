@@ -35,7 +35,7 @@ import presentation.connectVendor.ConnectVendorPresenter
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.widgets.BusinessInfoContent
-import presentation.widgets.BusinessInfoTitle
+import presentation.widgets.VendorDetailsTitle
 import utils.ParcelableScreen
 
 @Parcelize
@@ -119,7 +119,7 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
 
         Scaffold(
             topBar = {
-                BusinessInfoTitle(onBackPressed = {
+                VendorDetailsTitle(onBackPressed = {
                     mainViewModel!!.setOnBackPressed(true)
                 })
             },

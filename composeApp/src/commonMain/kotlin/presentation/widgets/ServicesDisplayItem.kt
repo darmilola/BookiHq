@@ -21,22 +21,17 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import domain.Enums.Screens
-import domain.Models.ServiceTypeItem
 import domain.Models.Services
 import domain.Models.getWidget
-import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun HomeServicesWidget(vendorService:Services, mainViewModel: MainViewModel){
+fun HomeServicesWidget(vendorService:Services, onServiceSelected: (Services) -> Unit){
     val columnModifier = Modifier
         .padding(start = 5.dp, end = 5.dp, top = 5.dp, bottom = 5.dp)
         .clickable {
-            mainViewModel.setRecommendationServiceType(ServiceTypeItem())
-            mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.BOOKING.toPath()))
-            mainViewModel.setSelectedService(vendorService)
+            onServiceSelected(vendorService)
         }
         .height(130.dp)
         Column(

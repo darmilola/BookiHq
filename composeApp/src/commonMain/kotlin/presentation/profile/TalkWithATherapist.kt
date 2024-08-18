@@ -3,6 +3,10 @@ package presentation.profile
 import GGSansSemiBold
 import StackedSnackbarHost
 import UIStates.AppUIStates
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,9 +33,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.tab.Tab
-import cafe.adriel.voyager.navigator.tab.TabOptions
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.core.stack.StackEvent
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
@@ -68,10 +78,12 @@ import presentation.widgets.TitleWidget
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
+import utils.ParcelableScreen
 import utils.calculateVendorServiceTimes
 
+@OptIn(ExperimentalVoyagerApi::class)
 @Parcelize
-class TalkWithATherapist(val platformNavigator: PlatformNavigator) : Tab,
+class TalkWithATherapist(val platformNavigator: PlatformNavigator) : ParcelableScreen, ScreenTransition,
     KoinComponent, Parcelable {
 
     @Transient
@@ -83,18 +95,7 @@ class TalkWithATherapist(val platformNavigator: PlatformNavigator) : Tab,
     @Transient
     private var mainViewModel: MainViewModel? = null
 
-    override val options: TabOptions
-        @Composable
-        get() {
-            val title = "Talk With A Therapist"
-
-            return remember {
-                TabOptions(
-                    index = 0u,
-                    title = title
-                )
-            }
-        }
+    override val key: ScreenKey = uniqueScreenKey
 
     fun setMainViewModel(mainViewModel: MainViewModel){
         this.mainViewModel = mainViewModel
@@ -105,6 +106,7 @@ class TalkWithATherapist(val platformNavigator: PlatformNavigator) : Tab,
 
         val vendorTimes = remember { mutableStateOf(listOf<VendorTime>()) }
         val platformTimes = remember { mutableStateOf(listOf<PlatformTime>()) }
+        val navigator = LocalNavigator.currentOrThrow
 
         if (performedActionUIStateViewModel == null) {
             performedActionUIStateViewModel= kmpViewModel(
@@ -112,6 +114,11 @@ class TalkWithATherapist(val platformNavigator: PlatformNavigator) : Tab,
                     PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
+        }
+        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+        if (onBackPressed.value){
+            mainViewModel!!.setOnBackPressed(false)
+            navigator.pop()
         }
 
         if (loadingScreenUiStateViewModel == null) {
@@ -154,7 +161,9 @@ class TalkWithATherapist(val platformNavigator: PlatformNavigator) : Tab,
             topBar = {
                 Box(modifier = Modifier.fillMaxWidth().height(60.dp)) {
                     Box(modifier = Modifier.fillMaxHeight().fillMaxWidth().padding(start = 10.dp), contentAlignment = Alignment.CenterStart) {
-                        AttachBackIcon(mainViewModel!!)
+                        AttachBackIcon(onBackPressed = {
+                            navigator.pop()
+                        })
                     }
                     Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(), contentAlignment = Alignment.Center) {
                         PageTitle()
@@ -189,10 +198,7 @@ class TalkWithATherapist(val platformNavigator: PlatformNavigator) : Tab,
                         Box(modifier = Modifier.fillMaxWidth()) {
                             SuccessDialog("Appointment Created Successfully", "Close", onConfirmation = {
                                 performedActionUIStateViewModel!!.switchActionUIState(AppUIStates(isDefault = true))
-                                mainViewModel!!.setScreenNav(
-                                    Pair(
-                                        Screens.BOOKING.toPath(),
-                                        Screens.MAIN_TAB.toPath()))
+                                navigator.pop()
                             })
                         }
                     }
@@ -314,13 +320,9 @@ class TalkWithATherapist(val platformNavigator: PlatformNavigator) : Tab,
     }
 
     @Composable
-    private fun AttachBackIcon(mainViewModel: MainViewModel) {
+    private fun AttachBackIcon(onBackPressed:() -> Unit) {
         PageBackNavWidget {
-            when (mainViewModel.screenNav.value.first) {
-                Screens.MAIN_TAB.toPath() -> {
-                    mainViewModel.setScreenNav(Pair(Screens.TALK_WITH_A_THERAPIST.toPath(), Screens.MAIN_TAB.toPath()))
-                }
-            }
+            onBackPressed()
         }
     }
 
@@ -339,6 +341,21 @@ class TalkWithATherapist(val platformNavigator: PlatformNavigator) : Tab,
             TitleWidget(title = "Talk With A Therapist", textColor = Colors.primaryColor)
         }
     }
+
+    override fun enter(lastEvent: StackEvent): EnterTransition {
+        return slideIn { size ->
+            val x = if (lastEvent == StackEvent.Pop) -size.width else size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
+    override fun exit(lastEvent: StackEvent): ExitTransition {
+        return slideOut { size ->
+            val x = if (lastEvent == StackEvent.Pop) size.width else -size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
 
 }
 

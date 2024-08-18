@@ -3,6 +3,10 @@ package presentation.therapist
 import GGSansSemiBold
 import StackedSnackbarHost
 import UIStates.AppUIStates
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,15 +33,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.tab.Tab
-import cafe.adriel.voyager.navigator.tab.TabOptions
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.core.stack.StackEvent
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
+import dev.icerock.moko.parcelize.Parcelize
 import kotlinx.serialization.Transient
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.TherapistHandler
@@ -50,8 +59,11 @@ import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
+import utils.ParcelableScreen
 
-class TherapistDashboardTab() : Tab, KoinComponent {
+@OptIn(ExperimentalVoyagerApi::class)
+@Parcelize
+class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
 
     @Transient
     private val therapistPresenter: TherapistPresenter by inject()
@@ -70,22 +82,7 @@ class TherapistDashboardTab() : Tab, KoinComponent {
     @Transient
     private var mainViewModel: MainViewModel? = null
 
-    @OptIn(ExperimentalResourceApi::class)
-    override val options: TabOptions
-        @Composable
-        get() {
-            val title = "Therapist Dashboard"
-            val icon = painterResource("drawable/dashboard_icon.png")
-
-            return remember {
-                TabOptions(
-                    index = 0u,
-                    title = title,
-                    icon = icon
-
-                )
-            }
-        }
+    override val key: ScreenKey = uniqueScreenKey
 
     fun setMainViewModel(mainViewModel: MainViewModel){
         this.mainViewModel = mainViewModel
@@ -93,6 +90,14 @@ class TherapistDashboardTab() : Tab, KoinComponent {
 
     @Composable
     override fun Content() {
+
+        val navigator = LocalNavigator.currentOrThrow
+        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+
+        if (onBackPressed.value){
+            mainViewModel!!.setOnBackPressed(false)
+            navigator.pop()
+        }
 
         if (loadingScreenUiStateViewModel == null) {
             loadingScreenUiStateViewModel = kmpViewModel(
@@ -190,7 +195,9 @@ class TherapistDashboardTab() : Tab, KoinComponent {
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {
-                TherapistDashboardTopBar(mainViewModel!!, appointmentResourceListEnvelopeViewModel!!)
+                TherapistDashboardTopBar(onBackPressed = {
+                    navigator.pop()
+                })
             },
             content = {
                  TabScreen()
@@ -254,5 +261,18 @@ class TherapistDashboardTab() : Tab, KoinComponent {
         }
     }
 
+    override fun enter(lastEvent: StackEvent): EnterTransition {
+        return slideIn { size ->
+            val x = if (lastEvent == StackEvent.Pop) -size.width else size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
+    override fun exit(lastEvent: StackEvent): ExitTransition {
+        return slideOut { size ->
+            val x = if (lastEvent == StackEvent.Pop) size.width else -size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
 
 }

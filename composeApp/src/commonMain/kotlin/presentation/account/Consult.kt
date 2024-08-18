@@ -73,7 +73,7 @@ class ConsultTab(private val mainViewModel: MainViewModel) : Tab {
             ConsultationSessionList(onCreateSessionClick = {
                 mainViewModel.setScreenNav(
                     Pair(
-                        Screens.MAIN_TAB.toPath(),
+                        Screens.MAIN_SCREEN.toPath(),
                         Screens.CONSULTATION.toPath()
                     )
                 )

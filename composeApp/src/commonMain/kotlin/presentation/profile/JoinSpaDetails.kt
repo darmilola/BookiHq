@@ -28,10 +28,10 @@ import presentation.dialogs.LoadingDialog
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.BusinessInfoContent
-import presentation.widgets.BusinessInfoTitle
+import presentation.widgets.VendorDetailsTitle
 
 @Parcelize
-class JoinDetailsTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
+class JoinSpaDetailsTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
     @Transient
     private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
@@ -67,6 +67,7 @@ class JoinDetailsTab(val platformNavigator: PlatformNavigator) : Tab, KoinCompon
             )
         }
 
+
         val profileHandler = ProfileHandler(profilePresenter,
             onUserLocationReady = {},
             onVendorInfoReady = { it -> },
@@ -80,7 +81,9 @@ class JoinDetailsTab(val platformNavigator: PlatformNavigator) : Tab, KoinCompon
 
         Scaffold(
             topBar = {
-                BusinessInfoTitle(mainViewModel = mainViewModel)
+                VendorDetailsTitle(onBackPressed = {
+
+                })
             },
             content = {
                 val joinVendor = mainViewModel!!.joinSpaVendor.value
@@ -98,7 +101,6 @@ class JoinDetailsTab(val platformNavigator: PlatformNavigator) : Tab, KoinCompon
                     else if (deviceInfo() == DeviceType.ANDROID.toPath()){
                         // App Restart for Process Android
                         mainViewModel!!.setRestartApp(isRestart = true)
-                        mainViewModel!!.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.MAIN_TAB.toPath()))
                     }
 
                 } else if (joinSpaUiState.value.isFailed) {

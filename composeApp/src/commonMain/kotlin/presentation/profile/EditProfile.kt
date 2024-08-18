@@ -1,6 +1,10 @@
 package presentation.profile
 
 import StackedSnackbarHost
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
 import androidx.compose.foundation.BorderStroke
 import theme.styles.Colors
 import androidx.compose.foundation.background
@@ -20,21 +24,27 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import applications.device.deviceInfo
-import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.core.stack.StackEvent
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
-import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Enums.DeviceType
@@ -47,6 +57,7 @@ import org.koin.core.component.inject
 import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.DomainViewHandler.PlatformHandler
 import presentation.DomainViewHandler.ProfileHandler
+import presentation.Screens.SplashScreen
 import presentation.authentication.AttachCityDropDownWidget
 import presentation.authentication.AttachCountryDropDownWidget
 import presentation.authentication.AuthenticationPresenter
@@ -66,9 +77,11 @@ import presentation.widgets.TitleWidget
 import presentations.widgets.InputWidget
 import rememberStackedSnackbarHostState
 import utils.InputValidator
+import utils.ParcelableScreen
 
+@OptIn(ExperimentalVoyagerApi::class)
 @Parcelize
-class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, KoinComponent, Parcelable {
+class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinComponent, ParcelableScreen, ScreenTransition {
 
     @Transient
     private val profilePresenter: ProfilePresenter by inject()
@@ -81,20 +94,7 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
     @Transient
     private var mainViewModel: MainViewModel? = null
 
-
-
-    override val options: TabOptions
-        @Composable
-        get() {
-            val title = "Edit Profile"
-
-            return remember {
-                TabOptions(
-                    index = 0u,
-                    title = title
-                )
-            }
-        }
+    override val key: ScreenKey = uniqueScreenKey
 
     fun setMainViewModel(mainViewModel: MainViewModel){
         this.mainViewModel = mainViewModel
@@ -102,13 +102,19 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
 
     @Composable
     override fun Content() {
-
+        val navigator = LocalNavigator.currentOrThrow
         if (platformViewModel == null) {
             platformViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     PlatformViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
+        }
+
+        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+        if (onBackPressed.value){
+            mainViewModel!!.setOnBackPressed(false)
+            navigator.pop()
         }
 
         val userInfo = mainViewModel!!.currentUserInfo.value
@@ -212,15 +218,7 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
             LoadingDialog(dialogTitle = "Updating Your Profile")
         }
         else if (updateProfileEnded.value && updateProfileSuccessful.value) {
-            if (deviceInfo() == DeviceType.IOS.toPath()) {
-                // iOS App Restart Process
-                platformNavigator!!.restartApp()
-            }
-            else if (deviceInfo() == DeviceType.ANDROID.toPath()){
-                // App Restart for Process Android
-                mainViewModel!!.setRestartApp(isRestart = true)
-                mainViewModel!!.setScreenNav(Pair(Screens.EDIT_PROFILE.toPath(), Screens.MAIN_TAB.toPath()))
-            }
+            navigator.replaceAll(SplashScreen(platformNavigator!!, mainViewModel!!))
         }
         else if(updateProfileEnded.value && !updateProfileSuccessful.value){
             ErrorDialog(dialogTitle = "Error Occurred", actionTitle = "", onConfirmation = {})
@@ -238,7 +236,9 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
                             .fillMaxWidth()
                             .fillMaxHeight(),
                             contentAlignment = Alignment.CenterStart) {
-                            leftTopBarItem(mainViewModel!!)
+                            leftTopBarItem(onBackPressed = {
+                                navigator.pop()
+                            })
                         }
 
                         Box(modifier =  Modifier.weight(3.0f)
@@ -392,35 +392,7 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
                             style = TextStyle(),
                             borderStroke = BorderStroke(1.dp, Colors.primaryColor)
                         ) {
-                            when (mainViewModel?.screenNav?.value?.first) {
-                                Screens.MAIN_TAB.toPath() -> {
-                                    mainViewModel!!.setScreenNav(
-                                        Pair(
-                                            Screens.EDIT_PROFILE.toPath(),
-                                            Screens.MAIN_TAB.toPath()
-                                        )
-                                    )
-                                }
-
-                                Screens.BOOKING.toPath() -> {
-                                    mainViewModel!!.setScreenNav(
-                                        Pair(
-                                            Screens.EDIT_PROFILE.toPath(),
-                                            Screens.BOOKING.toPath()
-                                        )
-                                    )
-                                }
-
-                                Screens.CART.toPath() -> {
-                                    mainViewModel!!.setScreenNav(
-                                        Pair(
-                                            Screens.EDIT_PROFILE.toPath(),
-                                            Screens.CART.toPath()
-                                        )
-                                    )
-                                }
-
-                            }
+                            navigator.pop()
                         }
 
                         ButtonComponent(
@@ -470,39 +442,27 @@ class EditProfileTab(val  platformNavigator: PlatformNavigator? = null) : Tab, K
                 }
             }
         }
+
+    override fun enter(lastEvent: StackEvent): EnterTransition {
+        return slideIn { size ->
+            val x = if (lastEvent == StackEvent.Pop) -size.width else size.width
+            IntOffset(x = x, y = 0)
+        }
     }
 
-@Composable
-fun leftTopBarItem(mainViewModel: MainViewModel) {
-    PageBackNavWidget {
-        when (mainViewModel.screenNav?.value?.first) {
-            Screens.MAIN_TAB.toPath() -> {
-                mainViewModel.setScreenNav(
-                    Pair(
-                        Screens.EDIT_PROFILE.toPath(),
-                        Screens.MAIN_TAB.toPath()
-                    )
-                )
-            }
-            Screens.BOOKING.toPath() -> {
-                mainViewModel.setScreenNav(
-                    Pair(
-                        Screens.EDIT_PROFILE.toPath(),
-                        Screens.BOOKING.toPath()
-                    )
-                )
-            }
-            Screens.CART.toPath() -> {
-                mainViewModel.setScreenNav(
-                    Pair(
-                        Screens.EDIT_PROFILE.toPath(),
-                        Screens.CART.toPath()
-                    )
-                )
-            }
-
-            else -> {}
+    override fun exit(lastEvent: StackEvent): ExitTransition {
+        return slideOut { size ->
+            val x = if (lastEvent == StackEvent.Pop) size.width else -size.width
+            IntOffset(x = x, y = 0)
         }
+    }
+
+}
+
+@Composable
+fun leftTopBarItem(onBackPressed: () -> Unit) {
+    PageBackNavWidget {
+        onBackPressed()
     }
 }
 

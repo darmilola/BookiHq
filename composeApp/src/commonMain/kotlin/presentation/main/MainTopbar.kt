@@ -122,7 +122,7 @@ fun mainTopBarItem(mainViewModel: MainViewModel) {
         when (displayedTab.value) {
             MainTabEnum.HOME.toPath() -> {
                 VendorLogo(imageUrl = vendorInfo.businessLogo!!, onVendorLogoClicked = {
-                    mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.CONNECTED_VENDOR_DETAILS.toPath()))
+                    mainViewModel.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.CONNECTED_VENDOR_DETAILS.toPath()))
                 })
             }
             MainTabEnum.SHOP.toPath() -> {

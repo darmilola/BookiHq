@@ -14,22 +14,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import domain.Enums.Screens
-import presentation.viewmodels.MainViewModel
 
 
 @Composable
-fun ConnectVendorHeader(mainViewModel: MainViewModel? = null){
+fun SwitchVendorHeader(onBackPressed: () -> Unit){
     Column(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally) {
-        ConnectBusinessTitle(mainViewModel)
+        ConnectBusinessTitle(onBackPressed = {
+            onBackPressed()
+        })
         ConnectBusinessDescription()
     }
 }
 
 @Composable
-fun ConnectBusinessTitle(mainViewModel: MainViewModel?){
+fun ConnectBusinessTitle(onBackPressed: () -> Unit){
     val rowModifier = Modifier
         .fillMaxWidth()
         .height(40.dp)
@@ -50,7 +50,9 @@ fun ConnectBusinessTitle(mainViewModel: MainViewModel?){
                 .fillMaxWidth()
                 .fillMaxHeight(),
                 contentAlignment = Alignment.CenterStart) {
-                leftTopBarItem(mainViewModel!!)
+                leftTopBarItem(onBackPressed = {
+                    onBackPressed()
+                })
             }
 
             Box(modifier =  Modifier.weight(3.0f)
@@ -70,7 +72,7 @@ fun ConnectBusinessTitle(mainViewModel: MainViewModel?){
 }
 
 @Composable
-fun BusinessInfoTitle(mainViewModel: MainViewModel?){
+fun VendorDetailsTitle(onBackPressed: () -> Unit){
     val rowModifier = Modifier
         .fillMaxWidth()
         .padding(top = 20.dp)
@@ -83,7 +85,9 @@ fun BusinessInfoTitle(mainViewModel: MainViewModel?){
             Box(modifier =  Modifier.weight(1.0f)
                 .fillMaxHeight(),
                 contentAlignment = Alignment.CenterStart) {
-                VendorInfoTopBarItem(mainViewModel)
+                VendorInfoTopBarItem(onBackPressed = {
+                    onBackPressed()
+                })
             }
 
             Box(modifier =  Modifier.weight(3.0f)
@@ -101,32 +105,11 @@ fun BusinessInfoTitle(mainViewModel: MainViewModel?){
 }
 
 
-@Composable
-fun leftTopBarItem(mainViewModel: MainViewModel) {
-    PageBackNavWidget {
-        mainViewModel.setScreenNav(Pair(Screens.CONNECT_VENDOR_TAB.toPath(), Screens.MAIN_TAB.toPath()))
-    }
-}
-
 
 @Composable
-fun VendorInfoTopBarItem(mainViewModel: MainViewModel?) {
+fun VendorInfoTopBarItem(onBackPressed: () -> Unit) {
     PageBackNavWidget {
-        when (mainViewModel?.screenNav?.value?.first) {
-            Screens.MAIN_TAB.toPath() -> {
-                mainViewModel.setScreenNav(Pair(Screens.CONNECTED_VENDOR_DETAILS.toPath(), Screens.MAIN_TAB.toPath()))
-            }
-            Screens.CART.toPath() -> {
-                mainViewModel.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.CART.toPath()))
-            }
-            Screens.JOIN_SPA.toPath() -> {
-                mainViewModel.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.JOIN_SPA.toPath()))
-            }
-            Screens.CONNECT_VENDOR_TAB.toPath() -> {
-                mainViewModel.setScreenNav(Pair(Screens.VENDOR_INFO.toPath(), Screens.CONNECT_VENDOR_TAB.toPath()))
-            }
-            else -> {}
-        }
+        onBackPressed()
     }
 }
 

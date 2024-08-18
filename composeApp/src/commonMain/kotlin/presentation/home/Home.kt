@@ -198,11 +198,9 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 ) {
                     IndeterminateCircularProgressBar()
                 }
-            } else if (uiState.value.isFailed) {
-
-
-
-            } else if (uiState.value.isSuccess) {
+            }
+            else if (uiState.value.isFailed) {}
+            else if (uiState.value.isSuccess) {
                 val pastAppointments = homepageInfo.value.pastAppointment
                 val upcomingAppointments = homepageInfo.value.upcomingAppointment
                 val vendorServices = homepageInfo.value.vendorServices
@@ -216,16 +214,6 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 Scaffold(
                     snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
                     topBar = {},
-                    floatingActionButton = {
-                          if (isStatusViewExpanded.value){
-                              Box(
-                                  modifier = Modifier.size(140.dp)
-                                      .padding(bottom = 45.dp), contentAlignment = Alignment.CenterEnd
-                              ) {
-                                 AttachChatImage(iconRes = "drawable/chat_icon.png")
-                              }
-                          }
-                    },
                     content = {
                         Column(
                             Modifier
@@ -237,7 +225,10 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                         ) {
                             if (!vendorServices.isNullOrEmpty()) {
                                 AttachOurServices()
-                                ServiceGridScreen(vendorServices)
+                                ServiceGridScreen(vendorServices, onServiceSelected = {
+                                    mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.BOOKING.toPath()))
+                                    mainViewModel!!.setSelectedService(it)
+                                })
                             }
                             if (homePageViewModel!!.vendorStatus.value.isNotEmpty()) {
                                 BusinessStatusDisplay(statusList = homePageViewModel!!.vendorStatus.value, vendorInfo = mainViewModel!!.connectedVendor.value)
@@ -270,7 +261,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
     }
 
     @Composable
-    fun ServiceGridScreen(vendorServices: List<Services>) {
+    fun ServiceGridScreen(vendorServices: List<Services>, onServiceSelected: (Services) -> Unit) {
         val viewHeight = getServicesViewHeight(vendorServices)
         LazyVerticalGrid(
             columns = GridCells.Fixed(4),
@@ -281,7 +272,9 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             userScrollEnabled = false
         ) {
             items(vendorServices.size) {
-                HomeServicesWidget(vendorServices[it], mainViewModel!!)
+                HomeServicesWidget(vendorServices[it], onServiceSelected = {
+                    onServiceSelected(it)
+                })
             }
         }
      }
@@ -421,7 +414,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                             RecommendationType.Services.toPath() -> {
                                 mainViewModel.setScreenNav(
                                     Pair(
-                                        Screens.MAIN_TAB.toPath(),
+                                        Screens.MAIN_SCREEN.toPath(),
                                         Screens.BOOKING.toPath()
                                     )
                                 )

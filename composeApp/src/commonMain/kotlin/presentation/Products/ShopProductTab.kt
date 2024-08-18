@@ -113,7 +113,6 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
         val onCartChanged = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
         val isClickedSearchProduct = mainViewModel!!.clickedSearchProduct.collectAsState()
-
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
             animation = StackedSnackbarAnimation.Bounce
@@ -276,9 +275,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                 .clip(CircleShape)
                 .size(70.dp)
                 .clickable {
-                    mainViewModel.setScreenNav(
-                        Pair(Screens.MAIN_TAB.toPath(), Screens.CART.toPath())
-                    )
+                    mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.CART.toPath()))
                 }
                 .background(color = Colors.darkPrimary),
             contentAlignment = Alignment.Center

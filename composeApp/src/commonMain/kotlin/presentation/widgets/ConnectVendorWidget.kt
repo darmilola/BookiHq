@@ -37,7 +37,7 @@ import presentations.components.TextComponent
 
 
 @Composable
-fun ConnectVendorHeader(title: String){
+fun SwitchVendorHeader(title: String){
     Column(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
            verticalArrangement = Arrangement.Center,
            horizontalAlignment = Alignment.CenterHorizontally) {
@@ -89,49 +89,6 @@ fun ConnectBusinessTitle(title: String){
     }
 }
 
-@Composable
-fun BusinessInfoTitle(onBackPressed: () -> Unit){
-    val rowModifier = Modifier
-        .fillMaxWidth()
-        .fillMaxHeight()
-
-    val colModifier = Modifier
-        .padding(top = 20.dp, start = 10.dp)
-        .fillMaxWidth()
-        .height(60.dp)
-
-    Column(modifier = colModifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally) {
-        Row(modifier = rowModifier,
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically) {
-
-            Box(modifier =  Modifier.weight(1.0f)
-                .fillMaxWidth()
-                .fillMaxHeight(),
-                contentAlignment = Alignment.CenterStart) {
-                leftTopBarItem( onBackPressed = {
-                    onBackPressed()
-                })
-            }
-
-            Box(modifier =  Modifier.weight(3.0f)
-                .fillMaxWidth()
-                .fillMaxHeight(),
-                contentAlignment = Alignment.Center) {
-                TitleWidget(title = "Details", textColor = Colors.primaryColor)
-
-            }
-
-            Box(modifier =  Modifier.weight(1.0f)
-                .fillMaxWidth(0.20f)
-                .fillMaxHeight(),
-                contentAlignment = Alignment.Center) {
-            }
-        }
-    }
-}
 
 @Composable
 fun ConnectBusinessDescription(){

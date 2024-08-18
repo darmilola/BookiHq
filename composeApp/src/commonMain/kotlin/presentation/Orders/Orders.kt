@@ -1,6 +1,10 @@
 package presentation.Orders
 
 import StackedSnackbarHost
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,9 +30,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.core.stack.StackEvent
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
@@ -53,10 +65,12 @@ import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget
 import rememberStackedSnackbarHostState
 import theme.Colors
+import utils.ParcelableScreen
 import utils.getOrderViewHeight
 
+@OptIn(ExperimentalVoyagerApi::class)
 @Parcelize
-class Orders() : Tab, KoinComponent, Parcelable {
+class Orders() : ParcelableScreen, KoinComponent, Parcelable, ScreenTransition {
 
 
     @Transient
@@ -72,21 +86,7 @@ class Orders() : Tab, KoinComponent, Parcelable {
         this.mainViewModel = mainViewModel
     }
 
-    @OptIn(ExperimentalResourceApi::class)
-    override val options: TabOptions
-        @Composable
-        get() {
-            val title = "Orders"
-            val icon = painterResource("drawable/calender_icon_semi.png")
-
-            return remember {
-                TabOptions(
-                    index = 0u,
-                    title = title,
-                    icon = icon
-                )
-            }
-        }
+    override val key: ScreenKey = uniqueScreenKey
 
     @Composable
     override fun Content() {
@@ -95,6 +95,12 @@ class Orders() : Tab, KoinComponent, Parcelable {
             maxStack = 5,
             animation = StackedSnackbarAnimation.Bounce
         )
+        val navigator = LocalNavigator.currentOrThrow
+        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+        if (onBackPressed.value){
+            mainViewModel!!.setOnBackPressed(false)
+            navigator.pop()
+        }
 
 
         if (loadingScreenUiStateViewModel == null) {
@@ -155,7 +161,9 @@ class Orders() : Tab, KoinComponent, Parcelable {
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {
-                UserOrdersScreenTopBar()
+                UserOrdersScreenTopBar(onBackPressed = {
+                    navigator.pop()
+                })
             },
             content = {
                 val handler = OrderHandler(
@@ -225,7 +233,7 @@ class Orders() : Tab, KoinComponent, Parcelable {
 
 
     @Composable
-    fun UserOrdersScreenTopBar() {
+    fun UserOrdersScreenTopBar(onBackPressed: () -> Unit) {
 
         val rowModifier = Modifier
             .fillMaxWidth()
@@ -240,7 +248,9 @@ class Orders() : Tab, KoinComponent, Parcelable {
                 .fillMaxWidth()
                 .fillMaxHeight(),
                 contentAlignment = Alignment.CenterStart) {
-                leftTopBarItem(mainViewModel!!)
+                leftTopBarItem(onBackPressed = {
+                  onBackPressed()
+                })
             }
 
             Box(modifier =  Modifier.weight(3.0f)
@@ -264,10 +274,25 @@ class Orders() : Tab, KoinComponent, Parcelable {
     }
 
     @Composable
-    fun leftTopBarItem(mainViewModel: MainViewModel) {
+    fun leftTopBarItem(onBackPressed:() -> Unit) {
         PageBackNavWidget() {
-            mainViewModel.setScreenNav(Pair(Screens.ORDERS.toPath(), Screens.MAIN_TAB.toPath()))
+            onBackPressed()
         }
     }
+
+    override fun enter(lastEvent: StackEvent): EnterTransition {
+        return slideIn { size ->
+            val x = if (lastEvent == StackEvent.Pop) -size.width else size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
+    override fun exit(lastEvent: StackEvent): ExitTransition {
+        return slideOut { size ->
+            val x = if (lastEvent == StackEvent.Pop) size.width else -size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
 
 }

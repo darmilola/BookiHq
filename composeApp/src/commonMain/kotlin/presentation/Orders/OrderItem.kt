@@ -31,6 +31,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import domain.Models.CustomerOrder
 import domain.Enums.Screens
@@ -44,14 +46,15 @@ import utils.calculatePlacedOrderTotalPrice
 @Composable
 fun UserOrderComponent(mainViewModel: MainViewModel, customerOrder: CustomerOrder) {
 
-      var itemList: ArrayList<PlacedOrderItemComponent>
-      itemList = Json.decodeFromString<ArrayList<PlacedOrderItemComponent>>(customerOrder.orderItems?.orderItemJson!!)
+      val itemList = Json.decodeFromString<ArrayList<PlacedOrderItemComponent>>(customerOrder.orderItems?.orderItemJson!!)
       val totalCost = calculatePlacedOrderTotalPrice(itemList)
-      val navigator = LocalTabNavigator.current
+      val navigator = LocalNavigator.currentOrThrow
       val columnModifier = Modifier
         .padding(start = 10.dp, top = 35.dp, bottom = 10.dp, end = 10.dp)
         .clickable {
-            mainViewModel.setScreenNav(Pair(Screens.ORDERS.toPath(), Screens.ORDER_DETAILS.toPath()))
+            val details = OrderDetails()
+            details.setMainViewModel(mainViewModel)
+            navigator.push(details)
         }
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .height(250.dp)
@@ -83,7 +86,9 @@ fun UserOrderComponent(mainViewModel: MainViewModel, customerOrder: CustomerOrde
 
                     Box(modifier = Modifier.fillMaxWidth().clickable {
                           mainViewModel.setOrderItemComponents(itemList)
-                          mainViewModel.setScreenNav(Pair(Screens.ORDERS.toPath(), Screens.ORDER_DETAILS.toPath()))
+                          val details = OrderDetails()
+                          details.setMainViewModel(mainViewModel)
+                          navigator.push(details)
                     },
                         contentAlignment = Alignment.CenterEnd) {
                         ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))

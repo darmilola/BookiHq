@@ -58,7 +58,7 @@ import presentation.connectVendor.SwitchVendorBusinessItemComponent
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.VendorsResourceListEnvelopeViewModel
-import presentation.widgets.ConnectVendorHeader
+import presentation.widgets.SwitchVendorHeader
 import theme.Colors
 import utils.ParcelableScreen
 
@@ -183,7 +183,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
                     Column(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally) {
-                        ConnectVendorHeader(title = "Connect Vendor")
+                        SwitchVendorHeader(title = "Connect Vendor")
                         SearchBar(placeholderText = "search @vendor", onValueChange = {
                             vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                             searchQuery.value = it

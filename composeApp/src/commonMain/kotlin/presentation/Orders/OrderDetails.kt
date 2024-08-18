@@ -1,5 +1,9 @@
 package presentation.Orders
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,43 +13,52 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.core.stack.StackEvent
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import cafe.adriel.voyager.transitions.ScreenTransition
+import dev.icerock.moko.parcelize.Parcelize
 import domain.Enums.Screens
 import domain.Models.PlacedOrderItemComponent
 import kotlinx.serialization.Transient
 import presentation.widgets.OrderDetailList
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.PageBackNavWidget
+import utils.ParcelableScreen
 
-class OrderDetails() : Tab {
+@Parcelize @OptIn(ExperimentalVoyagerApi::class)
+class OrderDetails() : ParcelableScreen, ScreenTransition {
 
-    override val options: TabOptions
-        @Composable
-        get() {
-            val title = "Order Details"
 
-            return remember {
-                TabOptions(
-                    index = 0u,
-                    title = title
-                )
-            }
-        }
+    override val key: ScreenKey = uniqueScreenKey
+
     @Transient
     private var mainViewModel: MainViewModel? = null
 
-    fun setMainViewModel(mainViewModel: MainViewModel){
+    fun setMainViewModel(mainViewModel: MainViewModel) {
         this.mainViewModel = mainViewModel
     }
 
 
     @Composable
     override fun Content() {
+        val navigator = LocalNavigator.currentOrThrow
+        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+        if (onBackPressed.value){
+            mainViewModel!!.setOnBackPressed(false)
+            navigator.pop()
+        }
         val rowModifier = Modifier
             .fillMaxWidth()
             .height(70.dp)
@@ -55,9 +68,11 @@ class OrderDetails() : Tab {
             .fillMaxWidth()
             .fillMaxHeight()
 
-        Column(modifier = colModifier,
+        Column(
+            modifier = colModifier,
             verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally) {
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Row(
                 modifier = rowModifier,
                 horizontalArrangement = Arrangement.Start,
@@ -69,7 +84,9 @@ class OrderDetails() : Tab {
                         .fillMaxHeight(),
                     contentAlignment = Alignment.CenterStart
                 ) {
-                    leftTopBarItem(mainViewModel!!)
+                    leftTopBarItem(onBackPressed = {
+                        navigator.pop()
+                    })
                 }
 
             }
@@ -77,12 +94,28 @@ class OrderDetails() : Tab {
             OrderDetailList(itemList)
         }
     }
-}
 
-@Composable
-fun leftTopBarItem(mainViewModel: MainViewModel) {
-    PageBackNavWidget {
-        mainViewModel.setScreenNav(Pair(Screens.ORDER_DETAILS.toPath(), Screens.ORDERS.toPath()))
-      }
-  }
+    override fun enter(lastEvent: StackEvent): EnterTransition {
+        return slideIn { size ->
+            val x = if (lastEvent == StackEvent.Pop) -size.width else size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
+    override fun exit(lastEvent: StackEvent): ExitTransition {
+        return slideOut { size ->
+            val x = if (lastEvent == StackEvent.Pop) size.width else -size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
+
+
+    @Composable
+    fun leftTopBarItem(onBackPressed: () -> Unit) {
+        PageBackNavWidget {
+            onBackPressed()
+        }
+    }
+}
 

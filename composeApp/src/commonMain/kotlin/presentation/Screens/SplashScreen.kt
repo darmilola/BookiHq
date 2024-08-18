@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import applications.device.deviceInfo
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.russhwolf.settings.Settings
@@ -163,8 +164,7 @@ class SplashScreen(val platformNavigator: PlatformNavigator, val mainViewModel: 
 
     private val  authenticationPresenter: AuthenticationPresenter by inject()
 
-    override val key: ScreenKey
-        get() = "splashScreen"
+    override val key: ScreenKey = uniqueScreenKey
 
     @Composable
     override fun Content() {

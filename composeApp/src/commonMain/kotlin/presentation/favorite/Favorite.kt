@@ -119,7 +119,7 @@ class FavoriteTab(private val mainViewModel: MainViewModel) : Tab {
 
         ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke(1.dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor =  Color.DarkGray, style = style){
             if (mainViewModel.currentUserInfo.value.userId != null){
-                mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.EDIT_PROFILE.toPath()))
+                mainViewModel.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.EDIT_PROFILE.toPath()))
             }
         }
 
@@ -152,7 +152,7 @@ class FavoriteTab(private val mainViewModel: MainViewModel) : Tab {
                 style = TextStyle(),
                 iconRes = "drawable/video_chat.png",
                 isDestructiveAction = false, onClick = {
-                    mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.TALK_WITH_A_THERAPIST.toPath()))
+                    mainViewModel.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.TALK_WITH_A_THERAPIST.toPath()))
                 })
 
 
@@ -165,7 +165,7 @@ class FavoriteTab(private val mainViewModel: MainViewModel) : Tab {
                 style = TextStyle(),
                 iconRes = "drawable/shopping_basket.png",
                 isDestructiveAction = false, onClick = {
-                    mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.ORDERS.toPath()))
+                    mainViewModel.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.ORDERS.toPath()))
                 })
 
 
@@ -178,7 +178,7 @@ class FavoriteTab(private val mainViewModel: MainViewModel) : Tab {
                 style = TextStyle(),
                 iconRes = "drawable/switch.png",
                 isDestructiveAction = false, onClick = {
-                    mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.CONNECT_VENDOR_TAB.toPath()))
+                    mainViewModel.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.CONNECT_VENDOR.toPath()))
                 })
 
 
@@ -205,7 +205,7 @@ class FavoriteTab(private val mainViewModel: MainViewModel) : Tab {
                 style = TextStyle(),
                 iconRes = "drawable/dashboard_icon.png",
                 isDestructiveAction = false, onClick = {
-                    mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.THERAPIST_DASHBOARD.toPath()))
+                    mainViewModel.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.THERAPIST_DASHBOARD.toPath()))
                 })
 
             ActionItemComponent(
@@ -217,7 +217,7 @@ class FavoriteTab(private val mainViewModel: MainViewModel) : Tab {
                 style = TextStyle(),
                 iconRes = "drawable/join.png",
                 isDestructiveAction = false, onClick = {
-                    mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.JOIN_SPA.toPath()))
+                    mainViewModel.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.JOIN_SPA.toPath()))
                 })
 
             ActionItemComponent(

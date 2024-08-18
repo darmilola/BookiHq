@@ -55,9 +55,21 @@ import presentation.dialogs.LoadingDialog
 import presentation.dialogs.SuccessDialog
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import UIStates.AppUIStates
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
+import androidx.compose.ui.unit.IntOffset
 import applications.date.getDay
 import applications.date.getMonth
 import applications.date.getYear
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.core.stack.StackEvent
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import dev.icerock.moko.parcelize.Parcelable
 import domain.Models.PlatformNavigator
@@ -73,12 +85,14 @@ import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
+import utils.ParcelableScreen
 import utils.calculateCartCheckoutSubTotal
 import utils.calculateTotal
 
 
+@OptIn(ExperimentalVoyagerApi::class)
 @Parcelize
-class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
+class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinComponent, ScreenTransition {
 
     @Transient
     private val cartPresenter: CartPresenter by inject()
@@ -89,18 +103,7 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
     @Transient
     private var mainViewModel: MainViewModel? = null
 
-    override val options: TabOptions
-        @Composable
-        get() {
-            val title = "Cart"
-
-            return remember {
-                TabOptions(
-                    index = 0u,
-                    title = title
-                )
-            }
-        }
+    override val key: ScreenKey = uniqueScreenKey
 
     fun setMainViewModel(mainViewModel: MainViewModel){
         this.mainViewModel = mainViewModel
@@ -109,7 +112,12 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
     @Composable
     override fun Content() {
-
+        val navigator = LocalNavigator.currentOrThrow
+        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+        if (onBackPressed.value){
+            mainViewModel!!.setOnBackPressed(false)
+            navigator.pop()
+        }
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
             animation = StackedSnackbarAnimation.Bounce
@@ -152,12 +160,7 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
         cartViewModel!!.setSubTotal(subtotal)
 
         if (cartSize.value == 0) {
-            mainViewModel!!.setScreenNav(
-                Pair(
-                    Screens.CART.toPath(),
-                    Screens.MAIN_TAB.toPath()
-                )
-            )
+            navigator.pop()
         }
 
 
@@ -184,14 +187,7 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                         SuccessDialog("Creating Order Successful", actionTitle = "Done", onConfirmation = {
                             mainViewModel!!.clearUnsavedOrders()
                             mainViewModel!!.clearCurrentOrderReference()
-                            coroutineScope.launch {
-                                mainViewModel!!.setScreenNav(
-                                    Pair(
-                                        Screens.CART.toPath(),
-                                        Screens.MAIN_TAB.toPath()
-                                    )
-                                )
-                            }
+                            navigator.pop()
                         })
                     }
                 }
@@ -228,7 +224,9 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                 .fillMaxHeight(),
                             contentAlignment = Alignment.CenterStart
                         ) {
-                            leftTopBarItem(mainViewModel!!)
+                            leftTopBarItem(onBackPressed = {
+                                navigator.pop()
+                            })
                         }
 
                         Box(
@@ -389,14 +387,9 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
 
     @Composable
-    fun leftTopBarItem(mainViewModel: MainViewModel) {
+    fun leftTopBarItem(onBackPressed: () -> Unit) {
         PageBackNavWidget {
-            mainViewModel.setScreenNav(
-                Pair(
-                    Screens.CART.toPath(),
-                    Screens.MAIN_TAB.toPath()
-                )
-            )
+            onBackPressed()
         }
     }
 
@@ -431,6 +424,20 @@ class CartTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             dragHandle = {},
         ) {
             ProductDetailContent(mainViewModel,isViewedFromCart,selectedProduct, onAddToCart = { onDismiss(it,selectedProduct) })
+        }
+    }
+
+    override fun enter(lastEvent: StackEvent): EnterTransition {
+        return slideIn { size ->
+            val x = if (lastEvent == StackEvent.Pop) -size.width else size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
+    override fun exit(lastEvent: StackEvent): ExitTransition {
+        return slideOut { size ->
+            val x = if (lastEvent == StackEvent.Pop) size.width else -size.width
+            IntOffset(x = x, y = 0)
         }
     }
 

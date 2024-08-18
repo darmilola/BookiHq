@@ -20,7 +20,7 @@ import presentation.widgets.TitleWidget
 import theme.styles.Colors
 
 @Composable
-fun TherapistDashboardTopBar(mainViewModel: MainViewModel, appointmentResourceListEnvelopeViewModel: TherapistAppointmentResourceListEnvelopeViewModel) {
+fun TherapistDashboardTopBar(onBackPressed: () -> Unit) {
 
     val rowModifier = Modifier
         .fillMaxWidth()
@@ -35,7 +35,9 @@ fun TherapistDashboardTopBar(mainViewModel: MainViewModel, appointmentResourceLi
                 .fillMaxHeight()
                 .padding(start = 10.dp),
                 contentAlignment = Alignment.CenterStart) {
-                leftTopBarItem(mainViewModel,appointmentResourceListEnvelopeViewModel)
+                leftTopBarItem(onBackPressed = {
+                    onBackPressed()
+                })
             }
 
             Box(modifier =  Modifier.weight(3.0f)
@@ -54,15 +56,13 @@ fun TherapistDashboardTopBar(mainViewModel: MainViewModel, appointmentResourceLi
         }
     }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun leftTopBarItem(mainViewModel: MainViewModel, therapistAppointmentResourceListEnvelopeViewModel: TherapistAppointmentResourceListEnvelopeViewModel) {
+fun leftTopBarItem(onBackPressed: () -> Unit) {
     PageBackNavWidget(){
-           therapistAppointmentResourceListEnvelopeViewModel.clearData(mutableListOf())
-           mainViewModel.setScreenNav(Pair(Screens.THERAPIST_DASHBOARD.toPath(), Screens.MAIN_TAB.toPath()))
-                 }
+           onBackPressed()
+    }
 
-            }
+}
 
 @Composable
 fun DashboardTitle(){

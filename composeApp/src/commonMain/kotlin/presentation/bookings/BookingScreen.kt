@@ -2,6 +2,10 @@ package presentation.bookings
 
 import StackedSnackbarHost
 import StackedSnakbarHostState
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -32,8 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.tab.Tab
-import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
@@ -52,7 +54,14 @@ import presentation.viewmodels.MainViewModel
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.runtime.collectAsState
-import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import androidx.compose.ui.unit.IntOffset
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.core.stack.StackEvent
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.BookingStatus
 import domain.Enums.PaymentMethod
@@ -62,27 +71,18 @@ import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
+import utils.ParcelableScreen
 
 
+@OptIn(ExperimentalVoyagerApi::class)
 @Parcelize
-class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
+class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, ScreenTransition, ParcelableScreen {
     @Transient private val bookingPresenter: BookingPresenter by inject()
     @Transient private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient private var bookingViewModel: BookingViewModel? = null
     @Transient private var mainViewModel: MainViewModel? = null
 
-    override val options: TabOptions
-        @Composable
-        get() {
-            val title = "Bookings"
-
-            return remember {
-                TabOptions(
-                    index = 0u,
-                    title = title
-                )
-            }
-        }
+   override val key: ScreenKey = uniqueScreenKey
 
     fun setMainViewModel(mainViewModel: MainViewModel){
         this.mainViewModel = mainViewModel
@@ -94,9 +94,8 @@ class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
         val pagerState = rememberPagerState(pageCount = { 3 })
         val addMoreService = remember { mutableStateOf(false) }
         val lastItemRemoved = remember { mutableStateOf(false) }
+        val navigator = LocalNavigator.currentOrThrow
         val coroutineScope = rememberCoroutineScope()
-
-
 
 
         if (performedActionUIStateViewModel == null) {
@@ -114,6 +113,12 @@ class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
             },
         )
      }
+
+        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+        if (onBackPressed.value){
+            mainViewModel!!.setOnBackPressed(false)
+            navigator.pop()
+        }
 
 
         val handler = BookingScreenHandler(
@@ -133,12 +138,7 @@ class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
                 SuccessDialog("Creating Appointment Successful", actionTitle = "Done", onConfirmation = {
                     coroutineScope.launch {
                         pagerState.scrollToPage(0)
-                        mainViewModel!!.setScreenNav(
-                            Pair(
-                                Screens.BOOKING.toPath(),
-                                Screens.MAIN_TAB.toPath()
-                            )
-                        )
+                        navigator.pop()
                     }
                 })
             }
@@ -158,13 +158,13 @@ class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
         if (addMoreService.value){
             rememberCoroutineScope().launch {
                 pagerState.scrollToPage(0)
-                mainViewModel!!.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.MAIN_TAB.toPath()))
+                navigator.pop()
             }
         }
         if (lastItemRemoved.value){
             rememberCoroutineScope().launch {
                 pagerState.scrollToPage(0)
-                mainViewModel!!.setScreenNav(Pair(Screens.BOOKING.toPath(), Screens.MAIN_TAB.toPath()))
+                navigator.pop()
             }
         }
         Scaffold(
@@ -178,7 +178,9 @@ class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
                     .background(color = Color.White)
             Column(modifier = layoutModifier) {
 
-                BookingScreenTopBar(pagerState, mainViewModel!!)
+                BookingScreenTopBar(pagerState, onBackPressed = {
+                    navigator.pop()
+                })
 
                 val bgStyle = Modifier
                     .fillMaxWidth()
@@ -355,6 +357,21 @@ class BookingScreenTab(val platformNavigator: PlatformNavigator) : Tab, KoinComp
         }
 
     }
+
+    override fun enter(lastEvent: StackEvent): EnterTransition {
+        return slideIn { size ->
+            val x = if (lastEvent == StackEvent.Pop) -size.width else size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
+    override fun exit(lastEvent: StackEvent): ExitTransition {
+        return slideOut { size ->
+            val x = if (lastEvent == StackEvent.Pop) size.width else -size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
 
 }
 

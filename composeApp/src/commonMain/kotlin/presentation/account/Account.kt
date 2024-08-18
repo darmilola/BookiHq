@@ -146,7 +146,7 @@ class AccountTab : Tab, Parcelable {
 
         ButtonComponent(modifier = buttonStyle, buttonText = "Edit Profile", borderStroke = BorderStroke(1.dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor =  Color.DarkGray, style = style){
            if (mainViewModel!!.currentUserInfo.value.userId != null){
-               mainViewModel!!.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.EDIT_PROFILE.toPath()))
+               mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.EDIT_PROFILE.toPath()))
            }
         }
 
@@ -179,7 +179,7 @@ class AccountTab : Tab, Parcelable {
                     style = TextStyle(),
                     iconRes = "drawable/shopping_basket.png",
                     isDestructiveAction = false, onClick = {
-                        mainViewModel!!.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.ORDERS.toPath()))
+                        mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.ORDERS.toPath()))
                     })
 
 
@@ -192,7 +192,7 @@ class AccountTab : Tab, Parcelable {
                     style = TextStyle(),
                     iconRes = "drawable/video_chat.png",
                     isDestructiveAction = false, onClick = {
-                        mainViewModel!!.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.TALK_WITH_A_THERAPIST.toPath()))
+                        mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.TALK_WITH_A_THERAPIST.toPath()))
                     })
 
 
@@ -215,7 +215,7 @@ class AccountTab : Tab, Parcelable {
                     style = TextStyle(),
                     iconRes = "drawable/switch.png",
                     isDestructiveAction = false, onClick = {
-                        mainViewModel!!.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.CONNECT_VENDOR_TAB.toPath()))
+                        mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.CONNECT_VENDOR.toPath()))
                     })
 
                 ActionItemComponent(
@@ -237,7 +237,7 @@ class AccountTab : Tab, Parcelable {
                     style = TextStyle(),
                     iconRes = "drawable/join.png",
                     isDestructiveAction = false, onClick = {
-                        mainViewModel!!.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.JOIN_SPA.toPath()))
+                        mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.JOIN_SPA.toPath()))
                     })
 
                 if (mainViewModel!!.currentUserInfo.value.isTherapist == true) {
@@ -252,7 +252,7 @@ class AccountTab : Tab, Parcelable {
                         isDestructiveAction = false, onClick = {
                             mainViewModel!!.setScreenNav(
                                 Pair(
-                                    Screens.MAIN_TAB.toPath(),
+                                    Screens.MAIN_SCREEN.toPath(),
                                     Screens.THERAPIST_DASHBOARD.toPath()
                                 )
                             )
