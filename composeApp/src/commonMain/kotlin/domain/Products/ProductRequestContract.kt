@@ -17,7 +17,7 @@ data class SearchProductRequest(@SerialName("vendorId") val vendorId: Long,
 data class CreateOrderRequest(@SerialName("vendor_id") val vendorId: Long, @SerialName("user_id") val userId: Long,
                               @SerialName("deliveryMethod") val deliveryMethod: String, @SerialName("day") val day: Int,
                               @SerialName("month") val month: Int, @SerialName("year") val year: Int,
-                              @SerialName("paymentAmount") val paymentAmount: Double,
+                              @SerialName("paymentAmount") val paymentAmount: Long,
                               @SerialName("paymentMethod") val paymentMethod: String, @SerialName("orderItemJson") val orderItemJson: String)
 
 @Serializable
@@ -33,3 +33,6 @@ data class GetProductTypeRequest(
     @SerialName("vendorId") val vendorId: Long,
     @SerialName("type") val productType: String
 )
+
+@Serializable
+data class InitCheckoutRequest(@SerialName("customerEmail") val customerEmail: String, @SerialName("amount") val amount: String)

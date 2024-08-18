@@ -33,7 +33,7 @@ class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
         paymentMethod: String,
         day: Int,
         month: Int,
-        year: Int, user: User, vendor: Vendor,paymentAmount: Double, platformNavigator: PlatformNavigator
+        year: Int, user: User, vendor: Vendor,paymentAmount: Long, platformNavigator: PlatformNavigator
     ) {
         scope.launch(Dispatchers.Main) {
             try {
@@ -62,6 +62,38 @@ class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
             } catch(e: Exception) {
                 println("Error 2 ${e.message}")
                 contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Order"))
+            }
+        }
+    }
+
+    override fun initCheckOut(customerEmail: String, amount: String) {
+        println("Amount $amount email $customerEmail")
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    contractView?.showLce(AppUIStates(isLoading = true, loadingMessage = "Processing..."))
+                    productRepositoryImpl.initCheckout(paymentAmount = amount, customerEmail = customerEmail)
+                        .subscribe(
+                            onSuccess = { result ->
+                                println("My Result is ${result.authorizationResult}")
+                                if (result.status == "success"){
+                                    contractView?.showLce(AppUIStates(isSuccess = true, successMessage = "Processing Successful"))
+                                    contractView?.showAuthorizationResult(result.authorizationResult)
+                                }
+                                else{
+                                    contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Processing Error"))
+                                }
+                            },
+                            onError = {
+                                println("Error 1 ${it.message}")
+                                contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Processing Error"))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                println("Error 1 ${e.message}")
+                contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Processing Error"))
             }
         }
     }

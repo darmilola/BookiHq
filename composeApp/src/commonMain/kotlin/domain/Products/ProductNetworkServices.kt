@@ -3,6 +3,7 @@ package domain.Products
 import com.badoo.reaktive.single.toSingle
 import com.russhwolf.settings.Settings
 import domain.Enums.SharedPreferenceEnum
+import domain.Models.InitCheckoutResponse
 import domain.Models.ProductListDataResponse
 import domain.Models.ServerResponse
 import io.ktor.client.HttpClient
@@ -49,5 +50,13 @@ open class ProductNetworkService(private val apiService: HttpClient) {
             setBody(getProductTypeRequest)
             header("Authorization", apiKey)
         }.body<ProductListDataResponse>().toSingle()
+
+    suspend fun initCheckout(initCheckoutRequest: InitCheckoutRequest) =
+        apiService.post {
+            url("/orders/checkout/init")
+            contentType(ContentType.Application.Json)
+            setBody(initCheckoutRequest)
+            header("Authorization", apiKey)
+        }.body<InitCheckoutResponse>().toSingle()
 
 }

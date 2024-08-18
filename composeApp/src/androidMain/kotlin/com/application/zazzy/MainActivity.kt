@@ -47,6 +47,9 @@ import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
+import com.paystack.android.core.Paystack
+import com.paystack.android.ui.paymentsheet.PaymentSheet
+import com.paystack.android.ui.paymentsheet.PaymentSheetResult
 import domain.Models.PlatformNavigator
 import kotlinx.parcelize.Parcelize
 import presentation.Screens.SplashScreen
@@ -71,9 +74,11 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     @Transient private var gmailAuthPreferences: SharedPreferences.Editor? = null
     @Transient private var locationAuthPreferences: SharedPreferences.Editor? = null
     @Transient private var imageUploadPreferences: SharedPreferences.Editor? = null
+    @Transient private var paymentPreferences: SharedPreferences.Editor? = null
     @Transient private var sharedPreferenceChangeListener: OnSharedPreferenceChangeListener? = null
     @Transient lateinit var locationManager: LocationManager
     @Transient var networkLocationListener: LocationListener? = null
+    @Transient private lateinit var paymentSheet: PaymentSheet
     private var hasNetwork = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -114,6 +119,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
           gmailAuthPreferences = preferences!!.edit()
           imageUploadPreferences = preferences!!.edit()
           locationAuthPreferences = preferences!!.edit()
+          paymentPreferences = preferences!!.edit()
 
         firebaseAuth = FirebaseAuth.getInstance()
 
@@ -529,6 +535,52 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             if (latitude!!.isNotEmpty() && longitude!!.isNotEmpty()) {
                 locationAuthPreferences!!.clear().apply()
                 onLocationReady(latitude,longitude)
+            }
+        }
+        preferences!!.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
+    }
+
+    private fun paymentComplete(paymentSheetResult: PaymentSheetResult) {
+         when (paymentSheetResult) {
+            is PaymentSheetResult.Cancelled -> {
+                paymentPreferences!!.putBoolean("isSuccess",false)
+                paymentPreferences!!.apply()
+            }
+            is PaymentSheetResult.Failed -> {
+                paymentPreferences!!.putBoolean("isSuccess",false)
+                paymentPreferences!!.apply()
+            }
+             is PaymentSheetResult.Completed -> {
+                 paymentPreferences!!.putBoolean("isSuccess",true)
+                 paymentPreferences!!.apply()
+            }
+        }
+    }
+
+    override fun startPaymentProcess(
+        paymentAmount: String,
+        customerEmail: String,
+        accessCode: String,
+        publicKey: String,
+        onPaymentSuccessful: () -> Unit,
+        onPaymentFailed: () -> Unit
+    ) {
+        Paystack.builder()
+           .setPublicKey(publicKey)
+           .setLoggingEnabled(true)
+           .build()
+
+        paymentSheet = PaymentSheet(this, ::paymentComplete)
+        paymentSheet.launch(accessCode)
+
+        sharedPreferenceChangeListener = OnSharedPreferenceChangeListener { sharedPreferences, s ->
+            val isPaymentStateSuccess = sharedPreferences.getBoolean("isSuccess",false)
+            if (isPaymentStateSuccess) {
+                paymentPreferences!!.clear().apply()
+                onPaymentSuccessful()
+            }
+            else{
+                onPaymentFailed()
             }
         }
         preferences!!.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)

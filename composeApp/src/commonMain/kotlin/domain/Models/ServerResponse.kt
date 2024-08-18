@@ -55,6 +55,9 @@ data class TherapistTimeAvailabilityResponse(@SerialName("status") val status: S
                                              @SerialName("availability") val availableTimes: List<AvailableTime>)
 
 @Serializable
+class InitCheckoutResponse(@SerialName("status") var status: String, @SerialName("result")  var authorizationResult: PaymentAuthorizationResult)
+
+@Serializable
 data class VendorAvailabilityResponse(@SerialName("status") val status: String = "",
                                           @SerialName("vendorTimes") val vendorTimes: List<VendorTime>,
                                           @SerialName("platformTimes") val platformTimes: List<PlatformTime>)

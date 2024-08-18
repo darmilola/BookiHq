@@ -67,6 +67,7 @@ kotlin {
             implementation("com.google.firebase:firebase-storage")
             implementation("com.google.auth:google-auth-library-oauth2-http:1.24.0")
             implementation("com.github.bumptech.glide:glide:4.16.0")
+            implementation("com.paystack.android:paystack-ui:0.0.9")
 
 
         }
@@ -79,8 +80,6 @@ kotlin {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
             val voyagerVersion = "1.1.0-beta02"
-            val compassVersion = "1.0.0"
-
             // Navigator
             implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
 
@@ -173,8 +172,6 @@ kotlin {
 
             // pull to refresh
             implementation("dev.materii.pullrefresh:pullrefresh:1.3.0")
-
-
         }
 
         iosMain.dependencies {

@@ -1,6 +1,7 @@
 package domain.Products
 
 import com.badoo.reaktive.single.Single
+import domain.Models.InitCheckoutResponse
 import domain.Models.ProductListDataResponse
 import domain.Models.ServerResponse
 import io.ktor.client.HttpClient
@@ -35,10 +36,18 @@ class ProductRepositoryImpl(apiService: HttpClient): ProductRepository {
         month: Int,
         year: Int,
         orderItemJson: String,
-        paymentAmount: Double
+        paymentAmount: Long
     ): Single<ServerResponse> {
         val param = CreateOrderRequest(vendorId, userId, deliveryMethod,day,month,year,paymentAmount,paymentMethod,orderItemJson)
         return productNetworkService.createOrder(param)
+    }
+
+    override suspend fun initCheckout(
+        paymentAmount: String,
+        customerEmail: String
+    ): Single<InitCheckoutResponse> {
+        val param = InitCheckoutRequest(customerEmail = customerEmail, amount = paymentAmount)
+        return productNetworkService.initCheckout(param)
     }
 
 

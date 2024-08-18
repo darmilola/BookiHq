@@ -4,6 +4,8 @@ import domain.Models.OrderItem
 import domain.Models.ProductResourceListEnvelope
 import UIStates.AppUIStates
 import domain.Enums.ProductType
+import domain.Models.PaymentAuthorizationData
+import domain.Models.PaymentAuthorizationResult
 import domain.Models.PlatformNavigator
 import domain.Models.User
 import domain.Models.Vendor
@@ -36,12 +38,14 @@ class ProductContract {
 class CartContract {
     interface View {
         fun showLce(appUIStates: AppUIStates)
+        fun showAuthorizationResult(paymentAuthorizationResult: PaymentAuthorizationResult)
     }
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
         abstract fun createOrder(orderItemList: List<OrderItem>, vendorId: Long, userId: Long, deliveryMethod: String, paymentMethod: String, day: Int, month: Int, year: Int,
-                                 user: User, vendor: Vendor,paymentAmount: Double, platformNavigator: PlatformNavigator)
+                                 user: User, vendor: Vendor,paymentAmount: Long, platformNavigator: PlatformNavigator)
+        abstract fun initCheckOut(customerEmail: String, amount: String)
 
     }
 }

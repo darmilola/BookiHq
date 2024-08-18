@@ -72,6 +72,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import dev.icerock.moko.parcelize.Parcelable
+import domain.Enums.Keys
+import domain.Models.PaymentAuthorizationResult
 import domain.Models.PlatformNavigator
 import kotlinx.serialization.Transient
 import presentation.viewmodels.CartViewModel
@@ -120,9 +122,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
         }
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
-            animation = StackedSnackbarAnimation.Bounce
-        )
-        val coroutineScope = rememberCoroutineScope()
+            animation = StackedSnackbarAnimation.Bounce)
 
         if (createOrderActionUIStateViewModel == null) {
             createOrderActionUIStateViewModel = kmpViewModel(
@@ -170,16 +170,55 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
             topBar = {},
             content = {
 
+                val currentUserInfo = mainViewModel!!.currentUserInfo.value
+                val customerEmail = if (currentUserInfo.email!!.isNotEmpty()) currentUserInfo.email else "damilolaakinterinwa@gmail.com"
+                val paymentAmount = cartViewModel!!.total.value
                 // View Contract Handler Initialisation
                 val handler = CreateOrderScreenHandler(
                     cartPresenter,
-                    createOrderActionUIStateViewModel!!)
+                    createOrderActionUIStateViewModel!!, onAuthorizationSuccessful = {
+                        if (it.status) {
+                            platformNavigator.startPaymentProcess(paymentAmount = paymentAmount.toString(),
+                                customerEmail = customerEmail,
+                                publicKey = Keys.PAYSTACK_PUBLIC_KEY.toPath(),
+                                accessCode = it.paymentAuthorizationData.accessCode,
+                                onPaymentSuccessful = {
+                                    val orderItemList = mainViewModel!!.unSavedOrders.value
+                                    val vendorId = mainViewModel!!.connectedVendor.value.vendorId
+                                    val userId = mainViewModel!!.currentUserInfo.value.userId
+                                    val deliveryLocation = cartViewModel!!.deliveryMethod.value
+                                    val paymentMethod = cartViewModel!!.paymentMethod.value
+                                    val year = getYear()
+                                    val month = getMonth()
+                                    val day = getDay()
+
+                                    cartPresenter.createOrder(
+                                        orderItemList,
+                                        vendorId!!,
+                                        userId!!,
+                                        deliveryLocation,
+                                        paymentMethod,
+                                        day,
+                                        month,
+                                        year,
+                                        user = mainViewModel!!.currentUserInfo.value,
+                                        vendor = mainViewModel!!.connectedVendor.value,
+                                        paymentAmount = paymentAmount,
+                                        platformNavigator = platformNavigator
+                                    )
+
+                                },
+                                onPaymentFailed = {
+
+                                })
+                        }
+                    })
                 handler.init()
 
 
                 if (createOrderActionUiState.value.isLoading) {
                     Box(modifier = Modifier.fillMaxWidth(0.90f)) {
-                        LoadingDialog("Creating Order...")
+                        LoadingDialog(createOrderActionUiState.value.loadingMessage)
                     }
                 }
                 else if (createOrderActionUiState.value.isSuccess) {
@@ -278,18 +317,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                         })
                         StraightLine()
                         CheckOutSummaryWidget(cartViewModel!!,onCreateOrderStarted = {
-                             val orderItemList = mainViewModel!!.unSavedOrders.value
-                             val vendorId = mainViewModel!!.connectedVendor.value.vendorId
-                             val userId = mainViewModel!!.currentUserInfo.value.userId
-                             val deliveryLocation = cartViewModel!!.deliveryMethod.value
-                             val paymentMethod = cartViewModel!!.paymentMethod.value
-                             val year = getYear()
-                             val month = getMonth()
-                             val day = getDay()
-
-                             cartPresenter.createOrder(orderItemList,vendorId!!,userId!!,deliveryLocation,paymentMethod, day, month, year, user = mainViewModel!!.currentUserInfo.value, vendor = mainViewModel!!.connectedVendor.value,
-                                 paymentAmount = cartViewModel!!.total.value.toDouble(), platformNavigator = platformNavigator)
-
+                          cartPresenter.initCheckOut(amount = paymentAmount.toString(), customerEmail = customerEmail)
                         })
 
                     }
@@ -446,7 +474,8 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
 
 class CreateOrderScreenHandler(
     private val cartPresenter: CartPresenter,
-    private val uiStateViewModel: PerformedActionUIStateViewModel
+    private val uiStateViewModel: PerformedActionUIStateViewModel,
+    private val onAuthorizationSuccessful: (PaymentAuthorizationResult) -> Unit
 ) : CartContract.View {
     fun init() {
         cartPresenter.registerUIContract(this)
@@ -455,6 +484,10 @@ class CreateOrderScreenHandler(
 
     override fun showLce(appUIStates: AppUIStates) {
         uiStateViewModel.switchActionUIState(appUIStates)
+    }
+
+    override fun showAuthorizationResult(paymentAuthorizationResult: PaymentAuthorizationResult) {
+        onAuthorizationSuccessful(paymentAuthorizationResult)
     }
 }
 
