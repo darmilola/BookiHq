@@ -8,6 +8,7 @@ import domain.Enums.DeliveryMethodEnum
 import domain.Models.Appointment
 import domain.Models.BookedTimes
 import domain.Models.HomepageInfo
+import domain.Models.PaymentCard
 import domain.Models.PlatformTime
 import domain.Models.Product
 import domain.Models.ScreenSizeInfo
@@ -58,6 +59,14 @@ fun getServicesViewHeight(
     val lineCount: Int = ceil((itemList.size/4).toDouble()).toInt()
 
     return lineCount * 140
+}
+
+fun getPaymentCardsViewHeight(
+    itemList: List<PaymentCard>
+): Int {
+    val itemCount = itemList.size
+    val size = (itemCount * 100) + 30
+    return size
 }
 
 fun getPercentOfScreenHeight(

@@ -34,12 +34,14 @@ import utils.getCardType
 
 @Composable
 fun PaymentCardItem(paymentCard: PaymentCard, onPaymentCardSelected: (PaymentCard) -> Unit) {
+    val selectedBgColor: Color = if (paymentCard.isSelected) Colors.lightPrimaryColor else Color.White
     val columnModifier = Modifier
+        .background(color = selectedBgColor, shape = RoundedCornerShape(15.dp))
         .padding(start = 10.dp, top = 10.dp, bottom = 10.dp)
         .clickable {
             onPaymentCardSelected(paymentCard)
         }
-        .height(100.dp)
+        .height(100.dp).fillMaxWidth()
     Row(modifier = columnModifier,
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically

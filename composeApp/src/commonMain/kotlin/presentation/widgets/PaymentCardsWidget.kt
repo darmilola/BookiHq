@@ -24,9 +24,12 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
@@ -34,6 +37,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import domain.Models.PaymentCard
+import domain.Models.PaymentCardUIModel
+import domain.Models.ServiceTypeTherapistUIModel
+import domain.Models.ServiceTypeTherapists
 import kotlinx.coroutines.launch
 import presentation.Products.ProductPriceInfoContent
 import presentation.Products.ProductTitle
@@ -42,6 +48,7 @@ import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import theme.styles.Colors
+import utils.getPaymentCardsViewHeight
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,6 +57,9 @@ fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<Paymen
                            onDismiss: () -> Unit) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true))
+
+    var selectedCardUIModel = remember { mutableStateOf(PaymentCardUIModel(selectedCard = PaymentCard(), visibleCards = savedCards)) }
+
     val showBottomSheet = mainViewModel.showProductBottomsheet.collectAsState()
     scope.launch {
         scaffoldState.bottomSheetState.hide()
@@ -66,8 +76,11 @@ fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<Paymen
         }
     }
 
+    val cardsHeight = getPaymentCardsViewHeight(savedCards)
+    val bottomSheetHeight = cardsHeight + 200
+
     ModalBottomSheet(
-        modifier = Modifier.padding(top = 20.dp).height(450.dp),
+        modifier = Modifier.padding(top = 20.dp).height(bottomSheetHeight.dp),
         onDismissRequest = {
             onDismiss()
         },
@@ -125,18 +138,27 @@ fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<Paymen
                 }
             }
             LazyColumn(
-                modifier = Modifier.fillMaxWidth().height(230.dp).padding(top = 20.dp),
+                modifier = Modifier.fillMaxWidth().height(cardsHeight.dp).padding(top = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 userScrollEnabled = true
             ) {
-                items(savedCards.size) {
+                items(selectedCardUIModel.value.visibleCards.size) {
                     Box(
                         modifier = Modifier.fillMaxWidth().height(100.dp)
                             .padding(start = 20.dp, end = 20.dp)
-                            .background(color = Color.LightGray, shape = RoundedCornerShape(15.dp)),
+                            .background(color = Color.White, shape = RoundedCornerShape(15.dp)),
                         contentAlignment = Alignment.CenterStart
                     ) {
-                        PaymentCardItem(savedCards[it], onPaymentCardSelected = {})
+                        PaymentCardItem(selectedCardUIModel.value.visibleCards[it], onPaymentCardSelected = {
+                            it -> selectedCardUIModel.value = selectedCardUIModel.value.copy(
+                                selectedCard = it,
+                                visibleCards = selectedCardUIModel.value.visibleCards.map {
+                                    it2 -> it2.copy(
+                                        isSelected = it2.cardNumber == it.cardNumber
+                                    )
+                                }
+                            )
+                        })
                     }
                 }
             }
@@ -188,7 +210,14 @@ fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<Paymen
                 textColor = Color(color = 0xFFFFFFFF),
                 style = TextStyle(),
                 borderStroke = null
-            ) {}
+            ) {
+                if (selectedCardUIModel.value.selectedCard!!.cardNumber.isNotEmpty()){
+                    scope.launch {
+                        scaffoldState.bottomSheetState.hide()
+                        onDismiss()
+                    }
+                }
+            }
 
         }
     }

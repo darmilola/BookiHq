@@ -203,7 +203,6 @@ fun TherapistContent(bookingViewModel: BookingViewModel, therapists: List<Servic
                  isSelected = it2.therapistId == unsavedAppointmentTherapist.therapistId
              )
          }))}
-         println(selectedTherapistUIModel.toString())
     }
 
     Column(

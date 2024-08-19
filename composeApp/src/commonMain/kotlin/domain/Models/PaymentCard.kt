@@ -16,3 +16,8 @@ data class PaymentCard(
     val expiryYear: String = "",
     val cvv: String = "",
     val isSelected: Boolean = false): Parcelable
+
+
+data class PaymentCardUIModel(
+    val selectedCard: PaymentCard?,
+    val visibleCards: List<PaymentCard>)
