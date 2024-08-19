@@ -47,9 +47,9 @@ import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
-import com.paystack.android.core.Paystack
-import com.paystack.android.ui.paymentsheet.PaymentSheet
-import com.paystack.android.ui.paymentsheet.PaymentSheetResult
+import com.paystack.android_sdk.core.Paystack
+import com.paystack.android_sdk.ui.paymentsheet.PaymentSheet
+import com.paystack.android_sdk.ui.paymentsheet.PaymentSheetResult
 import domain.Models.PlatformNavigator
 import kotlinx.parcelize.Parcelize
 import presentation.Screens.SplashScreen
@@ -83,6 +83,13 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Paystack.builder()
+            .setPublicKey("pk_test_bf395e89a315198929ddca163fafecf64899d524")
+            .setLoggingEnabled(true)
+            .build()
+
+        paymentSheet = PaymentSheet(this, ::paymentComplete)
 
         setContent {
             if (mainViewModel == null) {
@@ -561,16 +568,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         paymentAmount: String,
         customerEmail: String,
         accessCode: String,
-        publicKey: String,
         onPaymentSuccessful: () -> Unit,
         onPaymentFailed: () -> Unit
     ) {
-        Paystack.builder()
-           .setPublicKey(publicKey)
-           .setLoggingEnabled(true)
-           .build()
-
-        paymentSheet = PaymentSheet(this, ::paymentComplete)
         paymentSheet.launch(accessCode)
 
         sharedPreferenceChangeListener = OnSharedPreferenceChangeListener { sharedPreferences, s ->

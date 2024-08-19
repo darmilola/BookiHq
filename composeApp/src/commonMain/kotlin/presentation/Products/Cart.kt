@@ -180,7 +180,6 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                         if (it.status) {
                             platformNavigator.startPaymentProcess(paymentAmount = paymentAmount.toString(),
                                 customerEmail = customerEmail,
-                                publicKey = Keys.PAYSTACK_PUBLIC_KEY.toPath(),
                                 accessCode = it.paymentAuthorizationData.accessCode,
                                 onPaymentSuccessful = {
                                     val orderItemList = mainViewModel!!.unSavedOrders.value

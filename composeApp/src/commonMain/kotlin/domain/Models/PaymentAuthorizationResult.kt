@@ -14,5 +14,3 @@ data class PaymentAuthorizationResult(@SerialName("status") var status: Boolean 
 @Serializable
 data class PaymentAuthorizationData(@SerialName("authorization_url") var authorizationUrl: String = "", @SerialName("access_code") var accessCode: String = "",
                                       @SerialName("reference") var reference: String = ""): Parcelable
-
-//{"status":true,"message":"Authorization URL created","data":{"authorization_url":"https://checkout.paystack.com/83fjb24sed5ik9i","access_code":"83fjb24sed5ik9i","reference":"j00hgk8a86"}}
