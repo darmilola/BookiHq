@@ -21,12 +21,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Enums.CardType
 import domain.Models.PaymentCard
+import kotlinx.coroutines.launch
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import theme.styles.Colors
@@ -53,8 +55,6 @@ fun PaymentCardItem(paymentCard: PaymentCard, onPaymentCardSelected: (PaymentCar
 
 @Composable
 fun CardTypeImage(paymentCard: PaymentCard) {
-
-    val cardNumber = paymentCard.cardNumber
     val firstDigit = paymentCard.cardNumber[0]
     val cardType = getCardType(firstDigit.digitToInt())
     var backgroundColor: Color = Color.Black
@@ -104,40 +104,120 @@ fun CardTypeImage(paymentCard: PaymentCard) {
 
 @Composable
 fun CardDescription(paymentCard: PaymentCard){
-    val firstFourDigit = paymentCard.cardNumber.substring(IntRange(0,3))
-    val displayDigit = "$firstFourDigit****"
+    val cardNumber = paymentCard.cardNumber
+    val lastFourDigit = cardNumber.substring(IntRange(cardNumber.length-4,cardNumber.length-1))
     val columnModifier = Modifier
         .padding(start = 10.dp, end = 10.dp)
+        .fillMaxWidth(0.80f)
         .fillMaxHeight()
-    Column(
-        modifier = columnModifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment  = Alignment.Start,
-    ) {
-        TextComponent(
-            text = paymentCard.firstname+" "+paymentCard.lastname,
-            fontSize = 16,
-            fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Colors.darkPrimary,
-            textAlign = TextAlign.Left,
-            fontWeight = FontWeight.ExtraBold,
-            lineHeight = 20,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 2)
+    Row(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = columnModifier,
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.Start,
+        ) {
 
-        TextComponent(
-            text = displayDigit,
-            fontSize = 16,
-            fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Colors.darkPrimary,
-            textAlign = TextAlign.Left,
-            fontWeight = FontWeight.ExtraBold,
-            lineHeight = 20,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 2)
+            Row(modifier = Modifier.fillMaxWidth()) {
+                fourBullets()
+                fourBullets()
+                fourBullets()
+                TextComponent(
+                    text = lastFourDigit,
+                    fontSize = 20,
+                    fontFamily = GGSansRegular,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Colors.darkPrimary,
+                    textAlign = TextAlign.Left,
+                    fontWeight = FontWeight.ExtraBold,
+                    lineHeight = 20,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 2
+                )
+            }
 
+            TextComponent(
+                text = paymentCard.expiryMonth + "/" + paymentCard.expiryYear,
+                fontSize = 16,
+                fontFamily = GGSansRegular,
+                textStyle = MaterialTheme.typography.h6,
+                textColor = Colors.darkPrimary,
+                textAlign = TextAlign.Left,
+                fontWeight = FontWeight.ExtraBold,
+                lineHeight = 20,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 2
+            )
+
+        }
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            val tintColor = if (paymentCard.isSelected)  Colors.primaryColor else Color.White
+            val modifier = Modifier
+                .padding(top = 2.dp)
+                .size(18.dp)
+            ImageComponent(
+                imageModifier = modifier,
+                imageRes = "drawable/light_check_mark_icon.png",
+                colorFilter = ColorFilter.tint(color = tintColor))
+        }
     }
+}
+
+@Composable
+fun fourBullets(){
+    TextComponent(
+        text = "\u2022",
+        fontSize = 24,
+        fontFamily = GGSansRegular,
+        textStyle = MaterialTheme.typography.h6,
+        textColor = Colors.darkPrimary,
+        textAlign = TextAlign.Left,
+        fontWeight = FontWeight.ExtraBold,
+        lineHeight = 20,
+        overflow = TextOverflow.Ellipsis,
+        maxLines = 2)
+    TextComponent(
+        text = "\u2022",
+        fontSize = 24,
+        fontFamily = GGSansRegular,
+        textStyle = MaterialTheme.typography.h6,
+        textColor = Colors.darkPrimary,
+        textAlign = TextAlign.Left,
+        fontWeight = FontWeight.ExtraBold,
+        lineHeight = 20,
+        overflow = TextOverflow.Ellipsis,
+        maxLines = 2)
+    TextComponent(
+        text = "\u2022",
+        fontSize = 24,
+        fontFamily = GGSansRegular,
+        textStyle = MaterialTheme.typography.h6,
+        textColor = Colors.darkPrimary,
+        textAlign = TextAlign.Left,
+        fontWeight = FontWeight.ExtraBold,
+        lineHeight = 20,
+        overflow = TextOverflow.Ellipsis,
+        maxLines = 2)
+    TextComponent(
+        text = "\u2022",
+        fontSize = 24,
+        fontFamily = GGSansRegular,
+        textStyle = MaterialTheme.typography.h6,
+        textColor = Colors.darkPrimary,
+        textAlign = TextAlign.Left,
+        fontWeight = FontWeight.ExtraBold,
+        lineHeight = 20,
+        overflow = TextOverflow.Ellipsis,
+        maxLines = 2)
+    TextComponent(
+        text = " ",
+        fontSize = 24,
+        fontFamily = GGSansRegular,
+        textStyle = MaterialTheme.typography.h6,
+        textColor = Colors.darkPrimary,
+        textAlign = TextAlign.Left,
+        fontWeight = FontWeight.ExtraBold,
+        lineHeight = 20,
+        overflow = TextOverflow.Ellipsis,
+        maxLines = 2)
 }
 

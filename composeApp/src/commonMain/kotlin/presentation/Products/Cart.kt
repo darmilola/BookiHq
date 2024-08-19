@@ -286,8 +286,8 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
 
                     val showSelectedPaymentCards = remember { mutableStateOf(false) }
                     val cardList = ArrayList<PaymentCard>()
-                    val paymentCard1 = PaymentCard(firstname = "Damilola", lastname = "Akinterinwa", cardNumber = "5555555555555555", expiryMonth = "", expiryYear = "", cvv = "")
-                    val paymentCard2 = PaymentCard(firstname = "Damilola", lastname = "Akinterinwa", cardNumber = "4555555555555555", expiryMonth = "", expiryYear = "", cvv = "")
+                    val paymentCard1 = PaymentCard(firstname = "Damilola", lastname = "Akinterinwa", cardNumber = "5555555555553452", expiryMonth = "06", expiryYear = "24", cvv = "312")
+                    val paymentCard2 = PaymentCard(firstname = "Damilola", lastname = "Akinterinwa", cardNumber = "4555555555555356", expiryMonth = "05", expiryYear = "27", cvv = "239")
                     cardList.add(paymentCard1)
                     cardList.add(paymentCard2)
 
