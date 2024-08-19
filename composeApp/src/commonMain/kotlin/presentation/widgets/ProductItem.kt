@@ -39,27 +39,6 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import utils.calculateDiscount
 
-/*
-@Composable
-fun ProductItem(product: Product, onProductClickListener: (Product) -> Unit) {
-    val columnModifier = Modifier
-        .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
-        .clickable {
-            onProductClickListener(product)
-        }
-        .height(280.dp)
-        Column(modifier = columnModifier,
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                ProductImage(product)
-                ProductNameAndPrice(product)
-            }
-}
-*/
-
-
-
 @Composable
 fun ProductItem(product: Product, onProductClickListener: (Product) -> Unit) {
     val columnModifier = Modifier
@@ -78,42 +57,6 @@ fun ProductItem(product: Product, onProductClickListener: (Product) -> Unit) {
             })
         }
     }
-
-
-  /*  @Composable
-    fun ProductImage(product: Product) {
-        val imageModifier =
-            Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-        Card(
-            modifier = Modifier
-                .padding(start = 5.dp, end = 5.dp, top = 5.dp)
-                .background(color = Color.White)
-                .height(200.dp)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(8.dp),
-            border = null
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
-                contentAlignment = Alignment.TopStart
-            ) {
-                ImageComponent(
-                    imageModifier = imageModifier,
-                    imageRes = product.productImages[0].imageUrl,
-                    isAsync = true,
-                    contentScale = ContentScale.Crop
-                )
-                if (product.isDiscounted) {
-                    DiscountText(product)
-                }
-            }
-        }
-    }
-*/
 
 @Composable
 fun HomeProductImage(product: Product) {

@@ -47,9 +47,6 @@ import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
-import com.paystack.android_sdk.core.Paystack
-import com.paystack.android_sdk.ui.paymentsheet.PaymentSheet
-import com.paystack.android_sdk.ui.paymentsheet.PaymentSheetResult
 import domain.Models.PlatformNavigator
 import kotlinx.parcelize.Parcelize
 import presentation.Screens.SplashScreen
@@ -78,18 +75,17 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     @Transient private var sharedPreferenceChangeListener: OnSharedPreferenceChangeListener? = null
     @Transient lateinit var locationManager: LocationManager
     @Transient var networkLocationListener: LocationListener? = null
-    @Transient private lateinit var paymentSheet: PaymentSheet
     private var hasNetwork = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Paystack.builder()
+        /*Paystack.builder()
             .setPublicKey("pk_test_bf395e89a315198929ddca163fafecf64899d524")
             .setLoggingEnabled(true)
             .build()
 
-        paymentSheet = PaymentSheet(this, ::paymentComplete)
+        paymentSheet = PaymentSheet(this, ::paymentComplete)*/
 
         setContent {
             if (mainViewModel == null) {
@@ -547,7 +543,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         preferences!!.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
     }
 
-    private fun paymentComplete(paymentSheetResult: PaymentSheetResult) {
+/*    private fun paymentComplete(paymentSheetResult: PaymentSheetResult) {
          when (paymentSheetResult) {
             is PaymentSheetResult.Cancelled -> {
                 paymentPreferences!!.putBoolean("isSuccess",false)
@@ -562,7 +558,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                  paymentPreferences!!.apply()
             }
         }
-    }
+    }*/
 
     override fun startPaymentProcess(
         paymentAmount: String,
@@ -571,7 +567,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         onPaymentSuccessful: () -> Unit,
         onPaymentFailed: () -> Unit
     ) {
-        paymentSheet.launch(accessCode)
+       // paymentSheet.launch(accessCode)
 
         sharedPreferenceChangeListener = OnSharedPreferenceChangeListener { sharedPreferences, s ->
             val isPaymentStateSuccess = sharedPreferences.getBoolean("isSuccess",false)

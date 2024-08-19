@@ -3,6 +3,7 @@ package utils
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import domain.Enums.CardType
 import domain.Enums.DeliveryMethodEnum
 import domain.Models.Appointment
 import domain.Models.BookedTimes
@@ -65,6 +66,21 @@ fun getPercentOfScreenHeight(
 ): Int {
     val screenHeightChange = (percentChange.toDouble().div(100.0)) * screenHeight.value
     return screenHeightChange.toInt()
+}
+
+fun getCardType(
+    startNumber: Int
+): String {
+   val cardType =  when(startNumber){
+        3 -> CardType.AMEX.toPath()
+        4 -> CardType.VISA.toPath()
+        5 -> CardType.MASTERCARD.toPath()
+        2 -> CardType.MASTERCARD.toPath()
+       else -> {
+           CardType.UNKNOWN.toPath()
+       }
+   }
+   return cardType
 }
 
 @Composable

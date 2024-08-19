@@ -27,7 +27,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,8 +35,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.tab.Tab
-import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
@@ -45,8 +42,6 @@ import domain.Enums.DeliveryMethodEnum
 import domain.Models.OrderItem
 import domain.Models.OrderItemUIModel
 import domain.Enums.PaymentMethod
-import domain.Enums.Screens
-import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.components.StraightLine
@@ -71,10 +66,10 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
-import dev.icerock.moko.parcelize.Parcelable
-import domain.Enums.Keys
 import domain.Models.PaymentAuthorizationResult
+import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
+import domain.Models.Product
 import kotlinx.serialization.Transient
 import presentation.viewmodels.CartViewModel
 import presentation.viewmodels.MainViewModel
@@ -82,6 +77,7 @@ import presentation.widgets.CartItem
 import presentation.widgets.CheckOutSummaryWidget
 import presentation.widgets.ProductDeliveryAddressWidget
 import presentation.widgets.PageBackNavWidget
+import presentation.widgets.PaymentCardBottomSheet
 import presentation.widgets.PaymentMethodWidget
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
@@ -288,6 +284,32 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                     }
 
 
+                    val showSelectedPaymentCards = remember { mutableStateOf(false) }
+                    val cardList = ArrayList<PaymentCard>()
+                    val paymentCard1 = PaymentCard(firstname = "Damilola", lastname = "Akinterinwa", cardNumber = "5555555555555555", expiryMonth = "", expiryYear = "", cvv = "")
+                    val paymentCard2 = PaymentCard(firstname = "Damilola", lastname = "Akinterinwa", cardNumber = "4555555555555555", expiryMonth = "", expiryYear = "", cvv = "")
+                    cardList.add(paymentCard1)
+                    cardList.add(paymentCard2)
+
+                    var showPaymentCardBottomSheet by remember { mutableStateOf(false) }
+
+                    if (showPaymentCardBottomSheet) {
+                        mainViewModel!!.showPaymentCardsBottomSheet(true)
+                    }
+                    else{
+                        mainViewModel!!.showPaymentCardsBottomSheet(false)
+                    }
+
+                    if (showSelectedPaymentCards.value) {
+                        PaymentCardBottomSheet(
+                            mainViewModel!!,
+                            cardList,
+                            onCardSelected = {},
+                            onDismiss = {
+                                showSelectedPaymentCards.value = false
+                            })
+                    }
+
                     Column(
                         modifier = Modifier
                             .padding(end = 0.dp, bottom = 50.dp)
@@ -316,7 +338,9 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                         })
                         StraightLine()
                         CheckOutSummaryWidget(cartViewModel!!,onCreateOrderStarted = {
-                          cartPresenter.initCheckOut(amount = paymentAmount.toString(), customerEmail = customerEmail)
+                            //cartPresenter.initCheckOut(amount = paymentAmount.toString(), customerEmail = customerEmail)
+                            showSelectedPaymentCards.value = true
+
                         })
 
                     }
