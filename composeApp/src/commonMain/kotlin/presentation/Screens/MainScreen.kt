@@ -31,6 +31,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.room.RoomDatabase
+import applications.room.AppDatabase
 import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -97,11 +99,17 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
     private var appointmentsTab: AppointmentsTab? = null
     @Transient
     private var accountTab: AccountTab? = null
+    @Transient
+    private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 
     override val key: ScreenKey = uniqueScreenKey
 
     fun setMainViewModel(mainViewModel: MainViewModel) {
         this.mainViewModel = mainViewModel
+    }
+
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = databaseBuilder
     }
 
 
@@ -136,7 +144,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
         if (restartApp.value) {
             mainViewModel!!.setRestartApp(false)
             val navigator = LocalNavigator.currentOrThrow
-            navigator.replaceAll(SplashScreen(platformNavigator, mainViewModel!!))
+            navigator.replaceAll(SplashScreen(platformNavigator, mainViewModel!!, databaseBuilder!!))
         }
 
         when (screenNav?.value?.second) {
@@ -221,6 +229,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             Screens.CART.toPath() -> {
                 val cart = Cart(platformNavigator!!)
                 cart.setMainViewModel(mainViewModel!!)
+                cart.setDatabaseBuilder(databaseBuilder)
                 val nav = LocalNavigator.currentOrThrow
                 nav.push(cart)
                 mainViewModel!!.setScreenNav(Pair(Screens.CART.toPath(), Screens.DEFAULT.toPath()))
@@ -302,6 +311,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                                 }
                                 shopProductTab = ShopProductTab()
                                 shopProductTab!!.setMainViewModel(mainViewModel!!)
+                                shopProductTab!!.setDatabaseBuilder(databaseBuilder)
                                 TabNavigationItem(
                                     shopProductTab!!,
                                     selectedImage = "drawable/shopping_basket.png",

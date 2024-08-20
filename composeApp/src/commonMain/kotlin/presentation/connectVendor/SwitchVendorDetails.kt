@@ -112,7 +112,7 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
                     }
                     else if (deviceInfo() == DeviceType.ANDROID.toPath()){
                         // App Restart for Android
-                        navigator.replaceAll(SplashScreen(mainViewModel = mainViewModel!!, platformNavigator = platformNavigator))
+                        //navigator.replaceAll(SplashScreen(mainViewModel = mainViewModel!!, platformNavigator = platformNavigator))
                     }
 
                 } else if (switchVendorUiState.value.isFailed) {

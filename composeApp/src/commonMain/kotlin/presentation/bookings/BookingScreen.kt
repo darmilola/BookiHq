@@ -55,6 +55,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.unit.IntOffset
+import androidx.room.RoomDatabase
+import applications.room.AppDatabase
 import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -65,6 +67,7 @@ import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.BookingStatus
 import domain.Enums.PaymentMethod
+import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
 import kotlinx.serialization.Transient
 import presentation.viewmodels.PerformedActionUIStateViewModel
@@ -81,12 +84,21 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
     @Transient private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient private var bookingViewModel: BookingViewModel? = null
     @Transient private var mainViewModel: MainViewModel? = null
+    @Transient
+    private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
+    @Transient var cardList = listOf<PaymentCard>()
+    private var selectedCard: PaymentCard? = null
 
    override val key: ScreenKey = uniqueScreenKey
 
     fun setMainViewModel(mainViewModel: MainViewModel){
         this.mainViewModel = mainViewModel
     }
+
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = databaseBuilder
+    }
+
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
@@ -307,7 +319,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                     val userId = mainViewModel.currentUserInfo.value.userId
                     val vendorId = mainViewModel.connectedVendor.value.vendorId
                     bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.DONE.toPath(), day = bookingViewModel!!.day.value!!, month = bookingViewModel!!.month.value, year = bookingViewModel!!.year.value, paymentAmount = 4500.0, paymentMethod = PaymentMethod.CARD_PAYMENT.toPath())
-                }
+                  }
                 }
             }
         }

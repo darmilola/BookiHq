@@ -55,9 +55,11 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.ui.unit.IntOffset
+import androidx.room.RoomDatabase
 import applications.date.getDay
 import applications.date.getMonth
 import applications.date.getYear
+import applications.room.AppDatabase
 import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -66,11 +68,15 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import domain.Enums.ActionType
 import domain.Models.PaymentAuthorizationResult
 import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
-import domain.Models.Product
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
+import presentation.Screens.AddDebitCardScreen
+import presentation.payment.PaymentContract
+import presentation.payment.PaymentPresenter
 import presentation.viewmodels.CartViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.CartItem
@@ -95,17 +101,29 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
     @Transient
     private val cartPresenter: CartPresenter by inject()
     @Transient
+    private val paymentPresenter: PaymentPresenter by inject()
+    @Transient
     private var createOrderActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
     private var cartViewModel: CartViewModel? = null
     @Transient
     private var mainViewModel: MainViewModel? = null
+    @Transient
+    private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
+    @Transient var cardList = listOf<PaymentCard>()
+    private var selectedCard: PaymentCard? = null
 
     override val key: ScreenKey = uniqueScreenKey
 
     fun setMainViewModel(mainViewModel: MainViewModel){
         this.mainViewModel = mainViewModel
     }
+
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = databaseBuilder
+    }
+
+
 
 
     @Composable
@@ -148,7 +166,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
             cartViewModel!!.setDeliveryFee(0L)
         }
 
-        val createOrderActionUiState = createOrderActionUIStateViewModel!!.uiStateInfo.collectAsState()
+        val actionUiState = createOrderActionUIStateViewModel!!.uiStateInfo.collectAsState()
 
         val subtotal = calculateCartCheckoutSubTotal(cartItems.value)
         val total = calculateTotal(subtotal, cartViewModel!!.deliveryFee.value)
@@ -172,36 +190,16 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                 // View Contract Handler Initialisation
                 val handler = CreateOrderScreenHandler(
                     cartPresenter,
+                    paymentPresenter = paymentPresenter,
                     createOrderActionUIStateViewModel!!, onAuthorizationSuccessful = {
                         if (it.status) {
                             platformNavigator.startPaymentProcess(paymentAmount = paymentAmount.toString(),
                                 customerEmail = customerEmail,
                                 accessCode = it.paymentAuthorizationData.accessCode,
+                                paymentCard = selectedCard!!,
+                                onPaymentLoading = {},
                                 onPaymentSuccessful = {
-                                    val orderItemList = mainViewModel!!.unSavedOrders.value
-                                    val vendorId = mainViewModel!!.connectedVendor.value.vendorId
-                                    val userId = mainViewModel!!.currentUserInfo.value.userId
-                                    val deliveryLocation = cartViewModel!!.deliveryMethod.value
-                                    val paymentMethod = cartViewModel!!.paymentMethod.value
-                                    val year = getYear()
-                                    val month = getMonth()
-                                    val day = getDay()
-
-                                    cartPresenter.createOrder(
-                                        orderItemList,
-                                        vendorId!!,
-                                        userId!!,
-                                        deliveryLocation,
-                                        paymentMethod,
-                                        day,
-                                        month,
-                                        year,
-                                        user = mainViewModel!!.currentUserInfo.value,
-                                        vendor = mainViewModel!!.connectedVendor.value,
-                                        paymentAmount = paymentAmount,
-                                        platformNavigator = platformNavigator
-                                    )
-
+                                     createOrder(paymentAmount)
                                 },
                                 onPaymentFailed = {
 
@@ -211,21 +209,27 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                 handler.init()
 
 
-                if (createOrderActionUiState.value.isLoading) {
+                if (actionUiState.value.isLoading) {
                     Box(modifier = Modifier.fillMaxWidth(0.90f)) {
-                        LoadingDialog(createOrderActionUiState.value.loadingMessage)
+                        LoadingDialog(actionUiState.value.loadingMessage)
                     }
                 }
-                else if (createOrderActionUiState.value.isSuccess) {
+                else if (actionUiState.value.isSuccess) {
                     Box(modifier = Modifier.fillMaxWidth()) {
-                        SuccessDialog("Creating Order Successful", actionTitle = "Done", onConfirmation = {
-                            mainViewModel!!.clearUnsavedOrders()
-                            mainViewModel!!.clearCurrentOrderReference()
-                            navigator.pop()
-                        })
+                        if (actionUiState.value.actionType == ActionType.DEFAULT.toPath()) {
+                            SuccessDialog(
+                                "Creating Order Successful",
+                                actionTitle = "Done",
+                                onConfirmation = {
+                                    mainViewModel!!.clearUnsavedOrders()
+                                    mainViewModel!!.clearCurrentOrderReference()
+                                    navigator.pop()
+                                })
+                        }
+                        else if(actionUiState.value.actionType == ActionType.PAYMENT.toPath()){}
                     }
                 }
-                else if (createOrderActionUiState.value.isFailed) {
+                else if (actionUiState.value.isFailed) {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         ErrorDialog("Creating Order Failed", actionTitle = "Retry", onConfirmation = {})
                     }
@@ -285,11 +289,6 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
 
 
                     val showSelectedPaymentCards = remember { mutableStateOf(false) }
-                    val cardList = ArrayList<PaymentCard>()
-                    val paymentCard1 = PaymentCard(firstname = "Damilola", lastname = "Akinterinwa", cardNumber = "5555555555553452", expiryMonth = "06", expiryYear = "24", cvv = "312")
-                    val paymentCard2 = PaymentCard(firstname = "Damilola", lastname = "Akinterinwa", cardNumber = "4555555555555356", expiryMonth = "05", expiryYear = "27", cvv = "239")
-                    cardList.add(paymentCard1)
-                    cardList.add(paymentCard2)
 
                     var showPaymentCardBottomSheet by remember { mutableStateOf(false) }
 
@@ -304,9 +303,17 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                         PaymentCardBottomSheet(
                             mainViewModel!!,
                             cardList,
-                            onCardSelected = {},
+                            onCardSelected = {
+                                showSelectedPaymentCards.value = false
+                                selectedCard = it
+                                paymentPresenter.initCheckOut(amount = paymentAmount.toString(), customerEmail = customerEmail)
+                            },
                             onDismiss = {
                                 showSelectedPaymentCards.value = false
+                            }, onAddNewSelected = {
+                                val addDebitCardScreen = AddDebitCardScreen(platformNavigator)
+                                addDebitCardScreen.setDatabaseBuilder(databaseBuilder)
+                                navigator.push(addDebitCardScreen)
                             })
                     }
 
@@ -338,9 +345,10 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                         })
                         StraightLine()
                         CheckOutSummaryWidget(cartViewModel!!,onCreateOrderStarted = {
-                            //cartPresenter.initCheckOut(amount = paymentAmount.toString(), customerEmail = customerEmail)
-                            showSelectedPaymentCards.value = true
-
+                            runBlocking {
+                                cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
+                                showSelectedPaymentCards.value = true
+                            }
                         })
 
                     }
@@ -348,6 +356,32 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                 }
             })
 
+    }
+
+    private fun createOrder(paymentAmount: Long){
+        val orderItemList = mainViewModel!!.unSavedOrders.value
+        val vendorId = mainViewModel!!.connectedVendor.value.vendorId
+        val userId = mainViewModel!!.currentUserInfo.value.userId
+        val deliveryLocation = cartViewModel!!.deliveryMethod.value
+        val paymentMethod = cartViewModel!!.paymentMethod.value
+        val year = getYear()
+        val month = getMonth()
+        val day = getDay()
+
+        cartPresenter.createOrder(
+            orderItemList,
+            vendorId!!,
+            userId!!,
+            deliveryLocation,
+            paymentMethod,
+            day,
+            month,
+            year,
+            user = mainViewModel!!.currentUserInfo.value,
+            vendor = mainViewModel!!.connectedVendor.value,
+            paymentAmount = paymentAmount,
+            platformNavigator = platformNavigator
+        )
     }
 
     @Composable
@@ -497,10 +531,12 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
 
 class CreateOrderScreenHandler(
     private val cartPresenter: CartPresenter,
+    private val paymentPresenter: PaymentPresenter,
     private val uiStateViewModel: PerformedActionUIStateViewModel,
     private val onAuthorizationSuccessful: (PaymentAuthorizationResult) -> Unit
-) : CartContract.View {
+) : CartContract.View, PaymentContract.View {
     fun init() {
+        paymentPresenter.registerUIContract(this)
         cartPresenter.registerUIContract(this)
     }
 

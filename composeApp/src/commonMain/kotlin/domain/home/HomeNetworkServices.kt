@@ -28,6 +28,7 @@ open class HomeNetworkService(private val apiService: HttpClient) {
 
     suspend fun getHomePageWithStatus(getHomeRequestWithStatus: GetHomeRequestWithStatus) =
         apiService.post {
+            println("Api Key is $apiKey")
             url("/home/status")
             contentType(ContentType.Application.Json)
             setBody(getHomeRequestWithStatus)

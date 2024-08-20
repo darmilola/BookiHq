@@ -27,8 +27,19 @@ rxkotlin = "3.0.1"
 peekaboo = "0.4.3"
 coreI18n = "1.0.0-alpha01"
 kotlin1922 = "1.9.22"
+sqliteBundledAndroid = "2.5.0-alpha06"
+
+ksp = "1.9.20-1.0.14"
+sqlite = "2.5.0-SNAPSHOT"
+androidx-room = "2.7.0-alpha01"
+
+
+
 
 [libraries]
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
+sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 httpmime = { module = "org.apache.httpcomponents:httpmime", version.ref = "httpmime" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -61,6 +72,7 @@ rxkotlin = { module = "io.reactivex.rxjava3:rxkotlin", version.ref = "rxkotlin" 
 peekaboo-ui = { module = "io.github.onseok:peekaboo-ui", version.ref = "peekaboo" }
 peekaboo-image-picker = { module = "io.github.onseok:peekaboo-image-picker", version.ref = "peekaboo" }
 androidx-core-i18n = { group = "androidx.core", name = "core-i18n", version.ref = "coreI18n" }
+androidx-sqlite-bundled-android = { group = "androidx.sqlite", name = "sqlite-bundled-android", version.ref = "sqliteBundledAndroid" }
 
 
 [plugins]
@@ -71,3 +83,5 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 cocoaPods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 applePlugin = { id = "org.jetbrains.gradle.apple.applePlugin", version.ref = "apple-plugin" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin1922" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "androidx-room" }

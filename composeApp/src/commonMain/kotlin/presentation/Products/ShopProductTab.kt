@@ -42,6 +42,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.room.RoomDatabase
+import applications.room.AppDatabase
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
@@ -57,6 +59,7 @@ import domain.Models.ProductItemUIModel
 import domain.Enums.Screens
 import domain.Enums.SharedPreferenceEnum
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.ShopProductsHandler
@@ -77,12 +80,19 @@ import utils.getPopularProductViewHeight
 @Parcelize
 class ShopProductTab : Tab, KoinComponent, Parcelable {
 
+    @Transient
     private val productPresenter: ProductPresenter by inject()
+    @Transient
     private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
+    @Transient
     private var mainViewModel: MainViewModel? = null
+    @Transient
     val preferenceSettings = Settings()
+    @Transient
     private var productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel? = null
     private var selectedProductType: String = preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath(),""]
+    @Transient
+    private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -103,6 +113,10 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
 
     fun setMainViewModel(mainViewModel: MainViewModel){
         this.mainViewModel = mainViewModel
+    }
+
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = databaseBuilder
     }
 
 

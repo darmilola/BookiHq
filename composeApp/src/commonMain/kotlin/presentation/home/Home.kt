@@ -147,7 +147,8 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 val vendorPhone: String = preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath(),""]
                 if (vendorPhone.isNotEmpty()){
                     println("Response $vendorPhone")
-                    homepagePresenter.getUserHomepageWithStatus(userId, vendorPhone)
+                    homepagePresenter.getUserHomepage(userId)
+                    //homepagePresenter.getUserHomepageWithStatus(userId, vendorPhone)
                 }
                 else {
                     println("Response Called here")

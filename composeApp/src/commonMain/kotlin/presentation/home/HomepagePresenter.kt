@@ -30,21 +30,25 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
                     homeRepositoryImpl.getUserHomePageWithStatus(userId, vendorWhatsAppPhone)
                         .subscribe(
                             onSuccess = { response ->
+                                println("Response 0 $response")
                                 if (response.status == "success") {
                                     contractView?.showLoadHomePageLce(AppUIStates(isSuccess = true))
                                     contractView?.showHomeWithStatus(response.homepageInfo, response.vendorStatusList)
                                 }
                                 else{
+                                    println("Response 1 $response")
                                     contractView?.showLoadHomePageLce(AppUIStates(isFailed = true))
                                 }
                             },
                             onError = {
+                                println("Response 2 ${it.message}")
                                 contractView?.showLoadHomePageLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
+                println("Response 3 ${e.message}")
                 contractView?.showLoadHomePageLce(AppUIStates(isFailed = true))
             }
         }

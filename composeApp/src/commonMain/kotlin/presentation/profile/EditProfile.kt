@@ -218,7 +218,7 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
             LoadingDialog(dialogTitle = "Updating Your Profile")
         }
         else if (updateProfileEnded.value && updateProfileSuccessful.value) {
-            navigator.replaceAll(SplashScreen(platformNavigator!!, mainViewModel!!))
+            //navigator.replaceAll(SplashScreen(platformNavigator!!, mainViewModel!!))
         }
         else if(updateProfileEnded.value && !updateProfileSuccessful.value){
             ErrorDialog(dialogTitle = "Error Occurred", actionTitle = "", onConfirmation = {})

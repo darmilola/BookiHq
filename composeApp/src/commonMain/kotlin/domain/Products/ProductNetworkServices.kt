@@ -51,12 +51,4 @@ open class ProductNetworkService(private val apiService: HttpClient) {
             header("Authorization", apiKey)
         }.body<ProductListDataResponse>().toSingle()
 
-    suspend fun initCheckout(initCheckoutRequest: InitCheckoutRequest) =
-        apiService.post {
-            url("/orders/checkout/init")
-            contentType(ContentType.Application.Json)
-            setBody(initCheckoutRequest)
-            header("Authorization", apiKey)
-        }.body<InitCheckoutResponse>().toSingle()
-
 }

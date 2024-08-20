@@ -15,7 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.room.RoomDatabase
 import applications.device.deviceInfo
+import applications.room.AppDatabase
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -43,7 +45,7 @@ import presentation.viewmodels.MainViewModel
 import presentation.widgets.SplashScreenWidget
 
 @Composable
-fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPresenter: AuthenticationPresenter, mainViewModel: MainViewModel) {
+fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPresenter: AuthenticationPresenter, mainViewModel: MainViewModel, databaseBuilder: RoomDatabase.Builder<AppDatabase>) {
 
     val preferenceSettings: Settings = Settings()
     val navigateToWelcomeScreen = remember { mutableStateOf(false) }
@@ -99,12 +101,14 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
         }
         else {
             val mainScreen = MainScreen(platformNavigator)
+            mainScreen.setDatabaseBuilder(databaseBuilder)
             mainScreen.setMainViewModel(mainViewModel)
             navigator.push(mainScreen)
         }
     }
     else if (navigateToWelcomeScreen.value){
         val welcomeScreen = WelcomeScreen(platformNavigator)
+        welcomeScreen.setDatabaseBuilder(databaseBuilder)
         welcomeScreen.setMainViewModel(mainViewModel)
         navigator.replaceAll(welcomeScreen)
     }
@@ -138,6 +142,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
                    authenticationPresenter.validateEmail(it)
              }, onWelcome = {
                     val welcomeScreen = WelcomeScreen(platformNavigator)
+                    welcomeScreen.setDatabaseBuilder(databaseBuilder)
                     welcomeScreen.setMainViewModel(mainViewModel)
                     navigator.replaceAll(welcomeScreen)
 
@@ -160,7 +165,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
      }
  }
 
-class SplashScreen(val platformNavigator: PlatformNavigator, val mainViewModel: MainViewModel) : Screen, KoinComponent {
+class SplashScreen(val platformNavigator: PlatformNavigator, val mainViewModel: MainViewModel, val databaseBuilder: RoomDatabase.Builder<AppDatabase>) : Screen, KoinComponent {
 
     private val  authenticationPresenter: AuthenticationPresenter by inject()
 
@@ -169,7 +174,7 @@ class SplashScreen(val platformNavigator: PlatformNavigator, val mainViewModel: 
     @Composable
     override fun Content() {
         initKoin()
-        SplashScreenCompose(platformNavigator = platformNavigator, authenticationPresenter,mainViewModel)
+        SplashScreenCompose(platformNavigator = platformNavigator, authenticationPresenter,mainViewModel,databaseBuilder)
     }
 }
 

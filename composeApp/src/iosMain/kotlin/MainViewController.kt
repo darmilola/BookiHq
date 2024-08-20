@@ -1,6 +1,8 @@
 
+import androidx.compose.runtime.remember
 import androidx.compose.ui.uikit.OnFocusBehavior
 import androidx.compose.ui.window.ComposeUIViewController
+import applications.room.getAppDatabase
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
@@ -29,6 +31,7 @@ class MainViewController {
         return ComposeUIViewController(configure = {
             onFocusBehavior = OnFocusBehavior.DoNothing
         }) {
+            val database = remember { getAppDatabase() }
             if (mainViewModel == null) {
                 mainViewModel = kmpViewModel(
                     factory = viewModelFactory {
@@ -39,7 +42,8 @@ class MainViewController {
             Navigator(
                 SplashScreen(
                     platformNavigator,
-                    mainViewModel = mainViewModel!!
+                    mainViewModel = mainViewModel!!,
+                    databaseBuilder = database
                 )
             ) { navigator ->
                 SlideTransition(navigator)
@@ -52,7 +56,9 @@ class MainViewController {
         return ComposeUIViewController(configure = {
             onFocusBehavior = OnFocusBehavior.DoNothing
         }) {
+            val database = remember { getAppDatabase() }
             val welcomeScreen =  WelcomeScreen(platformNavigator, googleAuthEmail = googleAuthEmail)
+            welcomeScreen.setDatabaseBuilder(database)
             welcomeScreen.setMainViewModel(mainViewModel!!)
             Navigator(welcomeScreen) { navigator ->
                 SlideTransition(navigator)
@@ -66,6 +72,7 @@ class MainViewController {
         return ComposeUIViewController(configure = {
             onFocusBehavior = OnFocusBehavior.DoNothing
         }) {
+            val database = remember { getAppDatabase() }
             if (mainViewModel == null) {
                 mainViewModel = kmpViewModel(
                     factory = viewModelFactory {
@@ -74,6 +81,7 @@ class MainViewController {
                 )
             }
             val mainScreen =  MainScreen(platformNavigator)
+            mainScreen.setDatabaseBuilder(database)
             mainScreen.setMainViewModel(mainViewModel!!)
             Navigator(mainScreen) { navigator ->
                 SlideTransition(navigator)

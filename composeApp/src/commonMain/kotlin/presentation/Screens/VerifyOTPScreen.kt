@@ -146,9 +146,9 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                 platformNavigator.goToMainScreen()
             }
             else {
-                val mainScreen = MainScreen(platformNavigator)
-                mainScreen.setMainViewModel(mainViewModel!!)
-                navigator.replaceAll(mainScreen)
+                //val mainScreen = MainScreen(platformNavigator)
+                //mainScreen.setMainViewModel(mainViewModel!!)
+                //navigator.replaceAll(mainScreen)
             }
         }
 

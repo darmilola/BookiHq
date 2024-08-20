@@ -21,8 +21,14 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.collectAsState
 import androidx.core.app.ActivityCompat
+import applications.room.getAppDatabase
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
+import co.paystack.android.Paystack.TransactionCallback
+import co.paystack.android.PaystackSdk
+import co.paystack.android.Transaction
+import co.paystack.android.model.Card
+import co.paystack.android.model.Charge
 import com.application.zazzy.firebase.NotificationMessage
 import com.application.zazzy.firebase.NotificationService
 import com.application.zazzy.firebase.NotificationType
@@ -47,6 +53,7 @@ import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
+import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
 import kotlinx.parcelize.Parcelize
 import presentation.Screens.SplashScreen
@@ -80,12 +87,8 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        /*Paystack.builder()
-            .setPublicKey("pk_test_bf395e89a315198929ddca163fafecf64899d524")
-            .setLoggingEnabled(true)
-            .build()
-
-        paymentSheet = PaymentSheet(this, ::paymentComplete)*/
+        PaystackSdk.initialize(getApplicationContext());
+        val database = getAppDatabase(applicationContext)
 
         setContent {
             if (mainViewModel == null) {
@@ -98,7 +101,8 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             Navigator(
                 SplashScreen(
                     this,
-                    mainViewModel = mainViewModel!!
+                    mainViewModel = mainViewModel!!,
+                    databaseBuilder = database
                 )
             ) { navigator ->
                 SlideTransition(navigator)
@@ -543,43 +547,39 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         preferences!!.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
     }
 
-/*    private fun paymentComplete(paymentSheetResult: PaymentSheetResult) {
-         when (paymentSheetResult) {
-            is PaymentSheetResult.Cancelled -> {
-                paymentPreferences!!.putBoolean("isSuccess",false)
-                paymentPreferences!!.apply()
-            }
-            is PaymentSheetResult.Failed -> {
-                paymentPreferences!!.putBoolean("isSuccess",false)
-                paymentPreferences!!.apply()
-            }
-             is PaymentSheetResult.Completed -> {
-                 paymentPreferences!!.putBoolean("isSuccess",true)
-                 paymentPreferences!!.apply()
-            }
-        }
-    }*/
-
     override fun startPaymentProcess(
         paymentAmount: String,
-        customerEmail: String,
         accessCode: String,
+        paymentCard: PaymentCard,
+        customerEmail: String,
+        onPaymentLoading: () -> Unit,
         onPaymentSuccessful: () -> Unit,
         onPaymentFailed: () -> Unit
     ) {
-       // paymentSheet.launch(accessCode)
+        val card = Card(paymentCard.cardNumber, paymentCard.expiryMonth.toInt(), paymentCard.expiryYear.toInt(), paymentCard.cvv)
+        if (card.isValid) {
+            val charge = Charge()
+            charge.setCard(card)
+            charge.setAccessCode(accessCode)
+            charge.setEmail(customerEmail)
+            charge.setAmount(paymentAmount.toInt())
 
-        sharedPreferenceChangeListener = OnSharedPreferenceChangeListener { sharedPreferences, s ->
-            val isPaymentStateSuccess = sharedPreferences.getBoolean("isSuccess",false)
-            if (isPaymentStateSuccess) {
-                paymentPreferences!!.clear().apply()
-                onPaymentSuccessful()
-            }
-            else{
-                onPaymentFailed()
-            }
+            PaystackSdk.chargeCard(this@MainActivity, charge, object : TransactionCallback {
+                override fun onSuccess(transaction: Transaction?) {
+                    onPaymentSuccessful()
+                }
+
+                override fun beforeValidate(transaction: Transaction?) {}
+
+                fun showLoading(isProcessing: Boolean?) {}
+
+                override fun onError(error: Throwable?, transaction: Transaction?) {
+                    onPaymentFailed()
+                }
+            })
+        } else {
+            onPaymentFailed()
         }
-        preferences!!.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
     }
 
 }

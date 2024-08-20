@@ -33,6 +33,3 @@ data class GetProductTypeRequest(
     @SerialName("vendorId") val vendorId: Long,
     @SerialName("type") val productType: String
 )
-
-@Serializable
-data class InitCheckoutRequest(@SerialName("customerEmail") val customerEmail: String, @SerialName("amount") val amount: String)

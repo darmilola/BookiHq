@@ -92,6 +92,44 @@ fun getCardType(
    return cardType
 }
 
+fun makeValidExpirationText(text: String): String {
+    val pattern = Regex("^\\d*\$")
+    var validExp = ""
+    val singleDigitRange: ArrayList<Int> = arrayListOf()
+    singleDigitRange.add(2)
+    singleDigitRange.add(3)
+    singleDigitRange.add(4)
+    singleDigitRange.add(5)
+    singleDigitRange.add(6)
+    singleDigitRange.add(7)
+    singleDigitRange.add(8)
+    singleDigitRange.add(9)
+
+    if (text.matches(pattern)){
+        //only digit
+        val firstText = text[0]
+        if (firstText.digitToInt() in singleDigitRange){
+            validExp = "0$firstText/"
+        }
+        else{
+            validExp = if (text.length == 2){
+                "$text/"
+            } else{
+                text
+            }
+        }
+    }
+    else{
+        // has entered month, currently in years 05/ or 12/34
+        validExp = if (text == "/") {
+            ""
+        } else{
+            text
+        }
+    }
+    return validExp
+}
+
 @Composable
 fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 

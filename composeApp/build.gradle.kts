@@ -9,6 +9,8 @@ plugins {
     id("kotlin-parcelize")
     kotlin("plugin.serialization") version "1.9.21"
     id("com.google.gms.google-services")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -67,7 +69,7 @@ kotlin {
             implementation("com.google.firebase:firebase-storage")
             implementation("com.google.auth:google-auth-library-oauth2-http:1.24.0")
             implementation("com.github.bumptech.glide:glide:4.16.0")
-            implementation("com.paystack.android:paystack-ui:0.0.9")
+            implementation("co.paystack.android:paystack:3.1.3")
 
 
         }
@@ -80,6 +82,7 @@ kotlin {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
             val voyagerVersion = "1.1.0-beta02"
+
             // Navigator
             implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
 
@@ -172,6 +175,11 @@ kotlin {
 
             // pull to refresh
             implementation("dev.materii.pullrefresh:pullrefresh:1.3.0")
+
+            val room_version = "2.7.0-alpha06"
+            implementation("androidx.room:room-runtime:$room_version")
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.sqlite.bundled)
         }
 
         iosMain.dependencies {
@@ -180,6 +188,10 @@ kotlin {
             implementation("uk.co.caprica:vlcj:4.7.0")
         }
     }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 android {
@@ -230,4 +242,7 @@ android {
 dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.i18n)
+    implementation(libs.androidx.sqlite.bundled.android)
+    ksp(libs.androidx.room.compiler)
+
 }

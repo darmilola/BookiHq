@@ -1,7 +1,6 @@
 package domain.Models
 
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
-import kotlinx.serialization.Serializable
 
 interface PlatformNavigator: Parcelable {
      fun startVideoCall(authToken: String)
@@ -35,5 +34,5 @@ interface PlatformNavigator: Parcelable {
     fun exitApp()
     fun restartApp()
     fun goToMainScreen()
-    fun startPaymentProcess(paymentAmount: String, customerEmail: String, accessCode: String, onPaymentSuccessful: () -> Unit, onPaymentFailed: () -> Unit)
+    fun startPaymentProcess(paymentAmount: String, accessCode: String, paymentCard: PaymentCard, customerEmail: String, onPaymentLoading: () -> Unit, onPaymentSuccessful: () -> Unit, onPaymentFailed: () -> Unit)
  }

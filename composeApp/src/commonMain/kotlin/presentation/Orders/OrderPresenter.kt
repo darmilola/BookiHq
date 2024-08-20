@@ -76,8 +76,6 @@ class OrderPresenter(apiService: HttpClient): OrderContract.Presenter() {
         }
     }
 
-    override fun deleteOrder(userId: Int) {
-        TODO("Not yet implemented")
-    }
+    override fun deleteOrder(userId: Int) {}
 
 }

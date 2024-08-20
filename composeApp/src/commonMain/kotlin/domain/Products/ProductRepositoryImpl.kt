@@ -42,15 +42,6 @@ class ProductRepositoryImpl(apiService: HttpClient): ProductRepository {
         return productNetworkService.createOrder(param)
     }
 
-    override suspend fun initCheckout(
-        paymentAmount: String,
-        customerEmail: String
-    ): Single<InitCheckoutResponse> {
-        val param = InitCheckoutRequest(customerEmail = customerEmail, amount = paymentAmount)
-        return productNetworkService.initCheckout(param)
-    }
-
-
     override suspend fun getProductsByType(
         vendorId: Long,
         productType: String,

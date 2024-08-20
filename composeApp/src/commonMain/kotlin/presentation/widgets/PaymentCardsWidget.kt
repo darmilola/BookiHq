@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -54,10 +55,9 @@ import utils.getPaymentCardsViewHeight
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<PaymentCard>, onCardSelected: (PaymentCard) -> Unit,
-                           onDismiss: () -> Unit) {
+                           onDismiss: () -> Unit, onAddNewSelected: () -> Unit) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true))
-
     var selectedCardUIModel = remember { mutableStateOf(PaymentCardUIModel(selectedCard = PaymentCard(), visibleCards = savedCards)) }
 
     val showBottomSheet = mainViewModel.showProductBottomsheet.collectAsState()
@@ -154,7 +154,7 @@ fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<Paymen
                                 selectedCard = it,
                                 visibleCards = selectedCardUIModel.value.visibleCards.map {
                                     it2 -> it2.copy(
-                                        isSelected = it2.cardNumber == it.cardNumber
+                                        isSelected = it2.id == it.id
                                     )
                                 }
                             )
@@ -184,17 +184,21 @@ fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<Paymen
                             colorFilter = ColorFilter.tint(color = Colors.primaryColor)
                         )
                     }
-                    TextComponent(
-                        text = "Add New Card",
-                        fontSize = 16,
-                        fontFamily = GGSansBold,
-                        textStyle = TextStyle(),
-                        textAlign = TextAlign.Left,
-                        fontWeight = FontWeight.ExtraBold,
-                        lineHeight = 20,
-                        textColor = Colors.primaryColor,
-                        maxLines = 1
-                    )
+                    Box(modifier = Modifier.wrapContentSize().clickable {
+                        onAddNewSelected()
+                    }) {
+                        TextComponent(
+                            text = "Add New Card",
+                            fontSize = 16,
+                            fontFamily = GGSansBold,
+                            textStyle = TextStyle(),
+                            textAlign = TextAlign.Left,
+                            fontWeight = FontWeight.ExtraBold,
+                            lineHeight = 20,
+                            textColor = Colors.primaryColor,
+                            maxLines = 1
+                        )
+                    }
                 }
             }
 
@@ -214,7 +218,7 @@ fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<Paymen
                 if (selectedCardUIModel.value.selectedCard!!.cardNumber.isNotEmpty()){
                     scope.launch {
                         scaffoldState.bottomSheetState.hide()
-                        onDismiss()
+                        onCardSelected(selectedCardUIModel.value.selectedCard!!)
                     }
                 }
             }

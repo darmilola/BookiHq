@@ -38,14 +38,12 @@ class ProductContract {
 class CartContract {
     interface View {
         fun showLce(appUIStates: AppUIStates)
-        fun showAuthorizationResult(paymentAuthorizationResult: PaymentAuthorizationResult)
     }
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
         abstract fun createOrder(orderItemList: List<OrderItem>, vendorId: Long, userId: Long, deliveryMethod: String, paymentMethod: String, day: Int, month: Int, year: Int,
                                  user: User, vendor: Vendor,paymentAmount: Long, platformNavigator: PlatformNavigator)
-        abstract fun initCheckOut(customerEmail: String, amount: String)
 
     }
 }

@@ -29,7 +29,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.room.RoomDatabase
 import applications.device.deviceInfo
+import applications.room.AppDatabase
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
@@ -60,9 +62,14 @@ class WelcomeScreen(val platformNavigator: PlatformNavigator, val googleAuthEmai
 
     @Transient private val  authenticationPresenter: AuthenticationPresenter by inject()
     @Transient private var mainViewModel: MainViewModel? = null
+    @Transient private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 
     fun setMainViewModel(mainViewModel: MainViewModel) {
         this.mainViewModel = mainViewModel
+    }
+
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>){
+        this.databaseBuilder = databaseBuilder
     }
 
     override val key: ScreenKey
@@ -77,12 +84,13 @@ class WelcomeScreen(val platformNavigator: PlatformNavigator, val googleAuthEmai
             platformNavigator.exitApp()
         }
 
-        WelcomeScreenCompose(platformNavigator, googleAuthEmail, authenticationPresenter = authenticationPresenter, mainViewModel = mainViewModel!!)
+        WelcomeScreenCompose(platformNavigator, googleAuthEmail, authenticationPresenter = authenticationPresenter, mainViewModel = mainViewModel!!, databaseBuilder = databaseBuilder!!)
     }
 }
 
 @Composable
-fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: String = "", authenticationPresenter: AuthenticationPresenter, mainViewModel: MainViewModel) {
+fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: String = "", authenticationPresenter: AuthenticationPresenter, mainViewModel: MainViewModel,
+                         databaseBuilder: RoomDatabase.Builder<AppDatabase>) {
 
     val verificationInProgress = remember { mutableStateOf(false) }
     val authEmail = remember { mutableStateOf("") }
@@ -164,6 +172,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
         }
         else {
             val mainScreen = MainScreen(platformNavigator)
+            mainScreen.setDatabaseBuilder(databaseBuilder)
             mainScreen.setMainViewModel(mainViewModel)
             navigator.push(mainScreen)
         }

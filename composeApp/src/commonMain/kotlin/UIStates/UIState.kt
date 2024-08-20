@@ -3,6 +3,7 @@ package UIStates
 
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import domain.Enums.ActionType
 
 @Parcelize
 class AppUIStates(
@@ -12,4 +13,5 @@ class AppUIStates(
     val isDefault: Boolean = false,
     val loadingMessage: String = "",
     val successMessage: String = "",
+    val actionType: String = ActionType.DEFAULT.toPath(),
     val errorMessage: String = ""): Parcelable
