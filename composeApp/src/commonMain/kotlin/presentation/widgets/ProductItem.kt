@@ -79,12 +79,14 @@ fun HomeProductImage(product: Product) {
                 .fillMaxHeight(),
             contentAlignment = Alignment.TopStart
         ) {
-            ImageComponent(
-                imageModifier = imageModifier,
-                imageRes = product.productImages[0].imageUrl,
-                contentScale = ContentScale.Crop,
-                isAsync = true
-            )
+            if (product.productImages.isNotEmpty()) {
+                ImageComponent(
+                    imageModifier = imageModifier,
+                    imageRes = product.productImages[0].imageUrl,
+                    contentScale = ContentScale.Crop,
+                    isAsync = true
+                )
+            }
         }
     }
 }
