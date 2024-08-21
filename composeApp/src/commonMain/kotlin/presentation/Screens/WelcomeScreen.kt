@@ -33,6 +33,7 @@ import androidx.room.RoomDatabase
 import applications.device.deviceInfo
 import applications.room.AppDatabase
 import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -72,8 +73,7 @@ class WelcomeScreen(val platformNavigator: PlatformNavigator, val googleAuthEmai
         this.databaseBuilder = databaseBuilder
     }
 
-    override val key: ScreenKey
-        get() = "welcomeScreen"
+    override val key: ScreenKey = uniqueScreenKey
 
     @Composable
     override fun Content() {

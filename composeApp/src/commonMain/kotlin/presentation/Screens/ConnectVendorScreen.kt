@@ -29,6 +29,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
 import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
@@ -81,8 +82,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
         this.mainViewModel = mainViewModel
     }
 
-    override val key: ScreenKey
-        get() = "connectVendorScreen"
+    override val key: ScreenKey = uniqueScreenKey
 
     @Composable
     override fun Content() {

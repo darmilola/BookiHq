@@ -89,7 +89,8 @@ import utils.makeValidExpirationText
 class AddDebitCardScreen(val  platformNavigator: PlatformNavigator? = null) : KoinComponent,
     ParcelableScreen, ScreenTransition {
 
-        override val key: ScreenKey = uniqueScreenKey
+    override val key: ScreenKey = uniqueScreenKey
+
     @Transient
     private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 

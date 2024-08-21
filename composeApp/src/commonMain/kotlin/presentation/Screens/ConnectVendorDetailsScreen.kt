@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import applications.device.deviceInfo
 import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
@@ -51,23 +52,10 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
         this.mainViewModel = mainViewModel
     }
 
-    override val key: ScreenKey
-        get() = "vendorDetailScreen"
+    override val key: ScreenKey = uniqueScreenKey
 
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val vendorConnected = remember { mutableStateOf(false) }
-        val userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(), -1L]
-        val userFirstname = preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath(),""]
-        val connectVendorAction = actionPerformedActionUIStateViewModel!!.uiStateInfo.collectAsState()
-
-        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
-        if (onBackPressed.value){
-            mainViewModel!!.setOnBackPressed(false)
-            navigator.pop()
-        }
-
 
         if (loadingScreenUiStateViewModel == null) {
             loadingScreenUiStateViewModel = kmpViewModel(
@@ -93,6 +81,19 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
             connectVendorPresenter)
         handler.init()
 
+        val navigator = LocalNavigator.currentOrThrow
+        val vendorConnected = remember { mutableStateOf(false) }
+        val userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(), -1L]
+        val userFirstname = preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath(),""]
+        val connectVendorAction = actionPerformedActionUIStateViewModel!!.uiStateInfo.collectAsState()
+
+        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+        if (onBackPressed.value){
+            mainViewModel!!.setOnBackPressed(false)
+            navigator.pop()
+        }
+
+
         if (connectVendorAction.value.isLoading) {
             Box(modifier = Modifier.fillMaxWidth(0.90f)) {
                 LoadingDialog("Connecting Vendor")
@@ -106,9 +107,9 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
                 platformNavigator.goToMainScreen()
             }
             else {
-              /*  val mainScreen = MainScreen(platformNavigator)
+                val mainScreen = MainScreen(platformNavigator)
                 mainScreen.setMainViewModel(mainViewModel!!)
-                navigator.replaceAll(mainScreen)*/
+                navigator.replaceAll(mainScreen)
             }
         }
         else if (connectVendorAction.value.isFailed){

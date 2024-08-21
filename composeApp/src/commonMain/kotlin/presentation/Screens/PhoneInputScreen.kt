@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -62,8 +63,7 @@ class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScr
         this.mainViewModel = mainViewModel
     }
 
-    override val key: ScreenKey
-        get() = "phoneInputScreen"
+    override val key: ScreenKey = uniqueScreenKey
 
     @Composable
     override fun Content() {

@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import applications.device.deviceInfo
 import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
@@ -63,8 +64,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
     @Transient private val authenticationPresenter : AuthenticationPresenter by inject()
     @Transient private var mainViewModel: MainViewModel? = null
 
-    override val key: ScreenKey
-        get() = "verifyOTPScreen"
+    override val key: ScreenKey = uniqueScreenKey
 
     fun setMainViewModel(mainViewModel: MainViewModel) {
         this.mainViewModel = mainViewModel
