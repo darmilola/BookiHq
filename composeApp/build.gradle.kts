@@ -53,8 +53,6 @@ kotlin {
             implementation("androidx.media3:media3-exoplayer:1.1.0")
             implementation("androidx.media3:media3-exoplayer-dash:1.1.0")
             implementation("androidx.media3:media3-ui:1.1.0")
-           // implementation ("io.dyte:core-android:1.37.0")
-            implementation ("io.dyte:uikit:1.18.0")
             implementation(project.dependencies.platform("com.google.firebase:firebase-bom:33.1.1"))
 
             // Add the dependency for the Firebase Authentication library
@@ -70,8 +68,6 @@ kotlin {
             implementation("com.google.auth:google-auth-library-oauth2-http:1.24.0")
             implementation("com.github.bumptech.glide:glide:4.16.0")
             implementation("co.paystack.android:paystack:3.1.3")
-
-
         }
 
         commonMain.dependencies {
@@ -243,6 +239,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.i18n)
     implementation(libs.androidx.sqlite.bundled.android)
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.constraintlayout)
     ksp(libs.androidx.room.compiler)
 
 }

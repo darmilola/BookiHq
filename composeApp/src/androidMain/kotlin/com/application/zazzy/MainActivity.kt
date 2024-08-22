@@ -2,6 +2,8 @@ package com.application.zazzy
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -14,6 +16,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.OpenableColumns
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
@@ -98,13 +101,11 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                     },
                 )
             }
-            Navigator(
-                SplashScreen(
-                    this,
-                    mainViewModel = mainViewModel!!,
-                    databaseBuilder = database
-                )
-            ) { navigator ->
+            val splashScreen = SplashScreen(platformNavigator = this)
+            splashScreen.setDatabaseBuilder(database)
+            splashScreen.setMainViewModel(mainViewModel!!)
+
+            Navigator(splashScreen) { navigator ->
                 SlideTransition(navigator)
 
             }
@@ -241,13 +242,6 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             }
         }.start()
     }
-
-    override fun startVideoCall(authToken: String) {
-        val intent = Intent(this, MeetWithTherapistActivity::class.java)
-        intent.putExtra("authToken", authToken)
-        startActivity(intent)
-    }
-
     override fun startGoogleSSO(onAuthSuccessful: (String) -> Unit, onAuthFailed: () -> Unit) {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken("114387254114-knn5thuj39m2hgnns9vnl8ic35f15nhp.apps.googleusercontent.com")

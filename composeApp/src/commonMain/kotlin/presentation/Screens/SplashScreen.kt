@@ -23,6 +23,8 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
@@ -37,6 +39,7 @@ import presentation.components.SplashScreenBackground
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.AuthenticationScreenHandler
@@ -165,16 +168,27 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
      }
  }
 
-class SplashScreen(val platformNavigator: PlatformNavigator, val mainViewModel: MainViewModel, val databaseBuilder: RoomDatabase.Builder<AppDatabase>) : Screen, KoinComponent {
+@Parcelize
+class SplashScreen(val platformNavigator: PlatformNavigator) : Screen, KoinComponent, Parcelable {
 
-    private val  authenticationPresenter: AuthenticationPresenter by inject()
+    @Transient private val  authenticationPresenter: AuthenticationPresenter by inject()
+    @Transient private var mainViewModel: MainViewModel? = null
+    @Transient private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 
     override val key: ScreenKey = uniqueScreenKey
+
+    fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
+
+    fun setDatabaseBuilder(builder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = builder
+    }
 
     @Composable
     override fun Content() {
         initKoin()
-        SplashScreenCompose(platformNavigator = platformNavigator, authenticationPresenter,mainViewModel,databaseBuilder)
+        SplashScreenCompose(platformNavigator = platformNavigator, authenticationPresenter,mainViewModel!!,databaseBuilder!!)
     }
 }
 

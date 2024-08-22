@@ -298,9 +298,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                     postponeTimeUIStateViewModel!!,
                     postponementViewModel!!,
                     appointmentPresenter,
-                    onMeetingTokenReady = {
-                        platformNavigator.startVideoCall(it)
-                    }
+                    onMeetingTokenReady = {}
                 )
                 handler.init()
 

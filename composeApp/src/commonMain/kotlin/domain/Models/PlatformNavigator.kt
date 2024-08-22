@@ -3,7 +3,6 @@ package domain.Models
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 
 interface PlatformNavigator: Parcelable {
-     fun startVideoCall(authToken: String)
      fun startScanningBarCode(onCodeReady: (String) -> Unit)
      fun getUserLocation(onLocationReady: (String, String) -> Unit)
      fun startGoogleSSO(onAuthSuccessful: (String) -> Unit,

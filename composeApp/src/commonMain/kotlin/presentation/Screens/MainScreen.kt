@@ -144,7 +144,10 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
         if (restartApp.value) {
             mainViewModel!!.setRestartApp(false)
             val navigator = LocalNavigator.currentOrThrow
-            navigator.replaceAll(SplashScreen(platformNavigator, mainViewModel!!, databaseBuilder!!))
+            val splashScreen = SplashScreen(platformNavigator = platformNavigator)
+            splashScreen.setDatabaseBuilder(databaseBuilder)
+            splashScreen.setMainViewModel(mainViewModel!!)
+            navigator.replaceAll(splashScreen)
         }
 
         when (screenNav?.value?.second) {
@@ -169,19 +172,6 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                 mainViewModel!!.setScreenNav(
                     Pair(
                         Screens.ORDERS.toPath(),
-                        Screens.DEFAULT.toPath()
-                    )
-                )
-            }
-
-            Screens.TALK_WITH_A_THERAPIST.toPath() -> {
-                val talkWithTherapist = TalkWithATherapist(platformNavigator)
-                talkWithTherapist.setMainViewModel(mainViewModel!!)
-                val nav = LocalNavigator.currentOrThrow
-                nav.push(talkWithTherapist)
-                mainViewModel!!.setScreenNav(
-                    Pair(
-                        Screens.TALK_WITH_A_THERAPIST.toPath(),
                         Screens.DEFAULT.toPath()
                     )
                 )

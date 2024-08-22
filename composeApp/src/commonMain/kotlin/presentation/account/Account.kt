@@ -182,20 +182,6 @@ class AccountTab : Tab, Parcelable {
                         mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.ORDERS.toPath()))
                     })
 
-
-                ActionItemComponent(
-                    modifier = actionStyle,
-                    buttonText = "Talk With A Therapist",
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                    fontSize = 20,
-                    textColor = Colors.darkPrimary,
-                    style = TextStyle(),
-                    iconRes = "drawable/video_chat.png",
-                    isDestructiveAction = false, onClick = {
-                        mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.TALK_WITH_A_THERAPIST.toPath()))
-                    })
-
-
                 ActionItemComponent(
                     modifier = actionStyle,
                     buttonText = "Invite A Friend",

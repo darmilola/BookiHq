@@ -191,10 +191,6 @@ class AppStartViewController: UIViewController, PlatformNavigator, UINavigationC
         
     }
     
-    func startVideoCall(authToken: String) {
-        
-    }
-    
     func startXSSO(onAuthSuccessful: @escaping (String) -> Void, onAuthFailed: @escaping () -> Void) {
         
     }
