@@ -59,8 +59,6 @@ import org.koin.core.component.inject
 import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.DomainViewHandler.PlatformHandler
 import presentation.DomainViewHandler.ProfileHandler
-import presentation.authentication.AttachCityDropDownWidget
-import presentation.authentication.AttachCountryDropDownWidget
 import presentation.authentication.AuthenticationPresenter
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton

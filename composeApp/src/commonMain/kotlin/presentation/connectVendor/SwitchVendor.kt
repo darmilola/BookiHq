@@ -86,7 +86,6 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
     @Transient
     private var vendorResourceListEnvelopeViewModel: VendorsResourceListEnvelopeViewModel? = null
     private var country: String = ""
-    private var city: String = ""
     @Transient
     private val preferenceSettings: Settings = Settings()
     @Transient
@@ -102,7 +101,6 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
     override fun Content() {
         val searchQuery = remember { mutableStateOf("") }
         country = preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""]
-        city = preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""]
         val navigator = LocalNavigator.currentOrThrow
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
@@ -148,14 +146,15 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
         LifecycleEffect(onStarted = {
             if (preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), ""].isNotEmpty()
                 && preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""].isNotEmpty()){
-                connectVendorPresenter.getVendor(country = country, city = city)
+                connectVendorPresenter.getVendor(country = country)
                 vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
             }
             else{
-                platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String ->
+                platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String, country: String ->
                     preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
                     preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
-                    connectVendorPresenter.getVendor(country = country, city = city)
+                    preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = country
+                    connectVendorPresenter.getVendor(country = country)
                     vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                 })
             }
@@ -216,10 +215,10 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                     SearchBar(placeholderText = "search @vendor", onValueChange = {
                         vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                         searchQuery.value = it
-                        connectVendorPresenter.searchVendor(country,city, searchQuery = it)
+                        connectVendorPresenter.searchVendor(country,searchQuery = it)
                     }, onBackPressed = {
                         vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
-                        connectVendorPresenter.getVendor(country = country, city = city)
+                        connectVendorPresenter.getVendor(country = country)
                     })
                 }
             },
@@ -280,14 +279,12 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                                         if (searchQuery.value.isNotEmpty()) {
                                             connectVendorPresenter.searchMoreVendors(
                                                 country,
-                                                city = city,
                                                 searchQuery.value,
                                                 vendorResourceListEnvelopeViewModel?.currentPage?.value!! + 1
                                             )
                                         } else {
                                             connectVendorPresenter.getMoreVendor(
                                                 country,
-                                                city = city,
                                                 vendorResourceListEnvelopeViewModel?.currentPage?.value!! + 1
                                             )
                                         }

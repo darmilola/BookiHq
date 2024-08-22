@@ -322,7 +322,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
 
                 }*/
                 else if (uiState.value.isSuccess) {
-                var pullRefreshState = rememberPullRefreshState(refreshing = isRefreshing.value, onRefresh = {
+                val pullRefreshState = rememberPullRefreshState(refreshing = isRefreshing.value, onRefresh = {
                     appointmentPresenter.refreshUserAppointments(userId)
                 })
                 PullRefreshLayout(

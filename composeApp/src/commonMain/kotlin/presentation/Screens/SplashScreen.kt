@@ -90,7 +90,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
         },
         onVerificationStarted = {},
         onVerificationEnded = {}, onCompleteStarted = {}, onCompleteEnded = {},
-        connectVendorOnProfileCompleted = { _,_,_,_ ->}, onUpdateStarted = {}, onUpdateEnded = {})
+        connectVendorOnProfileCompleted = { _,_,_ ->}, onUpdateStarted = {}, onUpdateEnded = {})
     handler.init()
 
     if (navigateToConnectVendor.value){

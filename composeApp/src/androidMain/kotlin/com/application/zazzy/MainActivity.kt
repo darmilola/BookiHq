@@ -2,13 +2,13 @@ package com.application.zazzy
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ContentValues
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -16,7 +16,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.OpenableColumns
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
@@ -62,6 +61,7 @@ import kotlinx.parcelize.Parcelize
 import presentation.Screens.SplashScreen
 import presentation.viewmodels.MainViewModel
 import java.io.IOException
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 
@@ -503,7 +503,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         // No Android Implementation
     }
 
-    override fun getUserLocation(onLocationReady: (String, String) -> Unit) {
+    override fun getUserLocation(onLocationReady: (String, String, String) -> Unit) {
         if (hasNetwork) {
             if (ActivityCompat.checkSelfPermission(
                     this,
@@ -525,20 +525,51 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                 val lastKnownLocationByNetwork =
                     locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
 
-                lastKnownLocationByNetwork?.let {
-                    onLocationReady(lastKnownLocationByNetwork.latitude.toString(), lastKnownLocationByNetwork.longitude.toString())
+                val lat =  6.465422
+                val long = 3.406448
+
+                val countryName = getCountryName(this, lat, long)
+
+                if (countryName != null) {
+                    onLocationReady(
+                        lastKnownLocationByNetwork!!.latitude.toString(),
+                        lastKnownLocationByNetwork!!.longitude.toString(),
+                        countryName
+                    )
                 }
             }
-            }
+         }
         sharedPreferenceChangeListener = OnSharedPreferenceChangeListener { sharedPreferences, s ->
-            val latitude = sharedPreferences.getString("latitude","")
-            val longitude = sharedPreferences.getString("longitude","")
+            //val latitude = sharedPreferences.getString("latitude","")
+            //val longitude = sharedPreferences.getString("longitude","")
+            val latitude =  6.465422.toString()
+            val longitude = 3.406448.toString()
             if (latitude!!.isNotEmpty() && longitude!!.isNotEmpty()) {
                 locationAuthPreferences!!.clear().apply()
-                onLocationReady(latitude,longitude)
+                val countryName = getCountryName(this, latitude.toDouble(), longitude.toDouble())
+
+                if (countryName != null) {
+                    onLocationReady(latitude,longitude, countryName)
+                }
             }
         }
         preferences!!.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
+    }
+
+
+    fun getCountryName(context: Context?, latitude: Double, longitude: Double): String? {
+        val geocoder = Geocoder(context!!, Locale.getDefault())
+        var addresses: List<Address>? = null
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1)
+            var result: Address
+            return if (addresses != null && !addresses.isEmpty()) {
+                addresses[0].getCountryName()
+            } else null
+        } catch (ignored: IOException) {
+            //do something
+        }
+        return null
     }
 
     override fun startPaymentProcess(

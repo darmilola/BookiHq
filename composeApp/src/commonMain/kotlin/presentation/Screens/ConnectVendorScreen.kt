@@ -73,10 +73,8 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
     @Transient private var connectPageViewModel: ConnectPageViewModel? = null
     @Transient private var mainViewModel: MainViewModel? = null
     @Transient private var vendorResourceListEnvelopeViewModel: VendorsResourceListEnvelopeViewModel? = null
-    @Transient
-    private var actionPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient private var actionPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     private var country: String = ""
-    private var city: String = ""
 
     fun setMainViewModel(mainViewModel: MainViewModel) {
         this.mainViewModel = mainViewModel
@@ -89,10 +87,9 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
         country = preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""]
-        city = preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""]
 
         if (onBackPressed.value){
-            platformNavigator!!.exitApp()
+            platformNavigator.exitApp()
         }
 
         if (vendorResourceListEnvelopeViewModel == null) {
@@ -122,18 +119,18 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
         LifecycleEffect(onStarted = {
             if (preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), ""].isNotEmpty()
                 && preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""].isNotEmpty()){
-                connectVendorPresenter.getVendor(country = country, city = city)
+                connectVendorPresenter.getVendor(country = country)
                 vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
             }
             else{
-                platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String ->
+                platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String ->
                     preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
                     preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
-                    connectVendorPresenter.getVendor(country = country, city = city)
+                    preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = countryName
+                    connectVendorPresenter.getVendor(country = country)
                     vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                 })
             }
-
         }, onDisposed = {})
 
 
@@ -187,10 +184,10 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
                         SearchBar(placeholderText = "search @vendor", onValueChange = {
                             vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                             searchQuery.value = it
-                            connectVendorPresenter.searchVendor(country,city = city, searchQuery = it)
+                            connectVendorPresenter.searchVendor(country,searchQuery = it)
                         }, onBackPressed = {
                             vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
-                            connectVendorPresenter.getVendor(country = country, city = city)
+                            connectVendorPresenter.getVendor(country = country)
                         })
                     }
                 },
@@ -251,14 +248,12 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
                                                 if (searchQuery.value.isNotEmpty()) {
                                                     connectVendorPresenter.searchMoreVendors(
                                                         country,
-                                                        city = city,
                                                         searchQuery.value,
                                                         vendorResourceListEnvelopeViewModel?.currentPage?.value!! + 1
                                                     )
                                                 } else {
                                                     connectVendorPresenter.getMoreVendor(
                                                         country,
-                                                        city = city,
                                                         vendorResourceListEnvelopeViewModel?.currentPage?.value!! + 1
                                                     )
                                                 }

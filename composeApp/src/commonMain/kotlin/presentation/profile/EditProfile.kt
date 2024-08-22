@@ -47,10 +47,14 @@ import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
+import com.russhwolf.settings.set
 import domain.Enums.DeviceType
 import domain.Enums.Gender
 import domain.Models.PlatformNavigator
 import domain.Enums.Screens
+import domain.Enums.SharedPreferenceEnum
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -58,8 +62,6 @@ import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.DomainViewHandler.PlatformHandler
 import presentation.DomainViewHandler.ProfileHandler
 import presentation.Screens.SplashScreen
-import presentation.authentication.AttachCityDropDownWidget
-import presentation.authentication.AttachCountryDropDownWidget
 import presentation.authentication.AuthenticationPresenter
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
@@ -121,14 +123,12 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
         val userGender = if (userInfo.gender == Gender.MALE.toPath()) Gender.MALE.toPath()
         else Gender.FEMALE.toPath()
 
-        val userAddress = userInfo.address ?: ""
-        val userPhone = userInfo.contactPhone ?: ""
         val firstname = remember { mutableStateOf(userInfo.firstname) }
         val lastname = remember { mutableStateOf(userInfo.lastname) }
         val gender = remember { mutableStateOf(userGender) }
         val city = remember { mutableStateOf(userInfo.city) }
-        val contactPhone = remember { mutableStateOf(userPhone) }
-        val address = remember { mutableStateOf(userAddress) }
+        val contactPhone = remember { mutableStateOf(userInfo.contactPhone) }
+        val address = remember { mutableStateOf(userInfo.address) }
         val profileImageUrl = remember { mutableStateOf(userInfo.profileImageUrl) }
         val inputList =  ArrayList<String>()
         val country = remember { mutableStateOf(userInfo.country) }
@@ -136,6 +136,8 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
         val updateProfileStarted = remember { mutableStateOf(false) }
         val updateProfileEnded = remember { mutableStateOf(false) }
         val updateProfileSuccessful = remember { mutableStateOf(false) }
+        val pattern = remember { Regex("^\\d*\$") }
+        val preferenceSettings = Settings()
 
         if (performedActionUIStateViewModel == null) {
             performedActionUIStateViewModel= kmpViewModel(
@@ -170,8 +172,8 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
 
         inputList.add(firstname.value!!)
         inputList.add(lastname.value!!)
-        inputList.add(address.value)
-        inputList.add(contactPhone.value)
+        inputList.add(address.value!!)
+        inputList.add(contactPhone.value!!)
         inputList.add(city.value.toString())
         inputList.add(country.value.toString())
 
@@ -203,7 +205,7 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
             connectVendor = { user -> },
             onVerificationStarted = {},
             onVerificationEnded = {}, onCompleteStarted = {}, onCompleteEnded = {},
-            connectVendorOnProfileCompleted = { country,city,profileId, apiKey -> },
+            connectVendorOnProfileCompleted = { country,profileId, apiKey -> },
             onUpdateStarted = {
                  updateProfileStarted.value = true
                  updateProfileEnded.value = false
@@ -222,6 +224,18 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
         }
         else if(updateProfileEnded.value && !updateProfileSuccessful.value){
             ErrorDialog(dialogTitle = "Error Occurred", actionTitle = "", onConfirmation = {})
+        }
+
+        if (preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""].isNotEmpty()){
+            country.value = preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""]
+        }
+        else{
+            platformNavigator!!.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String ->
+                preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
+                preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
+                preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = countryName
+                country.value = countryName
+            })
         }
 
 
@@ -299,15 +313,6 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
                             }
                         }
                     }
-                    AttachCountryDropDownWidget(defaultValue = country.value!!) {
-                        profilePresenter.getPlatformCities(country = it)
-                        country.value = it
-                        city.value = ""
-                    }
-
-                    AttachCityDropDownWidget(defaultValue = city.value!!,platformViewModel = platformViewModel!!) {
-                        city.value = it
-                    }
 
                     Box(
                         modifier = Modifier.fillMaxWidth()
@@ -318,7 +323,7 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
                             iconRes = "drawable/address.png",
                             placeholderText = "Mobile Address",
                             iconSize = 28,
-                            text = address.value,
+                            text = address.value!!,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                             isPasswordField = false,
                             onSaveClicked = isSavedClicked.value,
@@ -345,7 +350,9 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
                             isSingleLine = true,
                             maxLines = 1
                         ) {
-                            contactPhone.value = it
+                            if (it.matches(pattern)) {
+                                contactPhone.value = it
+                            }
                         }
                     }
 
@@ -410,29 +417,19 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
                                 ShowSnackBar(title = "Input Required", description = "Please provide the required info", actionLabel = "", duration = StackedSnackbarDuration.Short, snackBarType = SnackBarType.ERROR,
                                     onActionClick = {}, stackedSnackBarHostState = stackedSnackBarHostState)
                             }
-                            else if (country.value?.isEmpty() == true){
+                            else if (country.value!!.isEmpty()){
                                 ShowSnackBar(title = "Error",
-                                    description = "Please Select your country of residence",
+                                    description = "Please Allow Your Location",
                                     actionLabel = "",
                                     duration = StackedSnackbarDuration.Long,
                                     snackBarType = SnackBarType.ERROR,
                                     stackedSnackBarHostState = stackedSnackBarHostState,
                                     onActionClick = {})
                             }
-                            else if (city.value?.isEmpty() == true){
-                                ShowSnackBar(title = "Error",
-                                    description = "Please Select your City",
-                                    actionLabel = "",
-                                    duration = StackedSnackbarDuration.Long,
-                                    snackBarType = SnackBarType.ERROR,
-                                    stackedSnackBarHostState = stackedSnackBarHostState,
-                                    onActionClick = {})
-                            }
-
                             else {
                                 authenticationPresenter.updateProfile(userId = userInfo.userId!!, firstname = firstname.value!!, lastname = lastname.value!!,
-                                    address = address.value, contactPhone = contactPhone.value!!,
-                                    country = country.value!!, city = city.value!!, gender = gender.value!!, profileImageUrl = profileImageUrl.value!!)
+                                    address = address.value!!, contactPhone = contactPhone.value!!,
+                                    country = country.value!!, gender = gender.value, profileImageUrl = profileImageUrl.value!!)
                             }
 
                         }

@@ -54,12 +54,13 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
         }
     }
 
-    override fun getVendor(country: String, city: String) {
+    override fun getVendor(country: String) {
+        println("Country is $country")
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showScreenLce(AppUIStates(isLoading = true))
-                    connectVendorRepositoryImpl.getVendor(country, city)
+                    connectVendorRepositoryImpl.getVendor(country)
                         .subscribe(
                             onSuccess = { result ->
                                userLatitude =  preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), "0.0"].toDouble()
@@ -70,32 +71,36 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                                         vendor.distanceFromCustomer = distance
                                         vendor
                                     }
-                                    result.listItem.resources = updatedVendorDistance
+                                    val updatedSortedDistance = updatedVendorDistance.sortedBy{ it.distanceFromCustomer }
+                                    result.listItem.resources = updatedSortedDistance
                                     contractView?.showScreenLce(AppUIStates(isSuccess = true))
                                     contractView?.showVendors(result.listItem,isFromSearch = false, isLoadMore = false)
                                 }
                                 else{
+                                    println("Response 3 $result")
                                     contractView?.showScreenLce(AppUIStates(isFailed = true))
                                 }
                             },
                             onError = {
+                                println("Response 4 ${it.message}")
                                 contractView?.showScreenLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
+                println("Response 5 ${e.message}")
                 contractView?.showScreenLce(AppUIStates(isFailed = true))
             }
         }
     }
 
-    override fun getMoreVendor(country: String, city: String, nextPage: Int) {
+    override fun getMoreVendor(country: String, nextPage: Int) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.onLoadMoreVendorStarted(true)
-                    connectVendorRepositoryImpl.getVendor(country,city,nextPage)
+                    connectVendorRepositoryImpl.getVendor(country, nextPage)
                         .subscribe(
                             onSuccess = { result ->
                                 userLatitude =  preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), "0.0"].toDouble()
@@ -106,7 +111,8 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                                         vendor.distanceFromCustomer = distance
                                         vendor
                                     }
-                                    result.listItem.resources = updatedVendorDistance
+                                    val updatedSortedDistance = updatedVendorDistance.sortedBy{ it.distanceFromCustomer }
+                                    result.listItem.resources = updatedSortedDistance
                                     contractView?.onLoadMoreVendorEnded(true)
                                     contractView?.showVendors(result.listItem, isFromSearch = false, isLoadMore = true)
                                 }
@@ -126,12 +132,12 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
         }
     }
 
-    override fun searchVendor(country: String, city: String, searchQuery: String) {
+    override fun searchVendor(country: String, searchQuery: String) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showScreenLce(AppUIStates(isLoading = true))
-                    connectVendorRepositoryImpl.searchVendor(country,city,searchQuery)
+                    connectVendorRepositoryImpl.searchVendor(country, searchQuery)
                         .subscribe(
                             onSuccess = { result ->
                                 userLatitude =  preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), "0.0"].toDouble()
@@ -142,9 +148,8 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                                         vendor.distanceFromCustomer = distance
                                         vendor
                                     }
-                                    println("Response ${result.listItem.nextPageUrl}")
-                                    println("Response ${result.listItem.prevPageUrl}")
-                                    result.listItem.resources = updatedVendorDistance
+                                    val updatedSortedDistance = updatedVendorDistance.sortedBy{ it.distanceFromCustomer }
+                                    result.listItem.resources = updatedSortedDistance
                                     contractView?.showScreenLce(AppUIStates(isSuccess = true))
                                     contractView?.showVendors(result.listItem, isFromSearch = true, isLoadMore = false)
                                 }
@@ -164,12 +169,12 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
         }
     }
 
-    override fun searchMoreVendors(country: String, city: String, searchQuery: String, nextPage: Int) {
+    override fun searchMoreVendors(country: String, searchQuery: String, nextPage: Int) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.onLoadMoreVendorStarted(true)
-                    connectVendorRepositoryImpl.searchVendor(country,city,searchQuery,nextPage)
+                    connectVendorRepositoryImpl.searchVendor(country,searchQuery,nextPage)
                         .subscribe(
                             onSuccess = { result ->
                                 runBlocking {
@@ -189,8 +194,8 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                                                 vendor.distanceFromCustomer = distance
                                                 vendor
                                             }
-                                        println(result.listItem.resources)
-                                        result.listItem.resources = updatedVendorDistance
+                                        val updatedSortedDistance = updatedVendorDistance.sortedBy{ it.distanceFromCustomer }
+                                        result.listItem.resources = updatedSortedDistance
                                         contractView?.onLoadMoreVendorEnded(true)
                                         contractView?.showVendors(
                                             result.listItem,

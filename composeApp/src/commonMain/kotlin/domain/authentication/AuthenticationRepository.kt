@@ -19,7 +19,6 @@ interface AuthenticationRepository {
         address: String,
         contactPhone: String,
         country: String,
-        city: String,
         gender: String,
         profileImageUrl: String
     ): Single<ServerResponse>
@@ -34,14 +33,13 @@ interface AuthenticationRepository {
         lastname: String,
         userEmail: String,
         authPhone: String,
-        signupType: String,
+        address: String,
+        contactPhone: String,
         country: String,
-        city: String,
+        signupType: String,
         gender: String,
         profileImageUrl: String
     ): Single<CompleteProfileResponse>
-
-    suspend fun reverseGeocode(lat: Double, lng: Double): Single<Place?>
     suspend fun validateUserProfile(userEmail: String): Single<AuthenticationResponse>
     suspend fun validateEmail(userEmail: String): Single<AuthenticationResponse>
     suspend fun validatePhone(authPhone: String): Single<AuthenticationResponse>

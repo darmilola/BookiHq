@@ -14,8 +14,6 @@ class AuthenticationRepositoryImpl(apiService: HttpClient):
     AuthenticationRepository {
 
     private val authenticationNetworkService: AuthenticationNetworkService = AuthenticationNetworkService(apiService)
-    private val geocoder: Geocoder = createGeocoder()
-
 
     override suspend fun validateUserProfile(userEmail: String): Single<AuthenticationResponse> {
         val param = ValidateProfileRequest(userEmail)
@@ -39,11 +37,10 @@ class AuthenticationRepositoryImpl(apiService: HttpClient):
         address: String,
         contactPhone: String,
         country: String,
-        city: String,
         gender: String,
         profileImageUrl: String
     ): Single<ServerResponse> {
-        val param = UpdateProfileRequest(userId, firstname, lastname, contactPhone, address, country, city, gender, profileImageUrl)
+        val param = UpdateProfileRequest(userId, firstname, lastname, contactPhone, address,country, gender, profileImageUrl)
         return authenticationNetworkService.updateProfile(param)
     }
 
@@ -58,18 +55,15 @@ class AuthenticationRepositoryImpl(apiService: HttpClient):
         lastname: String,
         userEmail: String,
         authPhone: String,
-        signupType: String,
+        address: String,
+        contactPhone: String,
         country: String,
-        city: String,
+        signupType: String,
         gender: String,
         profileImageUrl: String
     ): Single<CompleteProfileResponse> {
-        val param = CompleteProfileRequest(firstname = firstname,lastname =  lastname,userEmail =  userEmail, authPhone = authPhone, signupType = signupType, country = country, city = city, gender = gender, profileImageUrl = profileImageUrl)
+        val param = CompleteProfileRequest(firstname = firstname,lastname =  lastname,userEmail =  userEmail, authPhone = authPhone, signupType = signupType, gender = gender, address = address, country = country, contactPhone = contactPhone, profileImageUrl = profileImageUrl)
         return authenticationNetworkService.completeProfile(param)
-    }
-
-    override suspend fun reverseGeocode(lat: Double, lng: Double): Single<Place?> {
-        return geocoder.reverse(lat, lng).getFirstOrNull().toSingle()
     }
 
 }
