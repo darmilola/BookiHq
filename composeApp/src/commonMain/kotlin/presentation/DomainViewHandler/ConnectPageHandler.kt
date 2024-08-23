@@ -27,11 +27,10 @@ class ConnectPageHandler(
     }
 
     override fun showVendors(vendors: VendorResourceListEnvelope?, isFromSearch: Boolean, isLoadMore: Boolean) {
-        println("True size is ${vendors!!.resources!!.size}")
         runBlocking {
             if (isFromSearch && !isLoadMore) {
                 vendorResourceListEnvelopeViewModel.clearData(mutableListOf())
-                vendors.prevPageUrl?.let { vendorResourceListEnvelopeViewModel.setPrevPageUrl(it) }
+                vendors!!.prevPageUrl?.let { vendorResourceListEnvelopeViewModel.setPrevPageUrl(it) }
                 vendors.nextPageUrl?.let { vendorResourceListEnvelopeViewModel.setNextPageUrl(it) }
                 vendors.currentPage?.let { vendorResourceListEnvelopeViewModel.setCurrentPage(it) }
                 vendors.totalItemCount?.let {
@@ -45,10 +44,10 @@ class ConnectPageHandler(
                     )
                 }
                 vendorResourceListEnvelopeViewModel.setResources(
-                    vendors?.resources!!.distinct().toMutableList()
+                    vendors?.resources!!.toMutableList()
                 )
             } else if (isLoadMore) {
-                vendors.prevPageUrl?.let { vendorResourceListEnvelopeViewModel.setPrevPageUrl(it) }
+                vendors!!.prevPageUrl?.let { vendorResourceListEnvelopeViewModel.setPrevPageUrl(it) }
                 vendors.nextPageUrl?.let { vendorResourceListEnvelopeViewModel.setNextPageUrl(it) }
                 vendors.currentPage?.let { vendorResourceListEnvelopeViewModel.setCurrentPage(it) }
                 vendors.totalItemCount?.let {
@@ -66,7 +65,7 @@ class ConnectPageHandler(
                 vendorResourceListEnvelopeViewModel.setResources(vendorList)
 
             } else {
-                vendors.prevPageUrl?.let { vendorResourceListEnvelopeViewModel.setPrevPageUrl(it) }
+                vendors!!.prevPageUrl?.let { vendorResourceListEnvelopeViewModel.setPrevPageUrl(it) }
                 vendors.nextPageUrl?.let { vendorResourceListEnvelopeViewModel.setNextPageUrl(it) }
                 vendors.currentPage?.let { vendorResourceListEnvelopeViewModel.setCurrentPage(it) }
                 vendors.totalItemCount?.let {
@@ -79,9 +78,8 @@ class ConnectPageHandler(
                         it
                     )
                 }
-                vendorResourceListEnvelopeViewModel.setResources(
-                    vendors?.resources!!.distinct().toMutableList()
-                )
+                println("Called me ${vendors.resources!!.size}")
+                vendorResourceListEnvelopeViewModel.setResources(vendors.resources!!.toMutableList())
             }
         }
     }

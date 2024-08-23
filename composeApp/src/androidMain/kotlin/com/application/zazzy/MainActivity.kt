@@ -503,7 +503,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         // No Android Implementation
     }
 
-    override fun getUserLocation(onLocationReady: (String, String, String) -> Unit) {
+    override fun getUserLocation(onLocationReady: (String, String, String, String) -> Unit) {
         if (hasNetwork) {
             if (ActivityCompat.checkSelfPermission(
                     this,
@@ -534,6 +534,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                     onLocationReady(
                         lastKnownLocationByNetwork!!.latitude.toString(),
                         lastKnownLocationByNetwork.longitude.toString(),
+                        locationInfo.first,
                         locationInfo.second
                     )
                 }
@@ -549,7 +550,8 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                 val locationInfo = getLocationInfo(this, latitude.toDouble(), longitude.toDouble())
 
                 if (locationInfo != null) {
-                    onLocationReady(latitude,longitude, locationInfo.second)
+                    onLocationReady(latitude,longitude, locationInfo.first,
+                        locationInfo.second)
                 }
             }
         }

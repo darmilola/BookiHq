@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -74,7 +75,6 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
     @Transient private var mainViewModel: MainViewModel? = null
     @Transient private var vendorResourceListEnvelopeViewModel: VendorsResourceListEnvelopeViewModel? = null
     @Transient private var actionPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
-    private var country: String = ""
 
     fun setMainViewModel(mainViewModel: MainViewModel) {
         this.mainViewModel = mainViewModel
@@ -86,7 +86,8 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
     override fun Content() {
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
-        country = preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""]
+        var country = preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""]
+        var city = preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""]
 
         if (onBackPressed.value){
             platformNavigator.exitApp()
@@ -116,23 +117,30 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
             )
         }
 
-        LifecycleEffect(onStarted = {
+        LaunchedEffect(key1 = true) {
             if (preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), ""].isNotEmpty()
-                && preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""].isNotEmpty()){
-                connectVendorPresenter.getVendor(country = country)
+                && preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""].isNotEmpty()
+                && preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""].isNotEmpty()
+                && preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""].isNotEmpty()){
+                println("Country 2 is $country City 2 is $city")
+                connectVendorPresenter.getVendor(country = country, city = city)
                 vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
             }
             else{
-                platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String ->
-                    println("My Name is $countryName")
+                platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String, cityName: String ->
                     preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
                     preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
                     preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = countryName
-                    connectVendorPresenter.getVendor(country = country)
+                    preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = cityName
+                    println("Country 1 is $countryName City 1 is $cityName")
+                    connectVendorPresenter.getVendor(country = countryName, city = cityName)
                     vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                    city = cityName
+                    country = countryName
                 })
             }
-        }, onDisposed = {})
+        }
+
 
 
 
@@ -148,24 +156,15 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
         val navigator = LocalNavigator.currentOrThrow
         val searchQuery = remember { mutableStateOf("") }
 
-        val loadMoreState = vendorResourceListEnvelopeViewModel!!.isLoadingMore.collectAsState()
         val initializingScreen = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
         val vendorList = vendorResourceListEnvelopeViewModel?.resources?.collectAsState()
         val selectedVendor = connectPageViewModel?.selectedVendor?.collectAsState()
-        val totalVendorsCount = vendorResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
-        val displayedVendorsCount = vendorResourceListEnvelopeViewModel?.displayedItemCount?.collectAsState()
-        var vendorUIModel by remember { mutableStateOf(VendorItemUIModel(selectedVendor?.value!!, vendorList!!.value)) }
-        val lastIndex = vendorList!!.value.size.minus(1)
+        val vendorUIModel = remember { mutableStateOf(VendorItemUIModel()) }
 
+        if (vendorList!!.value.isNotEmpty()){
+            vendorUIModel.value = VendorItemUIModel(selectedVendor?.value!!, vendorList.value)
+        }
 
-        if(!loadMoreState.value) {
-            vendorUIModel = vendorUIModel.copy(selectedVendor = selectedVendor?.value!!,
-                vendorsList = vendorResourceListEnvelopeViewModel?.resources?.value!!.map { it2 ->
-                    it2.copy(
-                        isSelected = it2.vendorId == selectedVendor.value.vendorId
-                    )
-                })
-           }
 
 
         // View Contract Handler Initialisation
@@ -188,7 +187,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
                             connectVendorPresenter.searchVendor(country,searchQuery = it)
                         }, onBackPressed = {
                             vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
-                            connectVendorPresenter.getVendor(country = country)
+                            connectVendorPresenter.getVendor(country = country, city = city)
                         })
                     }
                 },
@@ -210,59 +209,18 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
                     } else if (initializingScreen.value.isSuccess) {
                         LazyColumn(
                             modifier = Modifier.padding(top = 10.dp).fillMaxWidth()
-                                .height(getVendorListItemViewHeight(vendorUIModel.vendorsList).dp),
+                                .height(getVendorListItemViewHeight(vendorUIModel.value.vendorsList).dp),
                             contentPadding = PaddingValues(6.dp),
                             verticalArrangement = Arrangement.spacedBy(5.dp), userScrollEnabled = true
                         ) {
-                            runBlocking {
-                                items(vendorUIModel.vendorsList.size) { i ->
-                                    SwitchVendorBusinessItemComponent(vendor = vendorUIModel.vendorsList[i]) {
-                                        val connectVendorDetailsScreen = ConnectVendorDetailsScreen(vendor = it, platformNavigator = platformNavigator!!)
+                            println("Size is ${vendorUIModel.value.vendorsList.size}")
+                                items(vendorUIModel.value.vendorsList.size) { i ->
+                                    SwitchVendorBusinessItemComponent(vendor = vendorUIModel.value.vendorsList[i]) {
+                                        val connectVendorDetailsScreen = ConnectVendorDetailsScreen(vendor = it, platformNavigator = platformNavigator)
                                         connectVendorDetailsScreen.setMainViewModel(mainViewModel!!)
                                         navigator.push(connectVendorDetailsScreen)
                                     }
-                                    if (i == lastIndex && loadMoreState.value) {
-                                        Box(
-                                            modifier = Modifier.fillMaxWidth().height(60.dp),
-                                            contentAlignment = Alignment.Center
-                                        ) {
-                                            IndeterminateCircularProgressBar()
-                                        }
-                                    }
-                                    else if (i == lastIndex && (displayedVendorsCount!!.value < totalVendorsCount!!.value)) {
-                                        val buttonStyle = Modifier
-                                            .height(50.dp)
-                                            .fillMaxWidth()
-                                            .padding(top = 10.dp, start = 10.dp, end = 10.dp)
-
-                                        ButtonComponent(
-                                            modifier = buttonStyle,
-                                            buttonText = "Show More",
-                                            borderStroke = BorderStroke(1.dp, Colors.primaryColor),
-                                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-                                            fontSize = 16,
-                                            shape = CircleShape,
-                                            textColor = Colors.primaryColor,
-                                            style = TextStyle()
-                                        ) {
-                                            if (!vendorResourceListEnvelopeViewModel?.nextPageUrl?.value.isNullOrEmpty()) {
-                                                if (searchQuery.value.isNotEmpty()) {
-                                                    connectVendorPresenter.searchMoreVendors(
-                                                        country,
-                                                        searchQuery.value,
-                                                        vendorResourceListEnvelopeViewModel?.currentPage?.value!! + 1
-                                                    )
-                                                } else {
-                                                    connectVendorPresenter.getMoreVendor(
-                                                        country,
-                                                        vendorResourceListEnvelopeViewModel?.currentPage?.value!! + 1
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
                                 }
-                            }
                         }
                     }
                 },

@@ -54,20 +54,20 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
         }
     }
 
-    override fun getVendor(country: String) {
-        println("Country is $country")
+    override fun getVendor(country: String, city: String) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showScreenLce(AppUIStates(isLoading = true))
-                    connectVendorRepositoryImpl.getVendor(country)
+                    connectVendorRepositoryImpl.getVendor(country, city, 1)
                         .subscribe(
                             onSuccess = { result ->
                                userLatitude =  preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), "0.0"].toDouble()
                                userLongitude =  preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), "0.0"].toDouble()
                                 if (result.status == "success"){
                                     val updatedVendorDistance = result.listItem.resources!!.map { vendor ->
-                                        val distance = getDistanceFromCustomer(userLat = userLatitude, userLong = userLongitude, vendorLat = vendor.latitude, vendorLong = vendor.longitude)
+                                        val distance = getDistanceFromCustomer(userLat = userLatitude, userLong = userLongitude,
+                                            vendorLat = vendor.latitude, vendorLong = vendor.longitude)
                                         vendor.distanceFromCustomer = distance
                                         vendor
                                     }
@@ -95,12 +95,12 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
         }
     }
 
-    override fun getMoreVendor(country: String, nextPage: Int) {
+    override fun getMoreVendor(country: String, city: String, nextPage: Int) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.onLoadMoreVendorStarted(true)
-                    connectVendorRepositoryImpl.getVendor(country, nextPage)
+                    connectVendorRepositoryImpl.getVendor(country,city,nextPage)
                         .subscribe(
                             onSuccess = { result ->
                                 userLatitude =  preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), "0.0"].toDouble()

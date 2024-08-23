@@ -146,10 +146,11 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
             .background(color = Color.White)
 
     LaunchedEffect(key1 = true) {
-        platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String ->
+        platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String, cityName: String ->
             preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
             preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
             preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = countryName
+            preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = cityName
             userCountry.value = countryName
         })
     }
@@ -308,11 +309,12 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                             snackBarType = SnackBarType.ERROR,
                             stackedSnackBarHostState = stackedSnackBarHostState,
                             onActionClick = {
-                                platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String ->
+                                platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String, cityName: String ->
                                     println("My Name is $countryName")
                                     preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
                                     preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
                                     preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = countryName
+                                    preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = cityName
                                     userCountry.value = countryName
                                 })
                             })

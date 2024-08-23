@@ -16,8 +16,9 @@ data class Vendor(
     @SerialName("isMobileServicesAvailable") val isMobileServiceAvailable: Boolean = false, val isSelected: Boolean = false, var distanceFromCustomer: Double? = 0.0): Parcelable
 
 data class VendorItemUIModel(
-    val selectedVendor: Vendor,
-    val vendorsList: List<Vendor>)
+    val selectedVendor: Vendor = Vendor(),
+    val vendorsList: List<Vendor> = listOf()
+)
 
 fun getVendorListItemViewHeight(
     itemList: List<Vendor>

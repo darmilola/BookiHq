@@ -226,16 +226,18 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
             ErrorDialog(dialogTitle = "Error Occurred", actionTitle = "", onConfirmation = {})
         }
 
-        if (preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""].isNotEmpty()){
+        if (preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""].isNotEmpty() && preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""].isNotEmpty())
+        {
             country.value = preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""]
+            city.value = preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""]
         }
         else{
-            platformNavigator!!.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String ->
-                println("My Name is $countryName")
+            platformNavigator!!.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String, cityName: String ->
                 preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
                 preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = countryName
                 country.value = countryName
+                city.value = cityName
             })
         }
 
