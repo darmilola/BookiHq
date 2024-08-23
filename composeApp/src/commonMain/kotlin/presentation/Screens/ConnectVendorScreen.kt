@@ -124,6 +124,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
             }
             else{
                 platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String ->
+                    println("My Name is $countryName")
                     preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
                     preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
                     preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = countryName

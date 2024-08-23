@@ -528,13 +528,13 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                 val lat =  6.465422
                 val long = 3.406448
 
-                val countryName = getCountryName(this, lat, long)
+                val locationInfo = getLocationInfo(this, lat, long)
 
-                if (countryName != null) {
+                if (locationInfo != null) {
                     onLocationReady(
                         lastKnownLocationByNetwork!!.latitude.toString(),
-                        lastKnownLocationByNetwork!!.longitude.toString(),
-                        countryName
+                        lastKnownLocationByNetwork.longitude.toString(),
+                        locationInfo.second
                     )
                 }
             }
@@ -544,12 +544,12 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             //val longitude = sharedPreferences.getString("longitude","")
             val latitude =  6.465422.toString()
             val longitude = 3.406448.toString()
-            if (latitude!!.isNotEmpty() && longitude!!.isNotEmpty()) {
-                locationAuthPreferences!!.clear().apply()
-                val countryName = getCountryName(this, latitude.toDouble(), longitude.toDouble())
+            if (latitude.isNotEmpty() && longitude.isNotEmpty()) {
+               // locationAuthPreferences!!.clear().apply()
+                val locationInfo = getLocationInfo(this, latitude.toDouble(), longitude.toDouble())
 
-                if (countryName != null) {
-                    onLocationReady(latitude,longitude, countryName)
+                if (locationInfo != null) {
+                    onLocationReady(latitude,longitude, locationInfo.second)
                 }
             }
         }
@@ -557,14 +557,13 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     }
 
 
-    fun getCountryName(context: Context?, latitude: Double, longitude: Double): String? {
+    private fun getLocationInfo(context: Context?, latitude: Double, longitude: Double): Pair<String,String>? {
         val geocoder = Geocoder(context!!, Locale.getDefault())
         var addresses: List<Address>? = null
         try {
             addresses = geocoder.getFromLocation(latitude, longitude, 1)
-            var result: Address
-            return if (addresses != null && !addresses.isEmpty()) {
-                addresses[0].getCountryName()
+            return if (!addresses.isNullOrEmpty()) {
+               Pair(addresses[0].countryName, addresses[0].adminArea)
             } else null
         } catch (ignored: IOException) {
             //do something
