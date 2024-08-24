@@ -122,7 +122,6 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
                 && preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""].isNotEmpty()
                 && preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""].isNotEmpty()
                 && preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""].isNotEmpty()){
-                println("Country 2 is $country City 2 is $city")
                 connectVendorPresenter.getVendor(country = country, city = city)
                 vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
             }
@@ -132,7 +131,6 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
                     preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
                     preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = countryName
                     preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = cityName
-                    println("Country 1 is $countryName City 1 is $cityName")
                     connectVendorPresenter.getVendor(country = countryName, city = cityName)
                     vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                     city = cityName

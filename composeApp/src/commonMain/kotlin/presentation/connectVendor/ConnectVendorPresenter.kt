@@ -16,6 +16,7 @@ import com.russhwolf.settings.get
 import domain.Enums.SharedPreferenceEnum
 import kotlinx.coroutines.runBlocking
 import utils.getDistanceFromCustomer
+import utils.getMinuteDrive
 
 class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Presenter() {
     private val scope: CoroutineScope = MainScope()
@@ -62,6 +63,7 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                     connectVendorRepositoryImpl.getVendor(country, city, 1)
                         .subscribe(
                             onSuccess = { result ->
+                               println("Response $result")
                                userLatitude =  preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), "0.0"].toDouble()
                                userLongitude =  preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), "0.0"].toDouble()
                                 if (result.status == "success"){
@@ -73,6 +75,12 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                                     }
                                     val updatedSortedDistance = updatedVendorDistance.sortedBy{ it.distanceFromCustomer }
                                     result.listItem.resources = updatedSortedDistance
+                                    val updatedMinuteDrive = result.listItem.resources!!.map { vendor ->
+                                        val minuteDrive = getMinuteDrive(vendor.distanceFromCustomer!!)
+                                        vendor.minuteDriveText = minuteDrive
+                                        vendor
+                                    }
+                                    result.listItem.resources = updatedMinuteDrive
                                     contractView?.showScreenLce(AppUIStates(isSuccess = true))
                                     contractView?.showVendors(result.listItem,isFromSearch = false, isLoadMore = false)
                                 }
@@ -107,12 +115,19 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                                 userLongitude =  preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), "0.0"].toDouble()
                                 if (result.status == "success"){
                                     val updatedVendorDistance = result.listItem.resources!!.map { vendor ->
-                                        val distance = getDistanceFromCustomer(userLat = userLatitude, userLong = userLongitude, vendorLat = vendor.latitude, vendorLong = vendor.longitude)
+                                        val distance = getDistanceFromCustomer(userLat = userLatitude, userLong = userLongitude,
+                                            vendorLat = vendor.latitude, vendorLong = vendor.longitude)
                                         vendor.distanceFromCustomer = distance
                                         vendor
                                     }
                                     val updatedSortedDistance = updatedVendorDistance.sortedBy{ it.distanceFromCustomer }
                                     result.listItem.resources = updatedSortedDistance
+                                    val updatedMinuteDrive = result.listItem.resources!!.map { vendor ->
+                                        val minuteDrive = getMinuteDrive(vendor.distanceFromCustomer!!)
+                                        vendor.minuteDriveText = minuteDrive
+                                        vendor
+                                    }
+                                    result.listItem.resources = updatedMinuteDrive
                                     contractView?.onLoadMoreVendorEnded(true)
                                     contractView?.showVendors(result.listItem, isFromSearch = false, isLoadMore = true)
                                 }

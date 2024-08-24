@@ -86,8 +86,6 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
     private var connectPageViewModel: ConnectPageViewModel? = null
     @Transient
     private var vendorResourceListEnvelopeViewModel: VendorsResourceListEnvelopeViewModel? = null
-    private var country: String = ""
-    private var city: String = ""
     @Transient
     private val preferenceSettings: Settings = Settings()
     @Transient
@@ -102,8 +100,8 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
     @Composable
     override fun Content() {
         val searchQuery = remember { mutableStateOf("") }
-        country = preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""]
-        city = preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""]
+        var country = preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""]
+        var city = preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""]
         val navigator = LocalNavigator.currentOrThrow
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
@@ -146,12 +144,14 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
 
         LaunchedEffect(key1 = true) {
             if (preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), ""].isNotEmpty()
-                && preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""].isNotEmpty()){
+                && preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""].isNotEmpty()
+                && preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""].isNotEmpty()
+                && preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""].isNotEmpty()){
                 connectVendorPresenter.getVendor(country = country, city = city)
                 vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
             }
             else{
-                platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String, cityName: String->
+                platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String, cityName: String ->
                     preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
                     preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
                     preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = countryName

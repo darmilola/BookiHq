@@ -76,3 +76,23 @@ private fun deg2rad(deg: Double): Double {
 private fun rad2deg(rad: Double): Double {
     return rad * 180.0 / PI
 }
+
+fun getMinuteDrive(distanceFromCustomer: Double): String {
+    var minuteDriveText = ""
+    minuteDriveText = if (distanceFromCustomer < 60){
+        "${distanceFromCustomer.toInt()} Minutes Drive"
+    }
+    else if (distanceFromCustomer.toInt() == 60){
+        "1 Hour Drive"
+    }
+    else {
+        val hour = (distanceFromCustomer/60).toInt()
+        val minute = distanceFromCustomer.mod(60.0)
+        if (hour.toInt() <= 1){
+            "${hour.toInt()} Hour Drive"
+        } else{
+            "${hour.toInt()} Hours Drive"
+        }
+    }
+    return minuteDriveText
+}

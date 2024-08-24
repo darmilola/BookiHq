@@ -132,7 +132,7 @@ import presentations.components.TextComponent
                         .size(20.dp)
                     ImageComponent(imageModifier = modifier, imageRes = "drawable/location_icon_filled.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
                     TextComponent(
-                        text = vendor.distanceFromCustomer!!.toInt().toString() +" KM Away",
+                        text = vendor.minuteDriveText,
                         fontSize = 14,
                         fontFamily = GGSansRegular,
                         textStyle = TextStyle(),
