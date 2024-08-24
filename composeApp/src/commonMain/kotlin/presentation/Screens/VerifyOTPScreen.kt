@@ -34,7 +34,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
-import domain.Enums.AuthSSOScreenNav
 import domain.Enums.AuthType
 import domain.Enums.DeviceType
 import domain.Enums.SharedPreferenceEnum
@@ -51,7 +50,7 @@ import presentation.widgets.AuthenticationBackNav
 import presentation.widgets.OTPTextField
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
-import presentation.widgets.SubtitleTextWidget
+import presentation.widgets.MultiLineTextWidget
 import presentation.widgets.TitleWidget
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
@@ -263,8 +262,8 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
             modifier = rowModifier
         ) {
 
-            SubtitleTextWidget(text = verifyText, textAlign = TextAlign.Center)
-            SubtitleTextWidget(text = handleText, textColor = Colors.primaryColor, textAlign = TextAlign.Center)
+            MultiLineTextWidget(text = verifyText, textAlign = TextAlign.Center)
+            MultiLineTextWidget(text = handleText, textColor = Colors.primaryColor, textAlign = TextAlign.Center)
         }
     }
 

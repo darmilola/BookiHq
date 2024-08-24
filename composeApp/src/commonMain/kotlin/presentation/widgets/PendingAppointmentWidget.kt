@@ -144,7 +144,7 @@ fun AttachPendingAppointmentHeader(statusText: String, statusDrawableRes: String
                                     onDeleteAppointment(appointment)
                                 }
                             }) {
-                            SubtitleTextWidget(text = title, fontSize = 16)
+                            MultiLineTextWidget(text = title, fontSize = 16)
                         }
                     }
                 }

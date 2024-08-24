@@ -36,17 +36,15 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
-import domain.Enums.AuthSSOScreenNav
 import domain.Models.PlatformNavigator
 import kotlinx.serialization.Transient
-import presentation.Screens.VerifyOTPScreen
 import presentation.components.ButtonComponent
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.AuthenticationBackNav
 import presentation.widgets.PhoneInputWidget
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
-import presentation.widgets.SubtitleTextWidget
+import presentation.widgets.MultiLineTextWidget
 import presentation.widgets.TitleWidget
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
@@ -179,7 +177,7 @@ class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScr
             verticalAlignment = Alignment.Top,
             modifier = rowModifier
         ) {
-            SubtitleTextWidget(text = "We'll send a verification code to your\n" +
+            MultiLineTextWidget(text = "We'll send a verification code to your\n" +
                     " phone via text message", textAlign = TextAlign.Center)
         }
     }

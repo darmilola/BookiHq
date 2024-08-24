@@ -147,7 +147,6 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
         LaunchedEffect(key1 = true) {
             if (preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), ""].isNotEmpty()
                 && preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""].isNotEmpty()){
-                println("Country is $country City is $city")
                 connectVendorPresenter.getVendor(country = country, city = city)
                 vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
             }

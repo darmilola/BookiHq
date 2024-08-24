@@ -36,17 +36,23 @@ import presentations.components.ImageComponent
 
 @Composable
 fun MainTopBar(mainViewModel: MainViewModel) {
-    Column(modifier = Modifier.fillMaxWidth().height(60.dp), verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.Start) {
-           Box(
-               modifier = Modifier
-                   .fillMaxHeight()
-                   .background(color = Color.White)
-           ) {
-               appLogoTitleItem(mainViewModel)
-               mainTopBarItem(mainViewModel)
-           }
-       }
+    val displayedTab = mainViewModel.displayedTab.collectAsState()
+    if (displayedTab.value != MainTabEnum.SKIN_ANALYSIS.toPath()) {
+        Column(
+            modifier = Modifier.fillMaxWidth().height(60.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.Start
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .background(color = Color.White)
+            ) {
+                appLogoTitleItem(mainViewModel)
+                mainTopBarItem(mainViewModel)
+            }
+        }
+    }
 }
 
 

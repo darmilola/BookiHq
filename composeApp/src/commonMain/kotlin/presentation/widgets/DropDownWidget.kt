@@ -1,7 +1,5 @@
 package presentation.widgets
 
-import GGSansRegular
-import GGSansSemiBold
 import domain.Models.PhoneExtensionModel
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
@@ -21,11 +19,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -112,7 +108,7 @@ fun DropDownWidgetView(menuItems: List<String>,
                         onMenuItemClick(index)
                     }
                 }) {
-                SubtitleTextWidget(text = title, fontSize = 20)
+                MultiLineTextWidget(text = title, fontSize = 20)
             }
         }
     }

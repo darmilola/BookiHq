@@ -419,7 +419,7 @@ fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String
                                    onDeleteAppointment(userAppointment.resources!!)
                                }
                            }) {
-                           SubtitleTextWidget(text = title, fontSize = 16)
+                           MultiLineTextWidget(text = title, fontSize = 16)
                        }
                    }
                }
@@ -502,7 +502,7 @@ fun AttachMeetingAppointmentHeader(statusText: String, statusDrawableRes: String
                                   presenter?.deleteAppointment(appointment.appointmentId!!)
                               }
                           }) {
-                          SubtitleTextWidget(text = title, fontSize = 16)
+                          MultiLineTextWidget(text = title, fontSize = 16)
                       }
                   }
               }

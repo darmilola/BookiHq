@@ -12,7 +12,7 @@ object Colors {
     val serviceLightGray: Color = Color(color = 0xFF8D9093)
     val serviceDarkText: Color = Color(color = 0xFF4a5a6b)
     val surfaceColor: Color = Color(color = 0xFFF5FAFC)
-    val darkPrimary: Color = Color(color = 0xFF004659)
+    val darkPrimary: Color = Color(color = 0xFF011e26)
     val serviceTypeDark: Color = Color(color = 0xFF064f63)
     val pinkColor: Color = Color(color = 0xFFFA2D65)
     val blue: Color = Color(color = 0xFF3A8AF2)

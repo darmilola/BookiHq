@@ -107,7 +107,7 @@ fun AttachTherapistAppointmentHeader(statusText: String, statusDrawableRes: Stri
                                     onArchiveAppointment(appointment)
                                 }
                             }) {
-                            SubtitleTextWidget(text = title, fontSize = 16)
+                            MultiLineTextWidget(text = title, fontSize = 16)
                         }
                     }
                 }

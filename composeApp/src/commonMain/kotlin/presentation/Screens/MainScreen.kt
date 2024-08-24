@@ -58,6 +58,7 @@ import org.koin.core.component.inject
 import presentation.Orders.Orders
 import presentation.Products.Cart
 import presentation.Products.ShopProductTab
+import presentation.SkinAnalysis.SkinAnalysisTab
 import presentation.account.AccountTab
 import presentation.account.JoinASpa
 import presentation.appointments.AppointmentsTab
@@ -97,6 +98,8 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
     private var shopProductTab: ShopProductTab? = null
     @Transient
     private var appointmentsTab: AppointmentsTab? = null
+    @Transient
+    private var skinAnalysisTab: SkinAnalysisTab? = null
     @Transient
     private var accountTab: AccountTab? = null
     @Transient
@@ -251,7 +254,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             }
         }
 
-        TabNavigator(showDefaultTab(mainViewModel!!, homePageViewModel!!)) {
+        TabNavigator(showDefaultTab(mainViewModel!!, homePageViewModel)) {
                 it2 ->
             Scaffold(
                 topBar = {
@@ -314,6 +317,20 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                                 ) {
                                     isBottomNavSelected = true
                                 }
+                                skinAnalysisTab = SkinAnalysisTab()
+                                skinAnalysisTab!!.setMainViewModel(mainViewModel!!)
+                                TabNavigationItem(
+                                    skinAnalysisTab!!,
+                                    selectedImage = "drawable/spa_filled_icon.png",
+                                    unselectedImage = "drawable/spa_outline_icon.png",
+                                    labelText = "Skin Analysis",
+                                    imageSize = 26,
+                                    currentTabId = 2,
+                                    tabNavigator = it2,
+                                    mainViewModel = mainViewModel!!
+                                ) {
+                                    isBottomNavSelected = true
+                                }
                                 appointmentsTab = AppointmentsTab(platformNavigator)
                                 appointmentsTab!!.setMainViewModel(mainViewModel!!)
                                 TabNavigationItem(
@@ -322,7 +339,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                                     unselectedImage = "drawable/appointment_outline.png",
                                     labelText = "History",
                                     imageSize = 25,
-                                    currentTabId = 2,
+                                    currentTabId = 3,
                                     tabNavigator = it2,
                                     mainViewModel = mainViewModel!!
                                 ) {
@@ -332,11 +349,11 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                                 accountTab!!.setMainViewModel(mainViewModel!!)
                                 TabNavigationItem(
                                     accountTab!!,
-                                    selectedImage = "drawable/user_icon_filled.png",
-                                    unselectedImage = "drawable/user_icon_outline.png",
+                                    selectedImage = "drawable/more_circle_filled_icon.png",
+                                    unselectedImage = "drawable/more_icon_outlined.png",
                                     labelText = "More",
                                     imageSize = 25,
-                                    currentTabId = 3,
+                                    currentTabId = 4,
                                     tabNavigator = it2,
                                     mainViewModel = mainViewModel!!
                                 ) {
@@ -382,7 +399,18 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             mainViewModel.setTitle(screenTitle)
             mainViewModel.setIsClickedSearchProduct(false)
             mainViewModel.setDisplayedTab(MainTabEnum.SHOP.toPath())
-        } else if (tabNavigator.current is AppointmentsTab && currentTabId == 2) {
+        }
+        else if (tabNavigator.current is SkinAnalysisTab && currentTabId == 2) {
+            imageStr = selectedImage
+            imageTint = Color.White
+            handleTint = Color.White
+            val screenTitle = "Skin Analysis"
+            onBottomNavSelected()
+            mainViewModel.setTitle(screenTitle)
+            mainViewModel.setDisplayedTab(MainTabEnum.SKIN_ANALYSIS.toPath())
+
+        }
+        else if (tabNavigator.current is AppointmentsTab && currentTabId == 3) {
             imageStr = selectedImage
             imageTint = Color.White
             handleTint = Color.White
@@ -391,11 +419,11 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             mainViewModel.setTitle(screenTitle)
             mainViewModel.setDisplayedTab(MainTabEnum.APPOINTMENT.toPath())
 
-        } else if (tabNavigator.current is AccountTab && currentTabId == 3) {
+        } else if (tabNavigator.current is AccountTab && currentTabId == 4) {
             imageStr = selectedImage
             imageTint = Color.White
             handleTint = Color.White
-            val screenTitle = "Manage"
+            val screenTitle = "More"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
             mainViewModel.setDisplayedTab(MainTabEnum.PROFILE.toPath())
