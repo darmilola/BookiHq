@@ -14,6 +14,7 @@ class AuthenticationScreenHandler(
     private val connectVendor: (User) -> Unit,
     private val onVerificationStarted: () -> Unit,
     private val onVerificationEnded: () -> Unit,
+    private val onVerificationError: () -> Unit,
     private val onCompleteStarted: () -> Unit,
     private val onCompleteEnded: (Boolean) -> Unit,
     private val onUpdateStarted: () -> Unit,
@@ -29,6 +30,10 @@ class AuthenticationScreenHandler(
 
     override fun onProfileValidationEnded() {
         onVerificationEnded()
+    }
+
+    override fun onProfileValidationError() {
+        onVerificationError()
     }
 
     override fun onCompleteProfileStarted() {

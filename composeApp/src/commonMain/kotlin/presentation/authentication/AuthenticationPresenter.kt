@@ -103,11 +103,9 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                                 if (result.status == "success"){
                                     when (result.profileStatus) {
                                         ProfileStatus.DONE.toPath() -> {
-                                            contractView?.onProfileValidationEnded()
                                             contractView?.goToMainScreen(result.userInfo, result.whatsAppPhone)
                                         }
                                         ProfileStatus.CONNECT_VENDOR.toPath() -> {
-                                            contractView?.onProfileValidationEnded()
                                             contractView?.goToConnectVendor(result.userInfo)
                                         }
                                         ProfileStatus.COMPLETE_PROFILE.toPath() -> {
@@ -117,19 +115,17 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                                     }
                                 }
                                 else{
-                                    contractView?.onProfileValidationEnded()
+                                    contractView?.onProfileValidationError()
                                 }
                             },
                             onError = {
-                                println("Here 2 ${it.message}")
-                                contractView?.onProfileValidationEnded()
+                                contractView?.onProfileValidationError()
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Here 2 ${e.message}")
-                contractView?.onProfileValidationEnded()
+                contractView?.onProfileValidationError()
             }
         }
     }
@@ -180,20 +176,20 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                                     }
                                 }
                                 else{
-                                    contractView?.onProfileValidationEnded()
+                                    contractView?.onProfileValidationError()
 
                                 }
                             },
                             onError = {
                                 println("Error 1 ${it.message}")
-                                contractView?.onProfileValidationEnded()
+                                contractView?.onProfileValidationError()
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
                 println("Error 2 ${e.message}")
-                contractView?.onProfileValidationEnded()
+                contractView?.onProfileValidationError()
             }
         }
     }

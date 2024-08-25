@@ -15,6 +15,7 @@ class AuthenticationContract {
         fun onCompleteProfileError()
         fun onProfileValidationStarted()
         fun onProfileValidationEnded()
+        fun onProfileValidationError()
         fun onCompleteProfileStarted()
         fun onProfileUpdateStarted()
         fun onProfileUpdateEnded(isSuccessful: Boolean)

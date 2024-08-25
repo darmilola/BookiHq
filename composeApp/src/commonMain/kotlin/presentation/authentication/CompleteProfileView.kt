@@ -109,7 +109,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = apiKey
                 navigateToConnectVendor.value = true
 
-        }, onUpdateStarted = {}, onUpdateEnded = {})
+        }, onUpdateStarted = {}, onUpdateEnded = {}, onVerificationError = {})
     authHandler.init()
 
     val pattern = remember { Regex("^\\d*\$") }

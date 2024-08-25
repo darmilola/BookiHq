@@ -213,7 +213,7 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
                  updateProfileEnded.value = true
                  updateProfileStarted.value = false
                 if (it) updateProfileSuccessful.value = true
-            })
+            }, onVerificationError = {})
         handler.init()
 
         if (updateProfileStarted.value){

@@ -55,6 +55,8 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
     val navigateToConnectVendor = remember { mutableStateOf(false) }
     val navigateToPlatform = remember { mutableStateOf(false) }
     val authType = remember { mutableStateOf(AuthType.EMAIL.toPath()) }
+    val authEmail = remember { mutableStateOf("") }
+    val authPhone = remember { mutableStateOf("") }
     val navigator = LocalNavigator.currentOrThrow
 
 
@@ -90,7 +92,14 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
         },
         onVerificationStarted = {},
         onVerificationEnded = {}, onCompleteStarted = {}, onCompleteEnded = {},
-        connectVendorOnProfileCompleted = { _,_,_ ->}, onUpdateStarted = {}, onUpdateEnded = {})
+        connectVendorOnProfileCompleted = { _,_,_ ->}, onUpdateStarted = {}, onUpdateEnded = {}, onVerificationError = {
+            if (authType.value == AuthType.EMAIL.toPath()) {
+                authenticationPresenter.validateEmail(authEmail.value)
+            }
+            else if (authType.value == AuthType.PHONE.toPath()){
+                authenticationPresenter.validatePhone(authPhone.value)
+            }
+        })
     handler.init()
 
     if (navigateToConnectVendor.value){
@@ -138,9 +147,11 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
             authenticateSplashScreen(preferenceSettings,
              onPhoneAuthentication = {
                   authType.value = AuthType.PHONE.toPath()
+                  authPhone.value = it
                   authenticationPresenter.validatePhone(it, requireValidation = false)
              },
              onEmailAuthentication = {
+                   authEmail.value = it
                    authType.value = AuthType.EMAIL.toPath()
                    authenticationPresenter.validateEmail(it)
              }, onWelcome = {

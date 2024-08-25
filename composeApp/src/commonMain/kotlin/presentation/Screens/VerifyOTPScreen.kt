@@ -128,7 +128,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
             onVerificationEnded = {
                 verificationInProgress.value = false
             }, onCompleteStarted = {}, onCompleteEnded = {},connectVendorOnProfileCompleted = { country,profileId, apiKey -> },
-            onUpdateStarted = {}, onUpdateEnded = {})
+            onUpdateStarted = {}, onUpdateEnded = {}, onVerificationError = {})
         handler.init()
 
 
