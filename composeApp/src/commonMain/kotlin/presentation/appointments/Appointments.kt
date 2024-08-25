@@ -34,7 +34,6 @@ import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Models.AppointmentItemUIModel
-import domain.Enums.AppointmentType
 import domain.Models.PlatformNavigator
 import domain.Models.UserAppointment
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -345,13 +344,6 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                                 userScrollEnabled = true
                             ) {
                            itemsIndexed(items = appointmentUIModel.appointmentList) { it, item ->
-                               if (item.resources?.appointmentType == AppointmentType.MEETING.toPath()) {
-                                   MeetingAppointmentWidget(
-                                       userAppointment = item,
-                                       appointmentPresenter = appointmentPresenter,
-                                       isFromHomeTab = false
-                                   )
-                               } else {
                                    AppointmentWidget(
                                        item,
                                        appointmentPresenter = appointmentPresenter,
@@ -364,7 +356,6 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                                        },
                                        platformNavigator = platformNavigator
                                    )
-                               }
                                if (it == lastIndex && loadMoreState.value) {
                                    Box(
                                        modifier = Modifier.fillMaxWidth().height(60.dp),

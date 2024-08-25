@@ -7,9 +7,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable @Parcelize
 data class HomepageInfo (
-    @SerialName("user_info") val userInfo: User? = null,
-    @SerialName("vendor_info") val vendorInfo: Vendor? = null,
-    @SerialName("vendor_services") val vendorServices: ArrayList<Services>? = null,
-    @SerialName("vendor_recommendations") val recommendationRecommendations: ArrayList<VendorRecommendation>? = null,
-    @SerialName("past_appointments") val pastAppointment: ArrayList<Appointment>? = null,
-    @SerialName("upcoming_appointments") val upcomingAppointment: ArrayList<Appointment>? = null): Parcelable
+    @SerialName("user_info") val userInfo: User? = User(),
+    @SerialName("vendor_info") val vendorInfo: Vendor? = Vendor(),
+    @SerialName("vendor_services") val vendorServices: ArrayList<Services>? = arrayListOf(),
+    @SerialName("vendor_recommendations") val recommendationRecommendations: ArrayList<VendorRecommendation>? = arrayListOf(),
+    @SerialName("recentAppointments") val recentAppointments: ArrayList<UserAppointment>? = arrayListOf(),
+): Parcelable

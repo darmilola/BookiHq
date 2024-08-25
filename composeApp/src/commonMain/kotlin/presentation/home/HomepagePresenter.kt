@@ -62,6 +62,7 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
                     homeRepositoryImpl.getUserHomePage(userId)
                         .subscribe(
                             onSuccess = { response ->
+                                println("Response 0 $response")
                                 if (response.status == "success") {
                                     contractView?.showLoadHomePageLce(AppUIStates(isSuccess = true))
                                     contractView?.showHome(response.homepageInfo)
@@ -71,12 +72,14 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
                                 }
                             },
                             onError = {
+                                println("Response 1 ${it.message}")
                                 contractView?.showLoadHomePageLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
+                println("Response 2 ${e.message}")
                 contractView?.showLoadHomePageLce(AppUIStates(isFailed = true))
             }
         }

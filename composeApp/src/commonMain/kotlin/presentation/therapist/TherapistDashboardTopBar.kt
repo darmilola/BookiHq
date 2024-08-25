@@ -66,5 +66,5 @@ fun leftTopBarItem(onBackPressed: () -> Unit) {
 
 @Composable
 fun DashboardTitle(){
-    TitleWidget(textColor = Colors.primaryColor, title = "Your Dashboard")
+    TitleWidget(textColor = Colors.primaryColor, title = "Therapist Dashboard")
 }

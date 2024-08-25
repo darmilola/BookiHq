@@ -27,7 +27,6 @@ class BookingContract {
         abstract fun silentDeletePendingBookingAppointment(pendingAppointmentId: Long)
         abstract fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Int, serviceTypeId: Int, therapistId: Int,
                                                      appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String,
-                                                     serviceStatus: String, appointmentType: String,
-                                                     paymentAmount: Double, paymentMethod: String, bookingStatus: String)
+                                                     serviceStatus: String, paymentAmount: Double, paymentMethod: String, bookingStatus: String)
     }
 }

@@ -13,6 +13,7 @@ import domain.Models.PlatformTime
 import domain.Models.Product
 import domain.Models.ScreenSizeInfo
 import domain.Models.Services
+import domain.Models.UserAppointment
 import domain.Models.VendorStatusModel
 import domain.Models.VendorTime
 import kotlinx.datetime.Clock
@@ -38,7 +39,7 @@ fun getOrderViewHeight(
 }
 
 fun getRecentAppointmentViewHeight(
-    itemList: List<Appointment>
+    itemList: List<UserAppointment>
 ): Int {
     val itemCount = itemList.size
 
@@ -139,8 +140,7 @@ fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
 
 fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo, screenSizeInfo: ScreenSizeInfo, statusList: List<VendorStatusModel>): Int{
     val serviceCount = homepageInfo.vendorServices!!.size
-    val pastAppointmentCount = homepageInfo.pastAppointment!!.size
-    val upcomingAppointmentCount = homepageInfo.upcomingAppointment!!.size
+    val recentAppointmentCount = homepageInfo.recentAppointments!!.size
     var statusHeight = 0
 
     if (statusList.isNotEmpty()){
@@ -149,11 +149,10 @@ fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo, screenSizeInfo: Sc
 
     val servicesHeight = (ceil((serviceCount/4).toDouble()) * 140).toInt()
     val recommendationsHeight = 450
-    val pastAppointmentHeight = pastAppointmentCount * 200
-    val upcomingAppointmentHeight = upcomingAppointmentCount * 200
+    val recentAppointmentHeight = recentAppointmentCount * 200
     val bottomBarPadding = 200
 
-    return servicesHeight + pastAppointmentHeight + recommendationsHeight + statusHeight + upcomingAppointmentHeight + bottomBarPadding
+    return servicesHeight + recentAppointmentHeight + recommendationsHeight + statusHeight + bottomBarPadding
 }
 
 fun calculateBookingServiceTimes(platformTimes: List<PlatformTime>, vendorTimes: List<VendorTime>, bookedTimes: List<BookedTimes>, day: Int, month: Int, year: Int):

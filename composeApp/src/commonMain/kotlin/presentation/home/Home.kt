@@ -59,7 +59,6 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import domain.Models.Appointment
-import domain.Enums.AppointmentType
 import domain.Models.HomepageInfo
 import domain.Models.VendorRecommendation
 import domain.Enums.RecommendationType
@@ -69,6 +68,7 @@ import domain.Models.OrderItem
 import domain.Models.PlatformNavigator
 import domain.Models.Product
 import domain.Models.Services
+import domain.Models.UserAppointment
 import domain.Models.Vendor
 import domain.Models.VendorStatusModel
 import kotlinx.serialization.Transient
@@ -82,7 +82,6 @@ import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.ShopStatusWidget
 import presentation.widgets.HomeServicesWidget
-import presentation.widgets.MeetingAppointmentWidget
 import presentation.widgets.RecommendedServiceItem
 import presentation.widgets.HomeAppointmentWidget
 import presentation.widgets.ProductDetailBottomSheet
@@ -130,9 +129,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
     @Composable
     override fun Content() {
-           userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(), -1L]
-           val isStatusViewExpanded = remember { mutableStateOf(false) }
-
+            userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(), -1L]
             val screenSizeInfo = ScreenSizeInfo()
             if (performedActionUIStateViewModel == null) {
                 performedActionUIStateViewModel = kmpViewModel(
@@ -143,15 +140,13 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             }
 
         LaunchedEffect(true) {
-            if (homePageViewModel!!.homePageInfo.value.userInfo == null) {
+            if (homePageViewModel!!.homePageInfo.value.userInfo?.userId == null) {
                 val vendorPhone: String = preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath(),""]
                 if (vendorPhone.isNotEmpty()){
-                    println("Response $vendorPhone")
                     homepagePresenter.getUserHomepage(userId)
                     //homepagePresenter.getUserHomepageWithStatus(userId, vendorPhone)
                 }
                 else {
-                    println("Response Called here")
                     homepagePresenter.getUserHomepage(userId)
                 }
             }
@@ -202,8 +197,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             }
             else if (uiState.value.isFailed) {}
             else if (uiState.value.isSuccess) {
-                val pastAppointments = homepageInfo.value.pastAppointment
-                val upcomingAppointments = homepageInfo.value.upcomingAppointment
+                val recentAppointments = homepageInfo.value.recentAppointments
                 val vendorServices = homepageInfo.value.vendorServices
                 val vendorRecommendations = homepageInfo.value.recommendationRecommendations
 
@@ -234,16 +228,12 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                             if (homePageViewModel!!.vendorStatus.value.isNotEmpty()) {
                                 BusinessStatusDisplay(statusList = homePageViewModel!!.vendorStatus.value, vendorInfo = mainViewModel!!.connectedVendor.value)
                             }
-                            if (!upcomingAppointments.isNullOrEmpty()) {
-                                AttachAppointmentsTitle("Upcoming")
-                                AppointmentsScreen(appointmentList = upcomingAppointments, platformNavigator = platformNavigator)
-                            }
                             if (!vendorRecommendations.isNullOrEmpty()) {
                                 RecommendedSessions(vendorRecommendations!!, mainViewModel!!)
                             }
-                            if (!pastAppointments.isNullOrEmpty()) {
-                                AttachAppointmentsTitle("Past")
-                                AppointmentsScreen(appointmentList = pastAppointments, platformNavigator = platformNavigator)
+                            if (!recentAppointments.isNullOrEmpty()) {
+                                AttachAppointmentsTitle("Recent Appointments")
+                                AppointmentsScreen(appointmentList = recentAppointments, platformNavigator = platformNavigator)
                             }
                         }
                     })
@@ -485,7 +475,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
     }
 
     @Composable
-    fun AppointmentsScreen(appointmentList: List<Appointment>?, platformNavigator: PlatformNavigator) {
+    fun AppointmentsScreen(appointmentList: List<UserAppointment>?, platformNavigator: PlatformNavigator) {
         if (appointmentList != null) {
             val viewHeight = getRecentAppointmentViewHeight(appointmentList)
             LazyColumn(
@@ -493,15 +483,8 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                     .height(viewHeight.dp), userScrollEnabled = false
             ) {
                 items(key = { it -> it.appointmentId!!}, items =  appointmentList) { item ->
-                    if (item.appointmentType == AppointmentType.MEETING.toPath()) {
-                        MeetingAppointmentWidget(
-                            appointment = item,
-                            appointmentPresenter = null,
-                            isFromHomeTab = true
-                        )
-                    } else {
                         HomeAppointmentWidget(
-                            appointment = item,
+                            userAppointment  = item,
                             appointmentPresenter = null,
                             postponementViewModel = null,
                             mainViewModel = mainViewModel!!,
@@ -510,7 +493,6 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                             onDeleteAppointment = {},
                             platformNavigator = platformNavigator
                         )
-                    }
                 }
 
             }

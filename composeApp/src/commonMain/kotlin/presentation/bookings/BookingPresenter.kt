@@ -171,14 +171,14 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
 
     override fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Int, serviceTypeId: Int, therapistId: Int,
                                                  appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String,
-                                                 serviceStatus: String, appointmentType: String,
+                                                 serviceStatus: String,
                                                  paymentAmount: Double, paymentMethod: String, bookingStatus: String) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showLoadPendingAppointmentLce(AppUIStates(isLoading = true))
                     bookingRepositoryImpl.createPendingBookingAppointment(userId, vendorId, serviceId, serviceTypeId, therapistId, appointmentTime,
-                        day, month, year, serviceLocation, serviceStatus, appointmentType, paymentAmount, paymentMethod, bookingStatus)
+                        day, month, year, serviceLocation, serviceStatus, paymentAmount, paymentMethod, bookingStatus)
                         .subscribe(
                             onSuccess = { result ->
                                 if (result.status == "success"){

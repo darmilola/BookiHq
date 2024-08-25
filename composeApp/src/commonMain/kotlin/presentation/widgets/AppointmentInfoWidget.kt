@@ -269,19 +269,7 @@ fun MeetingInfoWidget(appointment: Appointment) {
         horizontalAlignment = Alignment.Start,
         modifier = columnModifier
     ) {
-        TextComponent(
-            text = appointment.meetingDescription.toString(),
-            fontSize = 16,
-            fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Colors.darkPrimary,
-            textAlign = TextAlign.Start,
-            lineHeight = 20,
-            maxLines = 3,
-            fontWeight = FontWeight.Bold,
-            textModifier = Modifier
-                .fillMaxWidth().height(40.dp).padding(start = 5.dp)
-        )
+
 
         Row(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
             Column(

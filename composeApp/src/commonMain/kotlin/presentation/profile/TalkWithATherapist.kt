@@ -47,10 +47,8 @@ import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
-import domain.Enums.AppointmentType
 import domain.Enums.BookingStatus
 import domain.Enums.PaymentMethod
-import domain.Enums.Screens
 import domain.Enums.ServiceStatusEnum
 import domain.Models.CurrentAppointmentBooking
 import domain.Models.PlatformNavigator
@@ -297,22 +295,7 @@ class TalkWithATherapist(val platformNavigator: PlatformNavigator) : ParcelableS
                             onActionClick = {}, stackedSnackBarHostState = stackedSnackBarHostState)
                     }
                     else {
-                        profilePresenter.createMeeting(
-                            meetingTitle = "Talk With Therapist",
-                            userId = mainViewModel!!.currentUserInfo.value.userId!!,
-                            vendorId = mainViewModel!!.connectedVendor.value.vendorId!!,
-                            serviceStatus = ServiceStatusEnum.PENDING.toPath(),
-                            bookingStatus = BookingStatus.DONE.toPath(),
-                            appointmentType = AppointmentType.MEETING.toPath(),
-                            appointmentTime = currentBooking.appointmentTime?.id!!,
-                            day = currentBooking.day,
-                            month = currentBooking.month,
-                            year = currentBooking.year,
-                            meetingDescription = currentBooking.description,
-                            user = mainViewModel!!.currentUserInfo.value, vendor = mainViewModel!!.connectedVendor.value,
-                            platformTime = currentBooking.appointmentTime!!, monthName = currentBooking.monthName, platformNavigator = platformNavigator,
-                            paymentAmount = 4000.0, paymentMethod = PaymentMethod.CARD_PAYMENT.toPath()
-                        )
+
                     }
 
                 }

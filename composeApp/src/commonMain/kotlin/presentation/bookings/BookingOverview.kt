@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import domain.Enums.AppointmentType
 import domain.Enums.BookingStatus
 import domain.Enums.PaymentMethod
 import domain.Enums.ServiceLocationEnum
@@ -61,7 +60,6 @@ fun BookingCheckOut(mainViewModel: MainViewModel, bookingPresenter: BookingPrese
             year = currentAppointmentBooking.appointmentYear!!,
             serviceLocation = if (currentAppointmentBooking.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
             serviceStatus = ServiceStatusEnum.BOOKING.toPath(),
-            appointmentType = AppointmentType.SERVICE.toPath(),
             paymentAmount = currentAppointmentBooking.serviceTypeItem!!.price.toDouble(),
             paymentMethod = PaymentMethod.CARD_PAYMENT.toPath(),
             bookingStatus = BookingStatus.PENDING.toPath()

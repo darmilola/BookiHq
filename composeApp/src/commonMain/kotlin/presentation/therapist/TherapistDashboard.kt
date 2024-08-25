@@ -213,8 +213,10 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
         val tabItems: ArrayList<String> = arrayListOf()
         tabItems.add("Appointments")
         tabItems.add("Reviews")
+        tabItems.add("Services")
+        tabItems.add("Settings")
         var tabIndex by remember { mutableStateOf(0) }
-        Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.Start) {
             ScrollableTabRow(selectedTabIndex = tabIndex,
                 modifier = Modifier.height(40.dp),
                 backgroundColor = Color.Transparent,

@@ -19,7 +19,6 @@ data class PostponeAppointmentRequest(@SerialName("user_id") val userId: Int,
                                       @SerialName("serviceLocation") val serviceLocation: String,
                                       @SerialName("serviceStatus") val serviceStatus: String,
                                       @SerialName("appointment_id") val appointmentId: Long,
-                                      @SerialName("appointmentType") val appointmentType: String,
                                       @SerialName("bookingStatus") val bookingStatus: String,
                                       @SerialName("paymentMethod") val paymentMethod: String)
 

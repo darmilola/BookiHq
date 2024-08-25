@@ -38,7 +38,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.Appointment
-import domain.Enums.AppointmentType
 import domain.Enums.MeetingStatus
 import domain.Enums.ServiceStatusEnum
 import domain.Models.PlatformNavigator
@@ -141,9 +140,9 @@ fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPrese
 
 
 @Composable
-fun HomeAppointmentWidget(appointment: Appointment? = null, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, mainViewModel: MainViewModel, availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, isFromHomeTab: Boolean, onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
+fun HomeAppointmentWidget(userAppointment: UserAppointment? = null, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, mainViewModel: MainViewModel, availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, isFromHomeTab: Boolean, onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
 
-    val serviceAppointmentStatus = appointment?.serviceStatus
+    val serviceAppointmentStatus = userAppointment?.resources?.serviceStatus
     val serviceMenuItems = arrayListOf<String>()
 
     var actionItem = ""
@@ -212,7 +211,7 @@ fun HomeAppointmentWidget(appointment: Appointment? = null, appointmentPresenter
                 serviceStatusText,
                 serviceIconRes,
                 serviceStatusColor,
-                appointment!!,
+                userAppointment?.resources!!,
                 serviceMenuItems,
                 appointmentPresenter,
                 postponementViewModel,
@@ -221,7 +220,7 @@ fun HomeAppointmentWidget(appointment: Appointment? = null, appointmentPresenter
                 onDeleteAppointment = {
                     onDeleteAppointment(it)
                 }, platformNavigator = platformNavigator)
-            AttachAppointmentContent(appointment!!)
+            AttachAppointmentContent(userAppointment?.resources)
         }
     }
 }
@@ -491,14 +490,7 @@ fun AttachMeetingAppointmentHeader(statusText: String, statusDrawableRes: String
                   menuItems.forEachIndexed { index, title ->
                       DropdownMenuItem(
                           onClick = {
-                              println("Title is $title")
-                              if (title.contentEquals("Join Meeting", ignoreCase = true)) {
-                                  presenter?.joinMeeting(
-                                      customParticipantId = appointment.userId.toString(),
-                                      presetName = "group_call_participant",
-                                      meetingId = appointment.meetingId!!
-                                  )
-                              } else if (title.contentEquals("Delete", true)) {
+                               if (title.contentEquals("Delete", true)) {
                                   presenter?.deleteAppointment(appointment.appointmentId!!)
                               }
                           }) {
@@ -535,12 +527,7 @@ fun AttachAppointmentStatus(status: String, statusColor: Color){
 
 @Composable
 fun AttachAppointmentContent(appointment: Appointment) {
-    if (appointment.appointmentType == AppointmentType.SERVICE.toPath()) {
-        AppointmentInfoWidget(appointment)
-    }
-    else{
-        MeetingInfoWidget(appointment)
-    }
+    AppointmentInfoWidget(appointment)
 }
 
 

@@ -182,15 +182,24 @@ class AccountTab : Tab, Parcelable {
                         mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.ORDERS.toPath()))
                     })
 
-                ActionItemComponent(
-                    modifier = actionStyle,
-                    buttonText = "Invite A Friend",
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                    fontSize = 20,
-                    textColor = Colors.darkPrimary,
-                    style = TextStyle(),
-                    iconRes = "drawable/invite.png",
-                    isDestructiveAction = false)
+               // if (mainViewModel!!.currentUserInfo.value.isTherapist == true) {
+                    ActionItemComponent(
+                        modifier = actionStyle,
+                        buttonText = "Therapist Dashboard",
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                        fontSize = 20,
+                        textColor = Colors.darkPrimary,
+                        style = TextStyle(),
+                        iconRes = "drawable/dashboard_icon.png",
+                        isDestructiveAction = false, onClick = {
+                            mainViewModel!!.setScreenNav(
+                                Pair(
+                                    Screens.MAIN_SCREEN.toPath(),
+                                    Screens.THERAPIST_DASHBOARD.toPath()
+                                )
+                            )
+                        })
+               // }
 
                 ActionItemComponent(
                     modifier = actionStyle,
@@ -225,25 +234,6 @@ class AccountTab : Tab, Parcelable {
                     isDestructiveAction = false, onClick = {
                         mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.JOIN_SPA.toPath()))
                     })
-
-                if (mainViewModel!!.currentUserInfo.value.isTherapist == true) {
-                    ActionItemComponent(
-                        modifier = actionStyle,
-                        buttonText = "Dashboard",
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                        fontSize = 20,
-                        textColor = Colors.darkPrimary,
-                        style = TextStyle(),
-                        iconRes = "drawable/dashboard_icon.png",
-                        isDestructiveAction = false, onClick = {
-                            mainViewModel!!.setScreenNav(
-                                Pair(
-                                    Screens.MAIN_SCREEN.toPath(),
-                                    Screens.THERAPIST_DASHBOARD.toPath()
-                                )
-                            )
-                        })
-                }
 
                 ActionItemComponent(
                     modifier = actionStyle,
