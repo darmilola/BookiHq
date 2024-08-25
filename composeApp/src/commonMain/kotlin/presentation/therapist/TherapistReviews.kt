@@ -40,6 +40,8 @@ fun TherapistReviews(therapistInfo: TherapistInfo, therapistPresenter: Therapist
                      loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel, performedActionUIStateViewModel: PerformedActionUIStateViewModel){
 
     val therapistReviews = remember { mutableStateOf(listOf<TherapistReviews>()) }
+    val isAvailableForBooking = remember { mutableStateOf(therapistInfo.isAvailable) }
+    val isMobileServiceAvailable = remember { mutableStateOf(therapistInfo.isMobileServiceAvailable) }
     val handler = TherapistHandler(therapistPresenter,
         loadingScreenUiStateViewModel = loadingScreenUiStateViewModel,
         performedActionUIStateViewModel,
@@ -93,11 +95,17 @@ fun TherapistReviews(therapistInfo: TherapistInfo, therapistPresenter: Therapist
                              TitleWidget(textColor = Colors.primaryColor, title = "Settings")
 
                              Row(modifier = Modifier.fillMaxWidth().height(50.dp), horizontalArrangement = Arrangement.Center) {
-                                 Switch(checked = true, onCheckedChange = {})
+                                 Switch(checked = isAvailableForBooking.value!!, onCheckedChange = {
+                                     isAvailableForBooking.value = it
+                                     therapistPresenter.updateAvailability(therapistInfo.id!!, isMobileServiceAvailable = isMobileServiceAvailable.value!!, isAvailable = isAvailableForBooking.value!!)
+                                 })
                                  TitleWidget(textColor = Colors.primaryColor, title = "Is Available for booking")
                              }
                            Row(modifier = Modifier.fillMaxWidth().height(50.dp), horizontalArrangement = Arrangement.Center) {
-                               Switch(checked = true, onCheckedChange = {})
+                               Switch(checked = isMobileServiceAvailable.value!!, onCheckedChange = {
+                                   isMobileServiceAvailable.value = it
+                                   therapistPresenter.updateAvailability(therapistInfo.id!!, isMobileServiceAvailable = isMobileServiceAvailable.value!!, isAvailable = isAvailableForBooking.value!!)
+                               })
                                TitleWidget(textColor = Colors.primaryColor, title = "Mobile Service Available")
                            }
                          }

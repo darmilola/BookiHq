@@ -2,6 +2,8 @@ package presentation.therapist
 
 import domain.Models.TherapistReviews
 import UIStates.AppUIStates
+import com.badoo.reaktive.single.Single
+import domain.Models.ServerResponse
 import domain.Models.TherapistAppointmentResourceListEnvelope
 
 interface TherapistContract {
@@ -22,5 +24,6 @@ interface TherapistContract {
         abstract fun getMoreTherapistAppointments(therapistId: Long, nextPage: Int = 1)
         abstract fun archiveAppointment(appointmentId: Long)
         abstract fun doneAppointment(appointmentId: Long)
+        abstract fun updateAvailability(therapistId: Long, isMobileServiceAvailable: Boolean, isAvailable: Boolean)
     }
 }

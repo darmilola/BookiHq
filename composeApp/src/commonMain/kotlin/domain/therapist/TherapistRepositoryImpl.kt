@@ -15,6 +15,15 @@ class TherapistRepositoryImpl(apiService: HttpClient): TherapistRepository {
         return therapistNetworkService.getReviews(param)
     }
 
+    override suspend fun updateAvailability(
+        therapistId: Long,
+        isMobileServiceAvailable: Boolean,
+        isAvailable: Boolean
+    ): Single<ServerResponse> {
+        val param = UpdateTherapistAvailabilityRequest(therapistId, isAvailable, isMobileServiceAvailable)
+        return therapistNetworkService.updateTherapistAvailability(param)
+    }
+
     override suspend fun archiveAppointment(appointmentId: Long): Single<ServerResponse> {
         val param = ArchiveAppointmentRequest(appointmentId)
         return therapistNetworkService.archiveAppointment(param)

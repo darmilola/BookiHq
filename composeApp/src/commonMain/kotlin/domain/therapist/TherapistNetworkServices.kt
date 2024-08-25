@@ -53,4 +53,12 @@ open class TherapistNetworkService(private val apiService: HttpClient) {
             header("Authorization", apiKey)
         }.body<ServerResponse>().toSingle()
 
+    suspend fun updateTherapistAvailability(updateTherapistAvailabilityRequest: UpdateTherapistAvailabilityRequest) =
+        apiService.post {
+            url("/therapist/availability/update")
+            contentType(ContentType.Application.Json)
+            setBody(updateTherapistAvailabilityRequest)
+            header("Authorization", apiKey)
+        }.body<ServerResponse>().toSingle()
+
 }

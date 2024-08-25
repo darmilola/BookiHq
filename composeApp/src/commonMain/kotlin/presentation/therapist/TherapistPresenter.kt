@@ -1,7 +1,9 @@
 package presentation.therapist
 
 import UIStates.AppUIStates
+import com.badoo.reaktive.single.Single
 import com.badoo.reaktive.single.subscribe
+import domain.Models.ServerResponse
 import domain.therapist.TherapistRepositoryImpl
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
@@ -163,6 +165,34 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
                 }
                 result.dispose()
             } catch(e: Exception) {
+                contractView?.showActionLce(AppUIStates(isFailed = true))
+            }
+        }
+    }
+
+    override fun updateAvailability(
+        therapistId: Long,
+        isMobileServiceAvailable: Boolean,
+        isAvailable: Boolean
+    ) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    therapistRepositoryImpl.updateAvailability(therapistId, isMobileServiceAvailable, isAvailable)
+                        .subscribe(
+                            onSuccess = { result ->
+                                println("Response 0 $result")
+                                if (result.status == "success"){}
+                                else{}
+                            },
+                            onError = {
+                                println("Response 1 ${it.message}")
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                println("Response 2 ${e.message}")
                 contractView?.showActionLce(AppUIStates(isFailed = true))
             }
         }
