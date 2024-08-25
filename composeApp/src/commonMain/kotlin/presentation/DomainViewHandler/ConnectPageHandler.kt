@@ -78,7 +78,6 @@ class ConnectPageHandler(
                         it
                     )
                 }
-                println("Called me ${vendors.resources!!.size}")
                 vendorResourceListEnvelopeViewModel.setResources(vendors.resources!!.toMutableList())
             }
         }

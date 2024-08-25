@@ -33,6 +33,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.room.RoomDatabase
+import applications.room.AppDatabase
 import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
 import cafe.adriel.voyager.core.screen.ScreenKey
@@ -90,11 +92,17 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
     private val preferenceSettings: Settings = Settings()
     @Transient
     private var mainViewModel: MainViewModel? = null
+    @Transient
+    private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 
     override val key: ScreenKey = uniqueScreenKey
 
     fun setMainViewModel(mainViewModel: MainViewModel){
         this.mainViewModel = mainViewModel
+    }
+
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = databaseBuilder
     }
 
     @Composable
@@ -192,6 +200,7 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                 showSwitchReasonBottomSheet = false
                 val details = SwitchVendorDetails(platformNavigator)
                 details.setMainViewModel(mainViewModel!!)
+                details.setDatabaseBuilder(databaseBuilder)
                 navigator.push(details)
             })
 

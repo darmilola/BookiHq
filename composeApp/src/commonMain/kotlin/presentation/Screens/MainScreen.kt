@@ -183,6 +183,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             Screens.CONNECT_VENDOR.toPath() -> {
                 val switchVendor = SwitchVendor(platformNavigator)
                 switchVendor.setMainViewModel(mainViewModel!!)
+                switchVendor.setDatabaseBuilder(databaseBuilder)
                 val nav = LocalNavigator.currentOrThrow
                 nav.push(switchVendor)
                 mainViewModel!!.setScreenNav(

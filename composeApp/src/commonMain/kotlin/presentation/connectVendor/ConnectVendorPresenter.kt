@@ -159,12 +159,19 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                                 userLongitude =  preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), "0.0"].toDouble()
                                 if (result.status == "success"){
                                     val updatedVendorDistance = result.listItem.resources!!.map { vendor ->
-                                        val distance = getDistanceFromCustomer(userLat = userLatitude, userLong = userLongitude, vendorLat = vendor.latitude, vendorLong = vendor.longitude)
+                                        val distance = getDistanceFromCustomer(userLat = userLatitude, userLong = userLongitude,
+                                            vendorLat = vendor.latitude, vendorLong = vendor.longitude)
                                         vendor.distanceFromCustomer = distance
                                         vendor
                                     }
                                     val updatedSortedDistance = updatedVendorDistance.sortedBy{ it.distanceFromCustomer }
                                     result.listItem.resources = updatedSortedDistance
+                                    val updatedMinuteDrive = result.listItem.resources!!.map { vendor ->
+                                        val minuteDrive = getMinuteDrive(vendor.distanceFromCustomer!!)
+                                        vendor.minuteDriveText = minuteDrive
+                                        vendor
+                                    }
+                                    result.listItem.resources = updatedMinuteDrive
                                     contractView?.showScreenLce(AppUIStates(isSuccess = true))
                                     contractView?.showVendors(result.listItem, isFromSearch = true, isLoadMore = false)
                                 }

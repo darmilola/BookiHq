@@ -12,7 +12,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
+import androidx.room.RoomDatabase
 import applications.device.deviceInfo
+import applications.room.AppDatabase
 import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -57,11 +59,16 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
     private val preferenceSettings: Settings = Settings()
     @Transient
     private var mainViewModel: MainViewModel? = null
+    @Transient
+    private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 
     override val key: ScreenKey = uniqueScreenKey
 
     fun setMainViewModel(mainViewModel: MainViewModel){
         this.mainViewModel = mainViewModel
+    }
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = databaseBuilder
     }
 
     @Composable
@@ -87,6 +94,7 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
 
         val switchVendorId = mainViewModel!!.switchVendorId.value
         val switchVendorReason = mainViewModel!!.switchVendorReason.value
+        val switchVendorValue = mainViewModel!!.switchVendor.value
         val userInfo = mainViewModel!!.currentUserInfo.value
         val switchVendorUiState = performedActionUIStateViewModel!!.switchVendorUiState.collectAsState()
         performedActionUIStateViewModel!!.switchVendorActionUIState(AppUIStates(isDefault = true))
@@ -112,14 +120,17 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
                     }
                     else if (deviceInfo() == DeviceType.ANDROID.toPath()){
                         // App Restart for Android
-                        //navigator.replaceAll(SplashScreen(mainViewModel = mainViewModel!!, platformNavigator = platformNavigator))
+                        val splashScreen = SplashScreen(platformNavigator = platformNavigator)
+                        splashScreen.setMainViewModel(mainViewModel!!)
+                        splashScreen.setDatabaseBuilder(databaseBuilder)
+                        navigator.replaceAll(splashScreen)
                     }
 
                 } else if (switchVendorUiState.value.isFailed) {
                     ErrorDialog(dialogTitle = "Error Occurred Please Try Again", actionTitle = "Retry"){}
                 }
 
-                BusinessInfoContent(mainViewModel!!.connectedVendor.value){
+                BusinessInfoContent(switchVendorValue){
                  profilePresenter.switchVendor(userId = userInfo.userId!!,
                      vendorId = switchVendorId, action = CustomerMovementEnum.Exit.toPath(),
                      exitReason = switchVendorReason, vendor = mainViewModel!!.connectedVendor.value!!, platformNavigator = platformNavigator)

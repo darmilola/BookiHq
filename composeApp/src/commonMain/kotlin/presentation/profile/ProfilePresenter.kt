@@ -172,23 +172,25 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                     profileRepositoryImpl.switchVendor(userId, vendorId, action, exitReason)
                         .subscribe(
                             onSuccess = { result ->
-                                if (result?.status == ServerResponseEnum.SUCCESS.toPath()){
+                                println("Response $result")
+                                if (result.status == ServerResponseEnum.SUCCESS.toPath()){
                                     platformNavigator.sendCustomerExitNotification(exitReason = exitReason, vendorLogoUrl = vendor.businessLogo!!, fcmToken = vendor.fcmToken!!)
                                     switchVendorContract?.showActionLce(AppUIStates(isSuccess = true))
                                 }
                                 else{
+                                    println("Response 2 $result")
                                     switchVendorContract?.showActionLce(AppUIStates(isFailed = true))
                                 }
                             },
                             onError = {
-                                println("Error 2 ${it.message}")
+                                println("Response 3 ${it.message}")
                                 switchVendorContract?.showActionLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Error 2 ${e.message}")
+                println("Response 4 ${e.message}")
                 switchVendorContract?.showActionLce(AppUIStates(isFailed = true))
             }
         }
