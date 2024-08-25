@@ -20,7 +20,7 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
         contractView = view
     }
 
-    override fun getTherapistReviews(therapistId: Int) {
+    override fun getTherapistReviews(therapistId: Long) {
         contractView?.showScreenLce(AppUIStates(isLoading = true))
         scope.launch(Dispatchers.Main) {
             try {
@@ -49,6 +49,7 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
     }
 
     override fun getTherapistAppointments(therapistId: Long) {
+        println("Therapist ID $therapistId")
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {

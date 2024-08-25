@@ -15,7 +15,7 @@ class TherapistHandler(
     private val performedActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val onReviewsReady: (List<TherapistReviews>) -> Unit,
     private val onMeetingTokenReady: (meetingToken: String) -> Unit,
-    private val appointmentResourceListEnvelopeViewModel: TherapistAppointmentResourceListEnvelopeViewModel) :
+    private val appointmentResourceListEnvelopeViewModel: TherapistAppointmentResourceListEnvelopeViewModel? = null) :
     TherapistContract.View {
     fun init() {
         therapistPresenter.registerUIContract(this)
@@ -34,7 +34,7 @@ class TherapistHandler(
     }
 
     override fun showAppointments(appointments: TherapistAppointmentResourceListEnvelope) {
-        if (appointmentResourceListEnvelopeViewModel.resources.value.isNotEmpty()) {
+        if (appointmentResourceListEnvelopeViewModel!!.resources.value.isNotEmpty()) {
             val appointmentList = appointmentResourceListEnvelopeViewModel.resources.value
             appointmentList.addAll(appointments.data!!)
             appointmentResourceListEnvelopeViewModel.setResources(appointmentList)
@@ -45,20 +45,20 @@ class TherapistHandler(
             appointments.displayedItemCount?.let { appointmentResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
         } else {
             appointmentResourceListEnvelopeViewModel.setResources(appointments.data)
-            appointments?.prevPageUrl?.let { appointmentResourceListEnvelopeViewModel.setPrevPageUrl(it) }
-            appointments?.nextPageUrl?.let { appointmentResourceListEnvelopeViewModel.setNextPageUrl(it) }
-            appointments?.currentPage?.let { appointmentResourceListEnvelopeViewModel.setCurrentPage(it) }
-            appointments?.totalItemCount?.let { appointmentResourceListEnvelopeViewModel.setTotalItemCount(it) }
-            appointments?.displayedItemCount?.let { appointmentResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
+            appointments.prevPageUrl?.let { appointmentResourceListEnvelopeViewModel.setPrevPageUrl(it) }
+            appointments.nextPageUrl?.let { appointmentResourceListEnvelopeViewModel.setNextPageUrl(it) }
+            appointments.currentPage?.let { appointmentResourceListEnvelopeViewModel.setCurrentPage(it) }
+            appointments.totalItemCount?.let { appointmentResourceListEnvelopeViewModel.setTotalItemCount(it) }
+            appointments.displayedItemCount?.let { appointmentResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
         }
     }
 
     override fun onLoadMoreAppointmentStarted() {
-        appointmentResourceListEnvelopeViewModel.setLoadingMore(true)
+        appointmentResourceListEnvelopeViewModel!!.setLoadingMore(true)
     }
 
     override fun onLoadMoreAppointmentEnded() {
-        appointmentResourceListEnvelopeViewModel.setLoadingMore(false)
+        appointmentResourceListEnvelopeViewModel!!.setLoadingMore(false)
     }
 
     override fun onJoinMeetingTokenReady(meetingToken: String) {

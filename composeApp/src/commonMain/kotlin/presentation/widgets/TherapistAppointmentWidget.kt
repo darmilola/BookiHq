@@ -38,9 +38,8 @@ import presentations.components.TextComponent
 import theme.styles.Colors
 
 @Composable
-fun AttachTherapistAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment, menuItems: ArrayList<String>,onArchiveAppointment: (Appointment) -> Unit,
+fun AttachTherapistAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment, onArchiveAppointment: (Appointment) -> Unit,
                                      onUpdateToDone: (Appointment) -> Unit) {
-    val expandedMenuItem = remember { mutableStateOf(false) }
 
     Row(
         horizontalArrangement = Arrangement.Start,
@@ -76,41 +75,6 @@ fun AttachTherapistAppointmentHeader(statusText: String, statusDrawableRes: Stri
         ) {
             ImageComponent(imageModifier = Modifier.size(20.dp).padding(bottom = 2.dp), imageRes = statusDrawableRes, colorFilter = ColorFilter.tint(color = statusColor))
             AttachAppointmentStatus(statusText, statusColor)
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    AttachIcon(
-                        iconRes = "drawable/overflow_menu.png",
-                        iconSize = 20,
-                        iconTint = statusColor
-                    ) {
-                        expandedMenuItem.value = true
-                    }
-                }
-                DropdownMenu(
-                    expanded = expandedMenuItem.value,
-                    onDismissRequest = { expandedMenuItem.value = false },
-                    modifier = Modifier
-                        .fillMaxWidth(0.40f)
-                        .background(Color.White)
-                ) {
-                    menuItems.forEachIndexed { index, title ->
-                        DropdownMenuItem(
-                            onClick = {
-                                if (title.contentEquals("Update To Done", true)) {
-                                    onUpdateToDone(appointment)
-                                } else if (title.contentEquals("Archive", true)) {
-                                    onArchiveAppointment(appointment)
-                                }
-                            }) {
-                            MultiLineTextWidget(text = title, fontSize = 16)
-                        }
-                    }
-                }
         }
     }
 }
@@ -122,23 +86,7 @@ fun TherapistDashboardAppointmentWidget(appointment: Appointment,
                                         onArchiveAppointment: (Appointment) -> Unit,
                                         onUpdateToDone: (Appointment) -> Unit) {
 
-    val appointmentStatus = appointment?.serviceStatus
-    val menuItems = arrayListOf<String>()
-
-    var actionItem = ""
-    actionItem = when (appointmentStatus) {
-        ServiceStatusEnum.PENDING.toPath() -> {
-            "Update To Done"
-        }
-
-        else -> {
-            "Archive"
-        }
-    }
-    menuItems.add(actionItem)
-
-
-
+    val appointmentStatus = appointment.serviceStatus
     var iconRes = "drawable/schedule.png"
     var statusText = "Pending"
     var statusColor: Color = Colors.primaryColor
@@ -181,7 +129,7 @@ fun TherapistDashboardAppointmentWidget(appointment: Appointment,
             horizontalAlignment = Alignment.Start,
             modifier = columnModifier
         ) {
-            AttachTherapistAppointmentHeader(statusText, iconRes, statusColor, appointment, menuItems, onUpdateToDone = {
+            AttachTherapistAppointmentHeader(statusText, iconRes, statusColor, appointment, onUpdateToDone = {
                 onUpdateToDone(it)
             }, onArchiveAppointment = {
                 onArchiveAppointment(it)

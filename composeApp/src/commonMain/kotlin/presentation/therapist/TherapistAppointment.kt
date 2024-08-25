@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +30,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import domain.Models.Appointment
 import domain.Models.TherapistAppointmentItemUIModel
+import domain.Models.TherapistInfo
+import presentation.DomainViewHandler.TherapistHandler
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.PerformedActionUIStateViewModel
@@ -43,6 +46,7 @@ import utils.getAppointmentViewHeight
 @Composable
 fun TherapistAppointment(mainViewModel: MainViewModel, loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel,
                          appointmentResourceListEnvelopeViewModel: TherapistAppointmentResourceListEnvelopeViewModel?, therapistPresenter: TherapistPresenter,
+                         therapistInfo: TherapistInfo,
                          performedActionUIStateViewModel: PerformedActionUIStateViewModel) {
 
 
@@ -50,6 +54,20 @@ fun TherapistAppointment(mainViewModel: MainViewModel, loadingScreenUiStateViewM
         maxStack = 5,
         animation = StackedSnackbarAnimation.Bounce
     )
+
+    LaunchedEffect(true) {
+        therapistPresenter.getTherapistAppointments(therapistInfo.id!!)
+    }
+
+    val handler = TherapistHandler(therapistPresenter,
+        loadingScreenUiStateViewModel = loadingScreenUiStateViewModel!!,
+        performedActionUIStateViewModel,
+        onReviewsReady = {
+
+        },
+        onMeetingTokenReady = {},
+        appointmentResourceListEnvelopeViewModel!!)
+    handler.init()
 
 
 
@@ -63,7 +81,6 @@ fun TherapistAppointment(mainViewModel: MainViewModel, loadingScreenUiStateViewM
     val uiState = loadingScreenUiStateViewModel.uiStateInfo.collectAsState()
     val lastIndex = appointmentList?.value?.size?.minus(1)
     val selectedAppointment = remember { mutableStateOf(Appointment()) }
-    val therapistInfo = mainViewModel.currentUserInfo.value
 
 
     var appointmentUIModel by remember {
@@ -159,7 +176,7 @@ fun TherapistAppointment(mainViewModel: MainViewModel, loadingScreenUiStateViewM
                                     ) {
                                         if (appointmentResourceListEnvelopeViewModel.nextPageUrl.value.isNotEmpty()) {
                                             therapistPresenter.getMoreTherapistAppointments(
-                                                therapistInfo.userId!!,
+                                                therapistInfo.id!!,
                                                 nextPage = appointmentResourceListEnvelopeViewModel.currentPage.value + 1
                                             )
                                         }

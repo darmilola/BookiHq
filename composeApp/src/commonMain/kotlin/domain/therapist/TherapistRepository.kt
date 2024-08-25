@@ -9,7 +9,7 @@ import domain.Models.TherapistTimeAvailabilityResponse
 
 interface TherapistRepository {
 
-    suspend fun getReviews(therapistId: Int): Single<TherapistReviewsResponse>
+    suspend fun getReviews(therapistId: Long): Single<TherapistReviewsResponse>
     suspend fun archiveAppointment(appointmentId: Long): Single<ServerResponse>
     suspend fun doneAppointment(appointmentId: Long): Single<ServerResponse>
     suspend fun getTherapistAppointments(therapistId: Long, nextPage: Int = 1): Single<TherapistAppointmentListDataResponse>

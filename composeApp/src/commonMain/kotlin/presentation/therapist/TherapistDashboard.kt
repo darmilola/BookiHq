@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -46,11 +47,13 @@ import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import dev.icerock.moko.parcelize.Parcelize
+import domain.Models.TherapistInfo
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.TherapistHandler
 import presentation.dialogs.LoadingDialog
+import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.TherapistAppointmentResourceListEnvelopeViewModel
@@ -72,8 +75,6 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
     @Transient
     private var performedActionUiStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
-    private var therapistViewModel: TherapistViewModel? = null
-    @Transient
     private var appointmentResourceListEnvelopeViewModel: TherapistAppointmentResourceListEnvelopeViewModel? = null
     @Transient
     private var availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
@@ -81,11 +82,17 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
     private var joinMeetingPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
     private var mainViewModel: MainViewModel? = null
+    @Transient
+    private var therapistInfo: TherapistInfo? = null
 
     override val key: ScreenKey = uniqueScreenKey
 
     fun setMainViewModel(mainViewModel: MainViewModel){
         this.mainViewModel = mainViewModel
+    }
+
+    fun setTherapistInfo(therapistInfo: TherapistInfo){
+        this.therapistInfo = therapistInfo
     }
 
     @Composable
@@ -142,34 +149,13 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
 
         }
 
-        if (therapistViewModel == null) {
-            therapistViewModel = kmpViewModel(
-                factory = viewModelFactory {
-                    TherapistViewModel(savedStateHandle = createSavedStateHandle())
-                },
-            )
-        }
-
 
         if (appointmentResourceListEnvelopeViewModel == null) {
             appointmentResourceListEnvelopeViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     TherapistAppointmentResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
                 })
-
-            val therapistInfo = mainViewModel!!.currentUserInfo.value
-            therapistPresenter.getTherapistAppointments(therapistInfo.userId!!)
         }
-
-        val handler = TherapistHandler(therapistPresenter,
-             loadingScreenUiStateViewModel = loadingScreenUiStateViewModel!!,
-             performedActionUiStateViewModel!!,
-            onReviewsReady = {
-                therapistViewModel!!.setTherapistReviews(it)
-             },
-             onMeetingTokenReady = {},
-            appointmentResourceListEnvelopeViewModel!!)
-        handler.init()
 
         val therapistInfo = mainViewModel!!.currentUserInfo.value
         val actionState = performedActionUiStateViewModel!!.therapistDashboardUiState.collectAsState()
@@ -213,41 +199,43 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
         val tabItems: ArrayList<String> = arrayListOf()
         tabItems.add("Appointments")
         tabItems.add("Reviews")
-        tabItems.add("Services")
-        tabItems.add("Settings")
         var tabIndex by remember { mutableStateOf(0) }
-        Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.Start) {
-            ScrollableTabRow(selectedTabIndex = tabIndex,
-                modifier = Modifier.height(40.dp),
-                backgroundColor = Color.Transparent,
-                indicator = { tabPositions ->
-                    Box(modifier = Modifier
-                            .tabIndicatorOffset(tabPositions[tabIndex])
-                            .height(3.dp)
-                            .padding(start = 30.dp, end = 30.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(color = Colors.primaryColor))
-                     },
-                divider = {}) {
-                tabItems.forEachIndexed { index, title ->
-                    Tab(text =
-                    {
-                        TextComponent(
-                            text = tabItems[index],
-                            fontSize = 16,
-                            fontFamily = GGSansSemiBold,
-                            textStyle = MaterialTheme.typography.h6,
-                            textColor = Colors.darkPrimary,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold,
-                            lineHeight = 30
+        Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                ScrollableTabRow(selectedTabIndex = tabIndex,
+                    modifier = Modifier.height(40.dp).fillMaxWidth(0.80f),
+                    backgroundColor = Color.Transparent,
+                    indicator = { tabPositions ->
+                        Box(
+                            modifier = Modifier
+                                .tabIndicatorOffset(tabPositions[tabIndex])
+                                .height(3.dp)
+                                .padding(start = 30.dp, end = 30.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(color = Colors.primaryColor)
                         )
-                    }, selected = tabIndex == index,
-                        onClick = {
-                            tabIndex = index
-                        }
+                    },
+                    divider = {}) {
+                    tabItems.forEachIndexed { index, title ->
+                        Tab(text =
+                        {
+                            TextComponent(
+                                text = tabItems[index],
+                                fontSize = 16,
+                                fontFamily = GGSansSemiBold,
+                                textStyle = MaterialTheme.typography.h6,
+                                textColor = Colors.darkPrimary,
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Bold,
+                                lineHeight = 30
+                            )
+                        }, selected = tabIndex == index,
+                            onClick = {
+                                tabIndex = index
+                            }
 
-                    )
+                        )
+                    }
                 }
             }
             Box(
@@ -255,8 +243,8 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
                 contentAlignment = Alignment.Center
             ) {
                 when(tabIndex){
-                    0 -> TherapistAppointment(mainViewModel!!, loadingScreenUiStateViewModel!!, appointmentResourceListEnvelopeViewModel, therapistPresenter, performedActionUiStateViewModel!!)
-                    1 -> TherapistReviews(mainViewModel!!, therapistPresenter, therapistViewModel!!, loadingScreenUiStateViewModel!!)
+                    0 -> TherapistAppointment(mainViewModel!!, loadingScreenUiStateViewModel!!, appointmentResourceListEnvelopeViewModel, therapistPresenter,therapistInfo!!,performedActionUiStateViewModel!!)
+                    1 -> TherapistReviews(therapistInfo!!, therapistPresenter, loadingScreenUiStateViewModel!!,performedActionUiStateViewModel!!)
                 }
 
             }

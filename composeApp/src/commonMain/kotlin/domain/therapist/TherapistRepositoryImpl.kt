@@ -10,7 +10,7 @@ import io.ktor.client.HttpClient
 class TherapistRepositoryImpl(apiService: HttpClient): TherapistRepository {
 
     private val therapistNetworkService: TherapistNetworkService = TherapistNetworkService(apiService)
-    override suspend fun getReviews(therapistId: Int): Single<TherapistReviewsResponse> {
+    override suspend fun getReviews(therapistId: Long): Single<TherapistReviewsResponse> {
         val param = GetReviewsRequest(therapistId)
         return therapistNetworkService.getReviews(param)
     }

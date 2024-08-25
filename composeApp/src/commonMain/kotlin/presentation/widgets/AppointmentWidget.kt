@@ -547,10 +547,6 @@ fun TherapistDisplayItem(therapistInfo: TherapistInfo) {
             modifier = rowModifier
         ) {
 
-            val iconModifier = Modifier
-                .padding(top = 5.dp)
-                .size(16.dp)
-
             val iconTextBoxModifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth()

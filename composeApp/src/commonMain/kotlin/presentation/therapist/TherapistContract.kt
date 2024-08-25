@@ -17,7 +17,7 @@ interface TherapistContract {
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
-        abstract fun getTherapistReviews(therapistId: Int)
+        abstract fun getTherapistReviews(therapistId: Long)
         abstract fun getTherapistAppointments(therapistId: Long)
         abstract fun getMoreTherapistAppointments(therapistId: Long, nextPage: Int = 1)
         abstract fun archiveAppointment(appointmentId: Long)
