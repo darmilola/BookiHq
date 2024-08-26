@@ -37,6 +37,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _showProductBottomSheet =  savedStateHandle.getStateFlow("showProductBottomSheet", false)
     private var _showPaymentCardsBottomSheet =  savedStateHandle.getStateFlow("showPaymentCardsBottomSheet", false)
     private var _showProductReviewsBottomSheet =  savedStateHandle.getStateFlow("showProductReviewsBottomSheet", false)
+    private var _showAppointmentReviewsBottomSheet =  savedStateHandle.getStateFlow("showAppointmentReviewsBottomSheet", false)
     private var _onBackPressed =  savedStateHandle.getStateFlow("onBackPressed", false)
     private var _exitApp =  savedStateHandle.getStateFlow("exitApp", false)
     private var _orderItemComponents =  savedStateHandle.getStateFlow("orderItemComponents", arrayListOf<PlacedOrderItemComponent>())
@@ -73,6 +74,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     val showProductReviewsBottomSheet: StateFlow<Boolean>
         get() = _showProductReviewsBottomSheet
+
+    val showAppointmentReviewsBottomSheet: StateFlow<Boolean>
+        get() = _showAppointmentReviewsBottomSheet
 
     val exitApp: StateFlow<Boolean>
         get() = _exitApp
@@ -137,6 +141,10 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     fun showProductReviewsBottomSheet(show: Boolean) {
         savedStateHandle["showProductReviewsBottomSheet"] = show
+    }
+
+    fun showAppointmentReviewsBottomSheet(show: Boolean) {
+        savedStateHandle["showAppointmentReviewsBottomSheet"] = show
     }
 
     fun showPaymentCardsBottomSheet(show: Boolean) {

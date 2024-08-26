@@ -36,26 +36,29 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                             onSuccess = { result ->
                                 when (result.status) {
                                     ServerResponseEnum.SUCCESS.toPath() -> {
+                                        println("Response 0 $result")
                                         contractView?.showLce(AppUIStates(isSuccess = true))
                                         contractView?.showAppointments(result.listItem, isRefresh = false)
                                     }
                                     ServerResponseEnum.EMPTY.toPath() -> {
+                                        println("Response 1 $result")
                                         contractView?.showLce(AppUIStates(isFailed = true))
                                     }
                                     else -> {
+                                        println("Response 2 $result")
                                         contractView?.showLce(AppUIStates(isFailed = true))
                                     }
                                 }
                             },
                             onError = {
-                                println("Result 2 ${it.message}")
+                                println("Result 3 ${it.message}")
                                 contractView?.showLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Result 3 ${e.message}")
+                println("Result 4 ${e.message}")
                 contractView?.showLce(AppUIStates(isFailed = true))
             }
         }
@@ -219,7 +222,7 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
         }
     }
 
-    override fun getTherapistAvailability(therapistId: Int, vendorId: Long, day: Int, month: Int, year: Int) {
+    override fun getTherapistAvailability(therapistId: Long, vendorId: Long, day: Int, month: Int, year: Int) {
         contractView?.showGetAvailabilityActionLce(AppUIStates(isLoading = true, loadingMessage = "Getting Availability"))
         scope.launch(Dispatchers.Main) {
             try {
@@ -243,6 +246,37 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                 result.dispose()
             } catch(e: Exception) {
                 contractView?.showGetAvailabilityActionLce(AppUIStates(isFailed = true, errorMessage = "Error Fetching Availability, Please Try Again"))
+            }
+        }
+    }
+
+    override fun addAppointmentReviews(userId: Long, appointmentId: Long, vendorId: Long, serviceTypeId: Long, reviewText: String) {
+        contractView?.showReviewsActionLce(AppUIStates(isLoading = true, loadingMessage = "Adding Reviews"))
+        println("Called ")
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    appointmentRepositoryImpl.addAppointmentReviews(userId, appointmentId, vendorId, serviceTypeId, reviewText)
+                        .subscribe(
+                            onSuccess = { result ->
+                                println("Called 2 $result")
+                                if (result.status == "success"){
+                                    contractView?.showReviewsActionLce(AppUIStates(isSuccess = true, successMessage = "Review Added Successfully"))
+                                }
+                                else{
+                                    contractView?.showReviewsActionLce(AppUIStates(isFailed = true, errorMessage = "Error Adding Review, Please Try Again"))
+                                }
+                            },
+                            onError = {
+                                println("Called 3 ${it.message}")
+                                contractView?.showReviewsActionLce(AppUIStates(isFailed = true, errorMessage = "Error Adding Review, Please Try Again"))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                println("Called 4 ${e.message}")
+                contractView?.showReviewsActionLce(AppUIStates(isFailed = true, errorMessage = "Error Adding Review, Please Try Again"))
             }
         }
     }

@@ -19,6 +19,7 @@ class AppointmentsHandler(
     private val loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel,
     private val deletePerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val joinMeetingPerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
+    private val addTherapistReviewPerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val getAvailabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val postponementViewModel: PostponementViewModel,
     private val appointmentPresenter: AppointmentPresenter,
@@ -27,12 +28,12 @@ class AppointmentsHandler(
         appointmentPresenter.registerUIContract(this)
     }
 
-    override fun showLce(appUIStates: AppUIStates) {
-        loadingScreenUiStateViewModel.switchScreenUIState(appUIStates)
+    override fun showLce(screenUiState: AppUIStates) {
+        loadingScreenUiStateViewModel.switchScreenUIState(screenUiState)
     }
 
-    override fun showRefreshing(appUiState: AppUIStates) {
-        refreshActionUIStateViewModel.switchRefreshAppointmentUiState(appUiState)
+    override fun showRefreshing(screenUiState: AppUIStates) {
+        refreshActionUIStateViewModel.switchRefreshAppointmentUiState(screenUiState)
     }
 
     override fun showDeleteActionLce(appUIStates: AppUIStates) {
@@ -41,6 +42,10 @@ class AppointmentsHandler(
 
     override fun showPostponeActionLce(appUIStates: AppUIStates) {
         postponementViewModel.setPostponementViewUIState(appUIStates)
+    }
+
+    override fun showReviewsActionLce(appUIStates: AppUIStates) {
+        addTherapistReviewPerformedActionUIStateViewModel.switchAddAppointmentReviewUiState(appUIStates)
     }
 
     override fun showJoinMeetingActionLce(appUIStates: AppUIStates) {
@@ -52,7 +57,6 @@ class AppointmentsHandler(
     }
 
     override fun showAppointments(appointments: AppointmentResourceListEnvelope, isRefresh: Boolean) {
-        println(appointments.data!!.size)
         if (isRefresh || appointmentResourceListEnvelopeViewModel.resources.value.isEmpty()){
             appointmentResourceListEnvelopeViewModel.setResources(appointments.data)
             appointments?.prevPageUrl?.let { appointmentResourceListEnvelopeViewModel.setPrevPageUrl(it) }

@@ -1,5 +1,6 @@
 package presentation.Orders
 
+import UIStates.AppUIStates
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.slideIn
@@ -36,24 +37,37 @@ import domain.Models.OrderItem
 import domain.Models.PlacedOrderItemComponent
 import domain.Models.Product
 import kotlinx.serialization.Transient
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import presentation.dialogs.LoadingDialog
+import presentation.dialogs.SuccessDialog
 import presentation.widgets.OrderDetailList
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.widgets.AddProductReviewBottomSheet
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.ProductDetailBottomSheet
 import utils.ParcelableScreen
 
 @Parcelize @OptIn(ExperimentalVoyagerApi::class)
-class OrderDetails() : ParcelableScreen, ScreenTransition {
+class OrderDetails() : ParcelableScreen, ScreenTransition, KoinComponent {
 
 
     override val key: ScreenKey = uniqueScreenKey
 
     @Transient
     private var mainViewModel: MainViewModel? = null
+    @Transient
+    private var reviewPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient
+    private val orderPresenter: OrderPresenter by inject()
 
     fun setMainViewModel(mainViewModel: MainViewModel) {
         this.mainViewModel = mainViewModel
+    }
+
+    fun setActionUiStateViewModel(reviewPerformedActionUIStateViewModel: PerformedActionUIStateViewModel) {
+        this.reviewPerformedActionUIStateViewModel = reviewPerformedActionUIStateViewModel
     }
 
 
@@ -62,6 +76,9 @@ class OrderDetails() : ParcelableScreen, ScreenTransition {
         val navigator = LocalNavigator.currentOrThrow
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
         val showAddReviewBottomSheet = mainViewModel!!.showProductReviewsBottomSheet.collectAsState()
+        val addReviewsUIState = reviewPerformedActionUIStateViewModel!!.addProductReviewUiState.collectAsState()
+        val selectedProductId = remember { mutableStateOf(-1L) }
+
         if (onBackPressed.value){
             mainViewModel!!.setOnBackPressed(false)
             navigator.pop()
@@ -75,9 +92,25 @@ class OrderDetails() : ParcelableScreen, ScreenTransition {
                     mainViewModel!!.showProductReviewsBottomSheet(false)
                 },
                 onReviewsAdded = {
+                    orderPresenter.addProductReviews(userId = mainViewModel!!.currentUserInfo.value.userId!!, productId = selectedProductId.value, reviewText = it)
                     mainViewModel!!.showProductReviewsBottomSheet(false)
                 })
         }
+
+
+        if (addReviewsUIState.value.isLoading) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                LoadingDialog("Adding Review")
+            }
+        }
+        else if (addReviewsUIState.value.isSuccess) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                SuccessDialog("Review Added Successfully", "Close", onConfirmation = {
+                    reviewPerformedActionUIStateViewModel!!.switchActionDeleteUIState(AppUIStates(isDefault = true))
+                })
+            }
+        }
+
 
 
         val rowModifier = Modifier
@@ -114,6 +147,7 @@ class OrderDetails() : ParcelableScreen, ScreenTransition {
             val itemList = mainViewModel!!.orderItemComponents.value
 
             OrderDetailList(itemList, onAddReviewClicked = {
+                selectedProductId.value = it
                 mainViewModel!!.showProductReviewsBottomSheet(true)
             })
         }

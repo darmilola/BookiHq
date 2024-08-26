@@ -282,7 +282,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
 
                 coroutineScope.launch {
                         if (currentPage == 0) {
-                            if (bookingViewModel?.currentAppointmentBooking?.value?.serviceTypeId == -1) {
+                            if (bookingViewModel?.currentAppointmentBooking?.value?.serviceTypeId == -1L) {
                                 ShowSnackBar(title = "No Service Selected",
                                     description = "Please Select a Service to proceed",
                                     actionLabel = "",

@@ -37,12 +37,13 @@ import domain.Models.CustomerOrder
 import domain.Models.PlacedOrderItemComponent
 import kotlinx.serialization.json.Json
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import utils.calculatePlacedOrderTotalPrice
 
 @Composable
-fun UserOrderComponent(mainViewModel: MainViewModel, customerOrder: CustomerOrder) {
+fun UserOrderComponent(mainViewModel: MainViewModel, customerOrder: CustomerOrder, reviewPerformedActionUIStateViewModel: PerformedActionUIStateViewModel) {
 
       val itemList = Json.decodeFromString<ArrayList<PlacedOrderItemComponent>>(customerOrder.orderItems?.orderItemJson!!)
       val totalCost = calculatePlacedOrderTotalPrice(itemList)
@@ -81,6 +82,7 @@ fun UserOrderComponent(mainViewModel: MainViewModel, customerOrder: CustomerOrde
                           mainViewModel.setOrderItemComponents(itemList)
                           val details = OrderDetails()
                           details.setMainViewModel(mainViewModel)
+                          details.setActionUiStateViewModel(reviewPerformedActionUIStateViewModel)
                           navigator.push(details)
                     },
                         contentAlignment = Alignment.CenterEnd) {

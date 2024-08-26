@@ -489,7 +489,6 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                             postponementViewModel = null,
                             mainViewModel = mainViewModel!!,
                             performedActionUIStateViewModel!!,
-                            isFromHomeTab = true,
                             onDeleteAppointment = {},
                             platformNavigator = platformNavigator
                         )

@@ -57,9 +57,10 @@ import dev.materii.pullrefresh.PullRefreshIndicator
 import dev.materii.pullrefresh.PullRefreshLayout
 import dev.materii.pullrefresh.rememberPullRefreshState
 import domain.Enums.SharedPreferenceEnum
+import domain.Models.Appointment
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.SuccessDialog
-import presentation.widgets.MeetingAppointmentWidget
+import presentation.widgets.AddAppointmentsReviewBottomSheet
 import presentation.widgets.AppointmentWidget
 import utils.getAppointmentViewHeight
 import rememberStackedSnackbarHostState
@@ -74,6 +75,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
     private var postponePerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     private var refreshActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     private var postponeTimeUIStateViewModel: PerformedActionUIStateViewModel? = null
+    private var addAppointmentReviewsUIStateViewModel: PerformedActionUIStateViewModel? = null
     private var joinMeetingPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     private var postponementViewModel: PostponementViewModel? = null
     private var mainViewModel: MainViewModel? = null
@@ -155,6 +157,14 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
             )
         }
 
+        if (addAppointmentReviewsUIStateViewModel == null) {
+            addAppointmentReviewsUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
         if (joinMeetingPerformedActionUIStateViewModel == null) {
             joinMeetingPerformedActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
@@ -185,11 +195,13 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
         val postponeActionUIStates = postponementViewModel!!.postponementViewUIState.collectAsState()
         val joinMeetingActionUIStates = joinMeetingPerformedActionUIStateViewModel!!.joinMeetingStateInfo.collectAsState()
         val refreshActionUIStates = refreshActionUIStateViewModel!!.refreshAppointmentActionUiState.collectAsState()
+        val addReviewsUIState = addAppointmentReviewsUIStateViewModel!!.addAppointmentReviewUiState.collectAsState()
         val isRefreshing = remember { mutableStateOf(false) }
         val userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(),-1L]
 
         val lastIndex = appointmentList?.value?.size?.minus(1)
         val selectedAppointment = remember { mutableStateOf(UserAppointment()) }
+        val appointmentForReview = remember { mutableStateOf(Appointment()) }
 
         LaunchedEffect(true) {
             if (appointmentResourceListEnvelopeViewModel!!.resources.value.isNotEmpty()){
@@ -251,6 +263,21 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                 })
             }
         }
+
+        if (addReviewsUIState.value.isLoading) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                LoadingDialog("Adding Review")
+            }
+        }
+        else if (addReviewsUIState.value.isSuccess) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                SuccessDialog("Review Added Successfully", "Close", onConfirmation = {
+                    addAppointmentReviewsUIStateViewModel!!.switchActionDeleteUIState(AppUIStates(isDefault = true))
+                })
+            }
+        }
+
+
         else if (deleteActionUIStates.value.isFailed) {
             ErrorDialog("Error Deleting Appointment", "Close", onConfirmation = {})
         }
@@ -294,12 +321,29 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                     loadingScreenUiStateViewModel!!,
                     deletePerformedActionUIStateViewModel!!,
                     joinMeetingPerformedActionUIStateViewModel!!,
+                    addAppointmentReviewsUIStateViewModel!!,
                     postponeTimeUIStateViewModel!!,
                     postponementViewModel!!,
                     appointmentPresenter,
                     onMeetingTokenReady = {}
                 )
                 handler.init()
+
+                val showAddReviewBottomSheet = mainViewModel!!.showAppointmentReviewsBottomSheet.collectAsState()
+
+                if (showAddReviewBottomSheet.value) {
+                    AddAppointmentsReviewBottomSheet(
+                        mainViewModel!!,
+                        onDismiss = {
+                            mainViewModel!!.showAppointmentReviewsBottomSheet(false)
+                        },
+                        onReviewsAdded = {
+                            appointmentPresenter.addAppointmentReviews(userId = userId, appointmentId = appointmentForReview.value.appointmentId!!,
+                                vendorId = appointmentForReview.value.vendorId, serviceTypeId = appointmentForReview.value.serviceTypeId!! ,reviewText = it)
+                            mainViewModel!!.showAppointmentReviewsBottomSheet(false)
+                        })
+                   }
+
 
                 if (uiState.value.isLoading) {
                     //Content Loading
@@ -350,12 +394,14 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                                        postponementViewModel = postponementViewModel,
                                        mainViewModel = mainViewModel!!,
                                        postponeTimeUIStateViewModel!!,
-                                       isFromHomeTab = false,
                                        onDeleteAppointment = {
                                            appointmentPresenter.deleteAppointment(it.appointmentId!!)
                                        },
-                                       platformNavigator = platformNavigator
-                                   )
+                                       platformNavigator = platformNavigator,
+                                       onAddReview = {
+                                           appointmentForReview.value = it
+                                           mainViewModel!!.showAppointmentReviewsBottomSheet(true)
+                                       })
                                if (it == lastIndex && loadMoreState.value) {
                                    Box(
                                        modifier = Modifier.fillMaxWidth().height(60.dp),

@@ -6,10 +6,12 @@ import presentation.Orders.OrderPresenter
 import UIStates.AppUIStates
 import presentation.viewmodels.OrdersResourceListEnvelopeViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 
 class OrderHandler(
     private val ordersResourceListEnvelopeViewModel: OrdersResourceListEnvelopeViewModel,
     private val loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel,
+    private val addReviewPerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val orderPresenter: OrderPresenter
 ) : OrderContract.View {
     fun init() {
@@ -23,6 +25,10 @@ class OrderHandler(
 
     override fun showAsyncLce(uiState: AppUIStates, message: String) {
         TODO("Not yet implemented")
+    }
+
+    override fun showReviewsActionLce(uiState: AppUIStates, message: String) {
+        addReviewPerformedActionUIStateViewModel.switchAddProductReviewUiState(uiState)
     }
 
     override fun showUserOrders(orders: OrderResourceListEnvelope) {

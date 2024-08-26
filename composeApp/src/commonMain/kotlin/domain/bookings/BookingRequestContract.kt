@@ -5,14 +5,14 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class GetTherapistsRequest(@SerialName("serviceTypeId") val serviceTypeId: Int,
+data class GetTherapistsRequest(@SerialName("serviceTypeId") val serviceTypeId: Long,
                                 @SerialName("vendorId") val vendorId: Long)
 @Serializable
 data class CreatePendingBookingAppointmentRequest(@SerialName("user_id") val userId: Long,
                                                   @SerialName("vendor_id") val vendorId: Long,
-                                                  @SerialName("service_id") val serviceId: Int,
-                                                  @SerialName("service_type_id") val serviceTypeId: Int,
-                                                  @SerialName("therapist_id") val therapistId: Int,
+                                                  @SerialName("service_id") val serviceId: Long,
+                                                  @SerialName("service_type_id") val serviceTypeId: Long,
+                                                  @SerialName("therapist_id") val therapistId: Long,
                                                   @SerialName("appointmentTime") val appointmentTime: Int,
                                                   @SerialName("day") val day: Int,
                                                   @SerialName("month") val month: Int,

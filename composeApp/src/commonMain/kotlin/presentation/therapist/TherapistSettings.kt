@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Switch
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,34 +22,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import domain.Models.TherapistInfo
-import domain.Models.TherapistReviews
-import presentation.DomainViewHandler.TherapistHandler
 import presentation.components.IndeterminateCircularProgressBar
-import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.TherapistViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
-import presentation.widgets.TherapistReviewScreen
 import presentation.widgets.TitleWidget
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
 
 @Composable
-fun TherapistReviews(therapistInfo: TherapistInfo, therapistPresenter: TherapistPresenter,
-                     loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel, performedActionUIStateViewModel: PerformedActionUIStateViewModel){
+fun TherapistSettings(therapistInfo: TherapistInfo, therapistPresenter: TherapistPresenter,
+                      loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel, performedActionUIStateViewModel: PerformedActionUIStateViewModel){
 
-    val therapistReviews = remember { mutableStateOf(listOf<TherapistReviews>()) }
     val isAvailableForBooking = remember { mutableStateOf(therapistInfo.isAvailable) }
     val isMobileServiceAvailable = remember { mutableStateOf(therapistInfo.isMobileServiceAvailable) }
-    val handler = TherapistHandler(therapistPresenter,
-        loadingScreenUiStateViewModel = loadingScreenUiStateViewModel,
-        performedActionUIStateViewModel,
-        onReviewsReady = {
-          it -> therapistReviews.value = it
-        },
-        onMeetingTokenReady = {},
-        null)
-    handler.init()
 
     val uiState = loadingScreenUiStateViewModel.uiStateInfo.collectAsState()
 
@@ -59,9 +43,6 @@ fun TherapistReviews(therapistInfo: TherapistInfo, therapistPresenter: Therapist
         animation = StackedSnackbarAnimation.Bounce
     )
 
-    LaunchedEffect(Unit, block = {
-            therapistPresenter.getTherapistReviews(therapistInfo.id!!)
-    })
 
     Scaffold(
         snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
@@ -88,9 +69,6 @@ fun TherapistReviews(therapistInfo: TherapistInfo, therapistPresenter: Therapist
                             .fillMaxWidth()
                             .background(color = Color.White)
                     ) {
-                       Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.5f)) {
-                           TherapistReviewScreen(therapistReviews.value)
-                       }
                        Column(modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(top = 50.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Top) {
                              TitleWidget(textColor = Colors.primaryColor, title = "Settings")
 

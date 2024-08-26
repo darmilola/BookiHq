@@ -30,6 +30,8 @@ class PerformedActionUIStateViewModel(private val savedStateHandle: SavedStateHa
     private var _loadHomepageUiState = savedStateHandle.getStateFlow("loadHomepageUiState", AppUIStates())
     private var _switchVendorUiState = savedStateHandle.getStateFlow("switchVendorUiState", AppUIStates())
     private var _getTherapistUiState = savedStateHandle.getStateFlow("getTherapistUiState", AppUIStates())
+    private var _addAppointmentReviewUiState = savedStateHandle.getStateFlow("addAppointmentReviewUiState", AppUIStates())
+    private var _addProductReviewUiState = savedStateHandle.getStateFlow("addProductReviewUiState", AppUIStates())
     private var _refreshAppointmentUiState = savedStateHandle.getStateFlow("refreshAppointmentUiState", AppUIStates())
     private var _loadPendingAppointmentUiState = savedStateHandle.getStateFlow("loadPendingAppointmentUiState", AppUIStates())
     private var _deletePendingAppointmentUiState = savedStateHandle.getStateFlow("deletePendingAppointmentUiState", AppUIStates())
@@ -54,6 +56,12 @@ class PerformedActionUIStateViewModel(private val savedStateHandle: SavedStateHa
     val refreshAppointmentActionUiState: StateFlow<AppUIStates>
         get() = _refreshAppointmentUiState
 
+    val addAppointmentReviewUiState: StateFlow<AppUIStates>
+        get() = _addAppointmentReviewUiState
+
+    val addProductReviewUiState: StateFlow<AppUIStates>
+        get() = _addProductReviewUiState
+
     val loadHomepageUiState: StateFlow<AppUIStates>
         get() = _loadHomepageUiState
 
@@ -66,8 +74,6 @@ class PerformedActionUIStateViewModel(private val savedStateHandle: SavedStateHa
     val switchVendorUiState: StateFlow<AppUIStates>
         get() = _switchVendorUiState
 
-    // for general reusable action, can be used when only
-    // one action is to be performed on the page
     val uiStateInfo: StateFlow<AppUIStates>
         get() = _uiState
 
@@ -99,6 +105,14 @@ class PerformedActionUIStateViewModel(private val savedStateHandle: SavedStateHa
 
     fun switchActionAvailabilityUIState(appUIStates: AppUIStates) {
         savedStateHandle["availabilityUiState"] = appUIStates
+    }
+
+    fun switchAddAppointmentReviewUiState(appUIStates: AppUIStates) {
+        savedStateHandle["addAppointmentReviewUiState"] = appUIStates
+    }
+
+    fun switchAddProductReviewUiState(appUIStates: AppUIStates) {
+        savedStateHandle["addProductReviewUiState"] = appUIStates
     }
 
     fun switchActionMeetingUIState(appUIStates: AppUIStates) {

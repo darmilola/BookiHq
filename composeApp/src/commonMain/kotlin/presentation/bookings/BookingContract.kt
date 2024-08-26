@@ -20,13 +20,14 @@ class BookingContract {
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
         abstract fun getUnSavedAppointment()
-        abstract fun getServiceTherapists(serviceTypeId: Int, vendorId: Long)
+        abstract fun getServiceTherapists(serviceTypeId: Long, vendorId: Long)
         abstract fun createAppointment(userId: Long, vendorId: Long, paymentAmount: Double, paymentMethod: String, bookingStatus: String, day: Int, month: Int, year: Int)
         abstract fun getPendingBookingAppointment(userId: Long, bookingStatus: String)
         abstract fun deletePendingBookingAppointment(pendingAppointmentId: Long)
         abstract fun silentDeletePendingBookingAppointment(pendingAppointmentId: Long)
-        abstract fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Int, serviceTypeId: Int, therapistId: Int,
+        abstract fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Long, serviceTypeId: Long, therapistId: Long,
                                                      appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String,
-                                                     serviceStatus: String, paymentAmount: Double, paymentMethod: String, bookingStatus: String)
+                                                     serviceStatus: String,
+                                                     paymentAmount: Double, paymentMethod: String, bookingStatus: String)
     }
 }

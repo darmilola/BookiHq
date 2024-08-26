@@ -119,7 +119,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
 
                         })
                 }
-                if (it.serviceTypeId != -1) {
+                if (it.serviceTypeId != -1L) {
                     bookingViewModel.undoSelectedServiceType()
                     bookingViewModel.setSelectedServiceType(it)
                     currentBooking.serviceTypeItem = it
@@ -185,14 +185,14 @@ fun AttachServiceTypeToggle(mainViewModel: MainViewModel,bookingViewModel: Booki
 fun AttachServiceDropDownWidget(mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, onServiceSelected: (ServiceTypeItem) -> Unit) {
     val serviceState = mainViewModel.selectedService.collectAsState()
     val recommendationServiceType = mainViewModel.selectedServiceType.value
-    val isRecommendationType = recommendationServiceType.serviceTypeId != -1
+    val isRecommendationType = recommendationServiceType.serviceTypeId != -1L
     val serviceTypeList = arrayListOf<String>()
     var selectedIndex: Int = -1
     val unsavedAppointment = bookingViewModel.currentAppointmentBooking.collectAsState()
-    if (unsavedAppointment.value.serviceTypeId != -1) {
+    if (unsavedAppointment.value.serviceTypeId != -1L) {
         selectedIndex = serviceState.value.serviceTypes.indexOf(unsavedAppointment.value.serviceTypeItem!!)
     }
-    if (recommendationServiceType.serviceTypeId != -1){
+    if (recommendationServiceType.serviceTypeId != -1L){
         serviceTypeList.add(recommendationServiceType.title)
         selectedIndex = 0
     }

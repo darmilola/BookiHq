@@ -61,6 +61,7 @@ import presentation.consultation.rightTopBarItem
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.OrdersResourceListEnvelopeViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget
 import rememberStackedSnackbarHostState
@@ -81,6 +82,8 @@ class Orders() : ParcelableScreen, KoinComponent, Parcelable, ScreenTransition {
     private var ordersResourceListEnvelopeViewModel: OrdersResourceListEnvelopeViewModel? = null
     @Transient
     private var mainViewModel: MainViewModel? = null
+    @Transient
+    private var reviewPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
 
     fun setMainViewModel(mainViewModel: MainViewModel){
         this.mainViewModel = mainViewModel
@@ -107,6 +110,15 @@ class Orders() : ParcelableScreen, KoinComponent, Parcelable, ScreenTransition {
             loadingScreenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+
+        if (reviewPerformedActionUIStateViewModel == null) {
+            reviewPerformedActionUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -169,6 +181,7 @@ class Orders() : ParcelableScreen, KoinComponent, Parcelable, ScreenTransition {
                 val handler = OrderHandler(
                     ordersResourceListEnvelopeViewModel!!,
                     loadingScreenUiStateViewModel!!,
+                    reviewPerformedActionUIStateViewModel!!,
                     orderPresenter
                 )
                 handler.init()
@@ -194,7 +207,7 @@ class Orders() : ParcelableScreen, KoinComponent, Parcelable, ScreenTransition {
                         userScrollEnabled = true
                     ) {
                         itemsIndexed(items = userOrderItemUIModel.userOrderList) { it, item ->
-                            UserOrderComponent(mainViewModel!!, item.customerOrder!!)
+                            UserOrderComponent(mainViewModel!!, item.customerOrder!!, reviewPerformedActionUIStateViewModel!!)
                             if (it == lastIndex && loadMoreState.value) {
                                 Box(
                                     modifier = Modifier.fillMaxWidth().height(60.dp),

@@ -24,7 +24,7 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
         contractView?.showUnsavedAppointment()
     }
 
-    override fun getServiceTherapists(serviceTypeId: Int, vendorId: Long) {
+    override fun getServiceTherapists(serviceTypeId: Long, vendorId: Long) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
@@ -169,7 +169,7 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
     }
 
 
-    override fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Int, serviceTypeId: Int, therapistId: Int,
+    override fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Long, serviceTypeId: Long, therapistId: Long,
                                                  appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String,
                                                  serviceStatus: String,
                                                  paymentAmount: Double, paymentMethod: String, bookingStatus: String) {

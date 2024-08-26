@@ -4,6 +4,7 @@ import com.badoo.reaktive.single.toSingle
 import com.russhwolf.settings.Settings
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.OrderListDataResponse
+import domain.Models.ServerResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.header
@@ -25,6 +26,14 @@ open class OrderNetworkService(private val apiService: HttpClient) {
             setBody(getOrderRequest)
             header("Authorization", apiKey)
         }.body<OrderListDataResponse>().toSingle()
+
+    suspend fun addProductReview(addProductReviewRequest: AddProductReviewRequest) =
+        apiService.post {
+            url("/products/reviews/add")
+            contentType(ContentType.Application.Json)
+            setBody(addProductReviewRequest)
+            header("Authorization", apiKey)
+        }.body<ServerResponse>().toSingle()
 
 
 }

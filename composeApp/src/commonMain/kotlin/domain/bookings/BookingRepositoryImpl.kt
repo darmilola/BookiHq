@@ -11,14 +11,14 @@ class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
     private val bookingNetworkService: BookingNetworkService = BookingNetworkService(apiService)
 
     override suspend fun getServiceTherapist(
-        serviceTypeId: Int,
+        serviceTypeId: Long,
         vendorId: Long
     ): Single<ServiceTherapistsResponse> {
         val param = GetTherapistsRequest(serviceTypeId, vendorId)
         return bookingNetworkService.getTherapists(param)
     }
 
-    override suspend fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Int, serviceTypeId: Int, therapistId: Int,
+    override suspend fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Long, serviceTypeId: Long, therapistId: Long,
                                                          appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, serviceStatus: String,
                                                           paymentAmount: Double, paymentMethod: String, bookingStatus: String): Single<PendingBookingAppointmentResponse> {
         val param = CreatePendingBookingAppointmentRequest(userId, vendorId, serviceId, serviceTypeId, therapistId,

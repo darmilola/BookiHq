@@ -2,13 +2,13 @@ package domain.appointments
 
 import com.badoo.reaktive.single.Single
 import domain.Enums.ServiceStatusEnum
-import domain.Models.Appointment
 import domain.Models.AppointmentListDataResponse
 import domain.Models.JoinMeetingResponse
 import domain.Models.ServerResponse
 import domain.Models.TherapistAvailabilityResponse
 import domain.Models.UserAppointment
 import io.ktor.client.HttpClient
+import kotlinx.serialization.SerialName
 
 class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
     private val appointmentNetworkService: AppointmentNetworkService = AppointmentNetworkService(apiService)
@@ -41,6 +41,17 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
         return appointmentNetworkService.deleteAppointment(param)
     }
 
+    override suspend fun addAppointmentReviews(
+        userId: Long,
+        appointmentId: Long,
+        vendorId: Long,
+        serviceTypeId: Long,
+        reviewText: String
+    ): Single<ServerResponse> {
+        val param = AddAppointmentReviewRequest(userId, appointmentId, vendorId, serviceTypeId, reviewText)
+        return appointmentNetworkService.addAppointmentReview(param)
+    }
+
     override suspend fun joinMeeting(
         customParticipantId: String,
         presetName: String,
@@ -49,8 +60,7 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
         val param = JoinMeetingRequest(customParticipantId, presetName, meetingId)
         return appointmentNetworkService.joinMeeting(param)
     }
-
-    override suspend fun getTherapistAvailability(therapistId: Int,vendorId: Long,day: Int, month: Int, year: Int): Single<TherapistAvailabilityResponse> {
+    override suspend fun getTherapistAvailability(therapistId: Long,vendorId: Long,day: Int, month: Int, year: Int): Single<TherapistAvailabilityResponse> {
         val param = GetTherapistAvailabilityRequest(therapistId,vendorId, day, month, year)
         return appointmentNetworkService.getTherapistAvailability(param)
     }

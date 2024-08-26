@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -51,13 +50,10 @@ import domain.Models.TherapistInfo
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import presentation.DomainViewHandler.TherapistHandler
 import presentation.dialogs.LoadingDialog
-import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.TherapistAppointmentResourceListEnvelopeViewModel
-import presentation.viewmodels.TherapistViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
@@ -198,7 +194,7 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
     fun TabScreen() {
         val tabItems: ArrayList<String> = arrayListOf()
         tabItems.add("Appointments")
-        tabItems.add("Reviews")
+        tabItems.add("Settings")
         var tabIndex by remember { mutableStateOf(0) }
         Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -244,7 +240,7 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
             ) {
                 when(tabIndex){
                     0 -> TherapistAppointment(mainViewModel!!, loadingScreenUiStateViewModel!!, appointmentResourceListEnvelopeViewModel, therapistPresenter,therapistInfo!!,performedActionUiStateViewModel!!)
-                    1 -> TherapistReviews(therapistInfo!!, therapistPresenter, loadingScreenUiStateViewModel!!,performedActionUiStateViewModel!!)
+                    1 -> TherapistSettings(therapistInfo!!, therapistPresenter, loadingScreenUiStateViewModel!!,performedActionUiStateViewModel!!)
                 }
 
             }

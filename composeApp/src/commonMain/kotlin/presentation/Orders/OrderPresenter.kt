@@ -77,5 +77,35 @@ class OrderPresenter(apiService: HttpClient): OrderContract.Presenter() {
     }
 
     override fun deleteOrder(userId: Int) {}
+    override fun addProductReviews(userId: Long, productId: Long, reviewText: String) {
+        println("Started $userId, $productId, $reviewText")
+        contractView?.showReviewsActionLce(AppUIStates(isLoading = true, loadingMessage = "Adding Reviews"))
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    orderRepositoryImpl.addProductReviews(userId, productId, reviewText)
+                        .subscribe(
+                            onSuccess = { result ->
+                                println("Success $result")
+                                if (result.status == "success"){
+                                    contractView?.showReviewsActionLce(AppUIStates(isSuccess = true, successMessage = "Reviews Added Successfully"))
+                                }
+                                else{
+                                    contractView?.showReviewsActionLce(AppUIStates(isFailed = true, errorMessage = "Error Adding Review, Please Try Again"))
+                                }
+                            },
+                            onError = {
+                                println("Failure ${it.message}")
+                                contractView?.showReviewsActionLce(AppUIStates(isFailed = true, errorMessage = "Error Adding Review, Please Try Again"))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                println("Failure ${e.message}")
+                contractView?.onLoadMoreOrderEnded(true)
+            }
+        }
+    }
 
 }

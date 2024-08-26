@@ -7,11 +7,16 @@ import kotlinx.serialization.Serializable
 data class GetAppointmentRequest(@SerialName("user_id") val userId: Long)
 
 @Serializable
-data class PostponeAppointmentRequest(@SerialName("user_id") val userId: Int,
-                                      @SerialName("vendor_id") val vendorId: Int,
-                                      @SerialName("service_id") val serviceId: Int,
-                                      @SerialName("service_type_id") val serviceTypeId: Int,
-                                      @SerialName("therapist_id") val therapistId: Int,
+data class AddAppointmentReviewRequest(@SerialName("user_id") val userId: Long, @SerialName("appointment_id") val appointmentId: Long,
+                                       @SerialName("vendor_id") val vendorId: Long, @SerialName("service_type_id") val serviceTypeId: Long,
+                                       @SerialName("reviewText") val reviewText: String)
+
+@Serializable
+data class PostponeAppointmentRequest(@SerialName("user_id") val userId: Long,
+                                      @SerialName("vendor_id") val vendorId: Long,
+                                      @SerialName("service_id") val serviceId: Long,
+                                      @SerialName("service_type_id") val serviceTypeId: Long,
+                                      @SerialName("therapist_id") val therapistId: Long,
                                       @SerialName("appointmentTime") val appointmentTime: Int,
                                       @SerialName("day") val day: Int,
                                       @SerialName("month") val month: Int,
@@ -31,5 +36,5 @@ data class JoinMeetingRequest(@SerialName("custom_participant_id") val customPar
                               @SerialName("meetingId") val meetingId: String)
 
 @Serializable
-data class GetTherapistAvailabilityRequest(@SerialName("therapist_id") val therapistId: Int,@SerialName("vendorId") val vendorId: Long, @SerialName("day") val day: Int,
+data class GetTherapistAvailabilityRequest(@SerialName("therapist_id") val therapistId: Long, @SerialName("vendorId") val vendorId: Long, @SerialName("day") val day: Int,
                                            @SerialName("month") val month: Int, @SerialName("year") val year: Int)

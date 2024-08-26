@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import domain.Models.Appointment
 import kotlinx.coroutines.launch
 import presentation.components.ButtonComponent
 import presentation.viewmodels.MainViewModel
@@ -43,10 +44,11 @@ import presentations.components.TextComponent
 import presentations.widgets.InputWidget
 import theme.styles.Colors
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddProductReviewBottomSheet(mainViewModel: MainViewModel, onReviewsAdded: (String) -> Unit,
-                           onDismiss: () -> Unit) {
+fun AddAppointmentsReviewBottomSheet(mainViewModel: MainViewModel, onReviewsAdded: (String) -> Unit,
+                                onDismiss: () -> Unit) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true))
     val reviewsText = remember { mutableStateOf("") }
@@ -91,7 +93,7 @@ fun AddProductReviewBottomSheet(mainViewModel: MainViewModel, onReviewsAdded: (S
                         .fillMaxWidth(0.80f)
                 ) {
                     TextComponent(
-                        text = "Add Product Review",
+                        text = "Add Appointment Review",
                         fontSize = 18,
                         fontFamily = GGSansBold,
                         textStyle = TextStyle(),
