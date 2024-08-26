@@ -33,9 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import domain.Models.CustomerOrder
-import domain.Enums.Screens
 import domain.Models.PlacedOrderItemComponent
 import kotlinx.serialization.json.Json
 import presentation.viewmodels.MainViewModel
@@ -51,11 +49,6 @@ fun UserOrderComponent(mainViewModel: MainViewModel, customerOrder: CustomerOrde
       val navigator = LocalNavigator.currentOrThrow
       val columnModifier = Modifier
         .padding(start = 10.dp, top = 35.dp, bottom = 10.dp, end = 10.dp)
-        .clickable {
-            val details = OrderDetails()
-            details.setMainViewModel(mainViewModel)
-            navigator.push(details)
-        }
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .height(250.dp)
         Column(modifier = columnModifier,
@@ -75,7 +68,7 @@ fun UserOrderComponent(mainViewModel: MainViewModel, customerOrder: CustomerOrde
                 ) {
 
                    TextComponent(
-                        text = "Processing...",
+                        text = customerOrder.orderStatus.toString(),
                         fontSize = 18,
                         fontFamily = GGSansRegular,
                         textStyle = TextStyle(),

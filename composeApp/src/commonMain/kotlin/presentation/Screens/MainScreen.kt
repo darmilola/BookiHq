@@ -210,6 +210,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             Screens.EDIT_PROFILE.toPath() -> {
                 val editProfile = EditProfile(platformNavigator)
                 editProfile.setMainViewModel(mainViewModel!!)
+                editProfile.setDatabaseBuilder(databaseBuilder)
                 val nav = LocalNavigator.currentOrThrow
                 nav.push(editProfile)
                 mainViewModel!!.setScreenNav(

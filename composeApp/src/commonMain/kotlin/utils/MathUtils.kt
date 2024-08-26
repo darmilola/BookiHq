@@ -30,10 +30,10 @@ fun calculateCartCheckoutSubTotal(orderItems: MutableList<OrderItem>): Long {
 fun calculatePlacedOrderTotalPrice(placedOrderItemComponent: ArrayList<PlacedOrderItemComponent>): Long {
     var total: Long = 0
     for (item in placedOrderItemComponent){
-        val price = item?.productPrice
+        val price = item.productPrice
         val qty = item.itemCount
-        val qtyPrice = price?.times(qty)
-        total += qtyPrice!!
+        val qtyPrice = price.times(qty)
+        total += qtyPrice
     }
     return total
 }

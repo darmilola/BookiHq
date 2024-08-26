@@ -182,7 +182,7 @@ class AccountTab : Tab, Parcelable {
                         mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.ORDERS.toPath()))
                     })
 
-               // if (mainViewModel!!.currentUserInfo.value.isTherapist == true) {
+                if (mainViewModel!!.currentUserInfo.value.isTherapist == true) {
                     ActionItemComponent(
                         modifier = actionStyle,
                         buttonText = "Therapist Dashboard",
@@ -199,7 +199,7 @@ class AccountTab : Tab, Parcelable {
                                 )
                             )
                         })
-               // }
+                }
 
                 ActionItemComponent(
                     modifier = actionStyle,

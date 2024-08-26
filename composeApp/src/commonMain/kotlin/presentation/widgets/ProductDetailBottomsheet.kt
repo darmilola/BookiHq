@@ -23,7 +23,7 @@ fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boo
                              onDismiss: () -> Unit) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false))
-    val showBottomSheet = mainViewModel.showProductBottomsheet.collectAsState()
+    val showBottomSheet = mainViewModel.showProductBottomSheet.collectAsState()
     scope.launch {
         scaffoldState.bottomSheetState.hide()
     }

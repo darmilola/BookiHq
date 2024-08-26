@@ -13,10 +13,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -33,28 +32,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import domain.Models.PaymentCard
-import domain.Models.PaymentCardUIModel
 import kotlinx.coroutines.launch
 import presentation.components.ButtonComponent
 import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
+import presentations.widgets.InputWidget
 import theme.styles.Colors
-import utils.getPaymentCardsViewHeight
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<PaymentCard>, onCardSelected: (PaymentCard) -> Unit,
-                           onDismiss: () -> Unit, onAddNewSelected: () -> Unit) {
+fun AddProductReviewBottomSheet(mainViewModel: MainViewModel, onReviewsAdded: (String) -> Unit,
+                           onDismiss: () -> Unit) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true))
-    val selectedCardUIModel = remember { mutableStateOf(PaymentCardUIModel(selectedCard = PaymentCard(), visibleCards = savedCards)) }
+    val reviewsText = remember { mutableStateOf("") }
 
-    val showBottomSheet = mainViewModel.showPaymentCardsBottomSheet.collectAsState()
+    val showBottomSheet = mainViewModel.showProductReviewsBottomSheet.collectAsState()
     scope.launch {
         scaffoldState.bottomSheetState.hide()
     }
@@ -70,11 +67,8 @@ fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<Paymen
         }
     }
 
-    val cardsHeight = getPaymentCardsViewHeight(savedCards)
-    val bottomSheetHeight = cardsHeight + 200
-
     ModalBottomSheet(
-        modifier = Modifier.padding(top = 20.dp).height(bottomSheetHeight.dp),
+        modifier = Modifier.padding(top = 20.dp).height(300.dp),
         onDismissRequest = {
             onDismiss()
         },
@@ -84,7 +78,6 @@ fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<Paymen
         dragHandle = {},
     ) {
         Column(modifier = Modifier.fillMaxSize().background(color = Color.White)) {
-
             Row(
                 modifier = Modifier
                     .height(50.dp)
@@ -98,7 +91,7 @@ fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<Paymen
                         .fillMaxWidth(0.80f)
                 ) {
                     TextComponent(
-                        text = "Choose Payment Method",
+                        text = "Add Product Review",
                         fontSize = 18,
                         fontFamily = GGSansBold,
                         textStyle = TextStyle(),
@@ -131,68 +124,19 @@ fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<Paymen
 
                 }
             }
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth().height(cardsHeight.dp).padding(top = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(5.dp),
-                userScrollEnabled = true
-            ) {
-                items(selectedCardUIModel.value.visibleCards.size) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth().height(100.dp)
-                            .padding(start = 20.dp, end = 20.dp)
-                            .background(color = Color.White, shape = RoundedCornerShape(15.dp)),
-                        contentAlignment = Alignment.CenterStart
-                    ) {
-                        PaymentCardItem(selectedCardUIModel.value.visibleCards[it], onPaymentCardSelected = {
-                            it -> selectedCardUIModel.value = selectedCardUIModel.value.copy(
-                                selectedCard = it,
-                                visibleCards = selectedCardUIModel.value.visibleCards.map {
-                                    it2 -> it2.copy(
-                                        isSelected = it2.id == it.id
-                                    )
-                                }
-                            )
-                        })
-                    }
-                }
-            }
-            Row(
-                modifier = Modifier
-                    .height(50.dp)
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
+            Box(modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp)) {
+                InputWidget(
+                    viewHeight = 120,
+                    iconRes = "drawable/cancel_icon.png",
+                    placeholderText = "Write Here...",
+                    iconSize = 28,
+                    text = reviewsText.value,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    isPasswordField = false,
+                    isSingleLine = false,
+                    maxLines = 5
                 ) {
-                    Box(modifier = Modifier.size(20.dp), contentAlignment = Alignment.CenterEnd) {
-                        val modifier = Modifier
-                            .padding(top = 2.dp)
-                            .size(18.dp)
-                        ImageComponent(
-                            imageModifier = modifier,
-                            imageRes = "drawable/add_icon.png",
-                            colorFilter = ColorFilter.tint(color = Colors.primaryColor)
-                        )
-                    }
-                    Box(modifier = Modifier.wrapContentSize().clickable {
-                        onAddNewSelected()
-                    }) {
-                        TextComponent(
-                            text = "Add New Card",
-                            fontSize = 16,
-                            fontFamily = GGSansBold,
-                            textStyle = TextStyle(),
-                            textAlign = TextAlign.Left,
-                            fontWeight = FontWeight.ExtraBold,
-                            lineHeight = 20,
-                            textColor = Colors.primaryColor,
-                            maxLines = 1
-                        )
-                    }
+                    reviewsText.value = it
                 }
             }
 
@@ -201,7 +145,7 @@ fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<Paymen
                     .padding(bottom = 10.dp, start = 10.dp, end = 10.dp, top = 4.dp)
                     .fillMaxWidth()
                     .height(50.dp),
-                buttonText = "Continue",
+                buttonText = "Send",
                 colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
                 fontSize = 16,
                 shape = CircleShape,
@@ -209,10 +153,9 @@ fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<Paymen
                 style = TextStyle(),
                 borderStroke = null
             ) {
-                if (selectedCardUIModel.value.selectedCard!!.cardNumber.isNotEmpty()){
+                if (reviewsText.value.isNotEmpty()){
                     scope.launch {
                         scaffoldState.bottomSheetState.hide()
-                        onCardSelected(selectedCardUIModel.value.selectedCard!!)
                     }
                 }
             }

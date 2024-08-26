@@ -34,8 +34,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _switchVendor =  savedStateHandle.getStateFlow("switchVendor", Vendor())
     private var _joinSpa =  savedStateHandle.getStateFlow("joinSpaVendor", Vendor())
     private var _restartApp =  savedStateHandle.getStateFlow("restartApp", false)
-    private var _showProductBottomsheet =  savedStateHandle.getStateFlow("showProductBottomSheet", false)
+    private var _showProductBottomSheet =  savedStateHandle.getStateFlow("showProductBottomSheet", false)
     private var _showPaymentCardsBottomSheet =  savedStateHandle.getStateFlow("showPaymentCardsBottomSheet", false)
+    private var _showProductReviewsBottomSheet =  savedStateHandle.getStateFlow("showProductReviewsBottomSheet", false)
     private var _onBackPressed =  savedStateHandle.getStateFlow("onBackPressed", false)
     private var _exitApp =  savedStateHandle.getStateFlow("exitApp", false)
     private var _orderItemComponents =  savedStateHandle.getStateFlow("orderItemComponents", arrayListOf<PlacedOrderItemComponent>())
@@ -64,11 +65,14 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     val selectedProductType: StateFlow<String>
         get() = _selectedProductType
 
-    val showProductBottomsheet: StateFlow<Boolean>
-        get() = _showProductBottomsheet
+    val showProductBottomSheet: StateFlow<Boolean>
+        get() = _showProductBottomSheet
 
     val showPaymentCardsBottomSheet: StateFlow<Boolean>
         get() = _showPaymentCardsBottomSheet
+
+    val showProductReviewsBottomSheet: StateFlow<Boolean>
+        get() = _showProductReviewsBottomSheet
 
     val exitApp: StateFlow<Boolean>
         get() = _exitApp
@@ -129,6 +133,10 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     }
     fun showProductBottomSheet(show: Boolean) {
         savedStateHandle["showProductBottomSheet"] = show
+    }
+
+    fun showProductReviewsBottomSheet(show: Boolean) {
+        savedStateHandle["showProductReviewsBottomSheet"] = show
     }
 
     fun showPaymentCardsBottomSheet(show: Boolean) {

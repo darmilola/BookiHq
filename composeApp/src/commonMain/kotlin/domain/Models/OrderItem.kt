@@ -19,6 +19,6 @@ data class OrderItemUIModel(
 )
 @Parcelize
 @Serializable
-data class PlacedOrderItemComponent(@SerialName("product_id") var productId: Int = -1, @SerialName("imageUrl") val imageUrl: String,
+data class PlacedOrderItemComponent(@SerialName("product_id") var productId: Long = -1, @SerialName("imageUrl") val imageUrl: String,
                                     @SerialName("product_name") var productName: String = "", @SerialName("description") var productDescription: String = "",
                                     @SerialName("price") var productPrice: Int = 0, @SerialName("itemCount") var itemCount: Int = 0): Parcelable

@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,11 +32,15 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import cafe.adriel.voyager.transitions.ScreenTransition
 import dev.icerock.moko.parcelize.Parcelize
 import domain.Enums.Screens
+import domain.Models.OrderItem
 import domain.Models.PlacedOrderItemComponent
+import domain.Models.Product
 import kotlinx.serialization.Transient
 import presentation.widgets.OrderDetailList
 import presentation.viewmodels.MainViewModel
+import presentation.widgets.AddProductReviewBottomSheet
 import presentation.widgets.PageBackNavWidget
+import presentation.widgets.ProductDetailBottomSheet
 import utils.ParcelableScreen
 
 @Parcelize @OptIn(ExperimentalVoyagerApi::class)
@@ -55,10 +61,25 @@ class OrderDetails() : ParcelableScreen, ScreenTransition {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+        val showAddReviewBottomSheet = mainViewModel!!.showProductReviewsBottomSheet.collectAsState()
         if (onBackPressed.value){
             mainViewModel!!.setOnBackPressed(false)
             navigator.pop()
         }
+
+
+        if (showAddReviewBottomSheet.value) {
+            AddProductReviewBottomSheet(
+                mainViewModel!!,
+                onDismiss = {
+                    mainViewModel!!.showProductReviewsBottomSheet(false)
+                },
+                onReviewsAdded = {
+                    mainViewModel!!.showProductReviewsBottomSheet(false)
+                })
+        }
+
+
         val rowModifier = Modifier
             .fillMaxWidth()
             .height(70.dp)
@@ -91,7 +112,10 @@ class OrderDetails() : ParcelableScreen, ScreenTransition {
 
             }
             val itemList = mainViewModel!!.orderItemComponents.value
-            OrderDetailList(itemList)
+
+            OrderDetailList(itemList, onAddReviewClicked = {
+                mainViewModel!!.showProductReviewsBottomSheet(true)
+            })
         }
     }
 

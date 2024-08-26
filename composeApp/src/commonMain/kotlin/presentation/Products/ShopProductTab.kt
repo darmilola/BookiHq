@@ -261,7 +261,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
             },
             backgroundColor = Color.Transparent,
             floatingActionButton = {
-                var cartSize = mainViewModel!!.unSavedOrderSize.collectAsState()
+                val cartSize = mainViewModel!!.unSavedOrderSize.collectAsState()
                 val cartContainer = if (cartSize.value > 0) 140 else 0
                 Box(
                     modifier = Modifier.size(cartContainer.dp)

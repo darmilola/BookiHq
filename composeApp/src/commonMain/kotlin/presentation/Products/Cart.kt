@@ -290,7 +290,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
 
                     val showSelectedPaymentCards = remember { mutableStateOf(false) }
 
-                    var showPaymentCardBottomSheet by remember { mutableStateOf(false) }
+                    val showPaymentCardBottomSheet by remember { mutableStateOf(false) }
 
                     if (showPaymentCardBottomSheet) {
                         mainViewModel!!.showPaymentCardsBottomSheet(true)

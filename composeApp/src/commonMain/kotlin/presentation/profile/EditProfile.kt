@@ -34,7 +34,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.room.RoomDatabase
 import applications.device.deviceInfo
+import applications.room.AppDatabase
 import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -95,11 +97,17 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
     private var platformViewModel: PlatformViewModel? = null
     @Transient
     private var mainViewModel: MainViewModel? = null
+    @Transient
+    private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 
     override val key: ScreenKey = uniqueScreenKey
 
     fun setMainViewModel(mainViewModel: MainViewModel){
         this.mainViewModel = mainViewModel
+    }
+
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = databaseBuilder
     }
 
     @Composable
@@ -220,7 +228,10 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
             LoadingDialog(dialogTitle = "Updating Your Profile")
         }
         else if (updateProfileEnded.value && updateProfileSuccessful.value) {
-            //navigator.replaceAll(SplashScreen(platformNavigator!!, mainViewModel!!))
+            val splashScreen = SplashScreen(platformNavigator!!)
+            splashScreen.setMainViewModel(mainViewModel!!)
+            splashScreen.setDatabaseBuilder(databaseBuilder!!)
+            navigator.replaceAll(splashScreen)
         }
         else if(updateProfileEnded.value && !updateProfileSuccessful.value){
             ErrorDialog(dialogTitle = "Error Occurred", actionTitle = "", onConfirmation = {})
