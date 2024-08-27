@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -125,9 +127,9 @@ fun PostponeDialog(userAppointment: UserAppointment, appointmentPresenter: Appoi
 
                             Column(
                                 modifier = Modifier
-                                    .padding(top = 5.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
+                                    .padding(top = 5.dp, bottom = 10.dp)
                                     .fillMaxWidth()
-                                    .height(320.dp),
+                                    .height(400.dp),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment  = Alignment.CenterHorizontally,
                             ) {
@@ -171,11 +173,11 @@ fun PostponeDialog(userAppointment: UserAppointment, appointmentPresenter: Appoi
 }
 
 @Composable
-fun PostponeTimeContent(availableHours: ArrayList<PlatformTime>, onWorkHourClickListener: (PlatformTime) -> Unit) {
+fun PostponeTimeContent(availableHours: Triple<ArrayList<PlatformTime>, ArrayList<PlatformTime>, ArrayList<PlatformTime>>, onWorkHourClickListener: (PlatformTime) -> Unit) {
 
     Column(
         modifier = Modifier
-            .padding(start = 20.dp, end = 10.dp, top = 15.dp, bottom = 10.dp)
+            .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 10.dp)
             .wrapContentHeight(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment  = Alignment.CenterHorizontally,
@@ -229,12 +231,11 @@ fun PostponeTimeContent(availableHours: ArrayList<PlatformTime>, onWorkHourClick
         }
 
         Row(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
-            Column(modifier = Modifier.weight(1f).wrapContentHeight()) {
+            Column(modifier = Modifier.fillMaxWidth().wrapContentHeight().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
                 PostponeTimeGrid(platformTimes = availableHours, onWorkHourClickListener = {
                     onWorkHourClickListener(it)
                 })
             }
-
         }
     }
 }

@@ -26,8 +26,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.AvailableTimeUIModel
 import domain.Models.AvailableTime
@@ -86,41 +88,162 @@ fun TimeGrid(platformTimes: List<PlatformTime>? = arrayListOf(), selectedTime: P
 
 
 @Composable
-fun PostponeTimeGrid(platformTimes: List<PlatformTime>? = arrayListOf(), onWorkHourClickListener: (PlatformTime) -> Unit) {
+fun PostponeTimeGrid(platformTimes: Triple<ArrayList<PlatformTime>, ArrayList<PlatformTime>, ArrayList<PlatformTime>>, onWorkHourClickListener: (PlatformTime) -> Unit) {
 
-    var workHourUIModel by remember {
+    var morningHourUIModel by remember {
         mutableStateOf(
             PlatformTimeUIModel(
                 selectedTime = PlatformTime(),
-                platformTimes!!
+                platformTimes.first
             )
         )
     }
 
-    Column(modifier = Modifier.fillMaxWidth()) {
+    var afternoonHourUIModel by remember {
+        mutableStateOf(
+            PlatformTimeUIModel(
+                selectedTime = PlatformTime(),
+                platformTimes.second
+            )
+        )
+    }
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            modifier = Modifier.fillMaxWidth().height(300.dp),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
-            userScrollEnabled = false,
-            horizontalArrangement = Arrangement.spacedBy(2.dp)
-        ) {
-            items(workHourUIModel.visibleTime.size) { i ->
-                TimeItem(workHourUIModel.visibleTime[i], onWorkHourClickListener = { it ->
-                    onWorkHourClickListener(it)
-                    workHourUIModel = workHourUIModel.copy(
-                        selectedTime = it,
-                        visibleTime = workHourUIModel.visibleTime.map { it2 ->
-                            it2.copy(
-                                isSelected = it2.id == it.id
-                            )
-                        }
+    var eveningHourUIModel by remember {
+        mutableStateOf(
+            PlatformTimeUIModel(
+                selectedTime = PlatformTime(),
+                platformTimes.third
+            )
+        )
+    }
 
-                    )
-                })
+    Row(modifier = Modifier.fillMaxWidth(0.90f).wrapContentHeight()) {
+        Column(modifier = Modifier.weight(1f).wrapContentHeight()) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(1),
+                modifier = Modifier.fillMaxWidth().height(400.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+                userScrollEnabled = false,
+                horizontalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                items(morningHourUIModel.visibleTime.size) { i ->
+                    TimeItem(morningHourUIModel.visibleTime[i], onWorkHourClickListener = { it ->
+                        onWorkHourClickListener(it)
+                        morningHourUIModel = morningHourUIModel.copy(
+                            selectedTime = it,
+                            visibleTime = morningHourUIModel.visibleTime.map { it2 ->
+                                it2.copy(
+                                    isSelected = it2.id == it.id
+                                )
+                            }
+
+                        )
+                        afternoonHourUIModel = afternoonHourUIModel.copy(
+                            selectedTime = it,
+                            visibleTime = afternoonHourUIModel.visibleTime.map { it2 ->
+                                it2.copy(
+                                    isSelected = it2.id == it.id
+                                )
+                            }
+
+                        )
+                        eveningHourUIModel = eveningHourUIModel.copy(
+                            selectedTime = it,
+                            visibleTime = eveningHourUIModel.visibleTime.map { it2 ->
+                                it2.copy(
+                                    isSelected = it2.id == it.id
+                                )
+                            }
+
+                        )
+                    })
+                }
             }
         }
+        Column(modifier = Modifier.weight(1f).wrapContentHeight()) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(1),
+                modifier = Modifier.fillMaxWidth().height(400.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+                userScrollEnabled = false,
+                horizontalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                items(afternoonHourUIModel.visibleTime.size) { i ->
+                    TimeItem(afternoonHourUIModel.visibleTime[i], onWorkHourClickListener = { it ->
+                        onWorkHourClickListener(it)
+                        morningHourUIModel = morningHourUIModel.copy(
+                            selectedTime = it,
+                            visibleTime = morningHourUIModel.visibleTime.map { it2 ->
+                                it2.copy(
+                                    isSelected = it2.id == it.id
+                                )
+                            }
+                        )
+                        afternoonHourUIModel = afternoonHourUIModel.copy(
+                            selectedTime = it,
+                            visibleTime = afternoonHourUIModel.visibleTime.map { it2 ->
+                                it2.copy(
+                                    isSelected = it2.id == it.id
+                                )
+                            }
+
+                        )
+                        eveningHourUIModel = eveningHourUIModel.copy(
+                            selectedTime = it,
+                            visibleTime = eveningHourUIModel.visibleTime.map { it2 ->
+                                it2.copy(
+                                    isSelected = it2.id == it.id
+                                )
+                            }
+
+                        )
+                    })
+                }
+            }
+        }
+        Column(modifier = Modifier.weight(1f).wrapContentHeight()) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(1),
+                modifier = Modifier.fillMaxWidth().height(400.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+                userScrollEnabled = false,
+                horizontalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                items(eveningHourUIModel.visibleTime.size) { i ->
+                    TimeItem(eveningHourUIModel.visibleTime[i], onWorkHourClickListener = { it ->
+                        onWorkHourClickListener(it)
+                        morningHourUIModel = morningHourUIModel.copy(
+                            selectedTime = it,
+                            visibleTime = morningHourUIModel.visibleTime.map { it2 ->
+                                it2.copy(
+                                    isSelected = it2.id == it.id
+                                )
+                            }
+
+                        )
+                        afternoonHourUIModel = afternoonHourUIModel.copy(
+                            selectedTime = it,
+                            visibleTime = afternoonHourUIModel.visibleTime.map { it2 ->
+                                it2.copy(
+                                    isSelected = it2.id == it.id
+                                )
+                            }
+
+                        )
+                        eveningHourUIModel = eveningHourUIModel.copy(
+                            selectedTime = it,
+                            visibleTime = eveningHourUIModel.visibleTime.map { it2 ->
+                                it2.copy(
+                                    isSelected = it2.id == it.id
+                                )
+                            }
+
+                        )
+                    })
+                }
+            }
+        }
+
     }
 }
 

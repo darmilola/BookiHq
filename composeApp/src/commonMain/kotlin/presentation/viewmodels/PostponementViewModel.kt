@@ -23,6 +23,9 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
     private var _monthName =  savedStateHandle.getStateFlow("monthName", "")
     private var _year =  savedStateHandle.getStateFlow("year", -1)
     private var _newSelectedTime = savedStateHandle.getStateFlow("newSelectedTime", PlatformTime())
+    private var _vendorMorningHours = savedStateHandle.getStateFlow("morningHours", listOf<PlatformTime>())
+    private var _vendorAfternoonHours = savedStateHandle.getStateFlow("afternoonHours", listOf<PlatformTime>())
+    private var _vendorEveningHours = savedStateHandle.getStateFlow("eveningHours", listOf<PlatformTime>())
 
 
 
@@ -40,6 +43,30 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
 
     val vendorTimes: StateFlow<List<VendorTime>>
         get() = _vendorTimes
+
+    val vendorMorningHours: StateFlow<List<PlatformTime>>
+        get() = _vendorMorningHours
+
+    val vendorAfternoonHours: StateFlow<List<PlatformTime>>
+        get() = _vendorAfternoonHours
+
+
+    val vendorEveningHours: StateFlow<List<PlatformTime>>
+        get() = _vendorEveningHours
+
+
+    fun setVendorMorningHours(morningHours: List<PlatformTime>) {
+        savedStateHandle["morningHours"] = morningHours
+    }
+
+    fun setVendorAfternoonHours(afternoonHours: List<PlatformTime>) {
+        savedStateHandle["afternoonHours"] = afternoonHours
+    }
+
+    fun setVendorEveningHours(eveningHours: List<PlatformTime>) {
+        savedStateHandle["eveningHours"] = eveningHours
+    }
+
 
     val day: StateFlow<Int>
         get() = _day

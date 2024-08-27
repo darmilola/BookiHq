@@ -401,12 +401,7 @@ fun VendorTimeContent(availableHours: ArrayList<PlatformTime>, onWorkHourClickLi
         }
 
         Row(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
-            Column(modifier = Modifier.weight(1f).wrapContentHeight()) {
-                PostponeTimeGrid(platformTimes = availableHours, onWorkHourClickListener = {
-                    onWorkHourClickListener(it)
-                })
-            }
-
+            Column(modifier = Modifier.weight(1f).wrapContentHeight()) {}
         }
     }
 }
