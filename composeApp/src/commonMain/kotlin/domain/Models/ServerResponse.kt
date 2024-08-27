@@ -51,10 +51,6 @@ data class VendorAccountResponse(@SerialName("status") val status: String = "",
                                          @SerialName("vendorInfo") val vendorInfo: Vendor)
 
 @Serializable
-data class TherapistTimeAvailabilityResponse(@SerialName("status") val status: String = "",
-                                             @SerialName("availability") val availableTimes: List<AvailableTime>)
-
-@Serializable
 class InitCheckoutResponse(@SerialName("status") var status: String, @SerialName("result")  var authorizationResultJsonString: String)
 
 @Serializable

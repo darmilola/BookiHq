@@ -5,7 +5,6 @@ import domain.Models.AppointmentListDataResponse
 import domain.Models.ServerResponse
 import domain.Models.TherapistAppointmentListDataResponse
 import domain.Models.TherapistReviewsResponse
-import domain.Models.TherapistTimeAvailabilityResponse
 
 interface TherapistRepository {
 

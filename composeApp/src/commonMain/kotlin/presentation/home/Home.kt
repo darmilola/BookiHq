@@ -143,8 +143,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             if (homePageViewModel!!.homePageInfo.value.userInfo?.userId == null) {
                 val vendorPhone: String = preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath(),""]
                 if (vendorPhone.isNotEmpty()){
-                    homepagePresenter.getUserHomepage(userId)
-                    //homepagePresenter.getUserHomepageWithStatus(userId, vendorPhone)
+                    homepagePresenter.getUserHomepageWithStatus(userId, vendorPhone)
                 }
                 else {
                     homepagePresenter.getUserHomepage(userId)
@@ -503,7 +502,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
     fun BusinessStatusDisplay(statusList: List<VendorStatusModel>, vendorInfo: Vendor) {
         val modifier =
             Modifier.fillMaxWidth()
-                .height(800.dp)
+                .height(700.dp)
                 .background(color = Color.Black)
         Box(modifier = modifier, contentAlignment = Alignment.Center) {
             ShopStatusWidget(statusList, vendorInfo)
