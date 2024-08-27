@@ -89,9 +89,5 @@ fun MobileDeliveryWidget(mainViewModel: MainViewModel) {
                 )
             }
         }
-
-        Box(modifier = Modifier.weight(1F), contentAlignment =  Alignment.Center) {
-            ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/chevron_right.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
-        }
     }
 }

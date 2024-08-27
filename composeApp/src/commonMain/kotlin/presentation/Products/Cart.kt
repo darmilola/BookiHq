@@ -153,8 +153,6 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                 },
             )
         }
-
-        cartViewModel!!.setPaymentMethod(PaymentMethod.CARD_PAYMENT.toPath())
         val cartItems = mainViewModel!!.unSavedOrders.collectAsState()
         val cartSize = mainViewModel!!.unSavedOrderSize.collectAsState()
         val deliveryMethod = cartViewModel!!.deliveryMethod.collectAsState()
@@ -344,11 +342,13 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                             cartViewModel!!.setPaymentMethod(PaymentMethod.CARD_PAYMENT.toPath())
                         })
                         StraightLine()
-                        CheckOutSummaryWidget(cartViewModel!!,onCreateOrderStarted = {
+                        CheckOutSummaryWidget(cartViewModel!!,onCardCheckOutStarted = {
                             runBlocking {
                                 cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
                                 showSelectedPaymentCards.value = true
                             }
+                        }, onCheckOutStarted = {
+                             createOrder(paymentAmount)
                         })
 
                     }

@@ -45,7 +45,7 @@ fun getUnSavedOrdersRequestJson(orders: List<OrderItem>): String {
             productId = item.productId, productName = item.itemProduct?.productName!!,
             productDescription = item.itemProduct!!.productDescription,
             price = item.itemProduct!!.productPrice, itemCount = item.itemCount,
-            imageUrl = item.itemProduct!!.productImages.get(0).imageUrl
+            imageUrl = item.itemProduct!!.productImages[0].imageUrl
         )
         val jsonStrRequest = Json.encodeToString(itemRequest)
         orderRequestList.add(jsonStrRequest)
