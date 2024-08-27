@@ -140,6 +140,7 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                     appointmentRepositoryImpl.postponeAppointment(userAppointment, newAppointmentTime, day,month,year)
                         .subscribe(
                             onSuccess = { result ->
+                                println("Response 0 $result")
                                 if (result.status == "success"){
                                     val time = if (platformTime.isAm) platformTime.time+"AM" else platformTime.time+"PM"
                                     contractView?.showPostponeActionLce(AppUIStates(isSuccess = true, successMessage = "Appointment Postponed"))
@@ -147,24 +148,26 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                                         appointmentTime = time, fcmToken = vendor.fcmToken!!, serviceType = userAppointment.resources?.serviceTypeItem!!.title)
                                 }
                                 else{
+                                    println("Response 1 $result")
                                     contractView?.showPostponeActionLce(AppUIStates(isFailed = true, errorMessage = "Error Postponing Appointment Please Try Again"))
                                 }
                             },
                             onError = {
-                                println("Error 2 ${it.message}")
+                                println("Response 2 ${it.message}")
                                 contractView?.showPostponeActionLce(AppUIStates(isFailed = true, errorMessage = "Error Postponing Appointment Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Error 2 ${e.message}")
+                println("Response 3 ${e.message}")
                 contractView?.showPostponeActionLce(AppUIStates(isFailed = true, errorMessage = "Error Postponing Appointment Please Try Again"))
             }
         }
     }
 
     override fun deleteAppointment(appointmentId: Long) {
+        println(appointmentId)
         contractView?.showDeleteActionLce(AppUIStates(isLoading = true, loadingMessage = "Deleting Appointment"))
         scope.launch(Dispatchers.Main) {
             try {
@@ -172,20 +175,24 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                     appointmentRepositoryImpl.deleteAppointment(appointmentId)
                         .subscribe(
                             onSuccess = { result ->
+                                println("Response 0 $result")
                                 if (result.status == "success"){
                                     contractView?.showDeleteActionLce(AppUIStates(isSuccess = true, successMessage = "Appointment Deleted"))
                                 }
                                 else{
+                                    println("Response 1 $result")
                                     contractView?.showDeleteActionLce(AppUIStates(isFailed = true, errorMessage = "Error Deleting Appointment Please Try Again"))
                                 }
                             },
                             onError = {
+                                println("Response 2 ${it.message}")
                                 contractView?.showDeleteActionLce(AppUIStates(isFailed = true, errorMessage = "Error Deleting Appointment Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
+                println("Response 3 ${e.message}")
                 contractView?.showDeleteActionLce(AppUIStates(isFailed = true, errorMessage = "Error Deleting Appointment Please Try Again"))
             }
         }

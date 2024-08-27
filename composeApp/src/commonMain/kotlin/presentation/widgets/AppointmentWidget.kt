@@ -53,7 +53,7 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, mainViewModel: MainViewModel, availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator,
+fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, mainViewModel: MainViewModel, availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, onDeleteAppointment: (UserAppointment) -> Unit, platformNavigator: PlatformNavigator,
                       onAddReview: (Appointment) -> Unit) {
 
     val appointment = userAppointment!!.resources
@@ -277,7 +277,7 @@ fun AttachHomeServiceAppointmentHeader(statusText: String, statusDrawableRes: St
 
 @Composable
 fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, userAppointment: UserAppointment, menuItems: ArrayList<String>, presenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null,
-                                   availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, mainViewModel: MainViewModel, onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator, onAddReview: (Appointment) -> Unit) {
+                                   availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, mainViewModel: MainViewModel, onDeleteAppointment: (UserAppointment) -> Unit, platformNavigator: PlatformNavigator, onAddReview: (Appointment) -> Unit) {
     val expandedMenuItem = remember { mutableStateOf(false) }
     val openPostponeDialog = remember { mutableStateOf(false) }
 
@@ -355,8 +355,9 @@ fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String
                            onClick = {
                                if (title.contentEquals("Postpone", true)) {
                                    openPostponeDialog.value = true
-                               } else if (title.contentEquals("Delete", true)) {
-                                   onDeleteAppointment(userAppointment.resources!!)
+                               }
+                               else if (title.contentEquals("Delete", true)) {
+                                   onDeleteAppointment(userAppointment)
                                }
                                else if (title.contentEquals("Add Review", true)) {
                                    onAddReview(userAppointment.resources!!)

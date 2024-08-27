@@ -155,7 +155,7 @@ fun PostponeDialog(userAppointment: UserAppointment, appointmentPresenter: Appoi
                                     day = newSelectedDay.value,
                                     month = newSelectedMonth.value,
                                     year = newSelectedYear.value,
-                                    vendor = userAppointment.resources?.vendor,
+                                    vendor = userAppointment.resources.vendor,
                                     user = mainViewModel.currentUserInfo.value,
                                     monthName = postponementViewModel.monthName.value,
                                     platformNavigator = platformNavigator,

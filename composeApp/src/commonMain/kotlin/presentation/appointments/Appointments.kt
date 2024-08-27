@@ -76,6 +76,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
     private var refreshActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     private var postponeTimeUIStateViewModel: PerformedActionUIStateViewModel? = null
     private var addAppointmentReviewsUIStateViewModel: PerformedActionUIStateViewModel? = null
+    private var postponeAppointmentUIStateViewModel: PerformedActionUIStateViewModel? = null
     private var joinMeetingPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     private var postponementViewModel: PostponementViewModel? = null
     private var mainViewModel: MainViewModel? = null
@@ -121,6 +122,14 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
             loadingScreenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+        if (postponeAppointmentUIStateViewModel == null) {
+            postponeAppointmentUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -192,10 +201,10 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
 
         val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
         val deleteActionUIStates = deletePerformedActionUIStateViewModel!!.deleteUIStateInfo.collectAsState()
-        val postponeActionUIStates = postponementViewModel!!.postponementViewUIState.collectAsState()
         val joinMeetingActionUIStates = joinMeetingPerformedActionUIStateViewModel!!.joinMeetingStateInfo.collectAsState()
         val refreshActionUIStates = refreshActionUIStateViewModel!!.refreshAppointmentActionUiState.collectAsState()
         val addReviewsUIState = addAppointmentReviewsUIStateViewModel!!.addAppointmentReviewUiState.collectAsState()
+        val postponeActionUIStates = postponeAppointmentUIStateViewModel!!.postponeAppointmentUiState.collectAsState()
         val isRefreshing = remember { mutableStateOf(false) }
         val userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(),-1L]
 
@@ -239,7 +248,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
             Box(modifier = Modifier.fillMaxWidth()) {
                 SuccessDialog("Appointment Postponed", "Close", onConfirmation = {
                     appointmentPresenter.refreshUserAppointments(userId)
-                    postponementViewModel!!.setPostponementViewUIState(AppUIStates(isDefault = true))
+                    postponeAppointmentUIStateViewModel!!.switchPostPostponeAppointmentUiState(AppUIStates(isDefault = true))
                 })
             }
         }
@@ -258,7 +267,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
             Box(modifier = Modifier.fillMaxWidth()) {
                 SuccessDialog("Delete Successful", "Close", onConfirmation = {
                     appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                    appointmentPresenter.getUserAppointments(userId!!)
+                    appointmentPresenter.getUserAppointments(userId)
                     deletePerformedActionUIStateViewModel!!.switchActionDeleteUIState(AppUIStates(isDefault = true))
                 })
             }
@@ -323,6 +332,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                     joinMeetingPerformedActionUIStateViewModel!!,
                     addAppointmentReviewsUIStateViewModel!!,
                     postponeTimeUIStateViewModel!!,
+                    postponeAppointmentUIStateViewModel!!,
                     postponementViewModel!!,
                     appointmentPresenter,
                     onMeetingTokenReady = {}
@@ -395,7 +405,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                                        mainViewModel = mainViewModel!!,
                                        postponeTimeUIStateViewModel!!,
                                        onDeleteAppointment = {
-                                           appointmentPresenter.deleteAppointment(it.appointmentId!!)
+                                           appointmentPresenter.deleteAppointment(it.id)
                                        },
                                        platformNavigator = platformNavigator,
                                        onAddReview = {

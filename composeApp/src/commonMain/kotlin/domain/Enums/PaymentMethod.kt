@@ -12,11 +12,3 @@ enum class PaymentMethod {
         PAYMENT_ON_DELIVERY -> "payment_on_delivery"
     }
 }
-
-fun getPaymentMethodDisplayName(paymentMethod: String): String{
-    when(paymentMethod){
-        PaymentMethod.CARD_PAYMENT.toPath() -> return "Card Payment"
-        PaymentMethod.PAYMENT_ON_DELIVERY.toPath() -> return "Pay On Delivery"
-        else -> return "Pay On Delivery"
-    }
-}

@@ -28,6 +28,7 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
         month: Int,
         year: Int
     ): Single<ServerResponse> {
+        println("Info are ${userAppointment.userId}, ${userAppointment.appointmentId}, ${userAppointment.bookingStatus}")
         val appointment = userAppointment.resources!!
         val param = PostponeAppointmentRequest(userId = appointment.userId!!, vendorId = appointment.vendorId, serviceId = appointment.serviceId,
             serviceTypeId = appointment.serviceTypeId!!, therapistId = appointment.therapistId, appointmentTime = appointmentTime,

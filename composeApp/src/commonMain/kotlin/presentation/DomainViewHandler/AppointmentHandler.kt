@@ -21,6 +21,7 @@ class AppointmentsHandler(
     private val joinMeetingPerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val addTherapistReviewPerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val getAvailabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
+    private val postponeActionPerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val postponementViewModel: PostponementViewModel,
     private val appointmentPresenter: AppointmentPresenter,
     private val onMeetingTokenReady: (meetingToken: String) -> Unit) : AppointmentContract.View {
@@ -41,7 +42,7 @@ class AppointmentsHandler(
     }
 
     override fun showPostponeActionLce(appUIStates: AppUIStates) {
-        postponementViewModel.setPostponementViewUIState(appUIStates)
+        postponeActionPerformedActionUIStateViewModel.switchPostPostponeAppointmentUiState(appUIStates)
     }
 
     override fun showReviewsActionLce(appUIStates: AppUIStates) {
