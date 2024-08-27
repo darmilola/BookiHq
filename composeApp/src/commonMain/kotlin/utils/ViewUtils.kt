@@ -157,35 +157,6 @@ fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo, screenSizeInfo: Sc
     return servicesHeight + recentAppointmentHeight + recommendationsHeight + statusHeight + bottomBarPadding
 }
 
-fun calculateBookingServiceTimes(platformTimes: List<PlatformTime>, vendorTimes: List<VendorTime>, bookedTimes: List<BookedTimes>, day: Int, month: Int, year: Int):
-ArrayList<PlatformTime>{
-    val workingHours: ArrayList<PlatformTime> = arrayListOf()
-    val vendorWorkingHours: ArrayList<Int> = arrayListOf()
-    val bookedHours: ArrayList<Int> = arrayListOf()
-
-    vendorTimes.forEach {
-        vendorWorkingHours.add(it.platformTime?.id!!)
-    }
-    bookedTimes.forEach {
-        if (it.day == day && it.month == month && it.year == year) {
-            bookedHours.add(it.platformTime?.id!!)
-        }
-    }
-
-
-    platformTimes.map {
-        if (it.id in vendorWorkingHours && it.id !in bookedHours){
-            workingHours.add(it.copy(isEnabled = true))
-        }
-        else{
-            workingHours.add(it)
-        }
-    }
-
-    return workingHours
-
-}
-
 
 fun calculateTherapistServiceTimes(platformTimes: List<PlatformTime>, vendorTimes: List<VendorTime>, bookedAppointment: List<Appointment>):
         Triple<ArrayList<PlatformTime>,ArrayList<PlatformTime>,ArrayList<PlatformTime>>{

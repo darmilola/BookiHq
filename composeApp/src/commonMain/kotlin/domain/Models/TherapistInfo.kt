@@ -10,6 +10,5 @@ data class TherapistInfo(@SerialName("id") val id: Long? = -1, @SerialName("ther
                          @SerialName("isAvailable") val isAvailable: Boolean? = false,
                          @SerialName("isMobileServicesAvailable") val isMobileServiceAvailable: Boolean? = false,
                          @SerialName("profile_info") val profileInfo: User? = null,
-                         @SerialName("booked_times") val bookedTimes: List<BookedTimes>? = arrayListOf(),
-                         @SerialName("therapist_reviews") val therapistReviews: List<TherapistReviews>? = arrayListOf(), val isSelected: Boolean = false): Parcelable
+                         @SerialName("booked_times") val bookedTimes: List<Appointment>? = arrayListOf(),val isSelected: Boolean = false): Parcelable
 

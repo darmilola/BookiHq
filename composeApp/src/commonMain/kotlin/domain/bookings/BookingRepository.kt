@@ -6,8 +6,7 @@ import domain.Models.ServerResponse
 import domain.Models.ServiceTherapistsResponse
 
 interface BookingRepository {
-    suspend fun getServiceTherapist(serviceTypeId: Long, vendorId: Long): Single<ServiceTherapistsResponse>
-
+    suspend fun getServiceTherapist(serviceTypeId: Long, vendorId: Long, day: Int, month: Int, year: Int): Single<ServiceTherapistsResponse>
     suspend fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Long, serviceTypeId: Long, therapistId: Long,
                                                 appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, serviceStatus: String,
                                                 paymentAmount: Double, paymentMethod: String, bookingStatus: String): Single<PendingBookingAppointmentResponse>

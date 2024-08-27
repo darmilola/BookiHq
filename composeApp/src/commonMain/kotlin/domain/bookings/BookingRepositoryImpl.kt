@@ -10,11 +10,8 @@ class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
 
     private val bookingNetworkService: BookingNetworkService = BookingNetworkService(apiService)
 
-    override suspend fun getServiceTherapist(
-        serviceTypeId: Long,
-        vendorId: Long
-    ): Single<ServiceTherapistsResponse> {
-        val param = GetTherapistsRequest(serviceTypeId, vendorId)
+    override suspend fun getServiceTherapist(serviceTypeId: Long, vendorId: Long, day: Int, month: Int, year: Int): Single<ServiceTherapistsResponse> {
+        val param = GetTherapistsRequest(serviceTypeId, vendorId, day, month, year)
         return bookingNetworkService.getTherapists(param)
     }
 

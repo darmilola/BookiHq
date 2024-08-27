@@ -31,9 +31,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import applications.date.getDay
-import applications.date.getMonth
-import applications.date.getYear
 import domain.Models.Appointment
 import domain.Models.PlatformTime
 import domain.Models.PlatformNavigator
@@ -44,7 +41,7 @@ import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
 import presentation.widgets.NewDateContent
-import presentation.widgets.PostponeTimeGrid
+import presentation.widgets.TimeGridDisplay
 import presentation.widgets.TitleWidget
 import presentation.widgets.buttonContent
 import presentations.components.TextComponent
@@ -135,7 +132,6 @@ fun PostponeDialog(userAppointment: UserAppointment, appointmentPresenter: Appoi
                             ) {
 
                                PostponeTimeContent(workHours, onWorkHourClickListener = {
-                                      println("Select Time $it")
                                       postponementViewModel.setNewSelectedTime(it)
                                })
                             }
@@ -232,7 +228,7 @@ fun PostponeTimeContent(availableHours: Triple<ArrayList<PlatformTime>, ArrayLis
 
         Row(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
             Column(modifier = Modifier.fillMaxWidth().wrapContentHeight().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
-                PostponeTimeGrid(platformTimes = availableHours, onWorkHourClickListener = {
+                TimeGridDisplay(platformTimes = availableHours, onWorkHourClickListener = {
                     onWorkHourClickListener(it)
                 })
             }

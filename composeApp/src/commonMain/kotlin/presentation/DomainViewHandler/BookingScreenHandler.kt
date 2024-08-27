@@ -4,6 +4,7 @@ import domain.Models.ServiceTypeTherapists
 import presentation.bookings.BookingContract
 import presentation.bookings.BookingPresenter
 import UIStates.AppUIStates
+import domain.Models.AppointmentReview
 import presentation.viewmodels.BookingViewModel
 import domain.Models.PlatformTime
 import domain.Models.UserAppointment
@@ -91,9 +92,10 @@ class BookingScreenHandler(
         }
     }
 
-    override fun showTherapists(serviceTherapists: List<ServiceTypeTherapists>, platformTime: List<PlatformTime>, vendorTime: List<VendorTime>) {
+    override fun showTherapists(serviceTherapists: List<ServiceTypeTherapists>, platformTime: List<PlatformTime>, vendorTime: List<VendorTime>, appointmentReviews: List<AppointmentReview>) {
         bookingViewModel.setTherapists(serviceTherapists)
         bookingViewModel.setVendorTimes(vendorTime)
+        bookingViewModel.setAppointmentReview(appointmentReviews)
         bookingViewModel.setPlatformTimes(platformTime)
     }
 

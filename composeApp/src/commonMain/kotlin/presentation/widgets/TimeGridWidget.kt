@@ -26,13 +26,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import domain.Models.AvailableTimeUIModel
-import domain.Models.AvailableTime
 import domain.Models.PlatformTime
 import domain.Models.PlatformTimeUIModel
 import domain.Models.VendorTime
@@ -88,7 +84,7 @@ fun TimeGrid(platformTimes: List<PlatformTime>? = arrayListOf(), selectedTime: P
 
 
 @Composable
-fun PostponeTimeGrid(platformTimes: Triple<ArrayList<PlatformTime>, ArrayList<PlatformTime>, ArrayList<PlatformTime>>, onWorkHourClickListener: (PlatformTime) -> Unit) {
+fun TimeGridDisplay(platformTimes: Triple<ArrayList<PlatformTime>, ArrayList<PlatformTime>, ArrayList<PlatformTime>>, onWorkHourClickListener: (PlatformTime) -> Unit) {
 
     var morningHourUIModel by remember {
         mutableStateOf(

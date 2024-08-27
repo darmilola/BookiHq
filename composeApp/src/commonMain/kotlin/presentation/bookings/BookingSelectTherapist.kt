@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Models.AppointmentReview
 import domain.Models.PlatformTime
 import domain.Models.ServiceTypeTherapists
 import domain.Models.ServiceTypeTherapistUIModel
@@ -41,8 +42,9 @@ import presentation.viewmodels.MainViewModel
 import presentation.widgets.AttachTherapistWidget
 import presentation.widgets.TherapistReviewScreen
 import presentation.widgets.TimeGrid
+import presentation.widgets.TimeGridDisplay
 import presentations.components.TextComponent
-import utils.calculateBookingServiceTimes
+import utils.calculateTherapistServiceTimes
 
 @Composable
 fun BookingSelectTherapists(mainViewModel: MainViewModel, performedActionUIStateViewModel: PerformedActionUIStateViewModel,
@@ -55,7 +57,7 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, performedActionUIState
     LaunchedEffect(Unit, block = {
         if (therapists.value.isEmpty()) {
             bookingPresenter.getServiceTherapists(bookingViewModel.selectedServiceType.value.serviceTypeId,
-                mainViewModel.connectedVendor.value.vendorId!!)
+                mainViewModel.connectedVendor.value.vendorId!!, day = bookingViewModel.day.value, month = bookingViewModel.month.value, year = bookingViewModel.year.value)
         }
     })
 
@@ -101,15 +103,25 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, performedActionUIState
             if(selectedTherapist.value.id != null) {
                 currentBooking.appointmentTime = null
 
-                val workHours = calculateBookingServiceTimes(bookedTimes = selectedTherapist.value.therapistInfo?.bookedTimes!!, vendorTimes = vendorTimes.value,
-                    platformTimes = platformTimes.value, day = bookingViewModel.day.value, month = bookingViewModel.month.value, year = bookingViewModel.year.value)
+                val workHours = calculateTherapistServiceTimes(platformTimes = platformTimes.value,
+                    vendorTimes = vendorTimes.value,
+                    bookedAppointment = selectedTherapist.value.therapistInfo?.bookedTimes!!)
 
-                AvailableTimeContent(workHours,bookingViewModel, onWorkHourClickListener = {
-                     currentBooking.pendingTime = it
-                     bookingViewModel.setCurrentBooking(currentBooking)
-                })
-                if (selectedTherapist.value.therapistInfo?.therapistReviews?.isNotEmpty() == true) {
-                    AttachServiceReviews(selectedTherapist.value)
+                Column(
+                    modifier = Modifier
+                        .padding(top = 5.dp, bottom = 10.dp)
+                        .fillMaxWidth()
+                        .height(400.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment  = Alignment.CenterHorizontally,
+                ) {
+                    AvailableTimeContent(workHours, onWorkHourClickListener = {
+                        currentBooking.pendingTime = it
+                        bookingViewModel.setCurrentBooking(currentBooking)
+                    })
+                }
+                if (bookingViewModel.appointmentReview.value.isNotEmpty()) {
+                    AttachServiceReviews(bookingViewModel.appointmentReview.value)
                 }
             }
           }
@@ -122,11 +134,11 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, performedActionUIState
 
 
 @Composable
-fun AvailableTimeContent(availableHours: ArrayList<PlatformTime>, bookingViewModel: BookingViewModel, onWorkHourClickListener: (PlatformTime) -> Unit) {
+fun AvailableTimeContent(availableHours: Triple<ArrayList<PlatformTime>, ArrayList<PlatformTime>, ArrayList<PlatformTime>>, onWorkHourClickListener: (PlatformTime) -> Unit) {
 
     Column(
         modifier = Modifier
-            .padding(start = 20.dp, end = 10.dp, top = 15.dp, bottom = 10.dp)
+            .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 10.dp)
             .wrapContentHeight(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment  = Alignment.CenterHorizontally,
@@ -179,14 +191,12 @@ fun AvailableTimeContent(availableHours: ArrayList<PlatformTime>, bookingViewMod
                 overflow = TextOverflow.Ellipsis)
         }
 
-        val currentBooking = bookingViewModel.currentAppointmentBooking.collectAsState()
-        Row(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
-            Column(modifier = Modifier.weight(1f).wrapContentHeight()) {
-                TimeGrid(platformTimes = availableHours,selectedTime = currentBooking.value.pendingTime, onWorkHourClickListener = {
+        Row(modifier = Modifier.fillMaxWidth().height(400.dp)) {
+            Column(modifier = Modifier.fillMaxWidth().wrapContentHeight().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
+                TimeGridDisplay(platformTimes = availableHours, onWorkHourClickListener = {
                     onWorkHourClickListener(it)
                 })
             }
-
         }
     }
 }
@@ -247,22 +257,9 @@ fun TherapistContent(bookingViewModel: BookingViewModel, therapists: List<Servic
 }
 
 @Composable
-fun AttachServiceReviews(serviceTypeTherapists: ServiceTypeTherapists){
-    val therapistReviews = serviceTypeTherapists.therapistInfo?.therapistReviews
-    TextComponent(
-        text = serviceTypeTherapists.therapistInfo?.profileInfo?.firstname+"'s Reviews",
-        fontSize = 18,
-        fontFamily = GGSansSemiBold,
-        textStyle = TextStyle(),
-        textColor = Colors.darkPrimary,
-        textAlign = TextAlign.Left,
-        fontWeight = FontWeight.Black,
-        lineHeight = 30,
-        textModifier = Modifier
-            .padding(bottom = 5.dp, start = 15.dp, top = 10.dp)
-            .fillMaxWidth())
+fun AttachServiceReviews(appointmentReview: List<AppointmentReview>){
 
-   TherapistReviewScreen(therapistReviews!!)
+   TherapistReviewScreen(appointmentReview)
 
 }
 
