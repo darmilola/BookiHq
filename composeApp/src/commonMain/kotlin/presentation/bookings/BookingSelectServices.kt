@@ -66,7 +66,6 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
     currentBooking.appointmentMonth = getMonth()
     currentBooking.appointmentDay = getDay()
 
-    bookingViewModel.setPendingAppointmentLoaded(isLoaded = false)
     bookingViewModel.setCurrentBooking(currentBooking)
     bookingViewModel.setSelectedDay(currentBooking.appointmentDay!!)
     bookingViewModel.setSelectedMonth(currentBooking.appointmentMonth!!)

@@ -1,7 +1,9 @@
 package utils
 
+import domain.Enums.ServiceLocationEnum
 import domain.Models.OrderItem
 import domain.Models.PlacedOrderItemComponent
+import domain.Models.UserAppointment
 import domain.Products.OrderItemRequest
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -10,11 +12,6 @@ import kotlin.math.acos
 import kotlin.math.cos
 import kotlin.math.sin
 
-fun calculateDiscount(price: Int, discount: Int): Int {
-    val reduction: Double = (price - discount).toDouble()
-    val ratioDecrease: Double = reduction / price
-    return (ratioDecrease * 100).toInt()
-}
 
 fun calculateCartCheckoutSubTotal(orderItems: MutableList<OrderItem>): Long {
    var subtotal: Long = 0
@@ -25,6 +22,21 @@ fun calculateCartCheckoutSubTotal(orderItems: MutableList<OrderItem>): Long {
       subtotal += qtyPrice!!
   }
     return subtotal
+}
+
+fun calculateAppointmentPaymentAmount(appointments: List<UserAppointment>): Int {
+    var total: Int = 0
+    for (item in appointments){
+        val price = item.resources!!.serviceTypeItem!!.price
+        val mobileServicePrice = item.resources.serviceTypeItem!!.mobileServicePrice
+        val serviceLocation = item.resources.serviceLocation
+        total = if (serviceLocation == ServiceLocationEnum.MOBILE.toPath()){
+            total + mobileServicePrice
+        } else{
+            total + price
+        }
+    }
+    return total
 }
 
 fun calculatePlacedOrderTotalPrice(placedOrderItemComponent: ArrayList<PlacedOrderItemComponent>): Long {

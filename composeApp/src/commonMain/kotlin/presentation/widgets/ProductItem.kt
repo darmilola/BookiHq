@@ -37,7 +37,6 @@ import domain.Models.Product
 import presentation.components.ButtonComponent
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
-import utils.calculateDiscount
 
 @Composable
 fun ProductItem(product: Product, onProductClickListener: (Product) -> Unit) {

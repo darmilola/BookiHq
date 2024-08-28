@@ -40,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
-import domain.Enums.Screens
 import domain.Models.Services
 import presentation.components.ButtonComponent
 import kotlinx.coroutines.launch
@@ -57,6 +56,9 @@ import androidx.compose.foundation.border
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.unit.IntOffset
 import androidx.room.RoomDatabase
+import applications.date.getDay
+import applications.date.getMonth
+import applications.date.getYear
 import applications.room.AppDatabase
 import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.ScreenKey
@@ -73,20 +75,17 @@ import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
-import presentation.Products.CartContract
-import presentation.Products.CartPresenter
-import presentation.Products.CreateOrderScreenHandler
 import presentation.Screens.AddDebitCardScreen
 import presentation.payment.PaymentContract
 import presentation.payment.PaymentPresenter
 import presentation.viewmodels.PerformedActionUIStateViewModel
-import presentation.widgets.AddAppointmentsReviewBottomSheet
 import presentation.widgets.AppointmentPaymentMethodBottomSheet
 import presentation.widgets.PaymentCardBottomSheet
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
 import utils.ParcelableScreen
+import utils.calculateAppointmentPaymentAmount
 
 
 @OptIn(ExperimentalVoyagerApi::class)
@@ -213,30 +212,31 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                 }, onCashSelected = {
                     val userId = mainViewModel!!.currentUserInfo.value.userId
                     val vendorId = mainViewModel!!.connectedVendor.value.vendorId
-
-                    bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.DONE.toPath(), day = bookingViewModel!!.day.value!!,
-                        month = bookingViewModel!!.month.value, year = bookingViewModel!!.year.value, paymentAmount = 4500,
+                    val paymentAmount = calculateAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
+                    bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.DONE.toPath(), day = getDay(),
+                        month = getMonth(), year = getYear(), paymentAmount = paymentAmount,
                         paymentMethod = PaymentMethod.PAYMENT_ON_DELIVERY.toPath())
                     mainViewModel!!.showAppointmentPaymentMethodBottomSheet(false)
                 })
         }
 
         // View Contract Handler Initialisation
-        val paymentHandler = CreateAppointmentScreenHandler(
+        val paymentHandler = CreateAppointmentPaymentHandler(
             paymentPresenter = paymentPresenter,
             onAuthorizationSuccessful = {
                 val userId = mainViewModel!!.currentUserInfo.value.userId
                 val vendorId = mainViewModel!!.connectedVendor.value.vendorId
                 if (it.status) {
-                    platformNavigator.startPaymentProcess(paymentAmount = 4500.toString(),
+                    val paymentAmount = calculateAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
+                    platformNavigator.startPaymentProcess(paymentAmount = paymentAmount.toString(),
                         customerEmail = customerEmail,
                         accessCode = it.paymentAuthorizationData.accessCode,
                         paymentCard = selectedCard!!,
                         onPaymentLoading = {},
                         onPaymentSuccessful = {
-                            bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.DONE.toPath(), day = bookingViewModel!!.day.value!!,
-                                month = bookingViewModel!!.month.value, year = bookingViewModel!!.year.value, paymentAmount = 4500,
-                                paymentMethod = PaymentMethod.PAYMENT_ON_DELIVERY.toPath())
+                            bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.DONE.toPath(), day = getDay(),
+                                month = getMonth(), year = getYear(), paymentAmount = paymentAmount,
+                                paymentMethod = PaymentMethod.CARD_PAYMENT.toPath())
                         },
                         onPaymentFailed = {
 
@@ -474,7 +474,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
     }
 }
 
-class CreateAppointmentScreenHandler(
+class CreateAppointmentPaymentHandler(
     private val paymentPresenter: PaymentPresenter,
     private val onAuthorizationSuccessful: (PaymentAuthorizationResult) -> Unit
 ) : PaymentContract.View {

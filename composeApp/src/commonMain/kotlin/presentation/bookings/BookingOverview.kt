@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,31 +41,26 @@ fun BookingCheckOut(mainViewModel: MainViewModel, bookingPresenter: BookingPrese
     val userId = mainViewModel.currentUserInfo.value.userId
     val vendorId = mainViewModel.connectedVendor.value.vendorId
     val currentAppointmentBooking = bookingViewModel.currentAppointmentBooking.value
-
-    val isPendingAppointmentLoaded = bookingViewModel.isPendingAppointmentLoaded.collectAsState()
     val customerPendingBookingAppointments = bookingViewModel.pendingAppointments.collectAsState()
 
     val deleteActionUiState = performedActionUIStateViewModel.deletePendingAppointmentUiState.collectAsState()
     val loadingPendingActionUiState = performedActionUIStateViewModel.loadPendingAppointmentUiState.collectAsState()
 
-    if (!isPendingAppointmentLoaded.value) {
+    LaunchedEffect(true) {
         bookingPresenter.createPendingBookingAppointment(
             userId = userId!!,
             vendorId = vendorId!!,
             serviceId = currentAppointmentBooking.serviceId,
             serviceTypeId = currentAppointmentBooking.serviceTypeId!!,
-            therapistId = currentAppointmentBooking.serviceTypeTherapists?.therapistInfo?.therapistId!!,
+            therapistId = currentAppointmentBooking.serviceTypeTherapists?.therapistInfo?.id!!,
             appointmentTime = currentAppointmentBooking.pendingTime?.id!!,
             day = currentAppointmentBooking.appointmentDay!!,
             month = currentAppointmentBooking.appointmentMonth!!,
             year = currentAppointmentBooking.appointmentYear!!,
             serviceLocation = if (currentAppointmentBooking.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
             serviceStatus = ServiceStatusEnum.BOOKING.toPath(),
-            paymentAmount = currentAppointmentBooking.serviceTypeItem!!.price.toDouble(),
-            paymentMethod = PaymentMethod.CARD_PAYMENT.toPath(),
             bookingStatus = BookingStatus.PENDING.toPath()
         )
-        bookingViewModel.setPendingAppointmentLoaded(isLoaded = true)
     }
 
 

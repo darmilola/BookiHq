@@ -15,8 +15,7 @@ data class Appointment(
     @SerialName("day") var appointmentDay: Int? = -1, @SerialName("month") var appointmentMonth: Int? = -1,
     @SerialName("year") var appointmentYear: Int? = -1, @SerialName("therapist_info") val therapistInfo: TherapistInfo? = null,
     @SerialName("service_type") var serviceTypeItem: ServiceTypeItem? = null, @SerialName("service") var services: Services? = null, @SerialName("time") val platformTime: PlatformTime = PlatformTime(),
-    @SerialName("vendor") val vendor: Vendor? = null, @SerialName("customer_info") val customerInfo: User? = null,
-    var isMobileService: Boolean = false, var serviceTypeTherapists: ServiceTypeTherapists? = null, var pendingTime: PlatformTime? = null): Parcelable
+    @SerialName("vendor") val vendor: Vendor? = null, @SerialName("customer_info") val customerInfo: User? = null, var isMobileService: Boolean = false, var serviceTypeTherapists: ServiceTypeTherapists? = null, var pendingTime: PlatformTime? = null): Parcelable
 
 data class AppointmentItemUIModel(
     val selectedAppointment: UserAppointment?,

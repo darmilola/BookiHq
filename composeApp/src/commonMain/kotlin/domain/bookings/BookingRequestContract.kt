@@ -21,8 +21,7 @@ data class CreatePendingBookingAppointmentRequest(@SerialName("user_id") val use
                                                   @SerialName("year") val year: Int,
                                                   @SerialName("serviceLocation") val serviceLocation: String,
                                                   @SerialName("serviceStatus") val serviceStatus: String,
-                                                  @SerialName("bookingStatus") val bookingStatus: String,
-                                                  @SerialName("paymentMethod") val paymentMethod: String)
+                                                  @SerialName("bookingStatus") val bookingStatus: String)
 
 @Serializable
 data class CreateAppointmentRequest(@SerialName("user_id") val userId: Long,

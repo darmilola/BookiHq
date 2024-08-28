@@ -171,33 +171,35 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
 
     override fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Long, serviceTypeId: Long, therapistId: Long,
                                                  appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String,
-                                                 serviceStatus: String,
-                                                 paymentAmount: Double, paymentMethod: String, bookingStatus: String) {
+                                                 serviceStatus: String, bookingStatus: String) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showLoadPendingAppointmentLce(AppUIStates(isLoading = true))
                     bookingRepositoryImpl.createPendingBookingAppointment(userId, vendorId, serviceId, serviceTypeId, therapistId, appointmentTime,
-                        day, month, year, serviceLocation, serviceStatus, paymentAmount, paymentMethod, bookingStatus)
+                        day, month, year, serviceLocation, serviceStatus,bookingStatus)
                         .subscribe(
                             onSuccess = { result ->
+                                println("Result $result")
                                 if (result.status == "success"){
+                                    println("Result  0 $result")
                                     contractView?.showLoadPendingAppointmentLce(AppUIStates(isSuccess = true))
                                     contractView?.showPendingBookingAppointment(result.appointments!!)
                                 }
                                 else{
+                                    println("Result  1 $result")
                                     contractView?.showLoadPendingAppointmentLce(AppUIStates(isFailed = true))
                                 }
                             },
                             onError = {
-                                println("Result 1 ${it.message}")
+                                println("Result 2 ${it.message}")
                                 contractView?.showLoadPendingAppointmentLce(AppUIStates(isFailed = true))
                             },
                         )
                    }
                 result.dispose()
             } catch(e: Exception) {
-                println("Result 2 ${e.message}")
+                println("Result 3 ${e.message}")
                 contractView?.showLoadPendingAppointmentLce(AppUIStates(isFailed = true))
             }
         }
