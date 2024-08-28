@@ -157,6 +157,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             Screens.BOOKING.toPath() -> {
                 val bookingTab = BookingScreen(platformNavigator)
                 bookingTab.setMainViewModel(mainViewModel!!)
+                bookingTab.setDatabaseBuilder(databaseBuilder)
                 val nav = LocalNavigator.currentOrThrow
                 nav.push(bookingTab)
                 mainViewModel!!.setScreenNav(

@@ -2,6 +2,7 @@ package presentation.bookings
 
 import StackedSnackbarHost
 import StackedSnakbarHostState
+import UIStates.AppUIStates
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.slideIn
@@ -67,10 +68,21 @@ import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.BookingStatus
 import domain.Enums.PaymentMethod
+import domain.Models.PaymentAuthorizationResult
 import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
+import presentation.Products.CartContract
+import presentation.Products.CartPresenter
+import presentation.Products.CreateOrderScreenHandler
+import presentation.Screens.AddDebitCardScreen
+import presentation.payment.PaymentContract
+import presentation.payment.PaymentPresenter
 import presentation.viewmodels.PerformedActionUIStateViewModel
+import presentation.widgets.AddAppointmentsReviewBottomSheet
+import presentation.widgets.AppointmentPaymentMethodBottomSheet
+import presentation.widgets.PaymentCardBottomSheet
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
@@ -83,6 +95,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
     @Transient private val bookingPresenter: BookingPresenter by inject()
     @Transient private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient private var bookingViewModel: BookingViewModel? = null
+    @Transient private val paymentPresenter: PaymentPresenter by inject()
     @Transient private var mainViewModel: MainViewModel? = null
     @Transient
     private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
@@ -106,6 +119,8 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         val pagerState = rememberPagerState(pageCount = { 3 })
         val addMoreService = remember { mutableStateOf(false) }
         val lastItemRemoved = remember { mutableStateOf(false) }
+        val currentUserInfo = mainViewModel!!.currentUserInfo.value
+        val customerEmail = if (currentUserInfo.email!!.isNotEmpty()) currentUserInfo.email else "damilolaakinterinwa@gmail.com"
         val navigator = LocalNavigator.currentOrThrow
         val coroutineScope = rememberCoroutineScope()
 
@@ -179,56 +194,126 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                 navigator.pop()
             }
         }
-        Scaffold(
-            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState)  }
-        ) {
 
-            val layoutModifier =
-                Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .background(color = Color.White)
-            Column(modifier = layoutModifier) {
+        val showPaymentMethodBottomSheet = mainViewModel!!.showAppointmentPaymentMethodBottomSheet.collectAsState()
 
-                BookingScreenTopBar(pagerState, onBackPressed = {
-                    navigator.pop()
-                })
-
-                val bgStyle = Modifier
-                    .fillMaxWidth()
-                    .background(color = Color.White)
-                    .fillMaxHeight()
-
-                Box(
-                    contentAlignment = Alignment.TopCenter, modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth()
-                        .background(color = Color.White)
-                ) {
-
-                    Column(
-                        modifier = bgStyle
-                    ) {
-                        AttachBookingPages(
-                            pagerState,
-                            performedActionUIStateViewModel!!,
-                            mainViewModel!!,
-                            bookingViewModel!!,
-                            services = mainViewModel!!.selectedService.value,
-                            onLastItemRemoved = {
-                                lastItemRemoved.value = true
-                            }
-                        )
-                        AttachActionButtons(pagerState, mainViewModel!!, stackedSnackBarHostState, bookingPresenter, onAddMoreServicesClicked = {
-                            addMoreService.value = true
-                        })
+        if (showPaymentMethodBottomSheet.value) {
+            AppointmentPaymentMethodBottomSheet(
+                mainViewModel!!,
+                onDismiss = {
+                    mainViewModel!!.showAppointmentPaymentMethodBottomSheet(false)
+                },
+                onCardPaymentSelected = {
+                    runBlocking {
+                        cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
                     }
-                }
+                    mainViewModel!!.showAppointmentPaymentMethodBottomSheet(false)
+                    mainViewModel!!.showPaymentCardsBottomSheet(true)
 
-            }
+                }, onCashSelected = {
+                    val userId = mainViewModel!!.currentUserInfo.value.userId
+                    val vendorId = mainViewModel!!.connectedVendor.value.vendorId
+
+                    bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.DONE.toPath(), day = bookingViewModel!!.day.value!!,
+                        month = bookingViewModel!!.month.value, year = bookingViewModel!!.year.value, paymentAmount = 4500,
+                        paymentMethod = PaymentMethod.PAYMENT_ON_DELIVERY.toPath())
+                    mainViewModel!!.showAppointmentPaymentMethodBottomSheet(false)
+                })
         }
 
-    }
+        // View Contract Handler Initialisation
+        val paymentHandler = CreateAppointmentScreenHandler(
+            paymentPresenter = paymentPresenter,
+            onAuthorizationSuccessful = {
+                val userId = mainViewModel!!.currentUserInfo.value.userId
+                val vendorId = mainViewModel!!.connectedVendor.value.vendorId
+                if (it.status) {
+                    platformNavigator.startPaymentProcess(paymentAmount = 4500.toString(),
+                        customerEmail = customerEmail,
+                        accessCode = it.paymentAuthorizationData.accessCode,
+                        paymentCard = selectedCard!!,
+                        onPaymentLoading = {},
+                        onPaymentSuccessful = {
+                            bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.DONE.toPath(), day = bookingViewModel!!.day.value!!,
+                                month = bookingViewModel!!.month.value, year = bookingViewModel!!.year.value, paymentAmount = 4500,
+                                paymentMethod = PaymentMethod.PAYMENT_ON_DELIVERY.toPath())
+                        },
+                        onPaymentFailed = {
+
+                        })
+                }
+            })
+        paymentHandler.init()
+
+        val showSelectPaymentCards = mainViewModel!!.showPaymentCardsBottomSheet.collectAsState()
+
+        if (showSelectPaymentCards.value) {
+            PaymentCardBottomSheet(
+                mainViewModel!!,
+                cardList,
+                onCardSelected = {
+                    mainViewModel!!.showPaymentCardsBottomSheet(false)
+                    selectedCard = it
+                    paymentPresenter.initCheckOut(amount = 4500.toString(), customerEmail = customerEmail)
+                },
+                onDismiss = {
+                    mainViewModel!!.showPaymentCardsBottomSheet(false)
+                }, onAddNewSelected = {
+                    val addDebitCardScreen = AddDebitCardScreen(platformNavigator)
+                    addDebitCardScreen.setDatabaseBuilder(databaseBuilder)
+                    navigator.push(addDebitCardScreen)
+                })
+        }
+
+        Scaffold(
+            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState)  },
+            topBar = {},
+            content = {
+                val layoutModifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .background(color = Color.White)
+                Column(modifier = layoutModifier) {
+
+                    BookingScreenTopBar(pagerState, onBackPressed = {
+                        navigator.pop()
+                    })
+
+                    val bgStyle = Modifier
+                        .fillMaxWidth()
+                        .background(color = Color.White)
+                        .fillMaxHeight()
+
+                    Box(
+                        contentAlignment = Alignment.TopCenter, modifier = Modifier
+                            .fillMaxHeight()
+                            .fillMaxWidth()
+                            .background(color = Color.White)
+                    ) {
+
+                        Column(
+                            modifier = bgStyle
+                        ) {
+                            AttachBookingPages(
+                                pagerState,
+                                performedActionUIStateViewModel!!,
+                                mainViewModel!!,
+                                bookingViewModel!!,
+                                services = mainViewModel!!.selectedService.value,
+                                onLastItemRemoved = {
+                                    lastItemRemoved.value = true
+                                }
+                            )
+                            AttachActionButtons(pagerState, mainViewModel!!, stackedSnackBarHostState, bookingPresenter, onAddMoreServicesClicked = {
+                                addMoreService.value = true
+                            })
+                        }
+                    }
+
+                }
+            }
+        )}
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
@@ -253,21 +338,27 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             verticalArrangement = Arrangement.Center) {
 
             if (currentPage == 2) {
-                    ButtonComponent(
-                        modifier = Modifier
-                            .padding(start = 5.dp, end = 5.dp, top = 10.dp, bottom = 10.dp)
-                            .fillMaxWidth()
-                            .background(color = Color.Transparent, shape = CircleShape)
-                            .border(border = BorderStroke(1.dp, color = Colors.primaryColor), shape = CircleShape)
-                            .height(45.dp),
-                        buttonText = "Add More Bookings",
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                        fontSize = 16, shape = RoundedCornerShape(10.dp),
-                        textColor = Colors.primaryColor, style = MaterialTheme.typography.h6, borderStroke = null
-                    ) {
-                        onAddMoreServicesClicked()
-                    }
-              }
+                ButtonComponent(
+                    modifier = Modifier
+                        .padding(start = 5.dp, end = 5.dp, top = 10.dp, bottom = 10.dp)
+                        .fillMaxWidth()
+                        .background(color = Color.Transparent, shape = CircleShape)
+                        .border(
+                            border = BorderStroke(1.dp, color = Colors.primaryColor),
+                            shape = CircleShape
+                        )
+                        .height(45.dp),
+                    buttonText = "Add More Bookings",
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                    fontSize = 16,
+                    shape = RoundedCornerShape(10.dp),
+                    textColor = Colors.primaryColor,
+                    style = MaterialTheme.typography.h6,
+                    borderStroke = null
+                ) {
+                    onAddMoreServicesClicked()
+                }
+            }
 
             val bookingNavText = if(currentPage == 2) "Go To Payments" else "Continue"
             ButtonComponent(modifier = Modifier
@@ -316,9 +407,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                         }
                     }
                 if (currentPage == 2){
-                    val userId = mainViewModel.currentUserInfo.value.userId
-                    val vendorId = mainViewModel.connectedVendor.value.vendorId
-                    bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.DONE.toPath(), day = bookingViewModel!!.day.value!!, month = bookingViewModel!!.month.value, year = bookingViewModel!!.year.value, paymentAmount = 4500.0, paymentMethod = PaymentMethod.CARD_PAYMENT.toPath())
+                    mainViewModel.showAppointmentPaymentMethodBottomSheet(true)
                   }
                 }
             }
@@ -383,7 +472,20 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             IntOffset(x = x, y = 0)
         }
     }
-
-
 }
+
+class CreateAppointmentScreenHandler(
+    private val paymentPresenter: PaymentPresenter,
+    private val onAuthorizationSuccessful: (PaymentAuthorizationResult) -> Unit
+) : PaymentContract.View {
+    fun init() {
+        paymentPresenter.registerUIContract(this)
+    }
+    override fun showLce(appUIStates: AppUIStates) {}
+
+    override fun showAuthorizationResult(paymentAuthorizationResult: PaymentAuthorizationResult) {
+        onAuthorizationSuccessful(paymentAuthorizationResult)
+    }
+}
+
 

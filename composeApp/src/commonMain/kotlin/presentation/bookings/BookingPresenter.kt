@@ -55,7 +55,7 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
     override fun createAppointment(
         userId: Long,
         vendorId: Long,
-        paymentAmount: Double,
+        paymentAmount: Int,
         paymentMethod: String,
         bookingStatus: String,
         day: Int,

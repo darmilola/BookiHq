@@ -26,7 +26,7 @@ class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
     override suspend fun createAppointment(
         userId: Long,
         vendorId: Long,
-        paymentAmount: Double,
+        paymentAmount: Int,
         paymentMethod: String,
         bookingStatus: String,
         day: Int,

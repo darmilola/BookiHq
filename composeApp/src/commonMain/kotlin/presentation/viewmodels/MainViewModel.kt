@@ -37,6 +37,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _showProductBottomSheet =  savedStateHandle.getStateFlow("showProductBottomSheet", false)
     private var _showPaymentCardsBottomSheet =  savedStateHandle.getStateFlow("showPaymentCardsBottomSheet", false)
     private var _showProductReviewsBottomSheet =  savedStateHandle.getStateFlow("showProductReviewsBottomSheet", false)
+    private var _showAppointmentPaymentMethodBottomSheet =  savedStateHandle.getStateFlow("showAppointmentPaymentMethodBottomSheet", false)
     private var _showAppointmentReviewsBottomSheet =  savedStateHandle.getStateFlow("showAppointmentReviewsBottomSheet", false)
     private var _onBackPressed =  savedStateHandle.getStateFlow("onBackPressed", false)
     private var _exitApp =  savedStateHandle.getStateFlow("exitApp", false)
@@ -77,6 +78,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     val showAppointmentReviewsBottomSheet: StateFlow<Boolean>
         get() = _showAppointmentReviewsBottomSheet
+
+    val showAppointmentPaymentMethodBottomSheet: StateFlow<Boolean>
+        get() = _showAppointmentPaymentMethodBottomSheet
 
     val exitApp: StateFlow<Boolean>
         get() = _exitApp
@@ -149,6 +153,10 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     fun showPaymentCardsBottomSheet(show: Boolean) {
         savedStateHandle["showPaymentCardsBottomSheet"] = show
+    }
+
+    fun showAppointmentPaymentMethodBottomSheet(show: Boolean) {
+        savedStateHandle["showAppointmentPaymentMethodBottomSheet"] = show
     }
 
     fun setSwitchVendorID(vendorId: Long) {

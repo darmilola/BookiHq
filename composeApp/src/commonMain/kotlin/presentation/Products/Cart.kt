@@ -286,7 +286,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                     }
 
 
-                    val showSelectedPaymentCards = remember { mutableStateOf(false) }
+                    val showSelectPaymentCards = remember { mutableStateOf(false) }
 
                     val showPaymentCardBottomSheet by remember { mutableStateOf(false) }
 
@@ -297,17 +297,17 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                         mainViewModel!!.showPaymentCardsBottomSheet(false)
                     }
 
-                    if (showSelectedPaymentCards.value) {
+                    if (showSelectPaymentCards.value) {
                         PaymentCardBottomSheet(
                             mainViewModel!!,
                             cardList,
                             onCardSelected = {
-                                showSelectedPaymentCards.value = false
+                                showSelectPaymentCards.value = false
                                 selectedCard = it
                                 paymentPresenter.initCheckOut(amount = paymentAmount.toString(), customerEmail = customerEmail)
                             },
                             onDismiss = {
-                                showSelectedPaymentCards.value = false
+                                showSelectPaymentCards.value = false
                             }, onAddNewSelected = {
                                 val addDebitCardScreen = AddDebitCardScreen(platformNavigator)
                                 addDebitCardScreen.setDatabaseBuilder(databaseBuilder)
@@ -345,7 +345,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                         CheckOutSummaryWidget(cartViewModel!!,onCardCheckOutStarted = {
                             runBlocking {
                                 cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
-                                showSelectedPaymentCards.value = true
+                                showSelectPaymentCards.value = true
                             }
                         }, onCheckOutStarted = {
                              createOrder(paymentAmount)

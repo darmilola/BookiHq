@@ -22,7 +22,7 @@ class BookingContract {
         abstract fun registerUIContract(view: View?)
         abstract fun getUnSavedAppointment()
         abstract fun getServiceTherapists(serviceTypeId: Long, vendorId: Long, day: Int, month: Int, year: Int)
-        abstract fun createAppointment(userId: Long, vendorId: Long, paymentAmount: Double, paymentMethod: String, bookingStatus: String, day: Int, month: Int, year: Int)
+        abstract fun createAppointment(userId: Long, vendorId: Long, paymentAmount: Int, paymentMethod: String, bookingStatus: String, day: Int, month: Int, year: Int)
         abstract fun getPendingBookingAppointment(userId: Long, bookingStatus: String)
         abstract fun deletePendingBookingAppointment(pendingAppointmentId: Long)
         abstract fun silentDeletePendingBookingAppointment(pendingAppointmentId: Long)
