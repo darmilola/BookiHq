@@ -214,7 +214,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                     mainViewModel!!.showProductBottomSheet(false)
                 }
 
-                if (selectedProduct.value.productId != -1) {
+                if (selectedProduct.value.productId != -1L) {
                     ProductDetailBottomSheet(
                         mainViewModel!!,
                         isViewedFromCart = false,

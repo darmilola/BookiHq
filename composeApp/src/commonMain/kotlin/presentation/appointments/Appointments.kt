@@ -58,10 +58,12 @@ import dev.materii.pullrefresh.PullRefreshLayout
 import dev.materii.pullrefresh.rememberPullRefreshState
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.Appointment
+import drawable.ErrorOccurredWidget
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.SuccessDialog
 import presentation.widgets.AddAppointmentsReviewBottomSheet
 import presentation.widgets.AppointmentWidget
+import presentation.widgets.EmptyContentWidget
 import utils.getAppointmentViewHeight
 import rememberStackedSnackbarHostState
 import theme.Colors
@@ -74,7 +76,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
     private var deletePerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     private var postponePerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     private var refreshActionUIStateViewModel: PerformedActionUIStateViewModel? = null
-    private var postponeTimeUIStateViewModel: PerformedActionUIStateViewModel? = null
+    private var getTherapistAvailabilityUIStateViewModel: PerformedActionUIStateViewModel? = null
     private var addAppointmentReviewsUIStateViewModel: PerformedActionUIStateViewModel? = null
     private var postponeAppointmentUIStateViewModel: PerformedActionUIStateViewModel? = null
     private var joinMeetingPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
@@ -158,8 +160,8 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
             )
         }
 
-        if (postponeTimeUIStateViewModel == null) {
-            postponeTimeUIStateViewModel = kmpViewModel(
+        if (getTherapistAvailabilityUIStateViewModel == null) {
+            getTherapistAvailabilityUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
@@ -301,10 +303,6 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
             isRefreshing.value = false
         }
 
-
-
-
-
         if (joinMeetingActionUIStates.value.isLoading) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 LoadingDialog("Joining Meeting")
@@ -331,7 +329,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                     deletePerformedActionUIStateViewModel!!,
                     joinMeetingPerformedActionUIStateViewModel!!,
                     addAppointmentReviewsUIStateViewModel!!,
-                    postponeTimeUIStateViewModel!!,
+                    getTherapistAvailabilityUIStateViewModel!!,
                     postponeAppointmentUIStateViewModel!!,
                     postponementViewModel!!,
                     appointmentPresenter,
@@ -354,9 +352,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                         })
                    }
 
-
                 if (uiState.value.isLoading) {
-                    //Content Loading
                     Box(
                         modifier = Modifier.fillMaxWidth().fillMaxHeight()
                             .padding(top = 40.dp, start = 50.dp, end = 50.dp)
@@ -366,14 +362,18 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                         IndeterminateCircularProgressBar()
                     }
                 } else if (uiState.value.isFailed) {
-
-                    //Error Occurred display reload
-
-                } /*else if (uiState.value.emptyContent) {
-
-                    //Error Occurred display reload
-
-                }*/
+                   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                       ErrorOccurredWidget(uiState.value.errorMessage, onRetryClicked = {
+                           appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                           appointmentPresenter.getUserAppointments(userId)
+                       })
+                   }
+                }
+                else if (uiState.value.isEmpty) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        EmptyContentWidget(emptyText = uiState.value.emptyMessage)
+                    }
+                }
                 else if (uiState.value.isSuccess) {
                 val pullRefreshState = rememberPullRefreshState(refreshing = isRefreshing.value, onRefresh = {
                     appointmentPresenter.refreshUserAppointments(userId)
@@ -403,7 +403,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                                        appointmentPresenter = appointmentPresenter,
                                        postponementViewModel = postponementViewModel,
                                        mainViewModel = mainViewModel!!,
-                                       postponeTimeUIStateViewModel!!,
+                                       getTherapistAvailabilityUIStateViewModel!!,
                                        onDeleteAppointment = {
                                            appointmentPresenter.deleteAppointment(it.id)
                                        },
@@ -438,7 +438,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                                        if (appointmentResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
                                            if (userId != -1L) {
                                                appointmentPresenter.getMoreAppointments(
-                                                   userId!!,
+                                                   userId,
                                                    nextPage = appointmentResourceListEnvelopeViewModel!!.currentPage.value + 1
                                                )
                                            }

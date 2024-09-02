@@ -362,15 +362,15 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
         var showProductDetailBottomSheet by remember { mutableStateOf(false) }
 
         if (showProductDetailBottomSheet) {
-            mainViewModel!!.showProductBottomSheet(true)
+            mainViewModel.showProductBottomSheet(true)
         }
         else{
-            mainViewModel!!.showProductBottomSheet(false)
+            mainViewModel.showProductBottomSheet(false)
         }
 
-        if (selectedProduct.value.productId != -1) {
+        if (selectedProduct.value.productId != -1L) {
             ProductDetailBottomSheet(
-                mainViewModel!!,
+                mainViewModel,
                 isViewedFromCart = false,
                 OrderItem(itemProduct = selectedProduct.value),
                 onDismiss = {
@@ -449,28 +449,6 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
         }
 
-    }
-
-    @Composable
-    fun AttachChatImage(iconRes: String) {
-        Box(
-            Modifier
-                .clip(CircleShape)
-                .size(70.dp)
-                .clickable {
-
-                }
-                .background(color = Colors.darkPrimary),
-            contentAlignment = Alignment.Center
-        ) {
-            val modifier = Modifier
-                .size(40.dp)
-            ImageComponent(
-                imageModifier = modifier,
-                imageRes = iconRes,
-                colorFilter = ColorFilter.tint(color = Color.White)
-            )
-        }
     }
 
     @Composable

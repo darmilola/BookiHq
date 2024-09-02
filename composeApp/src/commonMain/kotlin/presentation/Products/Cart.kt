@@ -214,7 +214,6 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                 }
                 else if (actionUiState.value.isSuccess) {
                     Box(modifier = Modifier.fillMaxWidth()) {
-                        if (actionUiState.value.actionType == ActionType.DEFAULT.toPath()) {
                             SuccessDialog(
                                 "Creating Order Successful",
                                 actionTitle = "Done",
@@ -223,8 +222,6 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                                     mainViewModel!!.clearCurrentOrderReference()
                                     navigator.pop()
                                 })
-                        }
-                        else if(actionUiState.value.actionType == ActionType.PAYMENT.toPath()){}
                     }
                 }
                 else if (actionUiState.value.isFailed) {

@@ -21,7 +21,7 @@ data class CreateOrderRequest(@SerialName("vendor_id") val vendorId: Long, @Seri
                               @SerialName("paymentMethod") val paymentMethod: String, @SerialName("orderItemJson") val orderItemJson: String)
 
 @Serializable
-data class OrderItemRequest(@SerialName("product_id") val productId: Int,
+data class OrderItemRequest(@SerialName("product_id") val productId: Long,
                             @SerialName("product_name") val productName: String,
                             @SerialName("imageUrl") val imageUrl: String,
                             @SerialName("description") val productDescription: String,

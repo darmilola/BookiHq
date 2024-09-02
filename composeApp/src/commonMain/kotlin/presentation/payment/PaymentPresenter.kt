@@ -43,7 +43,7 @@ class PaymentPresenter(apiService: HttpClient): PaymentContract.Presenter() {
                             onSuccess = { result ->
                                 val authorizationResult = Json.decodeFromString<PaymentAuthorizationResult>(result.authorizationResultJsonString)
                                 if (result.status == "success"){
-                                    contractView?.showLce(AppUIStates(isSuccess = true, successMessage = "Processing Successful", actionType = ActionType.PAYMENT.toPath()))
+                                    contractView?.showLce(AppUIStates(isSuccess = true, successMessage = "Processing Successful"))
                                     contractView?.showAuthorizationResult(authorizationResult)
                                 }
                                 else{

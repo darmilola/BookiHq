@@ -20,7 +20,7 @@ class AppointmentsHandler(
     private val deletePerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val joinMeetingPerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val addTherapistReviewPerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
-    private val getAvailabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
+    private val getTherapistAvailabilityActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val postponeActionPerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val postponementViewModel: PostponementViewModel,
     private val appointmentPresenter: AppointmentPresenter,
@@ -54,17 +54,17 @@ class AppointmentsHandler(
     }
 
     override fun showGetAvailabilityActionLce(appUIStates: AppUIStates) {
-        getAvailabilityPerformedActionUIStateViewModel.switchActionAvailabilityUIState(appUIStates)
+        getTherapistAvailabilityActionUIStateViewModel.switchActionAvailabilityUIState(appUIStates)
     }
 
     override fun showAppointments(appointments: AppointmentResourceListEnvelope, isRefresh: Boolean) {
         if (isRefresh || appointmentResourceListEnvelopeViewModel.resources.value.isEmpty()){
             appointmentResourceListEnvelopeViewModel.setResources(appointments.data)
-            appointments?.prevPageUrl?.let { appointmentResourceListEnvelopeViewModel.setPrevPageUrl(it) }
-            appointments?.nextPageUrl?.let { appointmentResourceListEnvelopeViewModel.setNextPageUrl(it) }
-            appointments?.currentPage?.let { appointmentResourceListEnvelopeViewModel.setCurrentPage(it) }
-            appointments?.totalItemCount?.let { appointmentResourceListEnvelopeViewModel.setTotalItemCount(it) }
-            appointments?.displayedItemCount?.let { appointmentResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
+            appointments.prevPageUrl?.let { appointmentResourceListEnvelopeViewModel.setPrevPageUrl(it) }
+            appointments.nextPageUrl?.let { appointmentResourceListEnvelopeViewModel.setNextPageUrl(it) }
+            appointments.currentPage?.let { appointmentResourceListEnvelopeViewModel.setCurrentPage(it) }
+            appointments.totalItemCount?.let { appointmentResourceListEnvelopeViewModel.setTotalItemCount(it) }
+            appointments.displayedItemCount?.let { appointmentResourceListEnvelopeViewModel.setDisplayedItemCount(it) }
         }
         else {
             val appointmentList = appointmentResourceListEnvelopeViewModel.resources.value
@@ -80,10 +80,10 @@ class AppointmentsHandler(
 
     override fun showTherapistAvailability(
         bookedAppointment: List<Appointment>, platformTime: List<PlatformTime>,
-        vendorTimes: List<VendorTime>){
+        vendorTime: List<VendorTime>){
         postponementViewModel.setTherapistBookedAppointment(bookedAppointment)
         postponementViewModel.setPlatformTimes(platformTime)
-        postponementViewModel.setVendorTimes(vendorTimes = vendorTimes)
+        postponementViewModel.setVendorTimes(vendorTimes = vendorTime)
     }
 
     override fun onLoadMoreAppointmentStarted() {

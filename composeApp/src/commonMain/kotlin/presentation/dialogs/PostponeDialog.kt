@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,6 +36,7 @@ import domain.Models.Appointment
 import domain.Models.PlatformTime
 import domain.Models.PlatformNavigator
 import domain.Models.UserAppointment
+import drawable.ErrorOccurredWidget
 import presentation.appointments.AppointmentPresenter
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.PerformedActionUIStateViewModel
@@ -62,8 +64,6 @@ fun PostponeDialog(userAppointment: UserAppointment, appointmentPresenter: Appoi
         val isNewDateSelected = remember { mutableStateOf(true) }
         val availabilityUIStates = availabilityPerformedActionUIStateViewModel.availabilityStateInfo.collectAsState()
 
-
-
         appointmentPresenter.getTherapistAvailability(
             therapistId!!,
             day = newSelectedDay.value,
@@ -77,7 +77,7 @@ fun PostponeDialog(userAppointment: UserAppointment, appointmentPresenter: Appoi
                 day = newSelectedDay.value,
                 month = newSelectedMonth.value,
                 year = newSelectedYear.value,
-                vendorId = userAppointment.resources?.vendor?.vendorId!!
+                vendorId = userAppointment.resources.vendor.vendorId
             )
             isNewDateSelected.value = false
         }
@@ -99,7 +99,6 @@ fun PostponeDialog(userAppointment: UserAppointment, appointmentPresenter: Appoi
                         }
 
                         NewDateContent(onDateSelected = {
-                            println("Select Day $it")
                            postponementViewModel.setSelectedDay(it.dayOfMonth)
                            postponementViewModel.setSelectedYear(it.year)
                            postponementViewModel.setSelectedMonth(it.monthNumber)
@@ -119,8 +118,8 @@ fun PostponeDialog(userAppointment: UserAppointment, appointmentPresenter: Appoi
                         else if (availabilityUIStates.value.isSuccess) {
 
                             val workHours = calculateTherapistServiceTimes(platformTimes = postponementViewModel!!.platformTimes.value,
-                                vendorTimes = postponementViewModel!!.vendorTimes.value,
-                                bookedAppointment = postponementViewModel!!.therapistBookedTimes.value)
+                                vendorTimes = postponementViewModel.vendorTimes.value,
+                                bookedAppointment = postponementViewModel.therapistBookedTimes.value)
 
                             Column(
                                 modifier = Modifier
@@ -136,8 +135,18 @@ fun PostponeDialog(userAppointment: UserAppointment, appointmentPresenter: Appoi
                                })
                             }
                         }
-                        else {
-                            // onDismissRequest()
+                        else if (availabilityUIStates.value.isFailed) {
+                            Box(modifier = Modifier .fillMaxWidth().height(400.dp), contentAlignment = Alignment.Center) {
+                                ErrorOccurredWidget(availabilityUIStates.value.errorMessage, onRetryClicked = {
+                                    appointmentPresenter.getTherapistAvailability(
+                                        therapistId,
+                                        day = newSelectedDay.value,
+                                        month = newSelectedMonth.value,
+                                        year = newSelectedYear.value,
+                                        vendorId = userAppointment.resources.vendor.vendorId
+                                    )
+                                })
+                            }
                         }
 
                         buttonContent(onDismissRequest = {

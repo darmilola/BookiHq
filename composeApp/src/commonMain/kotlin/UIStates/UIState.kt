@@ -10,8 +10,10 @@ class AppUIStates(
     val isLoading: Boolean = false,
     val isSuccess: Boolean = false,
     val isFailed: Boolean = false,
+    val isEmpty: Boolean = false,
     val isDefault: Boolean = false,
     val loadingMessage: String = "",
     val successMessage: String = "",
-    val actionType: String = ActionType.DEFAULT.toPath(),
-    val errorMessage: String = ""): Parcelable
+    val emptyMessage: String = "",
+    val errorMessage: String = "",
+    val defaultMessage: String = ""): Parcelable

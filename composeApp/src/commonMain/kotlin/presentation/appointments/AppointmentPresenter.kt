@@ -10,7 +10,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import UIStates.AppUIStates
-import domain.Enums.ServerResponseEnum
+import domain.Enums.ServerResponse
 import domain.Models.PlatformNavigator
 import domain.Models.PlatformTime
 import domain.Models.User
@@ -27,7 +27,7 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
     }
 
     override fun getUserAppointments(userId: Long) {
-        contractView?.showLce(AppUIStates(isLoading = true))
+        contractView?.showLce(AppUIStates(isLoading = true, loadingMessage = "Getting Appointments"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
@@ -35,31 +35,29 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {
-                                    ServerResponseEnum.SUCCESS.toPath() -> {
-                                        println("Response 0 $result")
+                                    ServerResponse.SUCCESS.toPath() -> {
                                         contractView?.showLce(AppUIStates(isSuccess = true))
                                         contractView?.showAppointments(result.listItem, isRefresh = false)
                                     }
-                                    ServerResponseEnum.EMPTY.toPath() -> {
-                                        println("Response 1 $result")
-                                        contractView?.showLce(AppUIStates(isFailed = true))
+                                    ServerResponse.EMPTY.toPath() -> {
+                                        contractView?.showLce(AppUIStates(isFailed = true, emptyMessage = "No Appointments Available"))
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.showRefreshing(AppUIStates(isFailed = true))
                                     }
                                     else -> {
-                                        println("Response 2 $result")
-                                        contractView?.showLce(AppUIStates(isFailed = true))
+                                        contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
                                     }
                                 }
                             },
                             onError = {
-                                println("Result 3 ${it.message}")
-                                contractView?.showLce(AppUIStates(isFailed = true))
+                                contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Result 4 ${e.message}")
-                contractView?.showLce(AppUIStates(isFailed = true))
+                contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
             }
         }
     }
@@ -73,11 +71,14 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {
-                                    ServerResponseEnum.SUCCESS.toPath() -> {
+                                    ServerResponse.SUCCESS.toPath() -> {
                                         contractView?.showRefreshing(AppUIStates(isSuccess = true))
                                         contractView?.showAppointments(result.listItem, isRefresh = true)
                                     }
-                                    ServerResponseEnum.EMPTY.toPath() -> {
+                                    ServerResponse.EMPTY.toPath() -> {
+                                        contractView?.showRefreshing(AppUIStates(isFailed = true))
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
                                         contractView?.showRefreshing(AppUIStates(isFailed = true))
                                     }
                                     else -> {
@@ -86,14 +87,12 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                                 }
                             },
                             onError = {
-                                println("Result 2 ${it.message}")
                                 contractView?.showRefreshing(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Result 3 ${e.message}")
                 contractView?.showRefreshing(AppUIStates(isFailed = true))
             }
         }
@@ -107,16 +106,24 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                     appointmentRepositoryImpl.getAppointments(userId, nextPage)
                         .subscribe(
                             onSuccess = { result ->
-                                if (result.status == "success"){
-                                    contractView?.onLoadMoreAppointmentEnded()
-                                    contractView?.showAppointments(result.listItem, isRefresh = false)
-                                }
-                                else{
-                                    contractView?.onLoadMoreAppointmentEnded()
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.onLoadMoreAppointmentEnded()
+                                        contractView?.showAppointments(result.listItem, isRefresh = false)
+                                    }
+                                    ServerResponse.EMPTY.toPath() -> {
+                                        contractView?.onLoadMoreAppointmentEnded()
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.onLoadMoreAppointmentEnded()
+                                    }
+                                    else -> {
+                                        contractView?.onLoadMoreAppointmentEnded()
+                                    }
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.onLoadMoreAppointmentEnded() }
+                                contractView?.onLoadMoreAppointmentEnded()
                             },
                         )
                 }
@@ -140,34 +147,34 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                     appointmentRepositoryImpl.postponeAppointment(userAppointment, newAppointmentTime, day,month,year)
                         .subscribe(
                             onSuccess = { result ->
-                                println("Response 0 $result")
-                                if (result.status == "success"){
-                                    val time = if (platformTime.isAm) platformTime.time+"AM" else platformTime.time+"PM"
-                                    contractView?.showPostponeActionLce(AppUIStates(isSuccess = true, successMessage = "Appointment Postponed"))
-                                    platformNavigator.sendPostponedAppointmentNotification(customerName = user.firstname!!, vendorLogoUrl = vendor.businessLogo!!, businessName = vendor.businessName!!, appointmentDay = day.toString(), appointmentMonth = monthName, appointmentYear = year.toString(),
-                                        appointmentTime = time, fcmToken = vendor.fcmToken!!, serviceType = userAppointment.resources?.serviceTypeItem!!.title)
-                                }
-                                else{
-                                    println("Response 1 $result")
-                                    contractView?.showPostponeActionLce(AppUIStates(isFailed = true, errorMessage = "Error Postponing Appointment Please Try Again"))
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        val time = if (platformTime.isAm) platformTime.time+"AM" else platformTime.time+"PM"
+                                        contractView?.showPostponeActionLce(AppUIStates(isSuccess = true, successMessage = "Appointment Postponed"))
+                                        platformNavigator.sendPostponedAppointmentNotification(customerName = user.firstname!!, vendorLogoUrl = vendor.businessLogo!!, businessName = vendor.businessName!!, appointmentDay = day.toString(), appointmentMonth = monthName, appointmentYear = year.toString(),
+                                            appointmentTime = time, fcmToken = vendor.fcmToken!!, serviceType = userAppointment.resources?.serviceTypeItem!!.title)
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.showPostponeActionLce(AppUIStates(isFailed = true, errorMessage = "Error Postponing Appointment Please Try Again"))
+                                    }
+                                    else -> {
+                                        contractView?.showPostponeActionLce(AppUIStates(isFailed = true, errorMessage = "Error Postponing Appointment Please Try Again"))
+                                    }
                                 }
                             },
                             onError = {
-                                println("Response 2 ${it.message}")
                                 contractView?.showPostponeActionLce(AppUIStates(isFailed = true, errorMessage = "Error Postponing Appointment Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Response 3 ${e.message}")
                 contractView?.showPostponeActionLce(AppUIStates(isFailed = true, errorMessage = "Error Postponing Appointment Please Try Again"))
             }
         }
     }
 
     override fun deleteAppointment(appointmentId: Long) {
-        println(appointmentId)
         contractView?.showDeleteActionLce(AppUIStates(isLoading = true, loadingMessage = "Deleting Appointment"))
         scope.launch(Dispatchers.Main) {
             try {
@@ -175,24 +182,25 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                     appointmentRepositoryImpl.deleteAppointment(appointmentId)
                         .subscribe(
                             onSuccess = { result ->
-                                println("Response 0 $result")
-                                if (result.status == "success"){
-                                    contractView?.showDeleteActionLce(AppUIStates(isSuccess = true, successMessage = "Appointment Deleted"))
-                                }
-                                else{
-                                    println("Response 1 $result")
-                                    contractView?.showDeleteActionLce(AppUIStates(isFailed = true, errorMessage = "Error Deleting Appointment Please Try Again"))
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.showDeleteActionLce(AppUIStates(isSuccess = true, successMessage = "Appointment Deleted"))
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.showDeleteActionLce(AppUIStates(isFailed = true, errorMessage = "Error Deleting Appointment Please Try Again"))
+                                    }
+                                    else -> {
+                                        contractView?.showDeleteActionLce(AppUIStates(isFailed = true, errorMessage = "Error Deleting Appointment Please Try Again"))
+                                    }
                                 }
                             },
                             onError = {
-                                println("Response 2 ${it.message}")
                                 contractView?.showDeleteActionLce(AppUIStates(isFailed = true, errorMessage = "Error Deleting Appointment Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Response 3 ${e.message}")
                 contractView?.showDeleteActionLce(AppUIStates(isFailed = true, errorMessage = "Error Deleting Appointment Please Try Again"))
             }
         }
@@ -206,24 +214,26 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                     appointmentRepositoryImpl.joinMeeting(customParticipantId, presetName, meetingId)
                         .subscribe(
                             onSuccess = { result ->
-                                println("Error 0 $result")
-                                if (result.status == "success"){
-                                    contractView?.showJoinMeetingActionLce(AppUIStates(isSuccess = true, successMessage = "Meeting Ready to be joined"))
-                                    contractView?.onJoinMeetingTokenReady(result.token)
-                                }
-                                else{
-                                    contractView?.showJoinMeetingActionLce(AppUIStates(isFailed = true, errorMessage = "Error Joining Meeting please try again"))
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.showJoinMeetingActionLce(AppUIStates(isSuccess = true, successMessage = "Meeting Ready to be joined"))
+                                        contractView?.onJoinMeetingTokenReady(result.token)
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.showJoinMeetingActionLce(AppUIStates(isFailed = true, errorMessage = "Error Joining Meeting please try again"))
+                                    }
+                                    else -> {
+                                        contractView?.showJoinMeetingActionLce(AppUIStates(isFailed = true, errorMessage = "Error Joining Meeting please try again"))
+                                    }
                                 }
                             },
                             onError = {
-                                println("Error 1 ${it.message}")
                                 contractView?.showJoinMeetingActionLce(AppUIStates(isFailed = true, errorMessage = "Error Joining Meeting please try again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Error 2 ${e.message}")
                 contractView?.showJoinMeetingActionLce(AppUIStates(isFailed = true, errorMessage = "Error Joining Meeting please try again"))
             }
         }
@@ -237,12 +247,17 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                     appointmentRepositoryImpl.getTherapistAvailability(therapistId,vendorId, day, month, year)
                         .subscribe(
                             onSuccess = { result ->
-                                if (result.status == "success"){
-                                    contractView?.showTherapistAvailability(result.bookedAppointment, result.platformTimes, result.vendorTimes)
-                                    contractView?.showGetAvailabilityActionLce(AppUIStates(isSuccess = true, successMessage = "Availability Ready"))
-                                }
-                                else{
-                                    contractView?.showGetAvailabilityActionLce(AppUIStates(isFailed = true, errorMessage = "Error Fetching Availability, Please Try Again"))
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.showTherapistAvailability(result.bookedAppointment, result.platformTimes, result.vendorTimes)
+                                        contractView?.showGetAvailabilityActionLce(AppUIStates(isSuccess = true, successMessage = "Availability Ready"))
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.showGetAvailabilityActionLce(AppUIStates(isFailed = true, errorMessage = "Error Fetching Availability, Please Try Again"))
+                                    }
+                                    else -> {
+                                        contractView?.showGetAvailabilityActionLce(AppUIStates(isFailed = true, errorMessage = "Error Fetching Availability, Please Try Again"))
+                                    }
                                 }
                             },
                             onError = {
@@ -259,30 +274,31 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
 
     override fun addAppointmentReviews(userId: Long, appointmentId: Long, vendorId: Long, serviceTypeId: Long, reviewText: String) {
         contractView?.showReviewsActionLce(AppUIStates(isLoading = true, loadingMessage = "Adding Reviews"))
-        println("Called ")
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     appointmentRepositoryImpl.addAppointmentReviews(userId, appointmentId, vendorId, serviceTypeId, reviewText)
                         .subscribe(
                             onSuccess = { result ->
-                                println("Called 2 $result")
-                                if (result.status == "success"){
-                                    contractView?.showReviewsActionLce(AppUIStates(isSuccess = true, successMessage = "Review Added Successfully"))
-                                }
-                                else{
-                                    contractView?.showReviewsActionLce(AppUIStates(isFailed = true, errorMessage = "Error Adding Review, Please Try Again"))
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.showReviewsActionLce(AppUIStates(isSuccess = true, successMessage = "Review Added Successfully"))
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.showReviewsActionLce(AppUIStates(isFailed = true, errorMessage = "Error Adding Review, Please Try Again"))
+                                    }
+                                    else -> {
+                                        contractView?.showReviewsActionLce(AppUIStates(isFailed = true, errorMessage = "Error Adding Review, Please Try Again"))
+                                    }
                                 }
                             },
                             onError = {
-                                println("Called 3 ${it.message}")
                                 contractView?.showReviewsActionLce(AppUIStates(isFailed = true, errorMessage = "Error Adding Review, Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Called 4 ${e.message}")
                 contractView?.showReviewsActionLce(AppUIStates(isFailed = true, errorMessage = "Error Adding Review, Please Try Again"))
             }
         }

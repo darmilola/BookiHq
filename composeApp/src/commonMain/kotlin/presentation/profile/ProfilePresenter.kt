@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.badoo.reaktive.single.subscribe
 import UIStates.AppUIStates
-import domain.Enums.ServerResponseEnum
+import domain.Enums.ServerResponse
 import domain.Models.PlatformNavigator
 import domain.Models.PlatformTime
 import domain.Models.User
@@ -173,7 +173,7 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                         .subscribe(
                             onSuccess = { result ->
                                 println("Response $result")
-                                if (result.status == ServerResponseEnum.SUCCESS.toPath()){
+                                if (result.status == ServerResponse.SUCCESS.toPath()){
                                     platformNavigator.sendCustomerExitNotification(exitReason = exitReason, vendorLogoUrl = vendor.businessLogo!!, fcmToken = vendor.fcmToken!!)
                                     switchVendorContract?.showActionLce(AppUIStates(isSuccess = true))
                                 }
@@ -205,11 +205,11 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                         .subscribe(
                             onSuccess = { result ->
                                 println("My Result is $result")
-                                if (result.status == ServerResponseEnum.SUCCESS.toPath()){
+                                if (result.status == ServerResponse.SUCCESS.toPath()){
                                     contractView?.showActionLce(AppUIStates(isSuccess = true))
                                     contractView?.showVendorInfo(result.vendorInfo)
                                 }
-                                else if (result.status == ServerResponseEnum.FAILURE.toPath()){
+                                else if (result.status == ServerResponse.FAILURE.toPath()){
                                     contractView?.showActionLce(AppUIStates(isFailed = true))
                                 }
                             },
@@ -236,7 +236,7 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                         .subscribe(
                             onSuccess = { result ->
                                 println("My Result 1 $result")
-                                if (result.status == ServerResponseEnum.SUCCESS.toPath()){
+                                if (result.status == ServerResponse.SUCCESS.toPath()){
                                     contractView?.showActionLce(AppUIStates(isSuccess = true))
                                 }
                                 else{

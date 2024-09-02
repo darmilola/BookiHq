@@ -126,7 +126,7 @@ fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPrese
                         serviceStatusText,
                         serviceIconRes,
                         serviceStatusColor,
-                        userAppointment!!,
+                        userAppointment,
                         serviceMenuItems,
                         appointmentPresenter,
                         postponementViewModel,

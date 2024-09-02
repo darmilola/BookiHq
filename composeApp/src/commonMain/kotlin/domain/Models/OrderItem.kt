@@ -8,8 +8,8 @@ import kotlinx.serialization.Serializable
 
 @Parcelize
 @Serializable
-data class OrderItem(@SerialName("order_id") var orderId: Int = -1, @SerialName("imageUrl") val imageUrl: String = "",
-                     @SerialName("product_id") var productId: Int = -1, @SerialName("itemCount") var itemCount: Int = 1,
+data class OrderItem(@SerialName("order_id") var orderId: Long = -1, @SerialName("imageUrl") val imageUrl: String = "",
+                     @SerialName("product_id") var productId: Long = -1, @SerialName("itemCount") var itemCount: Int = 1,
                      @SerialName("orderItemJson") var orderItemJson: String = "",
                      @SerialName("product") var itemProduct: Product? = null, val isSelected: Boolean = false, var itemKey: Int = -1): Parcelable
 

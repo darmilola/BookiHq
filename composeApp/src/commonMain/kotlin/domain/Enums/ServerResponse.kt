@@ -1,6 +1,6 @@
 package domain.Enums
 
-enum class ServerResponseEnum {
+enum class ServerResponse {
     SUCCESS,
     FAILURE,
     EMPTY;

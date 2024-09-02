@@ -59,6 +59,9 @@ fun getPopularProductViewHeight(
 fun getServicesViewHeight(
     itemList: List<Services>
 ): Int {
+    if (itemList.size < 4){
+        return 140
+    }
     val lineCount: Int = ceil((itemList.size/4).toDouble()).toInt()
 
     return lineCount * 140
