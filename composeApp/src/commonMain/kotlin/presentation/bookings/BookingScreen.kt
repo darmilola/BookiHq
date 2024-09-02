@@ -92,12 +92,14 @@ import utils.calculateAppointmentPaymentAmount
 @Parcelize
 class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, ScreenTransition, ParcelableScreen {
     @Transient private val bookingPresenter: BookingPresenter by inject()
-    @Transient private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient private var loadPendingActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient private var deleteActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient private var createAppointmentActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient private var getTherapistActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient private var bookingViewModel: BookingViewModel? = null
     @Transient private val paymentPresenter: PaymentPresenter by inject()
     @Transient private var mainViewModel: MainViewModel? = null
-    @Transient
-    private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
+    @Transient private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
     @Transient var cardList = listOf<PaymentCard>()
     private var selectedCard: PaymentCard? = null
 
@@ -124,8 +126,32 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         val coroutineScope = rememberCoroutineScope()
 
 
-        if (performedActionUIStateViewModel == null) {
-            performedActionUIStateViewModel = kmpViewModel(
+        if (loadPendingActionUIStateViewModel == null) {
+            loadPendingActionUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+        if (deleteActionUIStateViewModel == null) {
+            deleteActionUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+        if (createAppointmentActionUIStateViewModel == null) {
+            createAppointmentActionUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+        if (getTherapistActionUIStateViewModel == null) {
+            getTherapistActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
@@ -146,13 +172,13 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             navigator.pop()
         }
 
-
         val handler = BookingScreenHandler(
-            bookingViewModel!!, performedActionUIStateViewModel = performedActionUIStateViewModel!! ,bookingPresenter, onShowUnsavedAppointment = {})
+            bookingViewModel!!, loadPendingActionUIStateViewModel = loadPendingActionUIStateViewModel!!, deleteActionUIStateViewModel = deleteActionUIStateViewModel!!,
+            createAppointmentActionUIStateViewModel = createAppointmentActionUIStateViewModel!!, getTherapistActionUIStateViewModel = getTherapistActionUIStateViewModel!!, bookingPresenter, onShowUnsavedAppointment = {})
         handler.init()
 
 
-        val createAppointmentActionUiStates = performedActionUIStateViewModel!!.createAppointmentUiState.collectAsState()
+        val createAppointmentActionUiStates = createAppointmentActionUIStateViewModel!!.createAppointmentUiState.collectAsState()
 
         if (createAppointmentActionUiStates.value.isLoading) {
             Box(modifier = Modifier.fillMaxWidth(0.90f)) {
@@ -297,7 +323,9 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                         ) {
                             AttachBookingPages(
                                 pagerState,
-                                performedActionUIStateViewModel!!,
+                                getTherapistActionUIStateViewModel!!,
+                                loadPendingActionUIStateViewModel!!,
+                                deleteActionUIStateViewModel!!,
                                 mainViewModel!!,
                                 bookingViewModel!!,
                                 services = mainViewModel!!.selectedService.value,
@@ -413,10 +441,11 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             }
         }
 
-
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun AttachBookingPages(pagerState: PagerState, performedActionUIStateViewModel: PerformedActionUIStateViewModel, mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, services: Services, onLastItemRemoved:() -> Unit){
+    fun AttachBookingPages(pagerState: PagerState, getTherapistActionUIStateViewModel: PerformedActionUIStateViewModel,
+                           loadPendingActionUIStateViewModel: PerformedActionUIStateViewModel, deleteActionUIStateViewModel: PerformedActionUIStateViewModel,
+                           mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, services: Services, onLastItemRemoved:() -> Unit){
         val pageHeight = remember { mutableStateOf(0.90f) }
         val boxModifier =
             Modifier
@@ -425,7 +454,6 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                 .fillMaxHeight(pageHeight.value)
                 .fillMaxWidth()
 
-        // AnimationEffect
         Box(contentAlignment = Alignment.TopCenter, modifier = boxModifier) {
             HorizontalPager(
                 state = pagerState,
@@ -439,7 +467,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                     }
                     1 -> if(page == pagerState.targetPage) {
                          pageHeight.value = 0.90f
-                         BookingSelectTherapists(mainViewModel,performedActionUIStateViewModel,bookingViewModel,bookingPresenter)
+                         BookingSelectTherapists(mainViewModel,getTherapistActionUIStateViewModel,bookingViewModel,bookingPresenter)
                     }
                     2 -> if(page == pagerState.targetPage) {
                         pageHeight.value = 0.80f
@@ -447,7 +475,8 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                             mainViewModel,
                             bookingPresenter,
                             bookingViewModel,
-                            performedActionUIStateViewModel,
+                            loadPendingActionUIStateViewModel = loadPendingActionUIStateViewModel,
+                            deleteActionUIStateViewModel = deleteActionUIStateViewModel,
                             onLastItemRemoved = {
                                 onLastItemRemoved()
                            })

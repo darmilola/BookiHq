@@ -10,6 +10,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import UIStates.AppUIStates
+import domain.Enums.ServerResponse
 
 class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
 
@@ -19,7 +20,6 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
     override fun registerUIContract(view: BookingContract.View?) {
         contractView = view
     }
-
     override fun getUnSavedAppointment() {
         contractView?.showUnsavedAppointment()
     }
@@ -32,22 +32,27 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
                     bookingRepositoryImpl.getServiceTherapist(serviceTypeId, vendorId, day, month, year)
                         .subscribe(
                             onSuccess = { result ->
-                                if (result.status == "success"){
-                                    contractView?.getTherapistActionLce(AppUIStates(isSuccess  = true))
-                                    contractView?.showTherapists(result.serviceTherapists, result.platformTimes!!, result.vendorTimes!!, result.reviews!!)
-                                }
-                                else{
-                                    contractView?.getTherapistActionLce(AppUIStates(isFailed  = true))
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.getTherapistActionLce(AppUIStates(isSuccess  = true))
+                                        contractView?.showTherapists(result.serviceTherapists, result.platformTimes!!, result.vendorTimes!!, result.reviews!!)
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.getTherapistActionLce(AppUIStates(isFailed  = true, errorMessage = "Error Getting Therapist, Please Try Again"))
+                                    }
+                                    else -> {
+                                        contractView?.getTherapistActionLce(AppUIStates(isFailed  = true, errorMessage = "Error Getting Therapist, Please Try Again"))
+                                    }
                                 }
                             },
                             onError = {
-                                contractView?.getTherapistActionLce(AppUIStates(isFailed  = true))
+                                contractView?.getTherapistActionLce(AppUIStates(isFailed  = true, errorMessage = "Error Getting Therapist, Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.getTherapistActionLce(AppUIStates(isFailed  = true))
+                contractView?.getTherapistActionLce(AppUIStates(isFailed  = true, errorMessage = "Error Getting Therapist, Please Try Again"))
             }
         }
     }
@@ -150,16 +155,12 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
     }
 
     override fun silentDeletePendingBookingAppointment(pendingAppointmentId: Long) {
-        println(pendingAppointmentId)
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     bookingRepositoryImpl.deletePendingBookingAppointment(pendingAppointmentId)
                         .subscribe(
-                            onSuccess = { result ->
-                                if (result.status == "success"){}
-                                else{}
-                            },
+                            onSuccess = { result -> },
                             onError = {},
                         )
                 }
