@@ -1,5 +1,6 @@
 package presentation.authentication
 
+import UIStates.AppUIStates
 import domain.authentication.AuthenticationRepositoryImpl
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
@@ -11,6 +12,7 @@ import kotlinx.coroutines.withContext
 import com.badoo.reaktive.single.subscribe
 import domain.Models.User
 import domain.Enums.ProfileStatus
+import domain.Enums.ServerResponse
 import utils.makeValidPhone
 
 class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Presenter() {
@@ -31,24 +33,25 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                     authenticationRepositoryImpl.completeProfile(firstname, lastname, userEmail, authPhone,address,contactPhone,country, signupType,gender, profileImageUrl)
                         .subscribe(
                             onSuccess = { result ->
-                                println("Response 0 $result")
-                                if (result.status == "success"){
-                                    contractView?.onCompleteProfileDone(country,result.profileId, result.apiKey)
-                                }
-                                else{
-                                    println("Response 1 $result")
-                                    contractView?.onCompleteProfileError()
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.onCompleteProfileDone(country,result.profileId, result.apiKey)
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.onCompleteProfileError()
+                                    }
+                                    else -> {
+                                        contractView?.onCompleteProfileError()
+                                    }
                                 }
                             },
                             onError = {
-                                println("Response 2 ${it.message}")
                                 contractView?.onCompleteProfileError()
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Response 2 ${e.message}")
                 contractView?.onCompleteProfileError()
             }
         }
@@ -71,11 +74,16 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                     authenticationRepositoryImpl.updateProfile(userId, firstname, lastname, address, contactPhone, country, gender, profileImageUrl)
                         .subscribe(
                             onSuccess = { result ->
-                                if (result.status == "success"){
-                                    contractView?.onProfileUpdateEnded(isSuccessful = true)
-                                }
-                                else{
-                                    contractView?.onProfileUpdateEnded(isSuccessful = false)
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.onProfileUpdateEnded(isSuccessful = true)
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.onProfileUpdateEnded(isSuccessful = false)
+                                    }
+                                    else -> {
+                                        contractView?.onProfileUpdateEnded(isSuccessful = false)
+                                    }
                                 }
                             },
                             onError = {
@@ -97,8 +105,7 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                     authenticationRepositoryImpl.validateEmail(userEmail)
                         .subscribe(
                             onSuccess = { result ->
-                                println(result.toString())
-                                if (result.status == "success"){
+                                if (result.status == ServerResponse.SUCCESS.toPath()){
                                     when (result.profileStatus) {
                                         ProfileStatus.DONE.toPath() -> {
                                             contractView?.goToMainScreen(result.userInfo, result.whatsAppPhone)
@@ -133,23 +140,19 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
             try {
                 val result = withContext(Dispatchers.IO) {
                     authenticationRepositoryImpl.updateFcmToken(userId, fcmToken)
-                        .subscribe(
-                            onSuccess = { result -> },
-                            onError = {},
-                        )
+                        .subscribe(onSuccess = { result -> }, onError = {})
                 }
                 result.dispose()
-            } catch(e: Exception) {}
+            } catch(_: Exception) {}
         }
     }
 
     override fun validatePhone(phone: String, requireValidation: Boolean) {
        var validPhone = ""
-        if (requireValidation) {
-            validPhone = makeValidPhone(phone)
-       }
-        else{
-            validPhone = phone
+        validPhone = if (requireValidation) {
+            makeValidPhone(phone)
+        } else{
+            phone
         }
         scope.launch(Dispatchers.Main) {
             try {
@@ -158,35 +161,33 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                     authenticationRepositoryImpl.validatePhone(validPhone)
                         .subscribe(
                             onSuccess = { result ->
-                                println("Error 3 $result")
-                                if (result.status == "success"){
-                                    if (result.profileStatus == ProfileStatus.DONE.toPath()) {
-                                        contractView?.onProfileValidationEnded()
-                                        contractView?.goToMainScreen(result.userInfo,  result.whatsAppPhone)
-                                    }
-                                    else if(result.profileStatus == ProfileStatus.CONNECT_VENDOR.toPath()){
-                                        contractView?.onProfileValidationEnded()
-                                        contractView?.goToConnectVendor(result.userInfo)
-                                    }
-                                    else if(result.profileStatus == ProfileStatus.COMPLETE_PROFILE.toPath()){
-                                        contractView?.onProfileValidationEnded()
-                                        contractView?.goToCompleteProfileWithPhone(phone)
+                                if (result.status == ServerResponse.SUCCESS.toPath()){
+                                    when (result.profileStatus) {
+                                        ProfileStatus.DONE.toPath() -> {
+                                            contractView?.onProfileValidationEnded()
+                                            contractView?.goToMainScreen(result.userInfo,  result.whatsAppPhone)
+                                        }
+                                        ProfileStatus.CONNECT_VENDOR.toPath() -> {
+                                            contractView?.onProfileValidationEnded()
+                                            contractView?.goToConnectVendor(result.userInfo)
+                                        }
+                                        ProfileStatus.COMPLETE_PROFILE.toPath() -> {
+                                            contractView?.onProfileValidationEnded()
+                                            contractView?.goToCompleteProfileWithPhone(phone)
+                                        }
                                     }
                                 }
                                 else{
                                     contractView?.onProfileValidationError()
-
                                 }
                             },
                             onError = {
-                                println("Error 1 ${it.message}")
                                 contractView?.onProfileValidationError()
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Error 2 ${e.message}")
                 contractView?.onProfileValidationError()
             }
         }
