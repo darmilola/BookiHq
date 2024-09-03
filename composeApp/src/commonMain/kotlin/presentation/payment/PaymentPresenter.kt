@@ -35,10 +35,10 @@ class PaymentPresenter(apiService: HttpClient): PaymentContract.Presenter() {
     }
 
     override fun initCheckOut(customerEmail: String, amount: String) {
+        contractView?.showLce(AppUIStates(isLoading = true, loadingMessage = "Processing..."))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(AppUIStates(isLoading = true, loadingMessage = "Processing..."))
                     paymentRepositoryImpl.initCheckout(paymentAmount = amount, customerEmail = customerEmail)
                         .subscribe(
                             onSuccess = { result ->
