@@ -19,13 +19,10 @@ class OrderHandler(
     }
 
     override fun showLce(appUIStates: AppUIStates, message: String) {
-        ordersResourceListEnvelopeViewModel.clearData(mutableListOf())
         loadingScreenUiStateViewModel.switchScreenUIState(appUIStates)
     }
 
-    override fun showAsyncLce(uiState: AppUIStates, message: String) {
-        TODO("Not yet implemented")
-    }
+    override fun showAsyncLce(uiState: AppUIStates, message: String) {}
 
     override fun showReviewsActionLce(uiState: AppUIStates, message: String) {
         addReviewPerformedActionUIStateViewModel.switchAddProductReviewUiState(uiState)

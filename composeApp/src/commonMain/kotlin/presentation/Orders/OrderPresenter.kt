@@ -2,6 +2,7 @@ package presentation.Orders
 
 import UIStates.AppUIStates
 import com.badoo.reaktive.single.subscribe
+import domain.Enums.ServerResponse
 import domain.Orders.OrderRepositoryImpl
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
@@ -21,51 +22,58 @@ class OrderPresenter(apiService: HttpClient): OrderContract.Presenter() {
     }
 
     override fun getUserOrders(userId: Long) {
+        contractView?.showLce(AppUIStates(isLoading = true, loadingMessage = "Getting Orders"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(AppUIStates(isLoading = true))
-                    orderRepositoryImpl.getUserOrders(userId, 1)
+                    orderRepositoryImpl.getUserOrders(userId)
                         .subscribe(
                             onSuccess = { result ->
-                                if (result.status == "success"){
-                                    contractView?.showLce(AppUIStates(isSuccess = true))
-                                    contractView?.showUserOrders(result.listItem)
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.showLce(AppUIStates(isSuccess = true))
+                                        contractView?.showUserOrders(result.listItem)
+                                    }
+                                    ServerResponse.EMPTY.toPath() -> {
+                                        contractView?.showLce(AppUIStates(isEmpty = true, emptyMessage = "No Order Available"))
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Getting Orders"))
+                                    }
                                 }
-                                else{
-                                    contractView?.showLce(AppUIStates(isFailed = true))
-                                }
-                            },
+                             },
                             onError = {
-                                contractView?.showLce(AppUIStates(isFailed = true))
+                                contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Getting Orders"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(AppUIStates(isFailed = true))
+                contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Getting Orders"))
             }
         }
     }
 
     override fun getMoreUserOrders(userId: Long, nextPage: Int) {
+        contractView?.onLoadMoreOrderStarted(true)
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.onLoadMoreOrderStarted(true)
                     orderRepositoryImpl.getUserOrders(userId, nextPage)
                         .subscribe(
                             onSuccess = { result ->
-                                if (result.status == "success"){
-                                    contractView?.onLoadMoreOrderEnded(true)
-                                    contractView?.showUserOrders(result.listItem)
-                                }
-                                else{
-                                    contractView?.onLoadMoreOrderEnded(true)
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.onLoadMoreOrderEnded(true)
+                                        contractView?.showUserOrders(result.listItem)
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                       contractView?.onLoadMoreOrderEnded(true)
+                                    }
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.onLoadMoreOrderEnded(true) }
+                                contractView?.onLoadMoreOrderEnded(true)
                             },
                         )
                 }
@@ -78,7 +86,6 @@ class OrderPresenter(apiService: HttpClient): OrderContract.Presenter() {
 
     override fun deleteOrder(userId: Int) {}
     override fun addProductReviews(userId: Long, productId: Long, reviewText: String) {
-        println("Started $userId, $productId, $reviewText")
         contractView?.showReviewsActionLce(AppUIStates(isLoading = true, loadingMessage = "Adding Reviews"))
         scope.launch(Dispatchers.Main) {
             try {
@@ -86,24 +93,23 @@ class OrderPresenter(apiService: HttpClient): OrderContract.Presenter() {
                     orderRepositoryImpl.addProductReviews(userId, productId, reviewText)
                         .subscribe(
                             onSuccess = { result ->
-                                println("Success $result")
-                                if (result.status == "success"){
-                                    contractView?.showReviewsActionLce(AppUIStates(isSuccess = true, successMessage = "Reviews Added Successfully"))
-                                }
-                                else{
-                                    contractView?.showReviewsActionLce(AppUIStates(isFailed = true, errorMessage = "Error Adding Review, Please Try Again"))
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.showReviewsActionLce(AppUIStates(isSuccess = true, successMessage = "Reviews Added Successfully"))
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.showReviewsActionLce(AppUIStates(isFailed = true, errorMessage = "Error Adding Review, Please Try Again"))
+                                    }
                                 }
                             },
                             onError = {
-                                println("Failure ${it.message}")
                                 contractView?.showReviewsActionLce(AppUIStates(isFailed = true, errorMessage = "Error Adding Review, Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Failure ${e.message}")
-                contractView?.onLoadMoreOrderEnded(true)
+                contractView?.showReviewsActionLce(AppUIStates(isFailed = true, errorMessage = "Error Adding Review, Please Try Again"))
             }
         }
     }

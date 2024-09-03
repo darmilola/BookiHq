@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,20 +40,16 @@ import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import cafe.adriel.voyager.navigator.tab.Tab
-import cafe.adriel.voyager.navigator.tab.TabOptions
 import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
-import domain.Enums.Screens
 import domain.Models.UserOrderItemUIModel
 import domain.Models.UserOrders
+import drawable.ErrorOccurredWidget
 import kotlinx.serialization.Transient
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.OrderHandler
@@ -62,6 +60,7 @@ import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.OrdersResourceListEnvelopeViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
+import presentation.widgets.EmptyContentWidget
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget
 import rememberStackedSnackbarHostState
@@ -77,13 +76,13 @@ class Orders() : ParcelableScreen, KoinComponent, Parcelable, ScreenTransition {
     @Transient
     private val orderPresenter: OrderPresenter by inject()
     @Transient
-    private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
+    private var loadingOrderScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
     @Transient
     private var ordersResourceListEnvelopeViewModel: OrdersResourceListEnvelopeViewModel? = null
     @Transient
     private var mainViewModel: MainViewModel? = null
     @Transient
-    private var reviewPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    private var reviewActionUIStateViewModel: PerformedActionUIStateViewModel? = null
 
     fun setMainViewModel(mainViewModel: MainViewModel){
         this.mainViewModel = mainViewModel
@@ -106,8 +105,8 @@ class Orders() : ParcelableScreen, KoinComponent, Parcelable, ScreenTransition {
         }
 
 
-        if (loadingScreenUiStateViewModel == null) {
-            loadingScreenUiStateViewModel = kmpViewModel(
+        if (loadingOrderScreenUiStateViewModel == null) {
+            loadingOrderScreenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
@@ -115,8 +114,8 @@ class Orders() : ParcelableScreen, KoinComponent, Parcelable, ScreenTransition {
         }
 
 
-        if (reviewPerformedActionUIStateViewModel == null) {
-            reviewPerformedActionUIStateViewModel = kmpViewModel(
+        if (reviewActionUIStateViewModel == null) {
+            reviewActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
@@ -129,10 +128,14 @@ class Orders() : ParcelableScreen, KoinComponent, Parcelable, ScreenTransition {
                     OrdersResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
+        }
+
+
+
+        LaunchedEffect(true) {
             val userId = mainViewModel!!.currentUserInfo.value.userId
             orderPresenter.getUserOrders(userId!!)
         }
-
 
 
 
@@ -143,7 +146,7 @@ class Orders() : ParcelableScreen, KoinComponent, Parcelable, ScreenTransition {
             ordersResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
         val displayedOrdersCount =
             ordersResourceListEnvelopeViewModel!!.displayedItemCount.collectAsState()
-        val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
+        val loadOrderUiState = loadingOrderScreenUiStateViewModel!!.uiStateInfo.collectAsState()
         val lastIndex = ordersList?.value?.size?.minus(1)
         val userId = mainViewModel!!.currentUserInfo.value.userId
         val selectedOrder = remember { mutableStateOf(UserOrders()) }
@@ -180,14 +183,13 @@ class Orders() : ParcelableScreen, KoinComponent, Parcelable, ScreenTransition {
             content = {
                 val handler = OrderHandler(
                     ordersResourceListEnvelopeViewModel!!,
-                    loadingScreenUiStateViewModel!!,
-                    reviewPerformedActionUIStateViewModel!!,
+                    loadingOrderScreenUiStateViewModel!!,
+                    reviewActionUIStateViewModel!!,
                     orderPresenter
                 )
                 handler.init()
 
-                if (uiState.value.isLoading) {
-                    //Content Loading
+                if (loadOrderUiState.value.isLoading) {
                     Box(
                         modifier = Modifier.fillMaxWidth().fillMaxHeight()
                             .padding(top = 40.dp, start = 50.dp, end = 50.dp)
@@ -196,10 +198,21 @@ class Orders() : ParcelableScreen, KoinComponent, Parcelable, ScreenTransition {
                     ) {
                         IndeterminateCircularProgressBar()
                     }
-                } else if (uiState.value.isFailed) {
-                    // Error Occurred Try Again
-
-                } else if (uiState.value.isSuccess) {
+                }
+                else if (loadOrderUiState.value.isFailed) {
+                    Box(modifier = Modifier .fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.Center) {
+                        ErrorOccurredWidget(loadOrderUiState.value.errorMessage, onRetryClicked = {
+                            val userId = mainViewModel!!.currentUserInfo.value.userId
+                            orderPresenter.getUserOrders(userId!!)
+                        })
+                    }
+                }
+                else if (loadOrderUiState.value.isEmpty) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        EmptyContentWidget(emptyText = loadOrderUiState.value.emptyMessage)
+                    }
+                }
+                else if (loadOrderUiState.value.isSuccess) {
                     LazyColumn(
                         modifier = Modifier.fillMaxWidth()
                             .padding(bottom = 50.dp)
@@ -207,7 +220,7 @@ class Orders() : ParcelableScreen, KoinComponent, Parcelable, ScreenTransition {
                         userScrollEnabled = true
                     ) {
                         itemsIndexed(items = userOrderItemUIModel.userOrderList) { it, item ->
-                            UserOrderComponent(mainViewModel!!, item.customerOrder!!, reviewPerformedActionUIStateViewModel!!)
+                            UserOrderComponent(mainViewModel!!, item.customerOrder!!, reviewActionUIStateViewModel!!)
                             if (it == lastIndex && loadMoreState.value) {
                                 Box(
                                     modifier = Modifier.fillMaxWidth().height(60.dp),
