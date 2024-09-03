@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -58,6 +59,7 @@ import domain.Models.Product
 import domain.Models.ProductItemUIModel
 import domain.Enums.Screens
 import domain.Enums.SharedPreferenceEnum
+import drawable.ErrorOccurredWidget
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
@@ -69,6 +71,7 @@ import presentation.components.ToggleButton
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ProductResourceListEnvelopeViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
+import presentation.widgets.EmptyContentWidget
 import presentation.widgets.ProductItem
 import presentation.widgets.ProductDetailBottomSheet
 import presentation.widgets.SearchBar
@@ -231,7 +234,6 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                         })
                 }
 
-
                 val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
                 if (uiState.value.isLoading) {
                     Box(
@@ -242,10 +244,23 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                     ) {
                         IndeterminateCircularProgressBar()
                     }
-                } else if (uiState.value.isFailed) {
-                      val message = uiState.value.errorMessage
-
-                } else if (uiState.value.isSuccess) {
+                }
+                else if (uiState.value.isFailed) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        ErrorOccurredWidget(uiState.value.errorMessage, onRetryClicked = {
+                            if (productResourceListEnvelopeViewModel!!.resources.value.isEmpty()){
+                                productResourceListEnvelopeViewModel!!.setResources(mutableListOf())
+                                productPresenter.getProductsByType(vendorId, productType = selectedProductType)
+                            }
+                        })
+                    }
+                }
+                else if (uiState.value.isEmpty) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        EmptyContentWidget(emptyText = uiState.value.emptyMessage)
+                    }
+                }
+                else if (uiState.value.isSuccess) {
                     ProductContent(
                         productResourceListEnvelopeViewModel = productResourceListEnvelopeViewModel!!,
                         searchQuery = searchQuery.value,

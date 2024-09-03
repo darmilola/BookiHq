@@ -22,7 +22,6 @@ class ShopProductsHandler(
     }
 
     override fun showProducts(products: ProductResourceListEnvelope?, isFromSearch: Boolean, isLoadMore: Boolean) {
-        println("Products $products")
         runBlocking {
             productResourceListEnvelopeViewModel.setIsRefreshing(false)
             if (isFromSearch && !isLoadMore) {
@@ -44,9 +43,9 @@ class ShopProductsHandler(
             }
             else if (isLoadMore) {
                 products!!.prevPageUrl?.let { productResourceListEnvelopeViewModel.setPrevPageUrl(it) }
-                products!!.nextPageUrl?.let { productResourceListEnvelopeViewModel.setNextPageUrl(it) }
-                products!!.currentPage?.let { productResourceListEnvelopeViewModel.setCurrentPage(it) }
-                products!!.totalItemCount?.let {
+                products.nextPageUrl?.let { productResourceListEnvelopeViewModel.setNextPageUrl(it) }
+                products.currentPage?.let { productResourceListEnvelopeViewModel.setCurrentPage(it) }
+                products.totalItemCount?.let {
                     productResourceListEnvelopeViewModel.setTotalItemCount(
                         it
                     )
@@ -57,15 +56,15 @@ class ShopProductsHandler(
                     )
                 }
                 val productList = productResourceListEnvelopeViewModel.resources.value
-                productList.addAll(products?.resources!!.distinct()!!)
+                productList.addAll(products.resources!!.distinct())
                 productResourceListEnvelopeViewModel.setResources(productList)
 
             }
             else {
                 products!!.prevPageUrl?.let { productResourceListEnvelopeViewModel.setPrevPageUrl(it) }
-                products!!.nextPageUrl?.let { productResourceListEnvelopeViewModel.setNextPageUrl(it) }
-                products!!.currentPage?.let { productResourceListEnvelopeViewModel.setCurrentPage(it) }
-                products!!.totalItemCount?.let {
+                products.nextPageUrl?.let { productResourceListEnvelopeViewModel.setNextPageUrl(it) }
+                products.currentPage?.let { productResourceListEnvelopeViewModel.setCurrentPage(it) }
+                products.totalItemCount?.let {
                     productResourceListEnvelopeViewModel.setTotalItemCount(
                         it
                     )

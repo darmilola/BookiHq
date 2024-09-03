@@ -11,6 +11,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import UIStates.AppUIStates
+import domain.Enums.ServerResponse
 import domain.Models.PlatformNavigator
 import domain.Models.User
 import domain.Models.Vendor
@@ -35,32 +36,31 @@ class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
         month: Int,
         year: Int, user: User, vendor: Vendor,paymentAmount: Long, platformNavigator: PlatformNavigator
     ) {
+        contractView?.showLce(AppUIStates(isLoading = true, loadingMessage = "Creating Order"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(AppUIStates(isLoading = true, loadingMessage = "Creating Order"))
                     val orderItemsJson = getUnSavedOrdersRequestJson(orderItemList)
                     productRepositoryImpl.createOrder(vendorId,userId,deliveryMethod,paymentMethod,day, month, year, orderItemsJson,paymentAmount)
                         .subscribe(
                             onSuccess = { result ->
-                                println(result)
-                                if (result.status == "success"){
-                                    contractView?.showLce(AppUIStates(isSuccess = true, successMessage = "Order Created Successfully"))
-                                    platformNavigator.sendOrderBookingNotification(customerName = user.firstname!!, vendorLogoUrl = vendor.businessLogo!!, fcmToken = vendor.fcmToken!!)
-                                }
-                                else{
-                                    contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Order"))
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.showLce(AppUIStates(isSuccess = true, successMessage = "Order Created Successfully"))
+                                        platformNavigator.sendOrderBookingNotification(customerName = user.firstname!!, vendorLogoUrl = vendor.businessLogo!!, fcmToken = vendor.fcmToken!!)
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Order"))
+                                    }
                                 }
                             },
                             onError = {
-                                println("Error 1 ${it.message}")
                                 contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Order"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Error 2 ${e.message}")
                 contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Order"))
             }
         }
