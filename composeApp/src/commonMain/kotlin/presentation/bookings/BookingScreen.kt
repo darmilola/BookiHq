@@ -471,7 +471,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                     }
                     2 -> if(page == pagerState.targetPage) {
                         pageHeight.value = 0.80f
-                        BookingCheckOut(
+                        BookingOverview(
                             mainViewModel,
                             bookingPresenter,
                             bookingViewModel,

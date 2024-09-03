@@ -27,7 +27,7 @@ class BookingScreenHandler(
         uiState.let {
             when{
                 it.isLoading -> {
-                    loadPendingActionUIStateViewModel.switchActionLoadPendingAppointmentUiState(AppUIStates(isLoading = true))
+                    loadPendingActionUIStateViewModel.switchActionLoadPendingAppointmentUiState(AppUIStates(isLoading = true, loadingMessage = it.loadingMessage))
                 }
 
                 it.isSuccess -> {
@@ -35,7 +35,7 @@ class BookingScreenHandler(
                 }
 
                 it.isFailed -> {
-                    loadPendingActionUIStateViewModel.switchActionLoadPendingAppointmentUiState(AppUIStates(isFailed = true))
+                    loadPendingActionUIStateViewModel.switchActionLoadPendingAppointmentUiState(AppUIStates(isFailed = true, errorMessage = it.errorMessage))
                 }
             }
         }
@@ -45,14 +45,14 @@ class BookingScreenHandler(
         uiState.let {
             when {
                 it.isLoading -> {
-                    deleteActionUIStateViewModel.switchDeletePendingAppointmentUiState(AppUIStates(isLoading = true))
+                    deleteActionUIStateViewModel.switchDeletePendingAppointmentUiState(AppUIStates(isLoading = true, loadingMessage = it.loadingMessage))
                 }
                 it.isSuccess -> {
                     deleteActionUIStateViewModel.switchDeletePendingAppointmentUiState(AppUIStates(isSuccess = true))
                 }
 
                 it.isFailed -> {
-                    deleteActionUIStateViewModel.switchDeletePendingAppointmentUiState(AppUIStates(isFailed = true))
+                    deleteActionUIStateViewModel.switchDeletePendingAppointmentUiState(AppUIStates(isFailed = true, errorMessage = it.errorMessage))
                 }
 
             }
@@ -63,14 +63,14 @@ class BookingScreenHandler(
         uiState.let {
             when {
                 it.isLoading -> {
-                    createAppointmentActionUIStateViewModel.switchCreateAppointmentUiState(AppUIStates(isLoading = true))
+                    createAppointmentActionUIStateViewModel.switchCreateAppointmentUiState(AppUIStates(isLoading = true, loadingMessage = it.loadingMessage))
                 }
                 it.isSuccess -> {
                     createAppointmentActionUIStateViewModel.switchCreateAppointmentUiState(AppUIStates(isSuccess = true))
                 }
 
                 it.isFailed -> {
-                    createAppointmentActionUIStateViewModel.switchCreateAppointmentUiState(AppUIStates(isFailed = true))
+                    createAppointmentActionUIStateViewModel.switchCreateAppointmentUiState(AppUIStates(isFailed = true, errorMessage = it.errorMessage))
                 }
             }
         }
@@ -80,14 +80,14 @@ class BookingScreenHandler(
         uiState.let {
             when {
                 it.isLoading -> {
-                    getTherapistActionUIStateViewModel.switchGetTherapistUiState(AppUIStates(isLoading = true))
+                    getTherapistActionUIStateViewModel.switchGetTherapistUiState(AppUIStates(isLoading = true, loadingMessage = it.loadingMessage))
                 }
                 it.isSuccess -> {
                     getTherapistActionUIStateViewModel.switchGetTherapistUiState(AppUIStates(isSuccess = true))
                 }
 
                 it.isFailed -> {
-                    getTherapistActionUIStateViewModel.switchGetTherapistUiState(AppUIStates(isFailed = true))
+                    getTherapistActionUIStateViewModel.switchGetTherapistUiState(AppUIStates(isFailed = true, errorMessage = it.errorMessage))
                 }
 
             }

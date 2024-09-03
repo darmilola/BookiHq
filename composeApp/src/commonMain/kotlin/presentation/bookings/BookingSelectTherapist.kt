@@ -35,6 +35,7 @@ import domain.Models.AppointmentReview
 import domain.Models.PlatformTime
 import domain.Models.ServiceTypeTherapists
 import domain.Models.ServiceTypeTherapistUIModel
+import drawable.ErrorOccurredWidget
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.BookingViewModel
@@ -85,8 +86,14 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, performedActionUIState
             IndeterminateCircularProgressBar()
         }
     } else if (getTherapistActionUiStates.value.isFailed) {
-       // error occurred, refresh
-    } else if (getTherapistActionUiStates.value.isSuccess) {
+        Box(modifier = Modifier .fillMaxWidth().height(400.dp), contentAlignment = Alignment.Center) {
+            ErrorOccurredWidget(getTherapistActionUiStates.value.errorMessage, onRetryClicked = {
+                bookingPresenter.getServiceTherapists(bookingViewModel.selectedServiceType.value.serviceTypeId,
+                    mainViewModel.connectedVendor.value.vendorId!!, day = bookingViewModel.day.value, month = bookingViewModel.month.value, year = bookingViewModel.year.value)
+            })
+        }
+    }
+    else if (getTherapistActionUiStates.value.isSuccess) {
         Column(
             Modifier
                 .fillMaxSize()

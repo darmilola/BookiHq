@@ -20,10 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import domain.Enums.BookingStatus
-import domain.Enums.PaymentMethod
 import domain.Enums.ServiceLocationEnum
 import domain.Enums.ServiceStatusEnum
 import domain.Models.UserAppointment
+import drawable.ErrorOccurredWidget
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
@@ -36,7 +36,7 @@ import utils.getAppointmentViewHeight
 
 
 @Composable
-fun BookingCheckOut(mainViewModel: MainViewModel, bookingPresenter: BookingPresenter, bookingViewModel: BookingViewModel, loadPendingActionUIStateViewModel: PerformedActionUIStateViewModel,
+fun BookingOverview(mainViewModel: MainViewModel, bookingPresenter: BookingPresenter, bookingViewModel: BookingViewModel, loadPendingActionUIStateViewModel: PerformedActionUIStateViewModel,
                     deleteActionUIStateViewModel: PerformedActionUIStateViewModel, onLastItemRemoved: () -> Unit) {
 
     val userId = mainViewModel.currentUserInfo.value.userId
@@ -84,7 +84,6 @@ fun BookingCheckOut(mainViewModel: MainViewModel, bookingPresenter: BookingPrese
 
 
     if (loadingPendingActionUiState.value.isLoading) {
-        // Content Loading
         Box(
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
                 .padding(top = 40.dp, start = 50.dp, end = 50.dp)
@@ -94,8 +93,15 @@ fun BookingCheckOut(mainViewModel: MainViewModel, bookingPresenter: BookingPrese
             IndeterminateCircularProgressBar()
         }
     } else if (loadingPendingActionUiState.value.isFailed) {
-        // error occurred, refresh
-    } else if (loadingPendingActionUiState.value.isSuccess) {
+        Box(modifier = Modifier .fillMaxWidth().height(400.dp), contentAlignment = Alignment.Center) {
+            ErrorOccurredWidget(loadingPendingActionUiState.value.errorMessage, onRetryClicked = {
+                bookingPresenter.getPendingBookingAppointment(
+                    mainViewModel.currentUserInfo.value.userId!!,
+                    bookingStatus = BookingStatus.PENDING.toPath())
+            })
+        }
+    }
+    else if (loadingPendingActionUiState.value.isSuccess) {
         if (bookingViewModel.pendingAppointments.value.isEmpty()) {
             loadPendingActionUIStateViewModel.switchActionLoadPendingAppointmentUiState(AppUIStates(isDefault = true))
             onLastItemRemoved()
