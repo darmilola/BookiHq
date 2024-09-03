@@ -8,7 +8,7 @@ import presentation.home.HomepagePresenter
 import presentation.viewmodels.PerformedActionUIStateViewModel
 
 class HomepageHandler(
-    private val performedActionUIStateViewModel: PerformedActionUIStateViewModel,
+    private val loadHomePageActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val homepagePresenter: HomepagePresenter,
     private val onHomeInfoAvailable: (HomepageInfo, List<VendorStatusModel>) -> Unit) : HomepageContract.View {
     fun init() {
@@ -16,7 +16,7 @@ class HomepageHandler(
     }
 
     override fun showLoadHomePageLce(appUIStates: AppUIStates) {
-        performedActionUIStateViewModel.switchActionLoadHomepageUiState(appUIStates)
+        loadHomePageActionUIStateViewModel.switchActionLoadHomepageUiState(appUIStates)
     }
 
 

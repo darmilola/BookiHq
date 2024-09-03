@@ -5,7 +5,6 @@ import StackedSnackbarHost
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -44,7 +42,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -58,7 +55,7 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
-import domain.Models.Appointment
+import domain.Enums.BookingStatus
 import domain.Models.HomepageInfo
 import domain.Models.VendorRecommendation
 import domain.Enums.RecommendationType
@@ -71,6 +68,7 @@ import domain.Models.Services
 import domain.Models.UserAppointment
 import domain.Models.Vendor
 import domain.Models.VendorStatusModel
+import drawable.ErrorOccurredWidget
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -85,7 +83,6 @@ import presentation.widgets.HomeServicesWidget
 import presentation.widgets.RecommendedServiceItem
 import presentation.widgets.HomeAppointmentWidget
 import presentation.widgets.ProductDetailBottomSheet
-import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import utils.calculateHomePageScreenHeight
@@ -98,7 +95,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
     @Transient private val homepagePresenter: HomepagePresenter by inject()
     private var userId: Long = -1L
     @Transient private val preferenceSettings: Settings = Settings()
-    @Transient private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient private var loadHomepageActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient private var mainViewModel: MainViewModel? = null
     @Transient private var homePageViewModel: HomePageViewModel? = null
 
@@ -131,8 +128,8 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
     override fun Content() {
             userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(), -1L]
             val screenSizeInfo = ScreenSizeInfo()
-            if (performedActionUIStateViewModel == null) {
-                performedActionUIStateViewModel = kmpViewModel(
+            if (loadHomepageActionUIStateViewModel == null) {
+                loadHomepageActionUIStateViewModel = kmpViewModel(
                     factory = viewModelFactory {
                         PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                     },
@@ -152,7 +149,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
         }
 
 
-            val handler = HomepageHandler(performedActionUIStateViewModel!!, homepagePresenter,
+            val handler = HomepageHandler(loadHomepageActionUIStateViewModel!!, homepagePresenter,
                 onHomeInfoAvailable = { homePageInfo, vendorStatus ->
                     val viewHeight = calculateHomePageScreenHeight(
                         homepageInfo = homePageInfo,
@@ -175,7 +172,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             handler.init()
 
 
-        val uiState = performedActionUIStateViewModel!!.loadHomepageUiState.collectAsState()
+        val loadHomeUiState = loadHomepageActionUIStateViewModel!!.loadHomepageUiState.collectAsState()
         val homepageInfo = homePageViewModel!!.homePageInfo.collectAsState()
         val homePageViewHeight = homePageViewModel!!.homePageViewHeight.collectAsState()
 
@@ -184,7 +181,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 .background(color = Color.White),
             contentAlignment = Alignment.Center
         ) {
-            if (uiState.value.isLoading) {
+            if (loadHomeUiState.value.isLoading) {
                 Box(
                     modifier = Modifier.fillMaxWidth().fillMaxHeight()
                         .padding(top = 40.dp, start = 50.dp, end = 50.dp)
@@ -194,8 +191,20 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                     IndeterminateCircularProgressBar()
                 }
             }
-            else if (uiState.value.isFailed) {}
-            else if (uiState.value.isSuccess) {
+            else if (loadHomeUiState.value.isFailed) {
+                ErrorOccurredWidget(loadHomeUiState.value.errorMessage, onRetryClicked = {
+                    if (homePageViewModel!!.homePageInfo.value.userInfo?.userId == null) {
+                        val vendorPhone: String = preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath(),""]
+                        if (vendorPhone.isNotEmpty()){
+                            homepagePresenter.getUserHomepageWithStatus(userId, vendorPhone)
+                        }
+                        else {
+                            homepagePresenter.getUserHomepage(userId)
+                        }
+                    }
+                })
+            }
+            else if (loadHomeUiState.value.isSuccess) {
                 val recentAppointments = homepageInfo.value.recentAppointments
                 val vendorServices = homepageInfo.value.vendorServices
                 val vendorRecommendations = homepageInfo.value.recommendationRecommendations
@@ -465,7 +474,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                             appointmentPresenter = null,
                             postponementViewModel = null,
                             mainViewModel = mainViewModel!!,
-                            performedActionUIStateViewModel!!,
+                            loadHomepageActionUIStateViewModel!!,
                             onDeleteAppointment = {},
                             platformNavigator = platformNavigator
                         )
