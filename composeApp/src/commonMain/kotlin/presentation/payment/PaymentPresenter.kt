@@ -19,6 +19,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import presentation.Products.CartContract
 import com.badoo.reaktive.single.subscribe
+import domain.Enums.ServerResponse
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -41,13 +42,15 @@ class PaymentPresenter(apiService: HttpClient): PaymentContract.Presenter() {
                     paymentRepositoryImpl.initCheckout(paymentAmount = amount, customerEmail = customerEmail)
                         .subscribe(
                             onSuccess = { result ->
-                                val authorizationResult = Json.decodeFromString<PaymentAuthorizationResult>(result.authorizationResultJsonString)
-                                if (result.status == "success"){
-                                    contractView?.showLce(AppUIStates(isSuccess = true, successMessage = "Processing Successful"))
-                                    contractView?.showAuthorizationResult(authorizationResult)
-                                }
-                                else{
-                                    contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Processing Error"))
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        val authorizationResult = Json.decodeFromString<PaymentAuthorizationResult>(result.authorizationResultJsonString)
+                                        contractView?.showLce(AppUIStates(isSuccess = true, successMessage = "Processing Successful"))
+                                        contractView?.showAuthorizationResult(authorizationResult)
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Processing Error"))
+                                    }
                                 }
                             },
                             onError = {
