@@ -43,7 +43,7 @@ import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.DomainViewHandler.PlatformHandler
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
-import presentation.Screens.ConnectVendorScreen
+import presentation.Screens.ConnectVendor
 import presentation.dialogs.LoadingDialog
 import presentation.profile.ProfilePresenter
 import presentation.viewmodels.MainViewModel
@@ -121,7 +121,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
     }
 
     else if (navigateToConnectVendor.value){
-        val connectVendor = ConnectVendorScreen(platformNavigator)
+        val connectVendor = ConnectVendor(platformNavigator)
         connectVendor.setMainViewModel(mainViewModel)
         navigator.replaceAll(connectVendor)
     }

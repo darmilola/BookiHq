@@ -45,7 +45,7 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
    @Transient private val preferenceSettings: Settings = Settings()
    @Transient private val connectVendorPresenter: ConnectVendorPresenter by inject()
    @Transient private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
-   @Transient private var actionPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+   @Transient private var connectVendorActionUIStateViewModel: PerformedActionUIStateViewModel? = null
    @Transient private var mainViewModel: MainViewModel? = null
 
     fun setMainViewModel(mainViewModel: MainViewModel) {
@@ -65,8 +65,8 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
             )
         }
 
-        if (actionPerformedActionUIStateViewModel == null) {
-            actionPerformedActionUIStateViewModel = kmpViewModel(
+        if (connectVendorActionUIStateViewModel == null) {
+            connectVendorActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
@@ -77,7 +77,7 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
         // View Contract Handler Initialisation
         val handler = VendorInfoPageHandler(
             loadingScreenUiStateViewModel!!,
-            actionPerformedActionUIStateViewModel!!,
+            connectVendorActionUIStateViewModel!!,
             connectVendorPresenter)
         handler.init()
 
@@ -85,7 +85,7 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
         val vendorConnected = remember { mutableStateOf(false) }
         val userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(), -1L]
         val userFirstname = preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath(),""]
-        val connectVendorAction = actionPerformedActionUIStateViewModel!!.uiStateInfo.collectAsState()
+        val connectVendorAction = connectVendorActionUIStateViewModel!!.uiStateInfo.collectAsState()
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
         if (onBackPressed.value){
@@ -112,9 +112,7 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
                 navigator.replaceAll(mainScreen)
             }
         }
-        else if (connectVendorAction.value.isFailed){
-            // error occurred
-        }
+        else if (connectVendorAction.value.isFailed){}
 
 
 

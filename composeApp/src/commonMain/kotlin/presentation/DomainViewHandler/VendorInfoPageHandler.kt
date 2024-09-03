@@ -1,17 +1,15 @@
 package presentation.DomainViewHandler
 
 import UIStates.AppUIStates
-import domain.Models.Vendor
 import domain.Models.VendorResourceListEnvelope
 import presentation.connectVendor.ConnectVendorContract
 import presentation.connectVendor.ConnectVendorPresenter
-import presentation.viewmodels.ResourceListEnvelopeViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
 
 class VendorInfoPageHandler(
     private val loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel,
-    private val actionUIStateViewModel: PerformedActionUIStateViewModel,
+    private val connectVendorActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val connectVendorPresenter: ConnectVendorPresenter) : ConnectVendorContract.View {
     fun init() {
         connectVendorPresenter.registerUIContract(this)
@@ -22,7 +20,7 @@ class VendorInfoPageHandler(
     }
 
     override fun showActionLce(appUIStates: AppUIStates, message: String) {
-        actionUIStateViewModel.switchActionUIState(appUIStates)
+        connectVendorActionUIStateViewModel.switchActionUIState(appUIStates)
     }
 
     override fun showVendors(vendors: VendorResourceListEnvelope?, isFromSearch: Boolean, isLoadMore: Boolean) {}

@@ -1,34 +1,28 @@
 package presentation.Screens
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -45,14 +39,13 @@ import domain.Models.getVendorListItemViewHeight
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.widgets.SearchBar
-import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.ConnectPageViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.set
 import domain.Enums.SharedPreferenceEnum
-import kotlinx.coroutines.runBlocking
+import drawable.ErrorOccurredWidget
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.ConnectPageHandler
 import presentation.connectVendor.ConnectVendorPresenter
@@ -60,13 +53,13 @@ import presentation.connectVendor.SwitchVendorBusinessItemComponent
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.VendorsResourceListEnvelopeViewModel
+import presentation.widgets.EmptyContentWidget
 import presentation.widgets.SwitchVendorHeader
-import theme.Colors
 import utils.ParcelableScreen
 
 
 @Parcelize
-class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinComponent {
+class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinComponent {
 
     @Transient private val preferenceSettings: Settings = Settings()
     @Transient private val connectVendorPresenter: ConnectVendorPresenter by inject()
@@ -74,7 +67,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
     @Transient private var connectPageViewModel: ConnectPageViewModel? = null
     @Transient private var mainViewModel: MainViewModel? = null
     @Transient private var vendorResourceListEnvelopeViewModel: VendorsResourceListEnvelopeViewModel? = null
-    @Transient private var actionPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient private var connectVendorActionUIStateViewModel: PerformedActionUIStateViewModel? = null
 
     fun setMainViewModel(mainViewModel: MainViewModel) {
         this.mainViewModel = mainViewModel
@@ -100,8 +93,8 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
                 })
         }
 
-        if (actionPerformedActionUIStateViewModel == null) {
-            actionPerformedActionUIStateViewModel = kmpViewModel(
+        if (connectVendorActionUIStateViewModel == null) {
+            connectVendorActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
@@ -154,7 +147,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
         val navigator = LocalNavigator.currentOrThrow
         val searchQuery = remember { mutableStateOf("") }
 
-        val initializingScreen = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
+        val loadVendorUiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
         val vendorList = vendorResourceListEnvelopeViewModel?.resources?.collectAsState()
         val selectedVendor = connectPageViewModel?.selectedVendor?.collectAsState()
         val vendorUIModel = remember { mutableStateOf(VendorItemUIModel()) }
@@ -169,7 +162,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
         val handler = ConnectPageHandler(
             vendorResourceListEnvelopeViewModel!!,
             loadingScreenUiStateViewModel!!,
-            actionPerformedActionUIStateViewModel!!,
+            connectVendorActionUIStateViewModel!!,
             connectVendorPresenter)
         handler.init()
 
@@ -190,8 +183,7 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
                     }
                 },
                 content = {
-                    if (initializingScreen.value.isLoading) {
-                        //Content Loading
+                    if (loadVendorUiState.value.isLoading) {
                         Box(
                             modifier = Modifier.fillMaxWidth().fillMaxHeight()
                                 .padding(start = 50.dp, end = 50.dp)
@@ -200,18 +192,45 @@ class ConnectVendorScreen(val platformNavigator: PlatformNavigator) : Parcelable
                         ) {
                             IndeterminateCircularProgressBar()
                         }
-                    } else if (initializingScreen.value.isFailed) {
+                    }
+                    else if (loadVendorUiState.value.isFailed) {
+                        Box(modifier = Modifier .fillMaxWidth().height(400.dp), contentAlignment = Alignment.Center) {
+                            ErrorOccurredWidget(loadVendorUiState.value.errorMessage, onRetryClicked = {
+                                if (preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), ""].isNotEmpty()
+                                    && preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""].isNotEmpty()
+                                    && preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""].isNotEmpty()
+                                    && preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""].isNotEmpty()){
+                                    connectVendorPresenter.getVendor(country = country, city = city)
+                                    vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                                }
+                                else{
+                                    platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String, cityName: String ->
+                                        preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
+                                        preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
+                                        preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = countryName
+                                        preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = cityName
+                                        connectVendorPresenter.getVendor(country = countryName, city = cityName)
+                                        vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                                        city = cityName
+                                        country = countryName
+                                    })
+                                }
+                            })
+                        }
 
-                     // Error Occurred display reload
-
-                    } else if (initializingScreen.value.isSuccess) {
+                    }
+                    else if (loadVendorUiState.value.isEmpty) {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            EmptyContentWidget(emptyText = loadVendorUiState.value.emptyMessage)
+                        }
+                    }
+                    else if (loadVendorUiState.value.isSuccess) {
                         LazyColumn(
                             modifier = Modifier.padding(top = 10.dp).fillMaxWidth()
                                 .height(getVendorListItemViewHeight(vendorUIModel.value.vendorsList).dp),
                             contentPadding = PaddingValues(6.dp),
                             verticalArrangement = Arrangement.spacedBy(5.dp), userScrollEnabled = true
                         ) {
-                            println("Size is ${vendorUIModel.value.vendorsList.size}")
                                 items(vendorUIModel.value.vendorsList.size) { i ->
                                     SwitchVendorBusinessItemComponent(vendor = vendorUIModel.value.vendorsList[i]) {
                                         val connectVendorDetailsScreen = ConnectVendorDetailsScreen(vendor = it, platformNavigator = platformNavigator)

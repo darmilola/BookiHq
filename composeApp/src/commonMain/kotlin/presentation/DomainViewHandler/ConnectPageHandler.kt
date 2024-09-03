@@ -12,7 +12,7 @@ import presentation.viewmodels.VendorsResourceListEnvelopeViewModel
 class ConnectPageHandler(
     private val vendorResourceListEnvelopeViewModel: VendorsResourceListEnvelopeViewModel,
     private val loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel,
-    private val actionUIStateViewModel: PerformedActionUIStateViewModel,
+    private val connectVendorActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val connectVendorPresenter: ConnectVendorPresenter) : ConnectVendorContract.View {
     fun init() {
         connectVendorPresenter.registerUIContract(this)
@@ -23,7 +23,7 @@ class ConnectPageHandler(
     }
 
     override fun showActionLce(appUIStates: AppUIStates, message: String) {
-        actionUIStateViewModel.switchActionUIState(appUIStates)
+        connectVendorActionUIStateViewModel.switchActionUIState(appUIStates)
     }
 
     override fun showVendors(vendors: VendorResourceListEnvelope?, isFromSearch: Boolean, isLoadMore: Boolean) {
@@ -44,7 +44,7 @@ class ConnectPageHandler(
                     )
                 }
                 vendorResourceListEnvelopeViewModel.setResources(
-                    vendors?.resources!!.toMutableList()
+                    vendors.resources!!.toMutableList()
                 )
             } else if (isLoadMore) {
                 vendors!!.prevPageUrl?.let { vendorResourceListEnvelopeViewModel.setPrevPageUrl(it) }
@@ -61,7 +61,7 @@ class ConnectPageHandler(
                     )
                 }
                 val vendorList = vendorResourceListEnvelopeViewModel.resources.value
-                vendorList.addAll(vendors?.resources!!.distinct()!!)
+                vendorList.addAll(vendors.resources!!.distinct())
                 vendorResourceListEnvelopeViewModel.setResources(vendorList)
 
             } else {

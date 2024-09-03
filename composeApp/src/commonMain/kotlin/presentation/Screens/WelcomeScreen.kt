@@ -35,9 +35,7 @@ import applications.room.AppDatabase
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import cafe.adriel.voyager.transitions.SlideTransition
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
@@ -162,9 +160,9 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
         navigator.replaceAll(completeProfile)
     }
     else if (navigateToConnectVendor.value){
-        val connectVendorScreen = ConnectVendorScreen(platformNavigator)
-        connectVendorScreen.setMainViewModel(mainViewModel)
-        navigator.replaceAll(connectVendorScreen)
+        val connectVendor = ConnectVendor(platformNavigator)
+        connectVendor.setMainViewModel(mainViewModel)
+        navigator.replaceAll(connectVendor)
     }
     else if (navigateToPlatform.value) {
         if (deviceInfo() == DeviceType.IOS.toPath()) {

@@ -136,7 +136,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                 navigator.replaceAll(CompleteProfileScreen(platformNavigator, authPhone = authPhone.value, authEmail = ""))
         }
         else if (navigateToConnectVendor.value){
-            val connectScreen = ConnectVendorScreen(platformNavigator)
+            val connectScreen = ConnectVendor(platformNavigator)
             connectScreen.setMainViewModel(mainViewModel!!)
             navigator.replaceAll(connectScreen)
         }

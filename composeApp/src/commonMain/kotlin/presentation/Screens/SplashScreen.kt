@@ -26,18 +26,13 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.Settings
-import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import di.initKoin
 import domain.Enums.AuthType
 import domain.Enums.DeviceType
 import domain.Enums.SharedPreferenceEnum
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import presentation.components.SplashScreenBackground
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
@@ -103,9 +98,9 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
     handler.init()
 
     if (navigateToConnectVendor.value){
-        val connectVendorScreen = ConnectVendorScreen(platformNavigator)
-        connectVendorScreen.setMainViewModel(mainViewModel)
-        navigator.replaceAll(connectVendorScreen)
+        val connectVendor = ConnectVendor(platformNavigator)
+        connectVendor.setMainViewModel(mainViewModel)
+        navigator.replaceAll(connectVendor)
     }
     else if (navigateToPlatform.value) {
         if (deviceInfo() == DeviceType.IOS.toPath()) {
