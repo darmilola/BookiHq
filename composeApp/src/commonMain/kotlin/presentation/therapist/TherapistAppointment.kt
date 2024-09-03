@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,9 +29,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import domain.Enums.BookingStatus
 import domain.Models.Appointment
 import domain.Models.TherapistAppointmentItemUIModel
 import domain.Models.TherapistInfo
+import drawable.ErrorOccurredWidget
 import presentation.DomainViewHandler.TherapistHandler
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
@@ -38,6 +41,7 @@ import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.TherapistAppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
+import presentation.widgets.EmptyContentWidget
 import presentation.widgets.TherapistDashboardAppointmentWidget
 import rememberStackedSnackbarHostState
 import theme.Colors
@@ -60,7 +64,7 @@ fun TherapistAppointment(mainViewModel: MainViewModel, loadingScreenUiStateViewM
     }
 
     val handler = TherapistHandler(therapistPresenter,
-        loadingScreenUiStateViewModel = loadingScreenUiStateViewModel!!,
+        loadingScreenUiStateViewModel = loadingScreenUiStateViewModel,
         performedActionUIStateViewModel,
         onReviewsReady = {
 
@@ -72,14 +76,14 @@ fun TherapistAppointment(mainViewModel: MainViewModel, loadingScreenUiStateViewM
 
 
     val loadMoreState =
-        appointmentResourceListEnvelopeViewModel?.isLoadingMore?.collectAsState()
-    val appointmentList = appointmentResourceListEnvelopeViewModel?.resources?.collectAsState()
+        appointmentResourceListEnvelopeViewModel.isLoadingMore.collectAsState()
+    val appointmentList = appointmentResourceListEnvelopeViewModel.resources.collectAsState()
     val totalAppointmentsCount =
-        appointmentResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
+        appointmentResourceListEnvelopeViewModel.totalItemCount.collectAsState()
     val displayedAppointmentsCount =
-        appointmentResourceListEnvelopeViewModel?.displayedItemCount?.collectAsState()
+        appointmentResourceListEnvelopeViewModel.displayedItemCount.collectAsState()
     val uiState = loadingScreenUiStateViewModel.uiStateInfo.collectAsState()
-    val lastIndex = appointmentList?.value?.size?.minus(1)
+    val lastIndex = appointmentList.value.size.minus(1)
     val selectedAppointment = remember { mutableStateOf(Appointment()) }
 
 
@@ -87,12 +91,12 @@ fun TherapistAppointment(mainViewModel: MainViewModel, loadingScreenUiStateViewM
         mutableStateOf(
             TherapistAppointmentItemUIModel(
                 selectedAppointment.value,
-                appointmentList?.value!!
+                appointmentList.value
             )
         )
     }
 
-    if (!loadMoreState?.value!!) {
+    if (!loadMoreState.value) {
         appointmentUIModel =
             appointmentUIModel.copy(selectedAppointment = selectedAppointment.value,
                 appointmentList = appointmentResourceListEnvelopeViewModel.resources.value)
@@ -105,7 +109,6 @@ fun TherapistAppointment(mainViewModel: MainViewModel, loadingScreenUiStateViewM
         content = {
 
             if (uiState.value.isLoading) {
-                //Content Loading
                 Box(
                     modifier = Modifier.fillMaxWidth().fillMaxHeight()
                         .padding(top = 40.dp, start = 50.dp, end = 50.dp)
@@ -113,16 +116,21 @@ fun TherapistAppointment(mainViewModel: MainViewModel, loadingScreenUiStateViewM
                     contentAlignment = Alignment.Center
                 ) {
                     IndeterminateCircularProgressBar()
-                    println("Error 1")
                 }
-            } else if (uiState.value.isFailed) {
-
-                println("Error ")
-                //Error Occurred display reload
-
-            } else if (uiState.value.isSuccess) {
-                println("Error 2")
-
+            }
+            else if (uiState.value.isFailed) {
+                Box(modifier = Modifier .fillMaxWidth().height(400.dp), contentAlignment = Alignment.Center) {
+                    ErrorOccurredWidget(uiState.value.errorMessage, onRetryClicked = {
+                        therapistPresenter.getTherapistAppointments(therapistInfo.id!!)
+                    })
+                }
+            }
+            else if (uiState.value.isEmpty) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    EmptyContentWidget(emptyText = uiState.value.emptyMessage)
+                }
+            }
+            else if (uiState.value.isSuccess) {
                 val columnModifier = Modifier
                     .padding(top = 5.dp)
                     .fillMaxHeight()

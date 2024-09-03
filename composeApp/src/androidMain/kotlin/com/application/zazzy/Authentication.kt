@@ -44,7 +44,7 @@ class Authentication : AppCompatActivity() {
             .start(this, object : Callback<Credentials, AuthenticationException> {
                 override fun onFailure(error: AuthenticationException) {
                     val intent = Intent(this@Authentication, MainActivity::class.java)
-                    val response = AndroidAuth0ConnectionResponse(connectionType = connectionType, email = "", action = authAction!!, status = AuthenticationStatus.FAILURE.toPath())
+                    val response = AndroidAuth0ConnectionResponse(connectionType = connectionType, email = "", action = authAction!!, status = AuthenticationStatus.AUTHENTICATION_FAILURE.toPath())
                     intent.putExtra("authResponse", response)
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     startActivity(intent)
@@ -56,14 +56,14 @@ class Authentication : AppCompatActivity() {
                         .start(object : Callback<UserProfile, AuthenticationException> {
                             override fun onFailure(error: AuthenticationException) {
                                 val intent = Intent(this@Authentication, MainActivity::class.java)
-                                val response = AndroidAuth0ConnectionResponse(connectionType = connectionType, email = "", action = authAction!!, status = AuthenticationStatus.FAILURE.toPath())
+                                val response = AndroidAuth0ConnectionResponse(connectionType = connectionType, email = "", action = authAction!!, status = AuthenticationStatus.AUTHENTICATION_FAILURE.toPath())
                                 intent.putExtra("authResponse", response)
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                                 startActivity(intent)
                             }
                             override fun onSuccess(result: UserProfile) {
                                 val intent = Intent(this@Authentication, MainActivity::class.java)
-                                val response = AndroidAuth0ConnectionResponse(connectionType = connectionType, email = result.email, action = authAction!!, status = AuthenticationStatus.SUCCESS.toPath())
+                                val response = AndroidAuth0ConnectionResponse(connectionType = connectionType, email = result.email, action = authAction!!, status = AuthenticationStatus.AUTHENTICATION_SUCCESS.toPath())
                                 intent.putExtra("authResponse", response)
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                                 startActivity(intent)
@@ -82,7 +82,7 @@ class Authentication : AppCompatActivity() {
             .start(this, object : Callback<Credentials, AuthenticationException> {
                 override fun onFailure(error: AuthenticationException) {
                     val intent = Intent(this@Authentication, MainActivity::class.java)
-                    val response = AndroidAuth0ConnectionResponse(connectionType = connectionType, email = "", action = authAction!!, status = AuthenticationStatus.FAILURE.toPath())
+                    val response = AndroidAuth0ConnectionResponse(connectionType = connectionType, email = "", action = authAction!!, status = AuthenticationStatus.AUTHENTICATION_FAILURE.toPath())
                     intent.putExtra("authResponse", response)
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     startActivity(intent)
@@ -94,14 +94,14 @@ class Authentication : AppCompatActivity() {
                         .start(object : Callback<UserProfile, AuthenticationException> {
                             override fun onFailure(error: AuthenticationException) {
                                 val intent = Intent(this@Authentication, MainActivity::class.java)
-                                val response = AndroidAuth0ConnectionResponse(connectionType = connectionType, email = "", action = authAction!!, status = AuthenticationStatus.FAILURE.toPath())
+                                val response = AndroidAuth0ConnectionResponse(connectionType = connectionType, email = "", action = authAction!!, status = AuthenticationStatus.AUTHENTICATION_FAILURE.toPath())
                                 intent.putExtra("authResponse", response)
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                                 startActivity(intent)
                             }
                             override fun onSuccess(result: UserProfile) {
                                 val intent = Intent(this@Authentication, MainActivity::class.java)
-                                val response = AndroidAuth0ConnectionResponse(connectionType = connectionType, email = result.email, action = authAction!!, status = AuthenticationStatus.SUCCESS.toPath())
+                                val response = AndroidAuth0ConnectionResponse(connectionType = connectionType, email = result.email, action = authAction!!, status = AuthenticationStatus.AUTHENTICATION_SUCCESS.toPath())
                                 intent.putExtra("authResponse", response)
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                                 startActivity(intent)
