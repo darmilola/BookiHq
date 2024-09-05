@@ -105,6 +105,8 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
     @Transient
     private var createOrderActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
+    private var paymentActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient
     private var cartViewModel: CartViewModel? = null
     @Transient
     private var mainViewModel: MainViewModel? = null
@@ -146,6 +148,14 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
             )
         }
 
+        if (paymentActionUIStateViewModel == null) {
+            paymentActionUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
         if(cartViewModel == null) {
             cartViewModel = kmpViewModel(
                 factory = viewModelFactory {
@@ -165,6 +175,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
         }
 
         val actionUiState = createOrderActionUIStateViewModel!!.uiStateInfo.collectAsState()
+        val paymentActionUiState = paymentActionUIStateViewModel!!.paymentUiStateInfo.collectAsState()
 
         val subtotal = calculateCartCheckoutSubTotal(cartItems.value)
         val total = calculateTotal(subtotal, cartViewModel!!.deliveryFee.value)
@@ -185,11 +196,12 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                 val currentUserInfo = mainViewModel!!.currentUserInfo.value
                 val customerEmail = if (currentUserInfo.email!!.isNotEmpty()) currentUserInfo.email else "damilolaakinterinwa@gmail.com"
                 val paymentAmount = cartViewModel!!.total.value
-                // View Contract Handler Initialisation
                 val handler = CreateOrderScreenHandler(
                     cartPresenter,
                     paymentPresenter = paymentPresenter,
-                    createOrderActionUIStateViewModel!!, onAuthorizationSuccessful = {
+                    createOrderActionUIStateViewModel!!,
+                    paymentActionUIStateViewModel!!,
+                    onAuthorizationSuccessful = {
                         if (it.status) {
                             platformNavigator.startPaymentProcess(paymentAmount = paymentAmount.toString(),
                                 customerEmail = customerEmail,
@@ -227,6 +239,17 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                 else if (actionUiState.value.isFailed) {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         ErrorDialog("Creating Order Failed", actionTitle = "Retry", onConfirmation = {})
+                    }
+                }
+
+                if (paymentActionUiState.value.isLoading) {
+                    Box(modifier = Modifier.fillMaxWidth(0.90f)) {
+                        LoadingDialog("Processing Payment")
+                    }
+                }
+                else if (paymentActionUiState.value.isFailed) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        ErrorDialog("Payment Authentication Failed", actionTitle = "Retry", onConfirmation = {})
                     }
                 }
 
@@ -530,6 +553,7 @@ class CreateOrderScreenHandler(
     private val cartPresenter: CartPresenter,
     private val paymentPresenter: PaymentPresenter,
     private val uiStateViewModel: PerformedActionUIStateViewModel,
+    private val paymentUiStateViewModel: PerformedActionUIStateViewModel,
     private val onAuthorizationSuccessful: (PaymentAuthorizationResult) -> Unit
 ) : CartContract.View, PaymentContract.View {
     fun init() {
@@ -538,12 +562,16 @@ class CreateOrderScreenHandler(
     }
 
 
-    override fun showLce(appUIStates: AppUIStates) {
-        uiStateViewModel.switchActionUIState(appUIStates)
+    override fun showPaymentLce(appUIStates: AppUIStates) {
+        paymentUiStateViewModel.switchPaymentActionUIState(appUIStates)
     }
 
     override fun showAuthorizationResult(paymentAuthorizationResult: PaymentAuthorizationResult) {
         onAuthorizationSuccessful(paymentAuthorizationResult)
+    }
+
+    override fun showLce(appUIStates: AppUIStates) {
+        uiStateViewModel.switchActionUIState(appUIStates)
     }
 }
 

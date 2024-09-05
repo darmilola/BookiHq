@@ -5,7 +5,7 @@ import domain.Models.PaymentAuthorizationResult
 
 class PaymentContract {
     interface View {
-        fun showLce(appUIStates: AppUIStates)
+        fun showPaymentLce(appUIStates: AppUIStates)
         fun showAuthorizationResult(paymentAuthorizationResult: PaymentAuthorizationResult)
     }
 

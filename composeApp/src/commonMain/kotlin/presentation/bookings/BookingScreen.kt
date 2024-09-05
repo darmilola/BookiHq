@@ -95,6 +95,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
     @Transient private var loadPendingActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient private var deleteActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient private var createAppointmentActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient private var paymentActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient private var getTherapistActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient private var bookingViewModel: BookingViewModel? = null
     @Transient private val paymentPresenter: PaymentPresenter by inject()
@@ -158,6 +159,14 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             )
         }
 
+        if (paymentActionUIStateViewModel== null) {
+            paymentActionUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
       if(bookingViewModel == null) {
         bookingViewModel = kmpViewModel(
             factory = viewModelFactory {
@@ -179,6 +188,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
 
 
         val createAppointmentActionUiStates = createAppointmentActionUIStateViewModel!!.createAppointmentUiState.collectAsState()
+        val paymentActionUiState = paymentActionUIStateViewModel!!.paymentUiStateInfo.collectAsState()
 
         if (createAppointmentActionUiStates.value.isLoading) {
             Box(modifier = Modifier.fillMaxWidth(0.90f)) {
@@ -201,6 +211,17 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             }
         }
 
+        if (paymentActionUiState.value.isLoading) {
+            Box(modifier = Modifier.fillMaxWidth(0.90f)) {
+                LoadingDialog("Processing Payment")
+            }
+        }
+        else if (paymentActionUiState.value.isFailed) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                ErrorDialog("Payment Authentication Failed", actionTitle = "Retry", onConfirmation = {})
+            }
+        }
+
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -208,12 +229,14 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         )
 
         if (addMoreService.value){
+            addMoreService.value = false
             rememberCoroutineScope().launch {
                 pagerState.scrollToPage(0)
                 navigator.pop()
             }
         }
         if (lastItemRemoved.value){
+            lastItemRemoved.value = false
             rememberCoroutineScope().launch {
                 pagerState.scrollToPage(0)
                 navigator.pop()
@@ -249,6 +272,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         // View Contract Handler Initialisation
         val paymentHandler = CreateAppointmentPaymentHandler(
             paymentPresenter = paymentPresenter,
+            paymentActionUIStateViewModel!!,
             onAuthorizationSuccessful = {
                 val userId = mainViewModel!!.currentUserInfo.value.userId
                 val vendorId = mainViewModel!!.connectedVendor.value.vendorId
@@ -505,12 +529,15 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
 
 class CreateAppointmentPaymentHandler(
     private val paymentPresenter: PaymentPresenter,
+    private val paymentUiStateViewModel: PerformedActionUIStateViewModel,
     private val onAuthorizationSuccessful: (PaymentAuthorizationResult) -> Unit
 ) : PaymentContract.View {
     fun init() {
         paymentPresenter.registerUIContract(this)
     }
-    override fun showLce(appUIStates: AppUIStates) {}
+    override fun showPaymentLce(appUIStates: AppUIStates) {
+        paymentUiStateViewModel.switchPaymentActionUIState(appUIStates)
+    }
 
     override fun showAuthorizationResult(paymentAuthorizationResult: PaymentAuthorizationResult) {
         onAuthorizationSuccessful(paymentAuthorizationResult)

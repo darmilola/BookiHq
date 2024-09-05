@@ -65,6 +65,7 @@ import presentation.appointments.AppointmentsTab
 import presentation.authentication.AuthenticationPresenter
 import presentation.bookings.BookingScreen
 import presentation.connectVendor.SwitchVendor
+import presentation.connectVendor.SwitchVendorDetails
 import presentation.consultation.VirtualConsultationRoom
 import presentation.home.HomeTab
 import presentation.main.MainScreenTabs
@@ -137,7 +138,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
         if (onBackPressed.value){
-            platformNavigator!!.exitApp()
+            platformNavigator.exitApp()
         }
 
         var isBottomNavSelected by remember { mutableStateOf(true) }
@@ -194,7 +195,18 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                     )
                 )
             }
-
+            Screens.CONNECTED_VENDOR_DETAILS.toPath() -> {
+                val connectedVendorDetails = ConnectVendorDetailsScreen(vendorInfo.value,platformNavigator)
+                connectedVendorDetails.setMainViewModel(mainViewModel!!)
+                val nav = LocalNavigator.currentOrThrow
+                nav.push(connectedVendorDetails)
+                mainViewModel!!.setScreenNav(
+                    Pair(
+                        Screens.CONNECTED_VENDOR_DETAILS.toPath(),
+                        Screens.DEFAULT.toPath()
+                    )
+                )
+            }
             Screens.JOIN_SPA.toPath() -> {
                 val joinASpa = JoinASpa(platformNavigator)
                 joinASpa.setMainViewModel(mainViewModel!!)
@@ -223,7 +235,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             }
 
             Screens.CART.toPath() -> {
-                val cart = Cart(platformNavigator!!)
+                val cart = Cart(platformNavigator)
                 cart.setMainViewModel(mainViewModel!!)
                 cart.setDatabaseBuilder(databaseBuilder)
                 val nav = LocalNavigator.currentOrThrow
@@ -234,7 +246,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                 val consultation = VirtualConsultationRoom()
                 consultation.setMainViewModel(mainViewModel!!)
                 val nav = LocalNavigator.currentOrThrow
-                nav.push(consultation!!)
+                nav.push(consultation)
                 mainViewModel!!.setScreenNav(
                     Pair(
                         Screens.CONSULTATION_ROOM.toPath(),

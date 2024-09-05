@@ -107,7 +107,6 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
             Navigator(splashScreen) { navigator ->
                 SlideTransition(navigator)
-
             }
             val isFinished = mainViewModel!!.exitApp.collectAsState()
             if (isFinished.value){

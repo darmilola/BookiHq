@@ -24,6 +24,7 @@ class LoadingScreenUIStateViewModel(private val savedStateHandle: SavedStateHand
 class PerformedActionUIStateViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
     private var _uiState = savedStateHandle.getStateFlow("actionUiState", AppUIStates())
+    private var _paymentUiState = savedStateHandle.getStateFlow("paymentUiState", AppUIStates())
     private var _deleteUiState = savedStateHandle.getStateFlow("deleteActionUiState", AppUIStates())
     private var _availabilityUiState = savedStateHandle.getStateFlow("availabilityUiState", AppUIStates())
     private var _loadHomepageUiState = savedStateHandle.getStateFlow("loadHomepageUiState", AppUIStates())
@@ -78,6 +79,9 @@ class PerformedActionUIStateViewModel(private val savedStateHandle: SavedStateHa
     val uiStateInfo: StateFlow<AppUIStates>
         get() = _uiState
 
+    val paymentUiStateInfo: StateFlow<AppUIStates>
+        get() = _paymentUiState
+
     val joinMeetingStateInfo: StateFlow<AppUIStates>
         get() = _joinMeetingUiState
 
@@ -131,6 +135,10 @@ class PerformedActionUIStateViewModel(private val savedStateHandle: SavedStateHa
     }
     fun switchActionUIState(appUIStates: AppUIStates) {
         savedStateHandle["actionUiState"] = appUIStates
+    }
+
+    fun switchPaymentActionUIState(appUIStates: AppUIStates) {
+        savedStateHandle["paymentUiState"] = appUIStates
     }
 
 
