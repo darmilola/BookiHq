@@ -224,7 +224,7 @@ fun HomeAppointmentWidget(userAppointment: UserAppointment? = null, appointmentP
                 onDeleteAppointment = {
                     onDeleteAppointment(it)
                 }, platformNavigator = platformNavigator)
-            AttachAppointmentContent(userAppointment?.resources)
+            AttachAppointmentContent(userAppointment.resources)
         }
     }
 }

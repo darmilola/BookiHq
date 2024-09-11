@@ -1,4 +1,4 @@
-package presentation.bookings
+package presentation.appointmentBookings
 
 import GGSansSemiBold
 import theme.styles.Colors
@@ -42,7 +42,6 @@ import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.AttachTherapistWidget
 import presentation.widgets.TherapistReviewScreen
-import presentation.widgets.TimeGrid
 import presentation.widgets.TimeGridDisplay
 import presentations.components.TextComponent
 import utils.calculateTherapistServiceTimes

@@ -7,7 +7,6 @@ import domain.Enums.CardType
 import domain.Enums.DeliveryMethodEnum
 import domain.Enums.SessionEnum
 import domain.Models.Appointment
-import domain.Models.BookedTimes
 import domain.Models.HomepageInfo
 import domain.Models.PaymentCard
 import domain.Models.PlatformTime
@@ -48,7 +47,7 @@ fun getRecentAppointmentViewHeight(
     return itemCount * 200
 }
 
-fun getPopularProductViewHeight(
+fun getProductViewHeight(
     itemList: List<Product>
 ): Int {
     val itemCount = itemList.size

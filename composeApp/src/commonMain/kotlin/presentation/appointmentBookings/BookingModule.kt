@@ -1,4 +1,4 @@
-package presentation.bookings
+package presentation.appointmentBookings
 
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module

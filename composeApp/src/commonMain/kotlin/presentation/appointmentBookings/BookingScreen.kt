@@ -1,4 +1,4 @@
-package presentation.bookings
+package presentation.appointmentBookings
 
 import StackedSnackbarHost
 import StackedSnakbarHostState

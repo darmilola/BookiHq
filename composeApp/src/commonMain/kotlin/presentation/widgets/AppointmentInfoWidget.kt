@@ -45,11 +45,11 @@ fun AppointmentInfoWidget(appointment: Appointment) {
         dayOfMonth()
     }
     val platformTime = appointment.platformTime
-    val isAm = if (platformTime?.isAm == true) "AM" else "PM"
+    val isAm = if (platformTime.isAm) "AM" else "PM"
 
     val appointmentDate =
         LocalDate(dayOfMonth = appointment.appointmentDay!!, monthNumber = appointment.appointmentMonth!!, year = appointment.appointmentYear!!).format(appointmentDateFormat)
-    val appointmentTime = platformTime?.time+" "+isAm
+    val appointmentTime = platformTime.time +" "+isAm
 
     val columnModifier = Modifier
         .padding(start = 15.dp, end = 10.dp)
@@ -91,7 +91,7 @@ fun AppointmentInfoWidget(appointment: Appointment) {
                         contentAlignment = Alignment.CenterStart
                     ) {
                         TextComponent(
-                            text = appointmentTime.toString() + " " + appointmentDate,
+                            text = "$appointmentTime $appointmentDate",
                             textModifier = Modifier.wrapContentSize()
                                 .padding(start = 5.dp),
                             fontSize = 15,

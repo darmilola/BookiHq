@@ -1,4 +1,4 @@
-package presentation.bookings
+package presentation.appointmentBookings
 
 import com.badoo.reaktive.single.subscribe
 import domain.bookings.BookingRepositoryImpl

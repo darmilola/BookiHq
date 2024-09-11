@@ -59,12 +59,11 @@ import presentation.Orders.Orders
 import presentation.Packages.Packages
 import presentation.Products.Cart
 import presentation.Products.ShopProductTab
-import presentation.SkinAnalysis.SkinAnalysisTab
 import presentation.account.AccountTab
 import presentation.account.JoinASpa
 import presentation.appointments.AppointmentsTab
 import presentation.authentication.AuthenticationPresenter
-import presentation.bookings.BookingScreen
+import presentation.appointmentBookings.BookingScreen
 import presentation.connectVendor.SwitchVendor
 import presentation.consultation.VirtualConsultationRoom
 import presentation.home.HomeTab

@@ -37,7 +37,6 @@ import presentations.components.ImageComponent
 @Composable
 fun MainTopBar(mainViewModel: MainViewModel) {
     val displayedTab = mainViewModel.displayedTab.collectAsState()
-    if (displayedTab.value != MainTabEnum.PACKAGES.toPath()) {
         Column(
             modifier = Modifier.fillMaxWidth().height(60.dp),
             verticalArrangement = Arrangement.Center,
@@ -52,7 +51,6 @@ fun MainTopBar(mainViewModel: MainViewModel) {
                 mainTopBarItem(mainViewModel)
             }
         }
-    }
 }
 
 

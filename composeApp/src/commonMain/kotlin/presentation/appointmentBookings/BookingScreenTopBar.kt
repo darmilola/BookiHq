@@ -1,4 +1,4 @@
-package presentation.bookings
+package presentation.appointmentBookings
 
 import GGSansRegular
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -20,11 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
-import domain.Enums.Screens
 import kotlinx.coroutines.launch
-import presentation.viewmodels.BookingViewModel
-import presentation.viewmodels.MainViewModel
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.StepsProgressBar
 import presentations.components.TextComponent

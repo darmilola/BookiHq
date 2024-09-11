@@ -78,7 +78,7 @@ import presentation.widgets.SearchBar
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
-import utils.getPopularProductViewHeight
+import utils.getProductViewHeight
 
 @Parcelize
 class ShopProductTab : Tab, KoinComponent, Parcelable {
@@ -230,7 +230,6 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                                 onCartChanged.value
                             }
                             showProductDetailBottomSheet = false
-
                         })
                 }
 
@@ -304,7 +303,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                 .clip(CircleShape)
                 .size(70.dp)
                 .clickable {
-                    mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.CART.toPath()))
+                    mainViewModel.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.CART.toPath()))
                 }
                 .background(color = Colors.darkPrimary),
             contentAlignment = Alignment.Center
@@ -395,7 +394,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                     ) {
                         LazyColumn(
                             modifier = Modifier.fillMaxWidth().height(
-                                getPopularProductViewHeight(productList.value).dp
+                                getProductViewHeight(productList.value).dp
                             ),
                             contentPadding = PaddingValues(top = 6.dp, bottom = 6.dp),
                             verticalArrangement = Arrangement.spacedBy(5.dp),

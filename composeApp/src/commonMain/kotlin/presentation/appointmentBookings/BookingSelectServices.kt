@@ -1,4 +1,4 @@
-package presentation.bookings
+package presentation.appointmentBookings
 
 import GGSansSemiBold
 import StackedSnackbarHost

@@ -1,8 +1,8 @@
 package presentation.DomainViewHandler
 
 import domain.Models.ServiceTypeTherapists
-import presentation.bookings.BookingContract
-import presentation.bookings.BookingPresenter
+import presentation.appointmentBookings.BookingContract
+import presentation.appointmentBookings.BookingPresenter
 import UIStates.AppUIStates
 import domain.Models.AppointmentReview
 import presentation.viewmodels.BookingViewModel

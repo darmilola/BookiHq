@@ -1,8 +1,6 @@
 package di
 
 import applications.ktor.httpClient
-import com.russhwolf.settings.Settings
-import domain.Enums.SharedPreferenceEnum
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import io.ktor.client.plugins.contentnegotiation.*
@@ -10,16 +8,13 @@ import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.request.header
 import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import org.koin.core.context.loadKoinModules
 import org.koin.core.context.stopKoin
-import org.koin.core.context.unloadKoinModules
 import presentation.Orders.OrderModule
 import presentation.Packages.PackageModule
-import presentation.bookings.BookingModule
+import presentation.appointmentBookings.BookingModule
 import presentation.Products.ProductModule
 import presentation.connectVendor.ConnectVendorModule
 import presentation.profile.ProfileModule

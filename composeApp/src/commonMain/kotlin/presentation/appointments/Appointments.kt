@@ -203,7 +203,6 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
 
         val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
         val deleteActionUIStates = deletePerformedActionUIStateViewModel!!.deleteUIStateInfo.collectAsState()
-        val joinMeetingActionUIStates = joinMeetingPerformedActionUIStateViewModel!!.joinMeetingStateInfo.collectAsState()
         val refreshActionUIStates = refreshActionUIStateViewModel!!.refreshAppointmentActionUiState.collectAsState()
         val addReviewsUIState = addAppointmentReviewsUIStateViewModel!!.addAppointmentReviewUiState.collectAsState()
         val postponeActionUIStates = postponeAppointmentUIStateViewModel!!.postponeAppointmentUiState.collectAsState()
@@ -301,20 +300,6 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
         }
         else if (refreshActionUIStates.value.isFailed){
             isRefreshing.value = false
-        }
-
-        if (joinMeetingActionUIStates.value.isLoading) {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                LoadingDialog("Joining Meeting")
-            }
-        }
-        else if (joinMeetingActionUIStates.value.isSuccess) {}
-        else if (joinMeetingActionUIStates.value.isFailed) {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                ErrorDialog("Error Joining Meeting Please Try Again", actionTitle = "Retry", onConfirmation = {
-                    
-                })
-            }
         }
 
 
