@@ -56,6 +56,7 @@ import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.Orders.Orders
+import presentation.Packages.Packages
 import presentation.Products.Cart
 import presentation.Products.ShopProductTab
 import presentation.SkinAnalysis.SkinAnalysisTab
@@ -65,13 +66,11 @@ import presentation.appointments.AppointmentsTab
 import presentation.authentication.AuthenticationPresenter
 import presentation.bookings.BookingScreen
 import presentation.connectVendor.SwitchVendor
-import presentation.connectVendor.SwitchVendorDetails
 import presentation.consultation.VirtualConsultationRoom
 import presentation.home.HomeTab
 import presentation.main.MainScreenTabs
 import presentation.main.MainTopBar
 import presentation.profile.EditProfile
-import presentation.profile.TalkWithATherapist
 import presentation.therapist.TherapistDashboard
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
@@ -100,7 +99,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
     @Transient
     private var appointmentsTab: AppointmentsTab? = null
     @Transient
-    private var skinAnalysisTab: SkinAnalysisTab? = null
+    private var packages: Packages? = null
     @Transient
     private var accountTab: AccountTab? = null
     @Transient
@@ -333,13 +332,13 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                                 ) {
                                     isBottomNavSelected = true
                                 }
-                                skinAnalysisTab = SkinAnalysisTab()
-                                skinAnalysisTab!!.setMainViewModel(mainViewModel!!)
+                                packages = Packages()
+                                packages!!.setMainViewModel(mainViewModel!!)
                                 TabNavigationItem(
-                                    skinAnalysisTab!!,
-                                    selectedImage = "drawable/spa_filled_icon.png",
-                                    unselectedImage = "drawable/spa_outline_icon.png",
-                                    labelText = "Skin Analysis",
+                                    packages!!,
+                                    selectedImage = "drawable/package_icon_filled.png",
+                                    unselectedImage = "drawable/package_icon.png",
+                                    labelText = "Packages",
                                     imageSize = 26,
                                     currentTabId = 2,
                                     tabNavigator = it2,
@@ -397,7 +396,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
         var imageTint by remember { mutableStateOf(Color.White) }
         var handleTint by remember { mutableStateOf(Colors.darkPrimary) }
 
-        if (tabNavigator.current is HomeTab && currentTabId == 0) {
+        if (tabNavigator.current is HomeTab && currentTabId == MainTabEnum.HOME.toPageID()) {
             imageStr = selectedImage
             imageTint = Color.White
             handleTint = Color.White
@@ -406,7 +405,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             mainViewModel.setTitle(screenTitle)
             mainViewModel.setDisplayedTab(MainTabEnum.HOME.toPath())
         }
-        else  if (tabNavigator.current is ShopProductTab && currentTabId == 1) {
+        else  if (tabNavigator.current is ShopProductTab && currentTabId == MainTabEnum.PRODUCTS.toPageID()) {
             imageStr = selectedImage
             imageTint = Color.White
             handleTint = Color.White
@@ -414,19 +413,19 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
             mainViewModel.setIsClickedSearchProduct(false)
-            mainViewModel.setDisplayedTab(MainTabEnum.SHOP.toPath())
+            mainViewModel.setDisplayedTab(MainTabEnum.PRODUCTS.toPath())
         }
-        else if (tabNavigator.current is SkinAnalysisTab && currentTabId == 2) {
+        else if (tabNavigator.current is Packages && currentTabId == MainTabEnum.PACKAGES.toPageID()) {
             imageStr = selectedImage
             imageTint = Color.White
             handleTint = Color.White
-            val screenTitle = "Skin Analysis"
+            val screenTitle = "Packages"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
-            mainViewModel.setDisplayedTab(MainTabEnum.SKIN_ANALYSIS.toPath())
+            mainViewModel.setDisplayedTab(MainTabEnum.PACKAGES.toPath())
 
         }
-        else if (tabNavigator.current is AppointmentsTab && currentTabId == 3) {
+        else if (tabNavigator.current is AppointmentsTab && currentTabId == MainTabEnum.APPOINTMENT.toPageID()) {
             imageStr = selectedImage
             imageTint = Color.White
             handleTint = Color.White
@@ -435,14 +434,14 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             mainViewModel.setTitle(screenTitle)
             mainViewModel.setDisplayedTab(MainTabEnum.APPOINTMENT.toPath())
 
-        } else if (tabNavigator.current is AccountTab && currentTabId == 4) {
+        } else if (tabNavigator.current is AccountTab && currentTabId == MainTabEnum.MORE.toPageID()) {
             imageStr = selectedImage
             imageTint = Color.White
             handleTint = Color.White
             val screenTitle = "More"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
-            mainViewModel.setDisplayedTab(MainTabEnum.PROFILE.toPath())
+            mainViewModel.setDisplayedTab(MainTabEnum.MORE.toPath())
         } else {
             imageTint = Color.White
             handleTint = Colors.darkPrimary

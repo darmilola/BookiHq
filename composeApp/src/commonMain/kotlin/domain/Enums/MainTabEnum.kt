@@ -2,24 +2,32 @@ package domain.Enums
 
 enum class MainTabEnum {
     HOME,
-    SHOP,
-    SKIN_ANALYSIS,
+    PRODUCTS,
+    PACKAGES,
     APPOINTMENT,
-    PROFILE;
+    MORE;
 
     fun toPath() = when (this) {
         HOME -> "home"
-        SHOP -> "shop"
-        SKIN_ANALYSIS -> "skinAnalysis"
+        PRODUCTS -> "shop"
+        PACKAGES -> "packages"
         APPOINTMENT -> "appointment"
-        PROFILE -> "profile"
+        MORE -> "more"
     }
 
     fun toEventPropertyName() = when (this) {
         HOME -> "home"
-        SHOP -> "shop"
-        SKIN_ANALYSIS -> "skinAnalysis"
+        PRODUCTS -> "shop"
+        PACKAGES -> "packages"
         APPOINTMENT -> "appointment"
-        PROFILE -> "profile"
+        MORE -> "more"
+    }
+
+    fun toPageID() = when (this) {
+        HOME -> 0
+        PRODUCTS -> 1
+        PACKAGES -> 2
+        APPOINTMENT -> 3
+        MORE -> 4
     }
 }

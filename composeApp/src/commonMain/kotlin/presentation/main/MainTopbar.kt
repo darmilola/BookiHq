@@ -37,7 +37,7 @@ import presentations.components.ImageComponent
 @Composable
 fun MainTopBar(mainViewModel: MainViewModel) {
     val displayedTab = mainViewModel.displayedTab.collectAsState()
-    if (displayedTab.value != MainTabEnum.SKIN_ANALYSIS.toPath()) {
+    if (displayedTab.value != MainTabEnum.PACKAGES.toPath()) {
         Column(
             modifier = Modifier.fillMaxWidth().height(60.dp),
             verticalArrangement = Arrangement.Center,
@@ -131,7 +131,7 @@ fun mainTopBarItem(mainViewModel: MainViewModel) {
                     mainViewModel.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.CONNECTED_VENDOR_DETAILS.toPath()))
                 })
             }
-            MainTabEnum.SHOP.toPath() -> {
+            MainTabEnum.PRODUCTS.toPath() -> {
                 val iconModifier = Modifier
                     .padding(top = 5.dp)
                     .clickable {
@@ -141,7 +141,7 @@ fun mainTopBarItem(mainViewModel: MainViewModel) {
                 ImageComponent(imageModifier = iconModifier, imageRes = "drawable/search_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
             }
             MainTabEnum.APPOINTMENT.toPath() -> {}
-            MainTabEnum.PROFILE.toPath() -> {}
+            MainTabEnum.MORE.toPath() -> {}
 
         }
     }

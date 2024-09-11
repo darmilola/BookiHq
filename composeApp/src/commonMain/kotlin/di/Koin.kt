@@ -18,6 +18,7 @@ import org.koin.core.context.loadKoinModules
 import org.koin.core.context.stopKoin
 import org.koin.core.context.unloadKoinModules
 import presentation.Orders.OrderModule
+import presentation.Packages.PackageModule
 import presentation.bookings.BookingModule
 import presentation.Products.ProductModule
 import presentation.connectVendor.ConnectVendorModule
@@ -38,6 +39,7 @@ fun initKoin(){
         modules(ProfileModule.ProfileModule)
         modules(BookingModule.BookingModule)
         modules(ProductModule.ProductModule)
+        modules(PackageModule.PackageModule)
         modules(PaymentModule.PaymentModule)
         modules(AppointmentModule.AppointmentModule)
         modules(TherapistModule.TherapistModule)

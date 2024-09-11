@@ -237,7 +237,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                 BusinessStatusDisplay(statusList = homePageViewModel!!.vendorStatus.value, vendorInfo = mainViewModel!!.connectedVendor.value)
                             }
                             if (!vendorRecommendations.isNullOrEmpty()) {
-                                RecommendedSessions(vendorRecommendations!!, mainViewModel!!)
+                                RecommendedSessions(vendorRecommendations, mainViewModel!!)
                             }
                             if (!recentAppointments.isNullOrEmpty()) {
                                 AttachAppointmentsTitle("Recent Appointments")
