@@ -41,7 +41,7 @@ import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.AttachTherapistWidget
-import presentation.widgets.TherapistReviewScreen
+import presentation.widgets.AppointmentReviewScreen
 import presentation.widgets.TimeGridDisplay
 import presentations.components.TextComponent
 import utils.calculateTherapistServiceTimes
@@ -278,9 +278,7 @@ fun TherapistContent(bookingViewModel: BookingViewModel, therapists: List<Servic
 
 @Composable
 fun AttachServiceReviews(appointmentReview: List<AppointmentReview>){
-
-   TherapistReviewScreen(appointmentReview)
-
+    AppointmentReviewScreen(appointmentReview)
 }
 
 

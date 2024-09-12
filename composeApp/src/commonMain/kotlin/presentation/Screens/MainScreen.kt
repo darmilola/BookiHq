@@ -69,6 +69,7 @@ import presentation.consultation.VirtualConsultationRoom
 import presentation.home.HomeTab
 import presentation.main.MainScreenTabs
 import presentation.main.MainTopBar
+import presentation.Packages.PackageInfo
 import presentation.profile.EditProfile
 import presentation.therapist.TherapistDashboard
 import presentation.viewmodels.HomePageViewModel
@@ -262,6 +263,19 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                 mainViewModel!!.setScreenNav(
                     Pair(
                         Screens.THERAPIST_DASHBOARD.toPath(),
+                        Screens.DEFAULT.toPath()
+                    )
+                )
+            }
+            Screens.PACKAGE_INFO.toPath() -> {
+                val packageInfo = PackageInfo(platformNavigator)
+                packageInfo.setMainViewModel(mainViewModel!!)
+                packageInfo.setSelectedPackage(mainViewModel!!.selectedPackage.value)
+                val nav = LocalNavigator.currentOrThrow
+                nav.push(packageInfo)
+                mainViewModel!!.setScreenNav(
+                    Pair(
+                        Screens.PACKAGE_INFO.toPath(),
                         Screens.DEFAULT.toPath()
                     )
                 )

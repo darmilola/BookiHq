@@ -12,6 +12,7 @@ import domain.Models.User
 import domain.Models.Vendor
 import kotlinx.coroutines.flow.StateFlow
 import domain.Models.ServiceTypeItem
+import domain.Models.VendorPackage
 
 
 class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
@@ -22,6 +23,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _currentVendorId =  savedStateHandle.getStateFlow("currentVendorId", -1L)
     private var _screenNav =  savedStateHandle.getStateFlow("screenNav", Pair(-1,-1))
     private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
+    private var _selectedPackage =  savedStateHandle.getStateFlow("selectedPackage", VendorPackage())
     private var _selectedServiceType =  savedStateHandle.getStateFlow("selectedServiceType", ServiceTypeItem())
     private var _currentUnsavedOrders =  savedStateHandle.getStateFlow("currentUnsavedOrders", ArrayList<OrderItem>())
     private var _currentUnsavedOrderSize =  savedStateHandle.getStateFlow("currentUnsavedOrderSize", 0)
@@ -48,6 +50,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     val selectedService: StateFlow<Services>
         get() = _selectedService
+
+    val selectedPackage: StateFlow<VendorPackage>
+        get() = _selectedPackage
 
     val switchVendor: StateFlow<Vendor>
         get() = _switchVendor
@@ -222,6 +227,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     fun setSelectedService(selectedService: Services) {
         savedStateHandle["selectedService"] = selectedService
+    }
+    fun setSelectedPackage(selectedPackage: VendorPackage) {
+        savedStateHandle["selectedPackage"] = selectedPackage
     }
     fun setCurrentUnsavedOrders(orderItems: ArrayList<OrderItem>) {
         savedStateHandle["currentUnsavedOrders"] = orderItems

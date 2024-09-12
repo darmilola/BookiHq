@@ -41,6 +41,7 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
+import domain.Enums.Screens
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.VendorPackage
 import domain.Models.VendorPackageItemUIModel
@@ -164,7 +165,7 @@ class Packages : Tab, KoinComponent, Parcelable {
                     else if (uiState.value.isFailed) {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                             ErrorOccurredWidget(uiState.value.errorMessage, onRetryClicked = {
-
+                                packagePresenter.getVendorPackages(vendorId)
                             })
                         }
                     }
@@ -174,7 +175,10 @@ class Packages : Tab, KoinComponent, Parcelable {
                         }
                     }
                     else if (uiState.value.isSuccess) {
-                        PackageContent(vendorPackages = packageList.value, onPackageSelected = {})
+                        PackageContent(vendorPackages = packageList.value, onPackageSelected = {
+                            mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.PACKAGE_INFO.toPath()))
+                            mainViewModel!!.setSelectedPackage(it)
+                        })
                     }
 
                 }
