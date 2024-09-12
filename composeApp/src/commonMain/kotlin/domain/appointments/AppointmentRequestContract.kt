@@ -9,7 +9,7 @@ data class GetAppointmentRequest(@SerialName("user_id") val userId: Long)
 @Serializable
 data class AddAppointmentReviewRequest(@SerialName("user_id") val userId: Long, @SerialName("appointment_id") val appointmentId: Long,
                                        @SerialName("vendor_id") val vendorId: Long, @SerialName("service_type_id") val serviceTypeId: Long,
-                                       @SerialName("reviewText") val reviewText: String)
+                                       @SerialName("therapist_id") val therapistId: Long, @SerialName("reviewText") val reviewText: String)
 
 @Serializable
 data class PostponeAppointmentRequest(@SerialName("user_id") val userId: Long,

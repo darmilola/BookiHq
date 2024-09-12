@@ -94,10 +94,9 @@ class BookingScreenHandler(
         }
     }
 
-    override fun showTherapists(serviceTherapists: List<ServiceTypeTherapists>, platformTime: List<PlatformTime>, vendorTime: List<VendorTime>, appointmentReviews: List<AppointmentReview>) {
+    override fun showTherapists(serviceTherapists: List<ServiceTypeTherapists>, platformTime: List<PlatformTime>, vendorTime: List<VendorTime>) {
         bookingViewModel.setTherapists(serviceTherapists)
         bookingViewModel.setVendorTimes(vendorTime)
-        bookingViewModel.setAppointmentReview(appointmentReviews)
         bookingViewModel.setPlatformTimes(platformTime)
     }
 

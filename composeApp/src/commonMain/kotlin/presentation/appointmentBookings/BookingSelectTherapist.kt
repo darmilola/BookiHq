@@ -75,7 +75,6 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, performedActionUIState
 
 
     if (getTherapistActionUiStates.value.isLoading) {
-        // Content Loading
         Box(
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
                 .padding(top = 40.dp, start = 50.dp, end = 50.dp)
@@ -126,8 +125,23 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, performedActionUIState
                         bookingViewModel.setCurrentBooking(currentBooking)
                     })
                 }
-                if (bookingViewModel.appointmentReview.value.isNotEmpty()) {
-                    AttachServiceReviews(bookingViewModel.appointmentReview.value)
+                if (selectedTherapist.value.id != null) {
+                    val therapistName = selectedTherapist.value.therapistInfo!!.profileInfo!!.firstname
+                    Column(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
+                        TextComponent(
+                            text = "$therapistName's Service Reviews",
+                            fontSize = 18,
+                            fontFamily = GGSansSemiBold,
+                            textStyle = TextStyle(),
+                            textColor = Colors.darkPrimary,
+                            textAlign = TextAlign.Left,
+                            fontWeight = FontWeight.Black,
+                            lineHeight = 30,
+                            textModifier = Modifier
+                                .fillMaxWidth().padding(start = 10.dp, bottom = 20.dp))
+
+                        AttachServiceReviews(selectedTherapist.value.therapistInfo!!.reviews!!)
+                    }
                 }
             }
           }

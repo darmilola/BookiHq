@@ -47,9 +47,10 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
         appointmentId: Long,
         vendorId: Long,
         serviceTypeId: Long,
+        therapistId: Long,
         reviewText: String
     ): Single<ServerResponse> {
-        val param = AddAppointmentReviewRequest(userId, appointmentId, vendorId, serviceTypeId, reviewText)
+        val param = AddAppointmentReviewRequest(userId, appointmentId, vendorId, serviceTypeId,therapistId, reviewText)
         return appointmentNetworkService.addAppointmentReview(param)
     }
 

@@ -35,7 +35,7 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
                                 when (result.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
                                         contractView?.getTherapistActionLce(AppUIStates(isSuccess  = true))
-                                        contractView?.showTherapists(result.serviceTherapists, result.platformTimes!!, result.vendorTimes!!, result.reviews!!)
+                                        contractView?.showTherapists(result.serviceTherapists, result.platformTimes!!, result.vendorTimes!!)
                                     }
                                     ServerResponse.FAILURE.toPath() -> {
                                         contractView?.getTherapistActionLce(AppUIStates(isFailed  = true, errorMessage = "Error Getting Therapist, Please Try Again"))

@@ -332,7 +332,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                         },
                         onReviewsAdded = {
                             appointmentPresenter.addAppointmentReviews(userId = userId, appointmentId = appointmentForReview.value.appointmentId!!,
-                                vendorId = appointmentForReview.value.vendorId, serviceTypeId = appointmentForReview.value.serviceTypeId!! ,reviewText = it)
+                                vendorId = appointmentForReview.value.vendorId, serviceTypeId = appointmentForReview.value.serviceTypeId!!, therapistId = appointmentForReview.value.therapistId,reviewText = it)
                             mainViewModel!!.showAppointmentReviewsBottomSheet(false)
                         })
                    }

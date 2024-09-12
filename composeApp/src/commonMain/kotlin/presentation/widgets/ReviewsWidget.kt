@@ -39,7 +39,7 @@ fun AppointmentReviewsWidget(reviews: AppointmentReview) {
         .fillMaxWidth()
     Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
         AttachSpecialistReviewHeader(reviews)
-        AttachUserReviewsContent(reviews.reviewText!!)
+        AttachUserReviewsContent(reviews.reviewText)
     }
 
 }
@@ -88,8 +88,8 @@ fun AttachSpecialistReviewHeader(reviews: AppointmentReview) {
                 .padding(start = 3.dp)
                 .fillMaxWidth()
             Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
-                AttachUserName(reviews.customerInfo!!)
-                AttachReviewDate(reviews.createdAt!!)
+                AttachUserName(reviews.customerInfo)
+                AttachReviewDate(reviews.createdAt)
             }
 
         }

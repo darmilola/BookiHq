@@ -272,12 +272,12 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
         }
     }
 
-    override fun addAppointmentReviews(userId: Long, appointmentId: Long, vendorId: Long, serviceTypeId: Long, reviewText: String) {
+    override fun addAppointmentReviews(userId: Long, appointmentId: Long, vendorId: Long, serviceTypeId: Long,therapistId: Long,reviewText: String) {
         contractView?.showReviewsActionLce(AppUIStates(isLoading = true, loadingMessage = "Adding Reviews"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    appointmentRepositoryImpl.addAppointmentReviews(userId, appointmentId, vendorId, serviceTypeId, reviewText)
+                    appointmentRepositoryImpl.addAppointmentReviews(userId, appointmentId, vendorId, serviceTypeId,therapistId,reviewText)
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {

@@ -13,7 +13,7 @@ class BookingContract {
         fun showDeleteActionLce(uiState: AppUIStates, message: String = "")
         fun showCreateAppointmentActionLce(uiState: AppUIStates, message: String = "")
         fun getTherapistActionLce(uiState: AppUIStates, message: String = "")
-        fun showTherapists(serviceTherapists: List<ServiceTypeTherapists>, platformTime: List<PlatformTime>, vendorTime: List<VendorTime>, appointmentReviews: List<AppointmentReview>)
+        fun showTherapists(serviceTherapists: List<ServiceTypeTherapists>, platformTime: List<PlatformTime>, vendorTime: List<VendorTime>)
         fun showPendingBookingAppointment(pendingAppointments: List<UserAppointment>)
         fun showUnsavedAppointment()
     }
