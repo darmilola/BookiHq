@@ -1,6 +1,7 @@
 package presentation.Packages
 
 import StackedSnackbarHost
+import UIStates.AppUIStates
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -54,8 +55,10 @@ import presentation.DomainViewHandler.PackagesHandler
 import presentation.DomainViewHandler.ShopProductsHandler
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
+import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.PackagesResourceListEnvelopeViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.widgets.EmptyContentWidget
 import presentation.widgets.PackageItem
@@ -74,6 +77,8 @@ class Packages : Tab, KoinComponent, Parcelable {
     val preferenceSettings = Settings()
     @Transient
     private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
+    @Transient
+    private var packagesResourceListEnvelopeViewModel: PackagesResourceListEnvelopeViewModel? = null
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -99,7 +104,6 @@ class Packages : Tab, KoinComponent, Parcelable {
     @Composable
     override fun Content() {
         val vendorId: Long = preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath(),-1L]
-        val packageList = remember { mutableStateOf(listOf<VendorPackage>()) }
 
         if (loadingScreenUiStateViewModel == null) {
             loadingScreenUiStateViewModel = kmpViewModel(
@@ -109,9 +113,16 @@ class Packages : Tab, KoinComponent, Parcelable {
             )
         }
 
+        if (packagesResourceListEnvelopeViewModel == null) {
+            packagesResourceListEnvelopeViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    PackagesResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
+                })
+        }
+
         val handler = PackagesHandler(packagePresenter,
             loadingScreenUiStateViewModel!!, onVendorPackageReady = {
-                packageList.value = it
+                packagesResourceListEnvelopeViewModel!!.setResources(it)
             })
         handler.init()
 
@@ -120,8 +131,16 @@ class Packages : Tab, KoinComponent, Parcelable {
             animation = StackedSnackbarAnimation.Bounce
         )
 
+        val packageList = packagesResourceListEnvelopeViewModel!!.resources.collectAsState()
+
         LaunchedEffect(true) {
-            packagePresenter.getVendorPackages(vendorId)
+            if (packageList.value.isNotEmpty()){
+                loadingScreenUiStateViewModel!!.switchScreenUIState(AppUIStates(isSuccess = true))
+            }
+            else {
+                packagePresenter.getVendorPackages(vendorId)
+            }
+
         }
 
         Scaffold(

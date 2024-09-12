@@ -7,6 +7,7 @@ import domain.Models.Product
 import domain.Models.UserAppointment
 import domain.Models.UserOrders
 import domain.Models.Vendor
+import domain.Models.VendorPackage
 import kotlinx.coroutines.flow.StateFlow
 
 class ResourceListEnvelopeViewModel<in T : Any>(private val savedStateHandle: SavedStateHandle): ViewModel() {
@@ -207,6 +208,22 @@ class AppointmentResourceListEnvelopeViewModel(private val savedStateHandle: Sav
         super.onCleared()
     }
 }
+
+
+
+
+class PackagesResourceListEnvelopeViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
+
+    private var _resources =  savedStateHandle.getStateFlow("resources", listOf<VendorPackage>())
+
+    val resources: StateFlow<List<VendorPackage>>
+        get() = _resources
+    fun setResources(resources: List<VendorPackage>?) {
+        savedStateHandle["resources"] = resources
+    }
+}
+
+
 
 
 
