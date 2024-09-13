@@ -9,6 +9,7 @@ import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,13 +56,17 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import domain.Models.OrderItem
+import domain.Models.PackageProducts
 import domain.Models.PlatformNavigator
+import domain.Models.Product
 import domain.Models.VendorPackage
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.AttachAppointmentStatus
 import presentation.widgets.PageBackNavWidget
+import presentation.widgets.ProductDetailBottomSheet
 import presentation.widgets.TitleWidget
 import presentation.widgets.VendorInfoTopBarItem
 import presentations.components.ImageComponent
@@ -94,11 +101,15 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+        val showProductDetails = remember { mutableStateOf(false) }
+        val selectedProductDetails = remember { mutableStateOf(PackageProducts()) }
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
         if (onBackPressed.value){
             mainViewModel!!.setOnBackPressed(false)
             navigator.pop()
         }
+        val services = vendorPackage!!.packageServices
+        val products = vendorPackage!!.packageProducts
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -109,7 +120,20 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {},
             content = {
-                Column(modifier = Modifier.fillMaxSize().background(color = Color(0x30CCCCCC)).verticalScroll(rememberScrollState())) {
+
+                if (showProductDetails.value) {
+                    ProductDetailBottomSheet(
+                        mainViewModel!!,
+                        isViewedFromCart = false,
+                        OrderItem(itemProduct = selectedProductDetails.value.productInfo),
+                        onDismiss = {
+                            showProductDetails.value = false
+                            selectedProductDetails.value = PackageProducts()
+                        },
+                        onAddToCart = { isAddToCart, item -> })
+                }
+
+                Column(modifier = Modifier.fillMaxWidth().wrapContentHeight().background(color = Color(0x30CCCCCC)).verticalScroll(rememberScrollState())) {
                     Box(modifier = Modifier.fillMaxWidth().height(400.dp)) {
                         ScrollingPackageImages(vendorPackage!!)
                         leftTopBarItem {
@@ -199,9 +223,9 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
                         }
                     }
 
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(modifier = Modifier.fillMaxWidth().height(700.dp), contentAlignment = Alignment.Center) {
                         Column(
-                            modifier = Modifier.fillMaxWidth().padding(top = 15.dp, start = 15.dp, end = 15.dp).height(400.dp)
+                            modifier = Modifier.fillMaxWidth().padding(top = 15.dp, start = 15.dp, end = 15.dp).fillMaxHeight()
                                 .background(color = Color.White, shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
                         ) {
                             TextComponent(
@@ -242,7 +266,7 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
 
 
                             TextComponent(
-                                text = "Reviews",
+                                text = "Services",
                                 fontSize = 20,
                                 fontFamily = GGSansRegular,
                                 textStyle = TextStyle(),
@@ -252,12 +276,99 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
                                 lineHeight = 30,
                                 textModifier = Modifier.fillMaxWidth().padding(top = 20.dp, start = 20.dp))
 
+                            for (item in services){
+                                packageServicesItem(item.serviceInfo.title)
+                            }
+
+                            TextComponent(
+                                text = "Products",
+                                fontSize = 20,
+                                fontFamily = GGSansRegular,
+                                textStyle = TextStyle(),
+                                textColor = Colors.darkPrimary,
+                                textAlign = TextAlign.Left,
+                                fontWeight = FontWeight.Black,
+                                lineHeight = 30,
+                                textModifier = Modifier.fillMaxWidth().padding(top = 20.dp, start = 20.dp))
+
+                            for (item in products){
+                                packageProductItem(item, onViewDetails = {
+                                     selectedProductDetails.value = it
+                                     showProductDetails.value = true
+                                })
+                            }
 
                         }
                     }
                 }
             }
         )
+    }
+
+    @Composable
+    fun packageServicesItem(serviceName: String){
+        Row(modifier = Modifier.fillMaxWidth().height(40.dp).padding(start = 20.dp, top = 10.dp)) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Box(modifier = Modifier.fillMaxHeight().width(10.dp), contentAlignment = Alignment.Center){
+                    Box(modifier = Modifier.size(10.dp).background(color = Color.Black, shape = CircleShape))
+                }
+                Box(modifier = Modifier.fillMaxWidth(0.80f).padding(start = 10.dp).fillMaxHeight(), contentAlignment = Alignment.CenterStart){
+                    TextComponent(
+                        text = serviceName,
+                        fontSize = 16,
+                        fontFamily = GGSansRegular,
+                        textStyle = MaterialTheme.typography.h6,
+                        textColor = Color.Black,
+                        textAlign = TextAlign.Start,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.Center){
+
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun packageProductItem(packageProducts: PackageProducts, onViewDetails:(PackageProducts) -> Unit){
+        Row(modifier = Modifier.fillMaxWidth().height(40.dp).padding(start = 20.dp, top = 10.dp)) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Box(modifier = Modifier.fillMaxHeight().width(10.dp), contentAlignment = Alignment.Center){
+                    Box(modifier = Modifier.size(10.dp).background(color = Color.Black, shape = CircleShape))
+                }
+                Box(modifier = Modifier.fillMaxWidth(0.70f).padding(start = 10.dp).fillMaxHeight(), contentAlignment = Alignment.CenterStart){
+                    TextComponent(
+                        text = packageProducts.productInfo.productName,
+                        fontSize = 16,
+                        fontFamily = GGSansRegular,
+                        textStyle = MaterialTheme.typography.h6,
+                        textColor = Color.Black,
+                        textAlign = TextAlign.Start,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().clickable { onViewDetails(packageProducts) }, contentAlignment = Alignment.Center){
+                    Row(
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.Top,
+                        modifier = Modifier.fillMaxWidth().height(40.dp)
+                    ) {
+                        TextComponent(
+                            text = "View Details",
+                            fontSize = 14,
+                            fontFamily = GGSansRegular,
+                            textStyle = MaterialTheme.typography.h6,
+                            textColor = Colors.primaryColor,
+                            textAlign = TextAlign.Start,
+                            fontWeight = FontWeight.Bold
+                        )
+                        ImageComponent(imageModifier = Modifier.size(20.dp), imageRes = "drawable/chevron_right.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+                    }
+
+                }
+            }
+        }
     }
 
     @Composable
