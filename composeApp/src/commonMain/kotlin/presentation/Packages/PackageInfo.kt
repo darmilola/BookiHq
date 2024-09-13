@@ -30,6 +30,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -63,12 +65,14 @@ import domain.Models.Product
 import domain.Models.VendorPackage
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
+import presentation.components.ButtonComponent
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.AttachAppointmentStatus
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.ProductDetailBottomSheet
 import presentation.widgets.TitleWidget
 import presentation.widgets.VendorInfoTopBarItem
+import presentation.widgets.productItemIncrementDecrementWidget
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
@@ -110,6 +114,10 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
         }
         val services = vendorPackage!!.packageServices
         val products = vendorPackage!!.packageProducts
+        val price = vendorPackage!!.price
+        val isMobileServiceAvailable = vendorPackage!!.isMobileServiceAvailable
+        val mobileServicePrice = vendorPackage!!.mobileServicePrice
+        val mobileServiceText = if (!isMobileServiceAvailable) "Not Available" else "NGN$mobileServicePrice"
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -119,6 +127,91 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {},
+            bottomBar = {
+                BottomNavigation(modifier = Modifier
+                    .height(80.dp), backgroundColor = Color.Transparent,
+                    elevation = 0.dp
+                )
+                {
+                    val buttonStyle2 = Modifier
+                        .padding(bottom = 10.dp, start = 10.dp, end = 10.dp, top = 4.dp)
+                        .fillMaxWidth()
+                        .height(50.dp)
+
+                    val bgStyle = Modifier
+                        .background(color = Color.White)
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+
+                        Row(
+                            modifier = bgStyle,
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(0.60f).fillMaxHeight(),
+                                horizontalAlignment = Alignment.Start,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+
+                                Row(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.50f).padding(start = 30.dp), verticalAlignment = Alignment.Bottom,
+                                    horizontalArrangement = Arrangement.Start) {
+                                    TextComponent(
+                                        text = "NGN$price Total",
+                                        fontSize = 18,
+                                        fontFamily = GGSansSemiBold,
+                                        textStyle = MaterialTheme.typography.h6,
+                                        textColor = Colors.primaryColor,
+                                        textAlign = TextAlign.Start,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+
+                                Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.Top) {
+                                    Box(modifier = Modifier.wrapContentWidth().padding(start = 30.dp).fillMaxHeight(), contentAlignment = Alignment.CenterStart){
+                                        TextComponent(
+                                            text = "Mobile Services",
+                                            fontSize = 15,
+                                            fontFamily = GGSansRegular,
+                                            textStyle = MaterialTheme.typography.h6,
+                                            textColor = Color.LightGray,
+                                            textAlign = TextAlign.Start,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                        Box(
+                                            modifier = Modifier.padding(start = 30.dp).wrapContentWidth()
+                                                .fillMaxHeight(),
+                                            contentAlignment = Alignment.CenterStart
+                                        ) {
+                                            TextComponent(
+                                                text = mobileServiceText,
+                                                fontSize = 16,
+                                                fontFamily = GGSansRegular,
+                                                textStyle = MaterialTheme.typography.h6,
+                                                textColor = Color.Black,
+                                                textAlign = TextAlign.Start,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        }
+                                    }
+                                }
+
+
+                            ButtonComponent(
+                                modifier = buttonStyle2,
+                                buttonText = "Book Now",
+                                colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
+                                fontSize = 16,
+                                shape = RoundedCornerShape(15.dp),
+                                textColor = Color(color = 0xFFFFFFFF),
+                                style = TextStyle(),
+                                borderStroke = null
+                            ) {}
+                        }
+
+                }
+            },
             content = {
 
                 if (showProductDetails.value) {
