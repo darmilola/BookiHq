@@ -58,6 +58,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import domain.Enums.Screens
 import domain.Models.OrderItem
 import domain.Models.PackageProducts
 import domain.Models.PlatformNavigator
@@ -67,6 +68,7 @@ import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import presentation.appointmentBookings.AttachServiceReviews
 import presentation.components.ButtonComponent
+import presentation.packageBookings.PackageBookingScreen
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.AttachAppointmentStatus
 import presentation.widgets.PackageReviewsWidget
@@ -126,6 +128,7 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
             animation = StackedSnackbarAnimation.Bounce)
 
 
+
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {},
@@ -135,6 +138,7 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
                     elevation = 0.dp
                 )
                 {
+                    val nav = LocalNavigator.currentOrThrow
                     val buttonStyle2 = Modifier
                         .padding(bottom = 10.dp, start = 10.dp, end = 10.dp, top = 4.dp)
                         .fillMaxWidth()
@@ -208,8 +212,19 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
                                 shape = RoundedCornerShape(15.dp),
                                 textColor = Color(color = 0xFFFFFFFF),
                                 style = TextStyle(),
-                                borderStroke = null
-                            ) {}
+                                borderStroke = null,
+                                onClick = {
+                                    val packageBooking = PackageBookingScreen(platformNavigator)
+                                    packageBooking.setMainViewModel(mainViewModel!!)
+                                    nav.push(packageBooking)
+                                    mainViewModel!!.setScreenNav(
+                                        Pair(
+                                            Screens.PACKAGE_BOOKING.toPath(),
+                                            Screens.DEFAULT.toPath()
+                                        )
+                                    )
+                                }
+                            )
                         }
 
                 }

@@ -17,6 +17,7 @@ class BookingScreenHandler(
     private val deleteActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val createAppointmentActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val getTherapistActionUIStateViewModel: PerformedActionUIStateViewModel,
+    private val getTimesActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val bookingPresenter: BookingPresenter,
     private val onShowUnsavedAppointment: () -> Unit) : BookingContract.View {
     fun init() {
@@ -94,8 +95,31 @@ class BookingScreenHandler(
         }
     }
 
+    override fun getTimesActionLce(uiState: AppUIStates, message: String) {
+        uiState.let {
+            when {
+                it.isLoading -> {
+                    getTimesActionUIStateViewModel.switchTimeActionUiState(AppUIStates(isLoading = true, loadingMessage = it.loadingMessage))
+                }
+                it.isSuccess -> {
+                    getTimesActionUIStateViewModel.switchTimeActionUiState(AppUIStates(isSuccess = true))
+                }
+
+                it.isFailed -> {
+                    getTimesActionUIStateViewModel.switchTimeActionUiState(AppUIStates(isFailed = true, errorMessage = it.errorMessage))
+                }
+
+            }
+        }
+    }
+
     override fun showTherapists(serviceTherapists: List<ServiceTypeTherapists>, platformTime: List<PlatformTime>, vendorTime: List<VendorTime>) {
         bookingViewModel.setTherapists(serviceTherapists)
+        bookingViewModel.setVendorTimes(vendorTime)
+        bookingViewModel.setPlatformTimes(platformTime)
+    }
+
+    override fun showTimes(platformTime: List<PlatformTime>, vendorTime: List<VendorTime>) {
         bookingViewModel.setVendorTimes(vendorTime)
         bookingViewModel.setPlatformTimes(platformTime)
     }

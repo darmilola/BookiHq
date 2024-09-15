@@ -73,6 +73,7 @@ import domain.Enums.PaymentMethod
 import domain.Models.PaymentAuthorizationResult
 import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
+import domain.Models.VendorPackage
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import presentation.Screens.AddDebitCardScreen
@@ -100,9 +101,12 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
     @Transient private var bookingViewModel: BookingViewModel? = null
     @Transient private val paymentPresenter: PaymentPresenter by inject()
     @Transient private var mainViewModel: MainViewModel? = null
+    @Transient
+    private var getTimeActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
     @Transient var cardList = listOf<PaymentCard>()
     private var selectedCard: PaymentCard? = null
+    private var vendorPackage: VendorPackage? = null
 
    override val key: ScreenKey = uniqueScreenKey
 
@@ -114,6 +118,9 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         this.databaseBuilder = databaseBuilder
     }
 
+    fun setSelectedPackage(vendorPackage: VendorPackage){
+        this.vendorPackage = vendorPackage
+    }
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
@@ -159,6 +166,15 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             )
         }
 
+        if (getTimeActionUIStateViewModel == null) {
+            getTimeActionUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+
         if (paymentActionUIStateViewModel== null) {
             paymentActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
@@ -183,7 +199,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
 
         val handler = BookingScreenHandler(
             bookingViewModel!!, loadPendingActionUIStateViewModel = loadPendingActionUIStateViewModel!!, deleteActionUIStateViewModel = deleteActionUIStateViewModel!!,
-            createAppointmentActionUIStateViewModel = createAppointmentActionUIStateViewModel!!, getTherapistActionUIStateViewModel = getTherapistActionUIStateViewModel!!, bookingPresenter, onShowUnsavedAppointment = {})
+            createAppointmentActionUIStateViewModel = createAppointmentActionUIStateViewModel!!, getTherapistActionUIStateViewModel = getTherapistActionUIStateViewModel!!, getTimesActionUIStateViewModel = getTimeActionUIStateViewModel!!,bookingPresenter, onShowUnsavedAppointment = {})
         handler.init()
 
 

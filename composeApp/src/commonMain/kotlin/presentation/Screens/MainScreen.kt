@@ -70,6 +70,7 @@ import presentation.home.HomeTab
 import presentation.main.MainScreenTabs
 import presentation.main.MainTopBar
 import presentation.Packages.PackageInfo
+import presentation.packageBookings.PackageBookingScreen
 import presentation.profile.EditProfile
 import presentation.therapist.TherapistDashboard
 import presentation.viewmodels.HomePageViewModel
@@ -123,6 +124,8 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             authenticationPresenter.updateFcmToken(userId = userId, fcmToken = it)
         }
         screenNav = mainViewModel?.screenNav?.collectAsState()
+
+
         val restartApp = mainViewModel!!.restartApp.collectAsState()
 
         var homePageViewModel: HomePageViewModel? = null
@@ -280,6 +283,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                     )
                 )
             }
+            Screens.PACKAGE_BOOKING.toPath() -> {}
         }
 
         TabNavigator(showDefaultTab(mainViewModel!!, homePageViewModel)) {

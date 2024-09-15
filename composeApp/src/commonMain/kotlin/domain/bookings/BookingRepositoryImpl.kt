@@ -4,6 +4,7 @@ import com.badoo.reaktive.single.Single
 import domain.Models.PendingBookingAppointmentResponse
 import domain.Models.ServerResponse
 import domain.Models.ServiceTherapistsResponse
+import domain.Models.TimeAvailabilityResponse
 import io.ktor.client.HttpClient
 
 class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {

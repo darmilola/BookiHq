@@ -5,6 +5,7 @@ import com.russhwolf.settings.Settings
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.OrderListDataResponse
 import domain.Models.ServerResponse
+import domain.Models.TimeAvailabilityResponse
 import domain.Models.VendorPackageListDataResponse
 import domain.Orders.AddProductReviewRequest
 import domain.Orders.GetOrderRequest
@@ -29,5 +30,13 @@ open class PackageNetworkService(private val apiService: HttpClient) {
             setBody(getVendorPackageRequest)
             header("Authorization", apiKey)
         }.body<VendorPackageListDataResponse>().toSingle()
+
+    suspend fun getTimeAvailability(timeAvailabilityRequest: TimeAvailabilityRequest) =
+        apiService.post {
+            url("/services/time")
+            contentType(ContentType.Application.Json)
+            setBody(timeAvailabilityRequest)
+            header("Authorization", apiKey)
+        }.body<TimeAvailabilityResponse>().toSingle()
 
 }

@@ -6,6 +6,7 @@ import domain.Enums.SharedPreferenceEnum
 import domain.Models.PendingBookingAppointmentResponse
 import domain.Models.ServerResponse
 import domain.Models.ServiceTherapistsResponse
+import domain.Models.TimeAvailabilityResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.header

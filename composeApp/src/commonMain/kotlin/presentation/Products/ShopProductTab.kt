@@ -71,6 +71,7 @@ import presentation.components.ToggleButton
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.ProductResourceListEnvelopeViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.widgets.EmptyContentWidget
 import presentation.widgets.ProductItem
 import presentation.widgets.ProductDetailBottomSheet
@@ -94,6 +95,8 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
     @Transient
     private var productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel? = null
     private var selectedProductType: String = preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath(),""]
+    @Transient
+    private var getTimeActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
     private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 
@@ -147,6 +150,14 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
             productResourceListEnvelopeViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     ProductResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
+                })
+
+        }
+
+        if (getTimeActionUIStateViewModel == null) {
+            getTimeActionUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 })
 
         }

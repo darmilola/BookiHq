@@ -11,12 +11,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import UIStates.AppUIStates
 import domain.Enums.ServerResponse
+import domain.packages.PackageRepositoryImpl
 
 class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
 
     private val scope: CoroutineScope = MainScope()
     private var contractView: BookingContract.View? = null
     private val bookingRepositoryImpl: BookingRepositoryImpl = BookingRepositoryImpl(apiService)
+    private val packageRepositoryImpl: PackageRepositoryImpl = PackageRepositoryImpl(apiService)
     override fun registerUIContract(view: BookingContract.View?) {
         contractView = view
     }
@@ -25,10 +27,10 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
     }
 
     override fun getServiceTherapists(serviceTypeId: Long, vendorId: Long, day: Int, month: Int, year: Int) {
+        contractView?.getTherapistActionLce(AppUIStates(isLoading  = true))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.getTherapistActionLce(AppUIStates(isLoading  = true))
                     bookingRepositoryImpl.getServiceTherapist(serviceTypeId, vendorId, day, month, year)
                         .subscribe(
                             onSuccess = { result ->
@@ -153,6 +155,40 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
             }
         }
     }
+
+    override fun getTimeAvailability(vendorId: Long) {
+        contractView?.getTimesActionLce(AppUIStates(isLoading  = true))
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    packageRepositoryImpl.getTimeAvailability(vendorId = vendorId)
+                        .subscribe(
+                            onSuccess = { result ->
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.getTimesActionLce(AppUIStates(isSuccess  = true))
+                                        contractView?.showTimes(result.platformTimes!!, result.vendorTimes!!)
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.getTimesActionLce(AppUIStates(isFailed  = true, errorMessage = "Error Getting Available Times, Please Try Again"))
+                                    }
+                                    else -> {
+                                        contractView?.getTimesActionLce(AppUIStates(isFailed  = true, errorMessage = "Error Getting Available Times, Please Try Again"))
+                                    }
+                                }
+                            },
+                            onError = {
+                                contractView?.getTimesActionLce(AppUIStates(isFailed  = true, errorMessage = "Error Getting Available Times, Please Try Again"))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.getTimesActionLce(AppUIStates(isFailed  = true, errorMessage = "Error Getting Available Times, Please Try Again"))
+            }
+        }
+    }
+
 
     override fun silentDeletePendingBookingAppointment(pendingAppointmentId: Long) {
         scope.launch(Dispatchers.Main) {
