@@ -13,7 +13,7 @@ data class VendorPackage(@SerialName("id") val packageId: Long = -1, @SerialName
                          @SerialName("mobileServicePrice") val mobileServicePrice: Long = 0L, @SerialName("therapists") val packageTherapists: ArrayList<PackageTherapists> = arrayListOf(),
                          @SerialName("products") val packageProducts: ArrayList<PackageProducts> = arrayListOf(), @SerialName("packageBookings") val packageBooking: Long = 0,
                          @SerialName("images") val packageImages: ArrayList<PackageImages> = arrayListOf(), @SerialName("services") val packageServices: ArrayList<PackageServices> = arrayListOf(),
-                         var isSelected: Boolean = false): Parcelable
+                         @SerialName("reviews") val packageReviews: ArrayList<PackageReviews> = arrayListOf(), var isSelected: Boolean = false): Parcelable
 
 data class VendorPackageItemUIModel(
     val selectedPackage: VendorPackage?,

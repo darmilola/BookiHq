@@ -65,9 +65,11 @@ import domain.Models.Product
 import domain.Models.VendorPackage
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
+import presentation.appointmentBookings.AttachServiceReviews
 import presentation.components.ButtonComponent
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.AttachAppointmentStatus
+import presentation.widgets.PackageReviewsWidget
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.ProductDetailBottomSheet
 import presentation.widgets.TitleWidget
@@ -316,7 +318,7 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
                         }
                     }
 
-                    Box(modifier = Modifier.fillMaxWidth().height(700.dp), contentAlignment = Alignment.Center) {
+                    Box(modifier = Modifier.fillMaxWidth().height(750.dp), contentAlignment = Alignment.Center) {
                         Column(
                             modifier = Modifier.fillMaxWidth().padding(top = 15.dp, start = 15.dp, end = 15.dp).fillMaxHeight()
                                 .background(color = Color.White, shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
@@ -389,6 +391,24 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
                                      selectedProductDetails.value = it
                                      showProductDetails.value = true
                                 })
+                            }
+
+
+                            if (vendorPackage!!.packageReviews.isNotEmpty()) {
+                                Column(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
+                                    TextComponent(
+                                        text = "Package Reviews",
+                                        fontSize = 20,
+                                        fontFamily = GGSansRegular,
+                                        textStyle = TextStyle(),
+                                        textColor = Colors.darkPrimary,
+                                        textAlign = TextAlign.Left,
+                                        fontWeight = FontWeight.Black,
+                                        lineHeight = 30,
+                                        textModifier = Modifier.fillMaxWidth().padding(top = 20.dp, start = 20.dp))
+
+                                    PackageReviewsWidget(vendorPackage!!.packageReviews)
+                                }
                             }
 
                         }

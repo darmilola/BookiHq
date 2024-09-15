@@ -25,6 +25,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,6 +59,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
                           services: Services) {
 
     val mobileServicesAvailable = mainViewModel.connectedVendor.value.isMobileServiceAvailable
+    val isServiceTypeMobileServiceAvailable = remember { mutableStateOf(false) }
 
     val currentBooking = Appointment()
     currentBooking.services = services
@@ -107,6 +110,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
                     "Complete"
                 }
                 if (it.mobileServiceAvailable) {
+                    isServiceTypeMobileServiceAvailable.value = true
                     ShowSnackBar(title = "Mobile Service Is Available",
                         description = description,
                         actionLabel = action,
@@ -118,6 +122,9 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
 
                         })
                 }
+                else{
+                    isServiceTypeMobileServiceAvailable.value = false
+                }
                 if (it.serviceTypeId != -1L) {
                     bookingViewModel.undoSelectedServiceType()
                     bookingViewModel.setSelectedServiceType(it)
@@ -127,7 +134,8 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
                 }
             })
             if (mobileServicesAvailable) {
-                ServiceLocationToggle(bookingViewModel, isDisabled = mainViewModel.currentUserInfo.value.isProfileCompleted != true,onSpaSelectedListener = {
+                val isServiceLocationDisabled = mainViewModel.currentUserInfo.value.isProfileCompleted != true && !isServiceTypeMobileServiceAvailable.value
+                ServiceLocationToggle(bookingViewModel, isDisabled = isServiceLocationDisabled, onSpaSelectedListener = {
                     currentBooking.isMobileService = false
                     bookingViewModel.setIsMobileService(false)
                     bookingViewModel.setCurrentBooking(currentBooking)

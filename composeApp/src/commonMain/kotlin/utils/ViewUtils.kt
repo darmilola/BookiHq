@@ -206,6 +206,50 @@ fun calculateTherapistServiceTimes(platformTimes: List<PlatformTime>, vendorTime
 
 }
 
+fun calculatePackageServiceTimes(platformTimes: List<PlatformTime>, vendorTimes: List<VendorTime>):
+        Triple<ArrayList<PlatformTime>,ArrayList<PlatformTime>,ArrayList<PlatformTime>>{
+
+    val morningHours: ArrayList<PlatformTime> = arrayListOf()
+    val afternoonHours: ArrayList<PlatformTime> = arrayListOf()
+    val eveningHours: ArrayList<PlatformTime> = arrayListOf()
+    val workingHours: ArrayList<PlatformTime> = arrayListOf()
+    val vendorWorkingHours: ArrayList<Int> = arrayListOf()
+    val bookedHours: ArrayList<Int> = arrayListOf()
+
+    runBlocking {
+        vendorTimes.forEach {
+            vendorWorkingHours.add(it.platformTime?.id!!)
+        }
+
+        platformTimes.map {
+            if (it.id in vendorWorkingHours) {
+                workingHours.add(it.copy(isEnabled = true))
+            } else {
+                workingHours.add(it)
+            }
+        }
+        workingHours.map {
+            when (it.session) {
+                SessionEnum.MORNING.toPath() -> {
+                    morningHours.add(it)
+                }
+
+                SessionEnum.AFTERNOON.toPath() -> {
+                    afternoonHours.add(it)
+                }
+
+                else -> {
+                    eveningHours.add(it)
+                }
+            }
+        }
+    }
+
+    return Triple(morningHours, afternoonHours, eveningHours)
+
+}
+
+
 
 fun calculateVendorServiceTimes(platformTimes: List<PlatformTime>, vendorTimes: List<VendorTime>):
         ArrayList<PlatformTime>{
