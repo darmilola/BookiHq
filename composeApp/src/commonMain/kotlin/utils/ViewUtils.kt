@@ -206,6 +206,7 @@ fun calculateTherapistServiceTimes(platformTimes: List<PlatformTime>, vendorTime
 
 }
 
+
 fun calculatePackageServiceTimes(platformTimes: List<PlatformTime>, vendorTimes: List<VendorTime>):
         Triple<ArrayList<PlatformTime>,ArrayList<PlatformTime>,ArrayList<PlatformTime>>{
 
@@ -214,7 +215,6 @@ fun calculatePackageServiceTimes(platformTimes: List<PlatformTime>, vendorTimes:
     val eveningHours: ArrayList<PlatformTime> = arrayListOf()
     val workingHours: ArrayList<PlatformTime> = arrayListOf()
     val vendorWorkingHours: ArrayList<Int> = arrayListOf()
-    val bookedHours: ArrayList<Int> = arrayListOf()
 
     runBlocking {
         vendorTimes.forEach {
@@ -248,8 +248,6 @@ fun calculatePackageServiceTimes(platformTimes: List<PlatformTime>, vendorTimes:
     return Triple(morningHours, afternoonHours, eveningHours)
 
 }
-
-
 
 fun calculateVendorServiceTimes(platformTimes: List<PlatformTime>, vendorTimes: List<VendorTime>):
         ArrayList<PlatformTime>{

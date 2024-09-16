@@ -50,6 +50,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.room.RoomDatabase
+import applications.room.AppDatabase
 import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -91,6 +93,8 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
     @Transient
     private var mainViewModel: MainViewModel? = null
     private var vendorPackage: VendorPackage? = null
+    @Transient
+    private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 
     override val key: ScreenKey = uniqueScreenKey
 
@@ -101,6 +105,11 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
     fun setSelectedPackage(vendorPackage: VendorPackage){
         this.vendorPackage = vendorPackage
     }
+
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = databaseBuilder
+    }
+
 
 
 
@@ -216,6 +225,8 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
                                 onClick = {
                                     val packageBooking = PackageBookingScreen(platformNavigator)
                                     packageBooking.setMainViewModel(mainViewModel!!)
+                                    packageBooking.setVendorPackage(vendorPackage!!)
+                                    packageBooking.setDatabaseBuilder(databaseBuilder = databaseBuilder)
                                     nav.push(packageBooking)
                                     mainViewModel!!.setScreenNav(
                                         Pair(

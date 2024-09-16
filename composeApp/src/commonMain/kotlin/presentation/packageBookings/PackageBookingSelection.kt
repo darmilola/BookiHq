@@ -34,11 +34,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import applications.date.getDay
 import applications.date.getMonth
 import applications.date.getYear
 import domain.Models.Appointment
+import domain.Models.PlatformTime
 import domain.Models.ServiceTypeItem
 import domain.Models.VendorPackage
 import presentation.viewmodels.BookingViewModel
@@ -46,10 +48,13 @@ import presentation.viewmodels.MainViewModel
 import presentation.widgets.BookingCalendar
 import presentation.widgets.DropDownWidget
 import presentation.widgets.ServiceLocationToggle
+import presentation.widgets.TimeGridDisplay
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
+import utils.calculatePackageServiceTimes
+import utils.calculateTherapistServiceTimes
 
 
 @Composable
@@ -60,12 +65,16 @@ fun PackageBookingSelection(mainViewModel: MainViewModel, bookingViewModel: Book
     val isPackageMobileServiceAvailable = vendorPackage.isMobileServiceAvailable
 
     val currentBooking = Appointment()
-    currentBooking.packages = vendorPackage
+    currentBooking.packageInfo = vendorPackage
     currentBooking.packageId = vendorPackage.packageId
 
     currentBooking.appointmentYear = getYear()
     currentBooking.appointmentMonth = getMonth()
     currentBooking.appointmentDay = getDay()
+
+    val vendorTimes = bookingViewModel.vendorTimes.collectAsState()
+    val platformTimes = bookingViewModel.platformTimes.collectAsState()
+
 
     bookingViewModel.setCurrentBooking(currentBooking)
     bookingViewModel.setSelectedDay(currentBooking.appointmentDay!!)
@@ -77,10 +86,6 @@ fun PackageBookingSelection(mainViewModel: MainViewModel, bookingViewModel: Book
         animation = StackedSnackbarAnimation.Bounce
     )
 
-    val boxModifier =
-        Modifier
-            .height(350.dp)
-            .fillMaxWidth()
     Scaffold(
         snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) }
     ) {
@@ -89,10 +94,6 @@ fun PackageBookingSelection(mainViewModel: MainViewModel, bookingViewModel: Book
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            
-            Box(contentAlignment = Alignment.TopStart, modifier = boxModifier) {
-                AttachPackageImages(vendorPackage)
-            }
             PackageTitle(vendorPackage)
             if (mobileServicesAvailable) {
                 val isServiceLocationDisabled =
@@ -122,9 +123,101 @@ fun PackageBookingSelection(mainViewModel: MainViewModel, bookingViewModel: Book
                 bookingViewModel.setSelectedYear(it.year)
                 bookingViewModel.setSelectedMonthName(it.month.name)
             }
+           if (platformTimes.value.isNotEmpty()) {
+
+               val workHours = calculatePackageServiceTimes(
+                   platformTimes = platformTimes.value,
+                   vendorTimes = vendorTimes.value
+               )
+               Column(
+                   modifier = Modifier
+                       .padding(top = 5.dp, bottom = 10.dp)
+                       .fillMaxWidth()
+                       .height(400.dp),
+                   verticalArrangement = Arrangement.Center,
+                   horizontalAlignment = Alignment.CenterHorizontally,
+               ) {
+
+                   AvailableTimeContent(
+                       workHours,
+                       onWorkHourClickListener = {
+                           currentBooking.pendingTime = it
+                           bookingViewModel.setCurrentBooking(currentBooking)
+                       })
+               }
+           }
+
         }
     }
 }
+
+@Composable
+fun AvailableTimeContent(availableHours: Triple<ArrayList<PlatformTime>, ArrayList<PlatformTime>, ArrayList<PlatformTime>>, onWorkHourClickListener: (PlatformTime) -> Unit) {
+    Column(
+        modifier = Modifier
+            .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 10.dp)
+            .height(400.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment  = Alignment.CenterHorizontally,
+    ) {
+
+        TextComponent(
+            text = "Available Times",
+            fontSize = 18,
+            fontFamily = GGSansSemiBold,
+            textStyle = TextStyle(),
+            textColor = Colors.darkPrimary,
+            textAlign = TextAlign.Left,
+            fontWeight = FontWeight.Black,
+            lineHeight = 30,
+            textModifier = Modifier
+                .fillMaxWidth().padding(start = 10.dp, bottom = 20.dp))
+        Row(modifier = Modifier.fillMaxWidth(0.90f).wrapContentHeight()) {
+            TextComponent(
+                text = "Morning",
+                fontSize = 16,
+                textStyle = TextStyle(),
+                textColor = theme.Colors.darkPrimary,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 25,
+                textModifier = Modifier.weight(1f).padding(bottom = 15.dp, top = 10.dp),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis)
+            TextComponent(
+                text = "Afternoon",
+                fontSize = 16,
+                textStyle = TextStyle(),
+                textColor = theme.Colors.darkPrimary,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 25,
+                textModifier = Modifier.weight(1f).padding(bottom = 15.dp, top = 10.dp),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis)
+            TextComponent(
+                text = "Evening",
+                fontSize = 16,
+                textStyle = TextStyle(),
+                textColor = theme.Colors.darkPrimary,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 25,
+                textModifier = Modifier.weight(1f).padding(bottom = 15.dp, top = 10.dp),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis)
+        }
+
+        Row(modifier = Modifier.fillMaxWidth().height(400.dp)) {
+            Column(modifier = Modifier.fillMaxWidth().height(400.dp).verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
+                TimeGridDisplay(platformTimes = availableHours, onWorkHourClickListener = {
+                    onWorkHourClickListener(it)
+                })
+            }
+        }
+    }
+}
+
 
 @Composable
 fun PackageTitle(vendorPackage: VendorPackage){
@@ -149,60 +242,6 @@ fun PackageTitle(vendorPackage: VendorPackage){
             textModifier = Modifier
                 .fillMaxWidth()
         )
-    }
-
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun AttachPackageImages(vendorPackage: VendorPackage){
-    val packageImages = vendorPackage.packageImages
-    val pagerState = rememberPagerState(pageCount = {
-        packageImages.size
-    })
-
-    val  boxModifier =
-        Modifier
-            .padding(bottom = 20.dp)
-            .fillMaxHeight()
-            .fillMaxWidth()
-
-    // AnimationEffect
-    Box(contentAlignment = Alignment.BottomCenter, modifier = boxModifier) {
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.fillMaxSize()
-        ) { page ->
-            ImageComponent(imageModifier = Modifier.fillMaxWidth().height(350.dp), imageRes = packageImages[page].imageUrl, isAsync = true ,contentScale = ContentScale.Crop)
-        }
-        Row(
-            Modifier
-                .wrapContentHeight()
-                .fillMaxWidth()
-                .padding(bottom = 4.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            repeat(pagerState.pageCount) { iteration ->
-                val color: Color
-                val width: Int
-                if (pagerState.currentPage == iteration){
-                    color =  Colors.primaryColor
-                    width = 25
-                } else{
-                    color =  Colors.lightPrimaryColor
-                    width = 25
-                }
-                Box(
-                    modifier = Modifier
-                        .padding(2.dp)
-                        .clip(CircleShape)
-                        .background(color)
-                        .height(2.dp)
-                        .width(width.dp)
-                )
-            }
-
-        }
     }
 
 }

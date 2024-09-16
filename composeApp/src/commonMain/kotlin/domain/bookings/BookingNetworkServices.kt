@@ -43,6 +43,14 @@ open class BookingNetworkService(private val apiService: HttpClient) {
             setBody(createPendingBookingAppointmentRequest)
         }.body<PendingBookingAppointmentResponse>().toSingle()
 
+    suspend fun createPendingBookingPackageAppointment(createPendingBookingPackageAppointmentRequest: CreatePendingBookingPackageAppointmentRequest) =
+        apiService.post {
+            url("/services/appointment/pending/booking/package/create")
+            contentType(ContentType.Application.Json)
+            header("Authorization", apiKey)
+            setBody(createPendingBookingPackageAppointmentRequest)
+        }.body<PendingBookingAppointmentResponse>().toSingle()
+
     suspend fun getPendingBookingAppointment(getPendingBookingAppointmentRequest: GetPendingBookingAppointmentRequest) =
         apiService.post {
             url("/services/appointment/pending/booking/get")

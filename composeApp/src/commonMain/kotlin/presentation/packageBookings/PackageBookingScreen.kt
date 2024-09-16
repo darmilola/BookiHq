@@ -135,6 +135,10 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
         this.databaseBuilder = databaseBuilder
     }
 
+    fun setVendorPackage(vendorPackage: VendorPackage){
+        this.vendorPackage = vendorPackage
+    }
+
 
 
     @OptIn(ExperimentalFoundationApi::class)
@@ -374,7 +378,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                         .background(color = Color.White)
                 Column(modifier = layoutModifier) {
 
-                    BookingScreenTopBar(pagerState, onBackPressed = {
+                    PackageBookingScreenTopBar(pagerState, onBackPressed = {
                         navigator.pop()
                     })
 
@@ -393,9 +397,8 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                         Column(
                             modifier = bgStyle
                         ) {
-                            AttachBookingPages(
+                            AttachPackageBookingPages(
                                 pagerState,
-                                getTherapistActionUIStateViewModel!!,
                                 loadPendingActionUIStateViewModel!!,
                                 deleteActionUIStateViewModel!!,
                                 mainViewModel!!,
@@ -438,7 +441,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Center) {
 
-            if (currentPage == 2) {
+            if (currentPage == 1) {
                 ButtonComponent(
                     modifier = Modifier
                         .padding(start = 5.dp, end = 5.dp, top = 10.dp, bottom = 10.dp)
@@ -461,7 +464,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                 }
             }
 
-            val bookingNavText = if(currentPage == 2) "Go To Payments" else "Continue"
+            val bookingNavText = if(currentPage == 1) "Go To Payments" else "Continue"
             ButtonComponent(modifier = Modifier
                 .padding(start = 5.dp, end = 5.dp, top = 10.dp, bottom = 10.dp)
                 .fillMaxWidth()
@@ -474,27 +477,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
 
                 coroutineScope.launch {
                     if (currentPage == 0) {
-                        if (bookingViewModel?.currentAppointmentBooking?.value?.serviceTypeId == -1L) {
-                            ShowSnackBar(title = "No Service Selected",
-                                description = "Please Select a Service to proceed",
-                                actionLabel = "",
-                                duration = StackedSnackbarDuration.Short,
-                                snackBarType = SnackBarType.ERROR,
-                                stackedSnackBarHostState,
-                                onActionClick = {})
-                        } else {
-                            pagerState.animateScrollToPage(1)
-                        }
-                    } else if (currentPage == 1) {
-                        if (bookingViewModel?.currentAppointmentBooking?.value?.serviceTypeTherapists == null) {
-                            ShowSnackBar(title = "No Therapist Selected",
-                                description = "Please Select a Therapist to proceed",
-                                actionLabel = "",
-                                duration = StackedSnackbarDuration.Short,
-                                snackBarType = SnackBarType.ERROR,
-                                stackedSnackBarHostState,
-                                onActionClick = {})
-                        } else if (bookingViewModel?.currentAppointmentBooking?.value?.pendingTime == null) {
+                        if (bookingViewModel?.currentAppointmentBooking?.value?.pendingTime == null) {
                             ShowSnackBar(title = "No Time Selected",
                                 description = "Please Select Appointment Time to proceed",
                                 actionLabel = "",
@@ -503,11 +486,11 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                                 stackedSnackBarHostState,
                                 onActionClick = {})
                         } else {
-                            pagerState.animateScrollToPage(2)
+                            pagerState.animateScrollToPage(1)
                         }
                     }
                 }
-                if (currentPage == 2){
+                if (currentPage == 1){
                     mainViewModel.showAppointmentPaymentMethodBottomSheet(true)
                 }
             }
@@ -516,7 +499,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun AttachBookingPages(pagerState: PagerState, getTherapistActionUIStateViewModel: PerformedActionUIStateViewModel,
+    fun AttachPackageBookingPages(pagerState: PagerState,
                            loadPendingActionUIStateViewModel: PerformedActionUIStateViewModel, deleteActionUIStateViewModel: PerformedActionUIStateViewModel,
                            mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, services: Services, onLastItemRemoved:() -> Unit){
         val pageHeight = remember { mutableStateOf(0.90f) }
@@ -536,15 +519,11 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                 when (page) {
                     0 -> if (page == pagerState.targetPage){
                         pageHeight.value = 0.90f
-                        BookingSelectServices(mainViewModel, bookingViewModel,services)
+                        PackageBookingSelection(mainViewModel, bookingViewModel,vendorPackage!!)
                     }
                     1 -> if(page == pagerState.targetPage) {
-                        pageHeight.value = 0.90f
-                        BookingSelectTherapists(mainViewModel,getTherapistActionUIStateViewModel,bookingViewModel,bookingPresenter)
-                    }
-                    2 -> if(page == pagerState.targetPage) {
                         pageHeight.value = 0.80f
-                        BookingOverview(
+                        PackageBookingOverview(
                             mainViewModel,
                             bookingPresenter,
                             bookingViewModel,

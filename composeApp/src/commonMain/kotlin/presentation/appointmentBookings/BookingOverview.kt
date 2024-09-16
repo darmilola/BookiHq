@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import domain.Enums.AppointmentType
 import domain.Enums.BookingStatus
 import domain.Enums.ServiceLocationEnum
 import domain.Enums.ServiceStatusEnum
@@ -32,6 +33,7 @@ import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.PendingAppointmentWidget
+import presentation.widgets.PendingPackageAppointmentWidget
 import utils.getAppointmentViewHeight
 
 
@@ -60,8 +62,7 @@ fun BookingOverview(mainViewModel: MainViewModel, bookingPresenter: BookingPrese
             year = currentAppointmentBooking.appointmentYear!!,
             serviceLocation = if (currentAppointmentBooking.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
             serviceStatus = ServiceStatusEnum.BOOKING.toPath(),
-            bookingStatus = BookingStatus.PENDING.toPath()
-        )
+            bookingStatus = BookingStatus.PENDING.toPath())
     }
 
 
@@ -135,12 +136,21 @@ fun PopulateBookingAppointmentScreen(appointmentList: List<UserAppointment>, onD
             .height(getAppointmentViewHeight(appointmentList.size).dp),
         userScrollEnabled = true
     ) {
-        itemsIndexed(items = appointmentList) { it, item ->
+        itemsIndexed(items = appointmentList) { _, item ->
+            if (item.resources!!.appointmentType == AppointmentType.SINGLE.toPath()) {
                 PendingAppointmentWidget(
                     item,
                     onDeleteAppointment = {
                         onDeleteItem(it)
                     })
+            }
+            if (item.resources.appointmentType == AppointmentType.PACKAGE.toPath()) {
+                PendingPackageAppointmentWidget(
+                    item,
+                    onDeleteAppointment = {
+                        onDeleteItem(it)
+                    })
+            }
               }
 
         }

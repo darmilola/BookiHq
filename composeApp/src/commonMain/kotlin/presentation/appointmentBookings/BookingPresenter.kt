@@ -10,6 +10,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import UIStates.AppUIStates
+import domain.Enums.AppointmentType
 import domain.Enums.ServerResponse
 import domain.packages.PackageRepositoryImpl
 
@@ -211,9 +212,10 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
             try {
                 val result = withContext(Dispatchers.IO) {
                     bookingRepositoryImpl.createPendingBookingAppointment(userId, vendorId, serviceId, serviceTypeId, therapistId, appointmentTime,
-                        day, month, year, serviceLocation, serviceStatus,bookingStatus)
+                        day, month, year, serviceLocation, serviceStatus,bookingStatus, appointmentType = AppointmentType.SINGLE.toPath())
                         .subscribe(
                             onSuccess = { result ->
+                                println("Result is $result")
                                 when (result.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
                                         contractView?.showLoadPendingAppointmentLce(AppUIStates(isSuccess = true, successMessage = "Creation Successful"))
@@ -225,12 +227,59 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
                                 }
                             },
                             onError = {
+                                println("Result 2 is ${it.message}")
                                 contractView?.showLoadPendingAppointmentLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Appointment"))
                             },
                         )
                    }
                 result.dispose()
             } catch(e: Exception) {
+                println("Result 3 is ${e.message}")
+                contractView?.showLoadPendingAppointmentLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Appointment"))
+            }
+        }
+    }
+
+    override fun createPendingPackageBookingAppointment(
+        userId: Long,
+        vendorId: Long,
+        packageId: Long,
+        appointmentTime: Int,
+        day: Int,
+        month: Int,
+        year: Int,
+        serviceLocation: String,
+        serviceStatus: String,
+        bookingStatus: String
+    ) {
+        contractView?.showLoadPendingAppointmentLce(AppUIStates(isLoading = true, loadingMessage = "Creating Pending Appointment"))
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    bookingRepositoryImpl.createPendingPackageBookingAppointment(userId, vendorId, packageId, appointmentTime,
+                        day, month, year, serviceLocation, serviceStatus, bookingStatus, appointmentType = AppointmentType.PACKAGE.toPath())
+                        .subscribe(
+                            onSuccess = { result ->
+                                println("Result is $result")
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.showLoadPendingAppointmentLce(AppUIStates(isSuccess = true, successMessage = "Creation Successful"))
+                                        contractView?.showPendingBookingAppointment(result.appointments!!)
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.showLoadPendingAppointmentLce(AppUIStates(isFailed = true, errorMessage = "Error Loading Appointment"))
+                                    }
+                                }
+                            },
+                            onError = {
+                                println("Result 2 is ${it.message}")
+                                contractView?.showLoadPendingAppointmentLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Appointment"))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                println("Result 3 is ${e.message}")
                 contractView?.showLoadPendingAppointmentLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Appointment"))
             }
         }

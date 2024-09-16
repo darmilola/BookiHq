@@ -120,6 +120,7 @@ class BookingScreenHandler(
     }
 
     override fun showTimes(platformTime: List<PlatformTime>, vendorTime: List<VendorTime>) {
+        println(platformTime)
         bookingViewModel.setVendorTimes(vendorTime)
         bookingViewModel.setPlatformTimes(platformTime)
     }

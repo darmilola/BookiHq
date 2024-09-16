@@ -274,6 +274,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                 val packageInfo = PackageInfo(platformNavigator)
                 packageInfo.setMainViewModel(mainViewModel!!)
                 packageInfo.setSelectedPackage(mainViewModel!!.selectedPackage.value)
+                packageInfo.setDatabaseBuilder(databaseBuilder)
                 val nav = LocalNavigator.currentOrThrow
                 nav.push(packageInfo)
                 mainViewModel!!.setScreenNav(

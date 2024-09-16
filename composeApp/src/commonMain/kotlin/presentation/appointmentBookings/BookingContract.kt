@@ -32,5 +32,6 @@ class BookingContract {
         abstract fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Long, serviceTypeId: Long, therapistId: Long,
                                                      appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String,
                                                      serviceStatus: String, bookingStatus: String)
+        abstract fun createPendingPackageBookingAppointment(userId: Long, vendorId: Long, packageId: Long, appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, serviceStatus: String, bookingStatus: String)
     }
 }

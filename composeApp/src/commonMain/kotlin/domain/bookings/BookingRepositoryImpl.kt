@@ -18,10 +18,27 @@ class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
 
     override suspend fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Long, serviceTypeId: Long, therapistId: Long,
                                                           appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, serviceStatus: String,
-                                                          bookingStatus: String): Single<PendingBookingAppointmentResponse> {
+                                                          bookingStatus: String, appointmentType: String): Single<PendingBookingAppointmentResponse> {
         val param = CreatePendingBookingAppointmentRequest(userId, vendorId, serviceId, serviceTypeId, therapistId,
-            appointmentTime, day, month, year, serviceLocation, serviceStatus, bookingStatus)
+            appointmentTime, day, month, year, serviceLocation, serviceStatus, bookingStatus, appointmentType)
         return bookingNetworkService.createPendingBookingAppointment(param)
+    }
+
+    override suspend fun createPendingPackageBookingAppointment(
+        userId: Long,
+        vendorId: Long,
+        packageId: Long,
+        appointmentTime: Int,
+        day: Int,
+        month: Int,
+        year: Int,
+        serviceLocation: String,
+        serviceStatus: String,
+        bookingStatus: String,
+        appointmentType: String
+    ): Single<PendingBookingAppointmentResponse> {
+        val param = CreatePendingBookingPackageAppointmentRequest(userId, vendorId, packageId, appointmentTime, day, month, year, serviceLocation, serviceStatus, bookingStatus, appointmentType)
+        return bookingNetworkService.createPendingBookingPackageAppointment(param)
     }
 
     override suspend fun createAppointment(
@@ -32,7 +49,7 @@ class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
         bookingStatus: String,
         day: Int,
         month: Int,
-        year: Int
+        year: Int,
     ): Single<ServerResponse> {
         val param = CreateAppointmentRequest(userId, vendorId, day, month, year, bookingStatus, paymentAmount, paymentMethod)
         return bookingNetworkService.createAppointment(param)

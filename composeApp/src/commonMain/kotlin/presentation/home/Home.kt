@@ -55,7 +55,7 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
-import domain.Enums.BookingStatus
+import domain.Enums.AppointmentType
 import domain.Models.HomepageInfo
 import domain.Models.VendorRecommendation
 import domain.Enums.RecommendationType
@@ -81,7 +81,9 @@ import presentation.viewmodels.MainViewModel
 import presentation.widgets.ShopStatusWidget
 import presentation.widgets.HomeServicesWidget
 import presentation.widgets.RecommendedServiceItem
-import presentation.widgets.HomeAppointmentWidget
+import presentation.widgets.RecentAppointmentWidget
+import presentation.widgets.PendingAppointmentWidget
+import presentation.widgets.PendingPackageAppointmentWidget
 import presentation.widgets.ProductDetailBottomSheet
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
@@ -468,9 +470,10 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 modifier = Modifier.fillMaxWidth()
                     .height(viewHeight.dp), userScrollEnabled = false
             ) {
-                items(key = { it -> it.appointmentId!!}, items =  appointmentList) { item ->
-                        HomeAppointmentWidget(
-                            userAppointment  = item,
+                items(key = { it -> it.appointmentId }, items =  appointmentList) { item ->
+                    if (item.resources!!.appointmentType == AppointmentType.SINGLE.toPath()) {
+                        RecentAppointmentWidget(
+                            userAppointment = item,
                             appointmentPresenter = null,
                             postponementViewModel = null,
                             mainViewModel = mainViewModel!!,
@@ -478,6 +481,13 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                             onDeleteAppointment = {},
                             platformNavigator = platformNavigator
                         )
+                    }else {
+                        if (item.resources.appointmentType == AppointmentType.PACKAGE.toPath()) {
+                            PendingPackageAppointmentWidget(
+                                item,
+                                onDeleteAppointment = {})
+                        }
+                    }
                 }
 
             }

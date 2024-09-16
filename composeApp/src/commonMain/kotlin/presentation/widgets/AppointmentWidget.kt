@@ -37,12 +37,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Enums.AppointmentType
 import domain.Models.Appointment
-import domain.Enums.MeetingStatus
 import domain.Enums.ServiceStatusEnum
 import domain.Models.PlatformNavigator
 import domain.Models.TherapistInfo
-import domain.Models.User
 import domain.Models.UserAppointment
 import presentation.appointments.AppointmentPresenter
 import presentation.dialogs.PostponeDialog
@@ -144,7 +143,7 @@ fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPrese
 
 
 @Composable
-fun HomeAppointmentWidget(userAppointment: UserAppointment? = null, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, mainViewModel: MainViewModel, availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
+fun RecentAppointmentWidget(userAppointment: UserAppointment? = null, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, mainViewModel: MainViewModel, availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
 
     val serviceAppointmentStatus = userAppointment?.resources?.serviceStatus
     val serviceMenuItems = arrayListOf<String>()
@@ -211,7 +210,7 @@ fun HomeAppointmentWidget(userAppointment: UserAppointment? = null, appointmentP
             horizontalAlignment = Alignment.Start,
             modifier = columnModifier
         ) {
-            AttachHomeServiceAppointmentHeader(
+            AttachRecentServiceAppointmentHeader(
                 serviceStatusText,
                 serviceIconRes,
                 serviceStatusColor,
@@ -231,8 +230,8 @@ fun HomeAppointmentWidget(userAppointment: UserAppointment? = null, appointmentP
 
 
 @Composable
-fun AttachHomeServiceAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment, menuItems: ArrayList<String>, presenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null,
-                                       availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, mainViewModel: MainViewModel, onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
+fun AttachRecentServiceAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment, menuItems: ArrayList<String>, presenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null,
+                                         availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, mainViewModel: MainViewModel, onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
 
     Row(
         horizontalArrangement = Arrangement.Start,
@@ -395,7 +394,9 @@ fun AttachAppointmentStatus(status: String, statusColor: Color){
 
 @Composable
 fun AttachAppointmentContent(appointment: Appointment) {
-    AppointmentInfoWidget(appointment)
+    if (appointment.appointmentType ==  AppointmentType.SINGLE.toPath()){
+        AppointmentInfoWidget(appointment)
+    }
 }
 
 

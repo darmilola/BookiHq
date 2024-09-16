@@ -43,7 +43,7 @@ fun StepsProgressBar(modifier: Modifier = Modifier, numberOfSteps: Int, currentS
         for (step in 0..numberOfSteps) {
             if(step == numberOfSteps){
                 Step(
-                    modifier = Modifier.weight(1.2F),
+                    modifier = Modifier.weight(0.5F),
                     isCompete = step < currentStep,
                     isCurrentStep = step == currentStep,
                     isLastStep = true,
@@ -52,7 +52,7 @@ fun StepsProgressBar(modifier: Modifier = Modifier, numberOfSteps: Int, currentS
             }
             else {
                 Step(
-                    modifier = Modifier.weight(2.4F),
+                    modifier = Modifier.weight(2F),
                     isCompete = step < currentStep,
                     isCurrentStep = step == currentStep,
                     itemTitle = stepItems[step]
