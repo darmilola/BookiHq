@@ -140,7 +140,7 @@ fun ViewPackage(vendorPackage: VendorPackage, onPackageClickListener: (VendorPac
 fun PackageInfo(vendorPackage: VendorPackage){
     val packageServices = vendorPackage.packageServices.size
     val products = vendorPackage.packageProducts.size
-    val price = vendorPackage.price
+    val therapist = vendorPackage.packageTherapists.size
     val rowModifier = Modifier
         .fillMaxWidth().height(25.dp)
     Row(
@@ -212,7 +212,7 @@ fun PackageInfo(vendorPackage: VendorPackage){
             horizontalArrangement = Arrangement.Start
         ) {
             TextComponent(
-                text = "$$price",
+                text = "$therapist Therapist",
                 textModifier = Modifier.wrapContentSize()
                     .padding(start = 5.dp),
                 fontSize = 15,

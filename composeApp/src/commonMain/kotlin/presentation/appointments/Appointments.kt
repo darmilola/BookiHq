@@ -56,6 +56,7 @@ import com.russhwolf.settings.get
 import dev.materii.pullrefresh.PullRefreshIndicator
 import dev.materii.pullrefresh.PullRefreshLayout
 import dev.materii.pullrefresh.rememberPullRefreshState
+import domain.Enums.AppointmentType
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.Appointment
 import drawable.ErrorOccurredWidget
@@ -64,6 +65,7 @@ import presentation.dialogs.SuccessDialog
 import presentation.widgets.AddAppointmentsReviewBottomSheet
 import presentation.widgets.AppointmentWidget
 import presentation.widgets.EmptyContentWidget
+import presentation.widgets.PendingPackageAppointmentWidget
 import utils.getAppointmentViewHeight
 import rememberStackedSnackbarHostState
 import theme.Colors
@@ -383,6 +385,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                                 userScrollEnabled = true
                             ) {
                            itemsIndexed(items = appointmentUIModel.appointmentList) { it, item ->
+                               if (item.resources!!.appointmentType == AppointmentType.SINGLE.toPath()) {
                                    AppointmentWidget(
                                        item,
                                        appointmentPresenter = appointmentPresenter,
@@ -397,6 +400,12 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                                            appointmentForReview.value = it
                                            mainViewModel!!.showAppointmentReviewsBottomSheet(true)
                                        })
+                               }
+                               else if (item.resources.appointmentType == AppointmentType.PACKAGE.toPath()) {
+                                   PendingPackageAppointmentWidget(
+                                       item,
+                                       onDeleteAppointment = {})
+                               }
                                if (it == lastIndex && loadMoreState.value) {
                                    Box(
                                        modifier = Modifier.fillMaxWidth().height(60.dp),

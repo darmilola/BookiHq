@@ -481,13 +481,13 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                             onDeleteAppointment = {},
                             platformNavigator = platformNavigator
                         )
-                    }else {
-                        if (item.resources.appointmentType == AppointmentType.PACKAGE.toPath()) {
+                      }
+                       else if (item.resources.appointmentType == AppointmentType.PACKAGE.toPath()) {
                             PendingPackageAppointmentWidget(
                                 item,
                                 onDeleteAppointment = {})
                         }
-                    }
+
                 }
 
             }

@@ -64,6 +64,7 @@ import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
 import domain.Models.Services
 import domain.Models.VendorPackage
+import drawable.ErrorOccurredWidget
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
@@ -77,6 +78,7 @@ import presentation.appointmentBookings.BookingScreenTopBar
 import presentation.appointmentBookings.BookingSelectServices
 import presentation.appointmentBookings.BookingSelectTherapists
 import presentation.components.ButtonComponent
+import presentation.components.IndeterminateCircularProgressBar
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
 import presentation.dialogs.SuccessDialog
@@ -147,6 +149,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
         val pagerState = rememberPagerState(pageCount = { 3 })
         val addMoreService = remember { mutableStateOf(false) }
         val lastItemRemoved = remember { mutableStateOf(false) }
+        val currentPage = remember { mutableStateOf(-1) }
         val currentUserInfo = mainViewModel!!.currentUserInfo.value
         val customerEmail = if (currentUserInfo.email!!.isNotEmpty()) currentUserInfo.email else "damilolaakinterinwa@gmail.com"
         val navigator = LocalNavigator.currentOrThrow
@@ -212,8 +215,17 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
         if (onBackPressed.value){
-            mainViewModel!!.setOnBackPressed(false)
-            navigator.pop()
+            if (currentPage.value == 0){
+                mainViewModel!!.setOnBackPressed(false)
+                navigator.pop()
+            }
+            else if (currentPage.value == 1) {
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(0)
+                }
+                val lastBooking = bookingViewModel!!.pendingAppointments.value[0]
+                bookingPresenter.silentDeletePendingBookingAppointment(lastBooking.appointmentId)
+            }
         }
 
         val handler = BookingScreenHandler(
@@ -260,17 +272,6 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
         else if (paymentActionUiState.value.isFailed) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 ErrorDialog("Payment Authentication Failed", actionTitle = "Retry", onConfirmation = {})
-            }
-        }
-
-        if (timeActionUiState.value.isLoading) {
-            Box(modifier = Modifier.fillMaxWidth(0.90f)) {
-                LoadingDialog("Loading Time")
-            }
-        }
-        else if (timeActionUiState.value.isFailed) {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                ErrorDialog("Error Occurred Please Try Again", actionTitle = "Retry", onConfirmation = {})
             }
         }
 
@@ -340,9 +341,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                                 month = getMonth(), year = getYear(), paymentAmount = paymentAmount,
                                 paymentMethod = PaymentMethod.CARD_PAYMENT.toPath())
                         },
-                        onPaymentFailed = {
-
-                        })
+                        onPaymentFailed = {})
                 }
             })
         paymentHandler.init()
@@ -378,41 +377,73 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                         .background(color = Color.White)
                 Column(modifier = layoutModifier) {
 
-                    PackageBookingScreenTopBar(pagerState, onBackPressed = {
-                        navigator.pop()
-                    })
+                        PackageBookingScreenTopBar(pagerState, onBackPressed = { page ->
+                            currentPage.value = page
+                            if (currentPage.value == 0){
+                                navigator.pop()
+                            }
+                            else if (currentPage.value == 1) {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(0)
+                                }
+                                val lastBooking = bookingViewModel!!.pendingAppointments.value[0]
+                                bookingPresenter.silentDeletePendingBookingAppointment(lastBooking.appointmentId)
+                            }
+                        })
 
-                    val bgStyle = Modifier
-                        .fillMaxWidth()
-                        .background(color = Color.White)
-                        .fillMaxHeight()
-
-                    Box(
-                        contentAlignment = Alignment.TopCenter, modifier = Modifier
-                            .fillMaxHeight()
+                        val bgStyle = Modifier
                             .fillMaxWidth()
                             .background(color = Color.White)
-                    ) {
+                            .fillMaxHeight()
 
-                        Column(
-                            modifier = bgStyle
+                        Box(
+                            contentAlignment = Alignment.TopCenter, modifier = Modifier
+                                .fillMaxHeight()
+                                .fillMaxWidth()
+                                .background(color = Color.White)
                         ) {
-                            AttachPackageBookingPages(
-                                pagerState,
-                                loadPendingActionUIStateViewModel!!,
-                                deleteActionUIStateViewModel!!,
-                                mainViewModel!!,
-                                bookingViewModel!!,
-                                services = mainViewModel!!.selectedService.value,
-                                onLastItemRemoved = {
-                                    lastItemRemoved.value = true
+                            if (timeActionUiState.value.isLoading) {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                                        .padding(top = 40.dp, start = 50.dp, end = 50.dp)
+                                        .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    IndeterminateCircularProgressBar()
                                 }
-                            )
-                            AttachActionButtons(pagerState, mainViewModel!!, stackedSnackBarHostState, bookingPresenter, onAddMoreServicesClicked = {
-                                addMoreService.value = true
-                            })
+                            }
+                            else if (timeActionUiState.value.isFailed) {
+                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                    ErrorOccurredWidget(timeActionUiState.value.errorMessage, onRetryClicked = {
+                                        bookingPresenter.getTimeAvailability(vendorId = vendorInfo.vendorId!!)
+                                    })
+                                }
+                            }
+                            else{
+                                Column(modifier = bgStyle) {
+                                    AttachPackageBookingPages(
+                                        pagerState,
+                                        loadPendingActionUIStateViewModel!!,
+                                        deleteActionUIStateViewModel!!,
+                                        mainViewModel!!,
+                                        bookingViewModel!!,
+                                        services = mainViewModel!!.selectedService.value,
+                                        onLastItemRemoved = {
+                                            lastItemRemoved.value = true
+                                        }
+                                    )
+
+                                    AttachActionButtons(
+                                        pagerState,
+                                        mainViewModel!!,
+                                        stackedSnackBarHostState,
+                                        bookingPresenter,
+                                        onAddMoreServicesClicked = {
+                                            addMoreService.value = true
+                                        })
+                                }
+                            }
                         }
-                    }
 
                 }
             }

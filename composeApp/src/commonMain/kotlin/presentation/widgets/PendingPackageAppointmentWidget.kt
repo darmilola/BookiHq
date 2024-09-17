@@ -189,19 +189,7 @@ fun AttachPackageAppointmentContent(appointment: Appointment) {
         horizontalAlignment = Alignment.Start,
         modifier = columnModifier
     ) {
-        TextComponent(
-            text = appointment.serviceTypeItem?.title.toString(),
-            fontSize = 16,
-            fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Colors.darkPrimary,
-            textAlign = TextAlign.Start,
-            fontWeight = FontWeight.Bold,
-            textModifier = Modifier
-                .fillMaxWidth().padding(start = 5.dp)
-        )
-
-
+        PackageInfo(appointment.packageInfo!!)
         Row(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
             Column(
                 modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(top = 5.dp),
