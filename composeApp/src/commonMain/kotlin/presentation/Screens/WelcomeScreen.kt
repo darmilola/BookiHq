@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -42,6 +43,7 @@ import com.russhwolf.settings.set
 import domain.Enums.AuthType
 import domain.Enums.DeviceType
 import domain.Enums.SharedPreferenceEnum
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
@@ -97,6 +99,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
     val navigateToPlatform = remember { mutableStateOf(false) }
     val preferenceSettings = Settings()
     val navigator = LocalNavigator.currentOrThrow
+    val scope = rememberCoroutineScope()
 
     val userEmailFromGoogleAuth = remember { mutableStateOf(googleAuthEmail) }
 
@@ -115,6 +118,15 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
                 preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] =
                     AuthType.EMAIL.toPath()
+
+                scope.launch {
+                    val userDao = databaseBuilder.build().getUserDao()
+                    val userCount = userDao.count()
+                    val vendorCount = userDao.count()
+                    if (userCount == 0 && vendorCount == 0) {
+                        userDao.insert(user)
+                    }
+                }
             }
             navigateToPlatform.value = true
         },
@@ -137,8 +149,16 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
-                preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] =
-                    AuthType.EMAIL.toPath()
+                preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.EMAIL.toPath()
+
+                scope.launch {
+                    val userDao = databaseBuilder.build().getUserDao()
+                    val userCount = userDao.count()
+                    val vendorCount = userDao.count()
+                    if (userCount == 0 && vendorCount == 0) {
+                        userDao.insert(user)
+                    }
+                }
             }
             navigateToConnectVendor.value = true
         },
@@ -210,7 +230,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                         AttachActionButtons(platformNavigator, onAuthSuccessful = {
                             authEmail.value = it
                             authenticationPresenter.validateEmail(it)
-                        }, onAuthFailed = {}, mainViewModel = mainViewModel)
+                        }, onAuthFailed = {}, mainViewModel = mainViewModel, databaseBuilder = databaseBuilder)
 
                     }
                     Box(
@@ -243,7 +263,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
 
 @Composable
 fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful: (String) -> Unit,
-                        onAuthFailed: () -> Unit, mainViewModel: MainViewModel){
+                        onAuthFailed: () -> Unit, mainViewModel: MainViewModel, databaseBuilder: RoomDatabase.Builder<AppDatabase>){
     val navigator = LocalNavigator.currentOrThrow
     val buttonStyle = Modifier
         .padding(bottom = 15.dp)
@@ -280,6 +300,7 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful:
         IconButtonComponent(modifier = phoneButtonStyle, buttonText = "Sign In with Phone Number", borderStroke = BorderStroke((0.01).dp, Colors.primaryColor), iconSize = 24, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor = Color.White, style = MaterialTheme.typography.h4, iconRes = "drawable/care_icon.png", colorFilter = ColorFilter.tint(color = Color.White)){
            val continueWithPhone = PhoneInputScreen(platformNavigator)
             continueWithPhone.setMainViewModel(mainViewModel = mainViewModel)
+            continueWithPhone.setDatabaseBuilder(databaseBuilder = databaseBuilder)
             navigator.push(continueWithPhone)
         }
 

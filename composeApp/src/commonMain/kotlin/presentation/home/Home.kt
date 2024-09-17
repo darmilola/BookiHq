@@ -2,6 +2,7 @@ package presentation.home
 
 import GGSansRegular
 import StackedSnackbarHost
+import UIStates.AppUIStates
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -37,6 +38,7 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +48,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.room.RoomDatabase
 import applications.device.ScreenSizeInfo
+import applications.room.AppDatabase
+import applications.room.UserDao
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
@@ -62,6 +67,7 @@ import domain.Enums.RecommendationType
 import domain.Enums.Screens
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.OrderItem
+import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
 import domain.Models.Product
 import domain.Models.Services
@@ -69,6 +75,7 @@ import domain.Models.UserAppointment
 import domain.Models.Vendor
 import domain.Models.VendorStatusModel
 import drawable.ErrorOccurredWidget
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -77,6 +84,7 @@ import presentation.components.StraightLine
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.HomePageViewModel
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.ShopStatusWidget
 import presentation.widgets.HomeServicesWidget
@@ -95,11 +103,12 @@ import utils.getServicesViewHeight
 class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
 
     @Transient private val homepagePresenter: HomepagePresenter by inject()
-    private var userId: Long = -1L
     @Transient private val preferenceSettings: Settings = Settings()
-    @Transient private var loadHomepageActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
     @Transient private var mainViewModel: MainViewModel? = null
     @Transient private var homePageViewModel: HomePageViewModel? = null
+    @Transient
+    private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 
   @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -125,22 +134,52 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
         this.homePageViewModel = homePageViewModel
     }
 
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = databaseBuilder
+    }
+
+
 
     @Composable
     override fun Content() {
-            userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(), -1L]
+            val userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(), -1L]
+            val vendorPhone: String = preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath(),""]
             val screenSizeInfo = ScreenSizeInfo()
-            if (loadHomepageActionUIStateViewModel == null) {
-                loadHomepageActionUIStateViewModel = kmpViewModel(
+
+
+            if (loadingScreenUiStateViewModel == null) {
+                loadingScreenUiStateViewModel = kmpViewModel(
                     factory = viewModelFactory {
-                        PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                        LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                     },
                 )
             }
 
+        val handler = HomepageHandler(loadingScreenUiStateViewModel!!, homepagePresenter,
+            onHomeInfoAvailable = { homePageInfo, vendorStatus ->
+                val viewHeight = calculateHomePageScreenHeight(
+                    homepageInfo = homePageInfo,
+                    screenSizeInfo = screenSizeInfo,
+                    statusList = vendorStatus
+                )
+                mainViewModel!!.setConnectedVendor(homePageInfo.vendorInfo!!)
+                homePageViewModel!!.setHomePageViewHeight(viewHeight)
+                homePageViewModel!!.setHomePageInfo(homePageInfo)
+                homePageViewModel!!.setVendorStatus(vendorStatus)
+                mainViewModel!!.setUserEmail(homePageInfo.userInfo?.email!!)
+                mainViewModel!!.setUserFirstname(homePageInfo.userInfo.firstname!!)
+                mainViewModel!!.setUserId(homePageInfo.userInfo.userId!!)
+                mainViewModel!!.setVendorEmail(homePageInfo.vendorInfo.businessEmail!!)
+                mainViewModel!!.setVendorId(homePageInfo.vendorInfo.vendorId!!)
+                mainViewModel!!.setVendorBusinessLogoUrl(homePageInfo.vendorInfo.businessLogo!!)
+                mainViewModel!!.setUserInfo(homePageInfo.userInfo)
+                saveAccountInfoFromServer(homePageInfo)
+            })
+        handler.init()
+
+
         LaunchedEffect(true) {
             if (homePageViewModel!!.homePageInfo.value.userInfo?.userId == null) {
-                val vendorPhone: String = preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath(),""]
                 if (vendorPhone.isNotEmpty()){
                     homepagePresenter.getUserHomepageWithStatus(userId, vendorPhone)
                 }
@@ -150,105 +189,100 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             }
         }
 
-
-            val handler = HomepageHandler(loadHomepageActionUIStateViewModel!!, homepagePresenter,
-                onHomeInfoAvailable = { homePageInfo, vendorStatus ->
-                    val viewHeight = calculateHomePageScreenHeight(
-                        homepageInfo = homePageInfo,
-                        screenSizeInfo = screenSizeInfo,
-                        statusList = vendorStatus
-                    )
-                    mainViewModel!!.setConnectedVendor(homePageInfo.vendorInfo!!)
-                    homePageViewModel!!.setHomePageViewHeight(viewHeight)
-                    homePageViewModel!!.setHomePageInfo(homePageInfo)
-                    homePageViewModel!!.setVendorStatus(vendorStatus)
-                    mainViewModel!!.setUserEmail(homePageInfo.userInfo?.email!!)
-                    mainViewModel!!.setUserFirstname(homePageInfo.userInfo.firstname!!)
-                    mainViewModel!!.setUserId(homePageInfo.userInfo.userId!!)
-                    mainViewModel!!.setVendorEmail(homePageInfo.vendorInfo.businessEmail!!)
-                    mainViewModel!!.setVendorId(homePageInfo.vendorInfo.vendorId!!)
-                    mainViewModel!!.setVendorBusinessLogoUrl(homePageInfo.vendorInfo.businessLogo!!)
-                    mainViewModel!!.setUserInfo(homePageInfo.userInfo)
-                    saveAccountInfoFromServer(homePageInfo)
-                })
-            handler.init()
-
-
-        val loadHomeUiState = loadHomepageActionUIStateViewModel!!.loadHomepageUiState.collectAsState()
         val homepageInfo = homePageViewModel!!.homePageInfo.collectAsState()
         val homePageViewHeight = homePageViewModel!!.homePageViewHeight.collectAsState()
+        val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
 
-        Box(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                .background(color = Color.White),
-            contentAlignment = Alignment.Center
-        ) {
-            if (loadHomeUiState.value.isLoading) {
-                Box(
-                    modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                        .padding(top = 40.dp, start = 50.dp, end = 50.dp)
-                        .background(color = Color.Transparent, shape = RoundedCornerShape(20.dp)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    IndeterminateCircularProgressBar()
-                }
-            }
-            else if (loadHomeUiState.value.isFailed) {
-                ErrorOccurredWidget(loadHomeUiState.value.errorMessage, onRetryClicked = {
-                    if (homePageViewModel!!.homePageInfo.value.userInfo?.userId == null) {
-                        val vendorPhone: String = preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath(),""]
-                        if (vendorPhone.isNotEmpty()){
-                            homepagePresenter.getUserHomepageWithStatus(userId, vendorPhone)
-                        }
-                        else {
-                            homepagePresenter.getUserHomepage(userId)
-                        }
-                    }
-                })
-            }
-            else if (loadHomeUiState.value.isSuccess) {
-                val recentAppointments = homepageInfo.value.recentAppointments
-                val vendorServices = homepageInfo.value.vendorServices
-                val vendorRecommendations = homepageInfo.value.recommendationRecommendations
+        if (homepageInfo.value.userInfo!!.userId != null){
+            loadingScreenUiStateViewModel!!.switchScreenUIState(AppUIStates(isSuccess = true))
+        }
 
-                val stackedSnackBarHostState = rememberStackedSnackbarHostState(
-                    maxStack = 5,
-                    animation = StackedSnackbarAnimation.Bounce
-                )
+        val stackedSnackBarHostState = rememberStackedSnackbarHostState(
+            maxStack = 5,
+            animation = StackedSnackbarAnimation.Bounce
+        )
 
-                Scaffold(
+
+            Scaffold(
                     snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
                     topBar = {},
                     content = {
-                        Column(
-                            Modifier
-                                .verticalScroll(state = rememberScrollState())
-                                .height(homePageViewHeight.value.dp)
-                                .fillMaxWidth()
-                                .padding(top = 5.dp, bottom = 100.dp)
-
+                        Box(
+                            modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                                .background(color = Color.White),
+                            contentAlignment = Alignment.Center
                         ) {
-                            if (!vendorServices.isNullOrEmpty()) {
-                                AttachOurServices()
-                                ServiceGridScreen(vendorServices, onServiceSelected = {
-                                    mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.BOOKING.toPath()))
-                                    mainViewModel!!.setSelectedService(it)
+                            if (uiState.value.isLoading) {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                                        .padding(top = 40.dp, start = 50.dp, end = 50.dp)
+                                        .background(
+                                            color = Color.Transparent,
+                                            shape = RoundedCornerShape(20.dp)
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    IndeterminateCircularProgressBar()
+                                }
+                            } else if (uiState.value.isFailed) {
+                                ErrorOccurredWidget(uiState.value.errorMessage, onRetryClicked = {
+                                    if (homePageViewModel!!.homePageInfo.value.userInfo?.userId == null) {
+                                        if (vendorPhone.isNotEmpty()) {
+                                            homepagePresenter.getUserHomepageWithStatus(
+                                                userId,
+                                                vendorPhone
+                                            )
+                                        } else {
+                                            homepagePresenter.getUserHomepage(userId)
+                                        }
+                                    }
                                 })
-                            }
-                            if (homePageViewModel!!.vendorStatus.value.isNotEmpty()) {
-                                BusinessStatusDisplay(statusList = homePageViewModel!!.vendorStatus.value, vendorInfo = mainViewModel!!.connectedVendor.value)
-                            }
-                            if (!vendorRecommendations.isNullOrEmpty()) {
-                                RecommendedSessions(vendorRecommendations, mainViewModel!!)
-                            }
-                            if (!recentAppointments.isNullOrEmpty()) {
-                                AttachAppointmentsTitle("Recent Appointments")
-                                AppointmentsScreen(appointmentList = recentAppointments, platformNavigator = platformNavigator)
+                            } else if (uiState.value.isSuccess) {
+                                val recentAppointments = homepageInfo.value.recentAppointments
+                                val vendorServices = homepageInfo.value.vendorServices
+                                val vendorRecommendations =
+                                    homepageInfo.value.recommendationRecommendations
+                                Column(
+                                    Modifier
+                                        .verticalScroll(state = rememberScrollState())
+                                        .height(homePageViewHeight.value.dp)
+                                        .fillMaxWidth()
+                                        .padding(top = 5.dp, bottom = 100.dp)
+
+                                ) {
+                                    if (!vendorServices.isNullOrEmpty()) {
+                                        AttachOurServices()
+                                        ServiceGridScreen(vendorServices, onServiceSelected = {
+                                            mainViewModel!!.setScreenNav(
+                                                Pair(
+                                                    Screens.MAIN_SCREEN.toPath(),
+                                                    Screens.BOOKING.toPath()
+                                                )
+                                            )
+                                            mainViewModel!!.setSelectedService(it)
+                                        })
+                                    }
+                                    if (homePageViewModel!!.vendorStatus.value.isNotEmpty()) {
+                                        BusinessStatusDisplay(
+                                            statusList = homePageViewModel!!.vendorStatus.value,
+                                            vendorInfo = mainViewModel!!.connectedVendor.value
+                                        )
+                                    }
+                                    if (!vendorRecommendations.isNullOrEmpty()) {
+                                        RecommendedSessions(vendorRecommendations, mainViewModel!!)
+                                    }
+                                    if (!recentAppointments.isNullOrEmpty()) {
+                                        AttachAppointmentsTitle("Recent Appointments")
+                                        AppointmentsScreen(
+                                            appointmentList = recentAppointments,
+                                            platformNavigator = platformNavigator
+                                        )
+                                    }
+                                }
                             }
                         }
                     })
-            }
-        }
+
     }
 
     private fun saveAccountInfoFromServer(homePageInfo: HomepageInfo){
@@ -477,7 +511,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                             appointmentPresenter = null,
                             postponementViewModel = null,
                             mainViewModel = mainViewModel!!,
-                            loadHomepageActionUIStateViewModel!!,
+                            loadingScreenUiStateViewModel!!,
                             onDeleteAppointment = {},
                             platformNavigator = platformNavigator
                         )

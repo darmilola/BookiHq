@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +34,7 @@ import domain.Enums.DeviceType
 import domain.Enums.SharedPreferenceEnum
 import presentation.components.SplashScreenBackground
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
@@ -53,6 +55,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
     val authEmail = remember { mutableStateOf("") }
     val authPhone = remember { mutableStateOf("") }
     val navigator = LocalNavigator.currentOrThrow
+    val scope = rememberCoroutineScope()
 
 
     val handler = AuthenticationScreenHandler(authenticationPresenter,
@@ -66,8 +69,14 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
                 preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = whatsAppPhone
-                val apiKey = preferenceSettings.getString(SharedPreferenceEnum.API_KEY.toPath(),"")
-                println("key is $apiKey")
+                scope.launch {
+                    val userDao = databaseBuilder.build().getUserDao()
+                    val userCount = userDao.count()
+                    val vendorCount = userDao.count()
+                    if (userCount == 0 && vendorCount == 0) {
+                        userDao.insert(user)
+                    }
+                }
                 navigateToPlatform.value = true
             }
         },
@@ -82,6 +91,14 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
                 preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
+                scope.launch {
+                    val userDao = databaseBuilder.build().getUserDao()
+                    val userCount = userDao.count()
+                    val vendorCount = userDao.count()
+                    if (userCount == 0 && vendorCount == 0) {
+                        userDao.insert(user)
+                    }
+                }
                 navigateToConnectVendor.value = true
             }
         },

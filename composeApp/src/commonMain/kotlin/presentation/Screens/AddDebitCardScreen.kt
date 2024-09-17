@@ -265,7 +265,6 @@ class AddDebitCardScreen(val  platformNavigator: PlatformNavigator? = null) : Ko
                             navigator.pop()
                         }
                     }
-
                 }
             }
         }

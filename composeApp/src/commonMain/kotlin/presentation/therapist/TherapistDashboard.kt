@@ -45,7 +45,10 @@ import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
 import dev.icerock.moko.parcelize.Parcelize
+import domain.Enums.SharedPreferenceEnum
 import domain.Models.TherapistInfo
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
@@ -80,6 +83,7 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
     private var mainViewModel: MainViewModel? = null
     @Transient
     private var therapistInfo: TherapistInfo? = null
+    val preferenceSettings = Settings()
 
     override val key: ScreenKey = uniqueScreenKey
 
@@ -96,6 +100,7 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
 
         val navigator = LocalNavigator.currentOrThrow
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+        val userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(),-1L]
 
         if (onBackPressed.value){
             mainViewModel!!.setOnBackPressed(false)
@@ -153,7 +158,6 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
                 })
         }
 
-        val therapistInfo = mainViewModel!!.currentUserInfo.value
         val actionState = performedActionUiStateViewModel!!.therapistDashboardUiState.collectAsState()
 
 
@@ -162,7 +166,6 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
             animation = StackedSnackbarAnimation.Bounce)
 
         if (actionState.value.isLoading){
-            //Content Loading
             Box(modifier = Modifier.fillMaxWidth()) {
                 LoadingDialog(actionState.value.loadingMessage)
             }
@@ -170,7 +173,7 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
         else if (actionState.value.isSuccess){
             appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
             performedActionUiStateViewModel!!.switchActionUIState(AppUIStates(isDefault = true))
-            therapistPresenter.getTherapistAppointments(therapistInfo.userId!!)
+            therapistPresenter.getTherapistAppointments(userId)
         }
 
 

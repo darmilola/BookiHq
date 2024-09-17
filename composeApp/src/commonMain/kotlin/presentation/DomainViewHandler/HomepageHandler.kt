@@ -5,10 +5,11 @@ import domain.Models.HomepageInfo
 import domain.Models.VendorStatusModel
 import presentation.home.HomepageContract
 import presentation.home.HomepagePresenter
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
 
 class HomepageHandler(
-    private val loadHomePageActionUIStateViewModel: PerformedActionUIStateViewModel,
+    private val loadingScreenUIStateViewModel: LoadingScreenUIStateViewModel,
     private val homepagePresenter: HomepagePresenter,
     private val onHomeInfoAvailable: (HomepageInfo, List<VendorStatusModel>) -> Unit) : HomepageContract.View {
     fun init() {
@@ -16,7 +17,7 @@ class HomepageHandler(
     }
 
     override fun showLoadHomePageLce(appUIStates: AppUIStates) {
-        loadHomePageActionUIStateViewModel.switchActionLoadHomepageUiState(appUIStates)
+        loadingScreenUIStateViewModel.switchScreenUIState(appUIStates)
     }
 
 

@@ -27,7 +27,7 @@ import presentations.components.TextComponent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun BookingScreenTopBar(pagerState: PagerState, onBackPressed: () -> Unit) {
+fun BookingScreenTopBar(pagerState: PagerState, onBackPressed: (Int) -> Unit) {
 
     val rowModifier = Modifier
         .fillMaxWidth()
@@ -54,11 +54,9 @@ fun BookingScreenTopBar(pagerState: PagerState, onBackPressed: () -> Unit) {
                 .fillMaxHeight()
                 .padding(start = 10.dp),
                 contentAlignment = Alignment.CenterStart) {
-                if (pagerState.targetPage != 2) {
                     leftTopBarItem(pagerState, onBackPressed = {
-                        onBackPressed()
+                        onBackPressed(it)
                     })
-                }
             }
 
             Box(modifier =  Modifier.weight(3.0f)
@@ -88,24 +86,10 @@ fun BookingScreenTopBar(pagerState: PagerState, onBackPressed: () -> Unit) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun leftTopBarItem(pagerState: PagerState, onBackPressed:() -> Unit) {
-    val coroutineScope = rememberCoroutineScope()
+fun leftTopBarItem(pagerState: PagerState, onBackPressed:(Int) -> Unit) {
     val currentPage = pagerState.currentPage
     PageBackNavWidget(){
-        coroutineScope.launch {
-            when (currentPage) {
-                2 -> {
-                    pagerState.animateScrollToPage(1)
-                }
-                1 -> {
-                    pagerState.animateScrollToPage(0)
-                }
-                else -> {
-                    onBackPressed()
-                }
-            }
-        }
-
+        onBackPressed(currentPage)
     }
 }
 

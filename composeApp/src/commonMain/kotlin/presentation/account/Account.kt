@@ -25,6 +25,7 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,9 +36,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.room.RoomDatabase
+import applications.room.AppDatabase
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.Screens
+import domain.Models.User
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Transient
 import presentation.components.ButtonComponent
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.ActionItemComponent
@@ -48,6 +55,9 @@ import presentations.components.TextComponent
 class AccountTab : Tab, Parcelable {
 
     private var mainViewModel: MainViewModel? = null
+    @Transient
+    private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
+    private var userInfo: User? = null
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -69,9 +79,13 @@ class AccountTab : Tab, Parcelable {
         this.mainViewModel = mainViewModel
     }
 
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = databaseBuilder
+    }
+
+
     @Composable
     override fun Content() {
-
         val columnModifier = Modifier
             .padding(top = 5.dp)
             .fillMaxHeight()
@@ -83,14 +97,17 @@ class AccountTab : Tab, Parcelable {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = columnModifier
             ) {
-                    val userInfo = mainViewModel!!.currentUserInfo.value
-                   if (userInfo.userId != null) {
+                runBlocking{
+                    val userDao = databaseBuilder!!.build().getUserDao()
+                    userInfo = userDao.getUser()
+                }
+
                        AccountProfileImage(
-                           profileImageUrl = userInfo.profileImageUrl!!,
+                           profileImageUrl = userInfo!!.profileImageUrl!!,
                            showEditIcon = false,
                            isAsync = true
                        ) {}
-                       UserAccountName(userInfo.firstname!!, userInfo.lastname!!)
+                       UserAccountName(userInfo!!.firstname!!, userInfo!!.lastname!!)
                        EditProfileButton(
                            TextStyle(
                                fontFamily = GGSansSemiBold,
@@ -104,7 +121,6 @@ class AccountTab : Tab, Parcelable {
                            modifier = Modifier.fillMaxWidth(0.90f).padding(top = 30.dp)
                        )
                        AttachAccountAction()
-                   }
             }
         }
 

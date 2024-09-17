@@ -20,6 +20,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _screenTitle = savedStateHandle.getStateFlow("screenTitle","Home")
     private var _connectedVendor =  savedStateHandle.getStateFlow("connectedVendor", Vendor())
     private var _currentUserInfo =  savedStateHandle.getStateFlow("userInfo", User())
+    private var _roomDbUserCount =  savedStateHandle.getStateFlow("roomDbUserCount", 0)
     private var _currentVendorId =  savedStateHandle.getStateFlow("currentVendorId", -1L)
     private var _screenNav =  savedStateHandle.getStateFlow("screenNav", Pair(-1,-1))
     private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
@@ -53,6 +54,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     val selectedPackage: StateFlow<VendorPackage>
         get() = _selectedPackage
+
+    val roomDbUserCount: StateFlow<Int>
+        get() = _roomDbUserCount
 
     val switchVendor: StateFlow<Vendor>
         get() = _switchVendor
@@ -130,6 +134,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     }
     fun setOrderItemComponents(orderItemComponents: ArrayList<PlacedOrderItemComponent>) {
         savedStateHandle["orderItemComponents"] = orderItemComponents
+    }
+    fun setRoomDbUserAccount(userCount: Int) {
+        savedStateHandle["roomDbUserCount"] = userCount
     }
     fun setSwitchVendor(vendor: Vendor) {
         savedStateHandle["switchVendor"] = vendor

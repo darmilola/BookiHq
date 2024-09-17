@@ -95,9 +95,9 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
 
     val authHandler = AuthenticationScreenHandler(authenticationPresenter,
         onUserLocationReady = {},
-        enterPlatform = { user, whatsappPhone -> },
-        completeProfile = { userEmail, userPhone -> },
-        connectVendor = { user -> },
+        enterPlatform = { _, _ -> },
+        completeProfile = { _, _ -> },
+        connectVendor = { _ -> },
         onVerificationStarted = {},
         onVerificationEnded = {}, onCompleteStarted = {
             completeProfileInProgress.value = true

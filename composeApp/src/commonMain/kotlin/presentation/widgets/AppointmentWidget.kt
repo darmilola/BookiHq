@@ -45,6 +45,7 @@ import domain.Models.TherapistInfo
 import domain.Models.UserAppointment
 import presentation.appointments.AppointmentPresenter
 import presentation.dialogs.PostponeDialog
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
@@ -143,7 +144,7 @@ fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPrese
 
 
 @Composable
-fun RecentAppointmentWidget(userAppointment: UserAppointment? = null, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, mainViewModel: MainViewModel, availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
+fun RecentAppointmentWidget(userAppointment: UserAppointment? = null, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, mainViewModel: MainViewModel, loadingScreenUIStateViewModel: LoadingScreenUIStateViewModel, onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
 
     val serviceAppointmentStatus = userAppointment?.resources?.serviceStatus
     val serviceMenuItems = arrayListOf<String>()
@@ -214,15 +215,7 @@ fun RecentAppointmentWidget(userAppointment: UserAppointment? = null, appointmen
                 serviceStatusText,
                 serviceIconRes,
                 serviceStatusColor,
-                userAppointment?.resources!!,
-                serviceMenuItems,
-                appointmentPresenter,
-                postponementViewModel,
-                availabilityPerformedActionUIStateViewModel,
-                mainViewModel = mainViewModel,
-                onDeleteAppointment = {
-                    onDeleteAppointment(it)
-                }, platformNavigator = platformNavigator)
+                userAppointment?.resources!!)
             AttachAppointmentContent(userAppointment.resources)
         }
     }
@@ -230,8 +223,7 @@ fun RecentAppointmentWidget(userAppointment: UserAppointment? = null, appointmen
 
 
 @Composable
-fun AttachRecentServiceAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment, menuItems: ArrayList<String>, presenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null,
-                                         availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, mainViewModel: MainViewModel, onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
+fun AttachRecentServiceAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, appointment: Appointment) {
 
     Row(
         horizontalArrangement = Arrangement.Start,

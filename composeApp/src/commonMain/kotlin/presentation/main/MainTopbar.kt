@@ -112,7 +112,7 @@ fun VendorLogo(imageUrl: String, onVendorLogoClicked: () -> Unit) {
 
 @Composable
 fun mainTopBarItem(mainViewModel: MainViewModel) {
-    val vendorInfo = mainViewModel.connectedVendor.value
+    val vendorInfo = mainViewModel.connectedVendor.collectAsState()
     val displayedTab = mainViewModel.displayedTab.collectAsState()
     val modifier = Modifier
         .padding(end = 10.dp)
@@ -125,9 +125,16 @@ fun mainTopBarItem(mainViewModel: MainViewModel) {
         ) {
         when (displayedTab.value) {
             MainTabEnum.HOME.toPath() -> {
-                VendorLogo(imageUrl = vendorInfo.businessLogo!!, onVendorLogoClicked = {
-                    mainViewModel.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.CONNECTED_VENDOR_DETAILS.toPath()))
-                })
+                if (vendorInfo.value.vendorId != null) {
+                    VendorLogo(imageUrl = vendorInfo.value.businessLogo!!, onVendorLogoClicked = {
+                        mainViewModel.setScreenNav(
+                            Pair(
+                                Screens.MAIN_SCREEN.toPath(),
+                                Screens.CONNECTED_VENDOR_DETAILS.toPath()
+                            )
+                        )
+                    })
+                }
             }
             MainTabEnum.PRODUCTS.toPath() -> {
                 val iconModifier = Modifier

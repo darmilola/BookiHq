@@ -20,13 +20,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.room.RoomDatabase
 import applications.device.deviceInfo
+import applications.room.AppDatabase
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -38,6 +41,7 @@ import domain.Enums.AuthType
 import domain.Enums.DeviceType
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.PlatformNavigator
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -62,12 +66,19 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
 
     @Transient private val authenticationPresenter : AuthenticationPresenter by inject()
     @Transient private var mainViewModel: MainViewModel? = null
+    @Transient
+    private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 
     override val key: ScreenKey = uniqueScreenKey
 
     fun setMainViewModel(mainViewModel: MainViewModel) {
         this.mainViewModel = mainViewModel
     }
+
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = databaseBuilder
+    }
+
 
     @Composable
     override fun Content() {
@@ -79,6 +90,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
         val authPhone = remember { mutableStateOf("") }
         val preferenceSettings = Settings()
         val navigator = LocalNavigator.currentOrThrow
+        val scope = rememberCoroutineScope()
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
 
@@ -105,6 +117,16 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
                 preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.PHONE.toPath()
                 preferenceSettings[SharedPreferenceEnum.AUTH_PHONE.toPath()] = user.authPhone
+
+                scope.launch {
+                    val userDao = databaseBuilder!!.build().getUserDao()
+                    val userCount = userDao.count()
+                    val vendorCount = userDao.count()
+                    if (userCount == 0 && vendorCount == 0) {
+                        userDao.insert(user)
+                    }
+                }
+
                 navigateToPlatform.value = true
             },
             completeProfile = { userEmail, userPhone ->
@@ -120,6 +142,16 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                 preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
                 preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
+
+                scope.launch {
+                    val userDao = databaseBuilder!!.build().getUserDao()
+                    val userCount = userDao.count()
+                    val vendorCount = userDao.count()
+                    if (userCount == 0 && vendorCount == 0) {
+                        userDao.insert(user)
+                    }
+                }
+
                 navigateToConnectVendor.value = true
             },
             onVerificationStarted = {
@@ -143,11 +175,6 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
         else if (navigateToPlatform.value){
             if (deviceInfo() == DeviceType.IOS.toPath()) {
                 platformNavigator.goToMainScreen()
-            }
-            else {
-                //val mainScreen = MainScreen(platformNavigator)
-                //mainScreen.setMainViewModel(mainViewModel!!)
-                //navigator.replaceAll(mainScreen)
             }
         }
 

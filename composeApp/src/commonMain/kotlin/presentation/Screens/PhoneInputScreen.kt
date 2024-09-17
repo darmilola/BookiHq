@@ -28,6 +28,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.room.RoomDatabase
+import applications.room.AppDatabase
 import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -56,9 +58,15 @@ import utils.makeValidPhone
 class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScreen, ScreenTransition {
     @Transient
     private var mainViewModel: MainViewModel? = null
+    @Transient
+    private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 
     fun setMainViewModel(mainViewModel: MainViewModel) {
         this.mainViewModel = mainViewModel
+    }
+
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = databaseBuilder
     }
 
     override val key: ScreenKey = uniqueScreenKey
@@ -138,6 +146,7 @@ class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScr
                         platformNavigator.startPhoneSS0(verificationPhone)
                         val verifyOTPScreen = VerifyOTPScreen(platformNavigator, verificationPhone)
                         verifyOTPScreen.setMainViewModel(mainViewModel = mainViewModel!!)
+                        verifyOTPScreen.setDatabaseBuilder(databaseBuilder = databaseBuilder)
                         navigator.push(verifyOTPScreen)
                     }
                 }

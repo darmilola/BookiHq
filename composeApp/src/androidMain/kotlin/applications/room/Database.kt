@@ -12,6 +12,7 @@ fun getAppDatabase(context: Context): RoomDatabase.Builder<AppDatabase> {
         context = context.applicationContext,
         name = dbFile.absolutePath
     )
+        .enableMultiInstanceInvalidation()
         .fallbackToDestructiveMigrationOnDowngrade(true)
         .setDriver(BundledSQLiteDriver()) // Very important
         .setQueryCoroutineContext(Dispatchers.IO)

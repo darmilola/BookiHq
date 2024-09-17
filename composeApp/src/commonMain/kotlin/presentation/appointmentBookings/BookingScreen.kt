@@ -132,6 +132,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         val customerEmail = if (currentUserInfo.email!!.isNotEmpty()) currentUserInfo.email else "damilolaakinterinwa@gmail.com"
         val navigator = LocalNavigator.currentOrThrow
         val coroutineScope = rememberCoroutineScope()
+        val currentPage = remember { mutableStateOf(-1) }
 
 
         if (loadPendingActionUIStateViewModel == null) {
@@ -193,8 +194,26 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
         if (onBackPressed.value){
-            mainViewModel!!.setOnBackPressed(false)
-            navigator.pop()
+            when (currentPage.value) {
+                0 -> {
+                    mainViewModel!!.setOnBackPressed(false)
+                    navigator.pop()
+                }
+                1 -> {
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(0)
+                    }
+                }
+                2 -> {
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(1)
+                        val lastBooking = bookingViewModel!!.pendingAppointments.value[0]
+                        bookingPresenter.silentDeletePendingBookingAppointment(lastBooking.appointmentId)
+                    }
+
+                }
+            }
+
         }
 
         val handler = BookingScreenHandler(
@@ -285,7 +304,6 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                 })
         }
 
-        // View Contract Handler Initialisation
         val paymentHandler = CreateAppointmentPaymentHandler(
             paymentPresenter = paymentPresenter,
             paymentActionUIStateViewModel!!,
@@ -342,8 +360,26 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                         .background(color = Color.White)
                 Column(modifier = layoutModifier) {
 
-                    BookingScreenTopBar(pagerState, onBackPressed = {
-                        navigator.pop()
+                    BookingScreenTopBar(pagerState, onBackPressed = { page ->
+                        currentPage.value = page
+                        when (currentPage.value) {
+                            0 -> {
+                                navigator.pop()
+                            }
+                            1 -> {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(0)
+                                }
+                            }
+                            2 -> {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(1)
+                                    val lastBooking = bookingViewModel!!.pendingAppointments.value[0]
+                                    bookingPresenter.silentDeletePendingBookingAppointment(lastBooking.appointmentId)
+                                }
+
+                            }
+                        }
                     })
 
                     val bgStyle = Modifier

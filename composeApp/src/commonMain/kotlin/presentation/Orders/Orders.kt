@@ -46,6 +46,9 @@ import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
+import domain.Enums.SharedPreferenceEnum
 import domain.Models.UserOrderItemUIModel
 import domain.Models.UserOrders
 import drawable.ErrorOccurredWidget
@@ -83,6 +86,8 @@ class Orders() : ParcelableScreen, KoinComponent, Parcelable, ScreenTransition {
     private var mainViewModel: MainViewModel? = null
     @Transient
     private var reviewActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient
+    val preferenceSettings = Settings()
 
     fun setMainViewModel(mainViewModel: MainViewModel){
         this.mainViewModel = mainViewModel
@@ -133,8 +138,8 @@ class Orders() : ParcelableScreen, KoinComponent, Parcelable, ScreenTransition {
 
 
         LaunchedEffect(true) {
-            val userId = mainViewModel!!.currentUserInfo.value.userId
-            orderPresenter.getUserOrders(userId!!)
+            val userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(),-1L]
+            orderPresenter.getUserOrders(userId)
         }
 
 
