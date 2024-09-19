@@ -75,8 +75,10 @@ import presentation.Screens.AddDebitCardScreen
 import presentation.appointmentBookings.BookingPresenter
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
+import presentation.dialogs.AddDebitCardDialog
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
+import presentation.dialogs.PostponeDialog
 import presentation.dialogs.SuccessDialog
 import presentation.payment.PaymentContract
 import presentation.payment.PaymentPresenter
@@ -150,6 +152,18 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
         val customerEmail = if (currentUserInfo.email!!.isNotEmpty()) currentUserInfo.email else "damilolaakinterinwa@gmail.com"
         val navigator = LocalNavigator.currentOrThrow
         val coroutineScope = rememberCoroutineScope()
+
+        val openAddDebitCardDialog = remember { mutableStateOf(false) }
+
+        when {
+            openAddDebitCardDialog.value -> {
+                    AddDebitCardDialog(databaseBuilder, onDismissRequest = {
+                        openAddDebitCardDialog.value = false
+                    }, onConfirmation = {
+                        openAddDebitCardDialog.value = false
+                    })
+                }
+            }
 
 
         if (loadPendingActionUIStateViewModel == null) {
@@ -359,9 +373,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                     mainViewModel!!.showPaymentCardsBottomSheet(false)
                 }, onAddNewSelected = {
                     mainViewModel!!.showPaymentCardsBottomSheet(false)
-                    val addDebitCardScreen = AddDebitCardScreen(platformNavigator)
-                    addDebitCardScreen.setDatabaseBuilder(databaseBuilder)
-                    navigator.push(addDebitCardScreen)
+                    openAddDebitCardDialog.value = true
                 })
         }
 

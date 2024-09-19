@@ -23,6 +23,7 @@ import domain.Enums.AppointmentType
 import domain.Enums.BookingStatus
 import domain.Enums.ServiceLocationEnum
 import domain.Enums.ServiceStatusEnum
+import domain.Models.Appointment
 import domain.Models.UserAppointment
 import drawable.ErrorOccurredWidget
 import presentation.appointmentBookings.BookingPresenter
@@ -48,9 +49,7 @@ fun PackageBookingOverview(mainViewModel: MainViewModel, bookingPresenter: Booki
 
     val deleteActionUiState = deleteActionUIStateViewModel.deletePendingAppointmentUiState.collectAsState()
     val loadingPendingActionUiState = loadPendingActionUIStateViewModel.loadPendingAppointmentUiState.collectAsState()
-    val lastPackageId = bookingViewModel.lastPackageId.collectAsState()
 
-      if (lastPackageId.value != customerPendingBookingAppointments.value[0].id) {
           LaunchedEffect(true) {
               bookingPresenter.createPendingPackageBookingAppointment(
                   userId = userId!!,
@@ -65,7 +64,7 @@ fun PackageBookingOverview(mainViewModel: MainViewModel, bookingPresenter: Booki
                   bookingStatus = BookingStatus.PENDING.toPath()
               )
           }
-      }
+
 
 
 
@@ -106,7 +105,6 @@ fun PackageBookingOverview(mainViewModel: MainViewModel, bookingPresenter: Booki
         }
     }
     else if (loadingPendingActionUiState.value.isSuccess) {
-        bookingViewModel.setLastPackageId(customerPendingBookingAppointments.value[0].id)
         if (bookingViewModel.pendingAppointments.value.isEmpty()) {
             loadPendingActionUIStateViewModel.switchActionLoadPendingAppointmentUiState(AppUIStates(isDefault = true))
             onLastItemRemoved()

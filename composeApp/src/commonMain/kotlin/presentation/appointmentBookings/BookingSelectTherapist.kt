@@ -103,7 +103,7 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, performedActionUIState
              TherapistContent(bookingViewModel,therapists.value, onTherapistSelected = {
                  selectedTherapist.value = it
                  currentBooking.serviceTypeTherapists = it
-                 bookingViewModel.setCurrentBooking(currentBooking)
+                 bookingViewModel.setCurrentAppointmentBooking(currentBooking)
              })
             if(selectedTherapist.value.id != null) {
                 currentBooking.appointmentTime = null
@@ -122,7 +122,7 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, performedActionUIState
                 ) {
                     AvailableTimeContent(workHours, onWorkHourClickListener = {
                         currentBooking.pendingTime = it
-                        bookingViewModel.setCurrentBooking(currentBooking)
+                        bookingViewModel.setCurrentAppointmentBooking(currentBooking)
                     })
                 }
                 if (selectedTherapist.value.id != null) {

@@ -77,6 +77,7 @@ import domain.Models.VendorPackage
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import presentation.Screens.AddDebitCardScreen
+import presentation.dialogs.AddDebitCardDialog
 import presentation.payment.PaymentContract
 import presentation.payment.PaymentPresenter
 import presentation.viewmodels.PerformedActionUIStateViewModel
@@ -217,6 +218,18 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
 
         }
 
+        val openAddDebitCardDialog = remember { mutableStateOf(false) }
+
+        when {
+            openAddDebitCardDialog.value -> {
+                AddDebitCardDialog(databaseBuilder, onDismissRequest = {
+                    openAddDebitCardDialog.value = false
+                }, onConfirmation = {
+                    openAddDebitCardDialog.value = false
+                })
+            }
+        }
+
         val handler = BookingScreenHandler(
             bookingViewModel!!, loadPendingActionUIStateViewModel = loadPendingActionUIStateViewModel!!, deleteActionUIStateViewModel = deleteActionUIStateViewModel!!,
             createAppointmentActionUIStateViewModel = createAppointmentActionUIStateViewModel!!, getTherapistActionUIStateViewModel = getTherapistActionUIStateViewModel!!, getTimesActionUIStateViewModel = getTimeActionUIStateViewModel!!,bookingPresenter, onShowUnsavedAppointment = {})
@@ -345,9 +358,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                     mainViewModel!!.showPaymentCardsBottomSheet(false)
                 }, onAddNewSelected = {
                     mainViewModel!!.showPaymentCardsBottomSheet(false)
-                    val addDebitCardScreen = AddDebitCardScreen(platformNavigator)
-                    addDebitCardScreen.setDatabaseBuilder(databaseBuilder)
-                    navigator.push(addDebitCardScreen)
+                    openAddDebitCardDialog.value = true
                 })
         }
 

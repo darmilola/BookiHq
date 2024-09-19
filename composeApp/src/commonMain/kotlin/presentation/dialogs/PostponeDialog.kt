@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -45,7 +44,7 @@ import presentation.viewmodels.PostponementViewModel
 import presentation.widgets.NewDateContent
 import presentation.widgets.TimeGridDisplay
 import presentation.widgets.TitleWidget
-import presentation.widgets.buttonContent
+import presentation.widgets.ButtonContent
 import presentations.components.TextComponent
 import utils.calculateTherapistServiceTimes
 
@@ -149,7 +148,7 @@ fun PostponeDialog(userAppointment: UserAppointment, appointmentPresenter: Appoi
                             }
                         }
 
-                        buttonContent(onDismissRequest = {
+                        ButtonContent(onDismissRequest = {
                             postponementViewModel.clearPostponementSelection()
                             onDismissRequest()
                         }, onConfirmation = {

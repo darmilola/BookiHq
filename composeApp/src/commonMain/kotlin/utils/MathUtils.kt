@@ -1,5 +1,6 @@
 package utils
 
+import domain.Enums.AppointmentType
 import domain.Enums.ServiceLocationEnum
 import domain.Models.OrderItem
 import domain.Models.PlacedOrderItemComponent
@@ -27,13 +28,25 @@ fun calculateCartCheckoutSubTotal(orderItems: MutableList<OrderItem>): Long {
 fun calculateAppointmentPaymentAmount(appointments: List<UserAppointment>): Int {
     var total: Int = 0
     for (item in appointments){
-        val price = item.resources!!.serviceTypeItem!!.price
-        val mobileServicePrice = item.resources.serviceTypeItem!!.mobileServicePrice
-        val serviceLocation = item.resources.serviceLocation
-        total = if (serviceLocation == ServiceLocationEnum.MOBILE.toPath()){
-            total + mobileServicePrice
-        } else{
-            total + price
+        if (item.resources!!.appointmentType == AppointmentType.SINGLE.toPath()) {
+            val price = item.resources.serviceTypeItem!!.price
+            val mobileServicePrice = item.resources.serviceTypeItem!!.mobileServicePrice
+            val serviceLocation = item.resources.serviceLocation
+            total = if (serviceLocation == ServiceLocationEnum.MOBILE.toPath()) {
+                total + mobileServicePrice
+            } else {
+                total + price
+            }
+        }
+        else if (item.resources.appointmentType == AppointmentType.PACKAGE.toPath()){
+            val price = item.resources.packageInfo!!.price
+            val mobileServicePrice = item.resources.packageInfo!!.mobileServicePrice
+            val serviceLocation = item.resources.serviceLocation
+            total = if (serviceLocation == ServiceLocationEnum.MOBILE.toPath()){
+                total + mobileServicePrice
+            } else{
+                total + price
+            }
         }
     }
     return total
@@ -43,13 +56,25 @@ fun calculateAppointmentPaymentAmount(appointments: List<UserAppointment>): Int 
 fun calculatePackageAppointmentPaymentAmount(appointments: List<UserAppointment>): Int {
     var total: Int = 0
     for (item in appointments){
-        val price = item.resources!!.packageInfo!!.price
-        val mobileServicePrice = item.resources.packageInfo!!.mobileServicePrice
-        val serviceLocation = item.resources.serviceLocation
-        total = if (serviceLocation == ServiceLocationEnum.MOBILE.toPath()){
-            total + mobileServicePrice
-        } else{
-            total + price
+        if (item.resources!!.appointmentType == AppointmentType.SINGLE.toPath()) {
+            val price = item.resources.serviceTypeItem!!.price
+            val mobileServicePrice = item.resources.serviceTypeItem!!.mobileServicePrice
+            val serviceLocation = item.resources.serviceLocation
+            total = if (serviceLocation == ServiceLocationEnum.MOBILE.toPath()) {
+                total + mobileServicePrice
+            } else {
+                total + price
+            }
+        }
+        else if (item.resources.appointmentType == AppointmentType.PACKAGE.toPath()){
+            val price = item.resources.packageInfo!!.price
+            val mobileServicePrice = item.resources.packageInfo!!.mobileServicePrice
+            val serviceLocation = item.resources.serviceLocation
+            total = if (serviceLocation == ServiceLocationEnum.MOBILE.toPath()){
+                total + mobileServicePrice
+            } else{
+                total + price
+            }
         }
     }
     return total

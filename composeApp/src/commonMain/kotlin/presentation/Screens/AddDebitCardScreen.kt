@@ -84,7 +84,7 @@ import utils.makeValidExpirationText
 
 @OptIn(ExperimentalVoyagerApi::class)
 @Parcelize
-class AddDebitCardScreen(val  platformNavigator: PlatformNavigator? = null) : KoinComponent,
+class AddDebitCardScreen(val platformNavigator: PlatformNavigator? = null) : KoinComponent,
     ParcelableScreen, ScreenTransition {
 
     override val key: ScreenKey = uniqueScreenKey

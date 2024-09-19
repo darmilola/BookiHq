@@ -69,7 +69,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
     currentBooking.appointmentMonth = getMonth()
     currentBooking.appointmentDay = getDay()
 
-    bookingViewModel.setCurrentBooking(currentBooking)
+    bookingViewModel.setCurrentAppointmentBooking(currentBooking)
     bookingViewModel.setSelectedDay(currentBooking.appointmentDay!!)
     bookingViewModel.setSelectedMonth(currentBooking.appointmentMonth!!)
     bookingViewModel.setSelectedYear(currentBooking.appointmentYear!!)
@@ -130,7 +130,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
                     bookingViewModel.setSelectedServiceType(it)
                     currentBooking.serviceTypeItem = it
                     currentBooking.serviceTypeId = it.serviceTypeId
-                    bookingViewModel.setCurrentBooking(currentBooking)
+                    bookingViewModel.setCurrentAppointmentBooking(currentBooking)
                 }
             })
             if (mobileServicesAvailable) {
@@ -138,11 +138,11 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
                 ServiceLocationToggle(bookingViewModel, isDisabled = isServiceLocationDisabled, onSpaSelectedListener = {
                     currentBooking.isMobileService = false
                     bookingViewModel.setIsMobileService(false)
-                    bookingViewModel.setCurrentBooking(currentBooking)
+                    bookingViewModel.setCurrentAppointmentBooking(currentBooking)
                 }, onMobileSelectedListener = {
                     currentBooking.isMobileService = true
                     bookingViewModel.setIsMobileService(true)
-                    bookingViewModel.setCurrentBooking(currentBooking)
+                    bookingViewModel.setCurrentAppointmentBooking(currentBooking)
                 })
             }
             BookingCalendar {
@@ -150,7 +150,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel,bookingViewModel: Booking
                 currentBooking.appointmentDay = it.dayOfMonth
                 currentBooking.appointmentMonth = it.monthNumber
                 currentBooking.appointmentYear = it.year
-                bookingViewModel.setCurrentBooking(currentBooking)
+                bookingViewModel.setCurrentAppointmentBooking(currentBooking)
                 bookingViewModel.setSelectedDay(it.dayOfMonth)
                 bookingViewModel.setSelectedMonth(it.monthNumber)
                 bookingViewModel.setSelectedYear(it.year)
