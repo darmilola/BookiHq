@@ -60,21 +60,23 @@ fun CardTypeImage(paymentCard: PaymentCard) {
     var backgroundColor: Color = Color.Black
     var imageRes = "drawable/visa_icon.png"
 
-    if (cardType == CardType.MASTERCARD.toPath()){
-        backgroundColor = Color.Black
-        imageRes = "drawable/mastercard_icon.png"
-    }
-    else if (cardType == CardType.VISA.toPath()){
-        backgroundColor = Color(color = 0xff0253a5)
-        imageRes = "drawable/visa_icon.png"
-    }
-    else if (cardType == CardType.AMEX.toPath()){
-        backgroundColor = Color(color = 0xff3498d8)
-        imageRes = "drawable/amex_icon.png"
-    }
-    else{
-        backgroundColor = Color(color = 0xffd72927)
-        imageRes = "drawable/card_error_icon.png"
+    when (cardType) {
+        CardType.MASTERCARD.toPath() -> {
+            backgroundColor = Color.Black
+            imageRes = "drawable/mastercard_icon.png"
+        }
+        CardType.VISA.toPath() -> {
+            backgroundColor = Color(color = 0xff0253a5)
+            imageRes = "drawable/visa_icon.png"
+        }
+        CardType.AMEX.toPath() -> {
+            backgroundColor = Color(color = 0xff3498d8)
+            imageRes = "drawable/amex_icon.png"
+        }
+        else -> {
+            backgroundColor = Color(color = 0xffd72927)
+            imageRes = "drawable/card_error_icon.png"
+        }
     }
 
     Card(

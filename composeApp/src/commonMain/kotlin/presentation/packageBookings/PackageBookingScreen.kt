@@ -72,11 +72,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.BookingScreenHandler
 import presentation.Screens.AddDebitCardScreen
-import presentation.appointmentBookings.BookingOverview
 import presentation.appointmentBookings.BookingPresenter
-import presentation.appointmentBookings.BookingScreenTopBar
-import presentation.appointmentBookings.BookingSelectServices
-import presentation.appointmentBookings.BookingSelectTherapists
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.dialogs.ErrorDialog
@@ -94,7 +90,7 @@ import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
 import utils.ParcelableScreen
-import utils.calculateAppointmentPaymentAmount
+import utils.calculatePackageAppointmentPaymentAmount
 
 @OptIn(ExperimentalVoyagerApi::class)
 @Parcelize
@@ -296,29 +292,29 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
             }
         }
 
-        val showPaymentMethodBottomSheet = mainViewModel!!.showAppointmentPaymentMethodBottomSheet.collectAsState()
+        val showPaymentMethodBottomSheet = mainViewModel!!.showPaymentMethodBottomSheet.collectAsState()
 
         if (showPaymentMethodBottomSheet.value) {
             AppointmentPaymentMethodBottomSheet(
                 mainViewModel!!,
                 onDismiss = {
-                    mainViewModel!!.showAppointmentPaymentMethodBottomSheet(false)
+                    mainViewModel!!.showPaymentMethodBottomSheet(false)
                 },
                 onCardPaymentSelected = {
                     runBlocking {
                         cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
                     }
-                    mainViewModel!!.showAppointmentPaymentMethodBottomSheet(false)
+                    mainViewModel!!.showPaymentMethodBottomSheet(false)
                     mainViewModel!!.showPaymentCardsBottomSheet(true)
 
                 }, onCashSelected = {
                     val userId = mainViewModel!!.currentUserInfo.value.userId
                     val vendorId = mainViewModel!!.connectedVendor.value.vendorId
-                    val paymentAmount = calculateAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
+                    val paymentAmount = calculatePackageAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
                     bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.DONE.toPath(), day = getDay(),
                         month = getMonth(), year = getYear(), paymentAmount = paymentAmount,
                         paymentMethod = PaymentMethod.PAYMENT_ON_DELIVERY.toPath())
-                    mainViewModel!!.showAppointmentPaymentMethodBottomSheet(false)
+                    mainViewModel!!.showPaymentMethodBottomSheet(false)
                 })
         }
 
@@ -330,7 +326,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                 val userId = mainViewModel!!.currentUserInfo.value.userId
                 val vendorId = mainViewModel!!.connectedVendor.value.vendorId
                 if (it.status) {
-                    val paymentAmount = calculateAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
+                    val paymentAmount = calculatePackageAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
                     platformNavigator.startPaymentProcess(paymentAmount = paymentAmount.toString(),
                         customerEmail = customerEmail,
                         accessCode = it.paymentAuthorizationData.accessCode,
@@ -349,17 +345,20 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
         val showSelectPaymentCards = mainViewModel!!.showPaymentCardsBottomSheet.collectAsState()
 
         if (showSelectPaymentCards.value) {
+            mainViewModel!!.showPaymentMethodBottomSheet(false)
             PaymentCardBottomSheet(
                 mainViewModel!!,
                 cardList,
                 onCardSelected = {
+                    val paymentAmount = calculatePackageAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
                     mainViewModel!!.showPaymentCardsBottomSheet(false)
                     selectedCard = it
-                    paymentPresenter.initCheckOut(amount = 4500.toString(), customerEmail = customerEmail)
+                    paymentPresenter.initCheckOut(amount = paymentAmount.toString(), customerEmail = customerEmail)
                 },
                 onDismiss = {
                     mainViewModel!!.showPaymentCardsBottomSheet(false)
                 }, onAddNewSelected = {
+                    mainViewModel!!.showPaymentCardsBottomSheet(false)
                     val addDebitCardScreen = AddDebitCardScreen(platformNavigator)
                     addDebitCardScreen.setDatabaseBuilder(databaseBuilder)
                     navigator.push(addDebitCardScreen)
@@ -522,7 +521,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                     }
                 }
                 if (currentPage == 1){
-                    mainViewModel.showAppointmentPaymentMethodBottomSheet(true)
+                    mainViewModel.showPaymentMethodBottomSheet(true)
                 }
             }
         }

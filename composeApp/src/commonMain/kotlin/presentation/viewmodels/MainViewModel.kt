@@ -6,6 +6,7 @@ import domain.Enums.DeliveryMethodEnum
 import domain.Enums.MainTabEnum
 import domain.Enums.ProductType
 import domain.Models.OrderItem
+import domain.Models.PaymentCard
 import domain.Models.PlacedOrderItemComponent
 import domain.Models.Services
 import domain.Models.User
@@ -40,7 +41,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _showProductBottomSheet =  savedStateHandle.getStateFlow("showProductBottomSheet", false)
     private var _showPaymentCardsBottomSheet =  savedStateHandle.getStateFlow("showPaymentCardsBottomSheet", false)
     private var _showProductReviewsBottomSheet =  savedStateHandle.getStateFlow("showProductReviewsBottomSheet", false)
-    private var _showAppointmentPaymentMethodBottomSheet =  savedStateHandle.getStateFlow("showAppointmentPaymentMethodBottomSheet", false)
+    private var _showPaymentMethodBottomSheet =  savedStateHandle.getStateFlow("showPaymentMethodBottomSheet", false)
     private var _showAppointmentReviewsBottomSheet =  savedStateHandle.getStateFlow("showAppointmentReviewsBottomSheet", false)
     private var _onBackPressed =  savedStateHandle.getStateFlow("onBackPressed", false)
     private var _exitApp =  savedStateHandle.getStateFlow("exitApp", false)
@@ -88,8 +89,8 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     val showAppointmentReviewsBottomSheet: StateFlow<Boolean>
         get() = _showAppointmentReviewsBottomSheet
 
-    val showAppointmentPaymentMethodBottomSheet: StateFlow<Boolean>
-        get() = _showAppointmentPaymentMethodBottomSheet
+    val showPaymentMethodBottomSheet: StateFlow<Boolean>
+        get() = _showPaymentMethodBottomSheet
 
     val exitApp: StateFlow<Boolean>
         get() = _exitApp
@@ -167,8 +168,8 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
         savedStateHandle["showPaymentCardsBottomSheet"] = show
     }
 
-    fun showAppointmentPaymentMethodBottomSheet(show: Boolean) {
-        savedStateHandle["showAppointmentPaymentMethodBottomSheet"] = show
+    fun showPaymentMethodBottomSheet(show: Boolean) {
+        savedStateHandle["showPaymentMethodBottomSheet"] = show
     }
 
     fun setSwitchVendorID(vendorId: Long) {

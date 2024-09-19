@@ -23,6 +23,7 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
     private var _currentAppointmentBooking =  savedStateHandle.getStateFlow("currentAppointmentBooking", Appointment())
     private var _vendorTimes = savedStateHandle.getStateFlow("vendorTimes", listOf<VendorTime>())
     private var _platformTimes = savedStateHandle.getStateFlow("platformTimes", listOf<PlatformTime>())
+    private var _lastPackageId =  savedStateHandle.getStateFlow("lastPackageId", -1L)
 
 
     val serviceTherapists: StateFlow<List<ServiceTypeTherapists>>
@@ -32,6 +33,9 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
 
     val platformTimes: StateFlow<List<PlatformTime>>
         get() = _platformTimes
+
+    val lastPackageId: StateFlow<Long>
+        get() = _lastPackageId
 
     val pendingAppointments: StateFlow<List<UserAppointment>>
         get() = _pendingAppointments
@@ -49,6 +53,9 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
         get() = _year
     fun setTherapists(serviceTherapists: List<ServiceTypeTherapists>) {
         savedStateHandle["therapists"] = serviceTherapists
+    }
+    fun setLastPackageId(lastPackageId: Long) {
+        savedStateHandle["lastPackageId"] = lastPackageId
     }
     fun setVendorTimes(vendorTimes: List<VendorTime>) {
         savedStateHandle["vendorTimes"] = vendorTimes

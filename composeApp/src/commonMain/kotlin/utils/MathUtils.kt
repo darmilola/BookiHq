@@ -39,6 +39,23 @@ fun calculateAppointmentPaymentAmount(appointments: List<UserAppointment>): Int 
     return total
 }
 
+
+fun calculatePackageAppointmentPaymentAmount(appointments: List<UserAppointment>): Int {
+    var total: Int = 0
+    for (item in appointments){
+        val price = item.resources!!.packageInfo!!.price
+        val mobileServicePrice = item.resources.packageInfo!!.mobileServicePrice
+        val serviceLocation = item.resources.serviceLocation
+        total = if (serviceLocation == ServiceLocationEnum.MOBILE.toPath()){
+            total + mobileServicePrice
+        } else{
+            total + price
+        }
+    }
+    return total
+}
+
+
 fun calculatePlacedOrderTotalPrice(placedOrderItemComponent: ArrayList<PlacedOrderItemComponent>): Long {
     var total: Long = 0
     for (item in placedOrderItemComponent){

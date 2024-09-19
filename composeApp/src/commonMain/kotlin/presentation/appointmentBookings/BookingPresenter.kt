@@ -215,7 +215,6 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
                         day, month, year, serviceLocation, serviceStatus,bookingStatus, appointmentType = AppointmentType.SINGLE.toPath())
                         .subscribe(
                             onSuccess = { result ->
-                                println("Result is $result")
                                 when (result.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
                                         contractView?.showLoadPendingAppointmentLce(AppUIStates(isSuccess = true, successMessage = "Creation Successful"))
@@ -227,14 +226,12 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
                                 }
                             },
                             onError = {
-                                println("Result 2 is ${it.message}")
                                 contractView?.showLoadPendingAppointmentLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Appointment"))
                             },
                         )
                    }
                 result.dispose()
             } catch(e: Exception) {
-                println("Result 3 is ${e.message}")
                 contractView?.showLoadPendingAppointmentLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Appointment"))
             }
         }
@@ -260,7 +257,6 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
                         day, month, year, serviceLocation, serviceStatus, bookingStatus, appointmentType = AppointmentType.PACKAGE.toPath())
                         .subscribe(
                             onSuccess = { result ->
-                                println("Result is $result")
                                 when (result.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
                                         contractView?.showLoadPendingAppointmentLce(AppUIStates(isSuccess = true, successMessage = "Creation Successful"))
@@ -272,14 +268,12 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
                                 }
                             },
                             onError = {
-                                println("Result 2 is ${it.message}")
                                 contractView?.showLoadPendingAppointmentLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Appointment"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Result 3 is ${e.message}")
                 contractView?.showLoadPendingAppointmentLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Appointment"))
             }
         }

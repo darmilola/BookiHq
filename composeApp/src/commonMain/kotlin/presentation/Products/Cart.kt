@@ -306,29 +306,24 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                     }
 
 
-                    val showSelectPaymentCards = remember { mutableStateOf(false) }
 
-                    val showPaymentCardBottomSheet by remember { mutableStateOf(false) }
 
-                    if (showPaymentCardBottomSheet) {
-                        mainViewModel!!.showPaymentCardsBottomSheet(true)
-                    }
-                    else{
-                        mainViewModel!!.showPaymentCardsBottomSheet(false)
-                    }
+                    val showSelectPaymentCards = mainViewModel!!.showPaymentCardsBottomSheet.collectAsState()
 
                     if (showSelectPaymentCards.value) {
+                        mainViewModel!!.showPaymentMethodBottomSheet(false)
                         PaymentCardBottomSheet(
                             mainViewModel!!,
                             cardList,
                             onCardSelected = {
-                                showSelectPaymentCards.value = false
+                                mainViewModel!!.showPaymentCardsBottomSheet(false)
                                 selectedCard = it
                                 paymentPresenter.initCheckOut(amount = paymentAmount.toString(), customerEmail = customerEmail)
                             },
                             onDismiss = {
-                                showSelectPaymentCards.value = false
+                                mainViewModel!!.showPaymentCardsBottomSheet(false)
                             }, onAddNewSelected = {
+                                mainViewModel!!.showPaymentCardsBottomSheet(false)
                                 val addDebitCardScreen = AddDebitCardScreen(platformNavigator)
                                 addDebitCardScreen.setDatabaseBuilder(databaseBuilder)
                                 navigator.push(addDebitCardScreen)
@@ -365,7 +360,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                         CheckOutSummaryWidget(cartViewModel!!,onCardCheckOutStarted = {
                             runBlocking {
                                 cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
-                                showSelectPaymentCards.value = true
+                                mainViewModel!!.showPaymentCardsBottomSheet(true)
                             }
                         }, onCheckOutStarted = {
                              createOrder(paymentAmount)

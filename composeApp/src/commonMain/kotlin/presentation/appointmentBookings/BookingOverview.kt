@@ -46,24 +46,28 @@ fun BookingOverview(mainViewModel: MainViewModel, bookingPresenter: BookingPrese
     val currentAppointmentBooking = bookingViewModel.currentAppointmentBooking.value
     val customerPendingBookingAppointments = bookingViewModel.pendingAppointments.collectAsState()
 
-    val deleteActionUiState = deleteActionUIStateViewModel.deletePendingAppointmentUiState.collectAsState()
-    val loadingPendingActionUiState = loadPendingActionUIStateViewModel.loadPendingAppointmentUiState.collectAsState()
+    val deleteActionUiState =
+        deleteActionUIStateViewModel.deletePendingAppointmentUiState.collectAsState()
+    val loadingPendingActionUiState =
+        loadPendingActionUIStateViewModel.loadPendingAppointmentUiState.collectAsState()
 
-    LaunchedEffect(true) {
-        bookingPresenter.createPendingBookingAppointment(
-            userId = userId!!,
-            vendorId = vendorId!!,
-            serviceId = currentAppointmentBooking.serviceId,
-            serviceTypeId = currentAppointmentBooking.serviceTypeId!!,
-            therapistId = currentAppointmentBooking.serviceTypeTherapists?.therapistInfo?.id!!,
-            appointmentTime = currentAppointmentBooking.pendingTime?.id!!,
-            day = currentAppointmentBooking.appointmentDay!!,
-            month = currentAppointmentBooking.appointmentMonth!!,
-            year = currentAppointmentBooking.appointmentYear!!,
-            serviceLocation = if (currentAppointmentBooking.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
-            serviceStatus = ServiceStatusEnum.BOOKING.toPath(),
-            bookingStatus = BookingStatus.PENDING.toPath())
-    }
+        LaunchedEffect(true) {
+            bookingPresenter.createPendingBookingAppointment(
+                userId = userId!!,
+                vendorId = vendorId!!,
+                serviceId = currentAppointmentBooking.serviceId,
+                serviceTypeId = currentAppointmentBooking.serviceTypeId!!,
+                therapistId = currentAppointmentBooking.serviceTypeTherapists?.therapistInfo?.id!!,
+                appointmentTime = currentAppointmentBooking.pendingTime?.id!!,
+                day = currentAppointmentBooking.appointmentDay!!,
+                month = currentAppointmentBooking.appointmentMonth!!,
+                year = currentAppointmentBooking.appointmentYear!!,
+                serviceLocation = if (currentAppointmentBooking.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
+                serviceStatus = ServiceStatusEnum.BOOKING.toPath(),
+                bookingStatus = BookingStatus.PENDING.toPath()
+            )
+        }
+
 
 
     if (deleteActionUiState.value.isLoading) {

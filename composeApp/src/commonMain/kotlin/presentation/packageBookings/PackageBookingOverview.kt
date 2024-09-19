@@ -48,21 +48,25 @@ fun PackageBookingOverview(mainViewModel: MainViewModel, bookingPresenter: Booki
 
     val deleteActionUiState = deleteActionUIStateViewModel.deletePendingAppointmentUiState.collectAsState()
     val loadingPendingActionUiState = loadPendingActionUIStateViewModel.loadPendingAppointmentUiState.collectAsState()
+    val lastPackageId = bookingViewModel.lastPackageId.collectAsState()
 
-    LaunchedEffect(true) {
-        bookingPresenter.createPendingPackageBookingAppointment(
-            userId = userId!!,
-            vendorId = vendorId!!,
-            packageId = bookingViewModel.currentAppointmentBooking.value.packageId,
-            appointmentTime = currentAppointmentBooking.pendingTime?.id!!,
-            day = currentAppointmentBooking.appointmentDay!!,
-            month = currentAppointmentBooking.appointmentMonth!!,
-            year = currentAppointmentBooking.appointmentYear!!,
-            serviceLocation = if (currentAppointmentBooking.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
-            serviceStatus = ServiceStatusEnum.BOOKING.toPath(),
-            bookingStatus = BookingStatus.PENDING.toPath()
-        )
-    }
+      if (lastPackageId.value != customerPendingBookingAppointments.value[0].id) {
+          LaunchedEffect(true) {
+              bookingPresenter.createPendingPackageBookingAppointment(
+                  userId = userId!!,
+                  vendorId = vendorId!!,
+                  packageId = bookingViewModel.currentAppointmentBooking.value.packageId,
+                  appointmentTime = currentAppointmentBooking.pendingTime?.id!!,
+                  day = currentAppointmentBooking.appointmentDay!!,
+                  month = currentAppointmentBooking.appointmentMonth!!,
+                  year = currentAppointmentBooking.appointmentYear!!,
+                  serviceLocation = if (currentAppointmentBooking.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
+                  serviceStatus = ServiceStatusEnum.BOOKING.toPath(),
+                  bookingStatus = BookingStatus.PENDING.toPath()
+              )
+          }
+      }
+
 
 
     if (deleteActionUiState.value.isLoading) {
@@ -102,6 +106,7 @@ fun PackageBookingOverview(mainViewModel: MainViewModel, bookingPresenter: Booki
         }
     }
     else if (loadingPendingActionUiState.value.isSuccess) {
+        bookingViewModel.setLastPackageId(customerPendingBookingAppointments.value[0].id)
         if (bookingViewModel.pendingAppointments.value.isEmpty()) {
             loadPendingActionUIStateViewModel.switchActionLoadPendingAppointmentUiState(AppUIStates(isDefault = true))
             onLastItemRemoved()
