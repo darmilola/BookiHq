@@ -75,6 +75,7 @@ import domain.Models.PlatformNavigator
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import presentation.Screens.AddDebitCardScreen
+import presentation.dialogs.AddDebitCardDialog
 import presentation.payment.PaymentContract
 import presentation.payment.PaymentPresenter
 import presentation.viewmodels.CartViewModel
@@ -184,6 +185,18 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
 
         if (cartSize.value == 0) {
             navigator.pop()
+        }
+
+        val openAddDebitCardDialog = remember { mutableStateOf(false) }
+
+        when {
+            openAddDebitCardDialog.value -> {
+                AddDebitCardDialog(databaseBuilder, onDismissRequest = {
+                    openAddDebitCardDialog.value = false
+                }, onConfirmation = {
+                    openAddDebitCardDialog.value = false
+                })
+            }
         }
 
 
@@ -324,9 +337,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                                 mainViewModel!!.showPaymentCardsBottomSheet(false)
                             }, onAddNewSelected = {
                                 mainViewModel!!.showPaymentCardsBottomSheet(false)
-                                val addDebitCardScreen = AddDebitCardScreen(platformNavigator)
-                                addDebitCardScreen.setDatabaseBuilder(databaseBuilder)
-                                navigator.push(addDebitCardScreen)
+                                openAddDebitCardDialog.value = true
                             })
                     }
 
