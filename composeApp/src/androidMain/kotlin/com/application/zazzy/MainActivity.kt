@@ -108,10 +108,6 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             Navigator(splashScreen) { navigator ->
                 SlideTransition(navigator)
             }
-            val isFinished = mainViewModel!!.exitApp.collectAsState()
-            if (isFinished.value){
-                finish()
-            }
         }
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -492,7 +488,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     }
 
     override fun exitApp() {
-        mainViewModel!!.setExitApp(true)
+        finish()
     }
     override fun restartApp() {
         // No Android Implementation

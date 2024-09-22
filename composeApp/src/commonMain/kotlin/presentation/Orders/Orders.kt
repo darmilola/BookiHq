@@ -138,8 +138,10 @@ class Orders() : ParcelableScreen, KoinComponent, Parcelable, ScreenTransition {
 
 
         LaunchedEffect(true) {
-            val userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(),-1L]
-            orderPresenter.getUserOrders(userId)
+            if (ordersResourceListEnvelopeViewModel!!.resources.value.isEmpty()) {
+                val userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(), -1L]
+                orderPresenter.getUserOrders(userId)
+            }
         }
 
 

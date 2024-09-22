@@ -90,8 +90,6 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
     private val preferenceSettings: Settings = Settings()
     private var userId: Long = 0L
     @Transient
-    private var mainScreenTabs: MainScreenTabs? = null
-    @Transient
     private val authenticationPresenter: AuthenticationPresenter by inject()
     @Transient
     private var screenNav: State<Pair<Int, Int>>? = null
@@ -290,14 +288,11 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                 it2 ->
             Scaffold(
                 topBar = {
-
                     MainTopBar(mainViewModel!!)
-
                 },
                 content = {
                     Box(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
                         CurrentTab()
-
                     }
                 },
                 backgroundColor = Color.White,
