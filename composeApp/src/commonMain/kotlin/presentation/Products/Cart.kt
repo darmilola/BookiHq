@@ -216,7 +216,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                     paymentActionUIStateViewModel!!,
                     onAuthorizationSuccessful = {
                         if (it.status) {
-                            platformNavigator.startPaymentProcess(paymentAmount = paymentAmount.toString(),
+                            platformNavigator.startPaymentProcess(paymentAmount = (paymentAmount * 100).toString(),
                                 customerEmail = customerEmail,
                                 accessCode = it.paymentAuthorizationData.accessCode,
                                 paymentCard = selectedCard!!,
@@ -331,7 +331,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                             onCardSelected = {
                                 mainViewModel!!.showPaymentCardsBottomSheet(false)
                                 selectedCard = it
-                                paymentPresenter.initCheckOut(amount = paymentAmount.toString(), customerEmail = customerEmail)
+                                paymentPresenter.initCheckOut(amount = (paymentAmount * 100).toString(), customerEmail = customerEmail)
                             },
                             onDismiss = {
                                 mainViewModel!!.showPaymentCardsBottomSheet(false)

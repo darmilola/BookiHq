@@ -341,7 +341,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                 val vendorId = mainViewModel!!.connectedVendor.value.vendorId
                 if (it.status) {
                     val paymentAmount = calculatePackageAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
-                    platformNavigator.startPaymentProcess(paymentAmount = paymentAmount.toString(),
+                    platformNavigator.startPaymentProcess(paymentAmount = (paymentAmount * 100).toString(),
                         customerEmail = customerEmail,
                         accessCode = it.paymentAuthorizationData.accessCode,
                         paymentCard = selectedCard!!,
@@ -367,7 +367,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                     val paymentAmount = calculatePackageAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
                     mainViewModel!!.showPaymentCardsBottomSheet(false)
                     selectedCard = it
-                    paymentPresenter.initCheckOut(amount = paymentAmount.toString(), customerEmail = customerEmail)
+                    paymentPresenter.initCheckOut(amount = (paymentAmount * 100).toString(), customerEmail = customerEmail)
                 },
                 onDismiss = {
                     mainViewModel!!.showPaymentCardsBottomSheet(false)

@@ -168,6 +168,13 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
             }
         }
 
+        // View Contract Handler Initialisation
+        val handler = ConnectPageHandler(
+            vendorResourceListEnvelopeViewModel!!,
+            loadingScreenUiStateViewModel!!,
+            switchVendorActionUIStateViewModel!!,
+            connectVendorPresenter)
+        handler.init()
 
         val loadVendorUiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
         val vendorList = vendorResourceListEnvelopeViewModel?.resources?.collectAsState()
@@ -177,14 +184,6 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
         if (vendorList!!.value.isNotEmpty()){
             vendorUIModel.value = VendorItemUIModel(selectedVendor?.value!!, vendorList.value)
         }
-
-        // View Contract Handler Initialisation
-        val handler = ConnectPageHandler(
-            vendorResourceListEnvelopeViewModel!!,
-            loadingScreenUiStateViewModel!!,
-            switchVendorActionUIStateViewModel!!,
-            connectVendorPresenter)
-        handler.init()
 
         var showSwitchReasonBottomSheet by remember { mutableStateOf(false) }
 
