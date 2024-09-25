@@ -112,17 +112,16 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                 preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
                 preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
-                preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] =
-                    vendorWhatsAppPhone
+                preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = vendorWhatsAppPhone
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
-                preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] =
-                    AuthType.EMAIL.toPath()
+                preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.EMAIL.toPath()
 
                 scope.launch {
                     val userDao = databaseBuilder.build().getUserDao()
+                    val vendorDao = databaseBuilder.build().getVendorDao()
                     val userCount = userDao.count()
-                    val vendorCount = userDao.count()
+                    val vendorCount = vendorDao.count()
                     if (userCount == 0 && vendorCount == 0) {
                         userDao.insert(user)
                     }
@@ -130,13 +129,11 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
             }
             navigateToPlatform.value = true
         },
-        completeProfile = { userEmail, vendorWhatsAppPhone ->
+        completeProfile = { userEmail, userAuthPhone ->
             runBlocking {
-                preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] =
-                    AuthType.EMAIL.toPath()
+                preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.EMAIL.toPath()
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = userEmail
-                preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] =
-                    vendorWhatsAppPhone
+                preferenceSettings[SharedPreferenceEnum.USER_AUTH_PHONE.toPath()] = userAuthPhone
             }
             navigateToCompleteProfile.value = true
         },
@@ -153,8 +150,9 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
 
                 scope.launch {
                     val userDao = databaseBuilder.build().getUserDao()
+                    val vendorDao = databaseBuilder.build().getVendorDao()
                     val userCount = userDao.count()
-                    val vendorCount = userDao.count()
+                    val vendorCount = vendorDao.count()
                     if (userCount == 0 && vendorCount == 0) {
                         userDao.insert(user)
                     }

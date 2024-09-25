@@ -44,7 +44,6 @@ class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
                     productRepositoryImpl.createOrder(vendorId,userId,deliveryMethod,paymentMethod,day, month, year, orderItemsJson,paymentAmount)
                         .subscribe(
                             onSuccess = { result ->
-                                println("Error 1 ${result.message}")
                                 when (result.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
                                         contractView?.showLce(AppUIStates(isSuccess = true, successMessage = "Order Created Successfully"))
@@ -56,14 +55,12 @@ class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
                                 }
                             },
                             onError = {
-                                println("Error 2 ${it.message}")
                                 contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Order"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Error 3 ${e.message}")
                 contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Order"))
             }
         }
