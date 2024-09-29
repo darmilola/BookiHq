@@ -42,6 +42,7 @@ import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.AttachTherapistWidget
 import presentation.widgets.AppointmentReviewScreen
+import presentation.widgets.EmptyContentWidget
 import presentation.widgets.TimeGridDisplay
 import presentations.components.TextComponent
 import utils.calculateTherapistServiceTimes
@@ -83,12 +84,20 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, performedActionUIState
         ) {
             IndeterminateCircularProgressBar()
         }
-    } else if (getTherapistActionUiStates.value.isFailed) {
+    }
+    else if (getTherapistActionUiStates.value.isFailed) {
         Box(modifier = Modifier .fillMaxWidth().height(400.dp), contentAlignment = Alignment.Center) {
             ErrorOccurredWidget(getTherapistActionUiStates.value.errorMessage, onRetryClicked = {
                 bookingPresenter.getServiceTherapists(bookingViewModel.selectedServiceType.value.serviceTypeId,
                     mainViewModel.connectedVendor.value.vendorId!!, day = bookingViewModel.day.value, month = bookingViewModel.month.value, year = bookingViewModel.year.value)
             })
+        }
+    }
+    else if (getTherapistActionUiStates.value.isEmpty) {
+        Box(modifier = Modifier .fillMaxWidth().height(400.dp), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                EmptyContentWidget(emptyText = getTherapistActionUiStates.value.emptyMessage)
+            }
         }
     }
     else if (getTherapistActionUiStates.value.isSuccess) {

@@ -155,6 +155,18 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 )
             }
 
+
+        LaunchedEffect(true) {
+            if (homePageViewModel!!.homePageInfo.value.userInfo?.userId == null) {
+                if (vendorPhone.isNotEmpty()){
+                    homepagePresenter.getUserHomepageWithStatus(userId, vendorPhone)
+                }
+                else {
+                    homepagePresenter.getUserHomepage(userId)
+                }
+            }
+        }
+
         val handler = HomepageHandler(loadingScreenUiStateViewModel!!, homepagePresenter,
             onHomeInfoAvailable = { homePageInfo, vendorStatus ->
                 val viewHeight = calculateHomePageScreenHeight(
@@ -176,18 +188,6 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 saveAccountInfoFromServer(homePageInfo)
             })
         handler.init()
-
-
-        LaunchedEffect(true) {
-            if (homePageViewModel!!.homePageInfo.value.userInfo?.userId == null) {
-                if (vendorPhone.isNotEmpty()){
-                    homepagePresenter.getUserHomepageWithStatus(userId, vendorPhone)
-                }
-                else {
-                    homepagePresenter.getUserHomepage(userId)
-                }
-            }
-        }
 
         val homepageInfo = homePageViewModel!!.homePageInfo.collectAsState()
         val homePageViewHeight = homePageViewModel!!.homePageViewHeight.collectAsState()

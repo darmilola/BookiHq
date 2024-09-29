@@ -116,8 +116,6 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
                 preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.EMAIL.toPath()
-
-                scope.launch {
                     val userDao = databaseBuilder.build().getUserDao()
                     val vendorDao = databaseBuilder.build().getVendorDao()
                     val userCount = userDao.count()
@@ -125,7 +123,6 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                     if (userCount == 0 && vendorCount == 0) {
                         userDao.insert(user)
                     }
-                }
             }
             navigateToPlatform.value = true
         },
@@ -147,8 +144,6 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
                 preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.EMAIL.toPath()
-
-                scope.launch {
                     val userDao = databaseBuilder.build().getUserDao()
                     val vendorDao = databaseBuilder.build().getVendorDao()
                     val userCount = userDao.count()
@@ -156,7 +151,6 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                     if (userCount == 0 && vendorCount == 0) {
                         userDao.insert(user)
                     }
-                }
             }
             navigateToConnectVendor.value = true
         },

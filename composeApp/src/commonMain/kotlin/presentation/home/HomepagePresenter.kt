@@ -24,7 +24,6 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
     }
 
     override fun getUserHomepageWithStatus(userId: Long, vendorWhatsAppPhone: String) {
-        println("Called Again Here...")
         contractView?.showLoadHomePageLce(AppUIStates(isLoading = true, loadingMessage = "Loading Home"))
         scope.launch(Dispatchers.Main) {
             try {

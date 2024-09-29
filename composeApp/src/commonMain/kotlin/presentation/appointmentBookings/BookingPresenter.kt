@@ -43,8 +43,8 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
                                     ServerResponse.FAILURE.toPath() -> {
                                         contractView?.getTherapistActionLce(AppUIStates(isFailed  = true, errorMessage = "Error Getting Therapist, Please Try Again"))
                                     }
-                                    else -> {
-                                        contractView?.getTherapistActionLce(AppUIStates(isFailed  = true, errorMessage = "Error Getting Therapist, Please Try Again"))
+                                    ServerResponse.EMPTY.toPath() -> {
+                                        contractView?.getTherapistActionLce(AppUIStates(isEmpty = true, emptyMessage = "No Therapist is Available"))
                                     }
                                 }
                             },

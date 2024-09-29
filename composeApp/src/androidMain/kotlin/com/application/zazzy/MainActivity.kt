@@ -129,9 +129,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         hasNetwork = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 
         networkLocationListener = object : LocationListener {
-            override fun onLocationChanged(location: Location) {
-
-            }
+            override fun onLocationChanged(location: Location) {}
             override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
             override fun onProviderEnabled(provider: String) {}
             override fun onProviderDisabled(provider: String) {}

@@ -94,7 +94,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
     val preferenceSettings = Settings()
     @Transient
     private var productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel? = null
-    private var selectedProductType: String = preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath(),""]
+    private var selectedProductType: String = preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath(),ProductType.COSMETICS.toPath()]
     @Transient
     private var getTimeActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient

@@ -28,7 +28,7 @@ data class HomePageWithStatusResponse(@SerialName("status") val status: String =
                             @SerialName("vendorStatus") val vendorStatusList: List<VendorStatusModel> = arrayListOf())
 
 @Serializable
-data class ServiceTherapistsResponse(@SerialName("status") val status: String = "", @SerialName("therapists") val serviceTherapists: List<ServiceTypeTherapists>,
+data class ServiceTherapistsResponse(@SerialName("status") val status: String = "", @SerialName("therapists") val serviceTherapists: List<ServiceTypeTherapists> = arrayListOf(),
                                      @SerialName("platformTime") val platformTimes: List<PlatformTime>? = null, @SerialName("vendorTime") val vendorTimes: List<VendorTime>? = null)
 
 @Serializable

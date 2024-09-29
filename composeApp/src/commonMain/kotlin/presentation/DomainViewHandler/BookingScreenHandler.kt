@@ -81,14 +81,16 @@ class BookingScreenHandler(
         uiState.let {
             when {
                 it.isLoading -> {
-                    getTherapistActionUIStateViewModel.switchGetTherapistUiState(AppUIStates(isLoading = true, loadingMessage = it.loadingMessage))
+                    getTherapistActionUIStateViewModel.switchGetTherapistUiState(uiState)
                 }
                 it.isSuccess -> {
-                    getTherapistActionUIStateViewModel.switchGetTherapistUiState(AppUIStates(isSuccess = true))
+                    getTherapistActionUIStateViewModel.switchGetTherapistUiState(uiState)
                 }
-
+                it.isEmpty -> {
+                    getTherapistActionUIStateViewModel.switchGetTherapistUiState(uiState)
+                }
                 it.isFailed -> {
-                    getTherapistActionUIStateViewModel.switchGetTherapistUiState(AppUIStates(isFailed = true, errorMessage = it.errorMessage))
+                    getTherapistActionUIStateViewModel.switchGetTherapistUiState(uiState)
                 }
 
             }
