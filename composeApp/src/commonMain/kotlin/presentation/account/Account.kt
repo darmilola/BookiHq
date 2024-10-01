@@ -198,6 +198,18 @@ class AccountTab : Tab, Parcelable {
                         mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.ORDERS.toPath()))
                     })
 
+                ActionItemComponent(
+                    modifier = actionStyle,
+                    buttonText = "Payment Methods",
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                    fontSize = 20,
+                    textColor = Colors.darkPrimary,
+                    style = TextStyle(),
+                    iconRes = "drawable/cards_icon.png",
+                    isDestructiveAction = false, onClick = {
+                        mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.PAYMENT_METHODS.toPath()))
+                    })
+
                 if (mainViewModel!!.currentUserInfo.value.isTherapist == true) {
                     ActionItemComponent(
                         modifier = actionStyle,

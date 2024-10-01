@@ -19,6 +19,7 @@ enum class Screens {
     CONNECTED_VENDOR_DETAILS,
     PACKAGE_INFO,
     PACKAGE_BOOKING,
+    PAYMENT_METHODS,
     DEFAULT;
     fun toPath() = when (this) {
         DEFAULT -> -1
@@ -39,5 +40,6 @@ enum class Screens {
         JOIN_SPA_INFO -> 15
         PACKAGE_INFO -> 16
         PACKAGE_BOOKING -> 17
+        PAYMENT_METHODS -> 18
     }
 }

@@ -54,19 +54,6 @@ fun AddDebitCardDialog(databaseBuilder: RoomDatabase.Builder<AppDatabase>?, onDi
         val pattern = remember { Regex("^\\d*\$") }
         val scope = rememberCoroutineScope()
 
-        val rootModifier =
-            Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.70f)
-                .verticalScroll(rememberScrollState())
-                .background(color = Color.White)
-
-
-        val stackedSnackBarHostState = rememberStackedSnackbarHostState(
-            maxStack = 1,
-            animation = StackedSnackbarAnimation.Bounce
-        )
-
         val cardNumber = remember { mutableStateOf("") }
         val cvv = remember { mutableStateOf("") }
         val expiryMonth = remember { mutableStateOf("") }
@@ -180,15 +167,18 @@ fun AddDebitCardDialog(databaseBuilder: RoomDatabase.Builder<AppDatabase>?, onDi
                             onDismissRequest()
                         }, onConfirmation = {
                             scope.launch {
-                                val paymentDao = databaseBuilder!!.build().getPaymentCardDao()
-                                paymentDao.insert(
-                                    paymentCard = PaymentCard(
-                                        cardNumber = cardNumber.value,
-                                        expiryMonth = expiryMonth.value,
-                                        expiryYear = expiryYear.value,
-                                        cvv = cvv.value
-                                    )
-                                )
+                               if (cardNumber.value.isNotEmpty() && expiryMonth.value.isNotEmpty() &&
+                                   expiryYear.value.isNotEmpty() && cvv.value.isNotEmpty()) {
+                                   val paymentDao = databaseBuilder!!.build().getPaymentCardDao()
+                                   paymentDao.insert(
+                                       paymentCard = PaymentCard(
+                                           cardNumber = cardNumber.value,
+                                           expiryMonth = expiryMonth.value,
+                                           expiryYear = expiryYear.value,
+                                           cvv = cvv.value
+                                       )
+                                   )
+                               }
                                 onConfirmation()
                             }
                         })

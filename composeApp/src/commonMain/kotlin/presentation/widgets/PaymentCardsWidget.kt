@@ -216,7 +216,6 @@ fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<Paymen
                     }
                 }
             }
-
         }
     }
 

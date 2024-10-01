@@ -73,6 +73,7 @@ import presentation.home.HomeTab
 import presentation.main.MainScreenTabs
 import presentation.main.MainTopBar
 import presentation.Packages.PackageInfo
+import presentation.account.PaymentMethods
 import presentation.profile.EditProfile
 import presentation.therapist.TherapistDashboard
 import presentation.viewmodels.HomePageViewModel
@@ -282,6 +283,19 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                 )
             }
             Screens.PACKAGE_BOOKING.toPath() -> {}
+            Screens.PAYMENT_METHODS.toPath() -> {
+                val paymentMethods = PaymentMethods(platformNavigator)
+                paymentMethods.setMainViewModel(mainViewModel!!)
+                paymentMethods.setDatabaseBuilder(databaseBuilder)
+                val nav = LocalNavigator.currentOrThrow
+                nav.push(paymentMethods)
+                mainViewModel!!.setScreenNav(
+                    Pair(
+                        Screens.PAYMENT_METHODS.toPath(),
+                        Screens.DEFAULT.toPath()
+                    )
+                )
+            }
         }
 
         TabNavigator(showDefaultTab(mainViewModel!!, homePageViewModel)) {
@@ -378,7 +392,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                                         accountTab!!,
                                         selectedImage = "drawable/more_circle_filled_icon.png",
                                         unselectedImage = "drawable/more_icon_outlined.png",
-                                        labelText = "More",
+                                        labelText = "Account",
                                         imageSize = 25,
                                         currentTabId = 4,
                                         tabNavigator = it2,
@@ -449,7 +463,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             imageStr = selectedImage
             imageTint = Color.White
             handleTint = Color.White
-            val screenTitle = "More"
+            val screenTitle = "Account"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
             mainViewModel.setDisplayedTab(MainTabEnum.MORE.toPath())
