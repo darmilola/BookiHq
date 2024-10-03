@@ -119,15 +119,13 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
                 vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
             }
             else{
-                platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String, cityName: String ->
+                platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String, _,_ ->
                     preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
                     preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
-                    preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = countryName
-                    preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = cityName
-                    connectVendorPresenter.getVendor(country = countryName, city = cityName)
+                    preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = country
+                    preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = city
+                    connectVendorPresenter.getVendor(country = country, city = city)
                     vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                    city = cityName
-                    country = countryName
                 })
             }
         }

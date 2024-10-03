@@ -5,7 +5,6 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,13 +17,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,7 +32,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import applications.room.AppDatabase
 import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
@@ -45,41 +41,20 @@ import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
-import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
-import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
-import com.hoc081098.kmp.viewmodel.viewModelFactory
-import domain.Enums.Gender
 import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import presentation.DomainViewHandler.AuthenticationScreenHandler
-import presentation.DomainViewHandler.PlatformHandler
-import presentation.DomainViewHandler.ProfileHandler
-import presentation.authentication.AuthenticationPresenter
 import presentation.components.ButtonComponent
-import presentation.components.ToggleButton
 import presentation.consultation.rightTopBarItem
-import presentation.dialogs.ErrorDialog
-import presentation.dialogs.LoadingDialog
-import presentation.profile.ProfilePresenter
-import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.PerformedActionUIStateViewModel
-import presentation.viewmodels.PlatformViewModel
-import presentation.widgets.AccountProfileImage
 import presentation.widgets.PageBackNavWidget
-import presentation.widgets.ShowSnackBar
-import presentation.widgets.SnackBarType
 import presentation.widgets.TitleWidget
 import presentations.widgets.InputWidget
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
-import utils.InputValidator
 import utils.ParcelableScreen
-import utils.makeValidExpirationText
 
 
 @OptIn(ExperimentalVoyagerApi::class)

@@ -104,7 +104,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
         },
         onVerificationStarted = {},
         onVerificationEnded = {}, onCompleteStarted = {}, onCompleteEnded = {},
-        connectVendorOnProfileCompleted = { _,_,_ ->}, onUpdateStarted = {}, onUpdateEnded = {}, onVerificationError = {
+        connectVendorOnProfileCompleted = { _,_,_,_ ->}, onUpdateStarted = {}, onUpdateEnded = {}, onVerificationError = {
             if (authType.value == AuthType.EMAIL.toPath()) {
                 authenticationPresenter.validateEmail(authEmail.value)
             }

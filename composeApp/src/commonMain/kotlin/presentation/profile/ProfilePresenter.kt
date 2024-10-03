@@ -112,30 +112,35 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         }
     }
 
-    override fun getPlatformCities(country: String) {
+    override fun getCities(country: String) {
         val cityList: ArrayList<String> = arrayListOf()
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    profileRepositoryImpl.getPlatformCities(country)
+                    profileRepositoryImpl.getCountryCities(country)
                         .subscribe(
                             onSuccess = { response ->
                                 when (response.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
-                                        response.countryCities?.get(0)?.cities!!.map {
-                                            cityList.add(it.cityName)
+                                        response.countryCities.cities.map {
+                                            cityList.add(it)
                                         }
-                                        platformContractView?.showPlatformCities(cityList)
+                                        platformContractView?.showCities(cityList)
                                     }
-                                    ServerResponse.FAILURE.toPath() -> {}
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        platformContractView?.showCities(cityList)
+                                    }
                                 }
-
                             },
-                            onError = {},
+                            onError = {
+                                platformContractView?.showCities(cityList)
+                            },
                         )
                 }
                 result.dispose()
-            } catch(_: Exception) {}
+            } catch(e: Exception) {
+                platformContractView?.showCities(cityList)
+            }
         }
     }
 

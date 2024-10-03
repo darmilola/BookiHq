@@ -28,7 +28,7 @@ data class GetVendorInfoRequest(@SerialName("vendor_id") val vendorId: Long)
 data class JoinSpaRequest(@SerialName("vendor_id") val vendorId: Long, @SerialName("therapist_id") val therapistId: Long)
 
 @Serializable
-data class GetPlatformCitiesRequest(@SerialName("country") val country: String)
+data class GetCountryCitiesRequest(@SerialName("country") val country: String)
 
 @Serializable
 data class GetVendorAvailabilityRequest(@SerialName("vendorId") val vendorId: Long)

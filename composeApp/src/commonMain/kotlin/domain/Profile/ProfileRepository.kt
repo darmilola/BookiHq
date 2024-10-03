@@ -4,6 +4,7 @@ import com.badoo.reaktive.single.Single
 import dev.jordond.compass.Place
 import domain.Enums.PaymentMethod
 import domain.Models.AuthenticationResponse
+import domain.Models.CountryCitiesResponse
 import domain.Models.PlatformCountryCitiesResponse
 import domain.Models.ServerResponse
 import domain.Models.VendorAccountResponse
@@ -29,11 +30,7 @@ interface ProfileRepository {
                              exitReason: String): Single<ServerResponse>
     suspend fun getVendorAvailableTimes(vendorId: Long): Single<VendorAvailabilityResponse>
     suspend fun reverseGeocode(lat: Double, lng: Double): Single<Place?>
-
-    suspend fun getPlatformCities(
-        country: String
-    ): Single<PlatformCountryCitiesResponse>
-
+    suspend fun getCountryCities(country: String): Single<CountryCitiesResponse>
     suspend fun createMeetingAppointment(meetingTitle: String,userId: Long, vendorId: Long, serviceStatus: String,bookingStatus: String,appointmentType: String,
                                          appointmentTime: Int, day: Int, month: Int, year: Int, meetingDescription: String,
                                          paymentAmount: Double, paymentMethod: String): Single<ServerResponse>

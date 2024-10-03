@@ -6,7 +6,6 @@ import domain.Models.HomePageWithStatusResponse
 
 interface HomeRepository {
     suspend fun getUserHomePage(userId: Long): Single<HomePageResponse>
-
     suspend fun getUserHomePageWithStatus(userId: Long, vendorPhone: String): Single<HomePageWithStatusResponse>
 
 }

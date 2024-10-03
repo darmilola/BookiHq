@@ -35,7 +35,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.room.RoomDatabase
-import applications.device.deviceInfo
 import applications.room.AppDatabase
 import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.ScreenKey
@@ -43,7 +42,6 @@ import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import cafe.adriel.voyager.navigator.tab.TabOptions
 import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
@@ -52,10 +50,8 @@ import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
-import domain.Enums.DeviceType
 import domain.Enums.Gender
 import domain.Models.PlatformNavigator
-import domain.Enums.Screens
 import domain.Enums.SharedPreferenceEnum
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
@@ -64,6 +60,8 @@ import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.DomainViewHandler.PlatformHandler
 import presentation.DomainViewHandler.ProfileHandler
 import presentation.Screens.SplashScreen
+import presentation.authentication.AttachCityDropDownWidget
+import presentation.authentication.AttachCountryDropDownWidget
 import presentation.authentication.AuthenticationPresenter
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
@@ -72,7 +70,7 @@ import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.PlatformViewModel
+import presentation.viewmodels.CityViewModel
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.AccountProfileImage
 import presentation.widgets.ShowSnackBar
@@ -94,7 +92,7 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
     @Transient
     private val authenticationPresenter : AuthenticationPresenter by inject()
     @Transient
-    private var platformViewModel: PlatformViewModel? = null
+    private var cityViewModel: CityViewModel? = null
     @Transient
     private var mainViewModel: MainViewModel? = null
     @Transient
@@ -113,10 +111,10 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        if (platformViewModel == null) {
-            platformViewModel = kmpViewModel(
+        if (cityViewModel == null) {
+            cityViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    PlatformViewModel(savedStateHandle = createSavedStateHandle())
+                    CityViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -128,18 +126,17 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
         }
 
         val userInfo = mainViewModel!!.currentUserInfo.value
-        val userGender = if (userInfo.gender == Gender.MALE.toPath()) Gender.MALE.toPath()
-        else Gender.FEMALE.toPath()
+        val userGender = if (userInfo.gender == Gender.MALE.toPath()) Gender.MALE.toPath() else Gender.FEMALE.toPath()
 
         val firstname = remember { mutableStateOf(userInfo.firstname) }
         val lastname = remember { mutableStateOf(userInfo.lastname) }
         val gender = remember { mutableStateOf(userGender) }
-        val city = remember { mutableStateOf(userInfo.city) }
         val contactPhone = remember { mutableStateOf(userInfo.contactPhone) }
         val address = remember { mutableStateOf(userInfo.address) }
         val profileImageUrl = remember { mutableStateOf(userInfo.profileImageUrl) }
         val inputList =  ArrayList<String>()
         val country = remember { mutableStateOf(userInfo.country) }
+        val city = remember { mutableStateOf(userInfo.city) }
         val isSavedClicked = remember { mutableStateOf(false) }
         val updateProfileStarted = remember { mutableStateOf(false) }
         val updateProfileEnded = remember { mutableStateOf(false) }
@@ -155,10 +152,10 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
             )
         }
 
-        if (platformViewModel == null) {
-            platformViewModel = kmpViewModel(
+        if (cityViewModel == null) {
+            cityViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    PlatformViewModel(savedStateHandle = createSavedStateHandle())
+                    CityViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -173,7 +170,7 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
         profileHandler.init()
 
         //View Contract Handler Initialisation
-        val platformHandler = PlatformHandler(profilePresenter, platformViewModel!!)
+        val platformHandler = PlatformHandler(profilePresenter, cityViewModel!!)
         platformHandler.init()
 
 
@@ -213,7 +210,7 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
             connectVendor = { user -> },
             onVerificationStarted = {},
             onVerificationEnded = {}, onCompleteStarted = {}, onCompleteEnded = {},
-            connectVendorOnProfileCompleted = { country,profileId, apiKey -> },
+            connectVendorOnProfileCompleted = { country,city,profileId, apiKey -> },
             onUpdateStarted = {
                  updateProfileStarted.value = true
                  updateProfileEnded.value = false
@@ -237,20 +234,11 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
             ErrorDialog(dialogTitle = "Error Occurred", actionTitle = "", onConfirmation = {})
         }
 
-        if (preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""].isNotEmpty() && preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""].isNotEmpty())
-        {
-            country.value = preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""]
-            city.value = preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""]
-        }
-        else{
             platformNavigator!!.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String, cityName: String ->
                 preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
                 preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
-                preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = countryName
-                country.value = countryName
-                city.value = cityName
             })
-        }
+
 
 
         Scaffold(
@@ -327,8 +315,15 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
                             }
                         }
                     }
+                AttachCountryDropDownWidget(selectedCountry = country.value!!) {
+                    profilePresenter.getCities(country = it)
+                    country.value = it
+                }
+                AttachCityDropDownWidget(cityViewModel = cityViewModel!!, onMenuItemClick = {
+                    city.value = it
+                })
 
-                    Box(
+                   Box(
                         modifier = Modifier.fillMaxWidth()
                             .padding(start = 10.dp),
                         contentAlignment = Alignment.Center
@@ -443,7 +438,7 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
                             else {
                                 authenticationPresenter.updateProfile(userId = userInfo.userId!!, firstname = firstname.value!!, lastname = lastname.value!!,
                                     address = address.value!!, contactPhone = contactPhone.value!!,
-                                    country = country.value!!, gender = gender.value, profileImageUrl = profileImageUrl.value!!)
+                                    country = country.value!!, city = city.value!!,gender = gender.value, profileImageUrl = profileImageUrl.value!!)
                             }
 
                         }

@@ -1,6 +1,7 @@
 package presentation.authentication
 
 import dev.jordond.compass.Place
+import domain.Models.City
 import domain.Models.User
 
 class AuthenticationContract {
@@ -11,7 +12,7 @@ class AuthenticationContract {
         fun goToCompleteProfileWithPhone(phone: String)
         fun showUserLocation(place: Place)
         fun goToConnectVendor(user: User)
-        fun onCompleteProfileDone(country: String, profileId: Long, apiKey: String)
+        fun onCompleteProfileDone(country: String,city: String, profileId: Long, apiKey: String)
         fun onCompleteProfileError()
         fun onProfileValidationStarted()
         fun onProfileValidationEnded()
@@ -27,10 +28,10 @@ class AuthenticationContract {
         abstract fun updateFcmToken(userId: Long, fcmToken: String)
         abstract fun validatePhone(phone: String,  requireValidation: Boolean = true)
         abstract fun completeProfile(firstname: String, lastname: String, userEmail: String, authPhone: String,
-                                     address: String, contactPhone: String, country: String,
+                                     address: String, contactPhone: String, country: String, city: String,
                                      signupType: String, gender: String, profileImageUrl: String)
        abstract fun updateProfile(userId: Long, firstname: String, lastname: String,  address: String, contactPhone: String,
-                                  country: String, gender: String, profileImageUrl: String)
+                                  country: String, city: String, gender: String, profileImageUrl: String)
 
     }
 }

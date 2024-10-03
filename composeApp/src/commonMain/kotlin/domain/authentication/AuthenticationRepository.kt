@@ -19,6 +19,7 @@ interface AuthenticationRepository {
         address: String,
         contactPhone: String,
         country: String,
+        city: String,
         gender: String,
         profileImageUrl: String
     ): Single<ServerResponse>
@@ -36,6 +37,7 @@ interface AuthenticationRepository {
         address: String,
         contactPhone: String,
         country: String,
+        city: String,
         signupType: String,
         gender: String,
         profileImageUrl: String

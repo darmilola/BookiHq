@@ -21,6 +21,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -35,6 +36,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
+import countryList
 import domain.Enums.AuthType
 import domain.Enums.Gender
 import domain.Enums.SharedPreferenceEnum
@@ -47,8 +49,9 @@ import presentation.Screens.ConnectVendor
 import presentation.dialogs.LoadingDialog
 import presentation.profile.ProfilePresenter
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.PlatformViewModel
+import presentation.viewmodels.CityViewModel
 import presentation.widgets.AccountProfileImage
+import presentation.widgets.DropDownWidget
 import presentation.widgets.SnackBarType
 import presentation.widgets.TitleWidget
 import presentation.widgets.ShowSnackBar
@@ -59,15 +62,16 @@ import utils.InputValidator
 
 @Composable
 fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail: String, authPhone: String,
-                    platformNavigator: PlatformNavigator, platformViewModel: PlatformViewModel, profilePresenter: ProfilePresenter, mainViewModel: MainViewModel) {
+                    platformNavigator: PlatformNavigator, cityViewModel: CityViewModel, profilePresenter: ProfilePresenter, mainViewModel: MainViewModel) {
 
     val placeHolderImage = "drawable/user_icon.png"
     val firstname = remember { mutableStateOf("") }
     val lastname = remember { mutableStateOf("") }
     val gender = remember { mutableStateOf(Gender.MALE.toPath()) }
-    val userCountry = remember { mutableStateOf("") }
     val contactPhone = remember { mutableStateOf("") }
     val address = remember { mutableStateOf("") }
+    val userCountry = remember { mutableStateOf("") }
+    val city = remember { mutableStateOf("") }
     val completeProfileInProgress = remember { mutableStateOf(false) }
     val navigateToConnectVendor = remember { mutableStateOf(false) }
     val profileImageUrl = remember { mutableStateOf(placeHolderImage) }
@@ -84,7 +88,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
     )
 
     //View Contract Handler Initialisation
-    val handler = PlatformHandler(profilePresenter, platformViewModel)
+    val handler = PlatformHandler(profilePresenter, cityViewModel)
     handler.init()
 
     inputList.add(firstname.value)
@@ -103,8 +107,9 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
             completeProfileInProgress.value = true
         }, onCompleteEnded = { isSuccessful -> completeProfileInProgress.value = false },
         connectVendorOnProfileCompleted = {
-                country, profileId, apiKey ->
+                country,userCity, profileId, apiKey ->
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = country
+                preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = userCity
                 preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = profileId
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = apiKey
                 navigateToConnectVendor.value = true
@@ -149,9 +154,6 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
         platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String, cityName: String ->
             preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
             preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
-            preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = countryName
-            preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = cityName
-            userCountry.value = countryName
         })
     }
 
@@ -211,6 +213,13 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                         }
                     }
                 }
+                AttachCountryDropDownWidget(selectedCountry = userCountry.value) {
+                    profilePresenter.getCities(country = it)
+                    userCountry.value = it
+                }
+                AttachCityDropDownWidget(cityViewModel = cityViewModel, onMenuItemClick = {
+                    city.value = it
+                })
                 Box(
                     modifier = Modifier.fillMaxWidth()
                         .padding(start = 10.dp),
@@ -301,24 +310,6 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                         ShowSnackBar(title = "Input Required", description = "Please provide the required info", actionLabel = "", duration = StackedSnackbarDuration.Short, snackBarType = SnackBarType.ERROR,
                                 onActionClick = {}, stackedSnackBarHostState = stackedSnackBarHostState)
                     }
-                    else if (userCountry.value.isEmpty()){
-                        ShowSnackBar(title = "Error",
-                            description = "Please Allow Your Location",
-                            actionLabel = "Allow Location",
-                            duration = StackedSnackbarDuration.Long,
-                            snackBarType = SnackBarType.ERROR,
-                            stackedSnackBarHostState = stackedSnackBarHostState,
-                            onActionClick = {
-                                platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String, cityName: String ->
-                                    println("My Name is $countryName")
-                                    preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
-                                    preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
-                                    preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = countryName
-                                    preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = cityName
-                                    userCountry.value = countryName
-                                })
-                            })
-                    }
                     else if (profileImageUrl.value == placeHolderImage) {
                         ShowSnackBar(title = "Profile Image Required", description = "Please Upload a required Profile Image", actionLabel = "", duration = StackedSnackbarDuration.Short, snackBarType = SnackBarType.ERROR,
                             stackedSnackBarHostState,onActionClick = {})
@@ -327,12 +318,33 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                         authenticationPresenter.completeProfile(
                             firstname.value, lastname.value,
                             userEmail = authEmail, authPhone = authPhone, contactPhone = contactPhone.value ,address = address.value, signupType = authType, country = userCountry.value,
-                            gender = gender.value, profileImageUrl = profileImageUrl.value)
+                            city = city.value, gender = gender.value, profileImageUrl = profileImageUrl.value)
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+fun AttachCountryDropDownWidget(selectedCountry: String = "", onMenuItemClick : (String) -> Unit) {
+    val countryList = countryList()
+
+    val index = if (selectedCountry ==  CountryEnum.SOUTH_AFRICA.toPath()) CountryEnum.SOUTH_AFRICA.getId() else CountryEnum.NIGERIA.getId()
+
+    DropDownWidget(menuItems = countryList, selectedIndex = index, placeHolderText = "Country of Residence", onMenuItemClick = {
+        onMenuItemClick(countryList[it])
+    })
+}
+
+@Composable
+fun AttachCityDropDownWidget(cityViewModel: CityViewModel, onMenuItemClick : (String) -> Unit) {
+    val cityListState = cityViewModel.cities.collectAsState()
+    val cityList = cityListState.value
+
+    DropDownWidget(menuItems = cityList,iconRes = "drawable/urban_icon.png", placeHolderText = "City", onMenuItemClick = {
+        onMenuItemClick(cityList[it])
+    })
 }
 
 

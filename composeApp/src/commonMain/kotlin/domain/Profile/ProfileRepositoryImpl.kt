@@ -5,6 +5,7 @@ import com.badoo.reaktive.single.Single
 import com.badoo.reaktive.single.toSingle
 import dev.jordond.compass.Place
 import dev.jordond.compass.geocoder.Geocoder
+import domain.Models.CountryCitiesResponse
 import domain.Models.PlatformCountryCitiesResponse
 import domain.Models.ServerResponse
 import domain.Models.VendorAccountResponse
@@ -68,9 +69,9 @@ class ProfileRepositoryImpl(apiService: HttpClient): ProfileRepository {
         return geocoder.reverse(lat, lng).getFirstOrNull().toSingle()
     }
 
-    override suspend fun getPlatformCities(country : String): Single<PlatformCountryCitiesResponse> {
-        val param = GetPlatformCitiesRequest(country)
-        return profileNetworkService.getPlatformCities(param)
+    override suspend fun getCountryCities(country: String): Single<CountryCitiesResponse> {
+        val param = GetCountryCitiesRequest(country)
+        return profileNetworkService.getCountryCities(param)
     }
 
     override suspend fun createMeetingAppointment(

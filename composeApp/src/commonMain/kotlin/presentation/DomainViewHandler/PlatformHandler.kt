@@ -2,18 +2,18 @@ package presentation.DomainViewHandler
 
 import presentation.profile.ProfileContract
 import presentation.profile.ProfilePresenter
-import presentation.viewmodels.PlatformViewModel
+import presentation.viewmodels.CityViewModel
 
 class PlatformHandler(
     private val profilePresenter: ProfilePresenter,
-    private val platformViewModel: PlatformViewModel
+    private val cityViewModel: CityViewModel
 ) : ProfileContract.PlatformContract {
     fun init() {
         profilePresenter.registerPlatformContract(this)
     }
 
-    override fun showPlatformCities(cities: ArrayList<String>) {
-        platformViewModel.setPlatformCities(cities)
+    override fun showCities(cities: ArrayList<String>) {
+        cityViewModel.setCities(cities)
     }
 
 }

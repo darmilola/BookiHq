@@ -23,19 +23,19 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
 
     override fun completeProfile(
         firstname: String, lastname: String, userEmail: String, authPhone: String,
-        address: String, contactPhone: String, country: String,
+        address: String, contactPhone: String, country: String,city: String,
         signupType: String, gender: String, profileImageUrl: String
     ) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.onCompleteProfileStarted()
-                    authenticationRepositoryImpl.completeProfile(firstname, lastname, userEmail, authPhone,address,contactPhone,country, signupType,gender, profileImageUrl)
+                    authenticationRepositoryImpl.completeProfile(firstname, lastname, userEmail, authPhone,address,contactPhone,country,city, signupType, gender, profileImageUrl)
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
-                                        contractView?.onCompleteProfileDone(country,result.profileId, result.apiKey)
+                                        contractView?.onCompleteProfileDone(country,city,result.profileId, result.apiKey)
                                     }
                                     ServerResponse.FAILURE.toPath() -> {
                                         contractView?.onCompleteProfileError()
@@ -64,6 +64,7 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
         address: String,
         contactPhone: String,
         country: String,
+        city: String,
         gender: String,
         profileImageUrl: String
     ) {
@@ -71,7 +72,7 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.onProfileUpdateStarted()
-                    authenticationRepositoryImpl.updateProfile(userId, firstname, lastname, address, contactPhone, country, gender, profileImageUrl)
+                    authenticationRepositoryImpl.updateProfile(userId, firstname, lastname, address, contactPhone, country,city, gender, profileImageUrl)
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {

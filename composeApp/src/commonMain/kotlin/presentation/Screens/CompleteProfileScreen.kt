@@ -4,12 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
+import countryList
 import domain.Models.PlatformNavigator
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
@@ -18,13 +17,14 @@ import presentation.authentication.AuthenticationPresenter
 import presentation.authentication.CompleteProfile
 import presentation.profile.ProfilePresenter
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.PlatformViewModel
+import presentation.viewmodels.CityViewModel
+import presentation.widgets.DropDownWidget
 import utils.ParcelableScreen
 
 @Parcelize
 data class CompleteProfileScreen(val platformNavigator: PlatformNavigator, val authEmail: String, val authPhone: String) : ParcelableScreen, KoinComponent {
 
-    private var platformViewModel: PlatformViewModel? = null
+    private var cityViewModel: CityViewModel? = null
     @Transient
     private var mainViewModel: MainViewModel? = null
 
@@ -43,10 +43,10 @@ data class CompleteProfileScreen(val platformNavigator: PlatformNavigator, val a
             platformNavigator.exitApp()
         }
 
-        if (platformViewModel == null) {
-            platformViewModel = kmpViewModel(
+        if (cityViewModel == null) {
+            cityViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    PlatformViewModel(savedStateHandle = createSavedStateHandle())
+                    CityViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -55,7 +55,7 @@ data class CompleteProfileScreen(val platformNavigator: PlatformNavigator, val a
         val profilePresenter : ProfilePresenter by inject()
 
 
-        CompleteProfile(authenticationPresenter,authEmail = authEmail, authPhone = authPhone, platformNavigator = platformNavigator!!, platformViewModel!!,
+        CompleteProfile(authenticationPresenter,authEmail = authEmail, authPhone = authPhone, platformNavigator = platformNavigator, cityViewModel!!,
             profilePresenter, mainViewModel = mainViewModel!!)
     }
 

@@ -30,7 +30,7 @@ class ProfileContract {
     }
 
     interface PlatformContract {
-        fun showPlatformCities(cities: ArrayList<String>)
+        fun showCities(cities: ArrayList<String>)
 
     }
 
@@ -44,7 +44,7 @@ class ProfileContract {
                                    cityId: Int, gender: String, profileImageUrl: String)
         abstract fun deleteProfile(userEmail: String)
         abstract fun registerPlatformContract(view: PlatformContract?)
-        abstract fun getPlatformCities(country: String)
+        abstract fun getCities(country: String)
         abstract fun getVendorAvailability(vendorId: Long)
         abstract fun switchVendor(userId: Long, vendorId: Long, action: String,
                          exitReason: String, vendor: Vendor, platformNavigator: PlatformNavigator)

@@ -3,6 +3,7 @@ package domain.Profile
 import com.badoo.reaktive.single.toSingle
 import com.russhwolf.settings.Settings
 import domain.Enums.SharedPreferenceEnum
+import domain.Models.CountryCitiesResponse
 import domain.Models.PlatformCountryCitiesResponse
 import domain.Models.ServerResponse
 import domain.Models.VendorAccountResponse
@@ -44,13 +45,13 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
             header("Authorization", apiKey)
         }.body<VendorAvailabilityResponse>().toSingle()
 
-    suspend fun getPlatformCities(getPlatformCitiesRequest: GetPlatformCitiesRequest) =
+    suspend fun getCountryCities(getCountryCitiesRequest: GetCountryCitiesRequest) =
         apiService.post {
-            url("/platform/city/get")
+            url("/vendor/auth/account/cities/load")
             contentType(ContentType.Application.Json)
-            setBody(getPlatformCitiesRequest)
+            setBody(getCountryCitiesRequest)
             header("Authorization", apiKey)
-        }.body<PlatformCountryCitiesResponse>().toSingle()
+        }.body<CountryCitiesResponse>().toSingle()
 
     suspend fun createMeeting(createMeetingRequest: CreateMeetingRequest) =
         apiService.post {

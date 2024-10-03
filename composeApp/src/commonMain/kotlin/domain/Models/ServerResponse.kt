@@ -27,6 +27,10 @@ data class HomePageResponse(@SerialName("status") val status: String = "", @Seri
 data class HomePageWithStatusResponse(@SerialName("status") val status: String = "", @SerialName("homePage") val homepageInfo: HomepageInfo = HomepageInfo(),
                             @SerialName("vendorStatus") val vendorStatusList: List<VendorStatusModel> = arrayListOf())
 
+@Serializable @Parcelize
+data class CountryCitiesResponse(@SerialName("status") val status: String = "",
+                                 @SerialName("cities") val countryCities: CityLoads): Parcelable
+
 @Serializable
 data class ServiceTherapistsResponse(@SerialName("status") val status: String = "", @SerialName("therapists") val serviceTherapists: List<ServiceTypeTherapists> = arrayListOf(),
                                      @SerialName("platformTime") val platformTimes: List<PlatformTime>? = null, @SerialName("vendorTime") val vendorTimes: List<VendorTime>? = null)

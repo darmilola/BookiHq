@@ -101,8 +101,7 @@ class AccountTab : Tab, Parcelable {
                     val userDao = databaseBuilder!!.build().getUserDao()
                     userInfo = userDao.getUser()
                 }
-
-                       AccountProfileImage(
+                AccountProfileImage(
                            profileImageUrl = userInfo!!.profileImageUrl!!,
                            showEditIcon = false,
                            isAsync = true
