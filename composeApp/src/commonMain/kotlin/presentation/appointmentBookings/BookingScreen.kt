@@ -329,6 +329,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                     platformNavigator.startPaymentProcess(paymentAmount = (paymentAmount * 100).toString(),
                         customerEmail = customerEmail,
                         accessCode = it.paymentAuthorizationData.accessCode,
+                        currency = mainViewModel!!.displayCurrencyPath.value,
                         paymentCard = selectedCard!!,
                         onPaymentLoading = {},
                         onPaymentSuccessful = {
@@ -345,6 +346,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
 
         if (showSelectPaymentCards.value) {
             val paymentAmount = calculateAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
+            val paymentCurrency = mainViewModel!!.displayCurrencyPath.value
             mainViewModel!!.showPaymentMethodBottomSheet(false)
             PaymentCardBottomSheet(
                 mainViewModel!!,
@@ -352,7 +354,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                 onCardSelected = {
                     mainViewModel!!.showPaymentCardsBottomSheet(false)
                     selectedCard = it
-                    paymentPresenter.initCheckOut(amount = (paymentAmount * 100).toString(), customerEmail = customerEmail)
+                    paymentPresenter.initCheckOut(amount = (paymentAmount * 100).toString(), customerEmail = customerEmail, currency = paymentCurrency)
                 },
                 onDismiss = {
                     mainViewModel!!.showPaymentCardsBottomSheet(false)

@@ -26,12 +26,14 @@ import domain.Enums.DeliveryMethodEnum
 import domain.Enums.PaymentMethod
 import presentation.components.ButtonComponent
 import presentation.viewmodels.CartViewModel
+import presentation.viewmodels.MainViewModel
 import presentations.components.TextComponent
 
 @Composable
-fun CheckOutSummaryWidget(cartViewModel: CartViewModel, onCheckOutStarted: () -> Unit, onCardCheckOutStarted:() -> Unit) {
+fun CheckOutSummaryWidget(cartViewModel: CartViewModel,mainViewModel: MainViewModel, onCheckOutStarted: () -> Unit, onCardCheckOutStarted:() -> Unit) {
 
     val deliveryMethod = cartViewModel.deliveryMethod.collectAsState()
+    val currencyUnit = mainViewModel.displayCurrencyUnit.value
     val subtotal = cartViewModel.subtotal.collectAsState()
     val total = cartViewModel.total.collectAsState()
     val deliveryFee = if (cartViewModel.deliveryFee.value == 0L) "Free" else cartViewModel.deliveryFee.value.toString()
@@ -69,7 +71,7 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel, onCheckOutStarted: () ->
                  textModifier = Modifier.fillMaxWidth(0.50f)
              )
              TextComponent(
-                 text = "$"+subtotal.value.toString(),
+                 text = currencyUnit+subtotal.value.toString(),
                  fontSize = 18,
                  fontFamily = GGSansSemiBold,
                  textStyle = MaterialTheme.typography.h6,
@@ -100,7 +102,7 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel, onCheckOutStarted: () ->
                     textModifier = Modifier.fillMaxWidth(0.50f)
                 )
                 TextComponent(
-                    text = "$$deliveryFee",
+                    text = "$currencyUnit$deliveryFee",
                     fontSize = 18,
                     fontFamily = GGSansSemiBold,
                     textStyle = MaterialTheme.typography.h6,
@@ -130,7 +132,7 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel, onCheckOutStarted: () ->
                 textModifier = Modifier.fillMaxWidth(0.50f)
             )
             TextComponent(
-                text = "$"+total.value.toString(),
+                text = currencyUnit+total.value.toString(),
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
                 textStyle = MaterialTheme.typography.h6,

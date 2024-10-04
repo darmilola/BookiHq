@@ -219,6 +219,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                             platformNavigator.startPaymentProcess(paymentAmount = (paymentAmount * 100).toString(),
                                 customerEmail = customerEmail,
                                 accessCode = it.paymentAuthorizationData.accessCode,
+                                currency = mainViewModel!!.displayCurrencyPath.value,
                                 paymentCard = selectedCard!!,
                                 onPaymentLoading = {},
                                 onPaymentSuccessful = {
@@ -322,6 +323,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
 
 
                     val showSelectPaymentCards = mainViewModel!!.showPaymentCardsBottomSheet.collectAsState()
+                    val paymentCurrency = mainViewModel!!.displayCurrencyPath.value
 
                     if (showSelectPaymentCards.value) {
                         mainViewModel!!.showPaymentMethodBottomSheet(false)
@@ -331,7 +333,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                             onCardSelected = {
                                 mainViewModel!!.showPaymentCardsBottomSheet(false)
                                 selectedCard = it
-                                paymentPresenter.initCheckOut(amount = (paymentAmount * 100).toString(), customerEmail = customerEmail)
+                                paymentPresenter.initCheckOut(amount = (paymentAmount * 100).toString(), customerEmail = customerEmail, currency = paymentCurrency)
                             },
                             onDismiss = {
                                 mainViewModel!!.showPaymentCardsBottomSheet(false)
@@ -368,7 +370,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                             cartViewModel!!.setPaymentMethod(PaymentMethod.CARD_PAYMENT.toPath())
                         })
                         StraightLine()
-                        CheckOutSummaryWidget(cartViewModel!!,onCardCheckOutStarted = {
+                        CheckOutSummaryWidget(cartViewModel!!,mainViewModel!!,onCardCheckOutStarted = {
                             runBlocking {
                                 cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
                                 mainViewModel!!.showPaymentCardsBottomSheet(true)
@@ -414,6 +416,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
     private fun PopulateCartItemList(mainViewModel: MainViewModel,stackedSnackBarHostState: StackedSnakbarHostState) {
 
         val cartItems = mainViewModel.unSavedOrders.collectAsState()
+        val currencyUnit = mainViewModel.displayCurrencyUnit.value
         if (cartItems.value.isNotEmpty()){
 
         val cartList = cartItems.value
@@ -442,7 +445,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                 userScrollEnabled = true
             ) {
                 items(key = { it -> it.itemKey}, items = orderItemUIModel.itemList) { item ->
-                    CartItem(item, onProductClickListener = {
+                    CartItem(item, currencyUnit, onProductClickListener = {
                         orderItemUIModel = orderItemUIModel.copy(
                             selectedItem = it,
                             itemList = mainViewModel.unSavedOrders.value

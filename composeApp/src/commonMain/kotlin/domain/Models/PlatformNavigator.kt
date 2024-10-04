@@ -33,5 +33,5 @@ interface PlatformNavigator: Parcelable {
     fun exitApp()
     fun restartApp()
     fun goToMainScreen()
-    fun startPaymentProcess(paymentAmount: String, accessCode: String, paymentCard: PaymentCard, customerEmail: String, onPaymentLoading: () -> Unit, onPaymentSuccessful: () -> Unit, onPaymentFailed: () -> Unit)
+    fun startPaymentProcess(paymentAmount: String, accessCode: String,currency: String,paymentCard: PaymentCard, customerEmail: String, onPaymentLoading: () -> Unit, onPaymentSuccessful: () -> Unit, onPaymentFailed: () -> Unit)
  }

@@ -40,6 +40,7 @@ import com.russhwolf.settings.set
 import domain.Enums.AuthType
 import domain.Enums.DeviceType
 import domain.Enums.SharedPreferenceEnum
+import domain.Enums.getDisplayCurrency
 import domain.Models.PlatformNavigator
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Transient
@@ -107,6 +108,11 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
         val handler = AuthenticationScreenHandler(authenticationPresenter,
             onUserLocationReady = {},
             enterPlatform = { user, vendorWhatsAppPhone ->
+                val userCurrency = getDisplayCurrency(user.country!!)
+                val displayCurrencyUnit = userCurrency.toDisplayUnit()
+                val displayCurrencyPath = userCurrency.toPath()
+                mainViewModel!!.setDisplayCurrencyUnit(displayCurrencyUnit)
+                mainViewModel!!.setDisplayCurrencyPath(displayCurrencyPath)
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
                 preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
                 preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId

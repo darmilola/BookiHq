@@ -119,6 +119,7 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val showProductDetails = remember { mutableStateOf(false) }
+        val currencyUnit = mainViewModel!!.displayCurrencyUnit.value
         val selectedProductDetails = remember { mutableStateOf(PackageProducts()) }
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
         if (onBackPressed.value){
@@ -130,7 +131,7 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
         val price = vendorPackage!!.price
         val isMobileServiceAvailable = vendorPackage!!.isMobileServiceAvailable
         val mobileServicePrice = vendorPackage!!.mobileServicePrice
-        val mobileServiceText = if (!isMobileServiceAvailable) "Not Available" else "NGN$mobileServicePrice"
+        val mobileServiceText = if (!isMobileServiceAvailable) "Not Available" else "$currencyUnit$mobileServicePrice"
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -172,7 +173,7 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
                                 Row(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.50f).padding(start = 30.dp), verticalAlignment = Alignment.Bottom,
                                     horizontalArrangement = Arrangement.Start) {
                                     TextComponent(
-                                        text = "NGN$price Total",
+                                        text = "$currencyUnit$price Total",
                                         fontSize = 18,
                                         fontFamily = GGSansSemiBold,
                                         textStyle = MaterialTheme.typography.h6,

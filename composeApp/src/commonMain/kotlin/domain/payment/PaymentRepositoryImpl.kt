@@ -12,9 +12,10 @@ class PaymentRepositoryImpl(apiService: HttpClient): PaymentRepository {
     private val paymentNetworkService: PaymentNetworkService = PaymentNetworkService(apiService)
     override suspend fun initCheckout(
         paymentAmount: String,
-        customerEmail: String
+        customerEmail: String,
+        currency: String
     ): Single<InitCheckoutResponse> {
-        val param = InitCheckoutRequest(customerEmail = customerEmail, amount = paymentAmount)
+        val param = InitCheckoutRequest(customerEmail = customerEmail, amount = paymentAmount, currency = currency)
         return paymentNetworkService.initCheckout(param)
     }
 }

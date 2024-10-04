@@ -11,7 +11,7 @@ class PaymentContract {
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
-        abstract fun initCheckOut(customerEmail: String, amount: String)
+        abstract fun initCheckOut(customerEmail: String, amount: String, currency: String)
 
     }
 }

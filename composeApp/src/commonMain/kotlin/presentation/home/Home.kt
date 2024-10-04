@@ -444,7 +444,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                     modifier = Modifier.fillMaxWidth().fillMaxHeight(0.95f),
                     pageSpacing = 10.dp
                 ) { page ->
-                    RecommendedServiceItem(recommendations[page], onItemClickListener = {
+                    RecommendedServiceItem(recommendations[page],mainViewModel, onItemClickListener = {
                         when (it.recommendationType) {
                             RecommendationType.Services.toPath() -> {
                                 mainViewModel.setScreenNav(

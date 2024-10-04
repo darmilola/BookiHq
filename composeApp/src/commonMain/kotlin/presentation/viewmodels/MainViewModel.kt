@@ -2,6 +2,7 @@ package presentation.viewmodels
 
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
+import domain.Enums.Currency
 import domain.Enums.DeliveryMethodEnum
 import domain.Enums.MainTabEnum
 import domain.Enums.ProductType
@@ -20,6 +21,8 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     private var _screenTitle = savedStateHandle.getStateFlow("screenTitle","Home")
     private var _connectedVendor =  savedStateHandle.getStateFlow("connectedVendor", Vendor())
+    private var _displayCurrencyUnit =  savedStateHandle.getStateFlow("displayCurrencyUnit", Currency.USD.toDisplayUnit())
+    private var _displayCurrencyPath =  savedStateHandle.getStateFlow("displayCurrencyPath", Currency.USD.toPath())
     private var _currentUserInfo =  savedStateHandle.getStateFlow("userInfo", User())
     private var _roomDbUserCount =  savedStateHandle.getStateFlow("roomDbUserCount", 0)
     private var _currentVendorId =  savedStateHandle.getStateFlow("currentVendorId", -1L)
@@ -107,6 +110,12 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
         get() = _currentUnsavedOrderSize
     val connectedVendor: StateFlow<Vendor>
         get() = _connectedVendor
+    val displayCurrencyUnit: StateFlow<String>
+        get() = _displayCurrencyUnit
+
+    val displayCurrencyPath: StateFlow<String>
+        get() = _displayCurrencyPath
+
     val switchVendorId: StateFlow<Long>
         get() = _switchVendorId
     val switchVendorReason: StateFlow<String>
@@ -202,6 +211,14 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     fun setConnectedVendor(vendor: Vendor) {
         savedStateHandle["connectedVendor"] = vendor
+    }
+
+    fun setDisplayCurrencyUnit(currencyUnit: String) {
+        savedStateHandle["displayCurrencyUnit"] = currencyUnit
+    }
+
+    fun setDisplayCurrencyPath(currencyPath: String) {
+        savedStateHandle["displayCurrencyPath"] = currencyPath
     }
 
     fun setRecommendationServiceType(serviceTypeItem: ServiceTypeItem) {

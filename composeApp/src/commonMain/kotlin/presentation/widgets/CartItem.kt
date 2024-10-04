@@ -27,12 +27,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Enums.Currency
 import domain.Models.OrderItem
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun CartItem(orderItem: OrderItem, onProductClickListener: (OrderItem) -> Unit, onItemCountChanged:(OrderItem) -> Unit, onItemRemovedFromCart: (OrderItem) -> Unit) {
+fun CartItem(orderItem: OrderItem,currencyUnit: String,onProductClickListener: (OrderItem) -> Unit, onItemCountChanged:(OrderItem) -> Unit, onItemRemovedFromCart: (OrderItem) -> Unit) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 10.dp, bottom = 10.dp)
         .clickable {
@@ -44,7 +45,7 @@ fun CartItem(orderItem: OrderItem, onProductClickListener: (OrderItem) -> Unit, 
             verticalAlignment = Alignment.CenterVertically
         ) {
             CartItemImage(orderItem.itemProduct?.productImages!![0].imageUrl)
-            CartItemDetail(orderItem, onItemCountChanged = {
+            CartItemDetail(orderItem,currencyUnit,onItemCountChanged = {
                  onItemCountChanged(it)
             }, onItemRemovedFromCart = {
                  onItemRemovedFromCart(it)
@@ -88,7 +89,7 @@ fun CartItemImage(imageUrl: String) {
 
 
 @Composable
-fun CartItemDetail(orderItem: OrderItem,onItemCountChanged:(OrderItem) -> Unit, onItemRemovedFromCart: (OrderItem) -> Unit) {
+fun CartItemDetail(orderItem: OrderItem,currencyUnit: String,onItemCountChanged:(OrderItem) -> Unit, onItemRemovedFromCart: (OrderItem) -> Unit) {
     val orderedProduct = orderItem.itemProduct
     val columnModifier = Modifier
         .padding(start = 10.dp, end = 10.dp)
@@ -117,7 +118,7 @@ fun CartItemDetail(orderItem: OrderItem,onItemCountChanged:(OrderItem) -> Unit, 
                 overflow = TextOverflow.Ellipsis,
                 textModifier = modifier
             )
-            CartProductPriceInfoContent(orderItem)
+            CartProductPriceInfoContent(orderItem,currencyUnit)
             productItemIncrementDecrementWidget(orderItem,isFromCart = true,onItemCountChanged = {
                 onItemCountChanged(it)
             }, onItemRemovedFromCart = {
@@ -127,7 +128,7 @@ fun CartItemDetail(orderItem: OrderItem,onItemCountChanged:(OrderItem) -> Unit, 
     }
 
 @Composable
-fun CartProductPriceInfoContent(orderItem: OrderItem) {
+fun CartProductPriceInfoContent(orderItem: OrderItem,currencyUnit: String,) {
     val product = orderItem.itemProduct
     Row(
         modifier = Modifier
@@ -136,7 +137,7 @@ fun CartProductPriceInfoContent(orderItem: OrderItem) {
             .fillMaxHeight(),
     ) {
         TextComponent(
-            text = "$${product!!.productPrice}",
+            text = "$currencyUnit${product!!.productPrice}",
             fontSize = 16,
             fontFamily = GGSansSemiBold,
             textStyle = MaterialTheme.typography.h6,

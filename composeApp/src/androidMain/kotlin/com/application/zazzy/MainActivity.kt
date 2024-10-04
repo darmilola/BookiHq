@@ -55,6 +55,7 @@ import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
+import domain.Enums.Currency
 import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
 import kotlinx.parcelize.Parcelize
@@ -569,6 +570,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     override fun startPaymentProcess(
         paymentAmount: String,
         accessCode: String,
+        currency: String,
         paymentCard: PaymentCard,
         customerEmail: String,
         onPaymentLoading: () -> Unit,

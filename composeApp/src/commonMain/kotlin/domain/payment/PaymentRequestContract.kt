@@ -4,4 +4,4 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class InitCheckoutRequest(@SerialName("customerEmail") val customerEmail: String, @SerialName("amount") val amount: String)
+data class InitCheckoutRequest(@SerialName("customerEmail") val customerEmail: String, @SerialName("amount") val amount: String, @SerialName("currency") val currency: String)

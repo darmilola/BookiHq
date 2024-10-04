@@ -43,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Enums.Currency
 import domain.Models.OrderItem
 import domain.Models.Product
 import domain.Enums.ValuesLimit
@@ -71,7 +72,7 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
 
     Scaffold(
         content = {
-            ProductBottomSheetContent(selectedProduct.itemProduct!!)
+            ProductBottomSheetContent(selectedProduct.itemProduct!!, mainViewModel)
         },
         backgroundColor = Color.White,
         bottomBar = {
@@ -134,10 +135,11 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
 
 
 @Composable
-fun ProductBottomSheetContent(product: Product) {
+fun ProductBottomSheetContent(product: Product, mainViewModel: MainViewModel) {
 
     var currentTabScreen by remember { mutableStateOf(0) }
     val reviewText = if (product.productReviews?.isNotEmpty() == true) "Reviews"  else "No Reviews"
+    val currencyUnit = mainViewModel.displayCurrencyUnit.value
 
     val boxModifier =
         Modifier
@@ -155,7 +157,7 @@ fun ProductBottomSheetContent(product: Product) {
             AttachScrollingProductImages(product)
             ProductBottomSheetContentHeader()
         }
-        ProductNameInfoContent(product)
+        ProductNameInfoContent(product, currencyUnit)
         Divider(color = Color(color = 0x90C8C8C8), thickness = 1.dp, modifier = Modifier.fillMaxWidth(0.90f).padding(top = 20.dp))
 
         ToggleButton(shape = CircleShape, onLeftClicked = {
@@ -206,7 +208,7 @@ fun ProductDescription(product: Product) {
 
 
 @Composable
-fun ProductNameInfoContent(product: Product) {
+fun ProductNameInfoContent(product: Product, currencyUnit: String) {
     Row(modifier = Modifier
         .padding(start = 20.dp, end = 20.dp, top = 10.dp),
         horizontalArrangement = Arrangement.Center,
@@ -215,12 +217,12 @@ fun ProductNameInfoContent(product: Product) {
             .fillMaxWidth(0.7f)) {
             ProductTitle(product)
         }
-        ProductPriceInfoContent(product)
+        ProductPriceInfoContent(product, currencyUnit)
     }
 }
 
 @Composable
-fun ProductPriceInfoContent(product: Product) {
+fun ProductPriceInfoContent(product: Product, currencyUnit: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -230,7 +232,7 @@ fun ProductPriceInfoContent(product: Product) {
     ) {
 
         TextComponent(
-            text = "$${product.productPrice}",
+            text = "$currencyUnit${product.productPrice}",
             fontSize = 20,
             fontFamily = GGSansBold,
             textStyle = TextStyle(),

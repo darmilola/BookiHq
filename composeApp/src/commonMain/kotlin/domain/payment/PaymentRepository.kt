@@ -6,6 +6,7 @@ import domain.Models.InitCheckoutResponse
 interface PaymentRepository {
     suspend fun initCheckout(
         paymentAmount: String,
-        customerEmail: String
+        customerEmail: String,
+        currency: String
     ): Single<InitCheckoutResponse>
 }

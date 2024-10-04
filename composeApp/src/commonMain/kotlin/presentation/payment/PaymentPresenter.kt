@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import com.badoo.reaktive.single.subscribe
+import domain.Enums.Currency
 import domain.Enums.ServerResponse
 
 class PaymentPresenter(apiService: HttpClient): PaymentContract.Presenter() {
@@ -23,12 +24,12 @@ class PaymentPresenter(apiService: HttpClient): PaymentContract.Presenter() {
         contractView = view
     }
 
-    override fun initCheckOut(customerEmail: String, amount: String) {
+    override fun initCheckOut(customerEmail: String, amount: String, currency: String) {
         contractView?.showPaymentLce(AppUIStates(isLoading = true, loadingMessage = "Processing..."))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    paymentRepositoryImpl.initCheckout(paymentAmount = amount, customerEmail = customerEmail)
+                    paymentRepositoryImpl.initCheckout(paymentAmount = amount, customerEmail = customerEmail, currency = currency)
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {
