@@ -191,7 +191,7 @@ fun AttachServiceTypeToggle(mainViewModel: MainViewModel,bookingViewModel: Booki
 @Composable
 fun AttachServiceDropDownWidget(mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, onServiceSelected: (ServiceTypeItem) -> Unit) {
     val serviceState = mainViewModel.selectedService.collectAsState()
-    val recommendationServiceType = mainViewModel.selectedServiceType.value
+    val recommendationServiceType = mainViewModel.recommendedServiceType.value
     val isRecommendationType = recommendationServiceType.serviceTypeId != -1L
     val serviceTypeList = arrayListOf<String>()
     var selectedIndex: Int = -1

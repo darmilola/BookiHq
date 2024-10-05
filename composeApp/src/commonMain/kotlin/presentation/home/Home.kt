@@ -70,6 +70,7 @@ import domain.Models.OrderItem
 import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
 import domain.Models.Product
+import domain.Models.ServiceTypeItem
 import domain.Models.Services
 import domain.Models.UserAppointment
 import domain.Models.Vendor
@@ -253,6 +254,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                     if (!vendorServices.isNullOrEmpty()) {
                                         AttachOurServices()
                                         ServiceGridScreen(vendorServices, onServiceSelected = {
+                                            mainViewModel!!.setRecommendationServiceType(ServiceTypeItem())
                                             mainViewModel!!.setScreenNav(
                                                 Pair(
                                                     Screens.MAIN_SCREEN.toPath(),

@@ -7,7 +7,6 @@ import domain.Enums.DeliveryMethodEnum
 import domain.Enums.MainTabEnum
 import domain.Enums.ProductType
 import domain.Models.OrderItem
-import domain.Models.PaymentCard
 import domain.Models.PlacedOrderItemComponent
 import domain.Models.Services
 import domain.Models.User
@@ -29,7 +28,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _screenNav =  savedStateHandle.getStateFlow("screenNav", Pair(-1,-1))
     private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
     private var _selectedPackage =  savedStateHandle.getStateFlow("selectedPackage", VendorPackage())
-    private var _selectedServiceType =  savedStateHandle.getStateFlow("selectedServiceType", ServiceTypeItem())
+    private var _recommendedServiceType =  savedStateHandle.getStateFlow("recommendedServiceType", ServiceTypeItem())
     private var _currentUnsavedOrders =  savedStateHandle.getStateFlow("currentUnsavedOrders", ArrayList<OrderItem>())
     private var _currentUnsavedOrderSize =  savedStateHandle.getStateFlow("currentUnsavedOrderSize", 0)
     private var _deliveryMethod =  savedStateHandle.getStateFlow("deliveryMethod", DeliveryMethodEnum.MOBILE.toPath())
@@ -129,8 +128,8 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     val currentUserInfo: StateFlow<User>
         get() = _currentUserInfo
 
-    val selectedServiceType: StateFlow<ServiceTypeItem>
-        get() = _selectedServiceType
+    val recommendedServiceType: StateFlow<ServiceTypeItem>
+        get() = _recommendedServiceType
 
 
     val screenNav: StateFlow<Pair<Int,Int>>
@@ -222,7 +221,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     }
 
     fun setRecommendationServiceType(serviceTypeItem: ServiceTypeItem) {
-        savedStateHandle["selectedServiceType"] = serviceTypeItem
+        savedStateHandle["recommendedServiceType"] = serviceTypeItem
     }
 
     fun setUserId(userId: Long) {
