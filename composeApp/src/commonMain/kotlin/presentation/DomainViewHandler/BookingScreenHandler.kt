@@ -7,6 +7,7 @@ import UIStates.AppUIStates
 import domain.Models.AppointmentReview
 import presentation.viewmodels.BookingViewModel
 import domain.Models.PlatformTime
+import domain.Models.ServiceTypeItem
 import domain.Models.UserAppointment
 import domain.Models.VendorTime
 import presentation.viewmodels.PerformedActionUIStateViewModel
@@ -17,6 +18,7 @@ class BookingScreenHandler(
     private val deleteActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val createAppointmentActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val getTherapistActionUIStateViewModel: PerformedActionUIStateViewModel,
+    private val getServiceTypesActionUIStateViewModel: PerformedActionUIStateViewModel?,
     private val getTimesActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val bookingPresenter: BookingPresenter,
     private val onShowUnsavedAppointment: () -> Unit) : BookingContract.View {
@@ -78,23 +80,11 @@ class BookingScreenHandler(
     }
 
     override fun getTherapistActionLce(uiState: AppUIStates, message: String) {
-        uiState.let {
-            when {
-                it.isLoading -> {
-                    getTherapistActionUIStateViewModel.switchGetTherapistUiState(uiState)
-                }
-                it.isSuccess -> {
-                    getTherapistActionUIStateViewModel.switchGetTherapistUiState(uiState)
-                }
-                it.isEmpty -> {
-                    getTherapistActionUIStateViewModel.switchGetTherapistUiState(uiState)
-                }
-                it.isFailed -> {
-                    getTherapistActionUIStateViewModel.switchGetTherapistUiState(uiState)
-                }
+        getTherapistActionUIStateViewModel.switchGetTherapistUiState(uiState)
+    }
 
-            }
-        }
+    override fun getServiceTypesLce(uiState: AppUIStates, message: String) {
+        getServiceTypesActionUIStateViewModel!!.switchGetServiceTypeUiState(uiState)
     }
 
     override fun getTimesActionLce(uiState: AppUIStates, message: String) {
@@ -122,9 +112,12 @@ class BookingScreenHandler(
     }
 
     override fun showTimes(platformTime: List<PlatformTime>, vendorTime: List<VendorTime>) {
-        println(platformTime)
         bookingViewModel.setVendorTimes(vendorTime)
         bookingViewModel.setPlatformTimes(platformTime)
+    }
+
+    override fun showServiceTypes(serviceTypes: List<ServiceTypeItem>) {
+        bookingViewModel.setServiceTypeList(serviceTypes)
     }
 
     override fun showPendingBookingAppointment(pendingAppointments: List<UserAppointment>) {

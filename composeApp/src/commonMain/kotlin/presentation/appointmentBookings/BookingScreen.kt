@@ -76,7 +76,6 @@ import domain.Models.PlatformNavigator
 import domain.Models.VendorPackage
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
-import presentation.Screens.AddDebitCardScreen
 import presentation.dialogs.AddDebitCardDialog
 import presentation.payment.PaymentContract
 import presentation.payment.PaymentPresenter
@@ -88,7 +87,6 @@ import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
 import utils.ParcelableScreen
 import utils.calculateAppointmentPaymentAmount
-import utils.calculatePackageAppointmentPaymentAmount
 
 
 @OptIn(ExperimentalVoyagerApi::class)
@@ -96,6 +94,7 @@ import utils.calculatePackageAppointmentPaymentAmount
 class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, ScreenTransition, ParcelableScreen {
     @Transient private val bookingPresenter: BookingPresenter by inject()
     @Transient private var loadPendingActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient private var getServiceTypesUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient private var deleteActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient private var createAppointmentActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient private var paymentActionUIStateViewModel: PerformedActionUIStateViewModel? = null
@@ -169,6 +168,14 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             )
         }
 
+        if (getServiceTypesUIStateViewModel == null) {
+            getServiceTypesUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
         if (getTimeActionUIStateViewModel == null) {
             getTimeActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
@@ -232,7 +239,10 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
 
         val handler = BookingScreenHandler(
             bookingViewModel!!, loadPendingActionUIStateViewModel = loadPendingActionUIStateViewModel!!, deleteActionUIStateViewModel = deleteActionUIStateViewModel!!,
-            createAppointmentActionUIStateViewModel = createAppointmentActionUIStateViewModel!!, getTherapistActionUIStateViewModel = getTherapistActionUIStateViewModel!!, getTimesActionUIStateViewModel = getTimeActionUIStateViewModel!!,bookingPresenter, onShowUnsavedAppointment = {})
+            createAppointmentActionUIStateViewModel = createAppointmentActionUIStateViewModel!!,
+            getServiceTypesActionUIStateViewModel = getServiceTypesUIStateViewModel!! ,
+            getTherapistActionUIStateViewModel = getTherapistActionUIStateViewModel!!, getTimesActionUIStateViewModel = getTimeActionUIStateViewModel!!, bookingPresenter = bookingPresenter
+        ) {}
         handler.init()
 
 
@@ -554,7 +564,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                 when (page) {
                     0 -> if (page == pagerState.targetPage){
                         pageHeight.value = 0.90f
-                        BookingSelectServices(mainViewModel, bookingViewModel,services)
+                        BookingSelectServices(mainViewModel, bookingViewModel,getServiceTypesUIStateViewModel!!,services, bookingPresenter)
                     }
                     1 -> if(page == pagerState.targetPage) {
                          pageHeight.value = 0.90f

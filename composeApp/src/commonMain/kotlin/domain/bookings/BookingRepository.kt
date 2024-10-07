@@ -4,10 +4,12 @@ import com.badoo.reaktive.single.Single
 import domain.Models.PendingBookingAppointmentResponse
 import domain.Models.ServerResponse
 import domain.Models.ServiceTherapistsResponse
+import domain.Models.ServiceTypesResponse
 import domain.Models.TimeAvailabilityResponse
 
 interface BookingRepository {
     suspend fun getServiceTherapist(serviceTypeId: Long, vendorId: Long, day: Int, month: Int, year: Int): Single<ServiceTherapistsResponse>
+    suspend fun getServiceTypes(serviceId: Long): Single<ServiceTypesResponse>
     suspend fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Long, serviceTypeId: Long, therapistId: Long,
                                                 appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, serviceStatus: String, bookingStatus: String,appointmentType: String): Single<PendingBookingAppointmentResponse>
     suspend fun createPendingPackageBookingAppointment(userId: Long, vendorId: Long, packageId: Long, appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, serviceStatus: String, bookingStatus: String, appointmentType: String): Single<PendingBookingAppointmentResponse>

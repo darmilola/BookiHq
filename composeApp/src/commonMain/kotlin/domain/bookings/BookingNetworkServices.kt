@@ -6,6 +6,7 @@ import domain.Enums.SharedPreferenceEnum
 import domain.Models.PendingBookingAppointmentResponse
 import domain.Models.ServerResponse
 import domain.Models.ServiceTherapistsResponse
+import domain.Models.ServiceTypesResponse
 import domain.Models.TimeAvailabilityResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -26,6 +27,14 @@ open class BookingNetworkService(private val apiService: HttpClient) {
             setBody(getTherapistsRequest)
             header("Authorization", apiKey)
         }.body<ServiceTherapistsResponse>().toSingle()
+
+    suspend fun getServiceTypes(getServiceTypeRequest: GetServiceTypeRequest) =
+        apiService.post {
+            url("/services/type/load")
+            contentType(ContentType.Application.Json)
+            setBody(getServiceTypeRequest)
+            header("Authorization", apiKey)
+        }.body<ServiceTypesResponse>().toSingle()
 
     suspend fun createAppointment(createAppointmentRequest: CreateAppointmentRequest) =
         apiService.post {

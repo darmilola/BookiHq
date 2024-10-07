@@ -4,6 +4,7 @@ import com.badoo.reaktive.single.Single
 import domain.Models.PendingBookingAppointmentResponse
 import domain.Models.ServerResponse
 import domain.Models.ServiceTherapistsResponse
+import domain.Models.ServiceTypesResponse
 import domain.Models.TimeAvailabilityResponse
 import io.ktor.client.HttpClient
 
@@ -14,6 +15,11 @@ class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
     override suspend fun getServiceTherapist(serviceTypeId: Long, vendorId: Long, day: Int, month: Int, year: Int): Single<ServiceTherapistsResponse> {
         val param = GetTherapistsRequest(serviceTypeId, vendorId, day, month, year)
         return bookingNetworkService.getTherapists(param)
+    }
+
+    override suspend fun getServiceTypes(serviceId: Long): Single<ServiceTypesResponse> {
+        val param = GetServiceTypeRequest(serviceId)
+        return bookingNetworkService.getServiceTypes(param)
     }
 
     override suspend fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Long, serviceTypeId: Long, therapistId: Long,

@@ -60,6 +60,39 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
         }
     }
 
+    override fun getServiceTypes(serviceId: Long) {
+        contractView?.getServiceTypesLce(AppUIStates(isLoading  = true))
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    bookingRepositoryImpl.getServiceTypes(serviceId)
+                        .subscribe(
+                            onSuccess = { result ->
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.getServiceTypesLce(AppUIStates(isSuccess  = true))
+                                        contractView?.showServiceTypes(result.serviceTypes!!)
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.getServiceTypesLce(AppUIStates(isFailed  = true, errorMessage = "Error Getting Services, Please Try Again"))
+                                    }
+                                    ServerResponse.EMPTY.toPath() -> {
+                                        contractView?.getServiceTypesLce(AppUIStates(isEmpty = true, emptyMessage = "No Service is Available"))
+                                    }
+                                }
+                            },
+                            onError = {
+                                contractView?.getServiceTypesLce(AppUIStates(isFailed  = true, errorMessage = "Error Getting Services, Please Try Again"))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.getServiceTypesLce(AppUIStates(isFailed  = true, errorMessage = "Error Getting Services, Please Try Again"))
+            }
+        }
+    }
+
     override fun createAppointment(
         userId: Long,
         vendorId: Long,

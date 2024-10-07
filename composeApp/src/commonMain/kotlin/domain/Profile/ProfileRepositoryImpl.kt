@@ -6,7 +6,6 @@ import com.badoo.reaktive.single.toSingle
 import dev.jordond.compass.Place
 import dev.jordond.compass.geocoder.Geocoder
 import domain.Models.CountryCitiesResponse
-import domain.Models.PlatformCountryCitiesResponse
 import domain.Models.ServerResponse
 import domain.Models.VendorAccountResponse
 import domain.Models.VendorAvailabilityResponse

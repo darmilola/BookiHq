@@ -71,14 +71,12 @@ import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.BookingScreenHandler
-import presentation.Screens.AddDebitCardScreen
 import presentation.appointmentBookings.BookingPresenter
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.dialogs.AddDebitCardDialog
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
-import presentation.dialogs.PostponeDialog
 import presentation.dialogs.SuccessDialog
 import presentation.payment.PaymentContract
 import presentation.payment.PaymentPresenter
@@ -240,7 +238,8 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
 
         val handler = BookingScreenHandler(
             bookingViewModel!!, loadPendingActionUIStateViewModel = loadPendingActionUIStateViewModel!!, deleteActionUIStateViewModel = deleteActionUIStateViewModel!!,
-            createAppointmentActionUIStateViewModel = createAppointmentActionUIStateViewModel!!, getTherapistActionUIStateViewModel = getTherapistActionUIStateViewModel!!, getTimesActionUIStateViewModel = getTimeActionUIStateViewModel!!, bookingPresenter, onShowUnsavedAppointment = {})
+            createAppointmentActionUIStateViewModel = createAppointmentActionUIStateViewModel!!, getTherapistActionUIStateViewModel = getTherapistActionUIStateViewModel!!, getTimesActionUIStateViewModel = getTimeActionUIStateViewModel!!, bookingPresenter = bookingPresenter,
+            onShowUnsavedAppointment = {}, getServiceTypesActionUIStateViewModel = null)
         handler.init()
         val vendorInfo = mainViewModel!!.connectedVendor.value
 

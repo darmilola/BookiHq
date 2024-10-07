@@ -2,6 +2,7 @@ package presentation.widgets
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -29,7 +30,7 @@ fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boo
     }
     if (showBottomSheet.value){
         scope.launch {
-                scaffoldState.bottomSheetState.show()
+           scaffoldState.bottomSheetState.show()
         }
     }
     else{
@@ -39,19 +40,24 @@ fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boo
         }
     }
 
-    ModalBottomSheet(
-        modifier = Modifier.padding(top = 20.dp),
-        onDismissRequest = {
-            onDismiss()
-        },
-        sheetState = scaffoldState.bottomSheetState,
-        shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
-        containerColor = Color(0xFFF3F3F3),
-        dragHandle = {},
-    ) {
-        ProductDetailContent(mainViewModel,isViewedFromCart,selectedProduct, onAddToCart = {
-              onAddToCart(it,selectedProduct)
+    BottomSheetScaffold(
+        scaffoldState = scaffoldState,
+        sheetContent = {
+            ModalBottomSheet(
+                modifier = Modifier.padding(top = 20.dp),
+                onDismissRequest = {
+                    onDismiss()
+                },
+                shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
+                containerColor = Color(0xFFF3F3F3),
+                dragHandle = {},
+            ) {
+                ProductDetailContent(mainViewModel,isViewedFromCart,selectedProduct, onAddToCart = {
+                    onAddToCart(it,selectedProduct)
 
-        })
-    }
+                })
+            }
+        }
+    ){}
+
 }

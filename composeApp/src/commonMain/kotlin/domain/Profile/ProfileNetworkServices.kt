@@ -4,7 +4,6 @@ import com.badoo.reaktive.single.toSingle
 import com.russhwolf.settings.Settings
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.CountryCitiesResponse
-import domain.Models.PlatformCountryCitiesResponse
 import domain.Models.ServerResponse
 import domain.Models.VendorAccountResponse
 import domain.Models.VendorAvailabilityResponse

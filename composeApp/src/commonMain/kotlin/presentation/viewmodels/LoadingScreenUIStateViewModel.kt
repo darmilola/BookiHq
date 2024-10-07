@@ -30,6 +30,7 @@ class PerformedActionUIStateViewModel(private val savedStateHandle: SavedStateHa
     private var _loadHomepageUiState = savedStateHandle.getStateFlow("loadHomepageUiState", AppUIStates())
     private var _switchVendorUiState = savedStateHandle.getStateFlow("switchVendorUiState", AppUIStates())
     private var _getTherapistUiState = savedStateHandle.getStateFlow("getTherapistUiState", AppUIStates())
+    private var _getServiceTypeUiState = savedStateHandle.getStateFlow("getServiceTypeUiState", AppUIStates())
     private var _getTimesActionUiState = savedStateHandle.getStateFlow("getTimesActionUiState", AppUIStates())
     private var _addAppointmentReviewUiState = savedStateHandle.getStateFlow("addAppointmentReviewUiState", AppUIStates())
     private var _addProductReviewUiState = savedStateHandle.getStateFlow("addProductReviewUiState", AppUIStates())
@@ -73,6 +74,9 @@ class PerformedActionUIStateViewModel(private val savedStateHandle: SavedStateHa
 
     val getTherapistUiState: StateFlow<AppUIStates>
         get() = _getTherapistUiState
+
+    val getServiceTypeUiState: StateFlow<AppUIStates>
+        get() = _getServiceTypeUiState
 
     val availabilityStateInfo: StateFlow<AppUIStates>
         get() = _availabilityUiState
@@ -133,6 +137,9 @@ class PerformedActionUIStateViewModel(private val savedStateHandle: SavedStateHa
     }
     fun switchGetTherapistUiState(appUIStates: AppUIStates) {
         savedStateHandle["getTherapistUiState"] = appUIStates
+    }
+    fun switchGetServiceTypeUiState(appUIStates: AppUIStates) {
+        savedStateHandle["getServiceTypeUiState"] = appUIStates
     }
     fun switchActionTherapistDashboardUIState(appUIStates: AppUIStates) {
         savedStateHandle["therapistDashboardUiState"] = appUIStates

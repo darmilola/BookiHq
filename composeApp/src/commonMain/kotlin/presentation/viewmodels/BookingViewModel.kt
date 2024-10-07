@@ -15,6 +15,7 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
     private var _therapists =  savedStateHandle.getStateFlow("therapists", arrayListOf<ServiceTypeTherapists>())
     private var _pendingAppointments =  savedStateHandle.getStateFlow("pendingAppointments", listOf<UserAppointment>())
     private var _selectedServiceType =  savedStateHandle.getStateFlow("selectedServiceType", ServiceTypeItem())
+    private var _serviceTypeList =  savedStateHandle.getStateFlow("serviceTypeList", listOf<ServiceTypeItem>())
     private var _day =  savedStateHandle.getStateFlow("day", -1)
     private var _month =  savedStateHandle.getStateFlow("month", -1)
     private var _year =  savedStateHandle.getStateFlow("year", -1)
@@ -26,6 +27,9 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
 
     val serviceTherapists: StateFlow<List<ServiceTypeTherapists>>
         get() = _therapists
+
+    val serviceTypeList: StateFlow<List<ServiceTypeItem>>
+        get() = _serviceTypeList
     val vendorTimes: StateFlow<List<VendorTime>>
         get() = _vendorTimes
 
@@ -48,6 +52,9 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
         get() = _year
     fun setTherapists(serviceTherapists: List<ServiceTypeTherapists>) {
         savedStateHandle["therapists"] = serviceTherapists
+    }
+    fun setServiceTypeList(serviceTypeList: List<ServiceTypeItem>) {
+        savedStateHandle["serviceTypeList"] = serviceTypeList
     }
     fun setVendorTimes(vendorTimes: List<VendorTime>) {
         savedStateHandle["vendorTimes"] = vendorTimes
