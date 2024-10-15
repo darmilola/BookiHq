@@ -40,24 +40,20 @@ fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boo
         }
     }
 
-    BottomSheetScaffold(
-        scaffoldState = scaffoldState,
-        sheetContent = {
-            ModalBottomSheet(
-                modifier = Modifier.padding(top = 20.dp),
-                onDismissRequest = {
-                    onDismiss()
-                },
-                shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
-                containerColor = Color(0xFFF3F3F3),
-                dragHandle = {},
-            ) {
-                ProductDetailContent(mainViewModel,isViewedFromCart,selectedProduct, onAddToCart = {
-                    onAddToCart(it,selectedProduct)
+    ModalBottomSheet(
+        modifier = Modifier.padding(top = 20.dp),
+        onDismissRequest = {
+            onDismiss()
+        },
+        sheetState = scaffoldState.bottomSheetState,
+        shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
+        containerColor = Color(0xFFF3F3F3),
+        dragHandle = {},
+    ) {
+        ProductDetailContent(mainViewModel,isViewedFromCart,selectedProduct, onAddToCart = {
+            onAddToCart(it,selectedProduct)
 
-                })
-            }
-        }
-    ){}
+        })
+    }
 
 }
