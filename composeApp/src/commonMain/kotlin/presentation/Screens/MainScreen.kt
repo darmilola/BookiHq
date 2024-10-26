@@ -73,6 +73,7 @@ import presentation.home.HomeTab
 import presentation.main.MainScreenTabs
 import presentation.main.MainTopBar
 import presentation.Packages.PackageInfo
+import presentation.account.FavoriteProducts
 import presentation.account.PaymentMethods
 import presentation.profile.EditProfile
 import presentation.therapist.TherapistDashboard
@@ -177,6 +178,19 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                 mainViewModel!!.setScreenNav(
                     Pair(
                         Screens.ORDERS.toPath(),
+                        Screens.DEFAULT.toPath()
+                    )
+                )
+            }
+            Screens.FAVORITE_PRODUCTS.toPath() -> {
+                val favoriteProduct = FavoriteProducts()
+                favoriteProduct.setMainViewModel(mainViewModel!!)
+                favoriteProduct.setDatabaseBuilder(databaseBuilder)
+                val nav = LocalNavigator.currentOrThrow
+                nav.push(favoriteProduct)
+                mainViewModel!!.setScreenNav(
+                    Pair(
+                        Screens.FAVORITE_PRODUCTS.toPath(),
                         Screens.DEFAULT.toPath()
                     )
                 )

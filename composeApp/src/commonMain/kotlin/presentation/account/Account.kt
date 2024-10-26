@@ -199,6 +199,18 @@ class AccountTab : Tab, Parcelable {
 
                 ActionItemComponent(
                     modifier = actionStyle,
+                    buttonText = "Favorite Products",
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                    fontSize = 20,
+                    textColor = Colors.darkPrimary,
+                    style = TextStyle(),
+                    iconRes = "drawable/fav_icon_filled.png",
+                    isDestructiveAction = false, onClick = {
+                        mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.FAVORITE_PRODUCTS.toPath()))
+                    })
+
+                ActionItemComponent(
+                    modifier = actionStyle,
                     buttonText = "Payment Methods",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,

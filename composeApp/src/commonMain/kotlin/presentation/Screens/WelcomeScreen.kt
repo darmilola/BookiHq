@@ -168,7 +168,10 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
             verificationInProgress.value = false
         }, onCompleteStarted = {}, onCompleteEnded = {},
         connectVendorOnProfileCompleted = { country,city,profileId, apiKey -> },
-        onUpdateStarted = {}, onUpdateEnded = {}, onVerificationError = {})
+        onUpdateStarted = {}, onUpdateEnded = {},
+        onVerificationError = {
+            verificationInProgress.value = false
+        })
     handler.init()
 
 

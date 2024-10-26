@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,6 +24,8 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -59,6 +62,7 @@ fun ProductItem(product: Product, onProductClickListener: (Product) -> Unit) {
 
 @Composable
 fun HomeProductImage(product: Product) {
+    val favIconRes = remember { mutableStateOf("drawable/fav_icon.png") }
     val imageModifier =
         Modifier
             .fillMaxHeight()
@@ -78,6 +82,7 @@ fun HomeProductImage(product: Product) {
                 .fillMaxHeight(),
             contentAlignment = Alignment.TopStart
         ) {
+
             if (product.productImages.isNotEmpty()) {
                 ImageComponent(
                     imageModifier = imageModifier,
@@ -85,6 +90,16 @@ fun HomeProductImage(product: Product) {
                     contentScale = ContentScale.Crop,
                     isAsync = true
                 )
+            }
+            Box(modifier = Modifier.fillMaxSize().padding(10.dp), contentAlignment = Alignment.TopStart){
+                FavoriteProductWidget(iconRes = favIconRes.value, onFavClicked = {
+                     if (it){
+                         favIconRes.value = "drawable/fav_icon_filled.png"
+                     }
+                    else{
+                         favIconRes.value = "drawable/fav_icon.png"
+                    }
+                })
             }
         }
     }

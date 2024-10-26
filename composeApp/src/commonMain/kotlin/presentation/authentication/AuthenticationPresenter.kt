@@ -99,10 +99,10 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
         }
     }
     override fun validateEmail(userEmail: String) {
+        contractView?.onProfileValidationStarted()
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.onProfileValidationStarted()
                     authenticationRepositoryImpl.validateEmail(userEmail)
                         .subscribe(
                             onSuccess = { result ->

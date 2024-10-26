@@ -48,7 +48,7 @@ private val KtorModule = module {
         httpClient {
             defaultRequest {
                 url {
-                    host = "/devprocess-vzrd.onrender.com/api/v1"
+                    host = "/devprocess-glg2.onrender.com/api/v1"
                     protocol = URLProtocol.HTTPS
                     port = 443
                 }
