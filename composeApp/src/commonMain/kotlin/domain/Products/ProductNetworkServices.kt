@@ -1,8 +1,11 @@
 package domain.Products
 
+import com.badoo.reaktive.single.Single
 import com.badoo.reaktive.single.toSingle
 import com.russhwolf.settings.Settings
 import domain.Enums.SharedPreferenceEnum
+import domain.Models.FavoriteProductIdResponse
+import domain.Models.FavoriteProductResponse
 import domain.Models.InitCheckoutResponse
 import domain.Models.ProductListDataResponse
 import domain.Models.ServerResponse
@@ -50,5 +53,37 @@ open class ProductNetworkService(private val apiService: HttpClient) {
             setBody(getProductTypeRequest)
             header("Authorization", apiKey)
         }.body<ProductListDataResponse>().toSingle()
+
+    suspend fun addFavoriteProduct(addFavoriteProductRequest: AddFavoriteProductRequest) =
+        apiService.post {
+            url("/products/favorites/add")
+            contentType(ContentType.Application.Json)
+            setBody(addFavoriteProductRequest)
+            header("Authorization", apiKey)
+        }.body<ServerResponse>().toSingle()
+
+    suspend fun removeFavoriteProduct(removeFavoriteProductRequest: RemoveFavoriteProductRequest) =
+        apiService.post {
+            url("/products/favorites/remove")
+            contentType(ContentType.Application.Json)
+            setBody(removeFavoriteProductRequest)
+            header("Authorization", apiKey)
+        }.body<ServerResponse>().toSingle()
+
+    suspend fun getFavoriteProducts(getFavoriteProductRequest: GetFavoriteProductRequest) =
+        apiService.post {
+            url("/products/favorites/get")
+            contentType(ContentType.Application.Json)
+            setBody(getFavoriteProductRequest)
+            header("Authorization", apiKey)
+        }.body<FavoriteProductResponse>().toSingle()
+
+    suspend fun getFavoriteProductIds(getFavoriteProductIdsRequest: GetFavoriteProductIdsRequest) =
+        apiService.post {
+            url("/products/favorites/get/ids")
+            contentType(ContentType.Application.Json)
+            setBody(getFavoriteProductIdsRequest)
+            header("Authorization", apiKey)
+        }.body<FavoriteProductIdResponse>().toSingle()
 
 }

@@ -379,7 +379,7 @@ class ProductResourceListEnvelopeViewModel(private val savedStateHandle: SavedSt
         get() = _isRefreshing
 
 
-    fun setResources(resources: MutableList<Product>?) {
+    fun setResources(resources: List<Product>?) {
         savedStateHandle["resources"] = resources
     }
 

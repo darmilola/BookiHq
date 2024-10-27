@@ -1,6 +1,8 @@
 package presentation.Products
 
 import UIStates.AppUIStates
+import androidx.room.RoomDatabase
+import applications.room.AppDatabase
 import com.badoo.reaktive.single.subscribe
 import domain.Enums.ServerResponse
 import domain.Products.ProductRepositoryImpl
@@ -10,15 +12,30 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.Transient
+import presentation.viewmodels.MainViewModel
+import utils.getDistanceFromCustomer
 
 class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
 
     private val scope: CoroutineScope = MainScope()
     private var contractView: ProductContract.View? = null
+    private var favoriteContractView: ProductContract.FavoriteProductView? = null
     private val productRepositoryImpl: ProductRepositoryImpl = ProductRepositoryImpl(apiService)
+    private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
+    private var mainViewModel: MainViewModel? = null
     override fun registerUIContract(view: ProductContract.View?) {
         contractView = view
+    }
+
+    override fun registerFavoriteUIContract(view: ProductContract.FavoriteProductView?) {
+        favoriteContractView = view
+    }
+
+    fun setMainViewModel(mainViewModel: MainViewModel) {
+        this.mainViewModel = mainViewModel
     }
 
     override fun getProducts(vendorId: Long) {
@@ -144,6 +161,88 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
         }
     }
 
+    override fun addFavoriteProduct(userId: Long, vendorId: Long, productId: Long) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    productRepositoryImpl.addFavoriteProduct(userId, vendorId, productId)
+                        .subscribe(
+                            onSuccess = { _ -> },
+                            onError = {},
+                        )
+                }
+                result.dispose()
+            } catch(_: Exception) { }
+        }
+    }
+
+    override fun removeFavoriteProduct(userId: Long, productId: Long) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    productRepositoryImpl.removeFavoriteProduct(userId, productId)
+                        .subscribe(
+                            onSuccess = { _ -> },
+                            onError = {},
+                        )
+                }
+                result.dispose()
+            } catch(_: Exception) { }
+        }
+    }
+
+    override fun getFavoriteProducts(userId: Long) {
+        favoriteContractView?.showLce(AppUIStates(isLoading = true))
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    productRepositoryImpl.getFavoriteProducts(userId)
+                        .subscribe(
+                            onSuccess = { result ->
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        favoriteContractView?.showLce(AppUIStates(isSuccess = true))
+                                        favoriteContractView?.showFavoriteProducts(result.favoriteProductItems)
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        favoriteContractView?.showLce(AppUIStates(isFailed = true))
+                                    }
+                                }
+                            },
+                            onError = {
+                                favoriteContractView?.showLce(AppUIStates(isFailed = true))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                favoriteContractView?.showLce(AppUIStates(isFailed = true))
+            }
+        }
+    }
+
+    override fun getFavoriteProductIds(userId: Long) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    productRepositoryImpl.getFavoriteProductIds(userId)
+                        .subscribe(
+                            onSuccess = { result ->
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        favoriteContractView?.showFavoriteProductIds(result.favoriteProductIds)
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {}
+                                }
+                            },
+                            onError = {},
+                        )
+                }
+                result.dispose()
+            } catch(_: Exception) {}
+        }
+    }
+
     override fun getProductsByType(vendorId: Long, productType: String) {
         contractView?.showLce(AppUIStates(isLoading = true, loadingMessage = "Loading Products"))
         scope.launch(Dispatchers.Main) {
@@ -154,8 +253,31 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                             onSuccess = { response ->
                                 when (response.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
-                                        contractView?.showLce(AppUIStates(isSuccess = true))
-                                        contractView?.showProducts(response.listItem, isFromSearch = false, isLoadMore = false)
+                                        println("Loaded ${response.listItem.resources}")
+                                        runBlocking {
+                                            val favoriteList = mainViewModel!!.favoriteProductIds.value
+                                            println("Loaded list $favoriteList")
+                                            val favoriteIdList = arrayListOf<Long>()
+                                            favoriteList.map {
+                                                favoriteIdList.add(it.favoriteId)
+                                            }
+                                           val updatedProductList = response.listItem.resources?.map {
+                                                if (it.productId in favoriteIdList){
+                                                    println("Yes")
+                                                    it.isFavorite = true
+                                                }
+                                               println(it)
+                                               it
+                                            }
+                                            response.listItem.resources = updatedProductList
+                                            println("Loaded 2 ${response.listItem.resources}")
+                                            contractView?.showLce(AppUIStates(isSuccess = true))
+                                            contractView?.showProducts(
+                                                response.listItem,
+                                                isFromSearch = false,
+                                                isLoadMore = false
+                                            )
+                                        }
                                     }
                                     ServerResponse.EMPTY.toPath() -> {
                                         contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Product is Empty"))

@@ -1,12 +1,10 @@
 package domain.Enums
 
-import com.russhwolf.settings.Settings
-
 enum class SharedPreferenceEnum {
     COUNTRY,
     CITY,
     SELECTED_PRODUCT_TYPE,
-    PROFILE_ID,
+    USER_ID,
     USER_EMAIL,
     FIRSTNAME,
     VENDOR_EMAIL,
@@ -24,7 +22,7 @@ enum class SharedPreferenceEnum {
     fun toPath() = when (this) {
         COUNTRY -> "country"
         CITY -> "city"
-        PROFILE_ID -> "profileId"
+        USER_ID -> "profileId"
         FIRSTNAME -> "firstname"
         VENDOR_ID -> "vendorId"
         USER_AUTH_PHONE -> "userAuthPhone"

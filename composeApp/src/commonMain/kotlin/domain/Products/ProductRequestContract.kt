@@ -1,6 +1,5 @@
 package domain.Products
 
-import domain.Models.OrderItem
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -32,4 +31,27 @@ data class OrderItemRequest(@SerialName("product_id") val productId: Long,
 data class GetProductTypeRequest(
     @SerialName("vendorId") val vendorId: Long,
     @SerialName("type") val productType: String
+)
+
+@Serializable
+data class AddFavoriteProductRequest(
+    @SerialName("user_id") val userId: Long,
+    @SerialName("product_id") val productId: Long,
+    @SerialName("vendor_id") val vendorId: Long
+)
+
+@Serializable
+data class RemoveFavoriteProductRequest(
+    @SerialName("user_id") val userId: Long,
+    @SerialName("productId") val productId: Long
+)
+
+@Serializable
+data class GetFavoriteProductRequest(
+    @SerialName("user_id") val userId: Long
+)
+
+@Serializable
+data class GetFavoriteProductIdsRequest(
+    @SerialName("user_id") val userId: Long
 )

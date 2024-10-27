@@ -38,7 +38,6 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,7 +50,6 @@ import androidx.compose.ui.unit.dp
 import androidx.room.RoomDatabase
 import applications.device.ScreenSizeInfo
 import applications.room.AppDatabase
-import applications.room.UserDao
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
@@ -67,7 +65,6 @@ import domain.Enums.RecommendationType
 import domain.Enums.Screens
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.OrderItem
-import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
 import domain.Models.Product
 import domain.Models.ServiceTypeItem
@@ -76,14 +73,12 @@ import domain.Models.UserAppointment
 import domain.Models.Vendor
 import domain.Models.VendorStatusModel
 import drawable.ErrorOccurredWidget
-import kotlinx.coroutines.launch
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.HomepageHandler
 import presentation.components.StraightLine
 import presentation.components.IndeterminateCircularProgressBar
-import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.MainViewModel
@@ -91,7 +86,6 @@ import presentation.widgets.ShopStatusWidget
 import presentation.widgets.HomeServicesWidget
 import presentation.widgets.RecommendedServiceItem
 import presentation.widgets.RecentAppointmentWidget
-import presentation.widgets.PendingAppointmentWidget
 import presentation.widgets.PendingPackageAppointmentWidget
 import presentation.widgets.ProductDetailBottomSheet
 import presentations.components.TextComponent
@@ -143,7 +137,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
     @Composable
     override fun Content() {
-            val userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(), -1L]
+            val userId = preferenceSettings[SharedPreferenceEnum.USER_ID.toPath(), -1L]
             val vendorPhone: String = preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath(),""]
             val screenSizeInfo = ScreenSizeInfo()
 
@@ -290,7 +284,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
     private fun saveAccountInfoFromServer(homePageInfo: HomepageInfo){
         val preferenceSettings = Settings()
         preferenceSettings[SharedPreferenceEnum.USER_EMAIL.toPath()] = homePageInfo.userInfo?.email
-        preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = homePageInfo.userInfo?.userId
+        preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = homePageInfo.userInfo?.userId
         preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = homePageInfo.userInfo?.firstname
         preferenceSettings[SharedPreferenceEnum.VENDOR_EMAIL.toPath()] = homePageInfo.vendorInfo?.businessEmail
         preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = homePageInfo.vendorInfo?.vendorId

@@ -100,7 +100,7 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
 
         val navigator = LocalNavigator.currentOrThrow
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
-        val userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(),-1L]
+        val userId = preferenceSettings[SharedPreferenceEnum.USER_ID.toPath(),-1L]
 
         if (onBackPressed.value){
             mainViewModel!!.setOnBackPressed(false)

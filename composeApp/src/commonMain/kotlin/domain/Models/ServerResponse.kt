@@ -1,5 +1,6 @@
 package domain.Models
 
+import applications.room.FavoriteProductDao
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.ProfileStatus
@@ -53,8 +54,7 @@ data class TherapistAvailabilityResponse(@SerialName("status") val status: Strin
                                          @SerialName("vendorTime") val vendorTimes: List<VendorTime>)
 
 @Serializable
-data class VendorAccountResponse(@SerialName("status") val status: String = "",
-                                         @SerialName("vendorInfo") val vendorInfo: Vendor)
+data class VendorAccountResponse(@SerialName("status") val status: String = "", @SerialName("vendorInfo") val vendorInfo: Vendor)
 
 @Serializable
 class InitCheckoutResponse(@SerialName("status") var status: String, @SerialName("result")  var authorizationResultJsonString: String)
@@ -65,4 +65,13 @@ data class VendorAvailabilityResponse(@SerialName("status") val status: String =
                                           @SerialName("platformTimes") val platformTimes: List<PlatformTime>)
 
 @Serializable
-data class PendingBookingAppointmentResponse(@SerialName("status") val status: String = "", @SerialName("message") val message: String = "", @SerialName("appointments") val appointments: List<UserAppointment>? = null)
+data class PendingBookingAppointmentResponse(@SerialName("status") val status: String = "", @SerialName("message") val message: String = "",
+                                             @SerialName("appointments") val appointments: List<UserAppointment>? = null)
+
+@Serializable
+data class FavoriteProductResponse(@SerialName("status") val status: String = "",
+                                      @SerialName("items") val favoriteProductItems: List<FavoriteProductModel>)
+
+@Serializable
+data class FavoriteProductIdResponse(@SerialName("status") val status: String = "",
+                                      @SerialName("items") val favoriteProductIds: List<FavoriteProductIdModel>)

@@ -209,7 +209,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
         val addReviewsUIState = addAppointmentReviewsUIStateViewModel!!.addAppointmentReviewUiState.collectAsState()
         val postponeActionUIStates = postponeAppointmentUIStateViewModel!!.postponeAppointmentUiState.collectAsState()
         val isRefreshing = remember { mutableStateOf(false) }
-        val userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(),-1L]
+        val userId = preferenceSettings[SharedPreferenceEnum.USER_ID.toPath(),-1L]
 
         val lastIndex = appointmentList?.value?.size?.minus(1)
         val selectedAppointment = remember { mutableStateOf(UserAppointment()) }

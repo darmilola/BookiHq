@@ -8,12 +8,12 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
-import domain.Models.FavoriteProduct
+import domain.Models.FavoriteProductIdModel
 import domain.Models.PaymentCard
 import domain.Models.User
 import domain.Models.Vendor
 
-@Database(entities = [PaymentCard::class, User::class, Vendor::class, FavoriteProduct::class], version = 1)
+@Database(entities = [PaymentCard::class, User::class, Vendor::class, FavoriteProductIdModel::class], version = 1)
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getPaymentCardDao(): PaymentCardDao
@@ -48,11 +48,11 @@ interface UserDao {
 @Dao
 interface FavoriteProductDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(product: FavoriteProduct)
+    suspend fun insert(product: FavoriteProductIdModel)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(productList: List<FavoriteProduct>)
-    @Query("SELECT * FROM FavoriteProduct")
-    suspend fun getAllFavoriteProduct(): List<FavoriteProduct>
+    fun insertAll(productList: List<FavoriteProductIdModel>)
+    @Query("SELECT * FROM FavoriteProductIdModel")
+    suspend fun getAllFavoriteProduct(): List<FavoriteProductIdModel>
 }
 
 

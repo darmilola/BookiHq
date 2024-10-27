@@ -83,7 +83,7 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
 
         val navigator = LocalNavigator.currentOrThrow
         val vendorConnected = remember { mutableStateOf(false) }
-        val userId = preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath(), -1L]
+        val userId = preferenceSettings[SharedPreferenceEnum.USER_ID.toPath(), -1L]
         val userFirstname = preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath(),""]
         val connectVendorAction = connectVendorActionUIStateViewModel!!.uiStateInfo.collectAsState()
 

@@ -1,6 +1,8 @@
 package domain.Products
 
 import com.badoo.reaktive.single.Single
+import domain.Models.FavoriteProductIdResponse
+import domain.Models.FavoriteProductResponse
 import domain.Models.InitCheckoutResponse
 import domain.Models.ProductListDataResponse
 import domain.Models.ServerResponse
@@ -8,6 +10,7 @@ import io.ktor.client.HttpClient
 import kotlinx.serialization.SerialName
 
 class ProductRepositoryImpl(apiService: HttpClient): ProductRepository {
+
     private val productNetworkService: ProductNetworkService = ProductNetworkService(apiService)
     override suspend fun getAllProducts(
         vendorId: Long,
@@ -51,6 +54,32 @@ class ProductRepositoryImpl(apiService: HttpClient): ProductRepository {
         return productNetworkService.getProductType(param, nextPage)
     }
 
+    override suspend fun addFavoriteProduct(
+        userId: Long,
+        vendorId: Long,
+        productId: Long
+    ): Single<ServerResponse> {
+        val param = AddFavoriteProductRequest(userId, productId, vendorId)
+        return productNetworkService.addFavoriteProduct(param)
+    }
+
+    override suspend fun removeFavoriteProduct(
+        userId: Long,
+        productId: Long
+    ): Single<ServerResponse> {
+        val param = RemoveFavoriteProductRequest(userId,productId)
+        return productNetworkService.removeFavoriteProduct(param)
+    }
+
+    override suspend fun getFavoriteProducts(userId: Long): Single<FavoriteProductResponse> {
+        val param = GetFavoriteProductRequest(userId)
+        return productNetworkService.getFavoriteProducts(param)
+    }
+
+    override suspend fun getFavoriteProductIds(userId: Long): Single<FavoriteProductIdResponse> {
+        val param = GetFavoriteProductIdsRequest(userId)
+        return productNetworkService.getFavoriteProductIds(param)
+    }
 
 
 }

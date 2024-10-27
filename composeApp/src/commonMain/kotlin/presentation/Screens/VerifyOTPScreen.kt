@@ -115,7 +115,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                 mainViewModel!!.setDisplayCurrencyPath(displayCurrencyPath)
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
                 preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
-                preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
+                preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
                 preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
                 preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = vendorWhatsAppPhone
@@ -147,7 +147,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
                 preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
-                preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
+                preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
 
                 scope.launch {
                     val userDao = databaseBuilder!!.build().getUserDao()

@@ -30,7 +30,6 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import di.initKoin
 import domain.Enums.AuthType
-import domain.Enums.Currency
 import domain.Enums.DeviceType
 import domain.Enums.SharedPreferenceEnum
 import domain.Enums.getDisplayCurrency
@@ -71,7 +70,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
                 mainViewModel.setDisplayCurrencyPath(displayCurrencyPath)
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
                 preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
-                preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
+                preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
                 preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
@@ -94,7 +93,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
             runBlocking {
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
                 preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
-                preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = user.userId
+                preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
                 preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey

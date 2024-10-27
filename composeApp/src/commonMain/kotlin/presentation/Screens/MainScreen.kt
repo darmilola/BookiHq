@@ -22,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -53,11 +52,10 @@ import domain.Enums.MainTabEnum
 import domain.Enums.Screens
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.PlatformNavigator
-import domain.Models.User
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import presentation.DomainViewHandler.FavoriteProductsHandler
 import presentation.Orders.Orders
 import presentation.Packages.Packages
 import presentation.Products.Cart
@@ -70,9 +68,9 @@ import presentation.appointmentBookings.BookingScreen
 import presentation.connectVendor.SwitchVendor
 import presentation.consultation.VirtualConsultationRoom
 import presentation.home.HomeTab
-import presentation.main.MainScreenTabs
 import presentation.main.MainTopBar
 import presentation.Packages.PackageInfo
+import presentation.Products.ProductPresenter
 import presentation.account.FavoriteProducts
 import presentation.account.PaymentMethods
 import presentation.profile.EditProfile
@@ -93,6 +91,8 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
     private var userId: Long = 0L
     @Transient
     private val authenticationPresenter: AuthenticationPresenter by inject()
+    @Transient
+    private val productPresenter: ProductPresenter by inject()
     @Transient
     private var screenNav: State<Pair<Int, Int>>? = null
     @Transient
@@ -122,10 +122,12 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
 
     @Composable
     override fun Content() {
-        userId = preferenceSettings.getLong(SharedPreferenceEnum.PROFILE_ID.toPath(), 0L)
+        userId = preferenceSettings.getLong(SharedPreferenceEnum.USER_ID.toPath(), 0L)
         platformNavigator.startNotificationService {
             authenticationPresenter.updateFcmToken(userId = userId, fcmToken = it)
         }
+        productPresenter.setMainViewModel(mainViewModel!!)
+        productPresenter.getFavoriteProductIds(userId)
         screenNav = mainViewModel?.screenNav?.collectAsState()
         val restartApp = mainViewModel!!.restartApp.collectAsState()
         var homePageViewModel: HomePageViewModel? = null
@@ -154,6 +156,13 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             splashScreen.setMainViewModel(mainViewModel!!)
             navigator.replaceAll(splashScreen)
         }
+
+        val favoriteHandler = FavoriteProductsHandler(productPresenter = productPresenter,
+            onFavoriteProductReady = {},
+            onFavoriteProductIdsReady = {
+                mainViewModel!!.setFavoriteProductIds(it)
+            })
+        favoriteHandler.init()
 
         when (screenNav?.value?.second) {
             Screens.BOOKING.toPath() -> {

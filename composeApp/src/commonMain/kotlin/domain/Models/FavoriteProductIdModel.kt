@@ -10,5 +10,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Entity
 @Parcelize
-data class FavoriteProduct(@PrimaryKey @SerialName("id") val favoriteId: Int = -1, @SerialName("product_id") val productId: Int = -1,
-                           @SerialName("vendor_id") val vendorId: Int = -1, @SerialName("user_id") val userId: Int = -1): Parcelable
+data class FavoriteProductIdModel(@PrimaryKey @SerialName("id") val favoriteId: Long = -1, @SerialName("product_id") val productId: Long = -1,
+                                  @SerialName("vendor_id") val vendorId: Long = -1, @SerialName("user_id") val userId: Long = -1): Parcelable

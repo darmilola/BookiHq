@@ -3,10 +3,16 @@ package presentation.Products
 import domain.Models.OrderItem
 import domain.Models.ProductResourceListEnvelope
 import UIStates.AppUIStates
+import com.badoo.reaktive.single.Single
 import domain.Enums.ProductType
+import domain.Models.FavoriteProductIdModel
+import domain.Models.FavoriteProductIdResponse
+import domain.Models.FavoriteProductModel
+import domain.Models.FavoriteProductResponse
 import domain.Models.PaymentAuthorizationData
 import domain.Models.PaymentAuthorizationResult
 import domain.Models.PlatformNavigator
+import domain.Models.ServerResponse
 import domain.Models.User
 import domain.Models.Vendor
 
@@ -20,16 +26,27 @@ class ProductContract {
         fun onProductTypeChangeEnded(isSuccess: Boolean = false)
     }
 
+    interface FavoriteProductView {
+        fun showLce(appUIStates: AppUIStates)
+        fun showFavoriteProducts(favoriteProducts: List<FavoriteProductModel>)
+        fun showFavoriteProductIds(favoriteProductIds: List<FavoriteProductIdModel>)
+    }
+
     abstract class Presenter {
 
         abstract fun getProductsByType(vendorId: Long,productType: String = ProductType.COSMETICS.toPath())
         abstract fun onProductTypeChanged(vendorId: Long,productType: String = ProductType.COSMETICS.toPath())
         abstract fun getMoreProductsByType(vendorId: Long,productType: String = ProductType.COSMETICS.toPath(),nextPage: Int = 1)
         abstract fun registerUIContract(view: View?)
+        abstract fun registerFavoriteUIContract(view: FavoriteProductView?)
         abstract fun getProducts(vendorId: Long)
         abstract fun getMoreProducts(vendorId: Long, nextPage: Int = 1)
         abstract fun searchProducts(vendorId: Long, searchQuery: String)
         abstract fun searchMoreProducts(vendorId: Long, searchQuery: String, nextPage: Int = 1)
+        abstract fun addFavoriteProduct(userId: Long, vendorId: Long, productId: Long)
+        abstract fun removeFavoriteProduct(userId: Long, productId: Long)
+        abstract fun getFavoriteProducts(userId: Long)
+        abstract fun getFavoriteProductIds(userId: Long)
 
     }
 }

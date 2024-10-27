@@ -110,7 +110,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                 country,userCity, profileId, apiKey ->
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = country
                 preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = userCity
-                preferenceSettings[SharedPreferenceEnum.PROFILE_ID.toPath()] = profileId
+                preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = profileId
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = apiKey
                 navigateToConnectVendor.value = true
 

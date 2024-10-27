@@ -6,6 +6,7 @@ import domain.Enums.Currency
 import domain.Enums.DeliveryMethodEnum
 import domain.Enums.MainTabEnum
 import domain.Enums.ProductType
+import domain.Models.FavoriteProductIdModel
 import domain.Models.OrderItem
 import domain.Models.PlacedOrderItemComponent
 import domain.Models.Services
@@ -48,6 +49,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _onBackPressed =  savedStateHandle.getStateFlow("onBackPressed", false)
     private var _exitApp =  savedStateHandle.getStateFlow("exitApp", false)
     private var _orderItemComponents =  savedStateHandle.getStateFlow("orderItemComponents", arrayListOf<PlacedOrderItemComponent>())
+    private var _favoriteProductIds =  savedStateHandle.getStateFlow("favoriteProductIds", listOf<FavoriteProductIdModel>())
 
     val screenTitle: StateFlow<String>
         get() = _screenTitle
@@ -69,6 +71,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     val orderItemComponents: StateFlow<ArrayList<PlacedOrderItemComponent>>
         get() = _orderItemComponents
+
+    val favoriteProductIds: StateFlow<List<FavoriteProductIdModel>>
+        get() = _favoriteProductIds
 
     val restartApp: StateFlow<Boolean>
         get() = _restartApp
@@ -186,6 +191,10 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     fun setSwitchVendorReason(switchReason: String) {
         savedStateHandle["switchVendorReason"] = switchReason
+    }
+
+    fun setFavoriteProductIds(favoriteProductIds: List<FavoriteProductIdModel>) {
+        savedStateHandle["favoriteProductIds"] = favoriteProductIds
     }
 
     fun setOnBackPressed(onBackPressed: Boolean) {

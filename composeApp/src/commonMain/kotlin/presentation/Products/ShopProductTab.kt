@@ -130,6 +130,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
     @Composable
     override fun Content() {
         val vendorId: Long = preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath(),-1L]
+        val userId: Long = preferenceSettings[SharedPreferenceEnum.USER_ID.toPath(),-1L]
         val onCartChanged = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
         val isClickedSearchProduct = mainViewModel!!.clickedSearchProduct.collectAsState()
@@ -137,6 +138,8 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
             maxStack = 5,
             animation = StackedSnackbarAnimation.Bounce
         )
+
+        productPresenter.setMainViewModel(mainViewModel!!)
 
         if (loadingScreenUiStateViewModel == null) {
             loadingScreenUiStateViewModel = kmpViewModel(
@@ -275,6 +278,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                         productResourceListEnvelopeViewModel = productResourceListEnvelopeViewModel!!,
                         searchQuery = searchQuery.value,
                         vendorId = vendorId,
+                        userId = userId,
                         onProductSelected = {
                          selectedProduct.value = it
                          showProductDetailBottomSheet = true
@@ -349,6 +353,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
         productResourceListEnvelopeViewModel: ProductResourceListEnvelopeViewModel,
         searchQuery: String,
         vendorId: Long,
+        userId: Long,
         onProductSelected: (Product) -> Unit,
         productType: String
     ) {
@@ -418,6 +423,12 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                                     onProductClickListener = { it2 ->
                                         onProductSelected(it2)
                                         selectedProduct.value = it2
+                                    },
+                                    onFavClicked = {
+                                        productPresenter.addFavoriteProduct(userId = userId, vendorId = vendorId, productId = it.productId)
+                                    },
+                                    onUnFavClicked = {
+                                        productPresenter.removeFavoriteProduct(userId = userId, productId = it.productId)
                                     })
 
                                 if (it == lastIndex && loadMoreState.value) {

@@ -42,7 +42,7 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun ProductItem(product: Product, onProductClickListener: (Product) -> Unit) {
+fun ProductItem(product: Product, onProductClickListener: (Product) -> Unit, onFavClicked:(Product) -> Unit, onUnFavClicked:(Product) -> Unit) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
         .clickable {
@@ -53,7 +53,7 @@ fun ProductItem(product: Product, onProductClickListener: (Product) -> Unit) {
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Top
         ) {
-            HomeProductImage(product)
+            HomeProductImage(product, onFavClicked, onUnFavClicked)
             HomeProductDescription(product, onProductClickListener = {
                 onProductClickListener(it)
             })
@@ -61,8 +61,14 @@ fun ProductItem(product: Product, onProductClickListener: (Product) -> Unit) {
     }
 
 @Composable
-fun HomeProductImage(product: Product) {
+fun HomeProductImage(product: Product, onFavClicked:(Product) -> Unit, onUnFavClicked:(Product) -> Unit) {
     val favIconRes = remember { mutableStateOf("drawable/fav_icon.png") }
+    if (product.isFavorite){
+        favIconRes.value = "drawable/fav_icon_filled.png"
+    }
+    else{
+        favIconRes.value = "drawable/fav_icon.png"
+    }
     val imageModifier =
         Modifier
             .fillMaxHeight()
@@ -94,9 +100,11 @@ fun HomeProductImage(product: Product) {
             Box(modifier = Modifier.fillMaxSize().padding(10.dp), contentAlignment = Alignment.TopStart){
                 FavoriteProductWidget(iconRes = favIconRes.value, onFavClicked = {
                      if (it){
+                         onFavClicked(product)
                          favIconRes.value = "drawable/fav_icon_filled.png"
                      }
                     else{
+                         onUnFavClicked(product)
                          favIconRes.value = "drawable/fav_icon.png"
                     }
                 })

@@ -53,7 +53,7 @@ class UserAppointment(
 
 @Serializable @Parcelize
 class ProductResourceListEnvelope(
-    @SerialName("data") val resources: MutableList<Product>? = null,
+    @SerialName("data") var resources: List<Product>? = null,
     @SerialName("next_page_url") val nextPageUrl: String? = null,
     @SerialName("prev_page_url") val prevPageUrl: String? = null,
     @SerialName("per_page") val perPage: String? = null,
