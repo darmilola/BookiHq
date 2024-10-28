@@ -3,6 +3,7 @@ package applications.room
 import androidx.room.ConstructedBy
 import androidx.room.Dao
 import androidx.room.Database
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -32,6 +33,8 @@ interface PaymentCardDao {
     suspend fun count(): Int
     @Query("SELECT * FROM PaymentCard")
     suspend fun getAllPaymentCards(): List<PaymentCard>
+    @Query("DELETE FROM PaymentCard WHERE id = :cardId")
+    suspend fun deletePaymentCardByById(cardId: Int)
 }
 
 

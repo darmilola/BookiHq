@@ -179,7 +179,10 @@ fun AddDebitCardDialog(databaseBuilder: RoomDatabase.Builder<AppDatabase>?, onDi
                                        )
                                    )
                                }
-                                onConfirmation()
+                                isSavedClicked.value = true
+                                if (cardNumber.value.isNotEmpty() && cvv.value.isNotEmpty() && expiryMonth.value.isNotEmpty() && expiryYear.value.isNotEmpty()){
+                                     onConfirmation()
+                                }
                             }
                         })
                     }

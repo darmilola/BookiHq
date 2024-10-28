@@ -128,13 +128,13 @@ class PaymentMethods(val platformNavigator: PlatformNavigator) : ParcelableScree
             cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
         }
 
-        val cardsHeight = getPaymentCardsViewHeight(cardList)
+        val paymentMethods = remember { mutableStateOf(cardList) }
+        val cardsHeight = getPaymentCardsViewHeight(paymentMethods.value)
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
         if (onBackPressed.value){
             mainViewModel!!.setOnBackPressed(false)
             navigator.pop()
         }
-        val selectedCardUIModel = remember { mutableStateOf(PaymentCardUIModel(selectedCard = PaymentCard(), visibleCards = cardList)) }
 
         val openAddDebitCardDialog = remember { mutableStateOf(false) }
 
@@ -146,7 +146,7 @@ class PaymentMethods(val platformNavigator: PlatformNavigator) : ParcelableScree
                     runBlocking {
                         cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
                     }
-                    selectedCardUIModel.value = PaymentCardUIModel(selectedCard = PaymentCard(), visibleCards = cardList)
+                    paymentMethods.value = cardList
                     openAddDebitCardDialog.value = false
                 })
             }
@@ -216,14 +216,20 @@ class PaymentMethods(val platformNavigator: PlatformNavigator) : ParcelableScree
                         verticalArrangement = Arrangement.spacedBy(5.dp),
                         userScrollEnabled = true
                     ) {
-                        items(selectedCardUIModel.value.visibleCards.size) {
+                        items(paymentMethods.value.size) {
                             Box(
                                 modifier = Modifier.fillMaxWidth().height(100.dp)
                                     .padding(start = 20.dp, end = 20.dp)
                                     .background(color = Color.White, shape = RoundedCornerShape(15.dp)),
                                 contentAlignment = Alignment.CenterStart
                             ) {
-                                PaymentCardItem(selectedCardUIModel.value.visibleCards[it], onPaymentCardSelected = {})
+                                PaymentCardItem(paymentMethods.value[it], onPaymentCardSelected = {
+                                    runBlocking {
+                                        databaseBuilder!!.build().getPaymentCardDao().deletePaymentCardByById(it.id)
+                                        cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
+                                    }
+                                    paymentMethods.value = cardList
+                                })
                             }
                         }
                     }
