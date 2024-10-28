@@ -380,7 +380,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
             productUIModel = productUIModel.copy(selectedProduct = selectedProduct.value,
                 productList = productResourceListEnvelopeViewModel.resources.value.map { it2 ->
                     it2.copy(
-                        isSelected = it2.productId == selectedProduct.value.vendorId
+                        isSelected = it2.productId == selectedProduct.value.productId
                     )
                 })
         }

@@ -70,7 +70,7 @@ data class PendingBookingAppointmentResponse(@SerialName("status") val status: S
 
 @Serializable
 data class FavoriteProductResponse(@SerialName("status") val status: String = "",
-                                      @SerialName("items") val favoriteProductItems: List<FavoriteProductModel>)
+                                      @SerialName("items") val favoriteProductItems: List<FavoriteProductModel> = arrayListOf())
 
 @Serializable
 data class FavoriteProductIdResponse(@SerialName("status") val status: String = "",

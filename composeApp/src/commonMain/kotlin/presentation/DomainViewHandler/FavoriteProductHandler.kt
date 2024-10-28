@@ -3,6 +3,7 @@ package presentation.DomainViewHandler
 import UIStates.AppUIStates
 import domain.Models.FavoriteProductIdModel
 import domain.Models.FavoriteProductModel
+import domain.Models.Product
 import domain.Models.ProductResourceListEnvelope
 import kotlinx.coroutines.runBlocking
 import presentation.Products.ProductContract
@@ -12,7 +13,7 @@ import presentation.viewmodels.ProductResourceListEnvelopeViewModel
 
 class FavoriteProductsHandler(
     private val loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null,
-    private val onFavoriteProductReady:(List<FavoriteProductModel>) -> Unit,
+    private val onFavoriteProductReady:(List<Product>) -> Unit,
     private val onFavoriteProductIdsReady:(List<FavoriteProductIdModel>) -> Unit,
     private val productPresenter: ProductPresenter
 ) : ProductContract.FavoriteProductView {
@@ -24,7 +25,7 @@ class FavoriteProductsHandler(
         loadingScreenUiStateViewModel!!.switchScreenUIState(appUIStates)
     }
 
-    override fun showFavoriteProducts(favoriteProducts: List<FavoriteProductModel>) {
+    override fun showFavoriteProducts(favoriteProducts: List<Product>) {
         onFavoriteProductReady(favoriteProducts)
     }
 

@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import applications.room.AppDatabase
 import com.badoo.reaktive.single.subscribe
 import domain.Enums.ServerResponse
+import domain.Models.Product
 import domain.Products.ProductRepositoryImpl
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
@@ -201,22 +202,32 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                             onSuccess = { result ->
                                 when (result.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
-                                        favoriteContractView?.showLce(AppUIStates(isSuccess = true))
-                                        favoriteContractView?.showFavoriteProducts(result.favoriteProductItems)
+                                        runBlocking {
+                                            val favoriteProductList = arrayListOf<Product>()
+                                            result.favoriteProductItems.map {
+                                                it.product.isFavorite = true
+                                                favoriteProductList.add(it.product)
+                                            }
+                                            favoriteContractView?.showFavoriteProducts(favoriteProductList)
+                                            favoriteContractView?.showLce(AppUIStates(isSuccess = true))
+                                        }
+                                    }
+                                    ServerResponse.EMPTY.toPath() -> {
+                                        favoriteContractView?.showLce(AppUIStates(isEmpty = true, emptyMessage = "No Product Added to Favorite"))
                                     }
                                     ServerResponse.FAILURE.toPath() -> {
-                                        favoriteContractView?.showLce(AppUIStates(isFailed = true))
+                                        favoriteContractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
                                     }
                                 }
                             },
                             onError = {
-                                favoriteContractView?.showLce(AppUIStates(isFailed = true))
+                                favoriteContractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                favoriteContractView?.showLce(AppUIStates(isFailed = true))
+                favoriteContractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
             }
         }
     }

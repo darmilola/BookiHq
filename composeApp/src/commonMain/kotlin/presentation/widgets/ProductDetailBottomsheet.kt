@@ -52,7 +52,6 @@ fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boo
     ) {
         ProductDetailContent(mainViewModel,isViewedFromCart,selectedProduct, onAddToCart = {
             onAddToCart(it,selectedProduct)
-
         })
     }
 

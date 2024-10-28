@@ -12,6 +12,7 @@ import domain.Models.FavoriteProductResponse
 import domain.Models.PaymentAuthorizationData
 import domain.Models.PaymentAuthorizationResult
 import domain.Models.PlatformNavigator
+import domain.Models.Product
 import domain.Models.ServerResponse
 import domain.Models.User
 import domain.Models.Vendor
@@ -28,7 +29,7 @@ class ProductContract {
 
     interface FavoriteProductView {
         fun showLce(appUIStates: AppUIStates)
-        fun showFavoriteProducts(favoriteProducts: List<FavoriteProductModel>)
+        fun showFavoriteProducts(favoriteProducts: List<Product>)
         fun showFavoriteProductIds(favoriteProductIds: List<FavoriteProductIdModel>)
     }
 
