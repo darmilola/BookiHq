@@ -364,6 +364,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
             PaymentCardBottomSheet(
                 mainViewModel!!,
                 cardList,
+                databaseBuilder = databaseBuilder,
                 onCardSelected = {
                     val paymentAmount = calculatePackageAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
                     mainViewModel!!.showPaymentCardsBottomSheet(false)

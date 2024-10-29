@@ -361,6 +361,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             PaymentCardBottomSheet(
                 mainViewModel!!,
                 cardList,
+                databaseBuilder = databaseBuilder,
                 onCardSelected = {
                     mainViewModel!!.showPaymentCardsBottomSheet(false)
                     selectedCard = it

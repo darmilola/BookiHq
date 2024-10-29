@@ -330,6 +330,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                         PaymentCardBottomSheet(
                             mainViewModel!!,
                             cardList,
+                            databaseBuilder = databaseBuilder,
                             onCardSelected = {
                                 mainViewModel!!.showPaymentCardsBottomSheet(false)
                                 selectedCard = it

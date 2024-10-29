@@ -35,9 +35,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.room.RoomDatabase
+import applications.room.AppDatabase
 import domain.Models.PaymentCard
 import domain.Models.PaymentCardUIModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import presentation.components.ButtonComponent
 import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
@@ -48,7 +51,7 @@ import utils.getPaymentCardsViewHeight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<PaymentCard>, onCardSelected: (PaymentCard) -> Unit,
+fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<PaymentCard>, databaseBuilder: RoomDatabase.Builder<AppDatabase>?, onCardSelected: (PaymentCard) -> Unit,
                            onDismiss: () -> Unit, onAddNewSelected: () -> Unit) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true))
@@ -152,7 +155,13 @@ fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<Paymen
                                     )
                                 }
                             )
-                        }, onPaymentCardRemoved = {})
+                        }, onPaymentCardRemoved = {
+                            runBlocking {
+                                databaseBuilder!!.build().getPaymentCardDao().deletePaymentCardByById(it.id)
+                                val cardList = databaseBuilder.build().getPaymentCardDao().getAllPaymentCards()
+                                selectedCardUIModel.value = PaymentCardUIModel(selectedCard = selectedCardUIModel.value.selectedCard, visibleCards = cardList)
+                            }
+                        })
                     }
                 }
             }
