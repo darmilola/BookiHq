@@ -72,6 +72,7 @@ import domain.Enums.ActionType
 import domain.Models.PaymentAuthorizationResult
 import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
+import domain.Models.Product
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import presentation.Screens.AddDebitCardScreen
@@ -86,6 +87,7 @@ import presentation.widgets.ProductDeliveryAddressWidget
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.PaymentCardBottomSheet
 import presentation.widgets.PaymentMethodWidget
+import presentation.widgets.ProductDetailBottomSheet
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import presentations.components.TextComponent
@@ -434,9 +436,14 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
 
 
         if (showProductDetailBottomSheet) {
-            ProductDetailBottomSheet(mainViewModel,isViewedFromCart = true,
-                selectedProduct = orderItemUIModel.selectedItem!!,
-                onDismiss = { isAddToCart, item -> showProductDetailBottomSheet = false })
+            ProductDetailBottomSheet(
+                mainViewModel,
+                isViewOnly = true,
+                OrderItem(itemProduct = orderItemUIModel.selectedItem!!.itemProduct!!),
+                onDismiss = {
+                   showProductDetailBottomSheet = false
+                },
+                onAddToCart = { isAddToCart, item -> })
 
         }
 
@@ -525,22 +532,6 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
 
     @Composable
     fun rightTopBarItem() {}
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, selectedProduct: OrderItem, onDismiss: (isAddToCart: Boolean, OrderItem) -> Unit) {
-        val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-        ModalBottomSheet(
-            modifier = Modifier.padding(top = 20.dp),
-            onDismissRequest = { onDismiss(false, selectedProduct) },
-            sheetState = modalBottomSheetState,
-            shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
-            containerColor = Color(0xFFF3F3F3),
-            dragHandle = {},
-        ) {
-            ProductDetailContent(mainViewModel,isViewedFromCart,selectedProduct, onAddToCart = { onDismiss(it,selectedProduct) })
-        }
-    }
 
     override fun enter(lastEvent: StackEvent): EnterTransition {
         return slideIn { size ->

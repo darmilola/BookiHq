@@ -2,7 +2,6 @@ package presentation.widgets
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -20,7 +19,7 @@ import presentation.viewmodels.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, selectedProduct: OrderItem, onAddToCart: (isAddToCart: Boolean, OrderItem) -> Unit,
+fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewOnly: Boolean = false, selectedProduct: OrderItem, onAddToCart: (isAddToCart: Boolean, OrderItem) -> Unit,
                              onDismiss: () -> Unit) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false))
@@ -50,7 +49,7 @@ fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewedFromCart: Boo
         containerColor = Color(0xFFF3F3F3),
         dragHandle = {},
     ) {
-        ProductDetailContent(mainViewModel,isViewedFromCart,selectedProduct, onAddToCart = {
+        ProductDetailContent(mainViewModel,isViewOnly,selectedProduct, onAddToCart = {
             onAddToCart(it,selectedProduct)
         })
     }

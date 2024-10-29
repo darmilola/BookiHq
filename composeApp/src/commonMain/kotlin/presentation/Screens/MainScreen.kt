@@ -233,6 +233,18 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                     )
                 )
             }
+            Screens.VENDOR_INFO_SCREEN.toPath() -> {
+                val vendorInfoScreen = VendorInfoScreen(vendorInfo.value,platformNavigator)
+                vendorInfoScreen.setMainViewModel(mainViewModel!!)
+                val nav = LocalNavigator.currentOrThrow
+                nav.push(vendorInfoScreen)
+                mainViewModel!!.setScreenNav(
+                    Pair(
+                        Screens.VENDOR_INFO_SCREEN.toPath(),
+                        Screens.DEFAULT.toPath()
+                    )
+                )
+            }
             Screens.JOIN_SPA.toPath() -> {
                 val joinASpa = JoinASpa(platformNavigator)
                 joinASpa.setMainViewModel(mainViewModel!!)

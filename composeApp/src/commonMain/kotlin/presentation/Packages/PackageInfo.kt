@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -64,21 +63,15 @@ import domain.Enums.Screens
 import domain.Models.OrderItem
 import domain.Models.PackageProducts
 import domain.Models.PlatformNavigator
-import domain.Models.Product
 import domain.Models.VendorPackage
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
-import presentation.appointmentBookings.AttachServiceReviews
 import presentation.components.ButtonComponent
 import presentation.packageBookings.PackageBookingScreen
 import presentation.viewmodels.MainViewModel
-import presentation.widgets.AttachAppointmentStatus
 import presentation.widgets.PackageReviewsWidget
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.ProductDetailBottomSheet
-import presentation.widgets.TitleWidget
-import presentation.widgets.VendorInfoTopBarItem
-import presentation.widgets.productItemIncrementDecrementWidget
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
@@ -246,7 +239,7 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
                 if (showProductDetails.value) {
                     ProductDetailBottomSheet(
                         mainViewModel!!,
-                        isViewedFromCart = false,
+                        isViewOnly = true,
                         OrderItem(itemProduct = selectedProductDetails.value.productInfo),
                         onDismiss = {
                             showProductDetails.value = false

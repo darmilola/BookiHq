@@ -130,7 +130,7 @@ fun mainTopBarItem(mainViewModel: MainViewModel) {
                         mainViewModel.setScreenNav(
                             Pair(
                                 Screens.MAIN_SCREEN.toPath(),
-                                Screens.CONNECTED_VENDOR_DETAILS.toPath()
+                                Screens.VENDOR_INFO_SCREEN.toPath()
                             )
                         )
                     })

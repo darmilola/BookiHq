@@ -43,7 +43,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import domain.Enums.Currency
 import domain.Models.OrderItem
 import domain.Models.Product
 import domain.Enums.ValuesLimit
@@ -55,12 +54,12 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean = false, selectedProduct: OrderItem, onAddToCart: (Boolean) -> Unit) {
+fun ProductDetailContent(mainViewModel: MainViewModel, isViewOnly: Boolean = false, selectedProduct: OrderItem, onAddToCart: (Boolean) -> Unit) {
     val itemKey = (ValuesLimit.MIN_VALUE.toValue() ..ValuesLimit.MAX_VALUE.toValue()).random()
     val currentOrder = mainViewModel.unSavedOrders.collectAsState()
     val orderItem = remember { mutableStateOf(OrderItem()) }
 
-    if (isViewedFromCart){
+    if (isViewOnly){
         orderItem.value = selectedProduct
     }
     else {
@@ -92,7 +91,7 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewedFromCart: Boolean
                     .fillMaxWidth()
                     .fillMaxHeight()
 
-                if (!isViewedFromCart) {
+                if (!isViewOnly) {
                     Row(
                         modifier = bgStyle,
                         horizontalArrangement = Arrangement.Center,

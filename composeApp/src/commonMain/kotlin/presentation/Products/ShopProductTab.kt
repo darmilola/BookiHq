@@ -234,7 +234,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                 if (selectedProduct.value.productId != -1L) {
                     ProductDetailBottomSheet(
                         mainViewModel!!,
-                        isViewedFromCart = false,
+                        isViewOnly = false,
                         OrderItem(itemProduct = selectedProduct.value),
                         onDismiss = {
                             selectedProduct.value = Product()
