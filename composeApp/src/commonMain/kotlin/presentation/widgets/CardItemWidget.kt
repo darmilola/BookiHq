@@ -28,28 +28,27 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Enums.CardType
 import domain.Models.PaymentCard
-import kotlinx.coroutines.launch
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import theme.styles.Colors
 import utils.getCardType
 
 @Composable
-fun PaymentCardItem(paymentCard: PaymentCard, onPaymentCardSelected: (PaymentCard) -> Unit) {
+fun PaymentCardItem(paymentCard: PaymentCard, onPaymentCardSelected: (PaymentCard) -> Unit, onPaymentCardRemoved: (PaymentCard) -> Unit) {
     val selectedBgColor: Color = if (paymentCard.isSelected) Colors.lightPrimaryColor else Color.White
-    val columnModifier = Modifier
+    val rowModifier = Modifier
         .background(color = selectedBgColor, shape = RoundedCornerShape(15.dp))
         .padding(start = 10.dp, top = 10.dp, bottom = 10.dp)
         .clickable {
             onPaymentCardSelected(paymentCard)
         }
         .height(100.dp).fillMaxWidth()
-    Row(modifier = columnModifier,
+    Row(modifier = rowModifier,
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
         CardTypeImage(paymentCard)
-        CardDescription(paymentCard)
+        CardDescription(paymentCard, onPaymentCardRemoved)
     }
 }
 
@@ -105,7 +104,7 @@ fun CardTypeImage(paymentCard: PaymentCard) {
 
 
 @Composable
-fun CardDescription(paymentCard: PaymentCard){
+fun CardDescription(paymentCard: PaymentCard, onPaymentCardRemoved: (PaymentCard) -> Unit){
     val cardNumber = paymentCard.cardNumber
     val lastFourDigit = cardNumber.substring(IntRange(cardNumber.length-4,cardNumber.length-1))
     val columnModifier = Modifier
@@ -152,14 +151,16 @@ fun CardDescription(paymentCard: PaymentCard){
 
         }
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            val tintColor = if (paymentCard.isSelected)  Colors.primaryColor else Color.White
             val modifier = Modifier
-                .padding(top = 2.dp)
+                .clickable {
+                    onPaymentCardRemoved(paymentCard)
+                }
                 .size(18.dp)
             ImageComponent(
                 imageModifier = modifier,
-                imageRes = "drawable/light_check_mark_icon.png",
-                colorFilter = ColorFilter.tint(color = tintColor))
+                imageRes = "drawable/cancel_icon_filled.png",
+                colorFilter = ColorFilter.tint(color = Colors.pinkColor)
+            )
         }
     }
 }

@@ -223,13 +223,14 @@ class PaymentMethods(val platformNavigator: PlatformNavigator) : ParcelableScree
                                     .background(color = Color.White, shape = RoundedCornerShape(15.dp)),
                                 contentAlignment = Alignment.CenterStart
                             ) {
-                                PaymentCardItem(paymentMethods.value[it], onPaymentCardSelected = {
-                                    runBlocking {
-                                        databaseBuilder!!.build().getPaymentCardDao().deletePaymentCardByById(it.id)
-                                        cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
-                                    }
-                                    paymentMethods.value = cardList
-                                })
+                                PaymentCardItem(paymentMethods.value[it], onPaymentCardSelected = {},
+                                    onPaymentCardRemoved = {
+                                     runBlocking {
+                                       databaseBuilder!!.build().getPaymentCardDao().deletePaymentCardByById(it.id)
+                                       cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
+                                     }
+                                     paymentMethods.value = cardList
+                                    })
                             }
                         }
                     }
