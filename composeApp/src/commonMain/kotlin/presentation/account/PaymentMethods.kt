@@ -286,7 +286,8 @@ class PaymentMethods(val platformNavigator: PlatformNavigator) : ParcelableScree
                         style = TextStyle(),
                         borderStroke = null
                     ) {
-
+                        mainViewModel!!.setOnBackPressed(false)
+                        navigator.pop()
                     }
                 }
             },
