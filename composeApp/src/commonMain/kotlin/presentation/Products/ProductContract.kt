@@ -31,6 +31,7 @@ class ProductContract {
         fun showLce(appUIStates: AppUIStates)
         fun showFavoriteProducts(favoriteProducts: List<Product>)
         fun showFavoriteProductIds(favoriteProductIds: List<FavoriteProductIdModel>)
+        fun onFavoriteProductChanged()
     }
 
     abstract class Presenter {

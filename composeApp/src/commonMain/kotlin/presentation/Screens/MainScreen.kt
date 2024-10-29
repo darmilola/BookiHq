@@ -161,6 +161,9 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             onFavoriteProductReady = {},
             onFavoriteProductIdsReady = {
                 mainViewModel!!.setFavoriteProductIds(it)
+            },
+            onFavoriteChanged = {
+                productPresenter.getFavoriteProductIds(userId)
             })
         favoriteHandler.init()
 

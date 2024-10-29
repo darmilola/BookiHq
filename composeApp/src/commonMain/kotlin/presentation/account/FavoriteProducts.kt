@@ -53,7 +53,6 @@ import domain.Models.OrderItem
 import domain.Models.Product
 import domain.Models.ProductItemUIModel
 import drawable.ErrorOccurredWidget
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -144,6 +143,9 @@ class FavoriteProducts() : ParcelableScreen, KoinComponent, Parcelable, ScreenTr
             },
             onFavoriteProductIdsReady = {
                 mainViewModel!!.setFavoriteProductIds(it)
+            },
+            onFavoriteChanged = {
+                productPresenter.getFavoriteProductIds(userId)
             })
         favoriteHandler.init()
 
@@ -275,7 +277,7 @@ class FavoriteProducts() : ParcelableScreen, KoinComponent, Parcelable, ScreenTr
         val productList = productResourceListEnvelopeViewModel.resources.collectAsState()
         val selectedProduct = remember { mutableStateOf(Product()) }
 
-        val productUIModel by remember {
+        val productUIModel = remember {
             mutableStateOf(
                 ProductItemUIModel(
                     selectedProduct.value,
@@ -313,10 +315,9 @@ class FavoriteProducts() : ParcelableScreen, KoinComponent, Parcelable, ScreenTr
                         verticalArrangement = Arrangement.spacedBy(5.dp),
                         userScrollEnabled = true
                     ) {
-                        runBlocking {
-                            items(productUIModel.productList.size) { it ->
+                            items(productUIModel.value.productList.size) { it ->
                                 ProductItem(
-                                    productUIModel.productList[it],
+                                    productUIModel.value.productList[it],
                                     onProductClickListener = { it2 ->
                                         onProductSelected(it2)
                                         selectedProduct.value = it2
@@ -326,10 +327,10 @@ class FavoriteProducts() : ParcelableScreen, KoinComponent, Parcelable, ScreenTr
                                     },
                                     onUnFavClicked = {
                                         productList.value.remove(it)
+                                        productUIModel.value = ProductItemUIModel(selectedProduct = selectedProduct.value, productList = productList.value)
                                         productPresenter.removeFavoriteProduct(userId = userId, productId = it.productId)
                                     })
                             }
-                        }
                     }
                 }
             }

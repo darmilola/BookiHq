@@ -168,7 +168,8 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                 val result = withContext(Dispatchers.IO) {
                     productRepositoryImpl.addFavoriteProduct(userId, vendorId, productId)
                         .subscribe(
-                            onSuccess = { _ -> },
+                            onSuccess = { _ ->
+                                favoriteContractView?.onFavoriteProductChanged() },
                             onError = {},
                         )
                 }
@@ -183,7 +184,7 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                 val result = withContext(Dispatchers.IO) {
                     productRepositoryImpl.removeFavoriteProduct(userId, productId)
                         .subscribe(
-                            onSuccess = { _ -> },
+                            onSuccess = { _ -> favoriteContractView?.onFavoriteProductChanged() },
                             onError = {},
                         )
                 }
