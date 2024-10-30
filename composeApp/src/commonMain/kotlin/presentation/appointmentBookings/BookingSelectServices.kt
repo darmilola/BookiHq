@@ -67,7 +67,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
 
     LaunchedEffect(Unit, block = {
         if (bookingViewModel.serviceTypeList.value.isEmpty()) {
-            bookingPresenter.getServiceTypes(services.serviceId)
+            bookingPresenter.getServiceData(services.serviceId)
         }
     })
 
@@ -145,7 +145,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
 
                 // AnimationEffect
                 Box(contentAlignment = Alignment.TopStart, modifier = boxModifier) {
-                    AttachServiceImages(mainViewModel)
+                    AttachServiceImages(bookingViewModel)
                 }
                 ServiceTitle(mainViewModel)
                 AttachServiceTypeToggle(mainViewModel, bookingViewModel, onServiceSelected = {
@@ -307,9 +307,8 @@ fun ServiceTitle(mainViewModel: MainViewModel){
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AttachServiceImages(mainViewModel: MainViewModel){
-    val serviceState = mainViewModel.selectedService.collectAsState()
-    val serviceImages = serviceState.value.serviceImages
+fun AttachServiceImages(bookingViewModel: BookingViewModel){
+    val serviceImages = bookingViewModel.serviceImages.value
     val pagerState = rememberPagerState(pageCount = {
         serviceImages.size
     })

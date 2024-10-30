@@ -2,8 +2,8 @@ package presentation.appointmentBookings
 
 import domain.Models.ServiceTypeTherapists
 import UIStates.AppUIStates
-import domain.Models.AppointmentReview
 import domain.Models.PlatformTime
+import domain.Models.ServiceImages
 import domain.Models.ServiceTypeItem
 import domain.Models.UserAppointment
 import domain.Models.VendorTime
@@ -18,7 +18,7 @@ class BookingContract {
         fun getTimesActionLce(uiState: AppUIStates, message: String = "")
         fun showTherapists(serviceTherapists: List<ServiceTypeTherapists>, platformTime: List<PlatformTime>, vendorTime: List<VendorTime>)
         fun showTimes(platformTime: List<PlatformTime>, vendorTime: List<VendorTime>)
-        fun showServiceTypes(serviceTypes: List<ServiceTypeItem>)
+        fun showServiceTypes(serviceTypes: List<ServiceTypeItem>, serviceImages: List<ServiceImages>)
         fun showPendingBookingAppointment(pendingAppointments: List<UserAppointment>)
         fun showUnsavedAppointment()
     }
@@ -27,7 +27,7 @@ class BookingContract {
         abstract fun registerUIContract(view: View?)
         abstract fun getUnSavedAppointment()
         abstract fun getServiceTherapists(serviceTypeId: Long, vendorId: Long, day: Int, month: Int, year: Int)
-        abstract fun getServiceTypes(serviceId: Long)
+        abstract fun getServiceData(serviceId: Long)
         abstract fun createAppointment(userId: Long, vendorId: Long, paymentAmount: Int, paymentMethod: String, bookingStatus: String, day: Int, month: Int, year: Int)
         abstract fun getPendingBookingAppointment(userId: Long, bookingStatus: String)
         abstract fun deletePendingBookingAppointment(pendingAppointmentId: Long)

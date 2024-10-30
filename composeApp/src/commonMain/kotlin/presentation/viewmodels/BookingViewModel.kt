@@ -4,6 +4,7 @@ import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Models.Appointment
 import domain.Models.PlatformTime
+import domain.Models.ServiceImages
 import domain.Models.ServiceTypeItem
 import domain.Models.ServiceTypeTherapists
 import domain.Models.UserAppointment
@@ -16,6 +17,7 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
     private var _pendingAppointments =  savedStateHandle.getStateFlow("pendingAppointments", listOf<UserAppointment>())
     private var _selectedServiceType =  savedStateHandle.getStateFlow("selectedServiceType", ServiceTypeItem())
     private var _serviceTypeList =  savedStateHandle.getStateFlow("serviceTypeList", listOf<ServiceTypeItem>())
+    private var _serviceimages =  savedStateHandle.getStateFlow("serviceImages", listOf<ServiceImages>())
     private var _day =  savedStateHandle.getStateFlow("day", -1)
     private var _month =  savedStateHandle.getStateFlow("month", -1)
     private var _year =  savedStateHandle.getStateFlow("year", -1)
@@ -30,6 +32,9 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
 
     val serviceTypeList: StateFlow<List<ServiceTypeItem>>
         get() = _serviceTypeList
+
+    val serviceImages: StateFlow<List<ServiceImages>>
+        get() = _serviceimages
     val vendorTimes: StateFlow<List<VendorTime>>
         get() = _vendorTimes
 
@@ -55,6 +60,9 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
     }
     fun setServiceTypeList(serviceTypeList: List<ServiceTypeItem>) {
         savedStateHandle["serviceTypeList"] = serviceTypeList
+    }
+    fun setServiceImages(serviceImages: List<ServiceImages>) {
+        savedStateHandle["serviceImages"] = serviceImages
     }
     fun setVendorTimes(vendorTimes: List<VendorTime>) {
         savedStateHandle["vendorTimes"] = vendorTimes

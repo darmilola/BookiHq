@@ -7,6 +7,7 @@ import UIStates.AppUIStates
 import domain.Models.AppointmentReview
 import presentation.viewmodels.BookingViewModel
 import domain.Models.PlatformTime
+import domain.Models.ServiceImages
 import domain.Models.ServiceTypeItem
 import domain.Models.UserAppointment
 import domain.Models.VendorTime
@@ -116,8 +117,9 @@ class BookingScreenHandler(
         bookingViewModel.setPlatformTimes(platformTime)
     }
 
-    override fun showServiceTypes(serviceTypes: List<ServiceTypeItem>) {
+    override fun showServiceTypes(serviceTypes: List<ServiceTypeItem>, serviceImages: List<ServiceImages>) {
         bookingViewModel.setServiceTypeList(serviceTypes)
+        bookingViewModel.setServiceImages(serviceImages)
     }
 
     override fun showPendingBookingAppointment(pendingAppointments: List<UserAppointment>) {

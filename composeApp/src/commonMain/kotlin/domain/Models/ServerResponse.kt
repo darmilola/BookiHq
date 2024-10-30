@@ -41,7 +41,8 @@ data class TimeAvailabilityResponse(@SerialName("status") val status: String = "
 
 @Serializable @Parcelize
 data class ServiceTypesResponse(@SerialName("status") val status: String = "",
-                                         @SerialName("serviceTypes") val serviceTypes: List<ServiceTypeItem>? = null): Parcelable
+                                @SerialName("serviceTypes") val serviceTypes: List<ServiceTypeItem>? = null,
+                                @SerialName("serviceImages") val serviceImages: List<ServiceImages>? = null): Parcelable
 
 @Serializable
 data class TherapistReviewsResponse(@SerialName("status") val status: String = "", @SerialName("reviews") val reviews: List<TherapistReviews>)

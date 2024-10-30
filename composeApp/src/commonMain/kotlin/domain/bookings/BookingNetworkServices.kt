@@ -7,7 +7,6 @@ import domain.Models.PendingBookingAppointmentResponse
 import domain.Models.ServerResponse
 import domain.Models.ServiceTherapistsResponse
 import domain.Models.ServiceTypesResponse
-import domain.Models.TimeAvailabilityResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.header
@@ -28,11 +27,11 @@ open class BookingNetworkService(private val apiService: HttpClient) {
             header("Authorization", apiKey)
         }.body<ServiceTherapistsResponse>().toSingle()
 
-    suspend fun getServiceTypes(getServiceTypeRequest: GetServiceTypeRequest) =
+    suspend fun getServiceData(getServiceDataRequest: GetServiceDataRequest) =
         apiService.post {
             url("/services/type/load")
             contentType(ContentType.Application.Json)
-            setBody(getServiceTypeRequest)
+            setBody(getServiceDataRequest)
             header("Authorization", apiKey)
         }.body<ServiceTypesResponse>().toSingle()
 

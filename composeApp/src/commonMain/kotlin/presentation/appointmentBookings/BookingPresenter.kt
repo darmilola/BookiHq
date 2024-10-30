@@ -60,18 +60,18 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
         }
     }
 
-    override fun getServiceTypes(serviceId: Long) {
+    override fun getServiceData(serviceId: Long) {
         contractView?.getServiceTypesLce(AppUIStates(isLoading  = true))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    bookingRepositoryImpl.getServiceTypes(serviceId)
+                    bookingRepositoryImpl.getServiceData(serviceId)
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
                                         contractView?.getServiceTypesLce(AppUIStates(isSuccess  = true))
-                                        contractView?.showServiceTypes(result.serviceTypes!!)
+                                        contractView?.showServiceTypes(result.serviceTypes!!, result.serviceImages!!)
                                     }
                                     ServerResponse.FAILURE.toPath() -> {
                                         contractView?.getServiceTypesLce(AppUIStates(isFailed  = true, errorMessage = "Error Getting Services, Please Try Again"))

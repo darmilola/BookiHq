@@ -5,7 +5,6 @@ import domain.Models.PendingBookingAppointmentResponse
 import domain.Models.ServerResponse
 import domain.Models.ServiceTherapistsResponse
 import domain.Models.ServiceTypesResponse
-import domain.Models.TimeAvailabilityResponse
 import io.ktor.client.HttpClient
 
 class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
@@ -17,9 +16,9 @@ class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
         return bookingNetworkService.getTherapists(param)
     }
 
-    override suspend fun getServiceTypes(serviceId: Long): Single<ServiceTypesResponse> {
-        val param = GetServiceTypeRequest(serviceId)
-        return bookingNetworkService.getServiceTypes(param)
+    override suspend fun getServiceData(serviceId: Long): Single<ServiceTypesResponse> {
+        val param = GetServiceDataRequest(serviceId)
+        return bookingNetworkService.getServiceData(param)
     }
 
     override suspend fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Long, serviceTypeId: Long, therapistId: Long,
