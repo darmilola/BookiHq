@@ -35,7 +35,7 @@ import presentations.components.TextComponent
 import theme.styles.Colors
 
 @Composable
-fun AppointmentInfoWidget(appointment: Appointment) {
+fun ServiceAppointmentInfoWidget(appointment: Appointment) {
 
     val appointmentDateFormat = LocalDate.Format {
         dayOfWeek(DayOfWeekNames.ENGLISH_FULL)

@@ -72,7 +72,7 @@ fun PendingAppointmentWidget(appointment: UserAppointment, onDeleteAppointment: 
                 onDeleteAppointment = {
                     onDeleteAppointment(it)
                 })
-            AttachAppointmentContent(appointment.resources!!)
+            AttachServiceAppointmentContent(appointment.resources!!)
         }
     }
 }

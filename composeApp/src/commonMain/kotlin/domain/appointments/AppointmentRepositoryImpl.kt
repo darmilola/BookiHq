@@ -17,7 +17,6 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
         userId: Long,
         nextPage: Int
     ): Single<AppointmentListDataResponse> {
-        println(userId)
         val param = GetAppointmentRequest(userId)
         return appointmentNetworkService.getAppointments(param, nextPage)
     }
@@ -28,10 +27,9 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
         month: Int,
         year: Int
     ): Single<ServerResponse> {
-        println("Info are ${userAppointment.userId}, ${userAppointment.appointmentId}, ${userAppointment.bookingStatus}")
         val appointment = userAppointment.resources!!
-        val param = PostponeAppointmentRequest(userId = appointment.userId!!, vendorId = appointment.vendorId, serviceId = appointment.serviceId,
-            serviceTypeId = appointment.serviceTypeId!!, therapistId = appointment.therapistId, appointmentTime = appointmentTime,
+        val param = PostponeAppointmentRequest(userId = appointment.userId!!, vendorId = appointment.vendorId, serviceId = appointment.serviceId, packageId = appointment.packageId,
+            serviceTypeId = appointment.serviceTypeId!!, therapistId = appointment.therapistId, appointmentTime = appointmentTime, appointmentType = userAppointment.resources.appointmentType,
             day = day, month = month, year = year, serviceLocation = appointment.serviceLocation, serviceStatus = ServiceStatusEnum.PENDING.toPath(),
             appointmentId = appointment.appointmentId!!, bookingStatus = userAppointment.bookingStatus!!, paymentMethod = userAppointment.paymentMethod!!)
         return appointmentNetworkService.postponeAppointment(param)

@@ -10,6 +10,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import UIStates.AppUIStates
+import domain.Enums.AppointmentType
 import domain.Enums.ServerResponse
 import domain.Models.PlatformNavigator
 import domain.Models.PlatformTime
@@ -151,8 +152,14 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                                     ServerResponse.SUCCESS.toPath() -> {
                                         val time = if (platformTime.isAm) platformTime.time+"AM" else platformTime.time+"PM"
                                         contractView?.showPostponeActionLce(AppUIStates(isSuccess = true, successMessage = "Appointment Postponed"))
+                                        val serviceType =  if (userAppointment.resources?.appointmentType ==  AppointmentType.SINGLE.toPath()){
+                                            userAppointment.resources.serviceTypeItem?.title
+                                        }
+                                        else {
+                                            userAppointment.resources?.packageInfo?.title
+                                        }
                                         platformNavigator.sendPostponedAppointmentNotification(customerName = user.firstname!!, vendorLogoUrl = vendor.businessLogo!!, businessName = vendor.businessName!!, appointmentDay = day.toString(), appointmentMonth = monthName, appointmentYear = year.toString(),
-                                            appointmentTime = time, fcmToken = vendor.fcmToken!!, serviceType = userAppointment.resources?.serviceTypeItem!!.title)
+                                            appointmentTime = time, fcmToken = vendor.fcmToken!!, serviceType = serviceType!!)
                                     }
                                     ServerResponse.FAILURE.toPath() -> {
                                         contractView?.showPostponeActionLce(AppUIStates(isFailed = true, errorMessage = "Error Postponing Appointment Please Try Again"))

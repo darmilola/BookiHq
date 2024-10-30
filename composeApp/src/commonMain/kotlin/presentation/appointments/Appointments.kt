@@ -65,6 +65,7 @@ import presentation.dialogs.SuccessDialog
 import presentation.widgets.AddAppointmentsReviewBottomSheet
 import presentation.widgets.AppointmentWidget
 import presentation.widgets.EmptyContentWidget
+import presentation.widgets.PackageAppointmentWidget
 import presentation.widgets.PendingPackageAppointmentWidget
 import utils.getAppointmentViewHeight
 import rememberStackedSnackbarHostState
@@ -402,9 +403,20 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                                        })
                                }
                                else if (item.resources.appointmentType == AppointmentType.PACKAGE.toPath()) {
-                                   PendingPackageAppointmentWidget(
+                                   PackageAppointmentWidget(
                                        item,
-                                       onDeleteAppointment = {})
+                                       appointmentPresenter = appointmentPresenter,
+                                       postponementViewModel = postponementViewModel,
+                                       mainViewModel = mainViewModel!!,
+                                       getTherapistAvailabilityUIStateViewModel!!,
+                                       onDeleteAppointment = {
+                                           appointmentPresenter.deleteAppointment(it.id)
+                                       },
+                                       platformNavigator = platformNavigator,
+                                       onAddReview = {
+                                           appointmentForReview.value = it
+                                           mainViewModel!!.showAppointmentReviewsBottomSheet(true)
+                                       })
                                }
                                if (it == lastIndex && loadMoreState.value) {
                                    Box(

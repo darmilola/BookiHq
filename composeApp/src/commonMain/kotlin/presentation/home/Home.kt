@@ -88,6 +88,7 @@ import presentation.widgets.RecommendedServiceItem
 import presentation.widgets.RecentAppointmentWidget
 import presentation.widgets.PendingPackageAppointmentWidget
 import presentation.widgets.ProductDetailBottomSheet
+import presentation.widgets.RecentPackageAppointmentWidget
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import utils.calculateHomePageScreenHeight
@@ -502,20 +503,10 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             ) {
                 items(key = { it -> it.appointmentId }, items =  appointmentList) { item ->
                     if (item.resources!!.appointmentType == AppointmentType.SINGLE.toPath()) {
-                        RecentAppointmentWidget(
-                            userAppointment = item,
-                            appointmentPresenter = null,
-                            postponementViewModel = null,
-                            mainViewModel = mainViewModel!!,
-                            loadingScreenUiStateViewModel!!,
-                            onDeleteAppointment = {},
-                            platformNavigator = platformNavigator
-                        )
+                        RecentAppointmentWidget(userAppointment = item)
                       }
                        else if (item.resources.appointmentType == AppointmentType.PACKAGE.toPath()) {
-                            PendingPackageAppointmentWidget(
-                                item,
-                                onDeleteAppointment = {})
+                            RecentPackageAppointmentWidget(item)
                         }
 
                 }

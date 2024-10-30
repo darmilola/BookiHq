@@ -45,7 +45,6 @@ import domain.Models.TherapistInfo
 import domain.Models.UserAppointment
 import presentation.appointments.AppointmentPresenter
 import presentation.dialogs.PostponeDialog
-import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
@@ -137,14 +136,14 @@ fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPrese
                         }, platformNavigator = platformNavigator, onAddReview = {
                             onAddReview(it)
                         })
-                    AttachAppointmentContent(appointment!!)
+                    AttachServiceAppointmentContent(appointment!!)
                 }
             }
 }
 
 
 @Composable
-fun RecentAppointmentWidget(userAppointment: UserAppointment? = null, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, mainViewModel: MainViewModel, loadingScreenUIStateViewModel: LoadingScreenUIStateViewModel, onDeleteAppointment: (Appointment) -> Unit, platformNavigator: PlatformNavigator) {
+fun RecentAppointmentWidget(userAppointment: UserAppointment? = null) {
 
     val serviceAppointmentStatus = userAppointment?.resources?.serviceStatus
     val serviceMenuItems = arrayListOf<String>()
@@ -216,7 +215,7 @@ fun RecentAppointmentWidget(userAppointment: UserAppointment? = null, appointmen
                 serviceIconRes,
                 serviceStatusColor,
                 userAppointment?.resources!!)
-            AttachAppointmentContent(userAppointment.resources)
+            AttachServiceAppointmentContent(userAppointment.resources)
         }
     }
 }
@@ -385,9 +384,9 @@ fun AttachAppointmentStatus(status: String, statusColor: Color){
 }
 
 @Composable
-fun AttachAppointmentContent(appointment: Appointment) {
+fun AttachServiceAppointmentContent(appointment: Appointment) {
     if (appointment.appointmentType ==  AppointmentType.SINGLE.toPath()){
-        AppointmentInfoWidget(appointment)
+        ServiceAppointmentInfoWidget(appointment)
     }
 }
 
