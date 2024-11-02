@@ -91,7 +91,7 @@ import utils.calculateAppointmentPaymentAmount
 
 @OptIn(ExperimentalVoyagerApi::class)
 @Parcelize
-class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, ScreenTransition, ParcelableScreen {
+class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, ParcelableScreen, ScreenTransition  {
     @Transient private val bookingPresenter: BookingPresenter by inject()
     @Transient private var loadPendingActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient private var getServiceTypesUIStateViewModel: PerformedActionUIStateViewModel? = null
@@ -117,10 +117,6 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
 
     fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
         this.databaseBuilder = databaseBuilder
-    }
-
-    fun setSelectedPackage(vendorPackage: VendorPackage){
-        this.vendorPackage = vendorPackage
     }
 
     @OptIn(ExperimentalFoundationApi::class)

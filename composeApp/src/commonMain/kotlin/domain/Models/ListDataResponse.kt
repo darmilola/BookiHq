@@ -7,19 +7,19 @@ import kotlinx.serialization.Serializable
 class ListDataResponse<T : Any>(@SerialName("response") var listItem: ResourceListEnvelope<T>, @SerialName("status")  var status: String)
 
 @Serializable
-class AppointmentListDataResponse(@SerialName("response") var listItem: AppointmentResourceListEnvelope, @SerialName("status")  var status: String)
+class AppointmentListDataResponse(@SerialName("response") var listItem: AppointmentResourceListEnvelope = AppointmentResourceListEnvelope(), @SerialName("status")  var status: String)
 
 @Serializable
 class VendorPackageListDataResponse(@SerialName("response") var packages: ArrayList<VendorPackage> = arrayListOf(), @SerialName("status")  var status: String)
 
 @Serializable
-class TherapistAppointmentListDataResponse(@SerialName("response") var listItem: TherapistAppointmentResourceListEnvelope, @SerialName("status")  var status: String)
+class TherapistAppointmentListDataResponse(@SerialName("response") var listItem: TherapistAppointmentResourceListEnvelope = TherapistAppointmentResourceListEnvelope(), @SerialName("status")  var status: String)
 
 @Serializable
-class ProductListDataResponse(@SerialName("response") var listItem: ProductResourceListEnvelope, @SerialName("status")  var status: String)
+class ProductListDataResponse(@SerialName("response") var listItem: ProductResourceListEnvelope = ProductResourceListEnvelope(), @SerialName("status")  var status: String)
 
 @Serializable
-class OrderListDataResponse(@SerialName("response") var listItem: OrderResourceListEnvelope, @SerialName("status")  var status: String)
+class OrderListDataResponse(@SerialName("response") var listItem: OrderResourceListEnvelope = OrderResourceListEnvelope(), @SerialName("status")  var status: String)
 
 @Serializable
-class VendorListDataResponse(@SerialName("response") var listItem: VendorResourceListEnvelope, @SerialName("status")  var status: String)
+class VendorListDataResponse(@SerialName("response") var listItem: VendorResourceListEnvelope = VendorResourceListEnvelope(), @SerialName("status")  var status: String)

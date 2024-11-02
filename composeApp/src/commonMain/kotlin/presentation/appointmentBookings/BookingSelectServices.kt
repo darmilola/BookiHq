@@ -155,29 +155,15 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
                         } else {
                             "Please complete your profile"
                         }
-                    val action =
-                        if (mainViewModel.currentUserInfo.value.isProfileCompleted == true) {
-                            ""
-                        } else {
-                            "Complete"
-                        }
                     if (it.mobileServiceAvailable) {
                         isServiceTypeMobileServiceAvailable.value = true
                         ShowSnackBar(title = "Mobile Service Is Available",
                             description = description,
-                            actionLabel = action,
+                            actionLabel = "",
                             duration = StackedSnackbarDuration.Short,
                             snackBarType = SnackBarType.INFO,
                             stackedSnackBarHostState,
-                            onActionClick = {
-                                mainViewModel.setScreenNav(
-                                    Pair(
-                                        Screens.BOOKING.toPath(),
-                                        Screens.EDIT_PROFILE.toPath()
-                                    )
-                                )
-
-                            })
+                            onActionClick = {})
                     } else {
                         isServiceTypeMobileServiceAvailable.value = false
                     }
@@ -191,7 +177,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
                 })
                 if (mobileServicesAvailable) {
                     val isServiceLocationDisabled =
-                        mainViewModel.currentUserInfo.value.isProfileCompleted != true && !isServiceTypeMobileServiceAvailable.value
+                        mainViewModel.currentUserInfo.value.isProfileCompleted != true || !isServiceTypeMobileServiceAvailable.value
                     ServiceLocationToggle(
                         bookingViewModel,
                         isDisabled = isServiceLocationDisabled,

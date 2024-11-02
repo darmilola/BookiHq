@@ -81,7 +81,7 @@ fun PackageBookingSelection(mainViewModel: MainViewModel, bookingViewModel: Book
             PackageTitle(vendorPackage)
             if (mobileServicesAvailable) {
                 val isServiceLocationDisabled =
-                    mainViewModel.currentUserInfo.value.isProfileCompleted != true && !isPackageMobileServiceAvailable
+                    mainViewModel.currentUserInfo.value.isProfileCompleted != true || !isPackageMobileServiceAvailable
                 ServiceLocationToggle(
                     bookingViewModel,
                     isDisabled = isServiceLocationDisabled,

@@ -28,7 +28,7 @@ import presentations.components.TextComponent
 import utils.getDeliveryMethodDisplayName
 
 @Composable
-fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel, cartViewModel: CartViewModel,
+fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel,
                                  onPickupSelectedListener:() -> Unit, onMobileSelectedListener:() -> Unit){
 
     val deliveryMethod =  mainViewModel.deliveryMethod.collectAsState()
@@ -37,6 +37,7 @@ fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel, cartViewModel: Ca
         .padding(start = 10.dp, bottom = 10.dp, top = 15.dp, end = 10.dp)
         .wrapContentHeight()
         .fillMaxWidth()
+    val isProfileCompleted = mainViewModel.currentUserInfo.value.isProfileCompleted
     Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
         TextComponent(
             text = "Delivery Location",
@@ -54,21 +55,15 @@ fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel, cartViewModel: Ca
 
         Row(modifier = Modifier.fillMaxWidth()) {
             ToggleButton(shape = CircleShape, isRightSelection = isRightSelection, onLeftClicked = {
-                mainViewModel.setDeliveryMethod(DeliveryMethodEnum.MOBILE.toPath())
+                println("Mobile")
                 onMobileSelectedListener()
             }, onRightClicked = {
-                mainViewModel.setDeliveryMethod(DeliveryMethodEnum.PICKUP.toPath())
+                println("Pickup")
                 onPickupSelectedListener()
-            }, leftText = getDeliveryMethodDisplayName(DeliveryMethodEnum.MOBILE.toPath()), rightText = getDeliveryMethodDisplayName(DeliveryMethodEnum.PICKUP.toPath()))
+            },
+                isDisabled = isProfileCompleted != true,
+                leftText = getDeliveryMethodDisplayName(DeliveryMethodEnum.MOBILE.toPath()), rightText = getDeliveryMethodDisplayName(DeliveryMethodEnum.PICKUP.toPath()))
         }
-
-       if(deliveryMethod.value == DeliveryMethodEnum.MOBILE.toPath()) {
-            MobileDeliveryWidget(mainViewModel = mainViewModel)
-       }
-        else{
-            ParlorDeliveryWidget(mainViewModel)
-        }
-
 
     }
 

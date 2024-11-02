@@ -169,11 +169,11 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
 
         when (screenNav?.value?.second) {
             Screens.BOOKING.toPath() -> {
-                val bookingTab = BookingScreen(platformNavigator)
-                bookingTab.setMainViewModel(mainViewModel!!)
-                bookingTab.setDatabaseBuilder(databaseBuilder)
+                val bookingScreen = BookingScreen(platformNavigator)
+                bookingScreen.setMainViewModel(mainViewModel!!)
+                bookingScreen.setDatabaseBuilder(databaseBuilder)
                 val nav = LocalNavigator.currentOrThrow
-                nav.push(bookingTab)
+                nav.push(bookingScreen)
                 mainViewModel!!.setScreenNav(
                     Pair(
                         Screens.BOOKING.toPath(),
