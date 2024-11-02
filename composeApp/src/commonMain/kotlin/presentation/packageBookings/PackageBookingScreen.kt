@@ -90,6 +90,7 @@ import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
 import utils.ParcelableScreen
+import utils.calculateAppointmentPaymentAmount
 import utils.calculatePackageAppointmentPaymentAmount
 
 @OptIn(ExperimentalVoyagerApi::class)
@@ -317,17 +318,13 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                     runBlocking {
                         cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
                     }
+                    bookingViewModel!!.setPaymentMethod(PaymentMethod.CARD_PAYMENT.toPath())
                     mainViewModel!!.showPaymentMethodBottomSheet(false)
                     mainViewModel!!.showPaymentCardsBottomSheet(true)
 
                 }, onCashSelected = {
-                    val userId = mainViewModel!!.currentUserInfo.value.userId
-                    val vendorId = mainViewModel!!.connectedVendor.value.vendorId
-                    val paymentAmount = calculatePackageAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
-                    bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.DONE.toPath(), day = getDay(),
-                        month = getMonth(), year = getYear(), paymentAmount = paymentAmount,
-                        paymentMethod = PaymentMethod.PAYMENT_ON_DELIVERY.toPath())
-                    mainViewModel!!.showPaymentMethodBottomSheet(false)
+                     bookingViewModel!!.setPaymentMethod(PaymentMethod.PAYMENT_ON_DELIVERY.toPath())
+                     createAppointment()
                 })
         }
 
@@ -336,8 +333,6 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
             paymentPresenter = paymentPresenter,
             paymentActionUIStateViewModel!!,
             onAuthorizationSuccessful = {
-                val userId = mainViewModel!!.currentUserInfo.value.userId
-                val vendorId = mainViewModel!!.connectedVendor.value.vendorId
                 if (it.status) {
                     val paymentAmount = calculatePackageAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
                     platformNavigator.startPaymentProcess(paymentAmount = (paymentAmount * 100).toString(),
@@ -347,9 +342,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                         paymentCard = selectedCard!!,
                         onPaymentLoading = {},
                         onPaymentSuccessful = {
-                            bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.DONE.toPath(), day = getDay(),
-                                month = getMonth(), year = getYear(), paymentAmount = paymentAmount,
-                                paymentMethod = PaymentMethod.CARD_PAYMENT.toPath())
+                            createAppointment()
                         },
                         onPaymentFailed = {})
                 }
@@ -360,7 +353,6 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
         val paymentCurrency = mainViewModel!!.displayCurrencyPath.value
 
         if (showSelectPaymentCards.value) {
-            mainViewModel!!.showPaymentMethodBottomSheet(false)
             PaymentCardBottomSheet(
                 mainViewModel!!,
                 cardList,
@@ -461,6 +453,17 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                 }
             }
         )
+    }
+
+    private fun createAppointment(){
+        val paymentMethod = bookingViewModel!!.paymentMethod.value
+        val userId = mainViewModel!!.currentUserInfo.value.userId
+        val vendorId = mainViewModel!!.connectedVendor.value.vendorId
+        val paymentAmount = calculatePackageAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
+
+        bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.DONE.toPath(), day = getDay(),
+            month = getMonth(), year = getYear(), paymentAmount = paymentAmount,
+            paymentMethod = paymentMethod)
     }
 
     @OptIn(ExperimentalFoundationApi::class)

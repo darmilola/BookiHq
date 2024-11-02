@@ -173,7 +173,7 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
                         SearchBar(placeholderText = "search @vendor", onValueChange = {
                             vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                             searchQuery.value = it
-                            connectVendorPresenter.searchVendor(country,searchQuery = it)
+                            connectVendorPresenter.searchVendor(country,city,searchQuery = it)
                         }, onBackPressed = {
                             vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                             connectVendorPresenter.getVendor(country = country, city = city)

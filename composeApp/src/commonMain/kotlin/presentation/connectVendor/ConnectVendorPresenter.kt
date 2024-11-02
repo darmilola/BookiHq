@@ -89,7 +89,7 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                                         contractView?.showVendors(result.listItem,isFromSearch = false, isLoadMore = false)
                                     }
                                     ServerResponse.EMPTY.toPath() -> {
-                                        contractView?.showScreenLce(AppUIStates(isEmpty = true, emptyMessage = "No Vendor Available"))
+                                        contractView?.showScreenLce(AppUIStates(isEmpty = true, emptyMessage = "No Vendor Available In Your Area"))
                                     }
                                     ServerResponse.FAILURE.toPath() -> {
                                         contractView?.showScreenLce(AppUIStates(isFailed = true, errorMessage = "Error Getting Vendors"))
@@ -140,28 +140,28 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
 
                                     }
                                     ServerResponse.FAILURE.toPath() -> {
-                                        contractView?.onLoadMoreVendorEnded(false)
+                                        contractView?.showScreenLce(AppUIStates(isFailed = true, errorMessage = "Error Getting Vendors"))
                                     }
                                 }
                             },
                             onError = {
-                                contractView?.onLoadMoreVendorEnded(false)
+                                contractView?.showScreenLce(AppUIStates(isFailed = true, errorMessage = "Error Getting Vendors"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.onLoadMoreVendorEnded(false)
+                contractView?.showScreenLce(AppUIStates(isFailed = true, errorMessage = "Error Getting Vendors"))
             }
         }
     }
 
-    override fun searchVendor(country: String, searchQuery: String) {
+    override fun searchVendor(country: String, city: String, searchQuery: String) {
         contractView?.showScreenLce(AppUIStates(isLoading = true, loadingMessage = "Searching Vendor"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    connectVendorRepositoryImpl.searchVendor(country, searchQuery)
+                    connectVendorRepositoryImpl.searchVendor(country,city, searchQuery)
                         .subscribe(
                             onSuccess = { result ->
                                     when (result.status) {
@@ -187,29 +187,32 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                                             contractView?.showVendors(result.listItem, isFromSearch = true, isLoadMore = false)
 
                                         }
+                                        ServerResponse.EMPTY.toPath() -> {
+                                            contractView?.showScreenLce(AppUIStates(isEmpty = true, emptyMessage = "Vendor Not Found"))
+                                        }
                                         ServerResponse.FAILURE.toPath() -> {
-                                            contractView?.showScreenLce(AppUIStates(isFailed = true))
+                                            contractView?.showScreenLce(AppUIStates(isFailed = true, errorMessage = "Error Getting Vendors"))
                                         }
                                     }
                             },
                             onError = {
-                                contractView?.showScreenLce(AppUIStates(isFailed = true))
+                                contractView?.showScreenLce(AppUIStates(isFailed = true, errorMessage = "Error Getting Vendors"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showScreenLce(AppUIStates(isFailed = true))
+                contractView?.showScreenLce(AppUIStates(isFailed = true, errorMessage = "Error Getting Vendors"))
             }
         }
     }
 
-    override fun searchMoreVendors(country: String, searchQuery: String, nextPage: Int) {
+    override fun searchMoreVendors(country: String, city: String, searchQuery: String, nextPage: Int) {
         contractView?.onLoadMoreVendorStarted(true)
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    connectVendorRepositoryImpl.searchVendor(country,searchQuery,nextPage)
+                    connectVendorRepositoryImpl.searchVendor(country,city,searchQuery,nextPage)
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {

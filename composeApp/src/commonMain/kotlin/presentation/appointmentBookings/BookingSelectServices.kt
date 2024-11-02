@@ -180,6 +180,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
                         mainViewModel.currentUserInfo.value.isProfileCompleted != true || !isServiceTypeMobileServiceAvailable.value
                     ServiceLocationToggle(
                         bookingViewModel,
+                        isPackage = false,
                         isDisabled = isServiceLocationDisabled,
                         onSpaSelectedListener = {
                             currentBooking.isMobileService = false

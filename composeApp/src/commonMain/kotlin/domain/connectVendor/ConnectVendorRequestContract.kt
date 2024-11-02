@@ -10,4 +10,4 @@ data class ConnectVendorRequest(@SerialName("userId") val userId: Long,
 @Serializable
 data class GetVendorRequest(@SerialName("country") val country: String, @SerialName("city") val city: String)
 @Serializable
-data class SearchVendorRequest(@SerialName("country") val country: String, @SerialName("query") val query: String)
+data class SearchVendorRequest(@SerialName("country") val country: String, @SerialName("city") val city: String, @SerialName("query") val query: String)

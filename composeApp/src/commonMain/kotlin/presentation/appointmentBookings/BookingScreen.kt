@@ -107,7 +107,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
     @Transient private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
     @Transient var cardList = listOf<PaymentCard>()
     private var selectedCard: PaymentCard? = null
-    private var vendorPackage: VendorPackage? = null
+
 
    override val key: ScreenKey = uniqueScreenKey
 
@@ -262,7 +262,9 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         }
         else if (createAppointmentActionUiStates.value.isFailed){
             Box(modifier = Modifier.fillMaxWidth()) {
-                ErrorDialog("Creating Appointment Failed", actionTitle = "Retry", onConfirmation = {})
+                ErrorDialog("Creating Appointment Failed", actionTitle = "Retry", onConfirmation = {
+                    createAppointment()
+                })
             }
         }
 
@@ -276,7 +278,6 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                 ErrorDialog("Payment Authentication Failed", actionTitle = "Retry", onConfirmation = {})
             }
         }
-
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -299,7 +300,6 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         }
 
         val showPaymentMethodBottomSheet = mainViewModel!!.showPaymentMethodBottomSheet.collectAsState()
-
         if (showPaymentMethodBottomSheet.value) {
             AppointmentPaymentMethodBottomSheet(
                 mainViewModel!!,
@@ -310,16 +310,14 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                     runBlocking {
                         cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
                     }
+                    bookingViewModel!!.setPaymentMethod(PaymentMethod.CARD_PAYMENT.toPath())
                     mainViewModel!!.showPaymentMethodBottomSheet(false)
                     mainViewModel!!.showPaymentCardsBottomSheet(true)
 
-                }, onCashSelected = {
-                    val userId = mainViewModel!!.currentUserInfo.value.userId
-                    val vendorId = mainViewModel!!.connectedVendor.value.vendorId
-                    val paymentAmount = calculateAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
-                    bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.DONE.toPath(), day = getDay(),
-                        month = getMonth(), year = getYear(), paymentAmount = paymentAmount,
-                        paymentMethod = PaymentMethod.PAYMENT_ON_DELIVERY.toPath())
+                },
+                onCashSelected = {
+                    bookingViewModel!!.setPaymentMethod(PaymentMethod.PAYMENT_ON_DELIVERY.toPath())
+                    createAppointment()
                     mainViewModel!!.showPaymentMethodBottomSheet(false)
                 })
         }
@@ -328,8 +326,6 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             paymentPresenter = paymentPresenter,
             paymentActionUIStateViewModel!!,
             onAuthorizationSuccessful = {
-                val userId = mainViewModel!!.currentUserInfo.value.userId
-                val vendorId = mainViewModel!!.connectedVendor.value.vendorId
                 if (it.status) {
                     val paymentAmount = calculateAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
                     platformNavigator.startPaymentProcess(paymentAmount = (paymentAmount * 100).toString(),
@@ -339,9 +335,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                         paymentCard = selectedCard!!,
                         onPaymentLoading = {},
                         onPaymentSuccessful = {
-                            bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.DONE.toPath(), day = getDay(),
-                                month = getMonth(), year = getYear(), paymentAmount = paymentAmount,
-                                paymentMethod = PaymentMethod.CARD_PAYMENT.toPath())
+                            createAppointment()
                         },
                         onPaymentFailed = {})
                 }
@@ -353,7 +347,6 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         if (showSelectPaymentCards.value) {
             val paymentAmount = calculateAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
             val paymentCurrency = mainViewModel!!.displayCurrencyPath.value
-            mainViewModel!!.showPaymentMethodBottomSheet(false)
             PaymentCardBottomSheet(
                 mainViewModel!!,
                 cardList,
@@ -440,6 +433,17 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                 }
             }
         )}
+
+    private fun createAppointment(){
+        val paymentMethod = bookingViewModel!!.paymentMethod.value
+        val userId = mainViewModel!!.currentUserInfo.value.userId
+        val vendorId = mainViewModel!!.connectedVendor.value.vendorId
+        val paymentAmount = calculateAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
+
+        bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.DONE.toPath(), day = getDay(),
+            month = getMonth(), year = getYear(), paymentAmount = paymentAmount,
+            paymentMethod = paymentMethod)
+    }
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable

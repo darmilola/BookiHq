@@ -20,29 +20,37 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import domain.Enums.ServiceLocationEnum
 import presentation.components.ToggleButton
 import presentation.viewmodels.BookingViewModel
 import presentations.components.TextComponent
 
 @Composable
-fun ServiceLocationToggle(bookingViewModel: BookingViewModel, isDisabled: Boolean = false, onSpaSelectedListener:() -> Unit,
+fun ServiceLocationToggle(bookingViewModel: BookingViewModel, isDisabled: Boolean = false, isPackage: Boolean = false, onSpaSelectedListener:() -> Unit,
                           onMobileSelectedListener:() -> Unit){
 
-    var locationType by remember { mutableStateOf(0) }
+    var locationType by remember { mutableStateOf(ServiceLocationEnum.SPA.toPath()) }
     val isMobileService = bookingViewModel.currentAppointmentBooking.value.isMobileService
     if(isMobileService){
-        locationType = 1
+        locationType = ServiceLocationEnum.MOBILE.toPath()
         onMobileSelectedListener()
     }
     else{
-        locationType = 0
+        locationType = ServiceLocationEnum.SPA.toPath()
         onSpaSelectedListener()
     }
 
     val selectedServiceTypeState = bookingViewModel.selectedServiceType.collectAsState()
     if (!selectedServiceTypeState.value.mobileServiceAvailable){
-        locationType = 0
+        locationType = ServiceLocationEnum.SPA.toPath()
         onSpaSelectedListener()
+    }
+
+    val isServiceLocationDisabled = if (isPackage){
+        isDisabled
+    }
+    else{
+        !selectedServiceTypeState.value.mobileServiceAvailable || isDisabled
     }
 
     Column(
@@ -68,11 +76,11 @@ fun ServiceLocationToggle(bookingViewModel: BookingViewModel, isDisabled: Boolea
 
         ToggleButton(shape = CircleShape,onLeftClicked = {
             onSpaSelectedListener()
-            locationType = 0
+            locationType = ServiceLocationEnum.SPA.toPath()
         }, onRightClicked = {
             onMobileSelectedListener()
-            locationType = 1
-        }, leftText = "Parlor", rightText = "My Address", isRightSelection = locationType != 0, isDisabled = !selectedServiceTypeState.value.mobileServiceAvailable || isDisabled)
+            locationType = ServiceLocationEnum.MOBILE.toPath()
+        }, leftText = "Parlor", rightText = "My Address", isRightSelection = locationType != ServiceLocationEnum.SPA.toPath(), isDisabled = isServiceLocationDisabled)
 
     }
 

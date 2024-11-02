@@ -26,7 +26,7 @@ fun calculateCartCheckoutSubTotal(orderItems: MutableList<OrderItem>): Long {
 }
 
 fun calculateAppointmentPaymentAmount(appointments: List<UserAppointment>): Int {
-    var total: Int = 0
+    var total = 0
     for (item in appointments){
         if (item.resources!!.appointmentType == AppointmentType.SINGLE.toPath()) {
             val price = item.resources.serviceTypeItem!!.price
