@@ -276,7 +276,7 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
                         profileImageUrl = profileImageUrl.value!!,
                         isAsync = true,
                         onUploadImageClicked = {
-                            platformNavigator!!.startImageUpload {
+                            platformNavigator.startImageUpload {
                                 profileImageUrl.value = it
                             }
                         })

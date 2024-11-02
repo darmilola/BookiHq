@@ -153,7 +153,7 @@ fun TherapistAppointmentInfoWidget(appointment: Appointment) {
 
     val appointmentDate =
         LocalDate(dayOfMonth = appointment.appointmentDay!!, monthNumber = appointment.appointmentMonth!!, year = appointment.appointmentYear!!).format(appointmentDateFormat)
-    val appointmentTime = platformTime?.time+" "+isAm
+    val appointmentTime = platformTime.time +" "+isAm
 
     val columnModifier = Modifier
         .padding(start = 15.dp, end = 10.dp)

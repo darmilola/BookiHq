@@ -5,12 +5,12 @@ enum class Gender {
     FEMALE;
 
     fun toPath() = when (this) {
-        MALE -> "male"
-        FEMALE -> "female"
+        MALE -> "Male"
+        FEMALE -> "Female"
     }
 
     fun toEventPropertyName() = when (this) {
-        MALE -> "male"
-        FEMALE -> "female"
+        MALE -> "Male"
+        FEMALE -> "Female"
     }
 }

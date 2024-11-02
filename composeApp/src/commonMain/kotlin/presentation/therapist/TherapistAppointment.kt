@@ -166,7 +166,7 @@ fun TherapistAppointment(mainViewModel: MainViewModel, loadingScreenUiStateViewM
                                     ) {
                                         IndeterminateCircularProgressBar()
                                     }
-                                } else if (it == lastIndex && (displayedAppointmentsCount?.value!! < totalAppointmentsCount?.value!!)) {
+                                } else if (it == lastIndex && (displayedAppointmentsCount.value < totalAppointmentsCount.value)) {
                                     val buttonStyle = Modifier
                                         .height(60.dp)
                                         .fillMaxWidth()

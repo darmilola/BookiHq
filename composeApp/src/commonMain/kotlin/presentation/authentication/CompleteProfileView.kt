@@ -285,13 +285,13 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                     ToggleButton(
                         shape = RoundedCornerShape(10.dp),
                         onLeftClicked = {
-                            gender.value = "Male"
+                            gender.value = Gender.MALE.toPath()
                         },
                         onRightClicked = {
-                            gender.value = "Female"
+                            gender.value = Gender.FEMALE.toPath()
                         },
-                        leftText = "Male",
-                        rightText = "Female",
+                        leftText = Gender.MALE.toPath(),
+                        rightText = Gender.FEMALE.toPath(),
                     )
                 }
 

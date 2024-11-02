@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
@@ -78,6 +79,31 @@ fun CustomerInfoWidget(appointment: Appointment) {
                      textModifier = Modifier.wrapContentSize()
                          .padding(start = 10.dp, end = 10.dp)
                  )
+                     Box(
+                         modifier = Modifier.width(25.dp).fillMaxHeight()
+                             .padding(start = 10.dp, end = 10.dp),
+                         contentAlignment = Alignment.Center
+                     ) {
+                         Box(
+                             modifier = Modifier.size(6.dp).clip(CircleShape)
+                                 .background(color = Colors.serviceLightGray)
+                         ) {}
+                     }
+                     Box(
+                         modifier = Modifier.wrapContentWidth().fillMaxHeight(),
+                         contentAlignment = Alignment.CenterStart
+                     ) {
+                         TextComponent(
+                             text = customerInfo.gender,
+                             textModifier = Modifier.wrapContentSize(),
+                             fontSize = 14,
+                             fontFamily = GGSansRegular,
+                             textStyle = MaterialTheme.typography.h6,
+                             textColor = Colors.serviceLightGray,
+                             textAlign = TextAlign.Start,
+                             fontWeight = FontWeight.Bold,
+                         )
+                     }
              }
 
              if (customerInfo!!.contactPhone != null) {
@@ -99,7 +125,7 @@ fun CustomerInfoWidget(appointment: Appointment) {
                      }
 
                      TextComponent(
-                         text = customerInfo!!.contactPhone.toString(),
+                         text = customerInfo.contactPhone.toString(),
                          fontSize = 15,
                          fontFamily = GGSansRegular,
                          textStyle = MaterialTheme.typography.h6,
@@ -133,7 +159,7 @@ fun CustomerInfoWidget(appointment: Appointment) {
                      }
 
                      TextComponent(
-                         text = customerInfo?.address.toString(),
+                         text = customerInfo.address.toString(),
                          fontSize = 15,
                          fontFamily = GGSansRegular,
                          textStyle = MaterialTheme.typography.h6,
