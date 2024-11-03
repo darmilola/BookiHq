@@ -9,7 +9,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.room.RoomDatabase
 import applications.device.deviceInfo
+import applications.room.AppDatabase
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -47,9 +49,14 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
    @Transient private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
    @Transient private var connectVendorActionUIStateViewModel: PerformedActionUIStateViewModel? = null
    @Transient private var mainViewModel: MainViewModel? = null
+   @Transient private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 
     fun setMainViewModel(mainViewModel: MainViewModel) {
         this.mainViewModel = mainViewModel
+    }
+
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = databaseBuilder
     }
 
     override val key: ScreenKey = uniqueScreenKey
@@ -109,6 +116,7 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
             else {
                 val mainScreen = MainScreen(platformNavigator)
                 mainScreen.setMainViewModel(mainViewModel!!)
+                mainScreen.setDatabaseBuilder(databaseBuilder)
                 navigator.replaceAll(mainScreen)
             }
         }

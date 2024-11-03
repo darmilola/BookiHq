@@ -18,5 +18,5 @@ data class User(
     @ColumnInfo @SerialName("imageUrl") val profileImageUrl: String? = null,
     @ColumnInfo @SerialName("authPhone") val authPhone: String? = null, @ColumnInfo @SerialName("connectedVendor") val connectedVendor: Long? = null,
     @ColumnInfo @SerialName("fcmToken") val fcmToken: String? = null, @ColumnInfo @SerialName("apiKey") val apiKey: String? = null,
-    @ColumnInfo @SerialName("isTherapist") val isTherapist: Boolean? = false, @ColumnInfo @SerialName("isProfileCompleted") val isProfileCompleted: Boolean? = false): Parcelable
+    @ColumnInfo @SerialName("isTherapist") val isTherapist: Boolean? = false): Parcelable
 

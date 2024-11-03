@@ -177,11 +177,13 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
     if (navigateToCompleteProfile.value){
         val completeProfile = CompleteProfileScreen(platformNavigator, authPhone = "", authEmail = authEmail.value)
         completeProfile.setMainViewModel(mainViewModel = mainViewModel)
+        completeProfile.setDatabaseBuilder(databaseBuilder = databaseBuilder)
         navigator.replaceAll(completeProfile)
     }
     else if (navigateToConnectVendor.value){
         val connectVendor = ConnectVendor(platformNavigator)
         connectVendor.setMainViewModel(mainViewModel)
+        connectVendor.setDatabaseBuilder(databaseBuilder)
         navigator.replaceAll(connectVendor)
     }
     else if (navigateToPlatform.value) {

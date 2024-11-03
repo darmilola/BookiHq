@@ -123,6 +123,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
     if (navigateToConnectVendor.value){
         val connectVendor = ConnectVendor(platformNavigator)
         connectVendor.setMainViewModel(mainViewModel)
+        connectVendor.setDatabaseBuilder(databaseBuilder)
         navigator.replaceAll(connectVendor)
     }
     else if (navigateToPlatform.value) {

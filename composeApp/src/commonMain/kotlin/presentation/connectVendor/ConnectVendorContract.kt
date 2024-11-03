@@ -15,9 +15,9 @@ class ConnectVendorContract {
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
         abstract fun connectVendor(userId: Long, vendorId: Long, action: String, userFirstname: String)
-        abstract fun getVendor(country: String, city: String)
-        abstract fun getMoreVendor(country: String, city: String, nextPage: Int = 1)
-        abstract fun searchVendor(country: String, city: String, searchQuery: String)
-        abstract fun searchMoreVendors(country: String, city: String, searchQuery: String, nextPage: Int = 1)
+        abstract fun getVendor(country: String, city: String, connectedVendor: Long,)
+        abstract fun getMoreVendor(country: String, city: String, connectedVendor: Long, nextPage: Int = 1)
+        abstract fun searchVendor(country: String, city: String, connectedVendor: Long, searchQuery: String)
+        abstract fun searchMoreVendors(country: String, city: String, connectedVendor: Long, searchQuery: String, nextPage: Int = 1)
     }
 }

@@ -149,16 +149,10 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
                 }
                 ServiceTitle(mainViewModel)
                 AttachServiceTypeToggle(mainViewModel, bookingViewModel, onServiceSelected = {
-                    val description =
-                        if (mainViewModel.currentUserInfo.value.isProfileCompleted == true) {
-                            "You can go Mobile for this service"
-                        } else {
-                            "Please complete your profile"
-                        }
                     if (it.mobileServiceAvailable) {
                         isServiceTypeMobileServiceAvailable.value = true
                         ShowSnackBar(title = "Mobile Service Is Available",
-                            description = description,
+                            description = "You can go Mobile for this service",
                             actionLabel = "",
                             duration = StackedSnackbarDuration.Short,
                             snackBarType = SnackBarType.INFO,
@@ -176,8 +170,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
                     }
                 })
                 if (mobileServicesAvailable) {
-                    val isServiceLocationDisabled =
-                        mainViewModel.currentUserInfo.value.isProfileCompleted != true || !isServiceTypeMobileServiceAvailable.value
+                    val isServiceLocationDisabled = !isServiceTypeMobileServiceAvailable.value
                     ServiceLocationToggle(
                         bookingViewModel,
                         isPackage = false,

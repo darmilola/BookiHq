@@ -32,6 +32,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.room.RoomDatabase
+import applications.room.AppDatabase
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.russhwolf.settings.Settings
@@ -62,7 +64,7 @@ import utils.InputValidator
 
 @Composable
 fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail: String, authPhone: String,
-                    platformNavigator: PlatformNavigator, cityViewModel: CityViewModel, profilePresenter: ProfilePresenter, mainViewModel: MainViewModel) {
+                    platformNavigator: PlatformNavigator, cityViewModel: CityViewModel, profilePresenter: ProfilePresenter, mainViewModel: MainViewModel, databaseBuilder: RoomDatabase.Builder<AppDatabase>?) {
 
     val placeHolderImage = "drawable/user_icon.png"
     val firstname = remember { mutableStateOf("") }
@@ -128,6 +130,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
     else if (navigateToConnectVendor.value){
         val connectVendor = ConnectVendor(platformNavigator)
         connectVendor.setMainViewModel(mainViewModel)
+        connectVendor.setDatabaseBuilder(databaseBuilder = databaseBuilder)
         navigator.replaceAll(connectVendor)
     }
 

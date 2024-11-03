@@ -211,13 +211,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
             content = {
 
                 LaunchedEffect(true) {
-                    val isProfileCompleted =
-                        mainViewModel!!.currentUserInfo.value.isProfileCompleted
-                    if (isProfileCompleted == true) {
-                        mainViewModel!!.setDeliveryMethod(DeliveryMethodEnum.MOBILE.toPath())
-                    } else {
-                        mainViewModel!!.setDeliveryMethod(DeliveryMethodEnum.PICKUP.toPath())
-                    }
+                    mainViewModel!!.setDeliveryMethod(DeliveryMethodEnum.MOBILE.toPath())
                 }
 
                 val currentUserInfo = mainViewModel!!.currentUserInfo.value

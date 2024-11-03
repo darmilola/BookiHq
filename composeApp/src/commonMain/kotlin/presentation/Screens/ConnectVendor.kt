@@ -23,6 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.room.RoomDatabase
+import applications.room.AppDatabase
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -45,6 +47,7 @@ import presentation.viewmodels.LoadingScreenUIStateViewModel
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.set
 import domain.Enums.SharedPreferenceEnum
+import domain.Enums.VendorEnum
 import drawable.ErrorOccurredWidget
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.ConnectPageHandler
@@ -68,9 +71,14 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
     @Transient private var mainViewModel: MainViewModel? = null
     @Transient private var vendorResourceListEnvelopeViewModel: VendorsResourceListEnvelopeViewModel? = null
     @Transient private var connectVendorActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 
     fun setMainViewModel(mainViewModel: MainViewModel) {
         this.mainViewModel = mainViewModel
+    }
+
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = databaseBuilder
     }
 
     override val key: ScreenKey = uniqueScreenKey
@@ -115,7 +123,7 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
                 && preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""].isNotEmpty()
                 && preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""].isNotEmpty()
                 && preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""].isNotEmpty()){
-                connectVendorPresenter.getVendor(country = country, city = city)
+                connectVendorPresenter.getVendor(country = country, city = city, connectedVendor = VendorEnum.DEFAULT_VENDOR_ID.toPath())
                 vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
             }
             else{
@@ -124,7 +132,7 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
                     preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
                     preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = country
                     preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = city
-                    connectVendorPresenter.getVendor(country = country, city = city)
+                    connectVendorPresenter.getVendor(country = country, city = city, connectedVendor = VendorEnum.DEFAULT_VENDOR_ID.toPath())
                     vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                 })
             }
@@ -173,10 +181,10 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
                         SearchBar(placeholderText = "search @vendor", onValueChange = {
                             vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                             searchQuery.value = it
-                            connectVendorPresenter.searchVendor(country,city,searchQuery = it)
+                            connectVendorPresenter.searchVendor(country,city,connectedVendor = VendorEnum.DEFAULT_VENDOR_ID.toPath(),searchQuery = it)
                         }, onBackPressed = {
                             vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
-                            connectVendorPresenter.getVendor(country = country, city = city)
+                            connectVendorPresenter.getVendor(country = country, city = city, connectedVendor = VendorEnum.DEFAULT_VENDOR_ID.toPath())
                         })
                     }
                 },
@@ -198,7 +206,7 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
                                     && preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""].isNotEmpty()
                                     && preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""].isNotEmpty()
                                     && preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""].isNotEmpty()){
-                                    connectVendorPresenter.getVendor(country = country, city = city)
+                                    connectVendorPresenter.getVendor(country = country, city = city, connectedVendor = VendorEnum.DEFAULT_VENDOR_ID.toPath())
                                     vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                                 }
                                 else{
@@ -207,7 +215,7 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
                                         preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
                                         preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = countryName
                                         preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = cityName
-                                        connectVendorPresenter.getVendor(country = countryName, city = cityName)
+                                        connectVendorPresenter.getVendor(country = countryName, city = cityName, connectedVendor = VendorEnum.DEFAULT_VENDOR_ID.toPath())
                                         vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                                         city = cityName
                                         country = countryName
@@ -233,6 +241,7 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
                                     SwitchVendorBusinessItemComponent(vendor = vendorUIModel.value.vendorsList[i]) {
                                         val connectVendorDetailsScreen = ConnectVendorDetailsScreen(vendor = it, platformNavigator = platformNavigator)
                                         connectVendorDetailsScreen.setMainViewModel(mainViewModel!!)
+                                        connectVendorDetailsScreen.setDatabaseBuilder(databaseBuilder = databaseBuilder)
                                         navigator.push(connectVendorDetailsScreen)
                                     }
                                 }

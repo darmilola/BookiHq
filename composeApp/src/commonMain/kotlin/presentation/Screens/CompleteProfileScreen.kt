@@ -2,6 +2,8 @@ package presentation.Screens
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.room.RoomDatabase
+import applications.room.AppDatabase
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
@@ -27,9 +29,14 @@ data class CompleteProfileScreen(val platformNavigator: PlatformNavigator, val a
     private var cityViewModel: CityViewModel? = null
     @Transient
     private var mainViewModel: MainViewModel? = null
+    @Transient
+    private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 
     fun setMainViewModel(mainViewModel: MainViewModel) {
         this.mainViewModel = mainViewModel
+    }
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = databaseBuilder
     }
 
     override val key: ScreenKey = uniqueScreenKey
@@ -56,7 +63,7 @@ data class CompleteProfileScreen(val platformNavigator: PlatformNavigator, val a
 
 
         CompleteProfile(authenticationPresenter,authEmail = authEmail, authPhone = authPhone, platformNavigator = platformNavigator, cityViewModel!!,
-            profilePresenter, mainViewModel = mainViewModel!!)
+            profilePresenter, mainViewModel = mainViewModel!!, databaseBuilder = databaseBuilder)
     }
 
 }

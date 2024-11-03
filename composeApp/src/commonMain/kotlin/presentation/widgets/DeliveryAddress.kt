@@ -37,7 +37,6 @@ fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel,
         .padding(start = 10.dp, bottom = 10.dp, top = 15.dp, end = 10.dp)
         .wrapContentHeight()
         .fillMaxWidth()
-    val isProfileCompleted = mainViewModel.currentUserInfo.value.isProfileCompleted
     Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
         TextComponent(
             text = "Delivery Location",
@@ -55,13 +54,11 @@ fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel,
 
         Row(modifier = Modifier.fillMaxWidth()) {
             ToggleButton(shape = CircleShape, isRightSelection = isRightSelection, onLeftClicked = {
-                println("Mobile")
                 onMobileSelectedListener()
             }, onRightClicked = {
-                println("Pickup")
                 onPickupSelectedListener()
             },
-                isDisabled = isProfileCompleted != true,
+                isDisabled = false,
                 leftText = getDeliveryMethodDisplayName(DeliveryMethodEnum.MOBILE.toPath()), rightText = getDeliveryMethodDisplayName(DeliveryMethodEnum.PICKUP.toPath()))
         }
 

@@ -176,6 +176,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
         else if (navigateToConnectVendor.value){
             val connectScreen = ConnectVendor(platformNavigator)
             connectScreen.setMainViewModel(mainViewModel!!)
+            connectScreen.setDatabaseBuilder(databaseBuilder)
             navigator.replaceAll(connectScreen)
         }
         else if (navigateToPlatform.value){

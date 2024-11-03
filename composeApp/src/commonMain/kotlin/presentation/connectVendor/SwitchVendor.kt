@@ -47,6 +47,7 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import domain.Enums.SharedPreferenceEnum
+import domain.Enums.VendorEnum
 import domain.Models.PlatformNavigator
 import domain.Models.Vendor
 import domain.Models.VendorItemUIModel
@@ -106,6 +107,7 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
         val searchQuery = remember { mutableStateOf("") }
         var country = preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""]
         var city = preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""]
+        val vendorId: Long = preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath(),-1L]
         val navigator = LocalNavigator.currentOrThrow
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
@@ -151,7 +153,7 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                 && preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""].isNotEmpty()
                 && preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""].isNotEmpty()
                 && preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""].isNotEmpty()){
-                connectVendorPresenter.getVendor(country = country, city = city)
+                connectVendorPresenter.getVendor(country = country, city = city, connectedVendor = vendorId)
                 vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
             }
             else{
@@ -160,7 +162,7 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                     preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
                     preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = countryName
                     preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = cityName
-                    connectVendorPresenter.getVendor(country = countryName, city = cityName)
+                    connectVendorPresenter.getVendor(country = countryName, city = cityName, connectedVendor = vendorId)
                     vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                     city = cityName
                     country = countryName
@@ -213,10 +215,10 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                     SearchBar(placeholderText = "search @vendor", onValueChange = {
                         vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                         searchQuery.value = it
-                        connectVendorPresenter.searchVendor(country,city,searchQuery = it)
+                        connectVendorPresenter.searchVendor(country,city, connectedVendor = vendorId,searchQuery = it)
                     }, onBackPressed = {
                         vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
-                        connectVendorPresenter.getVendor(country = country, city = city)
+                        connectVendorPresenter.getVendor(country = country, city = city, connectedVendor = vendorId)
                     })
                 }
             },
@@ -238,7 +240,7 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                                 && preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""].isNotEmpty()
                                 && preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""].isNotEmpty()
                                 && preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""].isNotEmpty()){
-                                connectVendorPresenter.getVendor(country = country, city = city)
+                                connectVendorPresenter.getVendor(country = country, city = city, connectedVendor = vendorId)
                                 vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                             }
                             else{
@@ -247,7 +249,7 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                                     preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
                                     preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = countryName
                                     preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = cityName
-                                    connectVendorPresenter.getVendor(country = countryName, city = cityName)
+                                    connectVendorPresenter.getVendor(country = countryName, city = cityName, connectedVendor = vendorId)
                                     vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                                     city = cityName
                                     country = countryName
