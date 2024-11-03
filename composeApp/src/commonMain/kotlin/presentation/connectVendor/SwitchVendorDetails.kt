@@ -30,6 +30,7 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import domain.Enums.CustomerMovementEnum
 import domain.Enums.DeviceType
+import domain.Enums.ProductType
 import domain.Enums.Screens
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.PlatformNavigator
@@ -110,17 +111,15 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
                 if (switchVendorUiState.value.isLoading) {
                     LoadingDialog("Connecting New Vendor")
                 } else if (switchVendorUiState.value.isSuccess) {
-                    preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = mainViewModel!!.switchVendor.value.whatsAppPhone
                     performedActionUIStateViewModel!!.switchVendorActionUIState(AppUIStates(isDefault = true))
-
                     if (deviceInfo() == DeviceType.IOS.toPath()) {
                         // iOS App Restart Process
                         platformNavigator.restartApp()
                     }
                     else if (deviceInfo() == DeviceType.ANDROID.toPath()){
                         // App Restart for Android
+                        preferenceSettings[SharedPreferenceEnum.IS_SWITCH_VENDOR.toPath()] = true
                         val splashScreen = SplashScreen(platformNavigator = platformNavigator)
-                        mainViewModel!!.setRestartApp(true)
                         splashScreen.setMainViewModel(mainViewModel!!)
                         splashScreen.setDatabaseBuilder(databaseBuilder)
                         navigator.replaceAll(splashScreen)
@@ -131,7 +130,6 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
                 }
 
                  BusinessInfoContent(switchVendorValue){
-                 println(userInfo)
                  profilePresenter.switchVendor(userId = userInfo.userId!!,
                      vendorId = switchVendorId, action = CustomerMovementEnum.Exit.toPath(),
                      exitReason = switchVendorReason, vendor = mainViewModel!!.connectedVendor.value, platformNavigator = platformNavigator)

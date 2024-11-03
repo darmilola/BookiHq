@@ -4,6 +4,7 @@ enum class SharedPreferenceEnum {
     COUNTRY,
     CITY,
     SELECTED_PRODUCT_TYPE,
+    IS_SWITCH_VENDOR,
     USER_ID,
     VENDOR_ID,
     USER_AUTH_PHONE,
@@ -29,6 +30,7 @@ enum class SharedPreferenceEnum {
         LATITUDE -> "latitude"
         LONGITUDE -> "longitude"
         SELECTED_PRODUCT_TYPE -> "selectedProductType"
+        IS_SWITCH_VENDOR -> "is_switch_vendor"
     }
 
 }

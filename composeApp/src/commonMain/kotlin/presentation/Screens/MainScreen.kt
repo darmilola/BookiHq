@@ -148,14 +148,8 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
         var isBottomNavSelected by remember { mutableStateOf(true) }
         val vendorInfo = mainViewModel!!.connectedVendor.collectAsState()
 
-        if (restartApp.value) {
-            mainViewModel!!.setRestartApp(false)
-            val navigator = LocalNavigator.currentOrThrow
-            val splashScreen = SplashScreen(platformNavigator = platformNavigator)
-            splashScreen.setDatabaseBuilder(databaseBuilder)
-            splashScreen.setMainViewModel(mainViewModel!!)
-            navigator.replaceAll(splashScreen)
-        }
+        println("I Restart ${restartApp.value}")
+
 
         val favoriteHandler = FavoriteProductsHandler(productPresenter = productPresenter,
             onFavoriteProductReady = {},

@@ -37,6 +37,9 @@ class PackagePresenter(apiService: HttpClient): PackageContract.Presenter() {
                                         contractView?.showLoadPackageLce(AppUIStates(isSuccess = true))
                                         contractView?.showVendorPackages(response.packages)
                                     }
+                                    ServerResponse.EMPTY.toPath() -> {
+                                        contractView?.showLoadPackageLce(AppUIStates(isEmpty = true, emptyMessage = "Vendor Has No Package"))
+                                    }
                                     ServerResponse.FAILURE.toPath() -> {
                                         contractView?.showLoadPackageLce(AppUIStates(isFailed = true, errorMessage = "Error Loading Packages"))
                                     }

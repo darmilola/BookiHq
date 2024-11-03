@@ -132,8 +132,8 @@ class Packages : Tab, KoinComponent, Parcelable {
             animation = StackedSnackbarAnimation.Bounce
         )
 
-        val isAppRestarted = mainViewModel!!.restartApp.value
-        if (isAppRestarted){
+        val isSwitchVendor: Boolean = preferenceSettings[SharedPreferenceEnum.IS_SWITCH_VENDOR.toPath(),false]
+        if (isSwitchVendor){
             packagesResourceListEnvelopeViewModel!!.setResources(arrayListOf())
         }
 

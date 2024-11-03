@@ -142,7 +142,6 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
 
 
         productPresenter.setMainViewModel(mainViewModel!!)
-
         if (loadingScreenUiStateViewModel == null) {
             loadingScreenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
@@ -171,8 +170,9 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
             loadingScreenUiStateViewModel!!, productResourceListEnvelopeViewModel!!, productPresenter)
         productHandler.init()
 
-        val isAppRestarted = mainViewModel!!.restartApp.value
-        if (isAppRestarted){
+        val isSwitchVendor: Boolean = preferenceSettings[SharedPreferenceEnum.IS_SWITCH_VENDOR.toPath(),false]
+
+        if (isSwitchVendor){
             productResourceListEnvelopeViewModel!!.setResources(arrayListOf())
         }
 

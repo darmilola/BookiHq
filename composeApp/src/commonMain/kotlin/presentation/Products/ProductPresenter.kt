@@ -287,7 +287,7 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                                         }
                                     }
                                     ServerResponse.EMPTY.toPath() -> {
-                                        contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Product is Empty"))
+                                        contractView?.showLce(AppUIStates(isEmpty = true, emptyMessage = "Product is Empty"))
                                     }
                                     ServerResponse.FAILURE.toPath() -> {
                                         contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Loading Product"))

@@ -142,12 +142,6 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             val vendorPhone: String = preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath(),""]
             val screenSizeInfo = ScreenSizeInfo()
 
-        val isAppRestarted = mainViewModel!!.restartApp.value
-            if (isAppRestarted){
-                homePageViewModel!!.setHomePageInfo(HomepageInfo())
-            }
-
-
             if (loadingScreenUiStateViewModel == null) {
                 loadingScreenUiStateViewModel = kmpViewModel(
                     factory = viewModelFactory {
@@ -158,6 +152,12 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
 
         LaunchedEffect(true) {
+            val isSwitchVendor: Boolean = preferenceSettings[SharedPreferenceEnum.IS_SWITCH_VENDOR.toPath(),false]
+
+            if (isSwitchVendor){
+                homePageViewModel!!.setHomePageInfo(HomepageInfo())
+            }
+
             if (homePageViewModel!!.homePageInfo.value.userInfo?.userId == null) {
                 if (vendorPhone.isNotEmpty()){
                     homepagePresenter.getUserHomepageWithStatus(userId, vendorPhone)

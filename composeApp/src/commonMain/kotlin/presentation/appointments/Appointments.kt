@@ -216,8 +216,8 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
         val selectedAppointment = remember { mutableStateOf(UserAppointment()) }
         val appointmentForReview = remember { mutableStateOf(Appointment()) }
 
-        val isAppRestarted = mainViewModel!!.restartApp.value
-        if (isAppRestarted){
+        val isSwitchVendor: Boolean = preferenceSettings[SharedPreferenceEnum.IS_SWITCH_VENDOR.toPath(),false]
+        if (isSwitchVendor){
             appointmentResourceListEnvelopeViewModel!!.setResources(arrayListOf())
         }
 

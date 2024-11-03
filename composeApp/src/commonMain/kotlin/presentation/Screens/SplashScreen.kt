@@ -31,6 +31,7 @@ import com.russhwolf.settings.set
 import di.initKoin
 import domain.Enums.AuthType
 import domain.Enums.DeviceType
+import domain.Enums.ProductType
 import domain.Enums.SharedPreferenceEnum
 import domain.Enums.getDisplayCurrency
 import presentation.components.SplashScreenBackground
@@ -57,7 +58,11 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
     val authPhone = remember { mutableStateOf("") }
     val navigator = LocalNavigator.currentOrThrow
     val scope = rememberCoroutineScope()
+    val connectedVendorId = mainViewModel.connectedVendor.value.vendorId
 
+    if (connectedVendorId == null){
+        preferenceSettings[SharedPreferenceEnum.IS_SWITCH_VENDOR.toPath()] = false
+    }
 
     val handler = AuthenticationScreenHandler(authenticationPresenter,
         onUserLocationReady = {},
