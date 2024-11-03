@@ -119,8 +119,6 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
         }, onUpdateStarted = {}, onUpdateEnded = {}, onVerificationError = {})
     authHandler.init()
 
-    val pattern = remember { Regex("^\\d*\$") }
-
     if (completeProfileInProgress.value) {
         Box(modifier = Modifier.fillMaxWidth(0.90f)) {
             LoadingDialog("Saving Profile...")
@@ -259,9 +257,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                         isSingleLine = true,
                         maxLines = 1
                     ) {
-                        if (it.matches(pattern)) {
-                            contactPhone.value = it
-                        }
+                        contactPhone.value = it
                     }
                 }
 

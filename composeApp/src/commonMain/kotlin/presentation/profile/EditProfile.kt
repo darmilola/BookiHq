@@ -141,7 +141,6 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
         val updateProfileStarted = remember { mutableStateOf(false) }
         val updateProfileEnded = remember { mutableStateOf(false) }
         val updateProfileSuccessful = remember { mutableStateOf(false) }
-        val pattern = remember { Regex("^\\d*\$") }
         val preferenceSettings = Settings()
 
         if (performedActionUIStateViewModel == null) {
@@ -353,15 +352,13 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
                             placeholderText = "Contact Phone",
                             iconSize = 28,
                             text = contactPhone.value!!,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             isPasswordField = false,
                             onSaveClicked = isSavedClicked.value,
                             isSingleLine = true,
                             maxLines = 1
                         ) {
-                            if (it.matches(pattern)) {
-                                contactPhone.value = it
-                            }
+                            contactPhone.value = it
                         }
                     }
 

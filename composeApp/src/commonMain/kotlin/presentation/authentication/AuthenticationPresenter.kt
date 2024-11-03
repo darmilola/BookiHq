@@ -75,6 +75,7 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                     authenticationRepositoryImpl.updateProfile(userId, firstname, lastname, address, contactPhone, country,city, gender, profileImageUrl)
                         .subscribe(
                             onSuccess = { result ->
+                                println("Error 0 $result")
                                 when (result.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
                                         contractView?.onProfileUpdateEnded(isSuccessful = true)
@@ -88,12 +89,14 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
                                 }
                             },
                             onError = {
+                                println("Error 1 ${it.message}")
                                 contractView?.onProfileUpdateEnded(isSuccessful = false)
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
+                println("Error 2 ${e.message}")
                 contractView?.onProfileUpdateEnded(isSuccessful = false)
             }
         }
