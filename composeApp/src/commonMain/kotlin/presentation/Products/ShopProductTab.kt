@@ -59,6 +59,7 @@ import domain.Models.Product
 import domain.Models.ProductItemUIModel
 import domain.Enums.Screens
 import domain.Enums.SharedPreferenceEnum
+import domain.Models.HomepageInfo
 import drawable.ErrorOccurredWidget
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
@@ -139,6 +140,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
             animation = StackedSnackbarAnimation.Bounce
         )
 
+
         productPresenter.setMainViewModel(mainViewModel!!)
 
         if (loadingScreenUiStateViewModel == null) {
@@ -169,6 +171,11 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
             loadingScreenUiStateViewModel!!, productResourceListEnvelopeViewModel!!, productPresenter)
         productHandler.init()
 
+        val isAppRestarted = mainViewModel!!.restartApp.value
+        if (isAppRestarted){
+            productResourceListEnvelopeViewModel!!.setResources(arrayListOf())
+        }
+
         LaunchedEffect(true) {
             if (productResourceListEnvelopeViewModel!!.resources.value.isEmpty()){
                 productResourceListEnvelopeViewModel!!.setResources(mutableListOf())
@@ -188,7 +195,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                                productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                                searchQuery.value = it
                                productPresenter.searchProducts(
-                                   mainViewModel!!.vendorId.value,
+                                   mainViewModel!!.connectedVendor.value.vendorId!!,
                                    it
                                )
                            }

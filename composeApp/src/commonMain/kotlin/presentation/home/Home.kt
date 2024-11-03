@@ -142,6 +142,11 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             val vendorPhone: String = preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath(),""]
             val screenSizeInfo = ScreenSizeInfo()
 
+        val isAppRestarted = mainViewModel!!.restartApp.value
+            if (isAppRestarted){
+                homePageViewModel!!.setHomePageInfo(HomepageInfo())
+            }
+
 
             if (loadingScreenUiStateViewModel == null) {
                 loadingScreenUiStateViewModel = kmpViewModel(
@@ -170,18 +175,10 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                     screenSizeInfo = screenSizeInfo,
                     statusList = vendorStatus
                 )
-                mainViewModel!!.setConnectedVendor(homePageInfo.vendorInfo!!)
                 homePageViewModel!!.setHomePageViewHeight(viewHeight)
                 homePageViewModel!!.setHomePageInfo(homePageInfo)
                 homePageViewModel!!.setVendorStatus(vendorStatus)
-                mainViewModel!!.setUserEmail(homePageInfo.userInfo?.email!!)
-                mainViewModel!!.setUserFirstname(homePageInfo.userInfo.firstname!!)
-                mainViewModel!!.setUserId(homePageInfo.userInfo.userId!!)
-                mainViewModel!!.setVendorEmail(homePageInfo.vendorInfo.businessEmail!!)
-                mainViewModel!!.setVendorId(homePageInfo.vendorInfo.vendorId!!)
-                mainViewModel!!.setVendorBusinessLogoUrl(homePageInfo.vendorInfo.businessLogo!!)
-                mainViewModel!!.setUserInfo(homePageInfo.userInfo)
-                saveAccountInfoFromServer(homePageInfo)
+                mainViewModel!!.setVendorBusinessLogoUrl(homePageInfo.vendorInfo!!.businessLogo!!)
             })
         handler.init()
 
@@ -280,16 +277,6 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                         }
                     })
 
-    }
-
-    private fun saveAccountInfoFromServer(homePageInfo: HomepageInfo){
-        val preferenceSettings = Settings()
-        preferenceSettings[SharedPreferenceEnum.USER_EMAIL.toPath()] = homePageInfo.userInfo?.email
-        preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = homePageInfo.userInfo?.userId
-        preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = homePageInfo.userInfo?.firstname
-        preferenceSettings[SharedPreferenceEnum.VENDOR_EMAIL.toPath()] = homePageInfo.vendorInfo?.businessEmail
-        preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = homePageInfo.vendorInfo?.vendorId
-        preferenceSettings[SharedPreferenceEnum.VENDOR_BUSINESS_LOGO.toPath()] = homePageInfo.vendorInfo?.businessLogo
     }
 
     @Composable

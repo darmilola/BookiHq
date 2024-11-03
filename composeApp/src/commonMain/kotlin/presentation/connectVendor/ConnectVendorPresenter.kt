@@ -29,7 +29,7 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
     override fun registerUIContract(view: ConnectVendorContract.View?) {
          contractView = view
     }
-    override fun connectVendor(userId: Long, vendorId: Long, action: String, userFirstname: String) {
+    override fun connectVendor(userId: Long, vendorId: Long, action: String) {
         contractView?.showActionLce(AppUIStates(isLoading = true, loadingMessage = "Connecting Vendor"))
         scope.launch(Dispatchers.Main) {
             try {

@@ -116,8 +116,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
                 preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
                 preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
-                preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
-                preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
+                preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendorId
                 preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = vendorWhatsAppPhone
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
@@ -165,7 +164,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
             },
             onVerificationEnded = {
                 verificationInProgress.value = false
-            }, onCompleteStarted = {}, onCompleteEnded = {},connectVendorOnProfileCompleted = { country,city,profileId, apiKey -> },
+            }, onCompleteStarted = {}, onCompleteEnded = {},connectVendorOnProfileCompleted = { _ -> },
             onUpdateStarted = {}, onUpdateEnded = {}, onVerificationError = {})
         handler.init()
 

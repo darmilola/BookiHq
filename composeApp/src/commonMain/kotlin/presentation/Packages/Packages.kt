@@ -132,6 +132,11 @@ class Packages : Tab, KoinComponent, Parcelable {
             animation = StackedSnackbarAnimation.Bounce
         )
 
+        val isAppRestarted = mainViewModel!!.restartApp.value
+        if (isAppRestarted){
+            packagesResourceListEnvelopeViewModel!!.setResources(arrayListOf())
+        }
+
         val packageList = packagesResourceListEnvelopeViewModel!!.resources.collectAsState()
 
         LaunchedEffect(true) {

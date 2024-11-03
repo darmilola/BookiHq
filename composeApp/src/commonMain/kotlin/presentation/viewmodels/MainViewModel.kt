@@ -25,7 +25,6 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _displayCurrencyPath =  savedStateHandle.getStateFlow("displayCurrencyPath", Currency.USD.toPath())
     private var _currentUserInfo =  savedStateHandle.getStateFlow("userInfo", User())
     private var _roomDbUserCount =  savedStateHandle.getStateFlow("roomDbUserCount", 0)
-    private var _currentVendorId =  savedStateHandle.getStateFlow("currentVendorId", -1L)
     private var _screenNav =  savedStateHandle.getStateFlow("screenNav", Pair(-1,-1))
     private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
     private var _selectedPackage =  savedStateHandle.getStateFlow("selectedPackage", VendorPackage())
@@ -126,9 +125,6 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
         get() = _switchVendorReason
     val joinSpaVendor: StateFlow<Vendor>
         get() = _joinSpa
-
-    val vendorId: StateFlow<Long>
-        get() = _currentVendorId
 
     val currentUserInfo: StateFlow<User>
         get() = _currentUserInfo
@@ -231,24 +227,6 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     fun setRecommendationServiceType(serviceTypeItem: ServiceTypeItem) {
         savedStateHandle["recommendedServiceType"] = serviceTypeItem
-    }
-
-    fun setUserId(userId: Long) {
-        savedStateHandle["currentUserId"] = userId
-    }
-
-    fun setVendorId(vendorId: Long) {
-        savedStateHandle["currentVendorId"] = vendorId
-    }
-
-    fun setUserFirstname(userFirstname: String) {
-        savedStateHandle["currentUserFirstname"] = userFirstname
-    }
-    fun setUserEmail(userEmail: String) {
-        savedStateHandle["currentUserEmail"] = userEmail
-    }
-    fun setVendorEmail(vendorEmail: String) {
-        savedStateHandle["currentVendorEmail"] = vendorEmail
     }
     fun setVendorBusinessLogoUrl(vendorLogoUrl: String) {
         savedStateHandle["currentVendorLogoUrl"] = vendorLogoUrl

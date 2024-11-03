@@ -43,6 +43,7 @@ import domain.Enums.AuthType
 import domain.Enums.Gender
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.PlatformNavigator
+import domain.Models.User
 import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.DomainViewHandler.PlatformHandler
 import presentation.components.ButtonComponent
@@ -108,12 +109,12 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
         onVerificationEnded = {}, onCompleteStarted = {
             completeProfileInProgress.value = true
         }, onCompleteEnded = { isSuccessful -> completeProfileInProgress.value = false },
-        connectVendorOnProfileCompleted = {
-                country,userCity, profileId, apiKey ->
-                preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = country
-                preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = userCity
-                preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = profileId
-                preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = apiKey
+        connectVendorOnProfileCompleted = { userInfo  ->
+                mainViewModel.setUserInfo(userInfo)
+                preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = userInfo.country
+                preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = userInfo.city
+                preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = userInfo.userId
+                preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = userInfo.apiKey
                 navigateToConnectVendor.value = true
 
         }, onUpdateStarted = {}, onUpdateEnded = {}, onVerificationError = {})

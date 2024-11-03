@@ -91,7 +91,6 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
         val navigator = LocalNavigator.currentOrThrow
         val vendorConnected = remember { mutableStateOf(false) }
         val userId = preferenceSettings[SharedPreferenceEnum.USER_ID.toPath(), -1L]
-        val userFirstname = preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath(),""]
         val connectVendorAction = connectVendorActionUIStateViewModel!!.uiStateInfo.collectAsState()
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
@@ -106,6 +105,7 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
                 LoadingDialog("Connecting Vendor")
             }
         } else if (connectVendorAction.value.isSuccess) {
+            mainViewModel!!.setConnectedVendor(vendor)
             preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = vendor.vendorId
             preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = vendor.whatsAppPhone
             vendorConnected.value = true
@@ -133,8 +133,7 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
             content = {
                 BusinessInfoContent(vendor) {
                     if (userId != -1L) {
-                        connectVendorPresenter.connectVendor(userId, vendor.vendorId!!, action = CustomerMovementEnum.Entry.toPath(),
-                            userFirstname = userFirstname)
+                        connectVendorPresenter.connectVendor(userId, vendor.vendorId!!, action = CustomerMovementEnum.Entry.toPath())
                     }
                 }
             },

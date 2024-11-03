@@ -209,7 +209,7 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
             connectVendor = { user -> },
             onVerificationStarted = {},
             onVerificationEnded = {}, onCompleteStarted = {}, onCompleteEnded = {},
-            connectVendorOnProfileCompleted = { country,city,profileId, apiKey -> },
+            connectVendorOnProfileCompleted = { _ -> },
             onUpdateStarted = {
                  updateProfileStarted.value = true
                  updateProfileEnded.value = false

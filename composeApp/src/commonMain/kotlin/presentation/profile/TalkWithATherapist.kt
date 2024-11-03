@@ -148,7 +148,7 @@ class TalkWithATherapist(val platformNavigator: PlatformNavigator) : ParcelableS
             animation = StackedSnackbarAnimation.Bounce
         )
 
-        profilePresenter.getVendorAvailability(mainViewModel!!.vendorId.value)
+        profilePresenter.getVendorAvailability(mainViewModel!!.connectedVendor.value.vendorId!!)
 
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },

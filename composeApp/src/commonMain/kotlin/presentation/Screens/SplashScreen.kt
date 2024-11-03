@@ -66,13 +66,14 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
                 val userCurrency = getDisplayCurrency(user.country!!)
                 val displayCurrencyUnit = userCurrency.toDisplayUnit()
                 val displayCurrencyPath = userCurrency.toPath()
+                mainViewModel.setUserInfo(user)
+                mainViewModel.setConnectedVendor(user.vendorInfo!!)
                 mainViewModel.setDisplayCurrencyUnit(displayCurrencyUnit)
                 mainViewModel.setDisplayCurrencyPath(displayCurrencyPath)
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
                 preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
                 preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
-                preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
-                preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
+                preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendorId
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
                 preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = whatsAppPhone
                 scope.launch {
@@ -94,9 +95,9 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
                 preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
                 preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
-                preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
-                preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
+                preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendorId
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
+                mainViewModel.setUserInfo(user)
                 scope.launch {
                     val userDao = databaseBuilder.build().getUserDao()
                     val userCount = userDao.count()
@@ -110,7 +111,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
         },
         onVerificationStarted = {},
         onVerificationEnded = {}, onCompleteStarted = {}, onCompleteEnded = {},
-        connectVendorOnProfileCompleted = { _,_,_,_ ->}, onUpdateStarted = {}, onUpdateEnded = {}, onVerificationError = {
+        connectVendorOnProfileCompleted = { _ ->}, onUpdateStarted = {}, onUpdateEnded = {}, onVerificationError = {
             if (authType.value == AuthType.EMAIL.toPath()) {
                 authenticationPresenter.validateEmail(authEmail.value)
             }

@@ -10,7 +10,7 @@ class AuthenticationScreenHandler(
     private val onUserLocationReady: (Place) -> Unit,
     private val enterPlatform: (User,vendorPhone: String?) -> Unit,
     private val completeProfile: (userEmail: String, userPhone: String) -> Unit,
-    private val connectVendorOnProfileCompleted: (country: String, city: String, profileId: Long, apiKey: String) -> Unit,
+    private val connectVendorOnProfileCompleted: (userInfo: User) -> Unit,
     private val connectVendor: (User) -> Unit,
     private val onVerificationStarted: () -> Unit,
     private val onVerificationEnded: () -> Unit,
@@ -64,9 +64,9 @@ class AuthenticationScreenHandler(
         onUserLocationReady(place)
     }
 
-    override fun onCompleteProfileDone(country: String, city: String, profileId: Long, apiKey: String) {
+    override fun onCompleteProfileDone(userInfo: User) {
             onCompleteEnded(true)
-            connectVendorOnProfileCompleted(country,city, profileId, apiKey)
+            connectVendorOnProfileCompleted(userInfo)
     }
     override fun goToConnectVendor(user: User) {
         connectVendor(user)

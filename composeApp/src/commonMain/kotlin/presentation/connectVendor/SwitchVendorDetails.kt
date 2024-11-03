@@ -98,7 +98,6 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
         val userInfo = mainViewModel!!.currentUserInfo.value
         val switchVendorUiState = performedActionUIStateViewModel!!.switchVendorUiState.collectAsState()
         performedActionUIStateViewModel!!.switchVendorActionUIState(AppUIStates(isDefault = true))
-        var switchVendorSuccess = remember { mutableStateOf(false) }
 
 
         Scaffold(
@@ -121,6 +120,7 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
                     else if (deviceInfo() == DeviceType.ANDROID.toPath()){
                         // App Restart for Android
                         val splashScreen = SplashScreen(platformNavigator = platformNavigator)
+                        mainViewModel!!.setRestartApp(true)
                         splashScreen.setMainViewModel(mainViewModel!!)
                         splashScreen.setDatabaseBuilder(databaseBuilder)
                         navigator.replaceAll(splashScreen)
@@ -130,10 +130,11 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
                     ErrorDialog(dialogTitle = "Error Occurred Please Try Again", actionTitle = "Retry"){}
                 }
 
-                BusinessInfoContent(switchVendorValue){
+                 BusinessInfoContent(switchVendorValue){
+                 println(userInfo)
                  profilePresenter.switchVendor(userId = userInfo.userId!!,
                      vendorId = switchVendorId, action = CustomerMovementEnum.Exit.toPath(),
-                     exitReason = switchVendorReason, vendor = mainViewModel!!.connectedVendor.value!!, platformNavigator = platformNavigator)
+                     exitReason = switchVendorReason, vendor = mainViewModel!!.connectedVendor.value, platformNavigator = platformNavigator)
                 }
             },
             backgroundColor = Color.Transparent

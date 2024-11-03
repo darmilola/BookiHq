@@ -12,7 +12,7 @@ class AuthenticationContract {
         fun goToCompleteProfileWithPhone(phone: String)
         fun showUserLocation(place: Place)
         fun goToConnectVendor(user: User)
-        fun onCompleteProfileDone(country: String,city: String, profileId: Long, apiKey: String)
+        fun onCompleteProfileDone(userInfo: User)
         fun onCompleteProfileError()
         fun onProfileValidationStarted()
         fun onProfileValidationEnded()

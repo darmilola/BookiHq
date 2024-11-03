@@ -112,11 +112,12 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                 val displayCurrencyPath = userCurrency.toPath()
                 mainViewModel.setDisplayCurrencyUnit(displayCurrencyUnit)
                 mainViewModel.setDisplayCurrencyPath(displayCurrencyPath)
+                mainViewModel.setUserInfo(user)
+                mainViewModel.setConnectedVendor(user.vendorInfo!!)
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
                 preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
                 preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
-                preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
-                preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
+                preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendorId
                 preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = vendorWhatsAppPhone
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
@@ -144,11 +145,11 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
                 preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
                 preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
-                preferenceSettings[SharedPreferenceEnum.FIRSTNAME.toPath()] = user.firstname
-                preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendor
+                preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendorId
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
                 preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.EMAIL.toPath()
+                mainViewModel.setUserInfo(user)
                     val userDao = databaseBuilder.build().getUserDao()
                     val vendorDao = databaseBuilder.build().getVendorDao()
                     val userCount = userDao.count()
@@ -166,7 +167,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
             userEmailFromGoogleAuth.value = ""
             verificationInProgress.value = false
         }, onCompleteStarted = {}, onCompleteEnded = {},
-        connectVendorOnProfileCompleted = { country,city,profileId, apiKey -> },
+        connectVendorOnProfileCompleted = { _ -> },
         onUpdateStarted = {}, onUpdateEnded = {},
         onVerificationError = {
             verificationInProgress.value = false

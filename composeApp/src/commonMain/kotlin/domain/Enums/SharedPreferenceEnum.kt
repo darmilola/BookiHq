@@ -5,10 +5,6 @@ enum class SharedPreferenceEnum {
     CITY,
     SELECTED_PRODUCT_TYPE,
     USER_ID,
-    USER_EMAIL,
-    FIRSTNAME,
-    VENDOR_EMAIL,
-    VENDOR_BUSINESS_LOGO,
     VENDOR_ID,
     USER_AUTH_PHONE,
     VENDOR_WHATSAPP_PHONE,
@@ -23,7 +19,6 @@ enum class SharedPreferenceEnum {
         COUNTRY -> "country"
         CITY -> "city"
         USER_ID -> "profileId"
-        FIRSTNAME -> "firstname"
         VENDOR_ID -> "vendorId"
         USER_AUTH_PHONE -> "userAuthPhone"
         VENDOR_WHATSAPP_PHONE -> "vendorWhatsAppPhone"
@@ -33,9 +28,6 @@ enum class SharedPreferenceEnum {
         API_KEY -> "apiKey"
         LATITUDE -> "latitude"
         LONGITUDE -> "longitude"
-        VENDOR_BUSINESS_LOGO -> "businessLogo"
-        USER_EMAIL -> "userEmail"
-        VENDOR_EMAIL -> "vendorEmail"
         SELECTED_PRODUCT_TYPE -> "selectedProductType"
     }
 

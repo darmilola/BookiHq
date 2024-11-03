@@ -216,6 +216,11 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
         val selectedAppointment = remember { mutableStateOf(UserAppointment()) }
         val appointmentForReview = remember { mutableStateOf(Appointment()) }
 
+        val isAppRestarted = mainViewModel!!.restartApp.value
+        if (isAppRestarted){
+            appointmentResourceListEnvelopeViewModel!!.setResources(arrayListOf())
+        }
+
         LaunchedEffect(true) {
             if (appointmentResourceListEnvelopeViewModel!!.resources.value.isNotEmpty()){
                 appointmentPresenter.refreshUserAppointments(userId)
