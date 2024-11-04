@@ -14,9 +14,9 @@ import io.ktor.client.HttpClient
 class PackageRepositoryImpl(apiService: HttpClient): PackageRepository {
     private val packageNetworkService: PackageNetworkService = PackageNetworkService(apiService)
 
-    override suspend fun getVendorPackages(vendorId: Long): Single<VendorPackageListDataResponse> {
+    override suspend fun getVendorPackages(vendorId: Long, nextPage: Int): Single<VendorPackageListDataResponse> {
         val param = GetVendorPackageRequest(vendorId)
-        return packageNetworkService.getVendorPackages(param)
+        return packageNetworkService.getVendorPackages(param, nextPage)
     }
 
     override suspend fun getTimeAvailability(vendorId: Long): Single<TimeAvailabilityResponse> {

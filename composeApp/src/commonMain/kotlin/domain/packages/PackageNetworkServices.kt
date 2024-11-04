@@ -23,9 +23,9 @@ open class PackageNetworkService(private val apiService: HttpClient) {
     val preferenceSettings = Settings()
     val apiKey = preferenceSettings.getString(SharedPreferenceEnum.API_KEY.toPath(), "")
 
-    suspend fun getVendorPackages(getVendorPackageRequest: GetVendorPackageRequest) =
+    suspend fun getVendorPackages(getVendorPackageRequest: GetVendorPackageRequest, nextPage: Int = 1) =
         apiService.post {
-            url("/packages")
+            url("/packages?page=$nextPage")
             contentType(ContentType.Application.Json)
             setBody(getVendorPackageRequest)
             header("Authorization", apiKey)

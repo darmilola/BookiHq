@@ -10,7 +10,7 @@ class ListDataResponse<T : Any>(@SerialName("response") var listItem: ResourceLi
 class AppointmentListDataResponse(@SerialName("response") var listItem: AppointmentResourceListEnvelope = AppointmentResourceListEnvelope(), @SerialName("status")  var status: String)
 
 @Serializable
-class VendorPackageListDataResponse(@SerialName("response") var packages: ArrayList<VendorPackage> = arrayListOf(), @SerialName("status")  var status: String)
+class VendorPackageListDataResponse(@SerialName("response") var listItem: VendorPackageResourceListEnvelope = VendorPackageResourceListEnvelope(), @SerialName("status")  var status: String)
 
 @Serializable
 class TherapistAppointmentListDataResponse(@SerialName("response") var listItem: TherapistAppointmentResourceListEnvelope = TherapistAppointmentResourceListEnvelope(), @SerialName("status")  var status: String)

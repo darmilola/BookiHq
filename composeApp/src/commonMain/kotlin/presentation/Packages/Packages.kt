@@ -43,6 +43,7 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import domain.Enums.Screens
 import domain.Enums.SharedPreferenceEnum
+import domain.Models.AppointmentItemUIModel
 import domain.Models.VendorPackage
 import domain.Models.VendorPackageItemUIModel
 import drawable.ErrorOccurredWidget
@@ -65,6 +66,7 @@ import presentation.widgets.EmptyContentWidget
 import presentation.widgets.PackageItem
 import presentation.widgets.ProductItem
 import rememberStackedSnackbarHostState
+import theme.Colors
 import utils.getProductViewHeight
 
 @Parcelize
@@ -122,9 +124,8 @@ class Packages : Tab, KoinComponent, Parcelable {
         }
 
         val handler = PackagesHandler(packagePresenter,
-            loadingScreenUiStateViewModel!!, onVendorPackageReady = {
-                packagesResourceListEnvelopeViewModel!!.setResources(it)
-            })
+            packagesResourceListEnvelopeViewModel!!,
+            loadingScreenUiStateViewModel!!)
         handler.init()
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
@@ -132,21 +133,41 @@ class Packages : Tab, KoinComponent, Parcelable {
             animation = StackedSnackbarAnimation.Bounce
         )
 
-        val isSwitchVendor: Boolean = preferenceSettings[SharedPreferenceEnum.IS_SWITCH_VENDOR.toPath(),false]
-        if (isSwitchVendor){
-            packagesResourceListEnvelopeViewModel!!.setResources(arrayListOf())
-        }
-
-        val packageList = packagesResourceListEnvelopeViewModel!!.resources.collectAsState()
+        val loadMoreState = packagesResourceListEnvelopeViewModel?.isLoadingMore?.collectAsState()
+        val packageList = packagesResourceListEnvelopeViewModel?.resources?.collectAsState()
+        val totalAppointmentsCount = packagesResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
+        val displayedAppointmentsCount = packagesResourceListEnvelopeViewModel?.displayedItemCount?.collectAsState()
+        val lastIndex = packageList?.value?.size?.minus(1)
 
         LaunchedEffect(true) {
-            if (packageList.value.isNotEmpty()){
+            val isSwitchVendor: Boolean = preferenceSettings[SharedPreferenceEnum.IS_SWITCH_VENDOR.toPath(),false]
+            if (isSwitchVendor){
+                packagesResourceListEnvelopeViewModel!!.setResources(arrayListOf())
+            }
+            if (packagesResourceListEnvelopeViewModel!!.resources.value.isNotEmpty()){
                 loadingScreenUiStateViewModel!!.switchScreenUIState(AppUIStates(isSuccess = true))
             }
             else {
                 packagePresenter.getVendorPackages(vendorId)
             }
 
+        }
+
+        val selectedPackage = remember { mutableStateOf(VendorPackage()) }
+
+        var packageUiModel by remember {
+            mutableStateOf(
+                VendorPackageItemUIModel(
+                    selectedPackage.value,
+                    packagesResourceListEnvelopeViewModel!!.resources.value
+                )
+            )
+        }
+
+        if (!loadMoreState?.value!!) {
+            packageUiModel =
+                packageUiModel.copy(selectedPackage = selectedPackage.value,
+                    packageList = packagesResourceListEnvelopeViewModel!!.resources.value)
         }
 
         Scaffold(
@@ -180,10 +201,76 @@ class Packages : Tab, KoinComponent, Parcelable {
                         }
                     }
                     else if (uiState.value.isSuccess) {
-                        PackageContent(vendorPackages = packageList.value, onPackageSelected = {
-                            mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.PACKAGE_INFO.toPath()))
-                            mainViewModel!!.setSelectedPackage(it)
-                        })
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                                .fillMaxHeight()
+                                .padding(bottom = 70.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+
+                            val columnModifier = Modifier
+                                .fillMaxHeight()
+                                .fillMaxWidth()
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = columnModifier
+                            ) {
+                                Row(
+                                    Modifier
+                                        .fillMaxHeight()
+                                        .fillMaxWidth()
+                                        .background(color = Color.White),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    LazyColumn(
+                                        modifier = Modifier.fillMaxWidth().height((packageList!!.value.size * 250).dp),
+                                        contentPadding = PaddingValues(top = 6.dp, bottom = 6.dp),
+                                        verticalArrangement = Arrangement.spacedBy(5.dp),
+                                        userScrollEnabled = true
+                                    ) {
+                                        runBlocking {
+                                            items(packageUiModel.packageList.size) { it ->
+                                                PackageItem(packageUiModel.packageList[it], onPackageClickListener = {
+                                                    mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.PACKAGE_INFO.toPath()))
+                                                    mainViewModel!!.setSelectedPackage(it)
+                                                })
+
+                                                if (it == lastIndex && loadMoreState!!.value) {
+                                                    Box(
+                                                        modifier = Modifier.fillMaxWidth().height(60.dp),
+                                                        contentAlignment = Alignment.Center
+                                                    ) {
+                                                        IndeterminateCircularProgressBar()
+                                                    }
+                                                } else if (it == lastIndex && (displayedAppointmentsCount?.value!! < totalAppointmentsCount?.value!!)) {
+                                                    val buttonStyle = Modifier
+                                                        .height(60.dp)
+                                                        .fillMaxWidth()
+                                                        .padding(top = 10.dp, start = 10.dp, end = 10.dp)
+
+                                                    ButtonComponent(
+                                                        modifier = buttonStyle,
+                                                        buttonText = "Show More",
+                                                        borderStroke = BorderStroke(1.dp, Colors.primaryColor),
+                                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                                                        fontSize = 16,
+                                                        shape = CircleShape,
+                                                        textColor = Colors.primaryColor,
+                                                        style = TextStyle()
+                                                    ) {
+                                                        if (packagesResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
+                                                            packagePresenter.getMoreVendorPackages(vendorId, packagesResourceListEnvelopeViewModel!!.currentPage.value + 1)
+
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
 
                 }
@@ -197,55 +284,6 @@ class Packages : Tab, KoinComponent, Parcelable {
     fun PackageContent(
         vendorPackages: List<VendorPackage>,
         onPackageSelected: (VendorPackage) -> Unit) {
-        val selectedPackage = remember { mutableStateOf(VendorPackage()) }
 
-        val packageUiModel by remember {
-            mutableStateOf(
-                VendorPackageItemUIModel(
-                    selectedPackage.value,
-                    vendorPackages
-                )
-            )
-        }
-
-        Box(
-            modifier = Modifier.fillMaxWidth()
-                .fillMaxHeight()
-                .padding(bottom = 70.dp),
-            contentAlignment = Alignment.Center
-        ) {
-
-            val columnModifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = columnModifier
-            ) {
-                Row(
-                    Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth()
-                        .background(color = Color.White),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxWidth().height((vendorPackages.size * 250).dp),
-                        contentPadding = PaddingValues(top = 6.dp, bottom = 6.dp),
-                        verticalArrangement = Arrangement.spacedBy(5.dp),
-                        userScrollEnabled = true
-                    ) {
-                        runBlocking {
-                            items(packageUiModel.packageList.size) { it ->
-                                PackageItem(packageUiModel.packageList[it], onPackageClickListener = {
-                                     onPackageSelected(it)
-                                })
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 }

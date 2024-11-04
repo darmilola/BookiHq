@@ -35,7 +35,7 @@ class PackagePresenter(apiService: HttpClient): PackageContract.Presenter() {
                                 when (response.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
                                         contractView?.showLoadPackageLce(AppUIStates(isSuccess = true))
-                                        contractView?.showVendorPackages(response.packages)
+                                        contractView?.showVendorPackages(response.listItem)
                                     }
                                     ServerResponse.EMPTY.toPath() -> {
                                         contractView?.showLoadPackageLce(AppUIStates(isEmpty = true, emptyMessage = "Vendor Has No Package"))
@@ -53,6 +53,39 @@ class PackagePresenter(apiService: HttpClient): PackageContract.Presenter() {
                 result.dispose()
             } catch(e: Exception) {
                 contractView?.showLoadPackageLce(AppUIStates(isFailed = true, errorMessage = "Error Loading Packages"))
+            }
+        }
+    }
+
+    override fun getMoreVendorPackages(vendorId: Long, nextPage: Int) {
+        contractView?.onLoadMoreAppointmentStarted()
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    packageRepositoryImpl.getVendorPackages(vendorId, nextPage)
+                        .subscribe(
+                            onSuccess = { response ->
+                                when (response.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.onLoadMoreAppointmentEnded()
+                                        contractView?.showVendorPackages(response.listItem)
+                                    }
+                                    ServerResponse.EMPTY.toPath() -> {
+                                        contractView?.onLoadMoreAppointmentEnded()
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.onLoadMoreAppointmentEnded()
+                                    }
+                                }
+                            },
+                            onError = {
+                                contractView?.onLoadMoreAppointmentEnded()
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.onLoadMoreAppointmentEnded()
             }
         }
     }

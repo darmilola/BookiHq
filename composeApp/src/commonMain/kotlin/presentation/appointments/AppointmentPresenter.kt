@@ -44,7 +44,7 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
                                         contractView?.showLce(AppUIStates(isEmpty = true, emptyMessage = "No Appointments Available"))
                                     }
                                     ServerResponse.FAILURE.toPath() -> {
-                                        contractView?.showRefreshing(AppUIStates(isFailed = true))
+                                        contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))
                                     }
                                     else -> {
                                         contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Occurred Please Try Again"))

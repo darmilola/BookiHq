@@ -7,6 +7,6 @@ import domain.Models.TimeAvailabilityResponse
 import domain.Models.VendorPackageListDataResponse
 
 interface PackageRepository {
-    suspend fun getVendorPackages(vendorId: Long): Single<VendorPackageListDataResponse>
+    suspend fun getVendorPackages(vendorId: Long, nextPage: Int = 1): Single<VendorPackageListDataResponse>
     suspend fun getTimeAvailability(vendorId: Long): Single<TimeAvailabilityResponse>
 }
