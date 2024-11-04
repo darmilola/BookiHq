@@ -22,8 +22,6 @@ import androidx.compose.ui.unit.dp
 import domain.Enums.AppointmentType
 import domain.Enums.BookingStatus
 import domain.Enums.ServiceLocationEnum
-import domain.Enums.ServiceStatusEnum
-import domain.Models.Appointment
 import domain.Models.UserAppointment
 import drawable.ErrorOccurredWidget
 import presentation.appointmentBookings.BookingPresenter
@@ -60,8 +58,7 @@ fun PackageBookingOverview(mainViewModel: MainViewModel, bookingPresenter: Booki
                   month = currentAppointmentBooking.appointmentMonth!!,
                   year = currentAppointmentBooking.appointmentYear!!,
                   serviceLocation = if (currentAppointmentBooking.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
-                  serviceStatus = ServiceStatusEnum.BOOKING.toPath(),
-                  bookingStatus = BookingStatus.PENDING.toPath()
+                  bookingStatus = BookingStatus.BOOKING.toPath()
               )
           }
 
@@ -76,12 +73,12 @@ fun PackageBookingOverview(mainViewModel: MainViewModel, bookingPresenter: Booki
             deleteActionUIStateViewModel.switchDeletePendingAppointmentUiState(AppUIStates(isDefault = true))
             bookingPresenter.getPendingBookingAppointment(
                 mainViewModel.currentUserInfo.value.userId!!,
-                bookingStatus = BookingStatus.PENDING.toPath()
+                bookingStatus = BookingStatus.BOOKING.toPath()
             )
         })
     }
     else if (deleteActionUiState.value.isFailed) {
-        ErrorDialog("success", actionTitle = "", onConfirmation = {})
+        ErrorDialog("Error Occurred", actionTitle = "Retry", onConfirmation = {})
     }
 
 
@@ -100,7 +97,7 @@ fun PackageBookingOverview(mainViewModel: MainViewModel, bookingPresenter: Booki
             ErrorOccurredWidget(loadingPendingActionUiState.value.errorMessage, onRetryClicked = {
                 bookingPresenter.getPendingBookingAppointment(
                     mainViewModel.currentUserInfo.value.userId!!,
-                    bookingStatus = BookingStatus.PENDING.toPath())
+                    bookingStatus = BookingStatus.BOOKING.toPath())
             })
         }
     }

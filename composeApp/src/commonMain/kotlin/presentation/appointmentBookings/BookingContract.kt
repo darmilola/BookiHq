@@ -11,7 +11,6 @@ import domain.Models.VendorTime
 class BookingContract {
     interface View {
         fun showLoadPendingAppointmentLce(uiState: AppUIStates, message: String = "")
-        fun showDeleteActionLce(uiState: AppUIStates, message: String = "")
         fun showCreateAppointmentActionLce(uiState: AppUIStates, message: String = "")
         fun getTherapistActionLce(uiState: AppUIStates, message: String = "")
         fun getServiceTypesLce(uiState: AppUIStates, message: String = "")
@@ -23,8 +22,13 @@ class BookingContract {
         fun showUnsavedAppointment()
     }
 
+    interface CancelContractView {
+        fun showCancelActionLce(uiState: AppUIStates, message: String = "")
+    }
+
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
+        abstract fun registerCancelUIContract(view: CancelContractView?)
         abstract fun getUnSavedAppointment()
         abstract fun getServiceTherapists(serviceTypeId: Long, vendorId: Long, day: Int, month: Int, year: Int)
         abstract fun getServiceData(serviceId: Long)
@@ -33,9 +37,9 @@ class BookingContract {
         abstract fun deletePendingBookingAppointment(pendingAppointmentId: Long)
         abstract fun getTimeAvailability(vendorId: Long)
         abstract fun silentDeletePendingBookingAppointment(pendingAppointmentId: Long)
+        abstract fun deleteAllPendingAppointment(userId: Long, bookingStatus: String)
         abstract fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Long, serviceTypeId: Long, therapistId: Long,
-                                                     appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String,
-                                                     serviceStatus: String, bookingStatus: String)
-        abstract fun createPendingPackageBookingAppointment(userId: Long, vendorId: Long, packageId: Long, appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, serviceStatus: String, bookingStatus: String)
+                                                     appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, bookingStatus: String)
+        abstract fun createPendingPackageBookingAppointment(userId: Long, vendorId: Long, packageId: Long, appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, bookingStatus: String)
     }
 }

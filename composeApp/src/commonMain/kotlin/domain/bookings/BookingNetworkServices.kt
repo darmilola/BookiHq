@@ -75,4 +75,12 @@ open class BookingNetworkService(private val apiService: HttpClient) {
             header("Authorization", apiKey)
         }.body<ServerResponse>().toSingle()
 
+    suspend fun deleteAllPendingBookingAppointment(deleteAllPendingBookingAppointmentRequest: DeleteAllPendingBookingAppointmentRequest) =
+        apiService.post {
+            url("/services/appointment/pending/booking/delete/all")
+            contentType(ContentType.Application.Json)
+            setBody(deleteAllPendingBookingAppointmentRequest)
+            header("Authorization", apiKey)
+        }.body<ServerResponse>().toSingle()
+
 }

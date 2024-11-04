@@ -22,10 +22,10 @@ class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
     }
 
     override suspend fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Long, serviceTypeId: Long, therapistId: Long,
-                                                          appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, serviceStatus: String,
+                                                          appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String,
                                                           bookingStatus: String, appointmentType: String): Single<PendingBookingAppointmentResponse> {
         val param = CreatePendingBookingAppointmentRequest(userId, vendorId, serviceId, serviceTypeId, therapistId,
-            appointmentTime, day, month, year, serviceLocation, serviceStatus, bookingStatus, appointmentType)
+            appointmentTime, day, month, year, serviceLocation, bookingStatus, appointmentType)
         return bookingNetworkService.createPendingBookingAppointment(param)
     }
 
@@ -38,11 +38,10 @@ class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
         month: Int,
         year: Int,
         serviceLocation: String,
-        serviceStatus: String,
         bookingStatus: String,
         appointmentType: String
     ): Single<PendingBookingAppointmentResponse> {
-        val param = CreatePendingBookingPackageAppointmentRequest(userId, vendorId, packageId, appointmentTime, day, month, year, serviceLocation, serviceStatus, bookingStatus, appointmentType)
+        val param = CreatePendingBookingPackageAppointmentRequest(userId, vendorId, packageId, appointmentTime, day, month, year, serviceLocation, bookingStatus, appointmentType)
         return bookingNetworkService.createPendingBookingPackageAppointment(param)
     }
 
@@ -68,6 +67,11 @@ class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
     override suspend fun deletePendingBookingAppointment(pendingAppointmentId: Long): Single<ServerResponse> {
         val param = DeletePendingBookingAppointmentRequest(pendingAppointmentId)
         return bookingNetworkService.deletePendingBookingAppointment(param)
+    }
+
+    override suspend fun deleteAllPendingAppointment(userId: Long, bookingStatus: String): Single<ServerResponse> {
+        val param = DeleteAllPendingBookingAppointmentRequest(userId, bookingStatus)
+        return bookingNetworkService.deleteAllPendingBookingAppointment(param)
     }
 
 }

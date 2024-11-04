@@ -60,6 +60,9 @@ import domain.Enums.AppointmentType
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.Appointment
 import drawable.ErrorOccurredWidget
+import kotlinx.serialization.Transient
+import presentation.DomainViewHandler.CancelContractHandler
+import presentation.appointmentBookings.BookingPresenter
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.SuccessDialog
 import presentation.widgets.AddAppointmentsReviewBottomSheet
@@ -74,19 +77,21 @@ import theme.Colors
 @Parcelize
 class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
 
-    private val appointmentPresenter: AppointmentPresenter by inject()
-    private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
-    private var deletePerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
-    private var postponePerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
-    private var refreshActionUIStateViewModel: PerformedActionUIStateViewModel? = null
-    private var getTherapistAvailabilityUIStateViewModel: PerformedActionUIStateViewModel? = null
-    private var addAppointmentReviewsUIStateViewModel: PerformedActionUIStateViewModel? = null
-    private var postponeAppointmentUIStateViewModel: PerformedActionUIStateViewModel? = null
-    private var joinMeetingPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
-    private var postponementViewModel: PostponementViewModel? = null
-    private var mainViewModel: MainViewModel? = null
-    val preferenceSettings = Settings()
-    private var appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel? = null
+    @Transient private val appointmentPresenter: AppointmentPresenter by inject()
+    @Transient private val bookingPresenter: BookingPresenter by inject()
+    @Transient private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
+    @Transient private var deletePerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient private var postponePerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient private var refreshActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient private var getTherapistAvailabilityUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient private var addAppointmentReviewsUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient private var postponeAppointmentUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient private var joinMeetingPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient private var cancelActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient private var postponementViewModel: PostponementViewModel? = null
+    @Transient private var mainViewModel: MainViewModel? = null
+    @Transient val preferenceSettings = Settings()
+    @Transient private var appointmentResourceListEnvelopeViewModel: AppointmentResourceListEnvelopeViewModel? = null
 
 
     @OptIn(ExperimentalResourceApi::class)
@@ -133,6 +138,14 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
 
         if (postponeAppointmentUIStateViewModel == null) {
             postponeAppointmentUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+        if (cancelActionUIStateViewModel == null) {
+            cancelActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
@@ -206,6 +219,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
 
         val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
         val deleteActionUIStates = deletePerformedActionUIStateViewModel!!.deleteUIStateInfo.collectAsState()
+        val cancelActionUIStates = cancelActionUIStateViewModel!!.deletePendingAppointmentUiState.collectAsState()
         val refreshActionUIStates = refreshActionUIStateViewModel!!.refreshAppointmentActionUiState.collectAsState()
         val addReviewsUIState = addAppointmentReviewsUIStateViewModel!!.addAppointmentReviewUiState.collectAsState()
         val postponeActionUIStates = postponeAppointmentUIStateViewModel!!.postponeAppointmentUiState.collectAsState()
@@ -267,9 +281,16 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                 ErrorDialog("Error Postponing Appointment", "Close", onConfirmation = {})
             }
         }
+
+
         if (deleteActionUIStates.value.isLoading) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 LoadingDialog("Deleting Appointment")
+            }
+        }
+        else if (deleteActionUIStates.value.isFailed) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                ErrorDialog("Error Occurred Please Try Again", "Close", onConfirmation = {})
             }
         }
         else if (deleteActionUIStates.value.isSuccess) {
@@ -281,6 +302,30 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                 })
             }
         }
+
+
+
+        if (cancelActionUIStates.value.isLoading) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                LoadingDialog("Cancelling Appointment")
+            }
+        }
+        else if (cancelActionUIStates.value.isFailed) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                ErrorDialog("Error Occurred Please Try Again", "Close", onConfirmation = {})
+            }
+        }
+        else if (cancelActionUIStates.value.isSuccess) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                SuccessDialog("Cancel Successful", "Close", onConfirmation = {
+                    appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                    appointmentPresenter.getUserAppointments(userId)
+                    cancelActionUIStateViewModel!!.switchDeletePendingAppointmentUiState(AppUIStates(isDefault = true))
+                })
+            }
+        }
+
+
 
         if (addReviewsUIState.value.isLoading) {
             Box(modifier = Modifier.fillMaxWidth()) {
@@ -309,6 +354,9 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
         else if (refreshActionUIStates.value.isFailed){
             isRefreshing.value = false
         }
+
+        val cancelContractHandler = CancelContractHandler(cancelActionUIStateViewModel!!, bookingPresenter)
+        cancelContractHandler.init()
 
 
         Scaffold(
@@ -401,6 +449,9 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                                        onDeleteAppointment = {
                                            appointmentPresenter.deleteAppointment(it.id)
                                        },
+                                       onCancelAppointment = {
+                                           bookingPresenter.deletePendingBookingAppointment(it.resources!!.appointmentId!!)
+                                       },
                                        platformNavigator = platformNavigator,
                                        onAddReview = {
                                            appointmentForReview.value = it
@@ -416,6 +467,9 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                                        getTherapistAvailabilityUIStateViewModel!!,
                                        onDeleteAppointment = {
                                            appointmentPresenter.deleteAppointment(it.id)
+                                       },
+                                       onCancelAppointment = {
+                                          bookingPresenter.deletePendingBookingAppointment(it.resources!!.appointmentId!!)
                                        },
                                        platformNavigator = platformNavigator,
                                        onAddReview = {

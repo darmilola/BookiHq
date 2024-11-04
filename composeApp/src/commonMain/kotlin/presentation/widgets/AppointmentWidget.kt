@@ -39,7 +39,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Enums.AppointmentType
 import domain.Models.Appointment
-import domain.Enums.ServiceStatusEnum
+import domain.Enums.BookingStatus
 import domain.Models.PlatformNavigator
 import domain.Models.TherapistInfo
 import domain.Models.UserAppointment
@@ -52,26 +52,28 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, mainViewModel: MainViewModel, availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, onDeleteAppointment: (UserAppointment) -> Unit, platformNavigator: PlatformNavigator,
+fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPresenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null, mainViewModel: MainViewModel, availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, onDeleteAppointment: (UserAppointment) -> Unit, onCancelAppointment: (UserAppointment) -> Unit, platformNavigator: PlatformNavigator,
                       onAddReview: (Appointment) -> Unit) {
 
     val appointment = userAppointment!!.resources
-    val serviceAppointmentStatus = appointment?.serviceStatus
+    val serviceAppointmentStatus = appointment?.bookingStatus
     val serviceMenuItems = arrayListOf<String>()
 
         var actionItem = ""
         actionItem = when (serviceAppointmentStatus) {
-            ServiceStatusEnum.POSTPONED.toPath() -> {
+            BookingStatus.POSTPONED.toPath() -> {
                 "Delete"
             }
-
+            BookingStatus.BOOKING.toPath() -> {
+                "Cancel Appointment"
+            }
             else -> {
                 "Postpone"
             }
         }
 
         serviceMenuItems.add(actionItem)
-        if (serviceAppointmentStatus == ServiceStatusEnum.DONE.toPath()) {
+        if (serviceAppointmentStatus == BookingStatus.DONE.toPath()) {
             serviceMenuItems.clear()
             serviceMenuItems.add("Delete")
             serviceMenuItems.add("Add Review")
@@ -86,17 +88,22 @@ fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPrese
 
 
     when (serviceAppointmentStatus) {
-        ServiceStatusEnum.PENDING.toPath() -> {
+        BookingStatus.PENDING.toPath() -> {
             serviceIconRes = "drawable/schedule.png"
             serviceStatusText = "Pending"
             serviceStatusColor = Colors.primaryColor
         }
-        ServiceStatusEnum.POSTPONED.toPath() -> {
+        BookingStatus.BOOKING.toPath() -> {
+            serviceIconRes = "drawable/schedule.png"
+            serviceStatusText = "Booking"
+            serviceStatusColor = Colors.primaryColor
+        }
+        BookingStatus.POSTPONED.toPath() -> {
             serviceIconRes = "drawable/appointment_postponed.png"
             serviceStatusText = "Postponed"
             serviceStatusColor = Colors.pinkColor
         }
-        ServiceStatusEnum.DONE.toPath() -> {
+        BookingStatus.DONE.toPath() -> {
             serviceIconRes = "drawable/appointment_done.png"
             serviceStatusText = "Done"
             serviceStatusColor = Colors.greenColor
@@ -133,7 +140,11 @@ fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPrese
                         mainViewModel = mainViewModel,
                          onDeleteAppointment = {
                             onDeleteAppointment(it)
-                        }, platformNavigator = platformNavigator, onAddReview = {
+                        },
+                        onCancelAppointment = {
+                           onCancelAppointment(it)
+                        },
+                        platformNavigator = platformNavigator, onAddReview = {
                             onAddReview(it)
                         })
                     AttachServiceAppointmentContent(appointment!!)
@@ -145,22 +156,24 @@ fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPrese
 @Composable
 fun RecentAppointmentWidget(userAppointment: UserAppointment? = null) {
 
-    val serviceAppointmentStatus = userAppointment?.resources?.serviceStatus
+    val serviceAppointmentStatus = userAppointment?.resources?.bookingStatus
     val serviceMenuItems = arrayListOf<String>()
 
     var actionItem = ""
     actionItem = when (serviceAppointmentStatus) {
-        ServiceStatusEnum.POSTPONED.toPath() -> {
+        BookingStatus.POSTPONED.toPath() -> {
             "Delete"
         }
-
+        BookingStatus.BOOKING.toPath() -> {
+            "Cancel Appointment"
+        }
         else -> {
             "Postpone"
         }
     }
 
     serviceMenuItems.add(actionItem)
-    if (serviceAppointmentStatus == ServiceStatusEnum.DONE.toPath()) {
+    if (serviceAppointmentStatus == BookingStatus.DONE.toPath()) {
         serviceMenuItems.clear()
         serviceMenuItems.add("Delete")
         serviceMenuItems.add("Add Review")
@@ -175,17 +188,22 @@ fun RecentAppointmentWidget(userAppointment: UserAppointment? = null) {
 
 
     when (serviceAppointmentStatus) {
-        ServiceStatusEnum.PENDING.toPath() -> {
+        BookingStatus.PENDING.toPath() -> {
             serviceIconRes = "drawable/schedule.png"
             serviceStatusText = "Pending"
             serviceStatusColor = Colors.primaryColor
         }
-        ServiceStatusEnum.POSTPONED.toPath() -> {
+        BookingStatus.POSTPONED.toPath() -> {
             serviceIconRes = "drawable/appointment_postponed.png"
             serviceStatusText = "Postponed"
             serviceStatusColor = Colors.pinkColor
         }
-        ServiceStatusEnum.DONE.toPath() -> {
+        BookingStatus.BOOKING.toPath() -> {
+            serviceIconRes = "drawable/schedule.png"
+            serviceStatusText = "Booking"
+            serviceStatusColor = Colors.primaryColor
+        }
+        BookingStatus.DONE.toPath() -> {
             serviceIconRes = "drawable/appointment_done.png"
             serviceStatusText = "Done"
             serviceStatusColor = Colors.greenColor
@@ -267,7 +285,7 @@ fun AttachRecentServiceAppointmentHeader(statusText: String, statusDrawableRes: 
 
 @Composable
 fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String, statusColor: Color, userAppointment: UserAppointment, menuItems: ArrayList<String>, presenter: AppointmentPresenter? = null, postponementViewModel: PostponementViewModel? = null,
-                                   availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, mainViewModel: MainViewModel, onDeleteAppointment: (UserAppointment) -> Unit, platformNavigator: PlatformNavigator, onAddReview: (Appointment) -> Unit) {
+                                   availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, mainViewModel: MainViewModel, onDeleteAppointment: (UserAppointment) -> Unit, onCancelAppointment: (UserAppointment) -> Unit, platformNavigator: PlatformNavigator, onAddReview: (Appointment) -> Unit) {
     val expandedMenuItem = remember { mutableStateOf(false) }
     val openPostponeDialog = remember { mutableStateOf(false) }
 
@@ -318,7 +336,6 @@ fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String
         ) {
             ImageComponent(imageModifier = Modifier.size(20.dp).padding(bottom = 2.dp), imageRes = statusDrawableRes, colorFilter = ColorFilter.tint(color = statusColor))
             AttachAppointmentStatus(statusText, statusColor)
-
                Row(
                    modifier = Modifier
                        .fillMaxSize(),
@@ -348,6 +365,9 @@ fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String
                                }
                                else if (title.contentEquals("Delete", true)) {
                                    onDeleteAppointment(userAppointment)
+                               }
+                               else if (title.contentEquals("Cancel Appointment")){
+                                   onCancelAppointment(userAppointment)
                                }
                                else if (title.contentEquals("Add Review", true)) {
                                    onAddReview(userAppointment.resources!!)

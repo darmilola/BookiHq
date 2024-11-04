@@ -24,7 +24,6 @@ data class CreatePendingBookingAppointmentRequest(@SerialName("user_id") val use
                                                   @SerialName("month") val month: Int,
                                                   @SerialName("year") val year: Int,
                                                   @SerialName("serviceLocation") val serviceLocation: String,
-                                                  @SerialName("serviceStatus") val serviceStatus: String,
                                                   @SerialName("bookingStatus") val bookingStatus: String,
                                                   @SerialName("appointmentType") val appointmentType: String,)
 
@@ -37,7 +36,6 @@ data class CreatePendingBookingPackageAppointmentRequest(@SerialName("user_id") 
                                                   @SerialName("month") val month: Int,
                                                   @SerialName("year") val year: Int,
                                                   @SerialName("serviceLocation") val serviceLocation: String,
-                                                  @SerialName("serviceStatus") val serviceStatus: String,
                                                   @SerialName("bookingStatus") val bookingStatus: String,
                                                   @SerialName("appointmentType") val appointmentType: String,)
 
@@ -56,3 +54,6 @@ data class GetPendingBookingAppointmentRequest(@SerialName("user_id") val userId
 
 @Serializable
 data class DeletePendingBookingAppointmentRequest(@SerialName("id") val pendingAppointmentId: Long)
+
+@Serializable
+data class DeleteAllPendingBookingAppointmentRequest(@SerialName("userId") val userId: Long, @SerialName("bookingStatus") val bookingStatus: String)

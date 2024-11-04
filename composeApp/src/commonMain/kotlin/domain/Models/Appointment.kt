@@ -3,14 +3,14 @@ package domain.Models
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.ServiceLocationEnum
-import domain.Enums.ServiceStatusEnum
+import domain.Enums.BookingStatus
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable @Parcelize
 data class Appointment(
     @SerialName("id") val appointmentId: Long? = -1, @SerialName("user_id") val userId: Long? = -1, @SerialName("vendor_id") val vendorId: Long = -1,
-    @SerialName("serviceLocation") val serviceLocation: String = ServiceLocationEnum.SPA.toPath(), @SerialName("serviceStatus") val serviceStatus: String = ServiceStatusEnum.PENDING.toPath(), @SerialName("service_id") var serviceId: Long = -1,
+    @SerialName("serviceLocation") val serviceLocation: String = ServiceLocationEnum.SPA.toPath(), @SerialName("bookingStatus") val bookingStatus: String = BookingStatus.PENDING.toPath(), @SerialName("service_id") var serviceId: Long = -1,
     @SerialName("therapist_id") val therapistId: Long = -1, @SerialName("service_type_id") var serviceTypeId: Long? = -1, @SerialName("appointmentTime") var appointmentTime: Int? = -1, @SerialName("appointmentType") var appointmentType: String = "",
     @SerialName("day") var appointmentDay: Int? = -1, @SerialName("month") var appointmentMonth: Int? = -1, @SerialName("package_id") var packageId: Long = -1,
     @SerialName("package_info") var packageInfo: VendorPackage? = null,

@@ -1,14 +1,13 @@
 package domain.appointments
 
 import com.badoo.reaktive.single.Single
-import domain.Enums.ServiceStatusEnum
+import domain.Enums.BookingStatus
 import domain.Models.AppointmentListDataResponse
 import domain.Models.JoinMeetingResponse
 import domain.Models.ServerResponse
 import domain.Models.TherapistAvailabilityResponse
 import domain.Models.UserAppointment
 import io.ktor.client.HttpClient
-import kotlinx.serialization.SerialName
 
 class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
     private val appointmentNetworkService: AppointmentNetworkService = AppointmentNetworkService(apiService)
@@ -30,8 +29,8 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
         val appointment = userAppointment.resources!!
         val param = PostponeAppointmentRequest(userId = appointment.userId!!, vendorId = appointment.vendorId, serviceId = appointment.serviceId, packageId = appointment.packageId,
             serviceTypeId = appointment.serviceTypeId!!, therapistId = appointment.therapistId, appointmentTime = appointmentTime, appointmentType = userAppointment.resources.appointmentType,
-            day = day, month = month, year = year, serviceLocation = appointment.serviceLocation, serviceStatus = ServiceStatusEnum.PENDING.toPath(),
-            appointmentId = appointment.appointmentId!!, bookingStatus = userAppointment.bookingStatus!!, paymentMethod = userAppointment.paymentMethod!!)
+            day = day, month = month, year = year, serviceLocation = appointment.serviceLocation,
+            appointmentId = appointment.appointmentId!!, bookingStatus = BookingStatus.PENDING.toPath(), paymentMethod = userAppointment.paymentMethod!!)
         return appointmentNetworkService.postponeAppointment(param)
     }
 

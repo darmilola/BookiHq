@@ -234,7 +234,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                 val recentAppointments = homepageInfo.value.recentAppointments
                                 val vendorServices = homepageInfo.value.vendorServices
                                 val vendorRecommendations =
-                                    homepageInfo.value.recommendationRecommendations
+                                    homepageInfo.value.recommendations
                                 Column(
                                     Modifier
                                         .verticalScroll(state = rememberScrollState())

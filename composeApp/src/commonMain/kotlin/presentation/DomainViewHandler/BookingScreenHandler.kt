@@ -16,7 +16,6 @@ import presentation.viewmodels.PerformedActionUIStateViewModel
 class BookingScreenHandler(
     private val bookingViewModel: BookingViewModel,
     private val loadPendingActionUIStateViewModel: PerformedActionUIStateViewModel,
-    private val deleteActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val createAppointmentActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val getTherapistActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val getServiceTypesActionUIStateViewModel: PerformedActionUIStateViewModel?,
@@ -28,56 +27,11 @@ class BookingScreenHandler(
     }
 
     override fun showLoadPendingAppointmentLce(uiState: AppUIStates, message: String) {
-        uiState.let {
-            when{
-                it.isLoading -> {
-                    loadPendingActionUIStateViewModel.switchActionLoadPendingAppointmentUiState(AppUIStates(isLoading = true, loadingMessage = it.loadingMessage))
-                }
-
-                it.isSuccess -> {
-                    loadPendingActionUIStateViewModel.switchActionLoadPendingAppointmentUiState(AppUIStates(isSuccess = true))
-                }
-
-                it.isFailed -> {
-                    loadPendingActionUIStateViewModel.switchActionLoadPendingAppointmentUiState(AppUIStates(isFailed = true, errorMessage = it.errorMessage))
-                }
-            }
-        }
-    }
-
-    override fun showDeleteActionLce(uiState: AppUIStates, message: String) {
-        uiState.let {
-            when {
-                it.isLoading -> {
-                    deleteActionUIStateViewModel.switchDeletePendingAppointmentUiState(AppUIStates(isLoading = true, loadingMessage = it.loadingMessage))
-                }
-                it.isSuccess -> {
-                    deleteActionUIStateViewModel.switchDeletePendingAppointmentUiState(AppUIStates(isSuccess = true))
-                }
-
-                it.isFailed -> {
-                    deleteActionUIStateViewModel.switchDeletePendingAppointmentUiState(AppUIStates(isFailed = true, errorMessage = it.errorMessage))
-                }
-
-            }
-        }
+        loadPendingActionUIStateViewModel.switchActionLoadPendingAppointmentUiState(uiState)
     }
 
     override fun showCreateAppointmentActionLce(uiState: AppUIStates, message: String) {
-        uiState.let {
-            when {
-                it.isLoading -> {
-                    createAppointmentActionUIStateViewModel.switchCreateAppointmentUiState(AppUIStates(isLoading = true, loadingMessage = it.loadingMessage))
-                }
-                it.isSuccess -> {
-                    createAppointmentActionUIStateViewModel.switchCreateAppointmentUiState(AppUIStates(isSuccess = true))
-                }
-
-                it.isFailed -> {
-                    createAppointmentActionUIStateViewModel.switchCreateAppointmentUiState(AppUIStates(isFailed = true, errorMessage = it.errorMessage))
-                }
-            }
-        }
+        createAppointmentActionUIStateViewModel.switchCreateAppointmentUiState(uiState)
     }
 
     override fun getTherapistActionLce(uiState: AppUIStates, message: String) {
@@ -89,21 +43,7 @@ class BookingScreenHandler(
     }
 
     override fun getTimesActionLce(uiState: AppUIStates, message: String) {
-        uiState.let {
-            when {
-                it.isLoading -> {
-                    getTimesActionUIStateViewModel.switchTimeActionUiState(AppUIStates(isLoading = true, loadingMessage = it.loadingMessage))
-                }
-                it.isSuccess -> {
-                    getTimesActionUIStateViewModel.switchTimeActionUiState(AppUIStates(isSuccess = true))
-                }
-
-                it.isFailed -> {
-                    getTimesActionUIStateViewModel.switchTimeActionUiState(AppUIStates(isFailed = true, errorMessage = it.errorMessage))
-                }
-
-            }
-        }
+        getTimesActionUIStateViewModel.switchTimeActionUiState(uiState)
     }
 
     override fun showTherapists(serviceTherapists: List<ServiceTypeTherapists>, platformTime: List<PlatformTime>, vendorTime: List<VendorTime>) {

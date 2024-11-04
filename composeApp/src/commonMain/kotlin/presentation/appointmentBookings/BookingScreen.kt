@@ -76,6 +76,7 @@ import domain.Models.PlatformNavigator
 import domain.Models.VendorPackage
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
+import presentation.DomainViewHandler.CancelContractHandler
 import presentation.dialogs.AddDebitCardDialog
 import presentation.payment.PaymentContract
 import presentation.payment.PaymentPresenter
@@ -234,12 +235,15 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         }
 
         val handler = BookingScreenHandler(
-            bookingViewModel!!, loadPendingActionUIStateViewModel = loadPendingActionUIStateViewModel!!, deleteActionUIStateViewModel = deleteActionUIStateViewModel!!,
+            bookingViewModel!!, loadPendingActionUIStateViewModel = loadPendingActionUIStateViewModel!!,
             createAppointmentActionUIStateViewModel = createAppointmentActionUIStateViewModel!!,
             getServiceTypesActionUIStateViewModel = getServiceTypesUIStateViewModel!! ,
             getTherapistActionUIStateViewModel = getTherapistActionUIStateViewModel!!, getTimesActionUIStateViewModel = getTimeActionUIStateViewModel!!, bookingPresenter = bookingPresenter
-        ) {}
+        ){}
         handler.init()
+
+        val cancelContractHandler = CancelContractHandler(deleteActionUIStateViewModel!!, bookingPresenter)
+        cancelContractHandler.init()
 
 
         val createAppointmentActionUiStates = createAppointmentActionUIStateViewModel!!.createAppointmentUiState.collectAsState()
@@ -440,7 +444,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         val vendorId = mainViewModel!!.connectedVendor.value.vendorId
         val paymentAmount = calculateAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
 
-        bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.DONE.toPath(), day = getDay(),
+        bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.PENDING.toPath(), day = getDay(),
             month = getMonth(), year = getYear(), paymentAmount = paymentAmount,
             paymentMethod = paymentMethod)
     }

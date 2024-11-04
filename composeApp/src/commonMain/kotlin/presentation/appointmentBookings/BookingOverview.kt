@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import domain.Enums.AppointmentType
 import domain.Enums.BookingStatus
 import domain.Enums.ServiceLocationEnum
-import domain.Enums.ServiceStatusEnum
 import domain.Models.UserAppointment
 import drawable.ErrorOccurredWidget
 import presentation.components.IndeterminateCircularProgressBar
@@ -63,22 +62,21 @@ fun BookingOverview(mainViewModel: MainViewModel, bookingPresenter: BookingPrese
                 month = currentAppointmentBooking.appointmentMonth!!,
                 year = currentAppointmentBooking.appointmentYear!!,
                 serviceLocation = if (currentAppointmentBooking.isMobileService) ServiceLocationEnum.MOBILE.toPath() else ServiceLocationEnum.SPA.toPath(),
-                serviceStatus = ServiceStatusEnum.BOOKING.toPath(),
-                bookingStatus = BookingStatus.PENDING.toPath()
+                bookingStatus = BookingStatus.BOOKING.toPath()
             )
         }
 
 
 
     if (deleteActionUiState.value.isLoading) {
-        LoadingDialog("Deleting Appointment")
+        LoadingDialog("Cancelling Appointment")
     }
     else if (deleteActionUiState.value.isSuccess) {
         SuccessDialog("success", actionTitle = "", onConfirmation = {
             deleteActionUIStateViewModel.switchDeletePendingAppointmentUiState(AppUIStates(isDefault = true))
             bookingPresenter.getPendingBookingAppointment(
                 mainViewModel.currentUserInfo.value.userId!!,
-                bookingStatus = BookingStatus.PENDING.toPath()
+                bookingStatus = BookingStatus.BOOKING.toPath()
             )
         })
     }
@@ -102,7 +100,7 @@ fun BookingOverview(mainViewModel: MainViewModel, bookingPresenter: BookingPrese
             ErrorOccurredWidget(loadingPendingActionUiState.value.errorMessage, onRetryClicked = {
                 bookingPresenter.getPendingBookingAppointment(
                     mainViewModel.currentUserInfo.value.userId!!,
-                    bookingStatus = BookingStatus.PENDING.toPath())
+                    bookingStatus = BookingStatus.BOOKING.toPath())
             })
         }
     }

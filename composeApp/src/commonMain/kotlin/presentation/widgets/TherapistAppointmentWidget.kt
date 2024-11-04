@@ -9,18 +9,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,7 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.Appointment
-import domain.Enums.ServiceStatusEnum
+import domain.Enums.BookingStatus
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import theme.styles.Colors
@@ -86,7 +81,7 @@ fun TherapistDashboardAppointmentWidget(appointment: Appointment,
                                         onArchiveAppointment: (Appointment) -> Unit,
                                         onUpdateToDone: (Appointment) -> Unit) {
 
-    val appointmentStatus = appointment.serviceStatus
+    val appointmentStatus = appointment.bookingStatus
     var iconRes = "drawable/schedule.png"
     var statusText = "Pending"
     var statusColor: Color = Colors.primaryColor
@@ -94,17 +89,17 @@ fun TherapistDashboardAppointmentWidget(appointment: Appointment,
 
 
     when (appointmentStatus) {
-        ServiceStatusEnum.PENDING.toPath() -> {
+        BookingStatus.PENDING.toPath() -> {
             iconRes = "drawable/schedule.png"
             statusText = "Pending"
             statusColor = Colors.primaryColor
         }
-        ServiceStatusEnum.POSTPONED.toPath() -> {
+        BookingStatus.POSTPONED.toPath() -> {
             iconRes = "drawable/appointment_postponed.png"
             statusText = "Postponed"
             statusColor = Colors.pinkColor
         }
-        ServiceStatusEnum.DONE.toPath() -> {
+        BookingStatus.DONE.toPath() -> {
             iconRes = "drawable/appointment_done.png"
             statusText = "Done"
             statusColor = Colors.greenColor

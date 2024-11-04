@@ -31,7 +31,6 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
                     homeRepositoryImpl.getUserHomePageWithStatus(userId, vendorWhatsAppPhone)
                         .subscribe(
                             onSuccess = { response ->
-                                println("Response $response")
                                 when (response.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
                                         contractView?.showLoadHomePageLce(AppUIStates(isSuccess = true))
