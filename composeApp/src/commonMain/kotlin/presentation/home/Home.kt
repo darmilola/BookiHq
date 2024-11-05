@@ -69,7 +69,6 @@ import domain.Models.Product
 import domain.Models.ServiceTypeItem
 import domain.Models.Services
 import domain.Models.UserAppointment
-import domain.Models.Vendor
 import drawable.ErrorOccurredWidget
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
@@ -232,11 +231,12 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                                     Screens.BOOKING.toPath()
                                                 )
                                             )
+                                            mainViewModel!!.setRecommendationServiceType(ServiceTypeItem())
                                             mainViewModel!!.setSelectedService(it)
                                         })
                                     }
                                     if (!vendorRecommendations.isNullOrEmpty()) {
-                                        RecommendedSessions(vendorRecommendations, mainViewModel!!)
+                                        VendorPicks(vendorRecommendations, mainViewModel!!)
                                     }
                                     if (!recentAppointments.isNullOrEmpty()) {
                                         AttachAppointmentsTitle("Recent Appointments")
@@ -299,7 +299,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
     }
 
     @Composable
-    fun RecommendedSessions(recommendations: List<VendorRecommendation>, mainViewModel: MainViewModel) {
+    fun VendorPicks(recommendations: List<VendorRecommendation>, mainViewModel: MainViewModel) {
         Column(modifier = Modifier.fillMaxWidth().height(450.dp)) {
         Row(
             horizontalArrangement = Arrangement.Start,

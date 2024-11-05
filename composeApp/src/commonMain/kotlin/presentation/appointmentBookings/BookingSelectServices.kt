@@ -2,6 +2,7 @@ package presentation.appointmentBookings
 
 import GGSansSemiBold
 import StackedSnackbarHost
+import UIStates.AppUIStates
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -65,9 +66,17 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
                           performedActionUIStateViewModel: PerformedActionUIStateViewModel,
                           services: Services, bookingPresenter: BookingPresenter) {
 
+    val recommendationServiceType = mainViewModel.recommendedServiceType.value
+
     LaunchedEffect(Unit, block = {
-        if (bookingViewModel.serviceTypeList.value.isEmpty()) {
+        if (recommendationServiceType.serviceTypeId == -1L) {
+            bookingViewModel.setCurrentAppointmentBooking(Appointment())
             bookingPresenter.getServiceData(services.serviceId)
+        }
+        else{
+            bookingViewModel.setServiceImages(recommendationServiceType.serviceDetails.serviceImages)
+            bookingViewModel.setCurrentAppointmentBooking(Appointment(serviceTypeItem = recommendationServiceType))
+            performedActionUIStateViewModel.switchGetServiceTypeUiState(AppUIStates(isSuccess = true))
         }
     })
 
@@ -112,7 +121,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
         }
     } else if (getServiceTypeActionUiStates.value.isSuccess) {
 
-        val currentBooking = Appointment()
+        val currentBooking = bookingViewModel.currentAppointmentBooking.value
         currentBooking.services = services
         currentBooking.serviceId = services.serviceId
 
@@ -240,11 +249,16 @@ fun AttachServiceDropDownWidget(mainViewModel: MainViewModel, bookingViewModel: 
     if (recommendationServiceType.serviceTypeId != -1L){
         serviceTypeList.add(recommendationServiceType.title)
         selectedIndex = 0
+        LaunchedEffect(Unit, block = {
+            onServiceSelected(recommendationServiceType)
+        })
+    }
+    else{
+        for (item in bookingViewModel.serviceTypeList.value){
+            serviceTypeList.add(item.title)
+        }
     }
     var selectedService: ServiceTypeItem? = null
-    for (item in bookingViewModel.serviceTypeList.value){
-         serviceTypeList.add(item.title)
-    }
     DropDownWidget(menuItems = serviceTypeList, selectedIndex = selectedIndex, shape = CircleShape ,iconRes = "drawable/spa_treatment_leaves.png",
         placeHolderText = "Select Service Type", iconSize = 20, onMenuItemClick = {
         if (!isRecommendationType) {
