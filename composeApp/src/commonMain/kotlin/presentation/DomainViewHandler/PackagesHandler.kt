@@ -48,11 +48,11 @@ class PackagesHandler(
         }
     }
 
-    override fun onLoadMoreAppointmentStarted() {
+    override fun onLoadMorePackageStarted() {
         packagesResourceListEnvelopeViewModel.setLoadingMore(true)
     }
 
-    override fun onLoadMoreAppointmentEnded() {
+    override fun onLoadMorePackageEnded() {
         packagesResourceListEnvelopeViewModel.setLoadingMore(false)
     }
 

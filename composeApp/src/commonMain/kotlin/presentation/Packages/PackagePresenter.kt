@@ -3,7 +3,6 @@ package presentation.Packages
 import UIStates.AppUIStates
 import com.badoo.reaktive.single.subscribe
 import domain.Enums.ServerResponse
-import domain.home.HomeRepositoryImpl
 import domain.packages.PackageRepositoryImpl
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
@@ -12,7 +11,6 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import presentation.home.HomepageContract
 
 class PackagePresenter(apiService: HttpClient): PackageContract.Presenter() {
 
@@ -58,7 +56,7 @@ class PackagePresenter(apiService: HttpClient): PackageContract.Presenter() {
     }
 
     override fun getMoreVendorPackages(vendorId: Long, nextPage: Int) {
-        contractView?.onLoadMoreAppointmentStarted()
+        contractView?.onLoadMorePackageStarted()
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
@@ -67,25 +65,25 @@ class PackagePresenter(apiService: HttpClient): PackageContract.Presenter() {
                             onSuccess = { response ->
                                 when (response.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
-                                        contractView?.onLoadMoreAppointmentEnded()
+                                        contractView?.onLoadMorePackageEnded()
                                         contractView?.showVendorPackages(response.listItem)
                                     }
                                     ServerResponse.EMPTY.toPath() -> {
-                                        contractView?.onLoadMoreAppointmentEnded()
+                                        contractView?.onLoadMorePackageEnded()
                                     }
                                     ServerResponse.FAILURE.toPath() -> {
-                                        contractView?.onLoadMoreAppointmentEnded()
+                                        contractView?.onLoadMorePackageEnded()
                                     }
                                 }
                             },
                             onError = {
-                                contractView?.onLoadMoreAppointmentEnded()
+                                contractView?.onLoadMorePackageEnded()
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.onLoadMoreAppointmentEnded()
+                contractView?.onLoadMorePackageEnded()
             }
         }
     }
