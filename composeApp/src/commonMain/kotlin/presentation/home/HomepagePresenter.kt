@@ -23,38 +23,6 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
         contractView = view
     }
 
-    override fun getUserHomepageWithStatus(userId: Long, vendorWhatsAppPhone: String) {
-        contractView?.showLoadHomePageLce(AppUIStates(isLoading = true, loadingMessage = "Loading Home"))
-        scope.launch(Dispatchers.Main) {
-            try {
-                val result = withContext(Dispatchers.IO) {
-                    homeRepositoryImpl.getUserHomePageWithStatus(userId, vendorWhatsAppPhone)
-                        .subscribe(
-                            onSuccess = { response ->
-                                when (response.status) {
-                                    ServerResponse.SUCCESS.toPath() -> {
-                                        contractView?.showLoadHomePageLce(AppUIStates(isSuccess = true))
-                                        contractView?.showHomeWithStatus(response.homepageInfo, response.vendorStatusList)
-                                    }
-                                    ServerResponse.FAILURE.toPath() -> {
-                                        contractView?.showLoadHomePageLce(AppUIStates(isFailed = true, errorMessage = "Error Loading Home"))
-                                    }
-                                }
-                            },
-                            onError = {
-                                println("Error 1 ${it.message}")
-                                contractView?.showLoadHomePageLce(AppUIStates(isFailed = true, errorMessage = "Error Loading Home"))
-                            },
-                        )
-                }
-                result.dispose()
-            } catch(e: Exception) {
-                println("Error 2 ${e.message}")
-                contractView?.showLoadHomePageLce(AppUIStates(isFailed = true, errorMessage = "Error Loading Home"))
-            }
-        }
-    }
-
     override fun getUserHomepage(userId: Long) {
         contractView?.showLoadHomePageLce(AppUIStates(isLoading = true, loadingMessage = "Loading Home"))
         scope.launch(Dispatchers.Main) {
@@ -63,7 +31,6 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
                     homeRepositoryImpl.getUserHomePage(userId)
                         .subscribe(
                             onSuccess = { response ->
-                                println("Response $response")
                                 when (response.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
                                         contractView?.showLoadHomePageLce(AppUIStates(isSuccess = true))
@@ -75,14 +42,12 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
                                 }
                             },
                             onError = {
-                                println("Error 1 ${it.message}")
                                 contractView?.showLoadHomePageLce(AppUIStates(isFailed = true, errorMessage = "Error Loading Home"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Error 2 ${e.message}")
                 contractView?.showLoadHomePageLce(AppUIStates(isFailed = true, errorMessage = "Error Loading Home"))
             }
         }

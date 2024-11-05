@@ -8,7 +8,7 @@ import presentation.authentication.AuthenticationPresenter
 class AuthenticationScreenHandler(
     private val authenticationPresenter: AuthenticationPresenter,
     private val onUserLocationReady: (Place) -> Unit,
-    private val enterPlatform: (User,vendorPhone: String?) -> Unit,
+    private val enterPlatform: (User) -> Unit,
     private val completeProfile: (userEmail: String, userPhone: String) -> Unit,
     private val connectVendorOnProfileCompleted: (userInfo: User) -> Unit,
     private val connectVendor: (User) -> Unit,
@@ -48,8 +48,8 @@ class AuthenticationScreenHandler(
         onUpdateEnded(isSuccessful)
     }
 
-    override fun goToMainScreen(user: User, vendorPhone: String?) {
-        enterPlatform(user, vendorPhone)
+    override fun goToMainScreen(user: User) {
+        enterPlatform(user)
     }
 
     override fun goToCompleteProfileWithEmail(userEmail: String) {

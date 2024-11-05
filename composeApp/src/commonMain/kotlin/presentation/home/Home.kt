@@ -57,7 +57,6 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
-import com.russhwolf.settings.set
 import domain.Enums.AppointmentType
 import domain.Models.HomepageInfo
 import domain.Models.VendorRecommendation
@@ -71,7 +70,6 @@ import domain.Models.ServiceTypeItem
 import domain.Models.Services
 import domain.Models.UserAppointment
 import domain.Models.Vendor
-import domain.Models.VendorStatusModel
 import drawable.ErrorOccurredWidget
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
@@ -82,11 +80,9 @@ import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.widgets.ShopStatusWidget
 import presentation.widgets.HomeServicesWidget
 import presentation.widgets.RecommendedServiceItem
 import presentation.widgets.RecentAppointmentWidget
-import presentation.widgets.PendingPackageAppointmentWidget
 import presentation.widgets.ProductDetailBottomSheet
 import presentation.widgets.RecentPackageAppointmentWidget
 import presentations.components.TextComponent
@@ -138,46 +134,36 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
     @Composable
     override fun Content() {
-            val userId = preferenceSettings[SharedPreferenceEnum.USER_ID.toPath(), -1L]
-            val vendorPhone: String = preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath(),""]
-            val screenSizeInfo = ScreenSizeInfo()
+        val userId = preferenceSettings[SharedPreferenceEnum.USER_ID.toPath(), -1L]
+        val screenSizeInfo = ScreenSizeInfo()
 
-            if (loadingScreenUiStateViewModel == null) {
-                loadingScreenUiStateViewModel = kmpViewModel(
-                    factory = viewModelFactory {
-                        LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
-                    },
-                )
-            }
+        if (loadingScreenUiStateViewModel == null) {
+            loadingScreenUiStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
 
 
         LaunchedEffect(true) {
-            val isSwitchVendor: Boolean = preferenceSettings[SharedPreferenceEnum.IS_SWITCH_VENDOR.toPath(),false]
+            val isSwitchVendor: Boolean =
+                preferenceSettings[SharedPreferenceEnum.IS_SWITCH_VENDOR.toPath(), false]
 
-            if (isSwitchVendor){
+            if (isSwitchVendor) {
                 homePageViewModel!!.setHomePageInfo(HomepageInfo())
             }
 
             if (homePageViewModel!!.homePageInfo.value.userInfo?.userId == null) {
-                if (vendorPhone.isNotEmpty()){
-                    homepagePresenter.getUserHomepageWithStatus(userId, vendorPhone)
-                }
-                else {
-                    homepagePresenter.getUserHomepage(userId)
-                }
+                homepagePresenter.getUserHomepage(userId)
             }
         }
 
         val handler = HomepageHandler(loadingScreenUiStateViewModel!!, homepagePresenter,
-            onHomeInfoAvailable = { homePageInfo, vendorStatus ->
-                val viewHeight = calculateHomePageScreenHeight(
-                    homepageInfo = homePageInfo,
-                    screenSizeInfo = screenSizeInfo,
-                    statusList = vendorStatus
-                )
+            onHomeInfoAvailable = { homePageInfo,->
+                val viewHeight = calculateHomePageScreenHeight(homepageInfo = homePageInfo)
                 homePageViewModel!!.setHomePageViewHeight(viewHeight)
                 homePageViewModel!!.setHomePageInfo(homePageInfo)
-                homePageViewModel!!.setVendorStatus(vendorStatus)
                 mainViewModel!!.setVendorBusinessLogoUrl(homePageInfo.vendorInfo!!.businessLogo!!)
             })
         handler.init()
@@ -220,15 +206,8 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                             } else if (uiState.value.isFailed) {
                                 ErrorOccurredWidget(uiState.value.errorMessage, onRetryClicked = {
                                     if (homePageViewModel!!.homePageInfo.value.userInfo?.userId == null) {
-                                        if (vendorPhone.isNotEmpty()) {
-                                            homepagePresenter.getUserHomepageWithStatus(
-                                                userId,
-                                                vendorPhone
-                                            )
-                                        } else {
-                                            homepagePresenter.getUserHomepage(userId)
+                                           homepagePresenter.getUserHomepage(userId)
                                         }
-                                    }
                                 })
                             } else if (uiState.value.isSuccess) {
                                 val recentAppointments = homepageInfo.value.recentAppointments
@@ -255,12 +234,6 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                             )
                                             mainViewModel!!.setSelectedService(it)
                                         })
-                                    }
-                                    if (homePageViewModel!!.vendorStatus.value.isNotEmpty()) {
-                                        BusinessStatusDisplay(
-                                            statusList = homePageViewModel!!.vendorStatus.value,
-                                            vendorInfo = mainViewModel!!.connectedVendor.value
-                                        )
                                     }
                                     if (!vendorRecommendations.isNullOrEmpty()) {
                                         RecommendedSessions(vendorRecommendations, mainViewModel!!)
@@ -337,7 +310,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 .fillMaxWidth()
         ) {
             TextComponent(
-                text = "Recommendation",
+                text = "Vendor Picks",
                 textModifier = Modifier.fillMaxWidth(0.35f),
                 fontSize = 16,
                 fontFamily = GGSansRegular,
@@ -499,18 +472,6 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 }
 
             }
-        }
-    }
-
-
-    @Composable
-    fun BusinessStatusDisplay(statusList: List<VendorStatusModel>, vendorInfo: Vendor) {
-        val modifier =
-            Modifier.fillMaxWidth()
-                .height(700.dp)
-                .background(color = Color.Black)
-        Box(modifier = modifier, contentAlignment = Alignment.Center) {
-            ShopStatusWidget(statusList, vendorInfo)
         }
     }
 }

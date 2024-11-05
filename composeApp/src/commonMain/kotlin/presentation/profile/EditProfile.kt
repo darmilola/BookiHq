@@ -204,9 +204,9 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
 
         val handler = AuthenticationScreenHandler(authenticationPresenter,
             onUserLocationReady = {},
-            enterPlatform = { user, phone -> },
-            completeProfile = { userEmail, userPhone -> },
-            connectVendor = { user -> },
+            enterPlatform = { _ -> },
+            completeProfile = { _, _ -> },
+            connectVendor = { _ -> },
             onVerificationStarted = {},
             onVerificationEnded = {}, onCompleteStarted = {}, onCompleteEnded = {},
             connectVendorOnProfileCompleted = { _ -> },

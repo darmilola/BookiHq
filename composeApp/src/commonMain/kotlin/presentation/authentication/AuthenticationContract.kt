@@ -7,7 +7,7 @@ import domain.Models.User
 class AuthenticationContract {
     interface View {
         fun showUserProfile(user: User)
-        fun goToMainScreen(user: User, vendorPhone: String?)
+        fun goToMainScreen(user: User)
         fun goToCompleteProfileWithEmail(userEmail: String)
         fun goToCompleteProfileWithPhone(phone: String)
         fun showUserLocation(place: Place)

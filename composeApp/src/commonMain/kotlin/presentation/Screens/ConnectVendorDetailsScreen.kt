@@ -107,7 +107,6 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
         } else if (connectVendorAction.value.isSuccess) {
             mainViewModel!!.setConnectedVendor(vendor)
             preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = vendor.vendorId
-            preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = vendor.whatsAppPhone
             vendorConnected.value = true
 
             if (deviceInfo() == DeviceType.IOS.toPath()) {

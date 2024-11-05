@@ -8,7 +8,6 @@ enum class SharedPreferenceEnum {
     USER_ID,
     VENDOR_ID,
     USER_AUTH_PHONE,
-    VENDOR_WHATSAPP_PHONE,
     AUTH_TYPE,
     AUTH_EMAIL,
     AUTH_PHONE,
@@ -22,7 +21,6 @@ enum class SharedPreferenceEnum {
         USER_ID -> "profileId"
         VENDOR_ID -> "vendorId"
         USER_AUTH_PHONE -> "userAuthPhone"
-        VENDOR_WHATSAPP_PHONE -> "vendorWhatsAppPhone"
         AUTH_TYPE -> "authType"
         AUTH_EMAIL -> "authEmail"
         AUTH_PHONE -> "authPhone"

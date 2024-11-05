@@ -14,7 +14,6 @@ import domain.Models.Product
 import domain.Models.ScreenSizeInfo
 import domain.Models.Services
 import domain.Models.UserAppointment
-import domain.Models.VendorStatusModel
 import domain.Models.VendorTime
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
@@ -142,21 +141,16 @@ fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 @Composable
 fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
 
-fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo, screenSizeInfo: ScreenSizeInfo, statusList: List<VendorStatusModel>): Int{
+fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo): Int{
     val serviceCount = homepageInfo.vendorServices!!.size
     val recentAppointmentCount = homepageInfo.recentAppointments!!.size
-    var statusHeight = 0
-
-    if (statusList.isNotEmpty()){
-        statusHeight = 800
-    }
 
     val servicesHeight = (ceil((serviceCount/4).toDouble()) * 140).toInt()
     val recommendationsHeight = 450
     val recentAppointmentHeight = recentAppointmentCount * 200
     val bottomBarPadding = 200
 
-    return servicesHeight + recentAppointmentHeight + recommendationsHeight + statusHeight + bottomBarPadding
+    return servicesHeight + recentAppointmentHeight + recommendationsHeight + bottomBarPadding
 }
 
 

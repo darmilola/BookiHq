@@ -105,7 +105,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
 
     val handler = AuthenticationScreenHandler(authenticationPresenter,
         onUserLocationReady = {},
-        enterPlatform = { user, vendorWhatsAppPhone ->
+        enterPlatform = { user ->
             runBlocking {
                 val userCurrency = getDisplayCurrency(user.country!!)
                 val displayCurrencyUnit = userCurrency.toDisplayUnit()
@@ -118,7 +118,6 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                 preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
                 preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendorId
-                preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = vendorWhatsAppPhone
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
                 preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.EMAIL.toPath()

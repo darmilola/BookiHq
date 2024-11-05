@@ -66,7 +66,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
 
     val handler = AuthenticationScreenHandler(authenticationPresenter,
         onUserLocationReady = {},
-        enterPlatform = { user, whatsAppPhone ->
+        enterPlatform = { user ->
             runBlocking {
                 val userCurrency = getDisplayCurrency(user.country!!)
                 val displayCurrencyUnit = userCurrency.toDisplayUnit()
@@ -80,7 +80,6 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
                 preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendorId
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
-                preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = whatsAppPhone
                 scope.launch {
                     val userDao = databaseBuilder.build().getUserDao()
                     val userCount = userDao.count()

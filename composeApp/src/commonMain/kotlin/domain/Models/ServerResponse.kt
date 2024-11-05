@@ -14,7 +14,7 @@ data class ServerResponse(@SerialName("status") val status: String = "", @Serial
 data class JoinMeetingResponse(@SerialName("status") val status: String = "", @SerialName("token") val token: String = "")
 
 @Serializable
-data class AuthenticationResponse(@SerialName("status") val status: String = "", @SerialName("whatsappPhone") val whatsAppPhone: String? = null, @SerialName("data") val userInfo: User = User(),
+data class AuthenticationResponse(@SerialName("status") val status: String = "", @SerialName("data") val userInfo: User = User(),
                                   @SerialName("profile_Status") val profileStatus: String = ProfileStatus.COMPLETE_PROFILE.toPath())
 
 @Serializable
@@ -22,10 +22,6 @@ data class CompleteProfileResponse(@SerialName("status") val status: String = ""
 
 @Serializable
 data class HomePageResponse(@SerialName("status") val status: String = "", @SerialName("homePage") val homepageInfo: HomepageInfo = HomepageInfo())
-
-@Serializable
-data class HomePageWithStatusResponse(@SerialName("status") val status: String = "", @SerialName("homePage") val homepageInfo: HomepageInfo = HomepageInfo(),
-                            @SerialName("vendorStatus") val vendorStatusList: List<VendorStatusModel> = arrayListOf())
 
 @Serializable @Parcelize
 data class CountryCitiesResponse(@SerialName("status") val status: String = "",

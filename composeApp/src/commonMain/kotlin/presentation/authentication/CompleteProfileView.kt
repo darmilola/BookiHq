@@ -102,7 +102,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
 
     val authHandler = AuthenticationScreenHandler(authenticationPresenter,
         onUserLocationReady = {},
-        enterPlatform = { _, _ -> },
+        enterPlatform = { _ -> },
         completeProfile = { _, _ -> },
         connectVendor = { _ -> },
         onVerificationStarted = {},

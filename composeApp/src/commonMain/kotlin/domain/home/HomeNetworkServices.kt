@@ -4,7 +4,6 @@ import com.badoo.reaktive.single.toSingle
 import com.russhwolf.settings.Settings
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.HomePageResponse
-import domain.Models.HomePageWithStatusResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.header
@@ -25,13 +24,5 @@ open class HomeNetworkService(private val apiService: HttpClient) {
             setBody(getHomeRequest)
             header("Authorization", apiKey)
         }.body<HomePageResponse>().toSingle()
-
-    suspend fun getHomePageWithStatus(getHomeRequestWithStatus: GetHomeRequestWithStatus) =
-        apiService.post {
-            url("/home/status")
-            contentType(ContentType.Application.Json)
-            setBody(getHomeRequestWithStatus)
-            header("Authorization", apiKey)
-        }.body<HomePageWithStatusResponse>().toSingle()
 
 }

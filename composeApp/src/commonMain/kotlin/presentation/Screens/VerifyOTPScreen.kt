@@ -107,7 +107,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
 
         val handler = AuthenticationScreenHandler(authenticationPresenter,
             onUserLocationReady = {},
-            enterPlatform = { user, vendorWhatsAppPhone ->
+            enterPlatform = { user ->
                 val userCurrency = getDisplayCurrency(user.country!!)
                 val displayCurrencyUnit = userCurrency.toDisplayUnit()
                 val displayCurrencyPath = userCurrency.toPath()
@@ -117,7 +117,6 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                 preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
                 preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendorId
-                preferenceSettings[SharedPreferenceEnum.VENDOR_WHATSAPP_PHONE.toPath()] = vendorWhatsAppPhone
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
                 preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.PHONE.toPath()
