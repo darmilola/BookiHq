@@ -135,12 +135,6 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
 
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
-        if (onBackPressed.value){
-            mainViewModel!!.setOnBackPressed(false)
-            navigator.pop()
-        }
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
             animation = StackedSnackbarAnimation.Bounce)
@@ -187,7 +181,10 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
         cartViewModel!!.setTotal(total)
         cartViewModel!!.setSubTotal(subtotal)
 
-        if (cartSize.value == 0) {
+        val navigator = LocalNavigator.currentOrThrow
+        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+        if (onBackPressed.value || cartSize.value == 0){
+            mainViewModel!!.setOnBackPressed(false)
             navigator.pop()
         }
 
@@ -426,8 +423,6 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
 
         val cartItems = mainViewModel.unSavedOrders.collectAsState()
         val currencyUnit = mainViewModel.displayCurrencyUnit.value
-        if (cartItems.value.isNotEmpty()){
-
         val cartList = cartItems.value
         val selectedItem = remember { mutableStateOf(OrderItem()) }
         var showProductDetailBottomSheet by remember { mutableStateOf(false) }
@@ -509,7 +504,6 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                     })
                     StraightLine()
                 }
-            }
         }
     }
 
