@@ -13,4 +13,5 @@ data class HomepageInfo (
     @SerialName("vendor_recommendations") val recommendations: ArrayList<VendorRecommendation>? = arrayListOf(),
     @SerialName("recent_appointments") val recentAppointments: ArrayList<UserAppointment>? = arrayListOf(),
     @SerialName("therapist_info") val therapistInfo: TherapistInfo? = null,
+    var servicesGridList: ArrayList<ArrayList<Services>>? = null
 ): Parcelable

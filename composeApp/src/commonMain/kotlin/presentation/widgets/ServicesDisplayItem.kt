@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,7 +34,7 @@ fun HomeServicesWidget(vendorService:Services, onServiceSelected: (Services) -> 
         .clickable {
             onServiceSelected(vendorService)
         }
-        .height(130.dp)
+        .height(120.dp)
         Column(
             modifier = columnModifier,
             verticalArrangement = Arrangement.Center,
@@ -63,7 +64,7 @@ fun HomeServicesWidget(vendorService:Services, onServiceSelected: (Services) -> 
 fun AttachServiceImage(iconRes: String, iconSize: Int = 40) {
     Box(
         Modifier
-            .clip(CircleShape)
+            .clip(RoundedCornerShape(10.dp))
             .fillMaxWidth()
             .height(80.dp)
             .background(color = Colors.lighterPrimaryColor),

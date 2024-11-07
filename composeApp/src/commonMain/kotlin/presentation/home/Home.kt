@@ -1,5 +1,6 @@
 package presentation.home
 
+import GGSansBold
 import GGSansRegular
 import StackedSnackbarHost
 import UIStates.AppUIStates
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -131,6 +133,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
 
 
+    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
         val userId = preferenceSettings[SharedPreferenceEnum.USER_ID.toPath(), -1L]
@@ -221,19 +224,54 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                         .padding(top = 5.dp, bottom = 100.dp)
 
                                 ) {
+                                    val servicesGridList = homepageInfo.value.servicesGridList!!
                                     if (!vendorServices.isNullOrEmpty()) {
                                         AttachOurServices()
-                                        ServiceGridScreen(vendorServices, onServiceSelected = {
-                                            mainViewModel!!.setRecommendationServiceType(ServiceTypeItem())
-                                            mainViewModel!!.setScreenNav(
-                                                Pair(
-                                                    Screens.MAIN_SCREEN.toPath(),
-                                                    Screens.BOOKING.toPath()
+                                        val pagerState = rememberPagerState(pageCount = {servicesGridList.size})
+                                        HorizontalPager(
+                                            state = pagerState,
+                                            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                                            pageSpacing = 10.dp
+                                        ) { page ->
+                                            ServiceGridScreen(servicesGridList[page], onServiceSelected = {
+                                                mainViewModel!!.setRecommendationServiceType(ServiceTypeItem())
+                                                mainViewModel!!.setScreenNav(
+                                                    Pair(
+                                                        Screens.MAIN_SCREEN.toPath(),
+                                                        Screens.BOOKING.toPath()
+                                                    )
                                                 )
-                                            )
-                                            mainViewModel!!.setRecommendationServiceType(ServiceTypeItem())
-                                            mainViewModel!!.setSelectedService(it)
-                                        })
+                                                mainViewModel!!.setRecommendationServiceType(ServiceTypeItem())
+                                                mainViewModel!!.setSelectedService(it)
+                                            })
+                                        }
+                                        Row(
+                                            Modifier
+                                                .height(5.dp)
+                                                .fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.Center
+                                        ) {
+                                            repeat(servicesGridList.size) { iteration ->
+                                                val color: Color
+                                                val width: Int
+                                                if (pagerState.currentPage == iteration) {
+                                                    color = Colors.primaryColor
+                                                    width = 20
+                                                } else {
+                                                    color = Color.LightGray
+                                                    width = 20
+                                                }
+                                                Box(
+                                                    modifier = Modifier
+                                                        .padding(2.dp)
+                                                        .clip(CircleShape)
+                                                        .background(color)
+                                                        .height(2.dp)
+                                                        .width(width.dp)
+                                                )
+                                            }
+
+                                        }
                                     }
                                     if (!vendorRecommendations.isNullOrEmpty()) {
                                         VendorPicks(vendorRecommendations, mainViewModel!!)
@@ -254,13 +292,12 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
     @Composable
     fun ServiceGridScreen(vendorServices: List<Services>, onServiceSelected: (Services) -> Unit) {
-        val viewHeight = getServicesViewHeight(vendorServices)
         LazyVerticalGrid(
-            columns = GridCells.Fixed(4),
-            modifier = Modifier.fillMaxWidth().height(viewHeight.dp),
+            columns = GridCells.Fixed(2),
+            modifier = Modifier.fillMaxWidth().height(420.dp),
             contentPadding = PaddingValues(5.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
+            horizontalArrangement = Arrangement.Start,
             userScrollEnabled = false
         ) {
             items(vendorServices.size) {
@@ -283,8 +320,8 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             ) {
                 TextComponent(
                     text = "Services",
-                    fontSize = 16,
-                    fontFamily = GGSansRegular,
+                    fontSize = 30,
+                    fontFamily = GGSansBold,
                     textStyle = MaterialTheme.typography.h6,
                     textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
@@ -292,7 +329,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                     lineHeight = 30,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    textModifier = Modifier.fillMaxWidth(0.20f)
+                    textModifier = Modifier.fillMaxWidth(0.35f)
                 )
                 StraightLine()
             }
@@ -311,9 +348,9 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
         ) {
             TextComponent(
                 text = "Vendor Picks",
-                textModifier = Modifier.fillMaxWidth(0.35f),
-                fontSize = 16,
-                fontFamily = GGSansRegular,
+                textModifier = Modifier.fillMaxWidth(0.50f),
+                fontSize = 30,
+                fontFamily = GGSansBold,
                 textStyle = MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,

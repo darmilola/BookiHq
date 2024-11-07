@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.badoo.reaktive.single.subscribe
 import domain.Enums.ServerResponse
+import utils.calculateServicesGridList
 
 
 class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
@@ -33,6 +34,8 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
                             onSuccess = { response ->
                                 when (response.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
+                                        val servicesGridList = calculateServicesGridList(response.homepageInfo.vendorServices!!)
+                                        response.homepageInfo.servicesGridList = servicesGridList
                                         contractView?.showLoadHomePageLce(AppUIStates(isSuccess = true))
                                         contractView?.showHome(response.homepageInfo)
                                     }

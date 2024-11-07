@@ -57,12 +57,86 @@ fun getProductViewHeight(
 fun getServicesViewHeight(
     itemList: List<Services>
 ): Int {
-    if (itemList.size < 4){
+    if (itemList.size < 2){
         return 140
     }
-    val lineCount: Int = ceil((itemList.size/4).toDouble()).toInt()
+    val lineCount: Int = ceil((itemList.size/2).toDouble()).toInt()
 
     return lineCount * 140
+}
+
+fun calculateServicesGridList(services: ArrayList<Services>): ArrayList<ArrayList<Services>> {
+    val horizontalList = arrayListOf<ArrayList<Services>>()
+    val firstServiceList = arrayListOf<Services>()
+    val secondServiceList = arrayListOf<Services>()
+    val thirdServiceList = arrayListOf<Services>()
+    val fourthServiceList = arrayListOf<Services>()
+    var horizontalListSize = 0
+    when (services.size) {
+        in 1..6 -> {
+            horizontalListSize = 1
+        }
+        in 7..12 -> {
+            horizontalListSize = 2
+        }
+        in 13..18 -> {
+            horizontalListSize = 3
+        }
+        in 19..24 -> {
+            horizontalListSize = 4
+        }
+    }
+
+
+    for (i in 0..<horizontalListSize){
+        if (i == 0){
+            for (j in  0..5){
+                if (j < services.size){
+                    firstServiceList.add(services[j])
+                }
+            }
+        }
+        if (i == 1){
+            for (j in  6..11){
+                if (j < services.size){
+                    secondServiceList.add(services[j])
+                }
+            }
+        }
+        if (i == 2){
+            for (j in  12..17){
+                if (j < services.size){
+                    thirdServiceList.add(services[j])
+                }
+            }
+        }
+        if (i == 3){
+            for (j in  18..23){
+                if (j < services.size){
+                    fourthServiceList.add(services[j])
+                }
+            }
+        }
+    }
+
+    if (firstServiceList.isNotEmpty()){
+        horizontalList.add(firstServiceList)
+    }
+
+    if (secondServiceList.isNotEmpty()){
+        horizontalList.add(secondServiceList)
+    }
+
+    if (thirdServiceList.isNotEmpty()){
+        horizontalList.add(thirdServiceList)
+    }
+
+    if (fourthServiceList.isNotEmpty()){
+        horizontalList.add(fourthServiceList)
+    }
+
+    return horizontalList
+
 }
 
 fun getPaymentCardsViewHeight(
