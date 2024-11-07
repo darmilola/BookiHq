@@ -66,9 +66,7 @@ fun TherapistAppointment(mainViewModel: MainViewModel, loadingScreenUiStateViewM
     val handler = TherapistHandler(therapistPresenter,
         loadingScreenUiStateViewModel = loadingScreenUiStateViewModel,
         performedActionUIStateViewModel,
-        onReviewsReady = {
-
-        },
+        onReviewsReady = {},
         onMeetingTokenReady = {},
         appointmentResourceListEnvelopeViewModel!!)
     handler.init()

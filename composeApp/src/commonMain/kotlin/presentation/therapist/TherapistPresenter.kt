@@ -17,9 +17,14 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
 
     private val scope: CoroutineScope = MainScope()
     private var contractView: TherapistContract.View? = null
+    private var dashboardContractView: TherapistContract.TherapistDashboardView? = null
     private val therapistRepositoryImpl: TherapistRepositoryImpl = TherapistRepositoryImpl(apiService)
     override fun registerUIContract(view: TherapistContract.View?) {
         contractView = view
+    }
+
+    override fun registerTherapistDashboardUIContract(view: TherapistContract.TherapistDashboardView?) {
+        dashboardContractView = view
     }
 
     override fun getTherapistReviews(therapistId: Long) {
@@ -178,18 +183,30 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
         isMobileServiceAvailable: Boolean,
         isAvailable: Boolean
     ) {
+        dashboardContractView?.showUpdateScreenLce(AppUIStates(isLoading = true, loadingMessage = "Updating Availability"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     therapistRepositoryImpl.updateAvailability(therapistId, isMobileServiceAvailable, isAvailable)
                         .subscribe(
-                            onSuccess = { result -> },
-                            onError = {},
+                            onSuccess = { result ->
+                                when (result.status) {
+                                    domain.Enums.ServerResponse.SUCCESS.toPath() -> {
+                                        dashboardContractView?.showUpdateScreenLce(AppUIStates(isSuccess = true))
+                                    }
+                                    domain.Enums.ServerResponse.FAILURE.toPath() -> {
+                                        dashboardContractView?.showUpdateScreenLce(AppUIStates(isFailed = true, errorMessage = "Error Occurred"))
+                                    }
+                                }
+                            },
+                            onError = {
+                                dashboardContractView?.showUpdateScreenLce(AppUIStates(isFailed = true, errorMessage = "Error Occurred"))
+                            },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showActionLce(AppUIStates(isFailed = true))
+                dashboardContractView?.showUpdateScreenLce(AppUIStates(isFailed = true, errorMessage = "Error Occurred"))
             }
         }
     }

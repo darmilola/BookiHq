@@ -2,8 +2,6 @@ package presentation.therapist
 
 import domain.Models.TherapistReviews
 import UIStates.AppUIStates
-import com.badoo.reaktive.single.Single
-import domain.Models.ServerResponse
 import domain.Models.TherapistAppointmentResourceListEnvelope
 
 interface TherapistContract {
@@ -17,8 +15,13 @@ interface TherapistContract {
         fun onJoinMeetingTokenReady(meetingToken: String)
     }
 
+    interface TherapistDashboardView {
+        fun showUpdateScreenLce(actionUiState: AppUIStates)
+    }
+
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
+        abstract fun registerTherapistDashboardUIContract(view: TherapistDashboardView?)
         abstract fun getTherapistReviews(therapistId: Long)
         abstract fun getTherapistAppointments(therapistId: Long)
         abstract fun getMoreTherapistAppointments(therapistId: Long, nextPage: Int = 1)

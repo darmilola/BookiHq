@@ -27,6 +27,14 @@ open class BookingNetworkService(private val apiService: HttpClient) {
             header("Authorization", apiKey)
         }.body<ServiceTherapistsResponse>().toSingle()
 
+    suspend fun getMobileTherapists(getTherapistsRequest: GetTherapistsRequest) =
+        apiService.post {
+            url("/services/therapists/mobile")
+            contentType(ContentType.Application.Json)
+            setBody(getTherapistsRequest)
+            header("Authorization", apiKey)
+        }.body<ServiceTherapistsResponse>().toSingle()
+
     suspend fun getServiceData(getServiceDataRequest: GetServiceDataRequest) =
         apiService.post {
             url("/services/type/load")

@@ -31,6 +31,7 @@ class BookingContract {
         abstract fun registerCancelUIContract(view: CancelContractView?)
         abstract fun getUnSavedAppointment()
         abstract fun getServiceTherapists(serviceTypeId: Long, vendorId: Long, day: Int, month: Int, year: Int)
+        abstract fun getMobileServiceTherapists(serviceTypeId: Long, vendorId: Long, day: Int, month: Int, year: Int)
         abstract fun getServiceData(serviceId: Long)
         abstract fun createAppointment(userId: Long, vendorId: Long, paymentAmount: Int, paymentMethod: String, bookingStatus: String, day: Int, month: Int, year: Int)
         abstract fun getPendingBookingAppointment(userId: Long, bookingStatus: String)

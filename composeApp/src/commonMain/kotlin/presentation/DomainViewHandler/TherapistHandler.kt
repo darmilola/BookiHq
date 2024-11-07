@@ -15,8 +15,7 @@ class TherapistHandler(
     private val performedActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val onReviewsReady: (List<TherapistReviews>) -> Unit,
     private val onMeetingTokenReady: (meetingToken: String) -> Unit,
-    private val appointmentResourceListEnvelopeViewModel: TherapistAppointmentResourceListEnvelopeViewModel? = null) :
-    TherapistContract.View {
+    private val appointmentResourceListEnvelopeViewModel: TherapistAppointmentResourceListEnvelopeViewModel? = null) : TherapistContract.View {
     fun init() {
         therapistPresenter.registerUIContract(this)
     }
@@ -64,5 +63,19 @@ class TherapistHandler(
     override fun onJoinMeetingTokenReady(meetingToken: String) {
         onMeetingTokenReady(meetingToken)
     }
+
+}
+
+class TherapistSettingsHandler(
+    private val therapistPresenter: TherapistPresenter,
+    private val performedActionUIStateViewModel: PerformedActionUIStateViewModel) : TherapistContract.TherapistDashboardView {
+    fun init() {
+        therapistPresenter.registerTherapistDashboardUIContract(this)
+    }
+
+    override fun showUpdateScreenLce(actionUiState: AppUIStates) {
+        performedActionUIStateViewModel.switchActionUIState(actionUiState)
+    }
+
 
 }

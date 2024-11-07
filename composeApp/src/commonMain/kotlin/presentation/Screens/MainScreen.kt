@@ -289,9 +289,10 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             }
 
             Screens.THERAPIST_DASHBOARD.toPath() -> {
-                val dashboard = TherapistDashboard()
+                val dashboard = TherapistDashboard(platformNavigator)
                 dashboard.setMainViewModel(mainViewModel!!)
                 dashboard.setTherapistInfo(homePageViewModel.homePageInfo.value.therapistInfo!!)
+                dashboard.setDatabaseBuilder(databaseBuilder)
                 val nav = LocalNavigator.currentOrThrow
                 nav.push(dashboard)
                 mainViewModel!!.setScreenNav(

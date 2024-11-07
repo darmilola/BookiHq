@@ -35,6 +35,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.room.RoomDatabase
+import applications.room.AppDatabase
 import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -49,10 +51,13 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import dev.icerock.moko.parcelize.Parcelize
 import domain.Enums.SharedPreferenceEnum
+import domain.Models.PlatformNavigator
 import domain.Models.TherapistInfo
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import presentation.Screens.SplashScreen
+import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
@@ -65,7 +70,7 @@ import utils.ParcelableScreen
 
 @OptIn(ExperimentalVoyagerApi::class)
 @Parcelize
-class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
+class TherapistDashboard(val platformNavigator: PlatformNavigator? = null) : ParcelableScreen, KoinComponent, ScreenTransition{
 
     @Transient
     private val therapistPresenter: TherapistPresenter by inject()
@@ -78,12 +83,12 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
     @Transient
     private var availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
-    private var joinMeetingPerformedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
-    @Transient
     private var mainViewModel: MainViewModel? = null
     @Transient
     private var therapistInfo: TherapistInfo? = null
     val preferenceSettings = Settings()
+    @Transient
+    private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 
     override val key: ScreenKey = uniqueScreenKey
 
@@ -93,6 +98,10 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
 
     fun setTherapistInfo(therapistInfo: TherapistInfo){
         this.therapistInfo = therapistInfo
+    }
+
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = databaseBuilder
     }
 
     @Composable
@@ -124,13 +133,6 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
             )
         }
 
-        if (joinMeetingPerformedActionUIStateViewModel == null) {
-            joinMeetingPerformedActionUIStateViewModel = kmpViewModel(
-                factory = viewModelFactory {
-                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
-                },
-            )
-        }
 
         if (loadingScreenUiStateViewModel == null) {
             loadingScreenUiStateViewModel = kmpViewModel(
@@ -158,23 +160,12 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
                 })
         }
 
-        val actionState = performedActionUiStateViewModel!!.therapistDashboardUiState.collectAsState()
+
 
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
             animation = StackedSnackbarAnimation.Bounce)
-
-        if (actionState.value.isLoading){
-            Box(modifier = Modifier.fillMaxWidth()) {
-                LoadingDialog(actionState.value.loadingMessage)
-            }
-        }
-        else if (actionState.value.isSuccess){
-            appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-            performedActionUiStateViewModel!!.switchActionUIState(AppUIStates(isDefault = true))
-            therapistPresenter.getTherapistAppointments(userId)
-        }
 
 
         Scaffold(
@@ -185,7 +176,12 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
                 })
             },
             content = {
-                 TabScreen()
+                 TabScreen(onUpdateSuccess = {
+                     val splashScreen = SplashScreen(platformNavigator!!)
+                     splashScreen.setMainViewModel(mainViewModel!!)
+                     splashScreen.setDatabaseBuilder(databaseBuilder!!)
+                     navigator.replaceAll(splashScreen)
+                 })
             },
             backgroundColor = Color.White,
             floatingActionButton = {}
@@ -194,7 +190,7 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
 
 
     @Composable
-    fun TabScreen() {
+    fun TabScreen(onUpdateSuccess: () -> Unit) {
         val tabItems: ArrayList<String> = arrayListOf()
         tabItems.add("Appointments")
         tabItems.add("Settings")
@@ -243,7 +239,9 @@ class TherapistDashboard() : ParcelableScreen, KoinComponent, ScreenTransition {
             ) {
                 when(tabIndex){
                     0 -> TherapistAppointment(mainViewModel!!, loadingScreenUiStateViewModel!!, appointmentResourceListEnvelopeViewModel, therapistPresenter,therapistInfo!!,performedActionUiStateViewModel!!)
-                    1 -> TherapistSettings(therapistInfo!!, therapistPresenter, loadingScreenUiStateViewModel!!,performedActionUiStateViewModel!!)
+                    1 -> TherapistSettings(therapistInfo!!, therapistPresenter, performedActionUiStateViewModel!!, onUpdateSuccess = {
+                          onUpdateSuccess()
+                       })
                 }
 
             }

@@ -8,6 +8,7 @@ import domain.Models.ServiceTypesResponse
 
 interface BookingRepository {
     suspend fun getServiceTherapist(serviceTypeId: Long, vendorId: Long, day: Int, month: Int, year: Int): Single<ServiceTherapistsResponse>
+    suspend fun getMobileServiceTherapist(serviceTypeId: Long, vendorId: Long, day: Int, month: Int, year: Int): Single<ServiceTherapistsResponse>
     suspend fun getServiceData(serviceId: Long): Single<ServiceTypesResponse>
     suspend fun createPendingBookingAppointment(userId: Long, vendorId: Long, serviceId: Long, serviceTypeId: Long, therapistId: Long,
                                                 appointmentTime: Int, day: Int, month: Int, year: Int, serviceLocation: String, bookingStatus: String,appointmentType: String): Single<PendingBookingAppointmentResponse>

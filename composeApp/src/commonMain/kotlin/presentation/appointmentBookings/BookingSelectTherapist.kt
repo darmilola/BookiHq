@@ -55,10 +55,27 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, performedActionUIState
     val therapists = bookingViewModel.serviceTherapists.collectAsState()
     val vendorTimes = bookingViewModel.vendorTimes.collectAsState()
     val platformTimes = bookingViewModel.platformTimes.collectAsState()
+    val isMobileService = bookingViewModel.isMobileService.collectAsState()
+
     LaunchedEffect(Unit, block = {
         if (therapists.value.isEmpty()) {
-            bookingPresenter.getServiceTherapists(bookingViewModel.selectedServiceType.value.serviceTypeId,
-                mainViewModel.connectedVendor.value.vendorId!!, day = bookingViewModel.day.value, month = bookingViewModel.month.value, year = bookingViewModel.year.value)
+            if (isMobileService.value) {
+                bookingPresenter.getMobileServiceTherapists(
+                    bookingViewModel.selectedServiceType.value.serviceTypeId,
+                    mainViewModel.connectedVendor.value.vendorId!!,
+                    day = bookingViewModel.day.value,
+                    month = bookingViewModel.month.value,
+                    year = bookingViewModel.year.value
+                )
+            } else {
+                bookingPresenter.getServiceTherapists(
+                    bookingViewModel.selectedServiceType.value.serviceTypeId,
+                    mainViewModel.connectedVendor.value.vendorId!!,
+                    day = bookingViewModel.day.value,
+                    month = bookingViewModel.month.value,
+                    year = bookingViewModel.year.value
+                )
+            }
         }
     })
 

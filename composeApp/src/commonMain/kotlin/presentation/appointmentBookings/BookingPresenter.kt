@@ -12,6 +12,7 @@ import kotlinx.coroutines.withContext
 import UIStates.AppUIStates
 import domain.Enums.AppointmentType
 import domain.Enums.ServerResponse
+import domain.Models.ServiceTypeTherapists
 import domain.packages.PackageRepositoryImpl
 
 class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
@@ -41,10 +42,74 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
                     bookingRepositoryImpl.getServiceTherapist(serviceTypeId, vendorId, day, month, year)
                         .subscribe(
                             onSuccess = { result ->
+                                // This is needed since therapistInfo can be null from the server
+                                val filteredTherapist = arrayListOf<ServiceTypeTherapists>()
                                 when (result.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
-                                        contractView?.getTherapistActionLce(AppUIStates(isSuccess  = true))
-                                        contractView?.showTherapists(result.serviceTherapists, result.platformTimes!!, result.vendorTimes!!)
+                                        result.serviceTherapists.map {
+                                            if (it.therapistInfo != null){
+                                                filteredTherapist.add(it)
+                                            }
+                                        }
+                                        if (filteredTherapist.size > 0){
+                                            contractView?.getTherapistActionLce(AppUIStates(isSuccess  = true))
+                                            contractView?.showTherapists(filteredTherapist, result.platformTimes!!, result.vendorTimes!!)
+                                        }
+                                        else{
+                                            contractView?.getTherapistActionLce(AppUIStates(isEmpty = true, emptyMessage = "No Therapist is Available"))
+                                        }
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.getTherapistActionLce(AppUIStates(isFailed  = true, errorMessage = "Error Getting Therapist, Please Try Again"))
+                                    }
+                                    ServerResponse.EMPTY.toPath() -> {
+                                        contractView?.getTherapistActionLce(AppUIStates(isEmpty = true, emptyMessage = "No Therapist is Available"))
+                                    }
+                                }
+                            },
+                            onError = {
+                                contractView?.getTherapistActionLce(AppUIStates(isFailed  = true, errorMessage = "Error Getting Therapist, Please Try Again"))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.getTherapistActionLce(AppUIStates(isFailed  = true, errorMessage = "Error Getting Therapist, Please Try Again"))
+            }
+        }
+    }
+
+    override fun getMobileServiceTherapists(
+        serviceTypeId: Long,
+        vendorId: Long,
+        day: Int,
+        month: Int,
+        year: Int
+    ) {
+        contractView?.getTherapistActionLce(AppUIStates(isLoading  = true))
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    bookingRepositoryImpl.getMobileServiceTherapist(serviceTypeId, vendorId, day, month, year)
+                        .subscribe(
+                            onSuccess = { result ->
+                                // This is needed since therapistInfo can be null from the server
+                                val filteredTherapist = arrayListOf<ServiceTypeTherapists>()
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        result.serviceTherapists.map {
+                                            if (it.therapistInfo != null){
+                                                filteredTherapist.add(it)
+                                            }
+                                        }
+                                        if (filteredTherapist.size > 0){
+                                            contractView?.getTherapistActionLce(AppUIStates(isSuccess  = true))
+                                            contractView?.showTherapists(filteredTherapist, result.platformTimes!!, result.vendorTimes!!)
+                                        }
+                                        else{
+                                            contractView?.getTherapistActionLce(AppUIStates(isEmpty = true, emptyMessage = "No Therapist is Available"))
+                                        }
+
                                     }
                                     ServerResponse.FAILURE.toPath() -> {
                                         contractView?.getTherapistActionLce(AppUIStates(isFailed  = true, errorMessage = "Error Getting Therapist, Please Try Again"))
