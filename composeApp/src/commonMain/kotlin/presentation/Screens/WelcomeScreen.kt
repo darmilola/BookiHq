@@ -232,7 +232,8 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                         AttachActionButtons(platformNavigator, onAuthSuccessful = {
                             authEmail.value = it
                             authenticationPresenter.validateEmail(it)
-                        }, onAuthFailed = {}, mainViewModel = mainViewModel, databaseBuilder = databaseBuilder)
+                        }, onAuthFailed = {
+                        }, mainViewModel = mainViewModel, databaseBuilder = databaseBuilder)
 
                     }
                     Box(

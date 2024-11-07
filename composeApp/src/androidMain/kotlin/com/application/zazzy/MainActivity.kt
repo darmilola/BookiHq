@@ -87,6 +87,8 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     @Transient lateinit var locationManager: LocationManager
     @Transient var networkLocationListener: LocationListener? = null
     private var hasNetwork = false
+    private val testPhone = "+16505554567"
+    val smsCode = "654321"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -126,6 +128,11 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
           paymentPreferences = preferences!!.edit()
 
         firebaseAuth = FirebaseAuth.getInstance()
+        val firebaseSettings = firebaseAuth!!.firebaseAuthSettings
+
+           //for testing
+           //firebaseSettings.setAppVerificationDisabledForTesting(true)
+           //firebaseSettings.setAutoRetrievedSmsCodeForPhoneNumber(testPhone, smsCode)
 
         hasNetwork = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 
@@ -138,14 +145,19 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
 
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            override fun onVerificationCompleted(credential: PhoneAuthCredential) {}
-            override fun onVerificationFailed(e: FirebaseException) {}
+            override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                println("Completed")
+            }
+            override fun onVerificationFailed(e: FirebaseException) {
+                println("Failed")
+            }
             override fun onCodeSent(
                 verificationId: String,
                 token: PhoneAuthProvider.ForceResendingToken,
             ) {
                 storedVerificationId = verificationId
                 resendToken = token
+                println("Sent $storedVerificationId $resendToken")
             }
         }
 
@@ -259,7 +271,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
     override fun startPhoneSS0(phone: String) {
         val options = PhoneAuthOptions.newBuilder(firebaseAuth!!)
-            .setPhoneNumber(phone)
+            .setPhoneNumber(testPhone)
             .setTimeout(30L, TimeUnit.SECONDS)
             .setActivity(this)
             .setCallbacks(callbacks!!)
@@ -269,6 +281,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
     override fun verifyOTP(verificationCode: String, onVerificationSuccessful: (String) -> Unit,
                            onVerificationFailed: () -> Unit) {
+        //sessionInfo + smsCode or temporary proof + phoneNumber
+        println("My ID $storedVerificationId")
+        println("MY CODE $verificationCode")
         val credential = PhoneAuthProvider.getCredential(storedVerificationId, verificationCode)
         signInWithPhoneAuthCredential(credential, onVerificationSuccessful = {
             onVerificationSuccessful(it)
@@ -284,7 +299,13 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             // There's something already here! Finish the sign-in for your user.
             pendingResultTask
                 .addOnSuccessListener {
-                    onAuthSuccessful(it.user?.email!!)
+                    if (it.user?.email != null){
+                        onAuthSuccessful(it.user?.email!!)
+                    }
+                    else{
+                        onAuthFailed()
+                    }
+
                 }
                 .addOnFailureListener {
                     onAuthFailed()
@@ -293,7 +314,12 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             firebaseAuth!!
                 .startActivityForSignInWithProvider(this, provider.build())
                 .addOnSuccessListener {
-                    onAuthSuccessful(it.user?.email!!)
+                    if (it.user?.email != null){
+                        onAuthSuccessful(it.user?.email!!)
+                    }
+                    else{
+                        onAuthFailed()
+                    }
                 }
                 .addOnFailureListener {
                     onAuthFailed()
