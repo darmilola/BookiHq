@@ -224,9 +224,9 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                         .padding(top = 5.dp, bottom = 100.dp)
 
                                 ) {
-                                    val servicesGridList = homepageInfo.value.servicesGridList!!
                                     if (!vendorServices.isNullOrEmpty()) {
                                         AttachOurServices()
+                                        val servicesGridList = homepageInfo.value.servicesGridList!!
                                         val pagerState = rememberPagerState(pageCount = {servicesGridList.size})
                                         HorizontalPager(
                                             state = pagerState,
