@@ -101,13 +101,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
             contentAlignment = Alignment.Center
         ) {
             ErrorOccurredWidget(getServiceTypeActionUiStates.value.errorMessage, onRetryClicked = {
-                bookingPresenter.getServiceTherapists(
-                    bookingViewModel.selectedServiceType.value.serviceTypeId,
-                    mainViewModel.connectedVendor.value.vendorId!!,
-                    day = bookingViewModel.day.value,
-                    month = bookingViewModel.month.value,
-                    year = bookingViewModel.year.value
-                )
+                bookingPresenter.getServiceData(services.serviceId)
             })
         }
     } else if (getServiceTypeActionUiStates.value.isEmpty) {

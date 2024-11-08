@@ -19,6 +19,7 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -123,15 +124,18 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
     @Composable
     override fun Content() {
         userId = preferenceSettings.getLong(SharedPreferenceEnum.USER_ID.toPath(), 0L)
-        platformNavigator.startNotificationService {
-            authenticationPresenter.updateFcmToken(userId = userId, fcmToken = it)
-        }
-        productPresenter.setMainViewModel(mainViewModel!!)
-        productPresenter.getFavoriteProductIds(userId)
-        screenNav = mainViewModel?.screenNav?.collectAsState()
-        val restartApp = mainViewModel!!.restartApp.collectAsState()
-        var homePageViewModel: HomePageViewModel? = null
 
+        LaunchedEffect(Unit, block = {
+            platformNavigator.startNotificationService {
+                authenticationPresenter.updateFcmToken(userId = userId, fcmToken = it)
+            }
+            productPresenter.getFavoriteProductIds(userId)
+        })
+
+        productPresenter.setMainViewModel(mainViewModel!!)
+        screenNav = mainViewModel?.screenNav?.collectAsState()
+
+        var homePageViewModel: HomePageViewModel? = null
         if (homePageViewModel == null) {
             homePageViewModel = kmpViewModel(
                 factory = viewModelFactory {
@@ -147,9 +151,6 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
 
         var isBottomNavSelected by remember { mutableStateOf(true) }
         val vendorInfo = mainViewModel!!.connectedVendor.collectAsState()
-
-        println("I Restart ${restartApp.value}")
-
 
         val favoriteHandler = FavoriteProductsHandler(productPresenter = productPresenter,
             onFavoriteProductReady = {},
