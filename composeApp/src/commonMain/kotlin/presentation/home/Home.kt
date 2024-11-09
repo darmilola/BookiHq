@@ -82,7 +82,7 @@ import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.HomeServicesWidget
-import presentation.widgets.RecommendedServiceItem
+import presentation.widgets.VendorPicksItem
 import presentation.widgets.RecentAppointmentWidget
 import presentation.widgets.ProductDetailBottomSheet
 import presentation.widgets.RecentPackageAppointmentWidget
@@ -90,7 +90,6 @@ import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import utils.calculateHomePageScreenHeight
 import utils.getRecentAppointmentViewHeight
-import utils.getServicesViewHeight
 
 @Parcelize
 class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
@@ -438,7 +437,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                     modifier = Modifier.fillMaxWidth().fillMaxHeight(0.95f),
                     pageSpacing = 10.dp
                 ) { page ->
-                    RecommendedServiceItem(recommendations[page],mainViewModel, onItemClickListener = {
+                    VendorPicksItem(recommendations[page],mainViewModel, onItemClickListener = {
                         when (it.recommendationType) {
                             RecommendationType.Services.toPath() -> {
                                 mainViewModel.setScreenNav(

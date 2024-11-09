@@ -31,7 +31,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import domain.Enums.Currency
 import domain.Models.VendorRecommendation
 import domain.Enums.RecommendationType
 import presentation.viewmodels.MainViewModel
@@ -39,8 +38,17 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun RecommendedServiceItem(vendorRecommendation: VendorRecommendation,mainViewModel: MainViewModel, onItemClickListener: (VendorRecommendation) -> Unit) {
+fun VendorPicksItem(vendorRecommendation: VendorRecommendation, mainViewModel: MainViewModel, onItemClickListener: (VendorRecommendation) -> Unit) {
 
+
+    var imageUrl = ""
+
+    if (vendorRecommendation.recommendationType == RecommendationType.Services.toPath()){
+        imageUrl = vendorRecommendation.serviceTypeItem!!.serviceDetails.serviceImages[0].imageUrl!!
+    }
+    else{
+        imageUrl = vendorRecommendation.product!!.productImages[0].imageUrl
+    }
 
     val columnModifier = Modifier
         .fillMaxHeight()
@@ -63,7 +71,7 @@ fun RecommendedServiceItem(vendorRecommendation: VendorRecommendation,mainViewMo
                 Column(
                     modifier = columnModifier
                 ) {
-                    RecommendedServicesImage("https://cdn.pixabay.com/photo/2017/06/05/07/58/butterfly-2373175_1280.png")
+                    RecommendedServicesImage(imageUrl!!)
                     RecommendedServiceDescription(vendorRecommendation)
                     RecommendedServicePriceAndAction(vendorRecommendation,mainViewModel, onItemClickListener = {
                         onItemClickListener(it)
