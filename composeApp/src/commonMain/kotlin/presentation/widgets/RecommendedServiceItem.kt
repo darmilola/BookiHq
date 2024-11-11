@@ -40,16 +40,6 @@ import presentations.components.TextComponent
 @Composable
 fun VendorPicksItem(vendorRecommendation: VendorRecommendation, mainViewModel: MainViewModel, onItemClickListener: (VendorRecommendation) -> Unit) {
 
-
-    var imageUrl = ""
-
-    if (vendorRecommendation.recommendationType == RecommendationType.Services.toPath()){
-        imageUrl = vendorRecommendation.serviceTypeItem!!.serviceDetails.serviceImages[0].imageUrl!!
-    }
-    else{
-        imageUrl = vendorRecommendation.product!!.productImages[0].imageUrl
-    }
-
     val columnModifier = Modifier
         .fillMaxHeight()
         .fillMaxWidth()
@@ -71,7 +61,7 @@ fun VendorPicksItem(vendorRecommendation: VendorRecommendation, mainViewModel: M
                 Column(
                     modifier = columnModifier
                 ) {
-                    RecommendedServicesImage(imageUrl!!)
+                    RecommendedServicesImage(vendorRecommendation.imageUrl)
                     RecommendedServiceDescription(vendorRecommendation)
                     RecommendedServicePriceAndAction(vendorRecommendation,mainViewModel, onItemClickListener = {
                         onItemClickListener(it)

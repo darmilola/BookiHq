@@ -108,16 +108,10 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
             mainViewModel!!.setConnectedVendor(vendor)
             preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = vendor.vendorId
             vendorConnected.value = true
-
-            if (deviceInfo() == DeviceType.IOS.toPath()) {
-                platformNavigator.goToMainScreen()
-            }
-            else {
                 val mainScreen = MainScreen(platformNavigator)
                 mainScreen.setMainViewModel(mainViewModel!!)
                 mainScreen.setDatabaseBuilder(databaseBuilder)
                 navigator.replaceAll(mainScreen)
-            }
         }
         else if (connectVendorAction.value.isFailed){}
 

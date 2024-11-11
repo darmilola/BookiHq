@@ -50,9 +50,6 @@ import presentation.widgets.SplashScreenWidget
 fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPresenter: AuthenticationPresenter, mainViewModel: MainViewModel, databaseBuilder: RoomDatabase.Builder<AppDatabase>) {
 
     val preferenceSettings: Settings = Settings()
-    val navigateToWelcomeScreen = remember { mutableStateOf(false) }
-    val navigateToConnectVendor = remember { mutableStateOf(false) }
-    val navigateToPlatform = remember { mutableStateOf(false) }
     val authType = remember { mutableStateOf(AuthType.EMAIL.toPath()) }
     val authEmail = remember { mutableStateOf("") }
     val authPhone = remember { mutableStateOf("") }
@@ -88,12 +85,13 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
                         userDao.insert(user)
                     }
                 }
-                navigateToPlatform.value = true
+                val mainScreen = MainScreen(platformNavigator)
+                mainScreen.setDatabaseBuilder(databaseBuilder)
+                mainScreen.setMainViewModel(mainViewModel)
+                navigator.replaceAll(mainScreen)
             }
         },
-        completeProfile = { _,_ ->
-               navigateToWelcomeScreen.value = true
-        },
+        completeProfile = { _,_ -> },
         connectVendor = { user ->
             runBlocking {
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
@@ -110,7 +108,10 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
                         userDao.insert(user)
                     }
                 }
-                navigateToConnectVendor.value = true
+                val connectVendor = ConnectVendor(platformNavigator)
+                connectVendor.setMainViewModel(mainViewModel)
+                connectVendor.setDatabaseBuilder(databaseBuilder)
+                navigator.replaceAll(connectVendor)
             }
         },
         onVerificationStarted = {},
@@ -124,32 +125,6 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
             }
         })
     handler.init()
-
-    if (navigateToConnectVendor.value){
-        val connectVendor = ConnectVendor(platformNavigator)
-        connectVendor.setMainViewModel(mainViewModel)
-        connectVendor.setDatabaseBuilder(databaseBuilder)
-        navigator.replaceAll(connectVendor)
-    }
-    else if (navigateToPlatform.value) {
-        if (deviceInfo() == DeviceType.IOS.toPath()) {
-            platformNavigator.goToMainScreen()
-        }
-        else {
-            val mainScreen = MainScreen(platformNavigator)
-            mainScreen.setDatabaseBuilder(databaseBuilder)
-            mainScreen.setMainViewModel(mainViewModel)
-            navigator.push(mainScreen)
-        }
-    }
-    else if (navigateToWelcomeScreen.value){
-        val welcomeScreen = WelcomeScreen(platformNavigator)
-        welcomeScreen.setDatabaseBuilder(databaseBuilder)
-        welcomeScreen.setMainViewModel(mainViewModel)
-        navigator.replaceAll(welcomeScreen)
-    }
-
-
 
    val  modifier =
         Modifier.fillMaxWidth()

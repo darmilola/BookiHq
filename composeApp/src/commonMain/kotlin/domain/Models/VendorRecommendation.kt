@@ -11,4 +11,4 @@ data class VendorRecommendation(@SerialName("id") val recommendationId: Int = -1
                                 @SerialName("recommendationType") val recommendationType: String = RecommendationType.Services.toPath(),
                                 @SerialName("description") val description: String = "", @SerialName("product_id") val productId: Int = -1,
                                 @SerialName("service_type_id") val serviceTypeId: Int = -1, @SerialName("service_type") val serviceTypeItem: ServiceTypeItem? = null,
-                                @SerialName("product") val product: Product? = null, val isSelected: Boolean = false): Parcelable
+                                @SerialName("product") val product: Product? = null, @SerialName("imageUrl") val imageUrl: String = "", val isSelected: Boolean = false): Parcelable

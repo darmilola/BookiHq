@@ -194,7 +194,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
             val mainScreen = MainScreen(platformNavigator)
             mainScreen.setDatabaseBuilder(databaseBuilder)
             mainScreen.setMainViewModel(mainViewModel)
-            navigator.push(mainScreen)
+            navigator.replaceAll(mainScreen)
         }
     }
 

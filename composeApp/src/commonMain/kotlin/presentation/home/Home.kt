@@ -291,9 +291,18 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
     @Composable
     fun ServiceGridScreen(vendorServices: List<Services>, onServiceSelected: (Services) -> Unit) {
+        val viewHeight = if (vendorServices.size <= 2){
+            140
+        }
+        else if (vendorServices.size in 3..4){
+            280
+        }
+        else{
+            420
+        }
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
-            modifier = Modifier.fillMaxWidth().height(420.dp),
+            modifier = Modifier.fillMaxWidth().height(viewHeight.dp),
             contentPadding = PaddingValues(5.dp),
             verticalArrangement = Arrangement.Top,
             horizontalArrangement = Arrangement.Start,
@@ -416,7 +425,6 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 },
                 onAddToCart = { isAddToCart, item ->
                     showProductDetailBottomSheet = false
-
                 })
         }
 
