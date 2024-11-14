@@ -20,8 +20,8 @@ import io.ktor.client.HttpClient
         return connectVendorNetworkService.getVendor(param,nextPage)
     }
 
-    override suspend fun searchVendor(country: String, city: String, connectedVendor: Long, searchQuery: String, nextPage: Int): Single<VendorListDataResponse> {
-        val param = SearchVendorRequest(country = country, query = searchQuery, city = city, connectedVendor = connectedVendor)
+    override suspend fun searchVendor(country: String, connectedVendor: Long, searchQuery: String, nextPage: Int): Single<VendorListDataResponse> {
+        val param = SearchVendorRequest(country = country, query = searchQuery, connectedVendor = connectedVendor)
         return connectVendorNetworkService.searchVendor(param,nextPage)
     }
 }

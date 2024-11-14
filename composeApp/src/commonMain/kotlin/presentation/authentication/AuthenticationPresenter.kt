@@ -23,14 +23,13 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
 
     override fun completeProfile(
         firstname: String, lastname: String, userEmail: String, authPhone: String,
-        address: String, contactPhone: String, country: String,city: String,
-        signupType: String, gender: String, profileImageUrl: String
+        country: String,city: String, signupType: String, gender: String, profileImageUrl: String
     ) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.onCompleteProfileStarted()
-                    authenticationRepositoryImpl.completeProfile(firstname, lastname, userEmail, authPhone,address,contactPhone,country,city, signupType, gender, profileImageUrl)
+                    authenticationRepositoryImpl.completeProfile(firstname, lastname, userEmail, authPhone,country,city, signupType, gender, profileImageUrl)
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {
@@ -68,6 +67,7 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
         gender: String,
         profileImageUrl: String
     ) {
+        println(userId)
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {

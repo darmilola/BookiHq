@@ -13,8 +13,6 @@ data class CompleteProfileRequest(
     @SerialName("gender") val gender: String,
     @SerialName("country") val country: String,
     @SerialName("city") val city: String,
-    @SerialName("contactPhone") val contactPhone: String,
-    @SerialName("address") val address: String,
     @SerialName("imageUrl") val profileImageUrl: String)
 
 

@@ -28,8 +28,7 @@ class AuthenticationContract {
         abstract fun updateFcmToken(userId: Long, fcmToken: String)
         abstract fun validatePhone(phone: String,  requireValidation: Boolean = true)
         abstract fun completeProfile(firstname: String, lastname: String, userEmail: String, authPhone: String,
-                                     address: String, contactPhone: String, country: String, city: String,
-                                     signupType: String, gender: String, profileImageUrl: String)
+                                     country: String, city: String, signupType: String, gender: String, profileImageUrl: String)
        abstract fun updateProfile(userId: Long, firstname: String, lastname: String,  address: String, contactPhone: String,
                                   country: String, city: String, gender: String, profileImageUrl: String)
 

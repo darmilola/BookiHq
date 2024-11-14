@@ -190,7 +190,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                         Box(
                             modifier = Modifier.fillMaxWidth().fillMaxHeight()
                                 .background(color = Color.White),
-                            contentAlignment = Alignment.Center
+                            contentAlignment = Alignment.TopStart
                         ) {
                             if (uiState.value.isLoading) {
                                 Box(

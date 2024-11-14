@@ -80,6 +80,7 @@ import presentation.DomainViewHandler.CancelContractHandler
 import presentation.dialogs.AddDebitCardDialog
 import presentation.payment.PaymentContract
 import presentation.payment.PaymentPresenter
+import presentation.profile.EditProfile
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.widgets.AppointmentPaymentMethodBottomSheet
 import presentation.widgets.PaymentCardBottomSheet
@@ -126,6 +127,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         val pagerState = rememberPagerState(pageCount = { 3 })
         val addMoreService = remember { mutableStateOf(false) }
         val lastItemRemoved = remember { mutableStateOf(false) }
+        val completeProfile = remember { mutableStateOf(false) }
         val currentUserInfo = mainViewModel!!.currentUserInfo.value
         val customerEmail = if (currentUserInfo.email!!.isNotEmpty()) currentUserInfo.email else "damilolaakinterinwa@gmail.com"
         val navigator = LocalNavigator.currentOrThrow
@@ -303,6 +305,15 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             }
         }
 
+        if (completeProfile.value){
+            completeProfile.value = false
+            val editProfile = EditProfile(platformNavigator)
+            editProfile.setMainViewModel(mainViewModel!!)
+            editProfile.setDatabaseBuilder(databaseBuilder)
+            val nav = LocalNavigator.currentOrThrow
+            nav.push(editProfile)
+        }
+
         val showPaymentMethodBottomSheet = mainViewModel!!.showPaymentMethodBottomSheet.collectAsState()
         if (showPaymentMethodBottomSheet.value) {
             AppointmentPaymentMethodBottomSheet(
@@ -426,6 +437,9 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                                 services = mainViewModel!!.selectedService.value,
                                 onLastItemRemoved = {
                                     lastItemRemoved.value = true
+                                },
+                                onCompleteProfile = {
+                                    completeProfile.value = true
                                 }
                             )
                             AttachActionButtons(pagerState, mainViewModel!!, stackedSnackBarHostState, bookingPresenter, onAddMoreServicesClicked = {
@@ -551,7 +565,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
     @Composable
     fun AttachBookingPages(pagerState: PagerState, getTherapistActionUIStateViewModel: PerformedActionUIStateViewModel,
                            loadPendingActionUIStateViewModel: PerformedActionUIStateViewModel, deleteActionUIStateViewModel: PerformedActionUIStateViewModel,
-                           mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, services: Services, onLastItemRemoved:() -> Unit){
+                           mainViewModel: MainViewModel, bookingViewModel: BookingViewModel, services: Services, onLastItemRemoved:() -> Unit, onCompleteProfile: () -> Unit){
         val pageHeight = remember { mutableStateOf(0.90f) }
         val boxModifier =
             Modifier
@@ -569,7 +583,10 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                 when (page) {
                     0 -> if (page == pagerState.targetPage){
                         pageHeight.value = 0.90f
-                        BookingSelectServices(mainViewModel, bookingViewModel,getServiceTypesUIStateViewModel!!,services, bookingPresenter)
+                        BookingSelectServices(mainViewModel, bookingViewModel,getServiceTypesUIStateViewModel!!,services, bookingPresenter,
+                            onCompleteProfile = {
+                                onCompleteProfile()
+                            })
                     }
                     1 -> if(page == pagerState.targetPage) {
                          pageHeight.value = 0.90f

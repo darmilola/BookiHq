@@ -21,7 +21,7 @@ data class InputValidator(private val input: ArrayList<String> = arrayListOf()) 
     fun isValidInput(): Boolean {
         var isValid = false
         for (element in input) {
-            if(element.isEmpty()){
+            if(element.trim().isEmpty()){
                 isValid = false
                 break
             }

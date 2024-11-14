@@ -34,8 +34,6 @@ interface AuthenticationRepository {
         lastname: String,
         userEmail: String,
         authPhone: String,
-        address: String,
-        contactPhone: String,
         country: String,
         city: String,
         signupType: String,

@@ -56,15 +56,13 @@ class AuthenticationRepositoryImpl(apiService: HttpClient):
         lastname: String,
         userEmail: String,
         authPhone: String,
-        address: String,
-        contactPhone: String,
         country: String,
         city: String,
         signupType: String,
         gender: String,
         profileImageUrl: String
     ): Single<CompleteProfileResponse> {
-        val param = CompleteProfileRequest(firstname = firstname,lastname =  lastname,userEmail =  userEmail, authPhone = authPhone, signupType = signupType, gender = gender, address = address, country = country, city = city, contactPhone = contactPhone, profileImageUrl = profileImageUrl)
+        val param = CompleteProfileRequest(firstname = firstname,lastname =  lastname,userEmail =  userEmail, authPhone = authPhone, signupType = signupType, gender = gender, country = country, city = city, profileImageUrl = profileImageUrl)
         return authenticationNetworkService.completeProfile(param)
     }
 

@@ -174,12 +174,13 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
 
 
 
-        inputList.add(firstname.value!!)
-        inputList.add(lastname.value!!)
-        inputList.add(address.value!!)
-        inputList.add(contactPhone.value!!)
-        inputList.add(city.value.toString())
-        inputList.add(country.value.toString())
+        inputList.add(firstname.value!!.trim())
+        inputList.add(lastname.value!!.trim())
+        inputList.add(address.value!!.trim())
+        inputList.add(contactPhone.value!!.trim())
+        inputList.add(city.value.toString().trim())
+        inputList.add(country.value.toString().trim())
+        inputList.add(profileImageUrl.value.toString().trim())
 
         val rootModifier =
             Modifier
@@ -373,6 +374,7 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
 
                         ToggleButton(
                             shape = RoundedCornerShape(10.dp),
+                            isRightSelection = userGender == Gender.FEMALE.toPath(),
                             onLeftClicked = {
                                 gender.value = Gender.MALE.toPath()
                             },

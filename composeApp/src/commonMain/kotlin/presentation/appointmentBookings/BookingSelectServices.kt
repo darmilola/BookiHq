@@ -64,9 +64,13 @@ import rememberStackedSnackbarHostState
 @Composable
 fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: BookingViewModel,
                           performedActionUIStateViewModel: PerformedActionUIStateViewModel,
-                          services: Services, bookingPresenter: BookingPresenter) {
+                          services: Services, bookingPresenter: BookingPresenter, onCompleteProfile:() -> Unit) {
 
     val recommendationServiceType = mainViewModel.recommendedServiceType.value
+    val userProfile = mainViewModel.currentUserInfo.value
+
+
+    val isProfileCompleted = userProfile.address!!.trim().isNotEmpty() && userProfile.contactPhone!!.trim().isNotEmpty()
 
     LaunchedEffect(Unit, block = {
         if (recommendationServiceType.serviceTypeId == -1L) {
@@ -154,13 +158,26 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
                 AttachServiceTypeToggle(mainViewModel, bookingViewModel, onServiceSelected = {
                     if (it.mobileServiceAvailable) {
                         isServiceTypeMobileServiceAvailable.value = true
-                        ShowSnackBar(title = "Mobile Service Is Available",
-                            description = "You can go Mobile for this service",
-                            actionLabel = "",
-                            duration = StackedSnackbarDuration.Short,
-                            snackBarType = SnackBarType.INFO,
-                            stackedSnackBarHostState,
-                            onActionClick = {})
+                        if (isProfileCompleted) {
+                            ShowSnackBar(title = "Mobile Service Is Available",
+                                description = "You can go Mobile for this service",
+                                actionLabel = "",
+                                duration = StackedSnackbarDuration.Short,
+                                snackBarType = SnackBarType.INFO,
+                                stackedSnackBarHostState,
+                                onActionClick = {})
+                        }
+                        else{
+                            ShowSnackBar(title = "Mobile Service Is Available",
+                                description = "Please complete your profile",
+                                actionLabel = "Complete Profile",
+                                duration = StackedSnackbarDuration.Short,
+                                snackBarType = SnackBarType.INFO,
+                                stackedSnackBarHostState,
+                                onActionClick = {
+                                    onCompleteProfile()
+                                })
+                        }
                     } else {
                         isServiceTypeMobileServiceAvailable.value = false
                     }
@@ -173,7 +190,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
                     }
                 })
                 if (mobileServicesAvailable) {
-                    val isServiceLocationDisabled = !isServiceTypeMobileServiceAvailable.value
+                    val isServiceLocationDisabled = !isServiceTypeMobileServiceAvailable.value || !isProfileCompleted
                     ServiceLocationToggle(
                         bookingViewModel,
                         isPackage = false,

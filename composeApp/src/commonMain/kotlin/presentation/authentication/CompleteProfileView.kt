@@ -71,8 +71,6 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
     val firstname = remember { mutableStateOf("") }
     val lastname = remember { mutableStateOf("") }
     val gender = remember { mutableStateOf(Gender.MALE.toPath()) }
-    val contactPhone = remember { mutableStateOf("") }
-    val address = remember { mutableStateOf("") }
     val userCountry = remember { mutableStateOf("") }
     val city = remember { mutableStateOf("") }
     val completeProfileInProgress = remember { mutableStateOf(false) }
@@ -96,8 +94,6 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
 
     inputList.add(firstname.value)
     inputList.add(lastname.value)
-    inputList.add(contactPhone.value)
-    inputList.add(address.value)
 
 
     val authHandler = AuthenticationScreenHandler(authenticationPresenter,
@@ -130,7 +126,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
         val connectVendor = ConnectVendor(platformNavigator)
         connectVendor.setMainViewModel(mainViewModel)
         connectVendor.setDatabaseBuilder(databaseBuilder = databaseBuilder)
-        navigator.replaceAll(connectVendor)
+        navigator.push(connectVendor)
     }
 
     val rootModifier =
@@ -222,45 +218,6 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                 AttachCityDropDownWidget(cityViewModel = cityViewModel, onMenuItemClick = {
                     city.value = it
                 })
-                Box(
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(start = 10.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    InputWidget(
-                        iconRes = "drawable/address.png",
-                        placeholderText = "Mobile Address",
-                        iconSize = 28,
-                        text = address.value,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                        isPasswordField = false,
-                        onSaveClicked = isSavedClicked.value,
-                        isSingleLine = true,
-                        maxLines = 1
-                    ) {
-                        address.value = it
-                    }
-                }
-
-                Box(
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(start = 10.dp, end = 10.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    InputWidget(
-                        iconRes = "drawable/phone_icon.png",
-                        placeholderText = "Contact Phone",
-                        iconSize = 28,
-                        text = contactPhone.value,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        isPasswordField = false,
-                        onSaveClicked = isSavedClicked.value,
-                        isSingleLine = true,
-                        maxLines = 1
-                    ) {
-                        contactPhone.value = it
-                    }
-                }
 
                 Column(
                     modifier = Modifier
@@ -317,7 +274,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                     else {
                         authenticationPresenter.completeProfile(
                             firstname.value, lastname.value,
-                            userEmail = authEmail, authPhone = authPhone, contactPhone = contactPhone.value ,address = address.value, signupType = authType, country = userCountry.value,
+                            userEmail = authEmail, authPhone = authPhone, signupType = authType, country = userCountry.value,
                             city = city.value, gender = gender.value, profileImageUrl = profileImageUrl.value)
                     }
                 }

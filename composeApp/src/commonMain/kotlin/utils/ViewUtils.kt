@@ -219,7 +219,15 @@ fun calculateHomePageScreenHeight(homepageInfo: HomepageInfo): Int{
     val serviceCount = homepageInfo.vendorServices!!.size
     val recentAppointmentCount = homepageInfo.recentAppointments!!.size
 
-    val servicesHeight = (ceil((serviceCount/4).toDouble()) * 140).toInt()
+    val servicesHeight = if (serviceCount <= 2){
+        140
+    }
+    else if (serviceCount in 3..4){
+        280
+    }
+    else{
+        420
+    }
     val recommendationsHeight = 450
     val recentAppointmentHeight = recentAppointmentCount * 200
     val bottomBarPadding = 200

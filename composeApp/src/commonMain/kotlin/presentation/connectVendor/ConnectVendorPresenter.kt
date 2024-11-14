@@ -156,12 +156,12 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
         }
     }
 
-    override fun searchVendor(country: String, city: String, connectedVendor: Long, searchQuery: String) {
+    override fun searchVendor(country: String, connectedVendor: Long, searchQuery: String) {
         contractView?.showScreenLce(AppUIStates(isLoading = true, loadingMessage = "Searching Vendor"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    connectVendorRepositoryImpl.searchVendor(country,city,connectedVendor,searchQuery)
+                    connectVendorRepositoryImpl.searchVendor(country,connectedVendor,searchQuery)
                         .subscribe(
                             onSuccess = { result ->
                                     when (result.status) {
@@ -207,12 +207,12 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
         }
     }
 
-    override fun searchMoreVendors(country: String, city: String, connectedVendor: Long, searchQuery: String, nextPage: Int) {
+    override fun searchMoreVendors(country: String,connectedVendor: Long, searchQuery: String, nextPage: Int) {
         contractView?.onLoadMoreVendorStarted(true)
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    connectVendorRepositoryImpl.searchVendor(country,city,connectedVendor,searchQuery,nextPage)
+                    connectVendorRepositoryImpl.searchVendor(country,connectedVendor,searchQuery,nextPage)
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {
