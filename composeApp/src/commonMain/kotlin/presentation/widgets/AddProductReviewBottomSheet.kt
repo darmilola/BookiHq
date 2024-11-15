@@ -134,7 +134,8 @@ fun AddProductReviewBottomSheet(mainViewModel: MainViewModel, onReviewsAdded: (S
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     isPasswordField = false,
                     isSingleLine = false,
-                    maxLines = 5
+                    maxLines = 5,
+                    maxLength = 250
                 ) {
                     reviewsText.value = it
                 }

@@ -91,7 +91,8 @@ fun AddDebitCardDialog(databaseBuilder: RoomDatabase.Builder<AppDatabase>?, onDi
                             isPasswordField = false,
                             onSaveClicked = isSavedClicked.value,
                             isSingleLine = true,
-                            maxLines = 1
+                            maxLines = 1,
+                            maxLength = 16
                         ) {
                             if (it.matches(pattern)) {
                                 cardNumber.value = it
@@ -112,7 +113,8 @@ fun AddDebitCardDialog(databaseBuilder: RoomDatabase.Builder<AppDatabase>?, onDi
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             isPasswordField = false,
                             isSingleLine = true,
-                            maxLines = 1
+                            maxLines = 1,
+                            maxLength = 2
                         ) {
                             if (it.matches(pattern) && it.length <= 2) {
                                 expiryMonth.value = it
@@ -133,7 +135,8 @@ fun AddDebitCardDialog(databaseBuilder: RoomDatabase.Builder<AppDatabase>?, onDi
                             isPasswordField = false,
                             onSaveClicked = isSavedClicked.value,
                             isSingleLine = true,
-                            maxLines = 1
+                            maxLines = 1,
+                            maxLength = 2
                         ) {
                             if (it.matches(pattern) && it.length <= 2) {
                                 expiryYear.value = it
@@ -154,7 +157,8 @@ fun AddDebitCardDialog(databaseBuilder: RoomDatabase.Builder<AppDatabase>?, onDi
                             isPasswordField = false,
                             onSaveClicked = isSavedClicked.value,
                             isSingleLine = true,
-                            maxLines = 1
+                            maxLines = 1,
+                            maxLength = 3
                         ) {
                             if (it.matches(pattern) && it.length <= 3) {
                                 cvv.value = it

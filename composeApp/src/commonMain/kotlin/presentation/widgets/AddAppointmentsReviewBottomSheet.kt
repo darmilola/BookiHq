@@ -136,7 +136,8 @@ fun AddAppointmentsReviewBottomSheet(mainViewModel: MainViewModel, onReviewsAdde
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     isPasswordField = false,
                     isSingleLine = false,
-                    maxLines = 5
+                    maxLines = 5,
+                    maxLength = 250
                 ) {
                     reviewsText.value = it
                 }

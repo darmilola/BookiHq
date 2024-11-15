@@ -191,7 +191,8 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                             isPasswordField = false,
                             isSingleLine = true,
                             onSaveClicked = isSavedClicked.value,
-                            maxLines = 1
+                            maxLines = 1,
+                            maxLength = 50
                         ) {
                             firstname.value = it
                         }
@@ -206,7 +207,8 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                             isPasswordField = false,
                             isSingleLine = true,
                             onSaveClicked = isSavedClicked.value,
-                            maxLines = 1
+                            maxLines = 1,
+                            maxLength = 50
                         ) {
                             lastname.value = it
                         }

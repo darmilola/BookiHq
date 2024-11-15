@@ -294,7 +294,8 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                                 isPasswordField = false,
                                 isSingleLine = true,
-                                maxLines = 1
+                                maxLines = 1,
+                                maxLength = 50
                             ) {
                                 firstname.value = it
                             }
@@ -309,7 +310,8 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
                                 isPasswordField = false,
                                 onSaveClicked = isSavedClicked.value,
                                 isSingleLine = true,
-                                maxLines = 1
+                                maxLines = 1,
+                                maxLength = 50
                             ) {
                                 lastname.value = it
                             }
@@ -338,7 +340,8 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
                             isPasswordField = false,
                             onSaveClicked = isSavedClicked.value,
                             isSingleLine = true,
-                            maxLines = 1
+                            maxLines = 1,
+                            maxLength = 100
                         ) {
                             address.value = it
                         }
@@ -358,7 +361,8 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
                             isPasswordField = false,
                             onSaveClicked = isSavedClicked.value,
                             isSingleLine = true,
-                            maxLines = 1
+                            maxLines = 1,
+                            maxLength = 12
                         ) {
                             contactPhone.value = it
                         }
