@@ -60,6 +60,8 @@ fun TherapistAppointment(mainViewModel: MainViewModel, loadingScreenUiStateViewM
     )
 
     LaunchedEffect(true) {
+        appointmentResourceListEnvelopeViewModel!!.setResources(mutableListOf())
+        appointmentResourceListEnvelopeViewModel.clearData(mutableListOf())
         therapistPresenter.getTherapistAppointments(therapistInfo.id!!)
     }
 

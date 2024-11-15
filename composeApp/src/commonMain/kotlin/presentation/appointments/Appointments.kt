@@ -295,9 +295,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
         else if (deleteActionUIStates.value.isSuccess) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 SuccessDialog("Delete Successful", "Close", onConfirmation = {
-                    appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                    appointmentPresenter.getUserAppointments(userId)
-                    deletePerformedActionUIStateViewModel!!.switchActionDeleteUIState(AppUIStates(isDefault = true))
+                    appointmentPresenter.refreshUserAppointments(userId)
                 })
             }
         }
