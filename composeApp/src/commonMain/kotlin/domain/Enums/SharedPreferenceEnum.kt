@@ -7,7 +7,6 @@ enum class SharedPreferenceEnum {
     IS_SWITCH_VENDOR,
     USER_ID,
     VENDOR_ID,
-    USER_AUTH_PHONE,
     AUTH_TYPE,
     AUTH_EMAIL,
     AUTH_PHONE,
@@ -20,7 +19,6 @@ enum class SharedPreferenceEnum {
         CITY -> "city"
         USER_ID -> "profileId"
         VENDOR_ID -> "vendorId"
-        USER_AUTH_PHONE -> "userAuthPhone"
         AUTH_TYPE -> "authType"
         AUTH_EMAIL -> "authEmail"
         AUTH_PHONE -> "authPhone"

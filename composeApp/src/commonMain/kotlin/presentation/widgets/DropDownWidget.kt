@@ -115,7 +115,8 @@ fun DropDownWidgetView(menuItems: List<String>,
 }
 
 @Composable
-fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_icon.png",selectedIndex: Int = -1, placeHolderText: String, iconSize: Int = 20, shape: RoundedCornerShape = RoundedCornerShape(15.dp), onMenuItemClick : (Int) -> Unit) {
+fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_icon.png",selectedIndex: Int = -1, placeHolderText: String, iconSize: Int = 20, shape: RoundedCornerShape = RoundedCornerShape(15.dp), onMenuItemClick : (Int) -> Unit,
+                   onExpandMenuItemClick : () -> Unit) {
 
     val expandedMenuItem = remember { mutableStateOf(false) }
     val selectedMenuIndex = remember { mutableStateOf(selectedIndex) }
@@ -141,6 +142,7 @@ fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_
             menuExpandedState = expandedMenuItem.value,
             selectedIndex = selectedMenuIndex.value,
             updateMenuExpandStatus = {
+                onExpandMenuItemClick()
                 expandedMenuItem.value = true
             },
             onDismissMenuView = {

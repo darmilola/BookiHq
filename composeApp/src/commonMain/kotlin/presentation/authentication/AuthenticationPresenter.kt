@@ -67,7 +67,6 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
         gender: String,
         profileImageUrl: String
     ) {
-        println(userId)
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {

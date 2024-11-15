@@ -167,10 +167,10 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
      val authEmail = settings.getString(SharedPreferenceEnum.AUTH_EMAIL.toPath(), "")
      val authPhone = settings.getString(SharedPreferenceEnum.AUTH_PHONE.toPath(), "")
 
-     if (authEmail.isNotEmpty()){
+     if (authEmail.trim().isNotEmpty()){
          onEmailAuthentication(authEmail)
      }
-     else if (authPhone.isNotEmpty()){
+     else if (authPhone.trim().isNotEmpty()){
          onPhoneAuthentication(authPhone)
      }
      else{

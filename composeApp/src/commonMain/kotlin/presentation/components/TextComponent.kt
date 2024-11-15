@@ -151,7 +151,7 @@ fun TextFieldComponent(text: String, readOnly: Boolean = false, modifier: Modifi
 
     BasicTextField(value = text, modifier = modifier, textStyle = textStyle, readOnly = isReadOnly, singleLine = isSingleLine, keyboardOptions = keyboardOptions, visualTransformation = visualTransformation, onValueChange = onValueChange, interactionSource = interactionSource, maxLines = maxLines, decorationBox = { innerTextField ->
         Row(modifier = Modifier.fillMaxWidth()) {
-            if (text.isEmpty()) {
+            if (text.trim().isEmpty()) {
                 PlaceholderTextComponent(placeholderText, textColor = Color.Gray, textSize = placeholderTextSize)
             }
         }

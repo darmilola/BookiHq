@@ -279,7 +279,7 @@ fun AttachServiceDropDownWidget(mainViewModel: MainViewModel, bookingViewModel: 
       else{
            onServiceSelected(recommendationServiceType)
       }
-    })
+    }, onExpandMenuItemClick = {})
 }
 
 @Composable

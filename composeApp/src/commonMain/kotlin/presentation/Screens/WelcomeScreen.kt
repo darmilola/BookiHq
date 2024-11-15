@@ -107,7 +107,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
         onUserLocationReady = {},
         enterPlatform = { user ->
             runBlocking {
-                val userCurrency = getDisplayCurrency(user.country!!)
+                val userCurrency = getDisplayCurrency(user.country)
                 val displayCurrencyUnit = userCurrency.toDisplayUnit()
                 val displayCurrencyPath = userCurrency.toPath()
                 mainViewModel.setDisplayCurrencyUnit(displayCurrencyUnit)
@@ -132,11 +132,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
             navigateToPlatform.value = true
         },
         completeProfile = { userEmail, userAuthPhone ->
-            runBlocking {
-                preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.EMAIL.toPath()
-                preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = userEmail
-                preferenceSettings[SharedPreferenceEnum.USER_AUTH_PHONE.toPath()] = userAuthPhone
-            }
+            preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.EMAIL.toPath()
             navigateToCompleteProfile.value = true
         },
         connectVendor = { user ->

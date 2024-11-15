@@ -205,11 +205,23 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                     IndeterminateCircularProgressBar()
                                 }
                             } else if (uiState.value.isFailed) {
-                                ErrorOccurredWidget(uiState.value.errorMessage, onRetryClicked = {
-                                    if (homePageViewModel!!.homePageInfo.value.userInfo?.userId == null) {
-                                           homepagePresenter.getUserHomepage(userId)
-                                        }
-                                })
+                                Box(
+                                    modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                                        .padding(top = 40.dp, start = 50.dp, end = 50.dp)
+                                        .background(
+                                            color = Color.Transparent,
+                                            shape = RoundedCornerShape(20.dp)
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    ErrorOccurredWidget(
+                                        uiState.value.errorMessage,
+                                        onRetryClicked = {
+                                            if (homePageViewModel!!.homePageInfo.value.userInfo?.userId == null) {
+                                                homepagePresenter.getUserHomepage(userId)
+                                            }
+                                        })
+                                }
                             } else if (uiState.value.isSuccess) {
                                 val recentAppointments = homepageInfo.value.recentAppointments
                                 val vendorServices = homepageInfo.value.vendorServices

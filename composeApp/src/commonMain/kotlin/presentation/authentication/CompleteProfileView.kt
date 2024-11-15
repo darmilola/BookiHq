@@ -43,7 +43,6 @@ import domain.Enums.AuthType
 import domain.Enums.Gender
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.PlatformNavigator
-import domain.Models.User
 import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.DomainViewHandler.PlatformHandler
 import presentation.components.ButtonComponent
@@ -111,6 +110,8 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                 preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = userInfo.city
                 preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = userInfo.userId
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = userInfo.apiKey
+                preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = authEmail
+                preferenceSettings[SharedPreferenceEnum.AUTH_PHONE.toPath()] = authPhone
                 navigateToConnectVendor.value = true
 
         }, onUpdateStarted = {}, onUpdateEnded = {}, onVerificationError = {})
@@ -211,13 +212,13 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                         }
                     }
                 }
-                AttachCountryDropDownWidget(selectedCountry = userCountry.value) {
+                CountryDropDownWidget {
                     profilePresenter.getCities(country = it)
                     userCountry.value = it
                 }
-                AttachCityDropDownWidget(cityViewModel = cityViewModel, onMenuItemClick = {
+                CityDropDownWidget(cityViewModel = cityViewModel, onMenuItemClick = {
                     city.value = it
-                })
+                }, onMenuExpanded = {})
 
                 Column(
                     modifier = Modifier
@@ -284,23 +285,21 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
 }
 
 @Composable
-fun AttachCountryDropDownWidget(selectedCountry: String = "", onMenuItemClick : (String) -> Unit) {
+fun CountryDropDownWidget(onMenuItemClick : (String) -> Unit) {
     val countryList = countryList()
-
-    val index = if (selectedCountry ==  CountryEnum.SOUTH_AFRICA.toPath()) CountryEnum.SOUTH_AFRICA.getId() else CountryEnum.NIGERIA.getId()
-
-    DropDownWidget(menuItems = countryList, selectedIndex = index, placeHolderText = "Country of Residence", onMenuItemClick = {
+    DropDownWidget(menuItems = countryList, placeHolderText = "Country of Residence", onMenuItemClick = {
         onMenuItemClick(countryList[it])
-    })
+    }, onExpandMenuItemClick = {})
 }
 
 @Composable
-fun AttachCityDropDownWidget(cityViewModel: CityViewModel, onMenuItemClick : (String) -> Unit) {
+fun CityDropDownWidget(cityViewModel: CityViewModel, onMenuItemClick : (String) -> Unit, onMenuExpanded:() -> Unit) {
     val cityListState = cityViewModel.cities.collectAsState()
     val cityList = cityListState.value
-
-    DropDownWidget(menuItems = cityList,iconRes = "drawable/urban_icon.png", placeHolderText = "City", onMenuItemClick = {
+    DropDownWidget(menuItems = cityList, iconRes = "drawable/urban_icon.png", placeHolderText = "Select City", onMenuItemClick = {
         onMenuItemClick(cityList[it])
+    }, onExpandMenuItemClick = {
+        onMenuExpanded()
     })
 }
 

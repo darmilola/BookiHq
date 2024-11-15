@@ -48,8 +48,8 @@ import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
-import com.russhwolf.settings.get
 import com.russhwolf.settings.set
+import countryList
 import domain.Enums.Gender
 import domain.Models.PlatformNavigator
 import domain.Enums.SharedPreferenceEnum
@@ -60,8 +60,6 @@ import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.DomainViewHandler.PlatformHandler
 import presentation.DomainViewHandler.ProfileHandler
 import presentation.Screens.SplashScreen
-import presentation.authentication.AttachCityDropDownWidget
-import presentation.authentication.AttachCountryDropDownWidget
 import presentation.authentication.AuthenticationPresenter
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
@@ -73,6 +71,7 @@ import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.CityViewModel
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.AccountProfileImage
+import presentation.widgets.DropDownWidget
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import presentation.widgets.TitleWidget
@@ -127,7 +126,6 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
 
         val userInfo = mainViewModel!!.currentUserInfo.value
         val userGender = if (userInfo.gender == Gender.MALE.toPath()) Gender.MALE.toPath() else Gender.FEMALE.toPath()
-
         val firstname = remember { mutableStateOf(userInfo.firstname) }
         val lastname = remember { mutableStateOf(userInfo.lastname) }
         val gender = remember { mutableStateOf(userGender) }
@@ -135,8 +133,8 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
         val address = remember { mutableStateOf(userInfo.address) }
         val profileImageUrl = remember { mutableStateOf(userInfo.profileImageUrl) }
         val inputList =  ArrayList<String>()
-        val country = remember { mutableStateOf(userInfo.country) }
-        val city = remember { mutableStateOf(userInfo.city) }
+        val userCountry = remember { mutableStateOf(userInfo.country) }
+        val userCity = remember { mutableStateOf(userInfo.city) }
         val isSavedClicked = remember { mutableStateOf(false) }
         val updateProfileStarted = remember { mutableStateOf(false) }
         val updateProfileEnded = remember { mutableStateOf(false) }
@@ -162,7 +160,7 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
 
         val profileHandler = ProfileHandler(profilePresenter,
             onUserLocationReady = {
-                country.value = it.country.toString()
+                userCountry.value = it.country.toString()
             },
             onVendorInfoReady = {},
             performedActionUIStateViewModel!!)
@@ -174,12 +172,14 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
 
 
 
+
+
         inputList.add(firstname.value!!.trim())
         inputList.add(lastname.value!!.trim())
-        inputList.add(address.value!!.trim())
-        inputList.add(contactPhone.value!!.trim())
-        inputList.add(city.value.toString().trim())
-        inputList.add(country.value.toString().trim())
+        inputList.add(address.value.trim())
+        inputList.add(contactPhone.value.trim())
+        inputList.add(userCity.value.trim())
+        inputList.add(userCountry.value.trim())
         inputList.add(profileImageUrl.value.toString().trim())
 
         val rootModifier =
@@ -315,12 +315,13 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
                             }
                         }
                     }
-                AttachCountryDropDownWidget(selectedCountry = country.value!!) {
-                    profilePresenter.getCities(country = it)
-                    country.value = it
+                EditProfileCountryDropDownWidget(selectedCountry = userCountry.value) {
+                    userCountry.value = it
                 }
-                AttachCityDropDownWidget(cityViewModel = cityViewModel!!, onMenuItemClick = {
-                    city.value = it
+                EditProfileCityDropDownWidget(selectedCity = userCity.value,cityViewModel = cityViewModel!!, onMenuItemClick = {
+                    userCity.value = it
+                }, onMenuExpanded = {
+                    profilePresenter.getCities(country = userCountry.value)
                 })
 
                    Box(
@@ -332,7 +333,7 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
                             iconRes = "drawable/address.png",
                             placeholderText = "Mobile Address",
                             iconSize = 28,
-                            text = address.value!!,
+                            text = address.value,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                             isPasswordField = false,
                             onSaveClicked = isSavedClicked.value,
@@ -352,7 +353,7 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
                             iconRes = "drawable/phone_icon.png",
                             placeholderText = "Contact Phone",
                             iconSize = 28,
-                            text = contactPhone.value!!,
+                            text = contactPhone.value,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             isPasswordField = false,
                             onSaveClicked = isSavedClicked.value,
@@ -425,7 +426,7 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
                                 ShowSnackBar(title = "Input Required", description = "Please provide the required info", actionLabel = "", duration = StackedSnackbarDuration.Short, snackBarType = SnackBarType.ERROR,
                                     onActionClick = {}, stackedSnackBarHostState = stackedSnackBarHostState)
                             }
-                            else if (country.value!!.isEmpty()){
+                            else if (userCountry.value.isEmpty()){
                                 ShowSnackBar(title = "Error",
                                     description = "Please Allow Your Location",
                                     actionLabel = "",
@@ -436,8 +437,8 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
                             }
                             else {
                                 authenticationPresenter.updateProfile(userId = userInfo.userId!!, firstname = firstname.value!!, lastname = lastname.value!!,
-                                    address = address.value!!, contactPhone = contactPhone.value!!,
-                                    country = country.value!!, city = city.value!!,gender = gender.value, profileImageUrl = profileImageUrl.value!!)
+                                    address = address.value, contactPhone = contactPhone.value,
+                                    country = userCountry.value, city = userCity.value,gender = gender.value, profileImageUrl = profileImageUrl.value!!)
                             }
 
                         }
@@ -470,6 +471,30 @@ fun leftTopBarItem(onBackPressed: () -> Unit) {
         onBackPressed()
     }
 }
+
+@Composable
+fun EditProfileCountryDropDownWidget(selectedCountry: String, onMenuItemClick : (String) -> Unit) {
+    val countryList = countryList()
+    val index = if (selectedCountry ==  CountryEnum.NIGERIA.toPath()) CountryEnum.NIGERIA.getId() else CountryEnum.NIGERIA.getId()
+    DropDownWidget(menuItems = countryList, selectedIndex = index, placeHolderText = "Country of Residence", onMenuItemClick = {
+        onMenuItemClick(countryList[it])
+    }, onExpandMenuItemClick = {})
+}
+
+@Composable
+fun EditProfileCityDropDownWidget(selectedCity: String, cityViewModel: CityViewModel, onMenuItemClick : (String) -> Unit, onMenuExpanded:() -> Unit) {
+    val cityListState = cityViewModel.cities.collectAsState()
+    val cityList = cityListState.value
+    if (cityList.isEmpty() && selectedCity.trim().isNotEmpty()) {
+        cityList.add(selectedCity)
+    }
+    DropDownWidget(menuItems = cityList, selectedIndex = 0,iconRes = "drawable/urban_icon.png", placeHolderText = "Select City", onMenuItemClick = {
+        onMenuItemClick(cityList[it])
+    }, onExpandMenuItemClick = {
+        onMenuExpanded()
+    })
+}
+
 
 
 

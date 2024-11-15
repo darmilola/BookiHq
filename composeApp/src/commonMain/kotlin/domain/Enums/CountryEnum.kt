@@ -29,8 +29,8 @@ enum class CountryEnum {
 fun countryList(): ArrayList<String>{
     val countryList = ArrayList<String>()
     countryList.add(CountryEnum.NIGERIA.toPath())
-    countryList.add(CountryEnum.SOUTH_AFRICA.toPath())
+    /*countryList.add(CountryEnum.SOUTH_AFRICA.toPath())
     countryList.add(CountryEnum.GHANA.toPath())
-    countryList.add(CountryEnum.KENYA.toPath())
+    countryList.add(CountryEnum.KENYA.toPath())*/
     return countryList
 }
