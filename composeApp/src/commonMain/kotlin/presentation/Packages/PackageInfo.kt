@@ -125,6 +125,12 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
         val isMobileServiceAvailable = vendorPackage!!.isMobileServiceAvailable
         val mobileServicePrice = vendorPackage!!.mobileServicePrice
         val mobileServiceText = if (!isMobileServiceAvailable) "Not Available" else "$currencyUnit$mobileServicePrice"
+        val packageServices = vendorPackage!!.packageServices.size
+        val productsSize = vendorPackage!!.packageProducts.size
+        val therapistSize = vendorPackage!!.packageTherapists.size
+        val serviceCountText = if (packageServices > 0) "$packageServices Services" else "No Services"
+        val productCountText = if (productsSize > 0) "$productsSize Products" else "No Products"
+        val therapistCountText = if (therapistSize > 0) "$therapistSize Therapist" else "No Therapist"
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -257,7 +263,7 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
                     }
                     Column(modifier = Modifier.fillMaxWidth().height(100.dp).background(color = Color.White).padding(10.dp)) {
                         TextComponent(
-                            text = "Saalbach Hinterglemm",
+                            text = vendorPackage!!.title,
                             fontSize = 23,
                             fontFamily = GGSansSemiBold,
                             textStyle = TextStyle(),
@@ -283,7 +289,7 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
                                     modifier = rowModifier
                                 ) {
                                     TextComponent(
-                                        text = "2 Services",
+                                        text = serviceCountText,
                                         fontSize = 16,
                                         fontFamily = GGSansRegular,
                                         textStyle = MaterialTheme.typography.h6,
@@ -304,7 +310,7 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
                                     modifier = rowModifier
                                 ) {
                                     TextComponent(
-                                        text = "3 Products",
+                                        text = productCountText,
                                         fontSize = 16,
                                         fontFamily = GGSansRegular,
                                         textStyle = MaterialTheme.typography.h6,
@@ -325,7 +331,7 @@ class PackageInfo(val platformNavigator: PlatformNavigator) : ParcelableScreen, 
                                     modifier = rowModifier
                                 ) {
                                     TextComponent(
-                                        text = "2 Therapists",
+                                        text = therapistCountText,
                                         fontSize = 16,
                                         fontFamily = GGSansRegular,
                                         textStyle = MaterialTheme.typography.h6,
