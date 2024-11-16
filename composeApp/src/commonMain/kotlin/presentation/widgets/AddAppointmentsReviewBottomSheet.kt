@@ -93,7 +93,7 @@ fun AddAppointmentsReviewBottomSheet(mainViewModel: MainViewModel, onReviewsAdde
                         .fillMaxWidth(0.80f)
                 ) {
                     TextComponent(
-                        text = "Add Appointment Review",
+                        text = "Add Therapist Review",
                         fontSize = 18,
                         fontFamily = GGSansBold,
                         textStyle = TextStyle(),
@@ -156,7 +156,132 @@ fun AddAppointmentsReviewBottomSheet(mainViewModel: MainViewModel, onReviewsAdde
                 style = TextStyle(),
                 borderStroke = null
             ) {
-                if (reviewsText.value.isNotEmpty()){
+                if (reviewsText.value.trim().isNotEmpty()){
+                    onReviewsAdded(reviewsText.value)
+                    scope.launch {
+                        scaffoldState.bottomSheetState.hide()
+                    }
+                }
+            }
+
+        }
+    }
+
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddPackageAppointmentsReviewBottomSheet(mainViewModel: MainViewModel, onReviewsAdded: (String) -> Unit,
+                                     onDismiss: () -> Unit) {
+    val scope = rememberCoroutineScope()
+    val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true))
+    val reviewsText = remember { mutableStateOf("") }
+
+    val showBottomSheet = mainViewModel.showProductReviewsBottomSheet.collectAsState()
+    scope.launch {
+        scaffoldState.bottomSheetState.hide()
+    }
+    if (showBottomSheet.value){
+        scope.launch {
+            scaffoldState.bottomSheetState.show()
+        }
+    }
+    else{
+        scope.launch {
+            scaffoldState.bottomSheetState.hide()
+            onDismiss()
+        }
+    }
+
+    ModalBottomSheet(
+        modifier = Modifier.padding(top = 20.dp).height(300.dp),
+        onDismissRequest = {
+            onDismiss()
+        },
+        sheetState = scaffoldState.bottomSheetState,
+        shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
+        containerColor = Color(0xFFF3F3F3),
+        dragHandle = {},
+    ) {
+        Column(modifier = Modifier.fillMaxSize().background(color = Color.White)) {
+            Row(
+                modifier = Modifier
+                    .height(50.dp)
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp, top = 10.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(0.80f)
+                ) {
+                    TextComponent(
+                        text = "Add Package Review",
+                        fontSize = 18,
+                        fontFamily = GGSansBold,
+                        textStyle = TextStyle(),
+                        textAlign = TextAlign.Left,
+                        fontWeight = FontWeight.ExtraBold,
+                        lineHeight = 20,
+                        textColor = Colors.primaryColor,
+                        maxLines = 1,
+                        textModifier = Modifier
+                            .padding(top = 10.dp)
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                    )
+                }
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterEnd) {
+                    val modifier = Modifier
+                        .padding(top = 2.dp)
+                        .clickable {
+                            scope.launch {
+                                scaffoldState.bottomSheetState.hide()
+                                onDismiss()
+                            }
+                        }
+                        .size(18.dp)
+                    ImageComponent(
+                        imageModifier = modifier,
+                        imageRes = "drawable/cancel_icon.png",
+                        colorFilter = ColorFilter.tint(color = Colors.primaryColor)
+                    )
+
+                }
+            }
+            Box(modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp)) {
+                InputWidget(
+                    viewHeight = 120,
+                    iconRes = "drawable/cancel_icon.png",
+                    placeholderText = "Write Here...",
+                    iconSize = 28,
+                    text = reviewsText.value,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    isPasswordField = false,
+                    isSingleLine = false,
+                    maxLines = 5,
+                    maxLength = 250
+                ) {
+                    reviewsText.value = it
+                }
+            }
+
+            ButtonComponent(
+                modifier = Modifier
+                    .padding(bottom = 10.dp, start = 10.dp, end = 10.dp, top = 4.dp)
+                    .fillMaxWidth()
+                    .height(50.dp),
+                buttonText = "Send",
+                colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
+                fontSize = 16,
+                shape = CircleShape,
+                textColor = Color(color = 0xFFFFFFFF),
+                style = TextStyle(),
+                borderStroke = null
+            ) {
+                if (reviewsText.value.trim().isNotEmpty()){
                     onReviewsAdded(reviewsText.value)
                     scope.launch {
                         scaffoldState.bottomSheetState.hide()

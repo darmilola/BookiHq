@@ -40,5 +40,6 @@ interface AppointmentContract {
         abstract fun joinMeeting(customParticipantId: String, presetName: String, meetingId: String)
         abstract fun getTherapistAvailability(therapistId: Long, vendorId: Long, day: Int, month: Int, year: Int)
         abstract fun addAppointmentReviews(userId: Long, appointmentId: Long, vendorId: Long, serviceTypeId: Long,therapistId: Long, reviewText: String)
+        abstract fun addPackageAppointmentReviews(userId: Long, appointmentId: Long, vendorId: Long, packageId: Long, reviewText: String)
     }
 }

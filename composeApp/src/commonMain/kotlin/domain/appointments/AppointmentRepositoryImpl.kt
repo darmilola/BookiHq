@@ -51,6 +51,17 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
         return appointmentNetworkService.addAppointmentReview(param)
     }
 
+    override suspend fun addPackageAppointmentReviews(
+        userId: Long,
+        appointmentId: Long,
+        vendorId: Long,
+        packageId: Long,
+        reviewText: String
+    ): Single<ServerResponse> {
+        val param = AddPackageAppointmentReviewRequest(userId, appointmentId, vendorId, packageId, reviewText)
+        return appointmentNetworkService.addPackageAppointmentReview(param)
+    }
+
     override suspend fun joinMeeting(
         customParticipantId: String,
         presetName: String,

@@ -311,4 +311,42 @@ class AppointmentPresenter(apiService: HttpClient): AppointmentContract.Presente
         }
     }
 
+    override fun addPackageAppointmentReviews(
+        userId: Long,
+        appointmentId: Long,
+        vendorId: Long,
+        packageId: Long,
+        reviewText: String
+    ) {
+        contractView?.showReviewsActionLce(AppUIStates(isLoading = true, loadingMessage = "Adding Reviews"))
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    appointmentRepositoryImpl.addPackageAppointmentReviews(userId, appointmentId, vendorId, packageId, reviewText)
+                        .subscribe(
+                            onSuccess = { result ->
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.showReviewsActionLce(AppUIStates(isSuccess = true, successMessage = "Review Added Successfully"))
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.showReviewsActionLce(AppUIStates(isFailed = true, errorMessage = "Error Adding Review, Please Try Again"))
+                                    }
+                                    else -> {
+                                        contractView?.showReviewsActionLce(AppUIStates(isFailed = true, errorMessage = "Error Adding Review, Please Try Again"))
+                                    }
+                                }
+                            },
+                            onError = {
+                                contractView?.showReviewsActionLce(AppUIStates(isFailed = true, errorMessage = "Error Adding Review, Please Try Again"))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.showReviewsActionLce(AppUIStates(isFailed = true, errorMessage = "Error Adding Review, Please Try Again"))
+            }
+        }
+    }
+
 }

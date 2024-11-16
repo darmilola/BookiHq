@@ -53,9 +53,17 @@ open class AppointmentNetworkService(private val apiService: HttpClient) {
 
     suspend fun addAppointmentReview(addAppointmentReviewRequest: AddAppointmentReviewRequest) =
         apiService.post {
-            url("/services/appointment/review")
+            url("/services/appointment/review/add")
             contentType(ContentType.Application.Json)
             setBody(addAppointmentReviewRequest)
+            header("Authorization", apiKey)
+        }.body<ServerResponse>().toSingle()
+
+    suspend fun addPackageAppointmentReview(addPackageAppointmentReviewRequest: AddPackageAppointmentReviewRequest) =
+        apiService.post {
+            url("/services/appointment/package/review/add")
+            contentType(ContentType.Application.Json)
+            setBody(addPackageAppointmentReviewRequest)
             header("Authorization", apiKey)
         }.body<ServerResponse>().toSingle()
 

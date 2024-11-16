@@ -66,6 +66,7 @@ import presentation.appointmentBookings.BookingPresenter
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.SuccessDialog
 import presentation.widgets.AddAppointmentsReviewBottomSheet
+import presentation.widgets.AddPackageAppointmentsReviewBottomSheet
 import presentation.widgets.AppointmentWidget
 import presentation.widgets.EmptyContentWidget
 import presentation.widgets.PackageAppointmentWidget
@@ -376,6 +377,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                 handler.init()
 
                 val showAddReviewBottomSheet = mainViewModel!!.showAppointmentReviewsBottomSheet.collectAsState()
+                val showAddPackageReviewBottomSheet = mainViewModel!!.showPackageReviewsBottomSheet.collectAsState()
 
                 if (showAddReviewBottomSheet.value) {
                     AddAppointmentsReviewBottomSheet(
@@ -389,6 +391,19 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                             mainViewModel!!.showAppointmentReviewsBottomSheet(false)
                         })
                    }
+
+                if (showAddPackageReviewBottomSheet.value) {
+                    AddPackageAppointmentsReviewBottomSheet(
+                        mainViewModel!!,
+                        onDismiss = {
+                            mainViewModel!!.showPackageReviewsBottomSheet(false)
+                        },
+                        onReviewsAdded = {
+                            appointmentPresenter.addPackageAppointmentReviews(userId = userId, appointmentId = appointmentForReview.value.appointmentId!!,
+                                vendorId = appointmentForReview.value.vendorId, packageId = appointmentForReview.value.packageId, reviewText = it)
+                            mainViewModel!!.showPackageReviewsBottomSheet(false)
+                        })
+                }
 
                 if (uiState.value.isLoading) {
                     Box(
@@ -471,7 +486,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
                                        platformNavigator = platformNavigator,
                                        onAddReview = {
                                            appointmentForReview.value = it
-                                           mainViewModel!!.showAppointmentReviewsBottomSheet(true)
+                                           mainViewModel!!.showPackageReviewsBottomSheet(true)
                                        })
                                }
                                if (it == lastIndex && loadMoreState.value) {
