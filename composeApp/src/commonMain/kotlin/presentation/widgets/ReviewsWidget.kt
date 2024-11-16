@@ -24,7 +24,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.AppointmentReview
-import domain.Models.PackageReviews
 import domain.Models.ProductReview
 import domain.Models.User
 import presentations.components.ImageComponent
@@ -45,7 +44,7 @@ fun AppointmentReviewsWidget(reviews: AppointmentReview) {
 
 
 @Composable
-fun PackageReviewsWidget(reviews: PackageReviews) {
+fun PackageReviewsWidget(reviews: AppointmentReview) {
 
     val columnModifier = Modifier
         .padding(start = 5.dp, bottom = 10.dp)
@@ -110,7 +109,7 @@ fun AttachAppointmentReviewHeader(reviews: AppointmentReview) {
 
 
 @Composable
-fun AttachPackageReviewHeader(reviews: PackageReviews) {
+fun AttachPackageReviewHeader(reviews: AppointmentReview) {
     val rowModifier = Modifier
         .fillMaxWidth()
     Row(

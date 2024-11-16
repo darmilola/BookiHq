@@ -24,14 +24,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import domain.Models.AppointmentReview
-import domain.Models.PackageReviews
-import domain.Models.VendorPackage
-import presentation.Packages.Packages
 import theme.styles.Colors
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PackageReviewsWidget(reviews: List<PackageReviews>) {
+fun PackageReviewsWidget(reviews: List<AppointmentReview>) {
     val pagerState = rememberPagerState(pageCount = {
         reviews.size
     })
@@ -54,7 +51,7 @@ fun PackageReviewsWidget(reviews: List<PackageReviews>) {
         Box(contentAlignment = Alignment.BottomCenter, modifier = boxModifier) {
             HorizontalPager(
                 state = pagerState,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxWidth().wrapContentHeight()
             ) { page ->
                 PackageReviewsWidget(reviews[page])
             }
