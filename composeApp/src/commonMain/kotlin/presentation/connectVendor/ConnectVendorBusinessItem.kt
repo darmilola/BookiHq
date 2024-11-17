@@ -74,6 +74,7 @@ import presentations.components.TextComponent
 
     @Composable
     fun BusinessNameAndHandle(vendor: Vendor){
+        val mobileServiceText = if (vendor.isMobileServiceAvailable) "Mobile Service" else "No Mobile Service"
         val columnModifier = Modifier
             .padding(start = 5.dp, end = 10.dp)
             .fillMaxHeight()
@@ -127,12 +128,12 @@ import presentations.components.TextComponent
                             .padding(end = 20.dp, top = 10.dp)
                             .wrapContentSize())
 
-                    val modifier = Modifier
+
+                    ImageComponent(imageModifier = Modifier
                         .padding(top = 10.dp)
-                        .size(20.dp)
-                    ImageComponent(imageModifier = modifier, imageRes = "drawable/location_icon_filled.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+                        .size(20.dp), imageRes = "drawable/location_icon_filled.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
                     TextComponent(
-                        text = vendor.minuteDriveText,
+                        text = mobileServiceText,
                         fontSize = 14,
                         fontFamily = GGSansRegular,
                         textStyle = TextStyle(),

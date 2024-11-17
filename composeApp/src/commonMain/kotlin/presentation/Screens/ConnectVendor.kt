@@ -119,24 +119,9 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
         }
 
         LaunchedEffect(key1 = true) {
-            if (preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), ""].isNotEmpty()
-                && preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""].isNotEmpty()
-                && preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""].isNotEmpty()
-                && preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""].isNotEmpty()){
                 connectVendorPresenter.getVendor(country = country, city = city, connectedVendor = VendorEnum.DEFAULT_VENDOR_ID.toPath())
                 vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-            }
-            else{
-                platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String, _,_ ->
-                    preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
-                    preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
-                    preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = country
-                    preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = city
-                    connectVendorPresenter.getVendor(country = country, city = city, connectedVendor = VendorEnum.DEFAULT_VENDOR_ID.toPath())
-                    vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                })
-            }
-        }
+           }
 
 
 
@@ -202,25 +187,8 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
                     else if (loadVendorUiState.value.isFailed) {
                         Box(modifier = Modifier .fillMaxWidth().height(400.dp), contentAlignment = Alignment.Center) {
                             ErrorOccurredWidget(loadVendorUiState.value.errorMessage, onRetryClicked = {
-                                if (preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath(), ""].isNotEmpty()
-                                    && preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath(), ""].isNotEmpty()
-                                    && preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""].isNotEmpty()
-                                    && preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""].isNotEmpty()){
                                     connectVendorPresenter.getVendor(country = country, city = city, connectedVendor = VendorEnum.DEFAULT_VENDOR_ID.toPath())
                                     vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                                }
-                                else{
-                                    platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String, cityName: String ->
-                                        preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
-                                        preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
-                                        preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = countryName
-                                        preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = cityName
-                                        connectVendorPresenter.getVendor(country = countryName, city = cityName, connectedVendor = VendorEnum.DEFAULT_VENDOR_ID.toPath())
-                                        vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                                        city = cityName
-                                        country = countryName
-                                    })
-                                }
                             })
                         }
 

@@ -82,7 +82,7 @@ import utils.ParcelableScreen
 
 @OptIn(ExperimentalVoyagerApi::class)
 @Parcelize
-class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinComponent, ParcelableScreen, ScreenTransition {
+class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinComponent, ParcelableScreen, ScreenTransition {
 
     @Transient
     private val profilePresenter: ProfilePresenter by inject()
@@ -234,11 +234,6 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
             ErrorDialog(dialogTitle = "Error Occurred", actionTitle = "", onConfirmation = {})
         }
 
-            platformNavigator!!.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String, cityName: String ->
-                preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
-                preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
-            })
-
 
 
         Scaffold(
@@ -276,7 +271,7 @@ class EditProfile(val  platformNavigator: PlatformNavigator? = null) : KoinCompo
                         profileImageUrl = profileImageUrl.value!!,
                         isAsync = true,
                         onUploadImageClicked = {
-                            platformNavigator.startImageUpload {
+                            platformNavigator!!.startImageUpload {
                                 profileImageUrl.value = it
                             }
                         })

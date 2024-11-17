@@ -149,16 +149,6 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
             .verticalScroll(rememberScrollState())
             .background(color = Color.White)
 
-    LaunchedEffect(key1 = true) {
-        platformNavigator.getUserLocation(onLocationReady = { latitude: String, longitude: String, countryName: String, cityName: String ->
-            preferenceSettings[SharedPreferenceEnum.LATITUDE.toPath()] = latitude
-            preferenceSettings[SharedPreferenceEnum.LONGITUDE.toPath()] = longitude
-        })
-    }
-
-
-
-
 
     Scaffold(
         snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState)  }
