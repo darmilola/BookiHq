@@ -92,7 +92,7 @@ fun AddDebitCardDialog(databaseBuilder: RoomDatabase.Builder<AppDatabase>?, onDi
                             onSaveClicked = isSavedClicked.value,
                             isSingleLine = true,
                             maxLines = 1,
-                            maxLength = 16
+                            maxLength = 25
                         ) {
                             if (it.matches(pattern)) {
                                 cardNumber.value = it
@@ -114,7 +114,7 @@ fun AddDebitCardDialog(databaseBuilder: RoomDatabase.Builder<AppDatabase>?, onDi
                             isPasswordField = false,
                             isSingleLine = true,
                             maxLines = 1,
-                            maxLength = 2
+                            maxLength = 3
                         ) {
                             if (it.matches(pattern) && it.length <= 2) {
                                 expiryMonth.value = it
@@ -136,7 +136,7 @@ fun AddDebitCardDialog(databaseBuilder: RoomDatabase.Builder<AppDatabase>?, onDi
                             onSaveClicked = isSavedClicked.value,
                             isSingleLine = true,
                             maxLines = 1,
-                            maxLength = 2
+                            maxLength = 3
                         ) {
                             if (it.matches(pattern) && it.length <= 2) {
                                 expiryYear.value = it
@@ -158,7 +158,7 @@ fun AddDebitCardDialog(databaseBuilder: RoomDatabase.Builder<AppDatabase>?, onDi
                             onSaveClicked = isSavedClicked.value,
                             isSingleLine = true,
                             maxLines = 1,
-                            maxLength = 3
+                            maxLength = 4
                         ) {
                             if (it.matches(pattern) && it.length <= 3) {
                                 cvv.value = it
