@@ -178,7 +178,6 @@ class TherapistDashboard(val platformNavigator: PlatformNavigator? = null) : Par
             content = {
                  TabScreen(onUpdateSuccess = {
                      val splashScreen = SplashScreen(platformNavigator!!)
-                     splashScreen.setMainViewModel(mainViewModel!!)
                      splashScreen.setDatabaseBuilder(databaseBuilder!!)
                      navigator.replaceAll(splashScreen)
                  })

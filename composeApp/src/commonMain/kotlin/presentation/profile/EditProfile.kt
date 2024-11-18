@@ -226,7 +226,6 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
         }
         else if (updateProfileEnded.value && updateProfileSuccessful.value) {
             val splashScreen = SplashScreen(platformNavigator!!)
-            splashScreen.setMainViewModel(mainViewModel!!)
             splashScreen.setDatabaseBuilder(databaseBuilder!!)
             navigator.replaceAll(splashScreen)
         }

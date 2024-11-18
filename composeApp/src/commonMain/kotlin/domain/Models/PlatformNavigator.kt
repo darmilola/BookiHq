@@ -4,7 +4,6 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 
 interface PlatformNavigator: Parcelable {
      fun startScanningBarCode(onCodeReady: (String) -> Unit)
-     fun getUserLocation(onLocationReady: (String, String, String, String) -> Unit)
      fun startGoogleSSO(onAuthSuccessful: (String) -> Unit,
                         onAuthFailed: () -> Unit)
      fun startPhoneSS0(phone: String)

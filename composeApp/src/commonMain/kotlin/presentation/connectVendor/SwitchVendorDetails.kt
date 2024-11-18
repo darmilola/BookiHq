@@ -126,7 +126,6 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
                         // App Restart for Android
                         preferenceSettings[SharedPreferenceEnum.IS_SWITCH_VENDOR.toPath()] = true
                         val splashScreen = SplashScreen(platformNavigator = platformNavigator)
-                        splashScreen.setMainViewModel(mainViewModel!!)
                         splashScreen.setDatabaseBuilder(databaseBuilder)
                         navigator.replaceAll(splashScreen)
                     }

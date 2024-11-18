@@ -41,7 +41,6 @@ class MainViewController {
             }
             val splashScreen = SplashScreen(platformNavigator = platformNavigator)
             splashScreen.setDatabaseBuilder(database)
-            splashScreen.setMainViewModel(mainViewModel!!)
             Navigator(splashScreen) { navigator ->
                 SlideTransition(navigator)
 

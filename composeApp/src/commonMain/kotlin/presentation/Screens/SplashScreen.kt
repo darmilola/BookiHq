@@ -24,8 +24,11 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
+import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import di.initKoin
@@ -187,16 +190,21 @@ class SplashScreen(val platformNavigator: PlatformNavigator) : Screen, KoinCompo
 
     override val key: ScreenKey = uniqueScreenKey
 
-    fun setMainViewModel(mainViewModel: MainViewModel){
-        this.mainViewModel = mainViewModel
-    }
-
     fun setDatabaseBuilder(builder: RoomDatabase.Builder<AppDatabase>?){
         this.databaseBuilder = builder
     }
 
     @Composable
     override fun Content() {
+
+        if (mainViewModel == null) {
+            mainViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    MainViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
         initKoin()
         SplashScreenCompose(platformNavigator = platformNavigator, authenticationPresenter,mainViewModel!!,databaseBuilder!!)
     }
