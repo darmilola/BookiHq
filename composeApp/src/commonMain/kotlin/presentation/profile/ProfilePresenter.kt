@@ -184,7 +184,6 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                             onSuccess = { result ->
                                 when (result.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
-                                        platformNavigator.sendCustomerExitNotification(exitReason = exitReason, vendorLogoUrl = vendor.businessLogo!!, fcmToken = vendor.fcmToken!!)
                                         switchVendorContract?.showActionLce(AppUIStates(isSuccess = true))
                                     }
                                     ServerResponse.FAILURE.toPath() -> {
@@ -317,9 +316,6 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                             onSuccess = { result ->
                                 when (result.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
-                                        val time = if (platformTime.isAm) platformTime.time+"AM" else platformTime.time+"PM"
-                                        platformNavigator.sendMeetingBookingNotification(customerName = user.firstname!!, vendorLogoUrl = vendor.businessLogo!!,
-                                            meetingDay = day.toString(), meetingMonth = monthName, meetingYear = year.toString(), meetingTime = time, fcmToken = vendor.fcmToken!!)
                                         meetingViewContract?.showActionLce(AppUIStates(isSuccess = true))
                                     }
                                     ServerResponse.FAILURE.toPath() -> {

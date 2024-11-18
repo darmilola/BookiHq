@@ -225,6 +225,8 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
             LoadingDialog(dialogTitle = "Updating Your Profile")
         }
         else if (updateProfileEnded.value && updateProfileSuccessful.value) {
+            updateProfileEnded.value = false
+            updateProfileSuccessful.value = false
             val splashScreen = SplashScreen(platformNavigator!!)
             splashScreen.setDatabaseBuilder(databaseBuilder!!)
             navigator.replaceAll(splashScreen)

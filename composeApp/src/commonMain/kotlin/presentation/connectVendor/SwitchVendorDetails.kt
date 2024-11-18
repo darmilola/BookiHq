@@ -118,17 +118,10 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
                     mainViewModel!!.setCurrentUnsavedOrders(arrayListOf())
                     bookingPresenter.deleteAllPendingAppointment(userId = userInfo.userId!!, bookingStatus = BookingStatus.BOOKING.toPath())
                     performedActionUIStateViewModel!!.switchVendorActionUIState(AppUIStates(isDefault = true))
-                    if (deviceInfo() == DeviceType.IOS.toPath()) {
-                        // iOS App Restart Process
-                        platformNavigator.restartApp()
-                    }
-                    else if (deviceInfo() == DeviceType.ANDROID.toPath()){
-                        // App Restart for Android
-                        preferenceSettings[SharedPreferenceEnum.IS_SWITCH_VENDOR.toPath()] = true
-                        val splashScreen = SplashScreen(platformNavigator = platformNavigator)
-                        splashScreen.setDatabaseBuilder(databaseBuilder)
-                        navigator.replaceAll(splashScreen)
-                    }
+                    preferenceSettings[SharedPreferenceEnum.IS_SWITCH_VENDOR.toPath()] = true
+                    val splashScreen = SplashScreen(platformNavigator = platformNavigator)
+                    splashScreen.setDatabaseBuilder(databaseBuilder)
+                    navigator.replaceAll(splashScreen)
 
                 } else if (switchVendorUiState.value.isFailed) {
                     ErrorDialog(dialogTitle = "Error Occurred Please Try Again", actionTitle = "Retry"){}

@@ -80,6 +80,7 @@ import presentation.Screens.AddDebitCardScreen
 import presentation.dialogs.AddDebitCardDialog
 import presentation.payment.PaymentContract
 import presentation.payment.PaymentPresenter
+import presentation.profile.EditProfile
 import presentation.viewmodels.CartViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.CartItem
@@ -162,15 +163,43 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                 },
             )
         }
+        val completeProfile = remember { mutableStateOf(false) }
+        val userProfile = mainViewModel!!.currentUserInfo.value
         val cartItems = mainViewModel!!.unSavedOrders.collectAsState()
         val cartSize = mainViewModel!!.unSavedOrderSize.collectAsState()
         val deliveryMethod = mainViewModel!!.deliveryMethod.collectAsState()
+        val isProfileCompleted = userProfile.address.trim().isNotEmpty() && userProfile.contactPhone.trim().isNotEmpty()
         val vendorDeliveryFee = mainViewModel!!.connectedVendor.value.deliveryFee
         if (deliveryMethod.value == DeliveryMethodEnum.MOBILE.toPath()){
             cartViewModel!!.setDeliveryFee(vendorDeliveryFee)
         }
         else{
             cartViewModel!!.setDeliveryFee(0L)
+        }
+
+        LaunchedEffect(true) {
+
+            if (!isProfileCompleted){
+                ShowSnackBar(title = "Only Pickup is Available",
+                    description = "Please Complete Your Profile for Mobile Delivery",
+                    actionLabel = "Complete Profile",
+                    duration = StackedSnackbarDuration.Long,
+                    snackBarType = SnackBarType.INFO,
+                    stackedSnackBarHostState,
+                    onActionClick = {
+                        completeProfile.value = true
+                    })
+            }
+
+        }
+
+        if (completeProfile.value){
+            completeProfile.value = false
+            val editProfile = EditProfile(platformNavigator)
+            editProfile.setMainViewModel(mainViewModel!!)
+            editProfile.setDatabaseBuilder(databaseBuilder)
+            val nav = LocalNavigator.currentOrThrow
+            nav.push(editProfile)
         }
 
         val actionUiState = createOrderActionUIStateViewModel!!.uiStateInfo.collectAsState()
@@ -208,7 +237,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
             content = {
 
                 LaunchedEffect(true) {
-                    mainViewModel!!.setDeliveryMethod(DeliveryMethodEnum.MOBILE.toPath())
+                    mainViewModel!!.setDeliveryMethod(DeliveryMethodEnum.PICKUP.toPath())
                 }
 
                 val currentUserInfo = mainViewModel!!.currentUserInfo.value
@@ -364,7 +393,8 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
 
                         PopulateCartItemList(mainViewModel!!,stackedSnackBarHostState)
 
-                        ProductDeliveryAddressWidget(mainViewModel!!, onMobileSelectedListener = {
+
+                        ProductDeliveryAddressWidget(mainViewModel!!, isDisabled = !isProfileCompleted, onMobileSelectedListener = {
                                 mainViewModel!!.setDeliveryMethod(DeliveryMethodEnum.MOBILE.toPath())
 
                             }, onPickupSelectedListener = {

@@ -357,22 +357,6 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             accessToken = notificationServiceAccessToken!!, data = data)
     }
 
-    override fun sendMeetingBookingNotification(
-        customerName: String,
-        vendorLogoUrl: String,
-        meetingDay: String,
-        meetingMonth: String,
-        meetingYear: String,
-        meetingTime: String,
-        fcmToken: String
-    ) {
-        val data = NotificationMessage.data(customerName = customerName, vendorLogoUrl = vendorLogoUrl,
-            type = NotificationType.MEETING_BOOKING.toPath(), meetingDay = meetingDay,
-            meetingMonth = meetingMonth, meetingYear = meetingYear, meetingTime = meetingTime)
-        NotificationService().sendAppNotification(fcmToken = fcmToken,
-            accessToken = notificationServiceAccessToken!!, data = data)
-    }
-
     override fun sendAppointmentBookingNotification(
         customerName: String,
         vendorLogoUrl: String,
@@ -408,29 +392,6 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         NotificationService().sendAppNotification(fcmToken = fcmToken,
             accessToken = notificationServiceAccessToken!!, data = data)
     }
-
-    override fun sendConnectVendorNotification(
-        customerName: String,
-        vendorLogoUrl: String,
-        fcmToken: String
-    ) {
-        val data = NotificationMessage.data(customerName = customerName, vendorLogoUrl = vendorLogoUrl,
-            type = NotificationType.CONNECT_BUSINESS.toPath())
-        NotificationService().sendAppNotification(fcmToken = fcmToken,
-            accessToken = notificationServiceAccessToken!!, data = data)
-    }
-
-    override fun sendCustomerExitNotification(
-        exitReason: String,
-        vendorLogoUrl: String,
-        fcmToken: String
-    ) {
-        val data = NotificationMessage.data(exitReason = exitReason, vendorLogoUrl = vendorLogoUrl,
-            type = NotificationType.CONNECT_BUSINESS.toPath())
-        NotificationService().sendAppNotification(fcmToken = fcmToken,
-            accessToken = notificationServiceAccessToken!!, data = data)
-    }
-
     override fun exitApp() {
         finish()
     }

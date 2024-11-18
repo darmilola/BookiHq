@@ -31,7 +31,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _recommendedServiceType =  savedStateHandle.getStateFlow("recommendedServiceType", ServiceTypeItem())
     private var _currentUnsavedOrders =  savedStateHandle.getStateFlow("currentUnsavedOrders", ArrayList<OrderItem>())
     private var _currentUnsavedOrderSize =  savedStateHandle.getStateFlow("currentUnsavedOrderSize", 0)
-    private var _deliveryMethod =  savedStateHandle.getStateFlow("deliveryMethod", DeliveryMethodEnum.MOBILE.toPath())
+    private var _deliveryMethod =  savedStateHandle.getStateFlow("deliveryMethod", DeliveryMethodEnum.PICKUP.toPath())
     private var _selectedProductType =  savedStateHandle.getStateFlow("selectedProductType", ProductType.COSMETICS.toPath())
     private var _currentMainDisplayTab =  savedStateHandle.getStateFlow("displayedTab", MainTabEnum.HOME.toPath())
     private var _isClickedSearchProductState =  savedStateHandle.getStateFlow("isClickedSearchProduct", false)

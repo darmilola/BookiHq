@@ -70,7 +70,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
     val userProfile = mainViewModel.currentUserInfo.value
 
 
-    val isProfileCompleted = userProfile.address!!.trim().isNotEmpty() && userProfile.contactPhone!!.trim().isNotEmpty()
+    val isProfileCompleted = userProfile.address.trim().isNotEmpty() && userProfile.contactPhone.trim().isNotEmpty()
 
     LaunchedEffect(Unit, block = {
         if (recommendationServiceType.serviceTypeId == -1L) {
@@ -171,7 +171,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
                             ShowSnackBar(title = "Mobile Service Is Available",
                                 description = "Please complete your profile",
                                 actionLabel = "Complete Profile",
-                                duration = StackedSnackbarDuration.Short,
+                                duration = StackedSnackbarDuration.Long,
                                 snackBarType = SnackBarType.INFO,
                                 stackedSnackBarHostState,
                                 onActionClick = {

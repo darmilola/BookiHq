@@ -28,11 +28,11 @@ import presentations.components.TextComponent
 import utils.getDeliveryMethodDisplayName
 
 @Composable
-fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel,
+fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel, isDisabled: Boolean = false,
                                  onPickupSelectedListener:() -> Unit, onMobileSelectedListener:() -> Unit){
 
     val deliveryMethod =  mainViewModel.deliveryMethod.collectAsState()
-    val isRightSelection = deliveryMethod.value == DeliveryMethodEnum.PICKUP.toPath()
+    val isRightSelection = deliveryMethod.value == DeliveryMethodEnum.MOBILE.toPath()
     val columnModifier = Modifier
         .padding(start = 10.dp, bottom = 10.dp, top = 15.dp, end = 10.dp)
         .wrapContentHeight()
@@ -54,12 +54,12 @@ fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel,
 
         Row(modifier = Modifier.fillMaxWidth()) {
             ToggleButton(shape = CircleShape, isRightSelection = isRightSelection, onLeftClicked = {
-                onMobileSelectedListener()
-            }, onRightClicked = {
                 onPickupSelectedListener()
+            }, onRightClicked = {
+                onMobileSelectedListener()
             },
-                isDisabled = false,
-                leftText = getDeliveryMethodDisplayName(DeliveryMethodEnum.MOBILE.toPath()), rightText = getDeliveryMethodDisplayName(DeliveryMethodEnum.PICKUP.toPath()))
+                isDisabled = isDisabled,
+                rightText = getDeliveryMethodDisplayName(DeliveryMethodEnum.MOBILE.toPath()), leftText = getDeliveryMethodDisplayName(DeliveryMethodEnum.PICKUP.toPath()))
         }
 
     }
