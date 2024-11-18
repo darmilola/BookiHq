@@ -32,7 +32,6 @@ import java.util.Random
 class AppFirebaseMessagingService : FirebaseMessagingService() {
     private var notificationManager: NotificationManager? = null
     private val ADMIN_CHANNEL_ID = "App Notification Channel"
-    private var preferences: SharedPreferences? = null
   override  fun onMessageReceived(message: RemoteMessage) {
         val notificationId: Int = Random().nextInt(60000)
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
@@ -54,10 +53,6 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
     }
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        preferences = getSharedPreferences("TokenSharedPref", MODE_PRIVATE);
-        val myEdit: SharedPreferences.Editor = preferences!!.edit()
-        myEdit.putString("fcmToken",token)
-        myEdit.apply()
     }
 
     private fun createNotificationBuilder(notificationDisplayData: NotificationMessage.NotificationDisplayData): NotificationCompat.Builder {
