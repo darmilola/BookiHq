@@ -132,11 +132,6 @@ fun SwitchVendorReasons(onReasonSelected: (String) -> Unit){
         style = MaterialTheme.typography.h4, iconRes = "drawable/emoji_frowned.png"){
         onReasonSelected(it)
     }
-    bottomSheetIconButtonComponent(modifier = buttonStyle, buttonText = ExitReasonEnum.NEED_SOMETHING_NEW.toPath(), borderStroke = BorderStroke(0.8.dp, Color(0xFFE9F0F2)),
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 14, shape = RoundedCornerShape(15.dp),
-        textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "drawable/emoji_frowned.png"){
-        onReasonSelected(it)
-    }
     bottomSheetIconButtonComponent(modifier = buttonStyle, buttonText = ExitReasonEnum.PREFER_NOT_SAY.toPath(),
         borderStroke = BorderStroke(0.8.dp, Color(0xFFE9F0F2)), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
         fontSize = 14, shape = RoundedCornerShape(15.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "drawable/emoji_think.png"){
