@@ -460,7 +460,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
 
         bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.PENDING.toPath(), day = getDay(),
             month = getMonth(), year = getYear(), paymentAmount = paymentAmount,
-            paymentMethod = paymentMethod)
+            paymentMethod = paymentMethod, platformNavigator = platformNavigator, vendor = mainViewModel!!.connectedVendor.value)
     }
 
     @OptIn(ExperimentalFoundationApi::class)

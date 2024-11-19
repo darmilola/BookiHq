@@ -2,10 +2,12 @@ package presentation.appointmentBookings
 
 import domain.Models.ServiceTypeTherapists
 import UIStates.AppUIStates
+import domain.Models.PlatformNavigator
 import domain.Models.PlatformTime
 import domain.Models.ServiceImages
 import domain.Models.ServiceTypeItem
 import domain.Models.UserAppointment
+import domain.Models.Vendor
 import domain.Models.VendorTime
 
 class BookingContract {
@@ -33,7 +35,7 @@ class BookingContract {
         abstract fun getServiceTherapists(serviceTypeId: Long, vendorId: Long, day: Int, month: Int, year: Int)
         abstract fun getMobileServiceTherapists(serviceTypeId: Long, vendorId: Long, day: Int, month: Int, year: Int)
         abstract fun getServiceData(serviceId: Long)
-        abstract fun createAppointment(userId: Long, vendorId: Long, paymentAmount: Int, paymentMethod: String, bookingStatus: String, day: Int, month: Int, year: Int)
+        abstract fun createAppointment(userId: Long, vendorId: Long, paymentAmount: Int, paymentMethod: String, bookingStatus: String, day: Int, month: Int, year: Int, platformNavigator: PlatformNavigator, vendor: Vendor)
         abstract fun getPendingBookingAppointment(userId: Long, bookingStatus: String)
         abstract fun deletePendingBookingAppointment(pendingAppointmentId: Long)
         abstract fun getTimeAvailability(vendorId: Long)

@@ -12,7 +12,9 @@ import kotlinx.coroutines.withContext
 import UIStates.AppUIStates
 import domain.Enums.AppointmentType
 import domain.Enums.ServerResponse
+import domain.Models.PlatformNavigator
 import domain.Models.ServiceTypeTherapists
+import domain.Models.Vendor
 import domain.packages.PackageRepositoryImpl
 
 class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
@@ -172,7 +174,9 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
         bookingStatus: String,
         day: Int,
         month: Int,
-        year: Int
+        year: Int,
+        platformNavigator: PlatformNavigator,
+        vendor: Vendor
     ) {
         scope.launch(Dispatchers.Main) {
             try {
@@ -183,6 +187,7 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
                             onSuccess = { result ->
                                 when (result.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
+                                        platformNavigator.sendAppointmentBookingNotification(vendorLogoUrl = vendor.businessLogo!!, fcmToken = vendor.fcmToken!!)
                                         contractView?.showCreateAppointmentActionLce(AppUIStates(isSuccess = true))
                                     }
                                     ServerResponse.FAILURE.toPath() -> {

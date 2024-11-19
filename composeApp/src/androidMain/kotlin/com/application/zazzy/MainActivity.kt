@@ -13,9 +13,11 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.OpenableColumns
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
@@ -88,12 +90,8 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     var imagePickerActivityResult: ActivityResultLauncher<Intent>? = null
     private var notificationServiceAccessToken: String? = ""
     @Transient
-    private var paymentPreferences: SharedPreferences.Editor? = null
-    @Transient
     lateinit var locationManager: LocationManager
     private val mainViewModel: MainViewModel by viewModels()
-    private val testPhone = "+16505554567"
-    val smsCode = "654321"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,7 +108,6 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         firebaseAuth = FirebaseAuth.getInstance()
-
 
 
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -189,7 +186,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
     override fun startPhoneSS0(phone: String) {
         val options = PhoneAuthOptions.newBuilder(firebaseAuth!!)
-            .setPhoneNumber(testPhone)
+            .setPhoneNumber(phone)
             .setTimeout(30L, TimeUnit.SECONDS)
             .setActivity(this)
             .setCallbacks(callbacks!!)
@@ -358,19 +355,10 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     }
 
     override fun sendAppointmentBookingNotification(
-        customerName: String,
         vendorLogoUrl: String,
-        businessName: String,
-        appointmentDay: String,
-        appointmentMonth: String,
-        appointmentYear: String,
-        appointmentTime: String,
-        serviceType: String,
         fcmToken: String
     ) {
-        val data = NotificationMessage.data(customerName = customerName, vendorLogoUrl = vendorLogoUrl,
-            type = NotificationType.APPOINTMENT_BOOKING.toPath(), businessName = businessName, appointmentDay = appointmentDay,
-            appointmentMonth = appointmentMonth, appointmentYear = appointmentYear, appointmentTime = appointmentTime, serviceType = serviceType)
+        val data = NotificationMessage.data(vendorLogoUrl = vendorLogoUrl, type = NotificationType.APPOINTMENT_BOOKING.toPath())
         NotificationService().sendAppNotification(fcmToken = fcmToken,
             accessToken = notificationServiceAccessToken!!, data = data)
     }
