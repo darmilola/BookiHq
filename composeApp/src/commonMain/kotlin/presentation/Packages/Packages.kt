@@ -140,9 +140,10 @@ class Packages : Tab, KoinComponent, Parcelable {
         val lastIndex = packageList?.value?.size?.minus(1)
 
         LaunchedEffect(true) {
-            val isSwitchVendor: Boolean = preferenceSettings[SharedPreferenceEnum.IS_SWITCH_VENDOR.toPath(),false]
+            val isSwitchVendor: Boolean = mainViewModel!!.isSwitchVendor.value
+            println("Vendor $isSwitchVendor")
             if (isSwitchVendor){
-                packagesResourceListEnvelopeViewModel!!.setResources(arrayListOf())
+                packagesResourceListEnvelopeViewModel!!.clearData(mutableListOf())
             }
             if (packagesResourceListEnvelopeViewModel!!.resources.value.isNotEmpty()){
                 loadingScreenUiStateViewModel!!.switchScreenUIState(AppUIStates(isSuccess = true))
@@ -150,7 +151,6 @@ class Packages : Tab, KoinComponent, Parcelable {
             else {
                 packagePresenter.getVendorPackages(vendorId)
             }
-
         }
 
         val selectedPackage = remember { mutableStateOf(VendorPackage()) }

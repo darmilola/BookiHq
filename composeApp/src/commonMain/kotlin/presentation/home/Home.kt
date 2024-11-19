@@ -148,9 +148,9 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
 
         LaunchedEffect(true) {
-            val isSwitchVendor: Boolean =
-                preferenceSettings[SharedPreferenceEnum.IS_SWITCH_VENDOR.toPath(), false]
+            val isSwitchVendor: Boolean = mainViewModel!!.isSwitchVendor.value
 
+            println("Vendor $isSwitchVendor")
             if (isSwitchVendor) {
                 homePageViewModel!!.setHomePageInfo(HomepageInfo())
             }

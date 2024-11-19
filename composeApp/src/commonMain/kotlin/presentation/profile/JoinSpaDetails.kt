@@ -16,7 +16,6 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import domain.Enums.DeviceType
-import domain.Enums.Screens
 import domain.Models.PlatformNavigator
 import domain.Models.Vendor
 import kotlinx.serialization.Transient
@@ -93,15 +92,6 @@ class JoinSpaDetailsTab(val platformNavigator: PlatformNavigator) : Tab, KoinCom
                     performedActionUIStateViewModel!!.switchActionUIState(AppUIStates(isDefault = true))
                     mainViewModel!!.setSwitchVendor(vendor = Vendor())
                     mainViewModel!!.setJoinSpaVendor(vendor = Vendor())
-
-                    if (deviceInfo() == DeviceType.IOS.toPath()) {
-                        // iOS App Restart Process
-                        platformNavigator.restartApp()
-                    }
-                    else if (deviceInfo() == DeviceType.ANDROID.toPath()){
-                        // App Restart for Process Android
-                        mainViewModel!!.setRestartApp(isRestart = true)
-                    }
 
                 } else if (joinSpaUiState.value.isFailed) {
                     ErrorDialog(dialogTitle = "Error Occurred Please Try Again", actionTitle = "Retry"){}

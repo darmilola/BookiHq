@@ -2,6 +2,7 @@ package presentation.Products
 
 import GGSansRegular
 import StackedSnackbarHost
+import UIStates.AppUIStates
 import androidx.compose.foundation.BorderStroke
 import theme.styles.Colors
 import androidx.compose.foundation.background
@@ -170,13 +171,15 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
             loadingScreenUiStateViewModel!!, productResourceListEnvelopeViewModel!!, productPresenter)
         productHandler.init()
 
-        val isSwitchVendor: Boolean = preferenceSettings[SharedPreferenceEnum.IS_SWITCH_VENDOR.toPath(),false]
-
-        if (isSwitchVendor){
-            productResourceListEnvelopeViewModel!!.setResources(arrayListOf())
-        }
-
         LaunchedEffect(true) {
+            val isSwitchVendor: Boolean = mainViewModel!!.isSwitchVendor.value
+
+            println("Vendor $isSwitchVendor")
+
+            if (isSwitchVendor){
+                productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+            }
+
             if (productResourceListEnvelopeViewModel!!.resources.value.isEmpty()){
                 productResourceListEnvelopeViewModel!!.setResources(mutableListOf())
                 productPresenter.getProductsByType(vendorId, productType = selectedProductType)

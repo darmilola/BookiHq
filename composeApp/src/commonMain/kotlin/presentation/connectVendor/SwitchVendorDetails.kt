@@ -8,12 +8,9 @@ import androidx.compose.animation.slideOut
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
 import androidx.room.RoomDatabase
-import applications.device.deviceInfo
 import applications.room.AppDatabase
 import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.ScreenKey
@@ -27,13 +24,8 @@ import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
-import com.russhwolf.settings.set
 import domain.Enums.BookingStatus
 import domain.Enums.CustomerMovementEnum
-import domain.Enums.DeviceType
-import domain.Enums.ProductType
-import domain.Enums.Screens
-import domain.Enums.SharedPreferenceEnum
 import domain.Models.PlatformNavigator
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
@@ -118,9 +110,10 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
                     mainViewModel!!.setCurrentUnsavedOrders(arrayListOf())
                     bookingPresenter.deleteAllPendingAppointment(userId = userInfo.userId!!, bookingStatus = BookingStatus.BOOKING.toPath())
                     performedActionUIStateViewModel!!.switchVendorActionUIState(AppUIStates(isDefault = true))
-                    preferenceSettings[SharedPreferenceEnum.IS_SWITCH_VENDOR.toPath()] = true
+                    mainViewModel!!.setIsSwitchVendor(true)
                     val splashScreen = SplashScreen(platformNavigator = platformNavigator)
                     splashScreen.setDatabaseBuilder(databaseBuilder)
+                    splashScreen.setMainViewModel(mainViewModel)
                     navigator.replaceAll(splashScreen)
 
                 } else if (switchVendorUiState.value.isFailed) {

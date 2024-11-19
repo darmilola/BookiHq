@@ -58,17 +58,12 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
     val authPhone = remember { mutableStateOf("") }
     val navigator = LocalNavigator.currentOrThrow
     val scope = rememberCoroutineScope()
-    val connectedVendorId = mainViewModel.connectedVendor.value.vendorId
-
-    if (connectedVendorId == null){
-        preferenceSettings[SharedPreferenceEnum.IS_SWITCH_VENDOR.toPath()] = false
-    }
 
     val handler = AuthenticationScreenHandler(authenticationPresenter,
         onUserLocationReady = {},
         enterPlatform = { user ->
             runBlocking {
-                val userCurrency = getDisplayCurrency(user.country!!)
+                val userCurrency = getDisplayCurrency(user.country)
                 val displayCurrencyUnit = userCurrency.toDisplayUnit()
                 val displayCurrencyPath = userCurrency.toPath()
                 mainViewModel.setUserInfo(user)
@@ -192,6 +187,10 @@ class SplashScreen(val platformNavigator: PlatformNavigator) : Screen, KoinCompo
 
     fun setDatabaseBuilder(builder: RoomDatabase.Builder<AppDatabase>?){
         this.databaseBuilder = builder
+    }
+
+    fun setMainViewModel(mainViewModel: MainViewModel? = null){
+        this.mainViewModel = mainViewModel
     }
 
     @Composable

@@ -47,7 +47,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _showAppointmentReviewsBottomSheet =  savedStateHandle.getStateFlow("showAppointmentReviewsBottomSheet", false)
     private var _showPackageReviewsBottomSheet =  savedStateHandle.getStateFlow("showPackageReviewsBottomSheet", false)
     private var _onBackPressed =  savedStateHandle.getStateFlow("onBackPressed", false)
-    private var _exitApp =  savedStateHandle.getStateFlow("exitApp", false)
+    private var _isSwitchVendor =  savedStateHandle.getStateFlow("isSwitchVendor", false)
     private var _orderItemComponents =  savedStateHandle.getStateFlow("orderItemComponents", arrayListOf<PlacedOrderItemComponent>())
     private var _favoriteProductIds =  savedStateHandle.getStateFlow("favoriteProductIds", listOf<FavoriteProductIdModel>())
 
@@ -102,8 +102,8 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     val showPaymentMethodBottomSheet: StateFlow<Boolean>
         get() = _showPaymentMethodBottomSheet
 
-    val exitApp: StateFlow<Boolean>
-        get() = _exitApp
+    val isSwitchVendor: StateFlow<Boolean>
+        get() = _isSwitchVendor
 
 
     val clickedSearchProduct: StateFlow<Boolean>
@@ -162,8 +162,8 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     fun setSelectedProductType(productType: String) {
         savedStateHandle["selectedProductType"] = productType
     }
-    fun setRestartApp(isRestart: Boolean) {
-        savedStateHandle["restartApp"] = isRestart
+    fun setIsSwitchVendor(isSwitchVendor: Boolean) {
+        savedStateHandle["isSwitchVendor"] = isSwitchVendor
     }
     fun showProductBottomSheet(show: Boolean) {
         savedStateHandle["showProductBottomSheet"] = show
@@ -262,8 +262,8 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
         savedStateHandle["currentUnsavedOrderSize"] = 0
     }
 
-    fun setExitApp(exitApp: Boolean) {
-        savedStateHandle["exitApp"] = exitApp
+    fun setIsRestart(isRestart: Boolean) {
+        savedStateHandle["isRestart"] = isRestart
     }
 
 

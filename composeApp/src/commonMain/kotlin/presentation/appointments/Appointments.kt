@@ -232,9 +232,9 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
         val appointmentForReview = remember { mutableStateOf(Appointment()) }
 
         LaunchedEffect(true) {
-            val isSwitchVendor: Boolean = preferenceSettings[SharedPreferenceEnum.IS_SWITCH_VENDOR.toPath(),false]
+            val isSwitchVendor: Boolean = mainViewModel!!.isSwitchVendor.value
             if (isSwitchVendor){
-                appointmentResourceListEnvelopeViewModel!!.setResources(arrayListOf())
+                appointmentResourceListEnvelopeViewModel!!.clearData(arrayListOf())
             }
             if (appointmentResourceListEnvelopeViewModel!!.resources.value.isNotEmpty()){
                 appointmentPresenter.refreshUserAppointments(userId)

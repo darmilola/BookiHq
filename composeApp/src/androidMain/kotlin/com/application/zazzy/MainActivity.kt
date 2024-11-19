@@ -177,7 +177,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mainViewModel.googleAuthUiState.collect {
-                    onAuthSuccessful(it)
+                    if (it.trim().isNotEmpty()) {
+                        onAuthSuccessful(it)
+                    }
                 }
             }
         }
@@ -301,7 +303,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mainViewModel.imageUrlUiState.collect {
-                    onUploadDone(it)
+                    if (it.trim().isNotEmpty()) {
+                        onUploadDone(it)
+                    }
                 }
             }
         }
@@ -328,7 +332,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mainViewModel.fcmTokenUiState.collect {
-                    onTokenReady(it)
+                    if (it.trim().isNotEmpty()) {
+                        onTokenReady(it)
+                    }
                 }
             }
         }

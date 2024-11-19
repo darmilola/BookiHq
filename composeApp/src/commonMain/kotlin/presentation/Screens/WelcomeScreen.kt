@@ -183,15 +183,11 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
         navigator.replaceAll(connectVendor)
     }
     else if (navigateToPlatform.value) {
-        if (deviceInfo() == DeviceType.IOS.toPath()) {
-            platformNavigator.goToMainScreen()
-        }
-        else {
+            navigateToPlatform.value = false
             val mainScreen = MainScreen(platformNavigator)
             mainScreen.setDatabaseBuilder(databaseBuilder)
             mainScreen.setMainViewModel(mainViewModel)
             navigator.replaceAll(mainScreen)
-        }
     }
 
     Box(contentAlignment = Alignment.TopCenter, modifier = Modifier
