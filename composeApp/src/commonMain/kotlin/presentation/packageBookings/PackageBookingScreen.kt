@@ -81,6 +81,7 @@ import presentation.dialogs.LoadingDialog
 import presentation.dialogs.SuccessDialog
 import presentation.payment.PaymentContract
 import presentation.payment.PaymentPresenter
+import presentation.profile.EditProfile
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
@@ -152,6 +153,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
         val customerEmail = if (currentUserInfo.email!!.isNotEmpty()) currentUserInfo.email else "damilolaakinterinwa@gmail.com"
         val navigator = LocalNavigator.currentOrThrow
         val coroutineScope = rememberCoroutineScope()
+        val completeProfile = remember { mutableStateOf(false) }
 
         val openAddDebitCardDialog = remember { mutableStateOf(false) }
 
@@ -164,6 +166,16 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                     })
                 }
             }
+
+        if (completeProfile.value){
+            completeProfile.value = false
+            val editProfile = EditProfile(platformNavigator)
+            editProfile.setMainViewModel(mainViewModel!!)
+            editProfile.setDatabaseBuilder(databaseBuilder)
+            val nav = LocalNavigator.currentOrThrow
+            nav.push(editProfile)
+        }
+
 
 
         if (loadPendingActionUIStateViewModel == null) {
@@ -432,7 +444,25 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                                     })
                                 }
                             }
-                            else{
+                            else if (timeActionUiState.value.isSuccess) {
+                                val userProfile = mainViewModel!!.currentUserInfo.value
+                                val isProfileCompleted = userProfile.address.trim().isNotEmpty() && userProfile.contactPhone.trim().isNotEmpty()
+                                val isMobileServiceAvailable = vendorPackage!!.isMobileServiceAvailable
+
+                                LaunchedEffect(true) {
+                                    if (isMobileServiceAvailable && !isProfileCompleted) {
+                                        ShowSnackBar(title = "Mobile Service Is Available",
+                                            description = "Please complete your profile",
+                                            actionLabel = "Complete Profile",
+                                            duration = StackedSnackbarDuration.Long,
+                                            snackBarType = SnackBarType.INFO,
+                                            stackedSnackBarHostState,
+                                            onActionClick = {
+                                                completeProfile.value = true
+                                            })
+                                    }
+                                }
+
                                 Column(modifier = bgStyle) {
                                     AttachPackageBookingPages(
                                         pagerState,

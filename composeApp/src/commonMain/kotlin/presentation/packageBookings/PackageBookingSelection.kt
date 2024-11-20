@@ -47,6 +47,8 @@ fun PackageBookingSelection(mainViewModel: MainViewModel, bookingViewModel: Book
 
     val mobileServicesAvailable = mainViewModel.connectedVendor.value.isMobileServiceAvailable
     val isPackageMobileServiceAvailable = vendorPackage.isMobileServiceAvailable
+    val userProfile = mainViewModel.currentUserInfo.value
+    val isProfileCompleted = userProfile.address.trim().isNotEmpty() && userProfile.contactPhone.trim().isNotEmpty()
 
     val currentBooking = Appointment()
     currentBooking.packageInfo = vendorPackage
@@ -76,11 +78,10 @@ fun PackageBookingSelection(mainViewModel: MainViewModel, bookingViewModel: Book
         Column(
             Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-        ) {
+                .verticalScroll(rememberScrollState())) {
             PackageTitle(vendorPackage)
             if (mobileServicesAvailable) {
-                val isServiceLocationDisabled = !isPackageMobileServiceAvailable
+                val isServiceLocationDisabled = !isPackageMobileServiceAvailable || !isProfileCompleted
                 ServiceLocationToggle(
                     bookingViewModel,
                     isPackage = true,
