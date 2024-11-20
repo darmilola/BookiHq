@@ -2,21 +2,22 @@ package presentation.therapist
 
 import domain.Models.TherapistReviews
 import UIStates.AppUIStates
+import domain.Models.AppointmentReview
 import domain.Models.TherapistAppointmentResourceListEnvelope
 
 interface TherapistContract {
     interface View {
         fun showScreenLce(actionUiState: AppUIStates)
         fun showActionLce(actionUiState: AppUIStates)
-        fun showReviews(reviews: List<TherapistReviews>)
         fun showAppointments(appointments: TherapistAppointmentResourceListEnvelope)
         fun onLoadMoreAppointmentStarted()
         fun onLoadMoreAppointmentEnded()
-        fun onJoinMeetingTokenReady(meetingToken: String)
     }
 
     interface TherapistDashboardView {
         fun showUpdateScreenLce(actionUiState: AppUIStates)
+        fun showReviews(reviews: List<AppointmentReview>)
+        fun showScreenLce(actionUiState: AppUIStates)
     }
 
     abstract class Presenter {

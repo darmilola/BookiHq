@@ -173,9 +173,6 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
 
         LaunchedEffect(true) {
             val isSwitchVendor: Boolean = mainViewModel!!.isSwitchVendor.value
-
-            println("Vendor $isSwitchVendor")
-
             if (isSwitchVendor){
                 productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
             }

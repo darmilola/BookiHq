@@ -2,7 +2,6 @@ package presentation.therapist
 
 import GGSansSemiBold
 import StackedSnackbarHost
-import UIStates.AppUIStates
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.slideIn
@@ -57,8 +56,6 @@ import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.Screens.SplashScreen
-import presentation.dialogs.ErrorDialog
-import presentation.dialogs.LoadingDialog
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.TherapistAppointmentResourceListEnvelopeViewModel
@@ -192,7 +189,7 @@ class TherapistDashboard(val platformNavigator: PlatformNavigator? = null) : Par
     fun TabScreen(onUpdateSuccess: () -> Unit) {
         val tabItems: ArrayList<String> = arrayListOf()
         tabItems.add("Appointments")
-        tabItems.add("Settings")
+        tabItems.add("Profile")
         var tabIndex by remember { mutableStateOf(0) }
         Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -238,7 +235,7 @@ class TherapistDashboard(val platformNavigator: PlatformNavigator? = null) : Par
             ) {
                 when(tabIndex){
                     0 -> TherapistAppointment(mainViewModel!!, loadingScreenUiStateViewModel!!, appointmentResourceListEnvelopeViewModel, therapistPresenter,therapistInfo!!,performedActionUiStateViewModel!!)
-                    1 -> TherapistSettings(therapistInfo!!, therapistPresenter, performedActionUiStateViewModel!!, onUpdateSuccess = {
+                    1 -> TherapistProfile(therapistInfo!!, therapistPresenter, performedActionUiStateViewModel!!,loadingScreenUiStateViewModel!!,onUpdateSuccess = {
                           onUpdateSuccess()
                        })
                 }

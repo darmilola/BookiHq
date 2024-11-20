@@ -5,6 +5,7 @@ import presentation.therapist.TherapistContract
 import presentation.therapist.TherapistPresenter
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import UIStates.AppUIStates
+import domain.Models.AppointmentReview
 import presentation.viewmodels.LoadingScreenUIStateViewModel
 import domain.Models.TherapistAppointmentResourceListEnvelope
 import presentation.viewmodels.TherapistAppointmentResourceListEnvelopeViewModel
@@ -13,8 +14,6 @@ class TherapistHandler(
     private val therapistPresenter: TherapistPresenter,
     private val loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel,
     private val performedActionUIStateViewModel: PerformedActionUIStateViewModel,
-    private val onReviewsReady: (List<TherapistReviews>) -> Unit,
-    private val onMeetingTokenReady: (meetingToken: String) -> Unit,
     private val appointmentResourceListEnvelopeViewModel: TherapistAppointmentResourceListEnvelopeViewModel? = null) : TherapistContract.View {
     fun init() {
         therapistPresenter.registerUIContract(this)
@@ -26,10 +25,6 @@ class TherapistHandler(
 
     override fun showActionLce(actionUiState: AppUIStates) {
          performedActionUIStateViewModel.switchActionTherapistDashboardUIState(actionUiState)
-    }
-
-    override fun showReviews(reviews: List<TherapistReviews>) {
-        onReviewsReady(reviews)
     }
 
     override fun showAppointments(appointments: TherapistAppointmentResourceListEnvelope) {
@@ -60,21 +55,28 @@ class TherapistHandler(
         appointmentResourceListEnvelopeViewModel!!.setLoadingMore(false)
     }
 
-    override fun onJoinMeetingTokenReady(meetingToken: String) {
-        onMeetingTokenReady(meetingToken)
-    }
 
 }
 
-class TherapistSettingsHandler(
+class TherapistProfileHandler(
     private val therapistPresenter: TherapistPresenter,
-    private val performedActionUIStateViewModel: PerformedActionUIStateViewModel) : TherapistContract.TherapistDashboardView {
+    private val performedActionUIStateViewModel: PerformedActionUIStateViewModel,
+    private val loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel,
+    private val onReviewsReady: (List<AppointmentReview>) -> Unit,) : TherapistContract.TherapistDashboardView {
     fun init() {
         therapistPresenter.registerTherapistDashboardUIContract(this)
     }
 
     override fun showUpdateScreenLce(actionUiState: AppUIStates) {
         performedActionUIStateViewModel.switchActionUIState(actionUiState)
+    }
+
+    override fun showReviews(reviews: List<AppointmentReview>) {
+        onReviewsReady(reviews)
+    }
+
+    override fun showScreenLce(actionUiState: AppUIStates) {
+        loadingScreenUiStateViewModel.switchScreenUIState(actionUiState)
     }
 
 

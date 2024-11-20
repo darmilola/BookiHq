@@ -40,7 +40,7 @@ data class ServiceTypesResponse(@SerialName("status") val status: String = "",
                                 @SerialName("serviceImages") val serviceImages: List<ServiceImages>? = null): Parcelable
 
 @Serializable
-data class TherapistReviewsResponse(@SerialName("status") val status: String = "", @SerialName("reviews") val reviews: List<TherapistReviews>)
+data class TherapistReviewsResponse(@SerialName("status") val status: String = "", @SerialName("reviews") val reviews: List<AppointmentReview>)
 
 
 @Serializable
