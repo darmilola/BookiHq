@@ -117,18 +117,6 @@ class AppStartViewController: UIViewController, PlatformNavigator, UINavigationC
         
     }
     
-    func sendConnectVendorNotification(customerName: String, vendorLogoUrl: String, fcmToken: String) {
-        
-    }
-    
-    func sendCustomerExitNotification(exitReason: String, vendorLogoUrl: String, fcmToken: String) {
-        
-    }
-    
-    func sendMeetingBookingNotification(customerName: String, vendorLogoUrl: String, meetingDay: String, meetingMonth: String, meetingYear: String, meetingTime: String, fcmToken: String) {
-        
-    }
-    
     func sendOrderBookingNotification(customerName: String, vendorLogoUrl: String, fcmToken: String) {
         
     }
@@ -221,6 +209,19 @@ class AppStartViewController: UIViewController, PlatformNavigator, UINavigationC
             let currentUser = Auth.auth().currentUser
             onVerificationSuccessful(currentUser!.phoneNumber!)
         }
+    }
+    
+    func startPaymentProcess(paymentAmount: String, accessCode: String,currency: String,paymentCard: PaymentCard, customerEmail: String, onPaymentLoading: () -> Unit, onPaymentSuccessful: () -> Unit, onPaymentFailed: () -> Unit){
+        
+    }
+    
+    class PaymentCard {
+        var id: Int = 0;
+        var cardNumber: String = "";
+        var expiryMonth: String = "";
+        var expiryYear: String = "";
+        var cvv: String = "";
+        var isSelected: Boolean = false;
     }
     
    func exitApp() {}
