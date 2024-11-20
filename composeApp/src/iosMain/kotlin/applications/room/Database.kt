@@ -31,7 +31,7 @@ private fun documentDirectory(): String {
 }
 
 fun getAppDatabase(): RoomDatabase.Builder<AppDatabase> {
-    val dbFile = NSHomeDirectory() + "/user.db"
+    val dbFile = NSHomeDirectory() + "/app.db"
     return Room.databaseBuilder<AppDatabase>(
         name = dbFile,
         factory = { AppDatabase::class.instantiateImpl() } // This too will show error

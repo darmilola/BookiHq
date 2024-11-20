@@ -83,30 +83,17 @@ class AppStartViewController: UIViewController, PlatformNavigator, UINavigationC
     private func showStartScreen() {
         rootView = AppStartView(platformNavigator: self)
         let appStartView = UIHostingController(rootView: rootView.edgesIgnoringSafeArea(.all))
-        showNextScreen(nextViewController: appStartView)
+        guard appStartView != nil else { return }
+         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
+                    self.navigationController?.pushViewController(appStartView!, animated: true)
+                })
     }
-    
-    func showNextScreen(nextViewController: UIViewController?) {
-        guard nextViewController != nil else { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
-            self.navigationController?.pushViewController(nextViewController!, animated: true)
-        })
-    }
-    
+
     struct AppStartView: UIViewControllerRepresentable {
         var platformNavigator: PlatformNavigator
+
         func makeUIViewController(context: Context) -> UIViewController {
             return MainViewController().appStartUiView(platformNavigator: platformNavigator)
-        }
-        
-        func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
-        
-    }
-    
-    struct MainScreenView: UIViewControllerRepresentable {
-        var platformNavigator: PlatformNavigator
-        func makeUIViewController(context: Context) -> UIViewController {
-            return MainViewController().mainScreenUiView(platformNavigator: platformNavigator)
         }
         
         func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
@@ -211,17 +198,9 @@ class AppStartViewController: UIViewController, PlatformNavigator, UINavigationC
         }
     }
     
-    func startPaymentProcess(paymentAmount: String, accessCode: String,currency: String,paymentCard: PaymentCard, customerEmail: String, onPaymentLoading: () -> Unit, onPaymentSuccessful: () -> Unit, onPaymentFailed: () -> Unit){
+    func startPaymentProcess(paymentAmount: String, accessCode: String,  currency: String, cardNumber: String, expiryMonth: String, expiryYear: String, cvv: String, customerEmail: String,
+                             onPaymentLoading: @escaping () -> Void, onPaymentSuccessful: @escaping () -> Void, onPaymentFailed: @escaping () -> Void){
         
-    }
-    
-    class PaymentCard {
-        var id: Int = 0;
-        var cardNumber: String = "";
-        var expiryMonth: String = "";
-        var expiryYear: String = "";
-        var cvv: String = "";
-        var isSelected: Boolean = false;
     }
     
    func exitApp() {}

@@ -26,60 +26,14 @@ import presentation.viewmodels.MainViewModel
 
 class MainViewController {
 
-    private var mainViewModel: MainViewModel? = null
     fun appStartUiView(platformNavigator: PlatformNavigator): UIViewController {
         return ComposeUIViewController(configure = {
             onFocusBehavior = OnFocusBehavior.DoNothing
         }) {
             val database = remember { getAppDatabase() }
-            if (mainViewModel == null) {
-                mainViewModel = kmpViewModel(
-                    factory = viewModelFactory {
-                        MainViewModel(savedStateHandle = createSavedStateHandle())
-                    },
-                )
-            }
             val splashScreen = SplashScreen(platformNavigator = platformNavigator)
             splashScreen.setDatabaseBuilder(database)
             Navigator(splashScreen) { navigator ->
-                SlideTransition(navigator)
-
-            }
-        }
-    }
-
-    fun welcomePageUiView(platformNavigator: PlatformNavigator, googleAuthEmail: String): UIViewController {
-        return ComposeUIViewController(configure = {
-            onFocusBehavior = OnFocusBehavior.DoNothing
-        }) {
-            val database = remember { getAppDatabase() }
-            val welcomeScreen =  WelcomeScreen(platformNavigator, googleAuthEmail = googleAuthEmail)
-            welcomeScreen.setDatabaseBuilder(database)
-            welcomeScreen.setMainViewModel(mainViewModel!!)
-            Navigator(welcomeScreen) { navigator ->
-                SlideTransition(navigator)
-
-            }
-        }
-    }
-
-
-    fun mainScreenUiView(platformNavigator: PlatformNavigator): UIViewController {
-        return ComposeUIViewController(configure = {
-            onFocusBehavior = OnFocusBehavior.DoNothing
-        }) {
-            val database = remember { getAppDatabase() }
-            if (mainViewModel == null) {
-                mainViewModel = kmpViewModel(
-                    factory = viewModelFactory {
-                        MainViewModel(savedStateHandle = createSavedStateHandle())
-                    },
-                )
-            }
-            val mainScreen =  MainScreen(platformNavigator)
-            mainScreen.setDatabaseBuilder(database)
-            mainScreen.setMainViewModel(mainViewModel!!)
-            Navigator(mainScreen) { navigator ->
                 SlideTransition(navigator)
 
             }

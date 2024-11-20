@@ -254,7 +254,10 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                                 customerEmail = customerEmail,
                                 accessCode = it.paymentAuthorizationData.accessCode,
                                 currency = mainViewModel!!.displayCurrencyPath.value,
-                                paymentCard = selectedCard!!,
+                                cardNumber = selectedCard!!.cardNumber,
+                                expiryMonth = selectedCard!!.expiryMonth,
+                                expiryYear = selectedCard!!.expiryYear,
+                                cvv = selectedCard!!.cvv,
                                 onPaymentLoading = {},
                                 onPaymentSuccessful = {
                                      customerPaidAmount = paymentAmount

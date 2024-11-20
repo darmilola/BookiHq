@@ -344,7 +344,10 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                         customerEmail = customerEmail,
                         accessCode = it.paymentAuthorizationData.accessCode,
                         currency = mainViewModel!!.displayCurrencyPath.value,
-                        paymentCard = selectedCard!!,
+                        cardNumber = selectedCard!!.cardNumber,
+                        expiryMonth = selectedCard!!.expiryMonth,
+                        expiryYear = selectedCard!!.expiryYear,
+                        cvv = selectedCard!!.cvv,
                         onPaymentLoading = {},
                         onPaymentSuccessful = {
                             createAppointment()

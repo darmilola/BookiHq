@@ -401,13 +401,16 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         paymentAmount: String,
         accessCode: String,
         currency: String,
-        paymentCard: PaymentCard,
+        cardNumber: String,
+        expiryMonth: String,
+        expiryYear: String,
+        cvv: String,
         customerEmail: String,
         onPaymentLoading: () -> Unit,
         onPaymentSuccessful: () -> Unit,
         onPaymentFailed: () -> Unit
     ) {
-        val card = Card(paymentCard.cardNumber, paymentCard.expiryMonth.toInt(), paymentCard.expiryYear.toInt(), paymentCard.cvv)
+        val card = Card(cardNumber, expiryMonth.toInt(), expiryYear.toInt(), cvv)
         if (card.isValid) {
             val charge = Charge()
             charge.setCard(card)
