@@ -340,6 +340,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                     mainViewModel!!.showPaymentCardsBottomSheet(true)
 
                 }, onCashSelected = {
+                     mainViewModel!!.showPaymentMethodBottomSheet(false)
                      bookingViewModel!!.setPaymentMethod(PaymentMethod.PAYMENT_ON_DELIVERY.toPath())
                      createAppointment()
                 })
