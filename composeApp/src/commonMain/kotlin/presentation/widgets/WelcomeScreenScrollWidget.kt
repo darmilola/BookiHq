@@ -66,7 +66,7 @@ fun welcomeScreenScrollWidget() {
         HorizontalPager(
             state = pagerState,
             userScrollEnabled = false,
-            flingBehavior = PagerDefaults.flingBehavior(state = pagerState, snapPositionalThreshold = 0.2f, lowVelocityAnimationSpec = tween(easing = LinearEasing, durationMillis = 1000)),
+            flingBehavior = PagerDefaults.flingBehavior(state = pagerState, snapPositionalThreshold = 0.2f),
             modifier = Modifier.fillMaxWidth().fillMaxHeight(0.97f)
         ) { currentPage ->
             Box(
