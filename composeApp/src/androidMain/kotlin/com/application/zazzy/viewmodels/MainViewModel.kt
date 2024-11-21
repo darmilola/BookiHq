@@ -1,4 +1,4 @@
-package com.application.zazzyadmin.viewmodels
+package com.application.zazzy.viewmodels
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

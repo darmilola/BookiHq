@@ -108,7 +108,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
         val handler = AuthenticationScreenHandler(authenticationPresenter,
             onUserLocationReady = {},
             enterPlatform = { user ->
-                val userCurrency = getDisplayCurrency(user.country!!)
+                val userCurrency = getDisplayCurrency(user.country)
                 val displayCurrencyUnit = userCurrency.toDisplayUnit()
                 val displayCurrencyPath = userCurrency.toPath()
                 mainViewModel!!.setDisplayCurrencyUnit(displayCurrencyUnit)

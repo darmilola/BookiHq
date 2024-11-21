@@ -1,31 +1,18 @@
 package com.application.zazzy
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener
-import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
-import android.location.Location
-import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.OpenableColumns
-import android.provider.Settings
 import androidx.activity.ComponentActivity
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.runtime.collectAsState
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -40,7 +27,7 @@ import co.paystack.android.model.Charge
 import com.application.zazzy.firebase.NotificationMessage
 import com.application.zazzy.firebase.NotificationService
 import com.application.zazzy.firebase.NotificationType
-import com.application.zazzyadmin.viewmodels.MainViewModel
+import com.application.zazzy.viewmodels.MainViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -59,17 +46,11 @@ import com.google.firebase.storage.storage
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
-import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
-import com.hoc081098.kmp.viewmodel.createSavedStateHandle
-import com.hoc081098.kmp.viewmodel.viewModelFactory
-import domain.Enums.Currency
-import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import presentation.Screens.SplashScreen
 import java.io.IOException
-import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 
