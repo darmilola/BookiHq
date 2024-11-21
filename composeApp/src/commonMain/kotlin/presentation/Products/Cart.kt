@@ -70,6 +70,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.ActionType
+import domain.Enums.CustomerPaymentEnum
+import domain.Enums.VendorEnum
 import domain.Models.PaymentAuthorizationResult
 import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
@@ -240,8 +242,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                     mainViewModel!!.setDeliveryMethod(DeliveryMethodEnum.PICKUP.toPath())
                 }
 
-                val currentUserInfo = mainViewModel!!.currentUserInfo.value
-                val customerEmail = if (currentUserInfo.email!!.isNotEmpty()) currentUserInfo.email else "damilolaakinterinwa@gmail.com"
+                val customerEmail = CustomerPaymentEnum.PAYMENT_EMAIL.toPath()
                 val paymentAmount = cartViewModel!!.total.value
                 val handler = CreateOrderScreenHandler(
                     cartPresenter,

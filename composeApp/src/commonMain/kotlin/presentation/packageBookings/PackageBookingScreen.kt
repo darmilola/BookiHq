@@ -58,7 +58,9 @@ import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Enums.BookingStatus
+import domain.Enums.CustomerPaymentEnum
 import domain.Enums.PaymentMethod
+import domain.Enums.VendorEnum
 import domain.Models.PaymentAuthorizationResult
 import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
@@ -150,7 +152,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
         val lastItemRemoved = remember { mutableStateOf(false) }
         val currentPage = remember { mutableStateOf(-1) }
         val currentUserInfo = mainViewModel!!.currentUserInfo.value
-        val customerEmail = if (currentUserInfo.email!!.isNotEmpty()) currentUserInfo.email else "damilolaakinterinwa@gmail.com"
+        val customerEmail = CustomerPaymentEnum.PAYMENT_EMAIL.toPath()
         val navigator = LocalNavigator.currentOrThrow
         val coroutineScope = rememberCoroutineScope()
         val completeProfile = remember { mutableStateOf(false) }

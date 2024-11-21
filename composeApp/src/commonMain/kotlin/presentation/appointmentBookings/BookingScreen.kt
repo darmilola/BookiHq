@@ -69,7 +69,9 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.BookingStatus
+import domain.Enums.CustomerPaymentEnum
 import domain.Enums.PaymentMethod
+import domain.Enums.VendorEnum
 import domain.Models.PaymentAuthorizationResult
 import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
@@ -129,7 +131,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         val lastItemRemoved = remember { mutableStateOf(false) }
         val completeProfile = remember { mutableStateOf(false) }
         val currentUserInfo = mainViewModel!!.currentUserInfo.value
-        val customerEmail = if (currentUserInfo.email!!.isNotEmpty()) currentUserInfo.email else "damilolaakinterinwa@gmail.com"
+        val customerEmail = CustomerPaymentEnum.PAYMENT_EMAIL.toPath()
         val navigator = LocalNavigator.currentOrThrow
         val coroutineScope = rememberCoroutineScope()
         val currentPage = remember { mutableStateOf(-1) }
