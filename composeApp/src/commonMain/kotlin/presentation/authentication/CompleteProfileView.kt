@@ -42,6 +42,7 @@ import countryList
 import domain.Enums.AuthType
 import domain.Enums.Gender
 import domain.Enums.SharedPreferenceEnum
+import domain.Enums.getDisplayCurrency
 import domain.Models.PlatformNavigator
 import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.DomainViewHandler.PlatformHandler
@@ -105,6 +106,11 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
             completeProfileInProgress.value = true
         }, onCompleteEnded = { isSuccessful -> completeProfileInProgress.value = false },
         connectVendorOnProfileCompleted = { userInfo  ->
+                val userCurrency = getDisplayCurrency(userInfo.country)
+                val displayCurrencyUnit = userCurrency.toDisplayUnit()
+                val displayCurrencyPath = userCurrency.toPath()
+                mainViewModel.setDisplayCurrencyUnit(displayCurrencyUnit)
+                mainViewModel.setDisplayCurrencyPath(displayCurrencyPath)
                 mainViewModel.setUserInfo(userInfo)
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = userInfo.country
                 preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = userInfo.city

@@ -89,7 +89,6 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
         handler.init()
 
         val navigator = LocalNavigator.currentOrThrow
-        val vendorConnected = remember { mutableStateOf(false) }
         val userId = preferenceSettings[SharedPreferenceEnum.USER_ID.toPath(), -1L]
         val connectVendorAction = connectVendorActionUIStateViewModel!!.uiStateInfo.collectAsState()
 
@@ -105,13 +104,13 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
                 LoadingDialog("Connecting Vendor")
             }
         } else if (connectVendorAction.value.isSuccess) {
+            connectVendorAction.value.isSuccess = false
             mainViewModel!!.setConnectedVendor(vendor)
             preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = vendor.vendorId
-            vendorConnected.value = true
-                val mainScreen = MainScreen(platformNavigator)
-                mainScreen.setMainViewModel(mainViewModel!!)
-                mainScreen.setDatabaseBuilder(databaseBuilder)
-                navigator.replaceAll(mainScreen)
+            val mainScreen = MainScreen(platformNavigator)
+            mainScreen.setMainViewModel(mainViewModel!!)
+            mainScreen.setDatabaseBuilder(databaseBuilder)
+            navigator.replaceAll(mainScreen)
         }
         else if (connectVendorAction.value.isFailed){}
 

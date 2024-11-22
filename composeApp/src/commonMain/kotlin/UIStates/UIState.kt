@@ -8,7 +8,7 @@ import domain.Enums.ActionType
 @Parcelize
 class AppUIStates(
     val isLoading: Boolean = false,
-    val isSuccess: Boolean = false,
+    var isSuccess: Boolean = false,
     val isFailed: Boolean = false,
     val isEmpty: Boolean = false,
     val isDefault: Boolean = false,

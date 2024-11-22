@@ -444,6 +444,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
 
 
     private fun showDefaultTab(mainViewModel: MainViewModel, homePageViewModel: HomePageViewModel): HomeTab {
+        println("Default is here")
         homeTab = HomeTab(platformNavigator)
         homeTab!!.setMainViewModel(mainViewModel)
         homeTab!!.setHomePageViewModel(homePageViewModel)
