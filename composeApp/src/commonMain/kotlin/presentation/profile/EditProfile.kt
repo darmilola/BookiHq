@@ -179,7 +179,6 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
         inputList.add(address.value.trim())
         inputList.add(contactPhone.value.trim())
         inputList.add(userCity.value.trim())
-        inputList.add(userCountry.value.trim())
         inputList.add(profileImageUrl.value.toString().trim())
 
         val rootModifier =
@@ -313,9 +312,6 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
                             }
                         }
                     }
-                EditProfileCountryDropDownWidget(selectedCountry = userCountry.value) {
-                    userCountry.value = it
-                }
                 EditProfileCityDropDownWidget(selectedCity = userCity.value,cityViewModel = cityViewModel!!, onMenuItemClick = {
                     userCity.value = it
                 }, onMenuExpanded = {
