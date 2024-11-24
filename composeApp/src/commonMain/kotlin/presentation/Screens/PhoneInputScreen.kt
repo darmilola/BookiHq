@@ -119,8 +119,8 @@ class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScr
                 AttachSendCodeDescription()
                 PhoneInputWidget(onValueChange = {
                     phone.value = it
-                }, onSelectionChange = {
-                    countryCode.value = if (it == 0) "+234" else "+27"
+                }, onCodeSelectionChange = {
+                    //countryCode.value = if (it == 0) "+234" else "+27"
                 })
                 ButtonComponent(
                     modifier = buttonStyle,

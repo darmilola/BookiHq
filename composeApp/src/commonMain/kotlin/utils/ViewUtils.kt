@@ -1,5 +1,6 @@
 package utils
 
+import CountryEnum
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -36,6 +37,19 @@ fun getOrderViewHeight(
 ): Int{
 
     return itemCount * 350
+}
+
+fun getFormattedContactPhone(userCountry: String = CountryEnum.DEFAULT.toPath(), contactPhone: String): String {
+    val validContactPhone = if (contactPhone.startsWith("0")) contactPhone.drop(1) else contactPhone
+    val countryCode = when(userCountry){
+        CountryEnum.NIGERIA.toPath() -> CountryEnum.NIGERIA.getCode()
+        CountryEnum.SOUTH_AFRICA.toPath() -> CountryEnum.SOUTH_AFRICA.getCode()
+        CountryEnum.GHANA.toPath() -> CountryEnum.GHANA.getCode()
+        CountryEnum.KENYA.toPath() -> CountryEnum.KENYA.getCode()
+        else -> CountryEnum.DEFAULT.getCode()
+    }
+    val validPhone = countryCode+validContactPhone
+    return validPhone
 }
 
 fun getRecentAppointmentViewHeight(

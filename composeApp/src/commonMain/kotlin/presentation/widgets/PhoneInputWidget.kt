@@ -1,5 +1,6 @@
 package presentation.widgets
 
+import CountryEnum
 import GGSansSemiBold
 import domain.Models.PhoneExtensionModel
 import theme.styles.Colors
@@ -35,8 +36,25 @@ import androidx.compose.ui.unit.dp
 import presentations.components.TextFieldComponent
 
 @Composable
-fun PhoneInputWidget(onValueChange: ((String) -> Unit)? = null, onSelectionChange: (Int) -> Unit) {
-    val countryCodeList = listOf<PhoneExtensionModel>(PhoneExtensionModel(countryCode = "+ 234", countryFlagRes = "drawable/nigeria_flag_icon.png"), PhoneExtensionModel(countryCode = "+ 27", countryFlagRes = "drawable/south_africa_flag.png"))
+fun PhoneInputWidget(userCountry: String = CountryEnum.DEFAULT.toPath(), onValueChange: ((String) -> Unit)? = null, onCodeSelectionChange: (PhoneExtensionModel) -> Unit) {
+    val countryCodeList = arrayListOf<PhoneExtensionModel>()
+    if (userCountry.contentEquals(CountryEnum.NIGERIA.toPath())) {
+        countryCodeList.add(
+            PhoneExtensionModel(
+                countryCode = "+234",
+                countryFlagRes = "drawable/nigeria_flag_icon.png"
+            )
+        )
+    }
+    else{
+        // Add all other countries
+        countryCodeList.add(
+            PhoneExtensionModel(
+                countryCode = "+234",
+                countryFlagRes = "drawable/nigeria_flag_icon.png"
+            )
+        )
+    }
     var text by remember { mutableStateOf("") }
     var borderStroke by remember { mutableStateOf(BorderStroke(2.dp, color  = Color.Transparent)) }
 
@@ -54,7 +72,7 @@ fun PhoneInputWidget(onValueChange: ((String) -> Unit)? = null, onSelectionChang
     ) {
         Box(modifier = Modifier.fillMaxWidth(0.30f).fillMaxHeight().padding(start = 20.dp), contentAlignment = Alignment.Center) {
             CountryCodeDropDownWidget(menuItems = countryCodeList, onSelectionChange = {
-                onSelectionChange(it)
+                onCodeSelectionChange(countryCodeList[it])
             })
         }
 
