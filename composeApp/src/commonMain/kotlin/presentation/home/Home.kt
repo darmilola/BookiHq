@@ -314,9 +314,9 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
         }
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
-            modifier = Modifier.fillMaxWidth().height(viewHeight.dp),
+            modifier = Modifier.fillMaxWidth().height(420.dp),
             contentPadding = PaddingValues(5.dp),
-            verticalArrangement = Arrangement.Top,
+            verticalArrangement = Arrangement.Center,
             horizontalArrangement = Arrangement.Start,
             userScrollEnabled = false
         ) {
