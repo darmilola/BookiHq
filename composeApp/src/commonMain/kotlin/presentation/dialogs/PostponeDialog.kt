@@ -235,7 +235,7 @@ fun PostponeTimeContent(availableHours: Triple<ArrayList<PlatformTime>, ArrayLis
         }
 
         Row(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
-            Column(modifier = Modifier.fillMaxWidth().wrapContentHeight().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(modifier = Modifier.fillMaxWidth().wrapContentHeight(), horizontalAlignment = Alignment.CenterHorizontally) {
                 TimeGridDisplay(platformTimes = availableHours, onWorkHourClickListener = {
                     onWorkHourClickListener(it)
                 })

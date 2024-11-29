@@ -194,7 +194,7 @@ fun AvailableTimeContent(availableHours: Triple<ArrayList<PlatformTime>, ArrayLi
         }
 
         Row(modifier = Modifier.fillMaxWidth().height(400.dp)) {
-            Column(modifier = Modifier.fillMaxWidth().height(400.dp).verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(modifier = Modifier.fillMaxWidth().height(400.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 TimeGridDisplay(platformTimes = availableHours, onWorkHourClickListener = {
                     onWorkHourClickListener(it)
                 })
