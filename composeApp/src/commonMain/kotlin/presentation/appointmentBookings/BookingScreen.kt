@@ -409,8 +409,13 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                             2 -> {
                                 coroutineScope.launch {
                                     pagerState.animateScrollToPage(1)
-                                    val lastBooking = bookingViewModel!!.pendingAppointments.value[0]
-                                    bookingPresenter.silentDeletePendingBookingAppointment(lastBooking.appointmentId)
+                                    if (bookingViewModel!!.pendingAppointments.value.isNotEmpty()) {
+                                        val lastBooking =
+                                            bookingViewModel!!.pendingAppointments.value[0]
+                                        bookingPresenter.silentDeletePendingBookingAppointment(
+                                            lastBooking.appointmentId
+                                        )
+                                    }
                                 }
 
                             }

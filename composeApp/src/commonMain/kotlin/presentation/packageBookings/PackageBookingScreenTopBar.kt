@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import presentation.widgets.PackageStepsProgressBar
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.StepsProgressBar
 import presentations.components.TextComponent
@@ -78,7 +79,7 @@ fun PackageBookingScreenTopBar(pagerState: PagerState, onBackPressed: (Int) -> U
         Row(modifier = Modifier.fillMaxWidth().height(70.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically) {
-            StepsProgressBar(modifier = Modifier.wrapContentWidth().padding(start = 20.dp), numberOfSteps = 1, currentStep = pagerState.currentPage, stepItems = stepList)
+            PackageStepsProgressBar(modifier = Modifier.wrapContentWidth().padding(start = 20.dp), numberOfSteps = 1, currentStep = pagerState.currentPage, stepItems = stepList)
         }
 
     }

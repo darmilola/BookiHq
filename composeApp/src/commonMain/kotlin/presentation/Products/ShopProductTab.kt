@@ -2,7 +2,6 @@ package presentation.Products
 
 import GGSansRegular
 import StackedSnackbarHost
-import UIStates.AppUIStates
 import androidx.compose.foundation.BorderStroke
 import theme.styles.Colors
 import androidx.compose.foundation.background
@@ -60,7 +59,6 @@ import domain.Models.Product
 import domain.Models.ProductItemUIModel
 import domain.Enums.Screens
 import domain.Enums.SharedPreferenceEnum
-import domain.Models.HomepageInfo
 import drawable.ErrorOccurredWidget
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
@@ -223,8 +221,8 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                             selectedProductType = ProductType.ACCESSORIES.toPath()
                             productPresenter.getProductsByType(vendorId, productType = selectedProductType)
                         },
-                        leftText = ProductType.COSMETICS.toPath(),
-                        rightText = ProductType.ACCESSORIES.toPath())
+                        leftText = ProductType.COSMETICS.toTitle(),
+                        rightText = ProductType.ACCESSORIES.toTitle())
                 }
             },
             content = {

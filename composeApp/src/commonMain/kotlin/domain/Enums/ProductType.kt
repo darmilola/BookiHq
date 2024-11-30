@@ -7,8 +7,8 @@ enum class ProductType {
         COSMETICS -> "cosmetics"
         ACCESSORIES -> "accessories"
     }
-    fun toEventPropertyName() = when (this) {
-        COSMETICS -> "cosmetics"
-        ACCESSORIES -> "accessories"
+    fun toTitle() = when (this) {
+        COSMETICS -> "Cosmetics"
+        ACCESSORIES -> "Accessories"
     }
 }

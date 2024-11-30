@@ -43,6 +43,34 @@ fun StepsProgressBar(modifier: Modifier = Modifier, numberOfSteps: Int, currentS
         for (step in 0..numberOfSteps) {
             if(step == numberOfSteps){
                 Step(
+                    modifier = Modifier.weight(1F),
+                    isCompete = step < currentStep,
+                    isCurrentStep = step == currentStep,
+                    isLastStep = true,
+                    itemTitle = stepItems[step]
+                )
+            }
+            else {
+                Step(
+                    modifier = Modifier.weight(2F),
+                    isCompete = step < currentStep,
+                    isCurrentStep = step == currentStep,
+                    itemTitle = stepItems[step]
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun PackageStepsProgressBar(modifier: Modifier = Modifier, numberOfSteps: Int, currentStep: Int, stepItems: ArrayList<String> = arrayListOf()) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        for (step in 0..numberOfSteps) {
+            if(step == numberOfSteps){
+                Step(
                     modifier = Modifier.weight(0.5F),
                     isCompete = step < currentStep,
                     isCurrentStep = step == currentStep,
