@@ -21,14 +21,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import domain.Models.PlatformTime
 import domain.Models.AvailableTime
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.dataModeller.CalendarDataSource
-import presentation.viewmodels.ActionUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.TherapistViewModel
-import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.widgets.NewDateContent
 import presentation.widgets.TherapistAvailabilityTimeGrid
 import presentations.components.TextComponent
@@ -37,17 +36,11 @@ import theme.styles.Colors
 
 @Composable
 fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: TherapistPresenter, therapistViewModel: TherapistViewModel,
-                          screenUiStateViewModel: ScreenUIStateViewModel, actionUIStateViewModel: ActionUIStateViewModel){
+                          loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel, performedActionUIStateViewModel: PerformedActionUIStateViewModel){
 
-    val screenUiState = screenUiStateViewModel.uiStateInfo.collectAsState()
-    val actionUIState = actionUIStateViewModel.uiStateInfo.collectAsState()
-
-    val newSelectedDay = therapistViewModel.day.collectAsState()
-    val newSelectedMonth = therapistViewModel.month.collectAsState()
-    val newSelectedYear = therapistViewModel.year.collectAsState()
+    val screenUiState = loadingScreenUiStateViewModel.uiStateInfo.collectAsState()
     val isNewDateSelected = remember { mutableStateOf(true) }
     val isSaveVisible = remember { mutableStateOf(false) }
-    val therapistId = mainViewModel.therapistId.value
     val currentDate = remember { mutableStateOf(CalendarDataSource().today) }
 
 
@@ -95,7 +88,7 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
                     therapistViewModel.clearServiceTimes()
                     isNewDateSelected.value = true
                 })
-                if (screenUiState.value.loadingVisible) {
+                if (screenUiState.value.isLoading) {
                     Box(
                         modifier = Modifier.fillMaxWidth().height(60.dp),
                         contentAlignment = Alignment.Center
@@ -103,7 +96,7 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
                         IndeterminateCircularProgressBar()
                     }
                 }
-                else if (screenUiState.value.contentVisible){
+                else if (screenUiState.value.isSuccess){
                     isNewDateSelected.value = false
                     Column(
                         modifier = Modifier

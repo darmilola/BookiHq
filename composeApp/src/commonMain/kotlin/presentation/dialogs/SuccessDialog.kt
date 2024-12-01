@@ -42,7 +42,7 @@ fun SuccessDialog(dialogTitle: String, actionTitle: String, onConfirmation: () -
         mutableStateOf(false)
     }
     if (shouldDismiss.value) return
-    Dialog(properties = DialogProperties(usePlatformDefaultWidth = false), onDismissRequest = {
+    Dialog(properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = false, dismissOnBackPress = false), onDismissRequest = {
         shouldDismiss.value = true
     }) {
         Surface(

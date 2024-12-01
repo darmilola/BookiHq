@@ -1,15 +1,25 @@
 package domain.Models
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Serializable @Parcelize
+@Serializable
+@Entity
+@Parcelize
 data class User(
-    @SerialName("id") val userId: Int? = null, @SerialName("userEmail") val userEmail: String? = null, @SerialName("firstname") val firstname: String? = null,
-    @SerialName("lastname") val lastname: String? = null, @SerialName("address") val address: String? = null, @SerialName("contactPhone") val contactPhone: String? = null,
-    @SerialName("countryId") val countryId: Int? = -1, @SerialName("cityId") val cityId: Int? = -1, @SerialName("gender") val gender: String? = null,
-    @SerialName("profileImageUrl") val profileImageUrl: String? = null, @SerialName("connectedVendor") val connectedVendor: Int? = null,
-    @SerialName("isTherapist") val isTherapist: Boolean? = false): Parcelable
+    @PrimaryKey(autoGenerate = true) val roomId: Int = 0, @ColumnInfo @SerialName("id") val userId: Long? = null, @ColumnInfo @SerialName("email") val email: String? = "", @ColumnInfo @SerialName("firstname") val firstname: String? = null,
+    @ColumnInfo @SerialName("lastname") val lastname: String? = null, @ColumnInfo @SerialName("address") val address: String = "", @ColumnInfo @SerialName("contactPhone") val contactPhone: String = "",
+    @ColumnInfo @SerialName("country") val country: String = "", @ColumnInfo @SerialName("city") val city: String = "", @ColumnInfo @SerialName("gender") val gender: String = "Male",
+    @ColumnInfo @SerialName("imageUrl") val profileImageUrl: String? = null,
+    @ColumnInfo @SerialName("authPhone") val authPhone: String? = null, @ColumnInfo @SerialName("connectedVendor") val connectedVendorId: Long? = null,
+    @ColumnInfo @SerialName("fcmToken") val fcmToken: String? = null, @ColumnInfo @SerialName("apiKey") val apiKey: String? = null,
+    @ColumnInfo @SerialName("isTherapist") val isTherapist: Boolean? = false): Parcelable {
+    @Ignore @SerialName("vendor_info") val vendorInfo: Vendor? = null
+    }
 

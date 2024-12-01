@@ -1,50 +1,29 @@
 package domain.Models
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Serializable @Parcelize
+@Serializable
+@Entity
+@Parcelize
 data class Vendor(
-    @SerialName("id")
-    val vendorId: Int? = null,
-    @SerialName("businessEmail")
-    val businessEmail: String = "",
-    @SerialName("businessName")
-    val businessName: String = "",
-    @SerialName("businessLogo")
-    val businessLogo: String = "",
-    @SerialName("businessAddress")
-    val businessAddress: String = "",
-    @SerialName("businessHandle")
-    val businessHandle: String = "",
-    @SerialName("businessAbout")
-    val businessAbout: String = "",
-    @SerialName("openingHour")
-    val openingHour: Int = 0,
-    @SerialName("closingHour")
-    val closingHour: Int = 0,
-    @SerialName("openingMinute")
-    val openingMinute: Int = 0,
-    @SerialName("closingMinute")
-    val closingMinute: Int = 0,
-    @SerialName("countryId")
-    val countryId: Int = -1,
-    @SerialName("cityId")
-    val cityId: Int = -1,
-    @SerialName("homeServiceAvailable")
-    val homeServiceAvailable: Boolean = false,
-    @SerialName("contactPhone")
-    val contactPhone: String = "",
-    @SerialName("password")
-    val password: String = "",
-    var isSelected: Boolean = false
-): Parcelable
+    @PrimaryKey(autoGenerate = true) val roomId: Int = 0, @ColumnInfo @SerialName("id") val vendorId: Long? = null, @ColumnInfo @SerialName("businessEmail") val businessEmail: String? = null,
+    @ColumnInfo @SerialName("businessName") val businessName: String? = null, @ColumnInfo @SerialName("businessLogo") val businessLogo: String? = null,
+    @ColumnInfo @SerialName("businessAddress") val businessAddress: String? = null, @ColumnInfo @SerialName("businessHandle") val businessHandle: String? = null,
+    @ColumnInfo @SerialName("businessAbout") val businessAbout: String? = null, @ColumnInfo @SerialName("openingTime") val openingTime: String? = null,
+    @ColumnInfo @SerialName("deliveryFee") val deliveryFee: Long = 0L,
+    @ColumnInfo @SerialName("fcmToken") val fcmToken: String? = null, @ColumnInfo @SerialName("country") val country: String? = null, @ColumnInfo @SerialName("city") val city: String? = null, @ColumnInfo @SerialName("whatsappPhone") val whatsAppPhone: String? = null,
+    @ColumnInfo @SerialName("isMobileServicesAvailable") val isMobileServiceAvailable: Boolean = false, val isSelected: Boolean = false): Parcelable
 
 data class VendorItemUIModel(
-    val selectedVendor: Vendor,
-    val vendorsList: List<Vendor>)
+    val selectedVendor: Vendor = Vendor(),
+    val vendorsList: List<Vendor> = listOf()
+)
 
 fun getVendorListItemViewHeight(
     itemList: List<Vendor>

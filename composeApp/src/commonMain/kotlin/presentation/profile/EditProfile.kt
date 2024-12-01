@@ -1,6 +1,11 @@
 package presentation.profile
 
 import StackedSnackbarHost
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
+import androidx.compose.foundation.BorderStroke
 import theme.styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,335 +18,479 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.tab.Tab
-import cafe.adriel.voyager.navigator.tab.TabOptions
+import androidx.room.RoomDatabase
+import applications.room.AppDatabase
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.core.stack.StackEvent
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
-import com.preat.peekaboo.image.picker.SelectionMode
-import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
-import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
+import com.russhwolf.settings.set
 import countryList
+import domain.Enums.Gender
 import domain.Models.PlatformNavigator
-import domain.Enums.Screens
-import domain.Enums.getCityList
+import domain.Enums.SharedPreferenceEnum
+import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import presentation.DomainViewHandler.AuthenticationScreenHandler
+import presentation.DomainViewHandler.PlatformHandler
 import presentation.DomainViewHandler.ProfileHandler
+import presentation.Screens.SplashScreen
+import presentation.authentication.AuthenticationPresenter
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
+import presentation.consultation.rightTopBarItem
+import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
-import presentation.viewmodels.ActionUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.widgets.DropDownWidget
+import presentation.viewmodels.CityViewModel
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.AccountProfileImage
+import presentation.widgets.DropDownWidget
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import presentation.widgets.TitleWidget
 import presentations.widgets.InputWidget
 import rememberStackedSnackbarHostState
+import utils.InputValidator
+import utils.ParcelableScreen
 
-class EditProfile(private val mainViewModel: MainViewModel, val  platformNavigator: PlatformNavigator? = null,val preferenceSettings: Settings) : Tab, KoinComponent {
+@OptIn(ExperimentalVoyagerApi::class)
+@Parcelize
+class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinComponent, ParcelableScreen, ScreenTransition {
+
+    @Transient
     private val profilePresenter: ProfilePresenter by inject()
-    private var actionUIStateViewModel: ActionUIStateViewModel? = null
-    override val options: TabOptions
-        @Composable
-        get() {
-            val title = "Edit Profile"
+    @Transient
+    private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient
+    private val authenticationPresenter : AuthenticationPresenter by inject()
+    @Transient
+    private var cityViewModel: CityViewModel? = null
+    @Transient
+    private var mainViewModel: MainViewModel? = null
+    @Transient
+    private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 
-            return remember {
-                TabOptions(
-                    index = 0u,
-                    title = title
-                )
-            }
-        }
+    override val key: ScreenKey = uniqueScreenKey
+
+    fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
+
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = databaseBuilder
+    }
 
     @Composable
     override fun Content() {
-        val latitude = remember { mutableStateOf(0.0) }
-        val longitude = remember { mutableStateOf(0.0) }
-        val country = remember { mutableStateOf("") }
-
-        if (actionUIStateViewModel == null) {
-            actionUIStateViewModel= kmpViewModel(
+        val navigator = LocalNavigator.currentOrThrow
+        if (cityViewModel == null) {
+            cityViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    CityViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
 
-        preferenceSettings as ObservableSettings
-
-        preferenceSettings.addDoubleListener("latitude",0.0) {
-                value: Double -> latitude.value = value
-        }
-        preferenceSettings.addDoubleListener("longitude",0.0) {
-                value: Double -> longitude.value = value
+        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+        if (onBackPressed.value){
+            mainViewModel!!.setOnBackPressed(false)
+            navigator.pop()
         }
 
-        if (latitude.value != 0.0 && longitude.value != 0.0){
-            profilePresenter.getUserLocation(latitude.value, longitude.value)
+        val userInfo = mainViewModel!!.currentUserInfo.value
+        val userGender = if (userInfo.gender == Gender.MALE.toPath()) Gender.MALE.toPath() else Gender.FEMALE.toPath()
+        val firstname = remember { mutableStateOf(userInfo.firstname) }
+        val lastname = remember { mutableStateOf(userInfo.lastname) }
+        val gender = remember { mutableStateOf(userGender) }
+        val contactPhone = remember { mutableStateOf(userInfo.contactPhone) }
+        val address = remember { mutableStateOf(userInfo.address) }
+        val profileImageUrl = remember { mutableStateOf(userInfo.profileImageUrl) }
+        val inputList =  ArrayList<String>()
+        val userCountry = remember { mutableStateOf(userInfo.country) }
+        val userCity = remember { mutableStateOf(userInfo.city) }
+        val isSavedClicked = remember { mutableStateOf(false) }
+        val updateProfileStarted = remember { mutableStateOf(false) }
+        val updateProfileEnded = remember { mutableStateOf(false) }
+        val updateProfileSuccessful = remember { mutableStateOf(false) }
+        val preferenceSettings = Settings()
+
+        if (performedActionUIStateViewModel == null) {
+            performedActionUIStateViewModel= kmpViewModel(
+                factory = viewModelFactory {
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+        if (cityViewModel == null) {
+            cityViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    CityViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
         }
 
 
-        val handler = ProfileHandler(profilePresenter,
+        val profileHandler = ProfileHandler(profilePresenter,
             onUserLocationReady = {
-               country.value = it.country.toString()
+                userCountry.value = it.country.toString()
             },
-           actionUIStateViewModel!!)
-        handler.init()
+            onVendorInfoReady = {},
+            performedActionUIStateViewModel!!)
+        profileHandler.init()
+
+        //View Contract Handler Initialisation
+        val platformHandler = PlatformHandler(profilePresenter, cityViewModel!!)
+        platformHandler.init()
+
+
+
+
+
+        inputList.add(firstname.value!!.trim())
+        inputList.add(lastname.value!!.trim())
+        inputList.add(address.value.trim())
+        inputList.add(contactPhone.value.trim())
+        inputList.add(userCity.value.trim())
+        inputList.add(profileImageUrl.value.toString().trim())
+
+        val rootModifier =
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.95f)
+                .verticalScroll(rememberScrollState())
+                .background(color = Color.White)
+
+
+        val topLayoutModifier =
+            Modifier
+                .padding(top = 20.dp, start = 5.dp, end = 5.dp)
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .background(color = Color.White)
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 1,
             animation = StackedSnackbarAnimation.Bounce
         )
 
+
+        val handler = AuthenticationScreenHandler(authenticationPresenter,
+            onUserLocationReady = {},
+            enterPlatform = { _ -> },
+            completeProfile = { _, _ -> },
+            connectVendor = { _ -> },
+            onVerificationStarted = {},
+            onVerificationEnded = {}, onCompleteStarted = {}, onCompleteEnded = {},
+            connectVendorOnProfileCompleted = { _ -> },
+            onUpdateStarted = {
+                 updateProfileStarted.value = true
+                 updateProfileEnded.value = false
+            }, onUpdateEnded = {
+                 updateProfileEnded.value = true
+                 updateProfileStarted.value = false
+                if (it) updateProfileSuccessful.value = true
+            }, onVerificationError = {})
+        handler.init()
+
+        if (updateProfileStarted.value){
+            LoadingDialog(dialogTitle = "Updating Your Profile")
+        }
+        else if (updateProfileEnded.value && updateProfileSuccessful.value) {
+            updateProfileEnded.value = false
+            updateProfileSuccessful.value = false
+            val splashScreen = SplashScreen(platformNavigator!!)
+            splashScreen.setDatabaseBuilder(databaseBuilder!!)
+            navigator.replaceAll(splashScreen)
+        }
+        else if(updateProfileEnded.value && !updateProfileSuccessful.value){
+            ErrorDialog(dialogTitle = "Error Occurred", actionTitle = "", onConfirmation = {})
+        }
+
+
+
         Scaffold(
-            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
-            topBar = {
-                 Box(modifier = Modifier.fillMaxWidth().height(60.dp)) {
-                     Box(modifier = Modifier.fillMaxHeight().fillMaxWidth().padding(start = 10.dp), contentAlignment = Alignment.CenterStart) {
-                         AttachBackIcon(mainViewModel)
-                     }
-                     Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(), contentAlignment = Alignment.Center) {
-                         PageTitle()
-                     }
+            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState)  }
+        ) {
+
+            Column(modifier = rootModifier) {
+                Column(modifier = topLayoutModifier) {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Box(modifier =  Modifier.weight(1.0f)
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
+                            contentAlignment = Alignment.CenterStart) {
+                            leftTopBarItem(onBackPressed = {
+                                navigator.pop()
+                            })
+                        }
+
+                        Box(modifier =  Modifier.weight(3.0f)
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
+                            contentAlignment = Alignment.Center) {
+                            PageTitle()
+                        }
+
+                        Box(modifier =  Modifier.weight(1.0f)
+                            .fillMaxWidth(0.20f)
+                            .fillMaxHeight(),
+                            contentAlignment = Alignment.Center) {
+                            rightTopBarItem()
+                        }
+                    }
                  }
-            },
-            content = {
-                if (actionUIStateViewModel!!.uiStateInfo.value.isLoading) {
-                    Box(modifier = Modifier.fillMaxWidth(0.80f)) {
-                        LoadingDialog("Updating Profile...")
+                    AccountProfileImage(
+                        profileImageUrl = profileImageUrl.value!!,
+                        isAsync = true,
+                        onUploadImageClicked = {
+                            platformNavigator!!.startImageUpload {
+                                profileImageUrl.value = it
+                            }
+                        })
+                    Row(modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp)) {
+                        Box(
+                            modifier = Modifier.weight(1f),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            InputWidget(
+                                iconRes = "drawable/card_icon.png",
+                                placeholderText = "Firstname",
+                                iconSize = 28,
+                                onSaveClicked = isSavedClicked.value,
+                                text = firstname.value!!,
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                                isPasswordField = false,
+                                isSingleLine = true,
+                                maxLines = 1,
+                                maxLength = 50
+                            ) {
+                                firstname.value = it
+                            }
+                        }
+                        Box(modifier = Modifier.weight(1f).padding(start = 10.dp), contentAlignment = Alignment.Center) {
+                            InputWidget(
+                                iconRes = "drawable/card_icon.png",
+                                placeholderText = "Lastname",
+                                iconSize = 28,
+                                text = lastname.value!!,
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                                isPasswordField = false,
+                                onSaveClicked = isSavedClicked.value,
+                                isSingleLine = true,
+                                maxLines = 1,
+                                maxLength = 50
+                            ) {
+                                lastname.value = it
+                            }
+                        }
                     }
-                } else if (actionUIStateViewModel!!.uiStateInfo.value.isSuccess) {
-                    ShowSnackBar(title = "Success!",
-                        description = "Account Updated Successfully",
-                        actionLabel = "",
-                        duration = StackedSnackbarDuration.Short,
-                        snackBarType = SnackBarType.SUCCESS,
-                        stackedSnackBarHostState,
-                        onActionClick = {})
-                }
-                else{
-                    ShowSnackBar(title = "Failed",
-                        description = "Error Occurred Please Try Again",
-                        actionLabel = "",
-                        duration = StackedSnackbarDuration.Short,
-                        snackBarType = SnackBarType.SUCCESS,
-                        stackedSnackBarHostState,
-                        onActionClick = {})
-                }
+                EditProfileCityDropDownWidget(selectedCity = userCity.value,cityViewModel = cityViewModel!!, onMenuItemClick = {
+                    userCity.value = it
+                }, onMenuExpanded = {
+                    profilePresenter.getCities(country = userCountry.value)
+                })
 
-                EditProfileCompose(mainViewModel, platformNavigator)
-            },
-            bottomBar = {
+                   Box(
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(start = 10.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        InputWidget(
+                            iconRes = "drawable/address.png",
+                            placeholderText = "Mobile Address",
+                            iconSize = 28,
+                            text = address.value,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                            isPasswordField = false,
+                            onSaveClicked = isSavedClicked.value,
+                            isSingleLine = true,
+                            maxLines = 1,
+                            maxLength = 100
+                        ) {
+                            address.value = it
+                        }
+                    }
 
-                val buttonStyle = Modifier
-                    .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 10.dp)
-                    .fillMaxWidth()
-                    .height(50.dp)
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(start = 10.dp, end = 10.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        InputWidget(
+                            iconRes = "drawable/phone_icon.png",
+                            placeholderText = "Contact Phone",
+                            iconSize = 28,
+                            text = contactPhone.value,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            isPasswordField = false,
+                            onSaveClicked = isSavedClicked.value,
+                            isSingleLine = true,
+                            maxLines = 1,
+                            maxLength = 12
+                        ) {
+                            contactPhone.value = it
+                        }
+                    }
 
-                ButtonComponent(
-                    modifier = buttonStyle,
-                    buttonText = "Save",
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
-                    fontSize = 18,
-                    shape = CircleShape,
-                    textColor = Color(color = 0xFFFFFFFF),
-                    style = TextStyle(),
-                    borderStroke = null
-                ) {
-                    preferenceSettings.clear()
-                    platformNavigator?.getUserLocation()
+                    Column(
+                        modifier = Modifier
+                            .padding(top = 20.dp)
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+
+                        ToggleButton(
+                            shape = RoundedCornerShape(10.dp),
+                            isRightSelection = userGender == Gender.FEMALE.toPath(),
+                            onLeftClicked = {
+                                gender.value = Gender.MALE.toPath()
+                            },
+                            onRightClicked = {
+                                gender.value = Gender.FEMALE.toPath()
+                            },
+                            leftText = Gender.MALE.toPath(),
+                            rightText = Gender.FEMALE.toPath(),
+                        )
+                    }
+
+                    Row(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
+                        val buttonStyle = Modifier
+                            .padding(end = 10.dp, top = 30.dp)
+                            .weight(1f)
+                            .height(45.dp)
+
+                        val buttonStyle2 = Modifier
+                            .padding(start = 10.dp, end = 10.dp, top = 30.dp)
+                            .weight(1f)
+                            .height(45.dp)
+
+                        ButtonComponent(
+                            modifier = buttonStyle2,
+                            buttonText = "Cancel",
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                            fontSize = 18,
+                            shape = RoundedCornerShape(10.dp),
+                            textColor = Colors.primaryColor,
+                            style = TextStyle(),
+                            borderStroke = BorderStroke(1.dp, Colors.primaryColor)
+                        ) {
+                            navigator.pop()
+                        }
+
+                        ButtonComponent(
+                            modifier = buttonStyle,
+                            buttonText = "Save",
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
+                            fontSize = 18,
+                            shape = RoundedCornerShape(10.dp),
+                            textColor = Color(color = 0xFFFFFFFF),
+                            style = TextStyle(),
+                            borderStroke = null
+                        ) {
+                            isSavedClicked.value = true
+                            if (!InputValidator(inputList).isValidInput()) {
+                                ShowSnackBar(title = "Input Required", description = "Please provide the required info", actionLabel = "", duration = StackedSnackbarDuration.Short, snackBarType = SnackBarType.ERROR,
+                                    onActionClick = {}, stackedSnackBarHostState = stackedSnackBarHostState)
+                            }
+                            else if (userCountry.value.isEmpty()){
+                                ShowSnackBar(title = "Error",
+                                    description = "Please Allow Your Location",
+                                    actionLabel = "",
+                                    duration = StackedSnackbarDuration.Long,
+                                    snackBarType = SnackBarType.ERROR,
+                                    stackedSnackBarHostState = stackedSnackBarHostState,
+                                    onActionClick = {})
+                            }
+                            else {
+                                authenticationPresenter.updateProfile(userId = userInfo.userId!!, firstname = firstname.value!!, lastname = lastname.value!!,
+                                    address = address.value, contactPhone = contactPhone.value,
+                                    country = userCountry.value, city = userCity.value,gender = gender.value, profileImageUrl = profileImageUrl.value!!)
+                            }
+
+                        }
+
+
+                   }
                 }
-            })
+            }
+        }
+
+    override fun enter(lastEvent: StackEvent): EnterTransition {
+        return slideIn { size ->
+            val x = if (lastEvent == StackEvent.Pop) -size.width else size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
+    override fun exit(lastEvent: StackEvent): ExitTransition {
+        return slideOut { size ->
+            val x = if (lastEvent == StackEvent.Pop) size.width else -size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
+}
+
+@Composable
+fun leftTopBarItem(onBackPressed: () -> Unit) {
+    PageBackNavWidget {
+        onBackPressed()
     }
 }
 
 @Composable
-fun EditProfileCompose(mainViewModel: MainViewModel, platformNavigator: PlatformNavigator?) {
-    val userInfo = mainViewModel.currentUserInfo.value
-    val firstname = remember { mutableStateOf(userInfo.firstname) }
-    val userEmail = userInfo.userEmail
-    val lastname = remember { mutableStateOf(userInfo.lastname) }
-    val address = remember { mutableStateOf(userInfo.address) }
-    val contactPhone = remember { mutableStateOf(userInfo.contactPhone) }
-    val country = remember { mutableStateOf(userInfo.countryId) }
-    val city = remember { mutableStateOf(userInfo.cityId) }
-    val gender = remember { mutableStateOf(userInfo.gender) }
-    val profileImageUrl = remember { mutableStateOf(userInfo.profileImageUrl) }
-    val imagePickerScope = rememberCoroutineScope()
-    val preferenceSettings = Settings()
-    val inputList =  ArrayList<String>()
-
-
-    preferenceSettings as ObservableSettings
-
-    preferenceSettings.addStringListener("imageUrl","") {
-            value: String -> profileImageUrl.value = value
-    }
-
-    val imagePicker = rememberImagePickerLauncher(
-        selectionMode = SelectionMode.Single,
-        scope = imagePickerScope,
-        onResult = { byteArrays ->
-            byteArrays.firstOrNull()?.let {
-                platformNavigator?.startImageUpload(it)
-            }
-        }
-    )
-
-
-
-    inputList.add(firstname.value!!)
-    inputList.add(lastname.value!!)
-    inputList.add(address.value!!)
-    inputList.add(contactPhone.value!!)
-    inputList.add(gender.value!!)
-
-    val rootModifier =
-        Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(top = 50.dp)
-            .background(color = Color.White)
-
-
-
-    val topLayoutModifier =
-        Modifier
-            .padding(start = 5.dp, end = 5.dp)
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
-            .fillMaxHeight()
-            .background(color = Color.White)
-
-
-    Column(modifier = rootModifier) {
-        Column(modifier = topLayoutModifier) {
-            AccountProfileImage(
-                profileImageUrl = profileImageUrl.value!!,
-                isAsync = true,
-                onUploadImageClicked = {
-                    imagePicker.launch()
-                })
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Box(modifier = Modifier.fillMaxWidth(0.50f), contentAlignment = Alignment.Center) {
-                    InputWidget(
-                        iconRes = "drawable/card_icon.png",
-                        placeholderText = "Firstname",
-                        iconSize = 40,
-                        text = userInfo.firstname!!
-                    ) {
-                        firstname.value = it
-                    }
-                }
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    InputWidget(
-                        iconRes = "drawable/card_icon.png",
-                        placeholderText = "Lastname",
-                        iconSize = 40,
-                        text = userInfo.lastname!!
-                    ) {
-                        lastname.value = it
-                    }
-                }
-            }
-            InputWidget(
-                iconRes = "drawable/address.png",
-                placeholderText = "Address",
-                iconSize = 28,
-                isPasswordField = false,
-                text = userInfo.address!!
-            ) {
-                address.value = it
-            }
-            InputWidget(
-                iconRes = "drawable/phone_icon.png",
-                placeholderText = "Contact Phone",
-                iconSize = 28,
-                isPasswordField = false,
-                text = userInfo.contactPhone!!
-            ) {
-                contactPhone.value = it
-            }
-            AttachCountryDropDownWidget(userInfo.countryId!!, onMenuItemClick = {
-                country.value = it
-            })
-            AttachCityDropDownWidget(
-                onMenuItemClick = {
-                    city.value = it
-                })
-
-            val isFemale: Boolean = gender.value == "female"
-
-            ToggleButton(shape = RoundedCornerShape(15.dp), isRightSelection = isFemale, onLeftClicked = {
-
-            }, onRightClicked = {
-
-            }, leftText = "Male", rightText = "Female")
-        }
-    }
-   }
-
-
-
-
-
-@Composable
-fun AttachCountryDropDownWidget(selectedCountry: Int = -1, onMenuItemClick : (Int) -> Unit) {
+fun EditProfileCountryDropDownWidget(selectedCountry: String, onMenuItemClick : (String) -> Unit) {
     val countryList = countryList()
-    DropDownWidget(menuItems = countryList, selectedIndex = selectedCountry, placeHolderText = "Country of Residence", onMenuItemClick = {
-        onMenuItemClick(it)
-    })
+    val index = if (selectedCountry ==  CountryEnum.NIGERIA.toPath()) CountryEnum.NIGERIA.getId() else CountryEnum.NIGERIA.getId()
+    DropDownWidget(menuItems = countryList, selectedIndex = index, placeHolderText = "Country of Residence", onMenuItemClick = {
+        onMenuItemClick(countryList[it])
+    }, onExpandMenuItemClick = {})
 }
 
 @Composable
-fun AttachCityDropDownWidget(userCountry: String = "", onMenuItemClick : (Int) -> Unit) {
-    val locations = getCityList(userCountry)
-    DropDownWidget(menuItems = locations.values.toList(), iconRes = "drawable/urban_icon.png", placeHolderText = "City", onMenuItemClick = {
-        onMenuItemClick(it)
-    })
-}
-
-
-
-@Composable
-private fun AttachBackIcon(mainViewModel: MainViewModel) {
-        PageBackNavWidget {
-            when (mainViewModel.screenNav.value.first) {
-                Screens.BOOKING.toPath() -> {
-                    mainViewModel.setScreenNav(Pair(Screens.EDIT_PROFILE.toPath(), Screens.BOOKING.toPath()))
-                }
-                Screens.CART.toPath() -> {
-                    mainViewModel.setScreenNav(Pair(Screens.EDIT_PROFILE.toPath(), Screens.CART.toPath()))
-                }
-                Screens.MAIN_TAB.toPath() -> {
-                    mainViewModel.setScreenNav(Pair(Screens.EDIT_PROFILE.toPath(), Screens.MAIN_TAB.toPath()))
-                }
-                else -> {
-
-                }
-            }
-        }
+fun EditProfileCityDropDownWidget(selectedCity: String, cityViewModel: CityViewModel, onMenuItemClick : (String) -> Unit, onMenuExpanded:() -> Unit) {
+    val cityListState = cityViewModel.cities.collectAsState()
+    val cityList = cityListState.value
+    if (cityList.isEmpty() && selectedCity.trim().isNotEmpty()) {
+        cityList.add(selectedCity)
     }
+    DropDownWidget(menuItems = cityList, selectedIndex = 0,iconRes = "drawable/urban_icon.png", placeHolderText = "Select City", onMenuItemClick = {
+        onMenuItemClick(cityList[it])
+    }, onExpandMenuItemClick = {
+        onMenuExpanded()
+    })
+}
+
 
 
 

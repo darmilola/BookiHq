@@ -48,7 +48,7 @@ fun ErrorDialog(dialogTitle: String, actionTitle: String, onConfirmation: () -> 
         Surface(
             shape = RoundedCornerShape(10.dp),
             color = Colors.lighterPrimaryColor,
-            modifier = Modifier.fillMaxWidth(0.90f).height(230.dp)
+            modifier = Modifier.fillMaxWidth(0.90f).height(250.dp)
         ) {
             ErrorDialogContent(dialogTitle,actionTitle, onConfirmation = {
                 onConfirmation()

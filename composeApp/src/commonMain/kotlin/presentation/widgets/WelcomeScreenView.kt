@@ -27,7 +27,7 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun welcomeScreenView(displayText: String) {
+fun welcomeScreenView(displayText: String, imageRes: String) {
     val bgStyle = Modifier
         .fillMaxWidth()
         .fillMaxHeight()
@@ -42,7 +42,7 @@ fun welcomeScreenView(displayText: String) {
         )
     Box(modifier = Modifier.fillMaxHeight().fillMaxWidth()) {
         ImageComponent(imageModifier = Modifier.fillMaxHeight().fillMaxWidth(),
-            imageRes = "drawable/woman_welcome.jpg", contentScale = ContentScale.FillWidth)
+            imageRes = imageRes, contentScale = ContentScale.FillWidth)
         Box(modifier = bgStyle)
         AttachTextContent(displayText = displayText)
     }

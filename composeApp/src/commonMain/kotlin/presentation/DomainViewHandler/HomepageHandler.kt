@@ -1,24 +1,23 @@
 package presentation.DomainViewHandler
 
+import UIStates.AppUIStates
 import domain.Models.HomepageInfo
-import domain.Models.VendorStatusModel
 import presentation.home.HomepageContract
 import presentation.home.HomepagePresenter
-import presentation.viewmodels.ScreenUIStateViewModel
-import UIStates.ScreenUIStates
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 
 class HomepageHandler(
-    private val screenUiStateViewModel: ScreenUIStateViewModel,
+    private val loadingScreenUIStateViewModel: LoadingScreenUIStateViewModel,
     private val homepagePresenter: HomepagePresenter,
-    private val onHomeInfoAvailable: (HomepageInfo, ArrayList<VendorStatusModel>) -> Unit) : HomepageContract.View {
+    private val onHomeInfoAvailable: (HomepageInfo) -> Unit) : HomepageContract.View {
     fun init() {
         homepagePresenter.registerUIContract(this)
     }
 
-    override fun showLce(uiState: ScreenUIStates) {
-        screenUiStateViewModel.switchScreenUIState(uiState)
+    override fun showLoadHomePageLce(appUIStates: AppUIStates) {
+        loadingScreenUIStateViewModel.switchScreenUIState(appUIStates)
     }
-    override fun showHome(homePageInfo: HomepageInfo, vendorStatus: ArrayList<VendorStatusModel>) {
-        onHomeInfoAvailable(homePageInfo, vendorStatus)
+    override fun showHome(homePageInfo: HomepageInfo) {
+        onHomeInfoAvailable(homePageInfo)
     }
 }

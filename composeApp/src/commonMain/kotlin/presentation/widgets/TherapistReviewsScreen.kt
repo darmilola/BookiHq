@@ -7,7 +7,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,26 +23,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import domain.Models.TherapistReviews
+import domain.Models.AppointmentReview
 import theme.styles.Colors
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TherapistReviewScreen(therapistReviews: List<TherapistReviews>) {
+fun AppointmentReviewScreen(appointmentReviews: List<AppointmentReview>) {
     val pagerState = rememberPagerState(pageCount = {
-        therapistReviews.size
+        appointmentReviews.size
     })
 
     val boxModifier =
         Modifier
             .padding(bottom = 20.dp, top = 20.dp, start = 15.dp)
-            .fillMaxHeight()
-            .fillMaxWidth()
+            .wrapContentHeight()
 
     val boxBgModifier =
         Modifier
             .padding(bottom = 10.dp, top = 10.dp, start = 15.dp)
-            .fillMaxHeight()
+            .wrapContentHeight()
             .fillMaxWidth()
             .border(border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(topStart = 7.dp, bottomStart = 7.dp))
 
@@ -55,7 +53,7 @@ fun TherapistReviewScreen(therapistReviews: List<TherapistReviews>) {
                 state = pagerState,
                 modifier = Modifier.fillMaxSize()
             ) { page ->
-                TherapistReviewsWidget(therapistReviews[page])
+                AppointmentReviewsWidget(appointmentReviews[page])
             }
             Row(
                 Modifier

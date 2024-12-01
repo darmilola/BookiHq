@@ -2,12 +2,12 @@ package domain.Enums
 
 
 enum class Screens {
-    MAIN_TAB,
+    MAIN_SCREEN,
     BOOKING,
     CONSULTATION,
     CART,
     ORDERS,
-    CONNECT_VENDOR_PAGE,
+    CONNECT_VENDOR,
     CONSULTATION_ROOM,
     EDIT_PROFILE,
     VENDOR_INFO,
@@ -15,21 +15,35 @@ enum class Screens {
     THERAPIST_DASHBOARD,
     PENDING_APPOINTMENT,
     ORDER_DETAILS,
-    TALK_WITH_A_THERAPIST;
+    JOIN_SPA_INFO,
+    CONNECTED_VENDOR_DETAILS,
+    PACKAGE_INFO,
+    PACKAGE_BOOKING,
+    PAYMENT_METHODS,
+    FAVORITE_PRODUCTS,
+    VENDOR_INFO_SCREEN,
+    DEFAULT;
     fun toPath() = when (this) {
-        MAIN_TAB -> 0
+        DEFAULT -> -1
+        MAIN_SCREEN -> 0
         BOOKING -> 1
         CONSULTATION -> 2
         CART -> 3
         ORDERS -> 4
-        CONNECT_VENDOR_PAGE -> 5
+        CONNECT_VENDOR -> 5
         CONSULTATION_ROOM -> 6
         EDIT_PROFILE -> 7
         VENDOR_INFO -> 8
         PENDING_APPOINTMENT -> 9
         THERAPIST_DASHBOARD ->10
         JOIN_SPA -> 11
-        TALK_WITH_A_THERAPIST -> 12
         ORDER_DETAILS -> 13
+        CONNECTED_VENDOR_DETAILS -> 14
+        JOIN_SPA_INFO -> 15
+        PACKAGE_INFO -> 16
+        PACKAGE_BOOKING -> 17
+        PAYMENT_METHODS -> 18
+        FAVORITE_PRODUCTS -> 19
+        VENDOR_INFO_SCREEN -> 20
     }
 }

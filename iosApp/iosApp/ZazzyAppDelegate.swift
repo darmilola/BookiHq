@@ -24,5 +24,4 @@ class ZazzyAppDelegate: PluggableApplicationDelegate, WindowProvider {
         return UIApplication.shared.delegate as! ZazzyAppDelegate
     }
     
-    
 }

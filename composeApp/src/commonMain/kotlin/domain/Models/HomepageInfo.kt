@@ -7,10 +7,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable @Parcelize
 data class HomepageInfo (
-    @SerialName("user_info") val userInfo: User? = null,
-    @SerialName("vendor_info") val vendorInfo: Vendor? = null,
+    @SerialName("user_info") val userInfo: User? = User(),
+    @SerialName("vendor_info") val vendorInfo: Vendor? = Vendor(),
+    @SerialName("vendor_services") val vendorServices: ArrayList<Services>? = arrayListOf(),
+    @SerialName("vendor_recommendations") val recommendations: ArrayList<VendorRecommendation>? = arrayListOf(),
+    @SerialName("recent_appointments") val recentAppointments: ArrayList<UserAppointment>? = arrayListOf(),
     @SerialName("therapist_info") val therapistInfo: TherapistInfo? = null,
-    @SerialName("vendor_services") val vendorServices: ArrayList<Services>? = null,
-    @SerialName("vendor_recommendations") val recommendationRecommendations: ArrayList<VendorRecommendation>? = null,
-    @SerialName("recent_appointments") val recentAppointment: ArrayList<Appointment>? = null,
-    @SerialName("popular_products") var popularProducts: ArrayList<Product>? = null): Parcelable
+    var servicesGridList: ArrayList<ArrayList<Services>>? = null
+): Parcelable

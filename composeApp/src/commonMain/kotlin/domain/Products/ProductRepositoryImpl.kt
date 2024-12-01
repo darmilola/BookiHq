@@ -1,14 +1,19 @@
 package domain.Products
 
 import com.badoo.reaktive.single.Single
+import domain.Models.FavoriteProductIdResponse
+import domain.Models.FavoriteProductResponse
+import domain.Models.InitCheckoutResponse
 import domain.Models.ProductListDataResponse
 import domain.Models.ServerResponse
 import io.ktor.client.HttpClient
+import kotlinx.serialization.SerialName
 
 class ProductRepositoryImpl(apiService: HttpClient): ProductRepository {
+
     private val productNetworkService: ProductNetworkService = ProductNetworkService(apiService)
     override suspend fun getAllProducts(
-        vendorId: Int,
+        vendorId: Long,
         nextPage: Int
     ): Single<ProductListDataResponse> {
         val param = GetAllProductsRequest(vendorId = vendorId)
@@ -17,7 +22,7 @@ class ProductRepositoryImpl(apiService: HttpClient): ProductRepository {
 
 
     override suspend fun searchProducts(
-        vendorId: Int,
+        vendorId: Long,
         searchQuery: String,
         nextPage: Int
     ): Single<ProductListDataResponse> {
@@ -26,15 +31,54 @@ class ProductRepositoryImpl(apiService: HttpClient): ProductRepository {
     }
 
     override suspend fun createOrder(
-        vendorId: Int,
-        userId: Int,
-        orderReference: Int,
+        vendorId: Long,
+        userId: Long,
         deliveryMethod: String,
         paymentMethod: String,
-        orderItems: ArrayList<OrderItemRequest>
+        day: Int,
+        month: Int,
+        year: Int,
+        orderItemJson: String,
+        paymentAmount: Long
     ): Single<ServerResponse> {
-        val param = CreateOrderRequest(vendorId, userId, orderReference, deliveryMethod, paymentMethod, orderItems)
+        val param = CreateOrderRequest(vendorId, userId, deliveryMethod,day,month,year,paymentAmount,paymentMethod,orderItemJson)
         return productNetworkService.createOrder(param)
+    }
+
+    override suspend fun getProductsByType(
+        vendorId: Long,
+        productType: String,
+        nextPage: Int
+    ): Single<ProductListDataResponse> {
+        val param = GetProductTypeRequest(vendorId, productType)
+        return productNetworkService.getProductType(param, nextPage)
+    }
+
+    override suspend fun addFavoriteProduct(
+        userId: Long,
+        vendorId: Long,
+        productId: Long
+    ): Single<ServerResponse> {
+        val param = AddFavoriteProductRequest(userId, productId, vendorId)
+        return productNetworkService.addFavoriteProduct(param)
+    }
+
+    override suspend fun removeFavoriteProduct(
+        userId: Long,
+        productId: Long
+    ): Single<ServerResponse> {
+        val param = RemoveFavoriteProductRequest(userId,productId)
+        return productNetworkService.removeFavoriteProduct(param)
+    }
+
+    override suspend fun getFavoriteProducts(userId: Long): Single<FavoriteProductResponse> {
+        val param = GetFavoriteProductRequest(userId)
+        return productNetworkService.getFavoriteProducts(param)
+    }
+
+    override suspend fun getFavoriteProductIds(userId: Long): Single<FavoriteProductIdResponse> {
+        val param = GetFavoriteProductIdsRequest(userId)
+        return productNetworkService.getFavoriteProductIds(param)
     }
 
 

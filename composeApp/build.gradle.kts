@@ -1,5 +1,6 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.compose.ExperimentalComposeLibrary
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -8,6 +9,8 @@ plugins {
     id("kotlin-parcelize")
     kotlin("plugin.serialization") version "1.9.21"
     id("com.google.gms.google-services")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -25,8 +28,12 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "ZazzyApp"
+            baseName = "composeApp"
             isStatic = true
+        }
+        iosTarget.compilations.getByName("main") {
+            // The default file path is src/nativeInterop/cinterop/<interop-name>.def
+            val nskeyvalueobserving by cinterops.creating
         }
     }
 
@@ -46,18 +53,21 @@ kotlin {
             implementation("androidx.media3:media3-exoplayer:1.1.0")
             implementation("androidx.media3:media3-exoplayer-dash:1.1.0")
             implementation("androidx.media3:media3-ui:1.1.0")
-           // implementation ("io.dyte:core-android:1.37.0")
-            implementation ("io.dyte:uikit:1.18.0")
             implementation(project.dependencies.platform("com.google.firebase:firebase-bom:33.1.1"))
 
             // Add the dependency for the Firebase Authentication library
             // When using the BoM, you don't specify versions in Firebase library dependencies
             implementation("com.google.firebase:firebase-auth")
+            implementation("com.google.firebase:firebase-messaging")
 
             // Also add the dependency for the Google Play services library and specify its version
             implementation("com.google.android.gms:play-services-auth:21.2.0")
 
-
+            implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
+            implementation("com.google.firebase:firebase-storage")
+            implementation("com.google.auth:google-auth-library-oauth2-http:1.24.0")
+            implementation("com.github.bumptech.glide:glide:4.16.0")
+            implementation("co.paystack.android:paystack:3.1.3")
         }
 
         commonMain.dependencies {
@@ -67,8 +77,7 @@ kotlin {
             implementation(compose.material3)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
-            val voyagerVersion = "1.0.0-rc10"
-            val compassVersion = "1.0.0"
+            val voyagerVersion = "1.1.0-beta02"
 
             // Navigator
             implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
@@ -160,13 +169,25 @@ kotlin {
             //savedState
             api("io.github.hoc081098:kmp-viewmodel-savedstate:0.7.1")
 
+            // pull to refresh
+            implementation("dev.materii.pullrefresh:pullrefresh:1.3.0")
 
+            val room_version = "2.7.0-alpha06"
+            implementation("androidx.room:room-runtime:$room_version")
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.sqlite.bundled)
         }
 
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            implementation("co.touchlab:stately-common:2.0.5")
+            implementation("uk.co.caprica:vlcj:4.7.0")
         }
     }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 android {
@@ -197,6 +218,7 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += "/META-INF/DEPENDENCIES"
+            excludes += "/META-INF/INDEX.LIST"
         }
     }
     buildTypes {
@@ -216,4 +238,9 @@ android {
 dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.i18n)
+    implementation(libs.androidx.sqlite.bundled.android)
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.constraintlayout)
+    ksp(libs.androidx.room.compiler)
+
 }

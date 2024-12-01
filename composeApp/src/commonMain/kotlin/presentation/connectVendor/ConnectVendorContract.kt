@@ -1,24 +1,23 @@
 package presentation.connectVendor
 
-import domain.Models.ResourceListEnvelope
-import domain.Models.Vendor
-import UIStates.ScreenUIStates
+import UIStates.AppUIStates
+import domain.Models.VendorResourceListEnvelope
 
 class ConnectVendorContract {
     interface View {
-        fun showLce(uiState: ScreenUIStates)
-        fun onVendorConnected(userEmail: String)
-        fun showVendors(vendors: ResourceListEnvelope<Vendor>?, isFromSearch: Boolean = false)
+        fun showScreenLce(appUIStates: AppUIStates)
+        fun showActionLce(appUIStates: AppUIStates, message: String = "")
+        fun showVendors(vendors: VendorResourceListEnvelope?, isFromSearch: Boolean = false, isLoadMore: Boolean = false)
         fun onLoadMoreVendorStarted(isSuccess: Boolean = false)
         fun onLoadMoreVendorEnded(isSuccess: Boolean = false)
     }
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
-        abstract fun connectVendor(userEmail: String, vendorId: Int)
-        abstract fun getVendor(countryId: Int, cityId: Int)
-        abstract fun getMoreVendor(countryId: Int, cityId: Int, nextPage: Int = 1)
-        abstract fun searchVendor(countryId: Int, cityId: Int, searchQuery: String)
-        abstract fun searchMoreVendors(countryId: Int, cityId: Int, searchQuery: String, nextPage: Int = 1)
+        abstract fun connectVendor(userId: Long, vendorId: Long, action: String)
+        abstract fun getVendor(country: String, city: String, connectedVendor: Long,)
+        abstract fun getMoreVendor(country: String, city: String, connectedVendor: Long, nextPage: Int = 1)
+        abstract fun searchVendor(country: String, connectedVendor: Long, searchQuery: String)
+        abstract fun searchMoreVendors(country: String, connectedVendor: Long, searchQuery: String, nextPage: Int = 1)
     }
 }

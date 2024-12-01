@@ -26,13 +26,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import domain.Enums.ExitReasonEnum
 import presentation.components.bottomSheetIconButtonComponent
 import theme.styles.Colors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwitchVendorBottomSheet(onDismiss: () -> Unit,
-                            onConfirmation: () -> Unit) {
+                            onConfirmation: (String) -> Unit) {
     val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ModalBottomSheet(
         modifier = Modifier.padding(top = 20.dp),
@@ -44,18 +45,15 @@ fun SwitchVendorBottomSheet(onDismiss: () -> Unit,
         containerColor = Color.White,
         dragHandle = {},
     ) {
-        SwitchVendorBottomSheetContent(onDismissRequest = {
-
-        }, onConfirmation = {
-
+        SwitchVendorBottomSheetContent(onConfirmation = {
+             onConfirmation(it)
         })
     }
 }
 
 
 @Composable
-fun SwitchVendorBottomSheetContent(onDismissRequest: () -> Unit,
-                                      onConfirmation: () -> Unit) {
+fun SwitchVendorBottomSheetContent(onConfirmation: (String) -> Unit) {
 
     Card(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
         shape = RoundedCornerShape(20.dp),
@@ -67,7 +65,9 @@ fun SwitchVendorBottomSheetContent(onDismissRequest: () -> Unit,
 
             }
             Column (modifier = Modifier.fillMaxWidth().height(350.dp).padding(start = 15.dp, end = 15.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                switchVendorReasons()
+                SwitchVendorReasons(onReasonSelected = {
+                    onConfirmation(it)
+                })
             }
         }
     }
@@ -108,14 +108,33 @@ fun SwitchVendorBottomSheetContentHeader() {
 }
 
 @Composable
-fun switchVendorReasons(){
+fun SwitchVendorReasons(onReasonSelected: (String) -> Unit){
     val buttonStyle = Modifier
         .padding(bottom = 10.dp)
         .fillMaxWidth()
         .height(60.dp)
-    bottomSheetIconButtonComponent(modifier = buttonStyle, buttonText = "Bad Therapist", borderStroke = BorderStroke(0.8.dp, Color(0xFFE9F0F2)), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 14, shape = RoundedCornerShape(15.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "drawable/emoji_frowned.png"){}
-    bottomSheetIconButtonComponent(modifier = buttonStyle, buttonText = "Too Expensive", borderStroke = BorderStroke(0.8.dp, Color(0xFFE9F0F2)), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 14, shape = RoundedCornerShape(15.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "drawable/emoji_think.png"){}
-    bottomSheetIconButtonComponent(modifier = buttonStyle, buttonText = "Needed More Service", borderStroke = BorderStroke(0.8.dp, Color(0xFFE9F0F2)), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 14, shape = RoundedCornerShape(15.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "drawable/emoji_frowned.png"){}
-    bottomSheetIconButtonComponent(modifier = buttonStyle, buttonText = "Need Something New", borderStroke = BorderStroke(0.8.dp, Color(0xFFE9F0F2)), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 14, shape = RoundedCornerShape(15.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "drawable/emoji_frowned.png"){}
-    bottomSheetIconButtonComponent(modifier = buttonStyle, buttonText = "Prefer not to say", borderStroke = BorderStroke(0.8.dp, Color(0xFFE9F0F2)), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 14, shape = RoundedCornerShape(15.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "drawable/emoji_think.png"){}
+    bottomSheetIconButtonComponent(modifier = buttonStyle, buttonText = ExitReasonEnum.BAD_THERAPIST.toPath(), borderStroke = BorderStroke(0.8.dp, Color(0xFFE9F0F2)),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 14,
+        shape = RoundedCornerShape(15.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4,
+        iconRes = "drawable/emoji_frowned.png"){
+        onReasonSelected(it)
+    }
+
+    bottomSheetIconButtonComponent(modifier = buttonStyle, buttonText = ExitReasonEnum.TOO_EXPENSIVE.toPath(),
+        borderStroke = BorderStroke(0.8.dp, Color(0xFFE9F0F2)), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+        fontSize = 14, shape = RoundedCornerShape(15.dp), textColor = Color.DarkGray,
+        style = MaterialTheme.typography.h4, iconRes = "drawable/emoji_think.png"){
+        onReasonSelected(it)
+    }
+
+    bottomSheetIconButtonComponent(modifier = buttonStyle, buttonText = ExitReasonEnum.NEEDED_MORE_SERVICE.toPath(), borderStroke = BorderStroke(0.8.dp, Color(0xFFE9F0F2)),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 14, shape = RoundedCornerShape(15.dp), textColor = Color.DarkGray,
+        style = MaterialTheme.typography.h4, iconRes = "drawable/emoji_frowned.png"){
+        onReasonSelected(it)
+    }
+    bottomSheetIconButtonComponent(modifier = buttonStyle, buttonText = ExitReasonEnum.PREFER_NOT_SAY.toPath(),
+        borderStroke = BorderStroke(0.8.dp, Color(0xFFE9F0F2)), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+        fontSize = 14, shape = RoundedCornerShape(15.dp), textColor = Color.DarkGray, style = MaterialTheme.typography.h4, iconRes = "drawable/emoji_think.png"){
+        onReasonSelected(it)
+    }
 }

@@ -1,95 +1,80 @@
 package presentation.DomainViewHandler
 
-import com.russhwolf.settings.Settings
 import dev.jordond.compass.Place
 import domain.Models.User
 import presentation.authentication.AuthenticationContract
 import presentation.authentication.AuthenticationPresenter
-import UIStates.ActionUIStates
-import presentation.viewmodels.AuthenticationViewModel
-import UIStates.ScreenUIStates
 
 class AuthenticationScreenHandler(
-    private val authenticationViewModel: AuthenticationViewModel,
     private val authenticationPresenter: AuthenticationPresenter,
     private val onUserLocationReady: (Place) -> Unit,
-    private val preferenceSettings: Settings,
-    private val onPageLoading: () -> Unit,
-    private val onContentVisible: () -> Unit,
-    private val onErrorVisible: () -> Unit,
-    private val enterPlatform: (userEmail: String) -> Unit,
-    private val completeProfile: (userEmail: String) -> Unit,
-    private val connectVendor: (userEmail: String) -> Unit,
-    private val isLoading:() -> Unit,
-    private val isSuccess:() -> Unit,
-    private val isFailed:() -> Unit
+    private val enterPlatform: (User) -> Unit,
+    private val completeProfile: (userEmail: String, userPhone: String) -> Unit,
+    private val connectVendorOnProfileCompleted: (userInfo: User) -> Unit,
+    private val connectVendor: (User) -> Unit,
+    private val onVerificationStarted: () -> Unit,
+    private val onVerificationEnded: () -> Unit,
+    private val onVerificationError: () -> Unit,
+    private val onCompleteStarted: () -> Unit,
+    private val onCompleteEnded: (Boolean) -> Unit,
+    private val onUpdateStarted: () -> Unit,
+    private val onUpdateEnded: (Boolean) -> Unit
 ) : AuthenticationContract.View {
     fun init() {
         authenticationPresenter.registerUIContract(this)
     }
 
-    override fun showLce(uiState: ScreenUIStates, message: String) {
-        uiState.let {
-            when{
-                it.loadingVisible -> {
-                    onPageLoading()
-                }
-
-                it.contentVisible -> {
-                    onContentVisible()
-                }
-
-                it.errorOccurred -> {
-                    onErrorVisible()
-                }
-            }
-        }
+    override fun onProfileValidationStarted() {
+        onVerificationStarted()
     }
 
-    override fun showAsyncLce(uiState: ActionUIStates, message: String) {
-        uiState.let {
-            when{
-                it.isLoading -> {
-                    isLoading()
-                }
-
-                it.isSuccess -> {
-                    isSuccess()
-                }
-
-                it.isFailed -> {
-                    isFailed()
-                }
-            }
-        }
+    override fun onProfileValidationEnded() {
+        onVerificationEnded()
     }
 
-
-    override fun onAuth0Started() {
-        preferenceSettings.clear()
-        authenticationViewModel.setAuth0Started(true)
+    override fun onProfileValidationError() {
+        onVerificationError()
     }
 
-    override fun onAuth0Ended() {
-        authenticationViewModel.setAuth0Ended(true)
+    override fun onCompleteProfileStarted() {
+        onCompleteStarted()
     }
 
-    override fun goToMainScreen(userEmail: String) {
-        enterPlatform(userEmail)
+    override fun onProfileUpdateStarted() {
+        onUpdateStarted()
     }
 
-    override fun goToCompleteProfile(userEmail: String) {
-        completeProfile(userEmail)
+    override fun onProfileUpdateEnded(isSuccessful: Boolean) {
+        onUpdateEnded(isSuccessful)
+    }
+
+    override fun goToMainScreen(user: User) {
+        enterPlatform(user)
+    }
+
+    override fun goToCompleteProfileWithEmail(userEmail: String) {
+        completeProfile(userEmail,"")
+    }
+
+    override fun goToCompleteProfileWithPhone(phone: String) {
+        completeProfile("",phone)
     }
 
     override fun showUserLocation(place: Place) {
         onUserLocationReady(place)
     }
 
-    override fun goToConnectVendor(userEmail: String) {
-        connectVendor(userEmail)
+    override fun onCompleteProfileDone(userInfo: User) {
+            onCompleteEnded(true)
+            connectVendorOnProfileCompleted(userInfo)
     }
-    override fun showUserProfile(user: User) {
-        TODO("Not yet implemented")
+    override fun goToConnectVendor(user: User) {
+        connectVendor(user)
     }
+
+    override fun onCompleteProfileError() {
+        onCompleteEnded(false)
+    }
+
+    override fun showUserProfile(user: User) {}
 }

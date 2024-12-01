@@ -21,7 +21,7 @@ data class InputValidator(private val input: ArrayList<String> = arrayListOf()) 
     fun isValidInput(): Boolean {
         var isValid = false
         for (element in input) {
-            if(element.isEmpty()){
+            if(element.trim().isEmpty()){
                 isValid = false
                 break
             }
@@ -31,7 +31,25 @@ data class InputValidator(private val input: ArrayList<String> = arrayListOf()) 
         }
         return isValid
     }
+
 }
+
+
+    fun makeValidPhone(input: String): String {
+        val sb = StringBuilder(input)
+        if (input.isNotEmpty()) {
+            if (sb[0].toString().equals("0", ignoreCase = true)) {
+                sb.deleteAt(0)
+                return sb.toString()
+            } else {
+                return input
+            }
+        }
+        else{
+            return input
+        }
+    }
+
 
 data class EmailValidator(private val input: String) {
 

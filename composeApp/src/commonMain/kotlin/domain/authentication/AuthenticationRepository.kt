@@ -4,24 +4,45 @@ import com.badoo.reaktive.single.Single
 import dev.jordond.compass.Location
 import dev.jordond.compass.Place
 import domain.Models.AuthenticationResponse
+import domain.Models.CompleteProfileResponse
 import domain.Models.ListDataResponse
 import domain.Models.ServerResponse
 import domain.Models.Vendor
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 interface AuthenticationRepository {
+    suspend fun updateProfile(
+        userId: Long,
+        firstname: String,
+        lastname: String,
+        address: String,
+        contactPhone: String,
+        country: String,
+        city: String,
+        gender: String,
+        profileImageUrl: String
+    ): Single<ServerResponse>
+
+    suspend fun updateFcmToken(
+        userId: Long,
+        fcmToken: String
+    ): Single<ServerResponse>
+
     suspend fun completeProfile(
         firstname: String,
         lastname: String,
         userEmail: String,
-        address: String,
-        contactPhone: String,
-        countryId: Int,
-        cityId: Int,
+        authPhone: String,
+        country: String,
+        city: String,
+        signupType: String,
         gender: String,
         profileImageUrl: String
-    ): Single<ServerResponse>
-    suspend fun reverseGeocode(lat: Double, lng: Double): Single<Place?>
+    ): Single<CompleteProfileResponse>
     suspend fun validateUserProfile(userEmail: String): Single<AuthenticationResponse>
+    suspend fun validateEmail(userEmail: String): Single<AuthenticationResponse>
+    suspend fun validatePhone(authPhone: String): Single<AuthenticationResponse>
 
 }
 

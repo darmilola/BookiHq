@@ -33,12 +33,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.VendorRecommendation
 import domain.Enums.RecommendationType
+import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun RecommendedServiceItem(vendorRecommendation: VendorRecommendation, onItemClickListener: (VendorRecommendation) -> Unit) {
-
+fun VendorPicksItem(vendorRecommendation: VendorRecommendation, mainViewModel: MainViewModel, onItemClickListener: (VendorRecommendation) -> Unit) {
 
     val columnModifier = Modifier
         .fillMaxHeight()
@@ -61,9 +61,9 @@ fun RecommendedServiceItem(vendorRecommendation: VendorRecommendation, onItemCli
                 Column(
                     modifier = columnModifier
                 ) {
-                    RecommendedServicesImage(vendorRecommendation.serviceTypeItem?.serviceDetails?.serviceImages!![0].imageUrl!!)
+                    RecommendedServicesImage(vendorRecommendation.imageUrl)
                     RecommendedServiceDescription(vendorRecommendation)
-                    RecommendedServicePriceAndAction(vendorRecommendation, onItemClickListener = {
+                    RecommendedServicePriceAndAction(vendorRecommendation,mainViewModel, onItemClickListener = {
                         onItemClickListener(it)
                     })
                 }
@@ -73,7 +73,8 @@ fun RecommendedServiceItem(vendorRecommendation: VendorRecommendation, onItemCli
 
 
 @Composable
-fun RecommendedServicePriceAndAction(vendorRecommendation: VendorRecommendation, onItemClickListener: (VendorRecommendation) -> Unit) {
+fun RecommendedServicePriceAndAction(vendorRecommendation: VendorRecommendation, mainViewModel: MainViewModel, onItemClickListener: (VendorRecommendation) -> Unit) {
+    val currencyUnit = mainViewModel.displayCurrencyUnit.value
     Row(modifier = Modifier.height(50.dp).padding(start = 10.dp, end = 10.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically) {
@@ -82,10 +83,10 @@ fun RecommendedServicePriceAndAction(vendorRecommendation: VendorRecommendation,
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically) {
             if (vendorRecommendation.recommendationType == RecommendationType.Services.toPath()){
-                PopularServicePriceContent(vendorRecommendation.serviceTypeItem?.price.toString())
+                PopularServicePriceContent(vendorRecommendation.serviceTypeItem?.price.toString(), currencyUnit)
             }
             else{
-                PopularServicePriceContent(vendorRecommendation.product?.productPrice.toString())
+                PopularServicePriceContent(vendorRecommendation.product?.productPrice.toString(), currencyUnit)
             }
 
         }
@@ -120,9 +121,9 @@ fun RecommendedServicePriceAndAction(vendorRecommendation: VendorRecommendation,
 
 }
 @Composable
-fun PopularServicePriceContent(price: String) {
+fun PopularServicePriceContent(price: String, currencyUnit: String) {
      TextComponent(
-            text = "$$price",
+            text = "$currencyUnit$price",
             fontSize = 16,
             fontFamily = GGSansRegular,
             textStyle = MaterialTheme.typography.h6,

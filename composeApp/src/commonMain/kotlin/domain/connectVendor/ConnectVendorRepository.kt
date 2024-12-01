@@ -4,9 +4,11 @@ import com.badoo.reaktive.single.Single
 import domain.Models.ListDataResponse
 import domain.Models.ServerResponse
 import domain.Models.Vendor
+import domain.Models.VendorListDataResponse
+import kotlinx.serialization.SerialName
 
 interface ConnectVendorRepository {
-    suspend fun connectVendor(userEmail: String, vendorId: Int): Single<ServerResponse>
-    suspend fun getVendor(countryId: Int, cityId: Int, nextPage: Int = 1): Single<ListDataResponse<Vendor>>
-    suspend fun searchVendor(countryId: Int, cityId: Int, searchQuery: String, nextPage: Int = 1): Single<ListDataResponse<Vendor>>
+    suspend fun connectVendor(userId: Long, vendorId: Long, action: String): Single<ServerResponse>
+    suspend fun getVendor(country: String, city: String, connectedVendor: Long, nextPage: Int): Single<VendorListDataResponse>
+    suspend fun searchVendor(country: String, connectedVendor: Long, searchQuery: String, nextPage: Int = 1): Single<VendorListDataResponse>
 }

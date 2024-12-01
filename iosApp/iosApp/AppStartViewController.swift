@@ -1,22 +1,30 @@
+import Foundation
 import UIKit
 import SwiftUI
-import ComposeApp
-import Auth0
-import JWTDecode
-import Cloudinary
 import CloudKit
+import composeApp
+import GoogleSignIn
+import FirebaseCore
+import FirebaseAuth
+import FirebaseStorage
 
 
 
-
-class AppStartViewController: UIViewController  {
-    
-    var locationManager: CLLocationManager?
+class AppStartViewController: UIViewController, PlatformNavigator, UINavigationControllerDelegate, UIImagePickerControllerDelegate, CLLocationManagerDelegate  {
+  
     var mainController: MainViewController?
+    var rootView: AppStartView?
+    var mainView: MainScreenView?
+    var uploadImage: UIImage?
+    var imagePicker = UIImagePickerController()
+    @objc dynamic var imageUploadUrl: String = ""
+    @objc dynamic var locationArray: [String] = []
+    var observation: NSKeyValueObservation?
+    let preferences = UserDefaults.standard
+    let locationManager = CLLocationManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = ZazzyApp.Colors.white
     }
     
     
@@ -24,162 +32,191 @@ class AppStartViewController: UIViewController  {
     
     override func viewDidAppear(_ animated: Bool){
         super.viewDidAppear(animated)
-        handleLoadData()
+        self.navigationController?.isNavigationBarHidden = true
+
+
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            locationManager.startUpdatingLocation()
+        }
+        showStartScreen()
     }
     
-    private func handleLoadData() {
-        mainController = getMainController()
-        locationManager = CLLocationManager()
-        locationManager?.delegate = self
-        let appStartView = UIHostingController(rootView: AppStartView(locationManager: locationManager!, mainController: mainController!))
-        showNextScreen(nextViewController: appStartView)
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let locValue: CLLocationCoordinate2D = manager.location?.coordinate else { return }
+        var mLocations: [String] = []
+        mLocations.append(String(locValue.latitude))
+        mLocations.append(String(locValue.longitude))
+        self.locationArray = mLocations
     }
     
-    func showNextScreen(nextViewController: UIViewController?) {
-        guard let viewController = nextViewController else { return }
-        viewController.view.backgroundColor = ZazzyApp.Colors.white
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
-            self.navigationController?.pushViewController(nextViewController!, animated: true)
-        })
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let pickedImage = info[.originalImage] as? UIImage {
+            guard let imageData = pickedImage.jpegData(compressionQuality: 0.75) else {return}
+                   let fileName = NSUUID().uuidString
+                   let ref = Storage.storage().reference(withPath: "/file/\(fileName)")
+                   ref.putData(imageData, metadata: nil) { metadata, error in
+                       if let error = error {
+                           print("Err: Failed to upload image \(error.localizedDescription)")
+                           return
+                       }
+                       
+                      ref.downloadURL { url, error in
+                           guard let imageURL = url?.absoluteString else {return}
+                           self.imageUploadUrl = imageURL
+                       }
+                   }
+        }
+        dismiss(animated: true, completion: nil)
     }
     
-    func getMainController() -> MainViewController {
-        return MainViewController()
+    func getCurrentLocation(){
+        locationManager.requestWhenInUseAuthorization()
     }
-}
+
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        // Handle the user canceling the image picker, if needed.
+        dismiss(animated: true, completion: nil)
+    }
     
+    private func showStartScreen() {
+        rootView = AppStartView(platformNavigator: self)
+        let appStartView = UIHostingController(rootView: rootView.edgesIgnoringSafeArea(.all))
+        guard appStartView != nil else { return }
+         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
+                    self.navigationController?.pushViewController(appStartView!, animated: true)
+                })
+    }
+
     struct AppStartView: UIViewControllerRepresentable {
-        var locationManager: CLLocationManager
-        var mainController: MainViewController
+        var platformNavigator: PlatformNavigator
+
         func makeUIViewController(context: Context) -> UIViewController {
-            return mainController.MainViewController(
-                onLoginEvent: { connectionType in
-                    Auth0
-                        .webAuth()
-                        .redirectURL(URL(string: "demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy/callback")!)
-                        .connection(connectionType)
-                        .start { result in
-                            switch result {
-                            case .success(let credentials):
-                                let jwt = try? decode(jwt: credentials.idToken)
-                                mainController
-                                    .setAuthResponse(response: Auth0ConnectionResponse(connectionType: connectionType, email: jwt?["email"].string ?? "", action: "login", status: "success"))
-                                
-                            case .failure(let error):
-                                mainController
-                                    .setAuthResponse(response: Auth0ConnectionResponse(connectionType: connectionType, email: "", action: "login", status: "failure"))
-                            }
-                        }
-                },
-                onLogoutEvent: {connectionType in
-                    Auth0
-                        .webAuth()
-                        .redirectURL(URL(string: "demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy/callback")!)
-                        .clearSession { result in
-                            switch result {
-                            case .success:
-                                mainController
-                                    .setAuthResponse(response: Auth0ConnectionResponse(connectionType: connectionType, email: "", action: "logout", status: "success"))
-                            case .failure(let error):
-                                mainController
-                                    .setAuthResponse(response: Auth0ConnectionResponse(connectionType: connectionType, email: "", action: "logout", status: "failure"))
-                            }
-                        }
-                },
-                onSignupEvent: { connectionType in
-                    Auth0
-                        .webAuth()
-                        .redirectURL(URL(string: "demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy/callback")!)
-                        .connection(connectionType)
-                        .start { result in
-                            switch result {
-                            case .success(let credentials):
-                                let jwt = try? decode(jwt: credentials.idToken)
-                                mainController
-                                    .setAuthResponse(response: Auth0ConnectionResponse(connectionType: connectionType, email: jwt?["email"].string ?? "", action: "signup", status: "success"))
-                                
-                            case .failure(let error):
-                                mainController
-                                    .setAuthResponse(response: Auth0ConnectionResponse(connectionType: connectionType, email:  "", action: "signup", status: "failure"))
-                            }
-                        }
-                },
-                
-                onUploadImageEvent: { data in
-                    let config = CLDConfiguration(cloudName: "df2aprbbs", apiKey:"699592978195546", secure: true)
-                    let cloudinary = CLDCloudinary(configuration: config)
-                    let params = CLDUploadRequestParams()
-                    let request = cloudinary
-                        .createUploader()
-                        .upload(data: data, uploadPreset: "UserUploads", params: CLDUploadRequestParams())
-                    { progress in
-                        mainController.onImageUploadProcessing(isDone: true)
-                        // Handle progress
-                    } completionHandler: { result, error in
-                        mainController.onImageUploadProcessing(isDone: false)
-                        mainController.onImageUploadResponse(imageUrl: result?.secureUrl ?? "empty")
-                        // Handle result
-                    }
-                },
-                onLocationEvent : {
-                    locationManager.requestWhenInUseAuthorization()
-                    locationManager.requestLocation()
-                    
-                }
-                
-            )
-            
+            return MainViewController().appStartUiView(platformNavigator: platformNavigator)
         }
         
         func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
         
     }
-
     
- extension AppStartViewController: CLLocationManagerDelegate{
-        public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-            guard let location = locations.last else { return }
-            mainController!.onLocationRequestAllowed(isAllowed: false)
-            mainController!.onLocationResponse(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-            print("Latitude: \(location.coordinate.latitude), Longitude: \(location.coordinate.longitude)")
+    func sendAppointmentBookingNotification(customerName: String, vendorLogoUrl: String, businessName: String, appointmentDay: String, appointmentMonth: String, appointmentYear: String, appointmentTime: String, serviceType: String, fcmToken: String) {
+        
+    }
+    
+    func sendOrderBookingNotification(customerName: String, vendorLogoUrl: String, fcmToken: String) {
+        
+    }
+    
+    func sendPostponedAppointmentNotification(customerName: String, vendorLogoUrl: String, businessName: String, appointmentDay: String, appointmentMonth: String, appointmentYear: String, appointmentTime: String, serviceType: String, fcmToken: String) {
+        
+    }
+    
+    func startGoogleSSO(onAuthSuccessful: @escaping (String) -> Void, onAuthFailed: @escaping () -> Void) {
+       
+        guard let clientID = FirebaseApp.app()?.options.clientID else { return }
+
+        // Create Google Sign In configuration object.
+        let config = GIDConfiguration(clientID: clientID)
+        GIDSignIn.sharedInstance.configuration = config
+        GIDSignIn.sharedInstance.signIn(withPresenting: self) { signInResult, error in
+            onAuthSuccessful("damilolaakinterinwa@gmail.com")
         }
         
-        public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-            switch manager.authorizationStatus {
-            case .notDetermined:
-                print("When user did not yet determined")
-            case .restricted:
-                print("Restricted by parental control")
-            case .denied:
-                print("When user select option Dont't Allow")
-            case .authorizedWhenInUse:
-                print("When user select option Allow While Using App or Allow Once")
-                mainController!.onLocationRequestAllowed(isAllowed: true)
-            default:
-                print("default")
-            }
+    }
+    
+    func startImageUpload(onUploadDone: @escaping (String) -> Void) {
+        if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum){
+                   imagePicker.delegate = self
+                   imagePicker.sourceType = .savedPhotosAlbum
+                   imagePicker.allowsEditing = false
+
+            present(imagePicker, animated: true, completion: {})
         }
-        
-        public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-            // locationManager.stopUpdatingLocation()
-            if let clErr = error as? CLError {
-                switch clErr.code {
-                case .locationUnknown, .denied, .network:
-                    print("Location request failed with error: \(clErr.localizedDescription)")
-                case .headingFailure:
-                    print("Heading request failed with error: \(clErr.localizedDescription)")
-                case .rangingUnavailable, .rangingFailure:
-                    print("Ranging request failed with error: \(clErr.localizedDescription)")
-                case .regionMonitoringDenied, .regionMonitoringFailure, .regionMonitoringSetupDelayed, .regionMonitoringResponseDelayed:
-                    print("Region monitoring request failed with error: \(clErr.localizedDescription)")
-                default:
-                    print("Unknown location manager error: \(clErr.localizedDescription)")
-                }
-            } else {
-                print("Unknown error occurred while handling location manager error: \(error.localizedDescription)")
+    
+        observation = self.observe(\.imageUploadUrl, options: [.old, .new]) { controller, value in
+                   onUploadDone(value.newValue!)
             }
+    }
+    
+    func startNotificationService(onTokenReady: @escaping (String) -> Void) {
+        let fcmTokenKey = "fcmToken"
+        if preferences.object(forKey: fcmTokenKey) == nil {
+            print("Nothing Here")
+        } else {
+            let fcmToken = preferences.string(forKey: fcmTokenKey)
+            print("Token is")
+            print(fcmToken!)
+            onTokenReady(fcmToken!)
         }
     }
+    
+    func startPhoneSS0(phone: String) {
+        PhoneAuthProvider.provider()
+          .verifyPhoneNumber(phone, uiDelegate: nil) { verificationID, error in
+              if let error = error {
+                return
+              }
+           UserDefaults.standard.set(verificationID, forKey: "authVerificationID")
+              print(verificationID!)
+        }
+    }
+    
+    func startScanningBarCode(onCodeReady: @escaping (String) -> Void) {
+        
+    }
+    
+    func startXSSO(onAuthSuccessful: @escaping (String) -> Void, onAuthFailed: @escaping () -> Void) {
+        
+    }
+    
+    func getUserLocation(onLocationReady: @escaping (String, String) -> Void) {
+        self.locationManager.requestAlwaysAuthorization()
+        self.locationManager.requestWhenInUseAuthorization()
+        
+        observation = self.observe(\.locationArray, options: [.old, .new]) { controller, value in
+            onLocationReady(self.locationArray[0],self.locationArray[1])
+        }
+       
+    }
+    
+    
+    func verifyOTP(verificationCode: String, onVerificationSuccessful: @escaping (String) -> Void, onVerificationFailed: @escaping () -> Void) {
+        let verificationID = UserDefaults.standard.string(forKey: "authVerificationID")
+        
+        let credential = PhoneAuthProvider.provider().credential(
+          withVerificationID: verificationID!,
+          verificationCode: verificationCode)
+        
+        Auth.auth().signIn(with: credential) { (authResult, error) in
+            if let error = error {
+                let authError = error as NSError
+                onVerificationFailed()
+            }
+            let currentUser = Auth.auth().currentUser
+            onVerificationSuccessful(currentUser!.phoneNumber!)
+        }
+    }
+    
+    func startPaymentProcess(paymentAmount: String, accessCode: String,  currency: String, cardNumber: String, expiryMonth: String, expiryYear: String, cvv: String, customerEmail: String,
+                             onPaymentLoading: @escaping () -> Void, onPaymentSuccessful: @escaping () -> Void, onPaymentFailed: @escaping () -> Void){
+        
+    }
+    
+   func exitApp() {}
+
+   func goToMainScreen() {
+       mainView = MainScreenView(platformNavigator: self)
+       let mainScreenView = UIHostingController(rootView: mainView)
+       showNextScreen(nextViewController: mainScreenView)
+   }
+    
+   func restartApp() {
+       rootView = AppStartView(platformNavigator: self)
+       let appStartView = UIHostingController(rootView: rootView.edgesIgnoringSafeArea(.all))
+       showNextScreen(nextViewController: appStartView)
+    }
+}
 
 
 

@@ -20,29 +20,37 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import domain.Enums.ServiceLocationEnum
 import presentation.components.ToggleButton
 import presentation.viewmodels.BookingViewModel
-import presentation.viewmodels.MainViewModel
 import presentations.components.TextComponent
 
 @Composable
-fun ServiceLocationToggle(bookingViewModel: BookingViewModel, mainViewModel: MainViewModel, onSpaSelectedListener:() -> Unit,
-                          onHomeSelectedListener:() -> Unit){
+fun ServiceLocationToggle(bookingViewModel: BookingViewModel, isDisabled: Boolean = false, isPackage: Boolean = false, onSpaSelectedListener:() -> Unit,
+                          onMobileSelectedListener:() -> Unit){
 
-    var locationType by remember { mutableStateOf(0) }
-    val isHomeService = bookingViewModel.currentAppointmentBooking.value.isHomeService
-    if(isHomeService){
-        locationType = 1
-        onHomeSelectedListener()
-    }else{
-        locationType = 0
+    var locationType by remember { mutableStateOf(ServiceLocationEnum.SPA.toPath()) }
+    val isMobileService = bookingViewModel.currentAppointmentBooking.value.isMobileService
+    if(isMobileService){
+        locationType = ServiceLocationEnum.MOBILE.toPath()
+        onMobileSelectedListener()
+    }
+    else{
+        locationType = ServiceLocationEnum.SPA.toPath()
         onSpaSelectedListener()
     }
 
     val selectedServiceTypeState = bookingViewModel.selectedServiceType.collectAsState()
-    if (!selectedServiceTypeState.value.homeServiceAvailable){
-        locationType = 0
+    if (!selectedServiceTypeState.value.mobileServiceAvailable){
+        locationType = ServiceLocationEnum.SPA.toPath()
         onSpaSelectedListener()
+    }
+
+    val isServiceLocationDisabled = if (isPackage){
+        isDisabled
+    }
+    else{
+        !selectedServiceTypeState.value.mobileServiceAvailable || isDisabled
     }
 
     Column(
@@ -66,13 +74,13 @@ fun ServiceLocationToggle(bookingViewModel: BookingViewModel, mainViewModel: Mai
             textModifier = Modifier
                 .fillMaxWidth().padding(start = 10.dp))
 
-        ToggleButton(shape = CircleShape, onLeftClicked = {
+        ToggleButton(shape = CircleShape,onLeftClicked = {
             onSpaSelectedListener()
-            locationType = 0
+            locationType = ServiceLocationEnum.SPA.toPath()
         }, onRightClicked = {
-            onHomeSelectedListener()
-            locationType = 1
-        }, leftText = "Parlor", rightText = "Home", isRightSelection = locationType != 0, isDisabled = !selectedServiceTypeState.value.homeServiceAvailable)
+            onMobileSelectedListener()
+            locationType = ServiceLocationEnum.MOBILE.toPath()
+        }, leftText = "Parlor", rightText = "My Address", isRightSelection = locationType != ServiceLocationEnum.SPA.toPath(), isDisabled = isServiceLocationDisabled)
 
     }
 

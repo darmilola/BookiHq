@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -24,12 +25,14 @@ import presentation.components.ToggleButton
 import presentation.viewmodels.CartViewModel
 import presentation.viewmodels.MainViewModel
 import presentations.components.TextComponent
+import utils.getDeliveryMethodDisplayName
 
 @Composable
-fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel,cartViewModel: CartViewModel,
-                                 onPickupSelectedListener:() -> Unit, onHomeSelectedListener:() -> Unit){
+fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel, isDisabled: Boolean = false,
+                                 onPickupSelectedListener:() -> Unit, onMobileSelectedListener:() -> Unit){
 
-    val deliveryLocation =  remember { mutableStateOf(cartViewModel.deliveryLocation.value) }
+    val deliveryMethod =  mainViewModel.deliveryMethod.collectAsState()
+    val isRightSelection = deliveryMethod.value == DeliveryMethodEnum.MOBILE.toPath()
     val columnModifier = Modifier
         .padding(start = 10.dp, bottom = 10.dp, top = 15.dp, end = 10.dp)
         .wrapContentHeight()
@@ -50,22 +53,14 @@ fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel,cartViewModel: Car
         )
 
         Row(modifier = Modifier.fillMaxWidth()) {
-            ToggleButton(shape = CircleShape, onLeftClicked = {
-                deliveryLocation.value = DeliveryMethodEnum.HOME_DELIVERY.toPath()
-                onHomeSelectedListener()
-            }, onRightClicked = {
-                deliveryLocation.value = DeliveryMethodEnum.PICKUP.toPath()
+            ToggleButton(shape = CircleShape, isRightSelection = isRightSelection, onLeftClicked = {
                 onPickupSelectedListener()
-            }, leftText = "Home", rightText = "Pick Up")
+            }, onRightClicked = {
+                onMobileSelectedListener()
+            },
+                isDisabled = isDisabled,
+                rightText = getDeliveryMethodDisplayName(DeliveryMethodEnum.MOBILE.toPath()), leftText = getDeliveryMethodDisplayName(DeliveryMethodEnum.PICKUP.toPath()))
         }
-
-       if(deliveryLocation.value == DeliveryMethodEnum.HOME_DELIVERY.toPath()) {
-            MobileDeliveryWidget(mainViewModel = mainViewModel)
-       }
-        else{
-            ParlorDeliveryWidget(mainViewModel)
-        }
-
 
     }
 

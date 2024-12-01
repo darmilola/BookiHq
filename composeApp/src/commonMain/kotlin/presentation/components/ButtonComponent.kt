@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
@@ -109,6 +110,7 @@ public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStr
                 val textModifier = Modifier
                     .fillMaxHeight()
                     .fillMaxWidth()
+                    .padding(end = 15.dp)
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
@@ -173,14 +175,14 @@ public fun IconButtonComponent(modifier: Modifier, buttonText: String, borderStr
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-public fun bottomSheetIconButtonComponent(modifier: Modifier, buttonText: String, borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, iconSize: Int = 28, colorFilter: ColorFilter? = null, onClick: (() -> Unit)? = null) {
+fun bottomSheetIconButtonComponent(modifier: Modifier, buttonText: String, borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, iconRes: String, iconSize: Int = 28, colorFilter: ColorFilter? = null, onClick: (String) -> Unit) {
     val rowModifier = Modifier
         .fillMaxWidth()
 
     Button(
         onClick = {
             if (onClick != null) {
-                onClick()
+                onClick(buttonText)
             }
         },
         border = borderStroke,
@@ -405,10 +407,8 @@ fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, isRightSelection: Boo
 
     var isLeftChecked by remember { mutableStateOf(!isRightSelection) }
 
-    if(isDisabled) isLeftChecked = true
-
-    val leftTint  = if(isLeftChecked && !isDisabled) Colors.primaryColor else if(isLeftChecked && isDisabled) Colors.disabledPrimaryColor else Color.Transparent
-    val rightTint  =  if(!isLeftChecked) Colors.primaryColor else Color.Transparent
+    val leftTint  = if(isLeftChecked && isDisabled) Colors.disabledPrimaryColor else if(isLeftChecked) Colors.primaryColor else Color.Transparent
+    val rightTint  =  if(!isLeftChecked && isDisabled) Colors.disabledPrimaryColor else if(!isLeftChecked) Colors.primaryColor else Color.Transparent
 
     val leftTextColor = if (isLeftChecked) Color.White else Colors.primaryColor
 
@@ -417,7 +417,7 @@ fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, isRightSelection: Boo
     val rowModifier = Modifier
         .padding(top = 15.dp, end = 10.dp, start = 10.dp)
         .fillMaxWidth()
-        .height(55.dp)
+        .height(50.dp)
         .background(color = Colors.lightPrimaryColor, shape = CircleShape)
         Row(
             horizontalArrangement = Arrangement.Start,

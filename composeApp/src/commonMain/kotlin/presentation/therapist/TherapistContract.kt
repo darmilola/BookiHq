@@ -1,25 +1,33 @@
 package presentation.therapist
 
-import domain.Models.AppointmentResourceListEnvelope
 import domain.Models.TherapistReviews
-import UIStates.ActionUIStates
-import UIStates.ScreenUIStates
+import UIStates.AppUIStates
+import domain.Models.AppointmentReview
+import domain.Models.TherapistAppointmentResourceListEnvelope
 
 interface TherapistContract {
     interface View {
-        fun showScreenLce(screenUIStates: ScreenUIStates)
-        fun showActionLce(actionUiState: ActionUIStates)
-        fun showReviews(reviews: List<TherapistReviews>)
-        fun showAppointments(appointments: AppointmentResourceListEnvelope)
+        fun showScreenLce(actionUiState: AppUIStates)
+        fun showActionLce(actionUiState: AppUIStates)
+        fun showAppointments(appointments: TherapistAppointmentResourceListEnvelope)
         fun onLoadMoreAppointmentStarted()
         fun onLoadMoreAppointmentEnded()
-        fun onJoinMeetingTokenReady(meetingToken: String)
+    }
+
+    interface TherapistDashboardView {
+        fun showUpdateScreenLce(actionUiState: AppUIStates)
+        fun showReviews(reviews: List<AppointmentReview>)
+        fun showScreenLce(actionUiState: AppUIStates)
     }
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
-        abstract fun getTherapistReviews(therapistId: Int)
-        abstract fun getTherapistAppointments(therapistId: Int)
-        abstract fun getMoreTherapistAppointments(therapistId: Int, nextPage: Int = 1)
+        abstract fun registerTherapistDashboardUIContract(view: TherapistDashboardView?)
+        abstract fun getTherapistReviews(therapistId: Long)
+        abstract fun getTherapistAppointments(therapistId: Long)
+        abstract fun getMoreTherapistAppointments(therapistId: Long, nextPage: Int = 1)
+        abstract fun archiveAppointment(appointmentId: Long)
+        abstract fun doneAppointment(appointmentId: Long)
+        abstract fun updateAvailability(therapistId: Long, isMobileServiceAvailable: Boolean, isAvailable: Boolean)
     }
 }

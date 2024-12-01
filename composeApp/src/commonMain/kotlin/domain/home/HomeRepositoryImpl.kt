@@ -8,8 +8,8 @@ class HomeRepositoryImpl(apiService: HttpClient):
     HomeRepository {
 
     private val homeNetworkService: HomeNetworkService = HomeNetworkService(apiService)
-    override suspend fun getUserHomePage(userEmail: String, vendorPhone: String): Single<HomePageResponse> {
-        val param = GetHomeRequest(userEmail, vendorPhone)
+    override suspend fun getUserHomePage(userId: Long): Single<HomePageResponse> {
+        val param = GetHomeRequest(userId)
         return homeNetworkService.getHomePage(param)
     }
 

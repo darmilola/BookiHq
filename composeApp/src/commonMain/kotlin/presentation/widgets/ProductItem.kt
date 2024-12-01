@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,6 +24,8 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,29 +40,9 @@ import domain.Models.Product
 import presentation.components.ButtonComponent
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
-import utils.calculateDiscount
 
 @Composable
-fun ProductItem(product: Product, onProductClickListener: (Product) -> Unit) {
-    val columnModifier = Modifier
-        .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
-        .clickable {
-            onProductClickListener(product)
-        }
-        .height(280.dp)
-        Column(modifier = columnModifier,
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                ProductImage(product)
-                ProductNameAndPrice(product)
-            }
-}
-
-
-
-@Composable
-fun HomeProductItem(product: Product, onProductClickListener: (Product) -> Unit) {
+fun ProductItem(product: Product, onProductClickListener: (Product) -> Unit, onFavClicked:(Product) -> Unit, onUnFavClicked:(Product) -> Unit) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
         .clickable {
@@ -70,51 +53,22 @@ fun HomeProductItem(product: Product, onProductClickListener: (Product) -> Unit)
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Top
         ) {
-            HomeProductImage(product)
+            HomeProductImage(product, onFavClicked, onUnFavClicked)
             HomeProductDescription(product, onProductClickListener = {
                 onProductClickListener(it)
             })
         }
     }
 
-
-    @Composable
-    fun ProductImage(product: Product) {
-        val imageModifier =
-            Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-        Card(
-            modifier = Modifier
-                .padding(start = 5.dp, end = 5.dp, top = 5.dp)
-                .background(color = Color.White)
-                .height(200.dp)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(8.dp),
-            border = null
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
-                contentAlignment = Alignment.TopStart
-            ) {
-                ImageComponent(
-                    imageModifier = imageModifier,
-                    imageRes = product.productImages[0].imageUrl,
-                    isAsync = true,
-                    contentScale = ContentScale.Crop
-                )
-                if (product.isDiscounted) {
-                    DiscountText(product)
-                }
-            }
-        }
-    }
-
-
 @Composable
-fun HomeProductImage(product: Product) {
+fun HomeProductImage(product: Product, onFavClicked:(Product) -> Unit, onUnFavClicked:(Product) -> Unit) {
+    val favIconRes = remember { mutableStateOf("drawable/fav_icon.png") }
+    if (product.isFavorite){
+        favIconRes.value = "drawable/fav_icon_filled.png"
+    }
+    else{
+        favIconRes.value = "drawable/fav_icon.png"
+    }
     val imageModifier =
         Modifier
             .fillMaxHeight()
@@ -134,19 +88,26 @@ fun HomeProductImage(product: Product) {
                 .fillMaxHeight(),
             contentAlignment = Alignment.TopStart
         ) {
-            ImageComponent(
-                imageModifier = imageModifier,
-                imageRes = product.productImages[0].imageUrl,
-                contentScale = ContentScale.Crop,
-                isAsync = true
-            )
-            Box(
-                modifier = Modifier
-                    .padding(5.dp)
-                    .size(35.dp).background(color = Color.White, shape = CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-              ImageComponent(imageModifier = Modifier.size(16.dp), imageRes = "drawable/like_icon.png", colorFilter = ColorFilter.tint(color = Colors.pinkColor))
+
+            if (product.productImages.isNotEmpty()) {
+                ImageComponent(
+                    imageModifier = imageModifier,
+                    imageRes = product.productImages[0].imageUrl,
+                    contentScale = ContentScale.Crop,
+                    isAsync = true
+                )
+            }
+            Box(modifier = Modifier.fillMaxSize().padding(10.dp), contentAlignment = Alignment.TopStart){
+                FavoriteProductWidget(iconRes = favIconRes.value, onFavClicked = {
+                     if (it){
+                         onFavClicked(product)
+                         favIconRes.value = "drawable/fav_icon_filled.png"
+                     }
+                    else{
+                         onUnFavClicked(product)
+                         favIconRes.value = "drawable/fav_icon.png"
+                    }
+                })
             }
         }
     }
@@ -222,81 +183,4 @@ fun HomeProductProductDescriptionText(product: Product) {
 
     }
 
-}
-
-
-@Composable
-fun ProductNameAndPrice(product: Product){
-    val price = if(product.isDiscounted) product.discount else product.productPrice
-    val columnModifier = Modifier
-        .padding(start = 10.dp, end = 10.dp)
-        .clickable {}
-        .fillMaxHeight()
-        Column(
-            modifier = columnModifier,
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment  = Alignment.CenterHorizontally,
-        ) {
-            val modifier = Modifier
-                .padding(top = 5.dp)
-                .fillMaxWidth()
-                .wrapContentHeight()
-
-            TextComponent(
-                text = product.productName,
-                fontSize = 16,
-                fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Colors.darkPrimary,
-                textAlign = TextAlign.Left,
-                fontWeight = FontWeight.Bold,
-                lineHeight = 20,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                textModifier = modifier
-            )
-
-            TextComponent(
-                text = "$$price",
-                fontSize = 16,
-                fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Colors.primaryColor,
-                textAlign = TextAlign.Left,
-                fontWeight = FontWeight.Bold,
-                lineHeight = 30,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                textModifier = Modifier
-                    .padding(top = 10.dp)
-                    .fillMaxWidth()
-                    .wrapContentHeight())
-        }
-    }
-
-
-@Composable
-fun DiscountText(product: Product) {
-
-    val discount = calculateDiscount(price = product.productPrice, discount = product.discount)
-    println(discount)
-    val indicatorModifier = Modifier
-        .padding(end = 15.dp, bottom = 20.dp)
-        .background(color = Color.Transparent)
-        .width(50.dp)
-        .height(25.dp)
-        .background(color =  Colors.darkPrimary)
-
-        Box(modifier = indicatorModifier,
-            contentAlignment = Alignment.Center){
-            TextComponent(
-                text = "-$discount%",
-                fontSize = 15,
-                fontFamily = GGSansRegular,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.White,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
 }

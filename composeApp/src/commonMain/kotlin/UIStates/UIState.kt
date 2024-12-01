@@ -3,19 +3,17 @@ package UIStates
 
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import domain.Enums.ActionType
 
 @Parcelize
-class ScreenUIStates(
-   val loadingVisible: Boolean = false,
-   val contentVisible: Boolean = false,
-   val errorOccurred: Boolean = false,
-   val errorMessage: String = ""): Parcelable
-
-@Parcelize
-class ActionUIStates(
+class AppUIStates(
     val isLoading: Boolean = false,
-    val isSuccess: Boolean = false,
+    var isSuccess: Boolean = false,
     val isFailed: Boolean = false,
+    val isEmpty: Boolean = false,
+    val isDefault: Boolean = false,
     val loadingMessage: String = "",
     val successMessage: String = "",
-    val errorMessage: String = ""): Parcelable
+    val emptyMessage: String = "",
+    val errorMessage: String = "",
+    val defaultMessage: String = ""): Parcelable

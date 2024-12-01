@@ -10,8 +10,12 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import UIStates.ActionUIStates
-import utils.getUnSavedOrders
+import UIStates.AppUIStates
+import domain.Enums.ServerResponse
+import domain.Models.PlatformNavigator
+import domain.Models.User
+import domain.Models.Vendor
+import utils.getUnSavedOrdersRequestJson
 
 class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
 
@@ -23,38 +27,44 @@ class CartPresenter(apiService: HttpClient): CartContract.Presenter() {
     }
 
     override fun createOrder(
-        orderItemList: MutableList<OrderItem>,
-        vendorId: Int,
-        userId: Int,
-        orderReference: Int,
+        orderItemList: List<OrderItem>,
+        vendorId: Long,
+        userId: Long,
         deliveryMethod: String,
-        paymentMethod: String
+        paymentMethod: String,
+        day: Int,
+        month: Int,
+        year: Int, user: User, vendor: Vendor,paymentAmount: Long, platformNavigator: PlatformNavigator
     ) {
+        contractView?.showLce(AppUIStates(isLoading = true, loadingMessage = "Creating Order"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(ActionUIStates(isLoading = true, loadingMessage = "Creating Order"))
-                    val orderItems = getUnSavedOrders(orderItemList,userId,orderReference)
-                    productRepositoryImpl.createOrder(vendorId,userId,orderReference,deliveryMethod,paymentMethod,orderItems)
+                    val orderItemsJson = getUnSavedOrdersRequestJson(orderItemList)
+                    productRepositoryImpl.createOrder(vendorId,userId,deliveryMethod,paymentMethod,day, month, year, orderItemsJson,paymentAmount)
                         .subscribe(
                             onSuccess = { result ->
-                                if (result.status == "success"){
-                                    contractView?.showLce(ActionUIStates(isSuccess = true, successMessage = "Order Created Successfully"))
-                                }
-                                else{
-                                    contractView?.showLce(ActionUIStates(isFailed = true, errorMessage = "Error Creating Order"))
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.showLce(AppUIStates(isSuccess = true, successMessage = "Order Created Successfully"))
+                                        platformNavigator.sendOrderBookingNotification(customerName = user.firstname!!, vendorLogoUrl = vendor.businessLogo!!, fcmToken = vendor.fcmToken!!)
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Order"))
+                                    }
                                 }
                             },
                             onError = {
-                                contractView?.showLce(ActionUIStates(isFailed = true, errorMessage = "Error Creating Order"))
+                                contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Order"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(ActionUIStates(isFailed = true, errorMessage = "Error Creating Order"))
+                contractView?.showLce(AppUIStates(isFailed = true, errorMessage = "Error Creating Order"))
             }
         }
     }
+
 
 }

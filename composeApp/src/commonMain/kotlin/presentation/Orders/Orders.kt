@@ -1,12 +1,17 @@
 package presentation.Orders
 
 import StackedSnackbarHost
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,17 +32,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.tab.Tab
-import cafe.adriel.voyager.navigator.tab.TabOptions
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.core.stack.StackEvent
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
-import domain.Models.CustomerItemUIModel
-import domain.Models.CustomerOrder
-import domain.Enums.Screens
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
+import domain.Enums.SharedPreferenceEnum
+import domain.Models.UserOrderItemUIModel
+import domain.Models.UserOrders
+import drawable.ErrorOccurredWidget
+import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.OrderHandler
@@ -45,52 +61,68 @@ import presentation.components.IndeterminateCircularProgressBar
 import presentation.consultation.rightTopBarItem
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.OrdersResourceListEnvelopeViewModel
-import presentation.viewmodels.ScreenUIStateViewModel
+import presentation.viewmodels.LoadingScreenUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
+import presentation.widgets.EmptyContentWidget
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.TitleWidget
 import rememberStackedSnackbarHostState
 import theme.Colors
+import utils.ParcelableScreen
 import utils.getOrderViewHeight
 
-class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
+@OptIn(ExperimentalVoyagerApi::class)
+@Parcelize
+class Orders() : ParcelableScreen, KoinComponent, Parcelable, ScreenTransition {
 
 
+    @Transient
     private val orderPresenter: OrderPresenter by inject()
-    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
+    @Transient
+    private var loadingOrderScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
+    @Transient
     private var ordersResourceListEnvelopeViewModel: OrdersResourceListEnvelopeViewModel? = null
+    @Transient
+    private var mainViewModel: MainViewModel? = null
+    @Transient
+    private var reviewActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient
+    val preferenceSettings = Settings()
 
+    fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
 
-    @OptIn(ExperimentalResourceApi::class)
-    override val options: TabOptions
-        @Composable
-        get() {
-            val title = "Orders"
-            val icon = painterResource("drawable/calender_icon_semi.png")
-
-            return remember {
-                TabOptions(
-                    index = 0u,
-                    title = title,
-                    icon = icon
-                )
-            }
-        }
+    override val key: ScreenKey = uniqueScreenKey
 
     @Composable
     override fun Content() {
-
-        val userId = mainViewModel.userId.collectAsState()
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
             animation = StackedSnackbarAnimation.Bounce
         )
+        val navigator = LocalNavigator.currentOrThrow
+        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+        if (onBackPressed.value){
+            mainViewModel!!.setOnBackPressed(false)
+            navigator.pop()
+        }
 
 
-        if (screenUiStateViewModel == null) {
-            screenUiStateViewModel = kmpViewModel(
+        if (loadingOrderScreenUiStateViewModel == null) {
+            loadingOrderScreenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+
+        if (reviewActionUIStateViewModel == null) {
+            reviewActionUIStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -101,9 +133,16 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                     OrdersResourceListEnvelopeViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
-            orderPresenter.getUserOrders(userId.value)
         }
 
+
+
+        LaunchedEffect(true) {
+            if (ordersResourceListEnvelopeViewModel!!.resources.value.isEmpty()) {
+                val userId = preferenceSettings[SharedPreferenceEnum.USER_ID.toPath(), -1L]
+                orderPresenter.getUserOrders(userId)
+            }
+        }
 
 
 
@@ -114,14 +153,15 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
             ordersResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
         val displayedOrdersCount =
             ordersResourceListEnvelopeViewModel!!.displayedItemCount.collectAsState()
-        val uiState = screenUiStateViewModel!!.uiStateInfo.collectAsState()
+        val loadOrderUiState = loadingOrderScreenUiStateViewModel!!.uiStateInfo.collectAsState()
         val lastIndex = ordersList?.value?.size?.minus(1)
-        val selectedOrder = remember { mutableStateOf(CustomerOrder()) }
+        val userId = mainViewModel!!.currentUserInfo.value.userId
+        val selectedOrder = remember { mutableStateOf(UserOrders()) }
 
 
-        var customerOrderUIModel by remember {
+        var userOrderItemUIModel by remember {
             mutableStateOf(
-                CustomerItemUIModel(
+                UserOrderItemUIModel(
                     selectedOrder.value,
                     ordersList?.value!!
                 )
@@ -129,9 +169,9 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
         }
 
         if (!loadMoreState?.value!!) {
-            customerOrderUIModel =
-                customerOrderUIModel.copy(selectedCustomerOrder = selectedOrder.value,
-                    customerOrderList = ordersResourceListEnvelopeViewModel!!.resources.value.map { it2 ->
+            userOrderItemUIModel =
+                userOrderItemUIModel.copy(selectedUserOrders = selectedOrder.value,
+                    userOrderList = ordersResourceListEnvelopeViewModel!!.resources.value.map { it2 ->
                         it2.copy(
                             isSelected = it2.id == selectedOrder.value.id
                         )
@@ -143,18 +183,20 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {
-                UserOrdersScreenTopBar()
+                UserOrdersScreenTopBar(onBackPressed = {
+                    navigator.pop()
+                })
             },
             content = {
                 val handler = OrderHandler(
                     ordersResourceListEnvelopeViewModel!!,
-                    screenUiStateViewModel!!,
+                    loadingOrderScreenUiStateViewModel!!,
+                    reviewActionUIStateViewModel!!,
                     orderPresenter
                 )
                 handler.init()
 
-                if (uiState.value.loadingVisible) {
-                    //Content Loading
+                if (loadOrderUiState.value.isLoading) {
                     Box(
                         modifier = Modifier.fillMaxWidth().fillMaxHeight()
                             .padding(top = 40.dp, start = 50.dp, end = 50.dp)
@@ -163,18 +205,29 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                     ) {
                         IndeterminateCircularProgressBar()
                     }
-                } else if (uiState.value.errorOccurred) {
-                    // Error Occurred Try Again
-
-                } else if (uiState.value.contentVisible) {
+                }
+                else if (loadOrderUiState.value.isFailed) {
+                    Box(modifier = Modifier .fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.Center) {
+                        ErrorOccurredWidget(loadOrderUiState.value.errorMessage, onRetryClicked = {
+                            val userId = mainViewModel!!.currentUserInfo.value.userId
+                            orderPresenter.getUserOrders(userId!!)
+                        })
+                    }
+                }
+                else if (loadOrderUiState.value.isEmpty) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        EmptyContentWidget(emptyText = loadOrderUiState.value.emptyMessage)
+                    }
+                }
+                else if (loadOrderUiState.value.isSuccess) {
                     LazyColumn(
                         modifier = Modifier.fillMaxWidth()
                             .padding(bottom = 50.dp)
-                            .height(getOrderViewHeight(customerOrderUIModel.customerOrderList.size).dp),
+                            .height(getOrderViewHeight(userOrderItemUIModel.userOrderList.size).dp),
                         userScrollEnabled = true
                     ) {
-                        itemsIndexed(items = customerOrderUIModel.customerOrderList) { it, item ->
-                            OrderItemList(mainViewModel, item)
+                        itemsIndexed(items = userOrderItemUIModel.userOrderList) { it, item ->
+                            UserOrderComponent(mainViewModel!!, item.customerOrder!!, reviewActionUIStateViewModel!!)
                             if (it == lastIndex && loadMoreState.value) {
                                 Box(
                                     modifier = Modifier.fillMaxWidth().height(60.dp),
@@ -199,22 +252,21 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                                     style = TextStyle()
                                 ) {
                                     if (ordersResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
-                                        if (userId.value != -1) {
-                                            orderPresenter.getMoreUserOrders(userId.value, nextPage = ordersResourceListEnvelopeViewModel!!.currentPage.value + 1)
+                                        if (userId != -1L) {
+                                            orderPresenter.getMoreUserOrders(userId!!, nextPage = ordersResourceListEnvelopeViewModel!!.currentPage.value + 1)
                                         }
                                     }
                                 }
                             }
                         }
-
                     }
                 }
             })
-            }
+         }
 
 
     @Composable
-    fun UserOrdersScreenTopBar() {
+    fun UserOrdersScreenTopBar(onBackPressed: () -> Unit) {
 
         val rowModifier = Modifier
             .fillMaxWidth()
@@ -229,7 +281,9 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
                 .fillMaxWidth()
                 .fillMaxHeight(),
                 contentAlignment = Alignment.CenterStart) {
-                leftTopBarItem(mainViewModel)
+                leftTopBarItem(onBackPressed = {
+                  onBackPressed()
+                })
             }
 
             Box(modifier =  Modifier.weight(3.0f)
@@ -253,10 +307,25 @@ class Orders(private val mainViewModel: MainViewModel) : Tab, KoinComponent {
     }
 
     @Composable
-    fun leftTopBarItem(mainViewModel: MainViewModel) {
+    fun leftTopBarItem(onBackPressed:() -> Unit) {
         PageBackNavWidget() {
-            mainViewModel.setScreenNav(Pair(Screens.ORDERS.toPath(), Screens.MAIN_TAB.toPath()))
+            onBackPressed()
         }
     }
+
+    override fun enter(lastEvent: StackEvent): EnterTransition {
+        return slideIn { size ->
+            val x = if (lastEvent == StackEvent.Pop) -size.width else size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
+    override fun exit(lastEvent: StackEvent): ExitTransition {
+        return slideOut { size ->
+            val x = if (lastEvent == StackEvent.Pop) size.width else -size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
 
 }

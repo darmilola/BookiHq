@@ -1,7 +1,5 @@
 package presentation.widgets
 
-import GGSansRegular
-import GGSansSemiBold
 import domain.Models.PhoneExtensionModel
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
@@ -21,11 +19,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,14 +39,14 @@ import presentations.components.TextComponent
 
 @Composable
 fun DropDownWidgetView(menuItems: List<String>,
-                   iconRes: String = "drawable/country_icon.png",
-                   iconSize: Int = 20,
-                   placeHolderText: String,
-                   menuExpandedState: Boolean,
-                   selectedIndex : Int,
-                   updateMenuExpandStatus : () -> Unit,
-                   onDismissMenuView : () -> Unit,
-                   onMenuItemClick : (Int) -> Unit) {
+                       iconRes: String = "drawable/country_icon.png",
+                       iconSize: Int = 25,
+                       placeHolderText: String,
+                       menuExpandedState: Boolean,
+                       selectedIndex : Int,
+                       updateMenuExpandStatus : () -> Unit,
+                       onDismissMenuView : () -> Unit,
+                       onMenuItemClick : (Int) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -61,76 +57,76 @@ fun DropDownWidgetView(menuItems: List<String>,
                 },
             ),
     ) {
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().fillMaxHeight()
-            ) {
-
-                Box(modifier = Modifier.fillMaxHeight().width(50.dp), contentAlignment = Alignment.Center){
-                    ImageComponent(imageModifier = Modifier
-                        .size(iconSize.dp), imageRes = iconRes, colorFilter = ColorFilter.tint(color = Colors.primaryColor))
-                }
-
-                Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.8f), contentAlignment = Alignment.Center){
-
-                    TextComponent(
-                        text =  if(selectedIndex != -1) menuItems[selectedIndex] else placeHolderText,
-                        fontSize = 16,
-                        fontFamily = GGSansSemiBold,
-                        textStyle = MaterialTheme.typography.h6,
-                        textColor = if(selectedIndex != -1) Colors.darkPrimary else  Color.Gray,
-                        textAlign = TextAlign.Start,
-                        fontWeight = FontWeight.Black,
-                        textModifier = Modifier.wrapContentHeight().fillMaxWidth().padding(end = 5.dp))
-                    }
-
-                Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(), contentAlignment = Alignment.Center){
-                    val imageModifier = Modifier
-                        .size(30.dp)
-                        .padding(start = 10.dp, top = 3.dp)
-                    ImageComponent(
-                        imageModifier = imageModifier,
-                        imageRes = "drawable/chevron_down_icon.png",
-                        colorFilter = ColorFilter.tint(color = Colors.primaryColor)
-                    )
-                }
-
-            }
-        }
-
-        DropdownMenu(
-            expanded = menuExpandedState,
-            onDismissRequest = { onDismissMenuView() },
-            modifier = Modifier
-                .fillMaxWidth(0.90f)
-                .background(Color.White)
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth().fillMaxHeight()
         ) {
-            menuItems.forEachIndexed { index, title ->
-                DropdownMenuItem(
-                    onClick = {
-                        if (index != -1) {
-                            onMenuItemClick(index)
-                        }
-                    }) {
-                    SubtitleTextWidget(text = title, fontSize = 16)
-                }
+
+            Box(modifier = Modifier.fillMaxHeight().width(50.dp), contentAlignment = Alignment.Center){
+                ImageComponent(imageModifier = Modifier
+                    .size(iconSize.dp), imageRes = iconRes, colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+            }
+
+            Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.8f), contentAlignment = Alignment.Center){
+
+                TextComponent(
+                    text =  if(selectedIndex != -1) menuItems[selectedIndex] else placeHolderText,
+                    fontSize = 16,
+                    textStyle = TextStyle(),
+                    textColor = if(selectedIndex != -1) Colors.darkPrimary else  Color.Gray,
+                    textAlign = TextAlign.Start,
+                    fontWeight = FontWeight.SemiBold,
+                    textModifier = Modifier.wrapContentHeight().fillMaxWidth().padding(end = 5.dp))
+            }
+
+            Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(), contentAlignment = Alignment.Center){
+                val imageModifier = Modifier
+                    .size(30.dp)
+                    .padding(start = 10.dp, top = 3.dp)
+                ImageComponent(
+                    imageModifier = imageModifier,
+                    imageRes = "drawable/chevron_down_icon.png",
+                    colorFilter = ColorFilter.tint(color = Colors.primaryColor)
+                )
+            }
+
+        }
+    }
+
+    DropdownMenu(
+        expanded = menuExpandedState,
+        onDismissRequest = { onDismissMenuView() },
+        modifier = Modifier
+            .fillMaxWidth(0.90f)
+            .background(Color.White)
+    ) {
+        menuItems.forEachIndexed { index, title ->
+            DropdownMenuItem(
+                onClick = {
+                    if (index != -1) {
+                        onMenuItemClick(index)
+                    }
+                }) {
+                MultiLineTextWidget(text = title, fontSize = 20)
             }
         }
+    }
 }
 
 @Composable
-fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_icon.png",selectedIndex: Int = -1, placeHolderText: String, iconSize: Int = 20, onMenuItemClick : (Int) -> Unit) {
+fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_icon.png",selectedIndex: Int = -1, placeHolderText: String, iconSize: Int = 20, shape: RoundedCornerShape = RoundedCornerShape(15.dp), onMenuItemClick : (Int) -> Unit,
+                   onExpandMenuItemClick : () -> Unit) {
 
     val expandedMenuItem = remember { mutableStateOf(false) }
     val selectedMenuIndex = remember { mutableStateOf(selectedIndex) }
 
     val modifier  = Modifier
-        .padding(top = 15.dp)
+        .padding(end = 10.dp, start = 10.dp, top = 20.dp)
         .fillMaxWidth()
-        .height(60.dp)
-        .border(border = BorderStroke((1.3).dp, color  = Colors.primaryColor), shape = CircleShape)
-        .background(color = Colors.lightPrimaryColor, shape = CircleShape)
+        .height(55.dp)
+        .border(border = BorderStroke(1.dp, color  = Colors.primaryColor), shape = shape)
+        .background(color = Colors.lightPrimaryColor, shape = shape)
 
     Column (
         modifier = modifier,
@@ -146,6 +142,7 @@ fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_
             menuExpandedState = expandedMenuItem.value,
             selectedIndex = selectedMenuIndex.value,
             updateMenuExpandStatus = {
+                onExpandMenuItemClick()
                 expandedMenuItem.value = true
             },
             onDismissMenuView = {
@@ -165,7 +162,6 @@ fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_
 fun CountryCodeDropDownWidget(menuItems: List<PhoneExtensionModel>, onSelectionChange: (Int) -> Unit) {
 
     val expandedMenuItem = remember { mutableStateOf(false) }
-
     val selectedMenuIndex = remember { mutableStateOf(0) }
 
     Column (

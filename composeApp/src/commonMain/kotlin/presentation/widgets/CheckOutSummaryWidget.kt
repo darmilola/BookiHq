@@ -1,6 +1,5 @@
 package presentation.widgets
 
-import GGSansBold
 import GGSansSemiBold
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
@@ -14,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,13 +22,29 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Enums.DeliveryMethodEnum
+import domain.Enums.PaymentMethod
 import presentation.components.ButtonComponent
 import presentation.viewmodels.CartViewModel
 import presentation.viewmodels.MainViewModel
 import presentations.components.TextComponent
 
 @Composable
-fun CheckOutSummaryWidget(cartViewModel: CartViewModel, onCreateOrderStarted:() -> Unit) {
+fun CheckOutSummaryWidget(cartViewModel: CartViewModel,mainViewModel: MainViewModel, onCheckOutStarted: () -> Unit, onCardCheckOutStarted:() -> Unit) {
+
+    val deliveryMethod = mainViewModel.deliveryMethod.collectAsState()
+    val currencyUnit = mainViewModel.displayCurrencyUnit.value
+    val subtotal = cartViewModel.subtotal.collectAsState()
+    val total = cartViewModel.total.collectAsState()
+    val deliveryFee = if (cartViewModel.deliveryFee.value == 0L) "Free" else cartViewModel.deliveryFee.value.toString()
+    val checkOutMethod = cartViewModel.paymentMethod.collectAsState()
+    val checkOutText = if (checkOutMethod.value == PaymentMethod.CARD_PAYMENT.toPath()) {
+        "Proceed to Checkout"
+    }
+    else{
+        "Place Order"
+    }
+
     val columnModifier = Modifier
         .padding(start = 10.dp, bottom = 10.dp, end = 10.dp)
         .height(200.dp)
@@ -55,7 +71,7 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel, onCreateOrderStarted:() 
                  textModifier = Modifier.fillMaxWidth(0.50f)
              )
              TextComponent(
-                 text = "$"+cartViewModel.subtotal.value,
+                 text = currencyUnit+subtotal.value.toString(),
                  fontSize = 18,
                  fontFamily = GGSansSemiBold,
                  textStyle = MaterialTheme.typography.h6,
@@ -69,34 +85,37 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel, onCreateOrderStarted:() 
              )
          }
 
+        println(deliveryMethod.value)
 
-        Row(modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)) {
-            TextComponent(
-                text = "Delivery Fee",
-                fontSize = 18,
-                fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.Gray,
-                textAlign = TextAlign.Right,
-                fontWeight = FontWeight.Bold,
-                lineHeight = 20,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                textModifier = Modifier.fillMaxWidth(0.50f)
-            )
-            TextComponent(
-                text = "Free",
-                fontSize = 18,
-                fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.Gray,
-                textAlign = TextAlign.Right,
-                fontWeight = FontWeight.Bold,
-                lineHeight = 20,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                textModifier = Modifier.fillMaxWidth()
-            )
+        if (deliveryMethod.value == DeliveryMethodEnum.MOBILE.toPath()) {
+            Row(modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)) {
+                TextComponent(
+                    text = "Delivery Fee",
+                    fontSize = 18,
+                    fontFamily = GGSansSemiBold,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Color.Gray,
+                    textAlign = TextAlign.Right,
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 20,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textModifier = Modifier.fillMaxWidth(0.50f)
+                )
+                TextComponent(
+                    text = "$currencyUnit$deliveryFee",
+                    fontSize = 18,
+                    fontFamily = GGSansSemiBold,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Color.Gray,
+                    textAlign = TextAlign.Right,
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 20,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textModifier = Modifier.fillMaxWidth()
+                )
+            }
         }
 
         Row(modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)) {
@@ -114,7 +133,7 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel, onCreateOrderStarted:() 
                 textModifier = Modifier.fillMaxWidth(0.50f)
             )
             TextComponent(
-                text = "$"+cartViewModel.total.value,
+                text = currencyUnit+total.value.toString(),
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
                 textStyle = MaterialTheme.typography.h6,
@@ -128,8 +147,14 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel, onCreateOrderStarted:() 
             )
         }
 
-        ButtonComponent(modifier = buttonStyle, buttonText = "Proceed To CheckOut", borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Colors.primaryColor, style = TextStyle()){
-                onCreateOrderStarted()
+        ButtonComponent(modifier = buttonStyle, buttonText = checkOutText, borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Colors.primaryColor, style = TextStyle()){
+            if (checkOutMethod.value == PaymentMethod.CARD_PAYMENT.toPath()) {
+                onCardCheckOutStarted()
+            }
+            else{
+                onCheckOutStarted()
+            }
+
         }
 
     }

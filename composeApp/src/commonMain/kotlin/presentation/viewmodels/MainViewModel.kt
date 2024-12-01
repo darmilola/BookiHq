@@ -1,40 +1,55 @@
 package presentation.viewmodels
 
-import UIStates.ActionUIStates
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
+import domain.Enums.Currency
+import domain.Enums.DeliveryMethodEnum
+import domain.Enums.MainTabEnum
+import domain.Enums.ProductType
+import domain.Models.FavoriteProductIdModel
 import domain.Models.OrderItem
-import domain.Models.VendorRecommendation
+import domain.Models.PlacedOrderItemComponent
 import domain.Models.Services
-import domain.Models.TherapistInfo
-import domain.Models.UnsavedAppointment
 import domain.Models.User
 import domain.Models.Vendor
 import kotlinx.coroutines.flow.StateFlow
-import domain.Models.HomepageInfo
-import domain.Models.VendorStatusModel
+import domain.Models.ServiceTypeItem
+import domain.Models.VendorPackage
 
-class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
+
+class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     private var _screenTitle = savedStateHandle.getStateFlow("screenTitle","Home")
     private var _connectedVendor =  savedStateHandle.getStateFlow("connectedVendor", Vendor())
+    private var _displayCurrencyUnit =  savedStateHandle.getStateFlow("displayCurrencyUnit", Currency.USD.toDisplayUnit())
+    private var _displayCurrencyPath =  savedStateHandle.getStateFlow("displayCurrencyPath", Currency.USD.toPath())
     private var _currentUserInfo =  savedStateHandle.getStateFlow("userInfo", User())
-    private var _currentUserId =  savedStateHandle.getStateFlow("currentUserId", -1)
-    private var _currentTherapistId =  savedStateHandle.getStateFlow("currentTherapistId", -1)
-    private var _currentVendorId =  savedStateHandle.getStateFlow("currentVendorId", -1)
-    private var _currentUserFirstname =  savedStateHandle.getStateFlow("currentUserFirstname", "")
-    private var _currentUserEmail =  savedStateHandle.getStateFlow("currentUserEmail", "")
-    private var _currentVendorEmail =  savedStateHandle.getStateFlow("currentVendorEmail", "")
-    private var _currentVendorLogoUrl =  savedStateHandle.getStateFlow("currentVendorLogoUrl", "")
-    private var _currentTherapistInfo =  savedStateHandle.getStateFlow("therapistInfo", TherapistInfo())
+    private var _roomDbUserCount =  savedStateHandle.getStateFlow("roomDbUserCount", 0)
     private var _screenNav =  savedStateHandle.getStateFlow("screenNav", Pair(-1,-1))
     private var _selectedService =  savedStateHandle.getStateFlow("selectedService", Services())
-    private var _vendorRecommendation =  savedStateHandle.getStateFlow("vendorRecommendation", VendorRecommendation())
-    private var _currentUnsavedAppointments =  savedStateHandle.getStateFlow("currentUnsavedAppointments", ArrayList<UnsavedAppointment>())
+    private var _selectedPackage =  savedStateHandle.getStateFlow("selectedPackage", VendorPackage())
+    private var _recommendedServiceType =  savedStateHandle.getStateFlow("recommendedServiceType", ServiceTypeItem())
     private var _currentUnsavedOrders =  savedStateHandle.getStateFlow("currentUnsavedOrders", ArrayList<OrderItem>())
-    private var _currentOrderReference =  savedStateHandle.getStateFlow("currentOrderReference", -1)
-    private var _homePageViewHeight =  savedStateHandle.getStateFlow("homePageViewHeight",0)
     private var _currentUnsavedOrderSize =  savedStateHandle.getStateFlow("currentUnsavedOrderSize", 0)
+    private var _deliveryMethod =  savedStateHandle.getStateFlow("deliveryMethod", DeliveryMethodEnum.PICKUP.toPath())
+    private var _selectedProductType =  savedStateHandle.getStateFlow("selectedProductType", ProductType.COSMETICS.toPath())
+    private var _currentMainDisplayTab =  savedStateHandle.getStateFlow("displayedTab", MainTabEnum.HOME.toPath())
+    private var _isClickedSearchProductState =  savedStateHandle.getStateFlow("isClickedSearchProduct", false)
+    private var _switchVendorId =  savedStateHandle.getStateFlow("switchVendorId", -1L)
+    private var _switchVendorReason =  savedStateHandle.getStateFlow("switchVendorReason", "")
+    private var _switchVendor =  savedStateHandle.getStateFlow("switchVendor", Vendor())
+    private var _joinSpa =  savedStateHandle.getStateFlow("joinSpaVendor", Vendor())
+    private var _restartApp =  savedStateHandle.getStateFlow("restartApp", false)
+    private var _showProductBottomSheet =  savedStateHandle.getStateFlow("showProductBottomSheet", false)
+    private var _showPaymentCardsBottomSheet =  savedStateHandle.getStateFlow("showPaymentCardsBottomSheet", false)
+    private var _showProductReviewsBottomSheet =  savedStateHandle.getStateFlow("showProductReviewsBottomSheet", false)
+    private var _showPaymentMethodBottomSheet =  savedStateHandle.getStateFlow("showPaymentMethodBottomSheet", false)
+    private var _showAppointmentReviewsBottomSheet =  savedStateHandle.getStateFlow("showAppointmentReviewsBottomSheet", false)
+    private var _showPackageReviewsBottomSheet =  savedStateHandle.getStateFlow("showPackageReviewsBottomSheet", false)
+    private var _onBackPressed =  savedStateHandle.getStateFlow("onBackPressed", false)
+    private var _isSwitchVendor =  savedStateHandle.getStateFlow("isSwitchVendor", false)
+    private var _orderItemComponents =  savedStateHandle.getStateFlow("orderItemComponents", arrayListOf<PlacedOrderItemComponent>())
+    private var _favoriteProductIds =  savedStateHandle.getStateFlow("favoriteProductIds", listOf<FavoriteProductIdModel>())
 
     val screenTitle: StateFlow<String>
         get() = _screenTitle
@@ -42,50 +57,84 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     val selectedService: StateFlow<Services>
         get() = _selectedService
 
-    val unSavedAppointments: StateFlow<ArrayList<UnsavedAppointment>>
-        get() = _currentUnsavedAppointments
+    val selectedPackage: StateFlow<VendorPackage>
+        get() = _selectedPackage
+
+    val roomDbUserCount: StateFlow<Int>
+        get() = _roomDbUserCount
+
+    val switchVendor: StateFlow<Vendor>
+        get() = _switchVendor
 
     val unSavedOrders: StateFlow<ArrayList<OrderItem>>
         get() = _currentUnsavedOrders
 
+    val orderItemComponents: StateFlow<ArrayList<PlacedOrderItemComponent>>
+        get() = _orderItemComponents
+
+    val favoriteProductIds: StateFlow<List<FavoriteProductIdModel>>
+        get() = _favoriteProductIds
+
+    val restartApp: StateFlow<Boolean>
+        get() = _restartApp
+
+    val deliveryMethod: StateFlow<String>
+        get() = _deliveryMethod
+
+    val selectedProductType: StateFlow<String>
+        get() = _selectedProductType
+
+    val showProductBottomSheet: StateFlow<Boolean>
+        get() = _showProductBottomSheet
+
+    val showPaymentCardsBottomSheet: StateFlow<Boolean>
+        get() = _showPaymentCardsBottomSheet
+
+    val showProductReviewsBottomSheet: StateFlow<Boolean>
+        get() = _showProductReviewsBottomSheet
+
+    val showAppointmentReviewsBottomSheet: StateFlow<Boolean>
+        get() = _showAppointmentReviewsBottomSheet
+
+    val showPackageReviewsBottomSheet: StateFlow<Boolean>
+        get() = _showPackageReviewsBottomSheet
+
+    val showPaymentMethodBottomSheet: StateFlow<Boolean>
+        get() = _showPaymentMethodBottomSheet
+
+    val isSwitchVendor: StateFlow<Boolean>
+        get() = _isSwitchVendor
+
+
+    val clickedSearchProduct: StateFlow<Boolean>
+        get() = _isClickedSearchProductState
+
+    val displayedTab: StateFlow<String>
+        get() = _currentMainDisplayTab
+    val onBackPressed: StateFlow<Boolean>
+        get() = _onBackPressed
     val unSavedOrderSize: StateFlow<Int>
         get() = _currentUnsavedOrderSize
-
-    val currentOrderReference: StateFlow<Int>
-        get() = _currentOrderReference
-
-    val userFirstname: StateFlow<String>
-        get() = _currentUserFirstname
-
     val connectedVendor: StateFlow<Vendor>
         get() = _connectedVendor
+    val displayCurrencyUnit: StateFlow<String>
+        get() = _displayCurrencyUnit
 
-    val homePageViewHeight: StateFlow<Int>
-        get() = _homePageViewHeight
+    val displayCurrencyPath: StateFlow<String>
+        get() = _displayCurrencyPath
 
-    val userEmail: StateFlow<String>
-        get() = _currentUserEmail
-    val vendorEmail: StateFlow<String>
-        get() = _currentVendorEmail
-    val vendorLogoUrl: StateFlow<String>
-        get() = _currentVendorLogoUrl
-    val userId: StateFlow<Int>
-        get() = _currentUserId
-
-    val therapistId: StateFlow<Int>
-        get() = _currentTherapistId
-
-    val vendorId: StateFlow<Int>
-        get() = _currentVendorId
-
-    val vendorRecommendation: StateFlow<VendorRecommendation>
-        get() = _vendorRecommendation
+    val switchVendorId: StateFlow<Long>
+        get() = _switchVendorId
+    val switchVendorReason: StateFlow<String>
+        get() = _switchVendorReason
+    val joinSpaVendor: StateFlow<Vendor>
+        get() = _joinSpa
 
     val currentUserInfo: StateFlow<User>
         get() = _currentUserInfo
 
-    val currentTherapistInfo: StateFlow<TherapistInfo>
-        get() = _currentTherapistInfo
+    val recommendedServiceType: StateFlow<ServiceTypeItem>
+        get() = _recommendedServiceType
 
 
     val screenNav: StateFlow<Pair<Int,Int>>
@@ -93,6 +142,75 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
 
     fun setTitle(newTitle: String) {
         savedStateHandle["screenTitle"] = newTitle
+    }
+    fun setJoinSpaVendor(vendor: Vendor) {
+        savedStateHandle["joinSpaVendor"] = vendor
+    }
+    fun setOrderItemComponents(orderItemComponents: ArrayList<PlacedOrderItemComponent>) {
+        savedStateHandle["orderItemComponents"] = orderItemComponents
+    }
+    fun setRoomDbUserAccount(userCount: Int) {
+        savedStateHandle["roomDbUserCount"] = userCount
+    }
+    fun setSwitchVendor(vendor: Vendor) {
+        savedStateHandle["switchVendor"] = vendor
+    }
+
+    fun setDeliveryMethod(deliveryMethod: String) {
+        savedStateHandle["deliveryMethod"] = deliveryMethod
+    }
+    fun setSelectedProductType(productType: String) {
+        savedStateHandle["selectedProductType"] = productType
+    }
+    fun setIsSwitchVendor(isSwitchVendor: Boolean) {
+        savedStateHandle["isSwitchVendor"] = isSwitchVendor
+    }
+    fun showProductBottomSheet(show: Boolean) {
+        savedStateHandle["showProductBottomSheet"] = show
+    }
+
+    fun showProductReviewsBottomSheet(show: Boolean) {
+        savedStateHandle["showProductReviewsBottomSheet"] = show
+    }
+
+    fun showAppointmentReviewsBottomSheet(show: Boolean) {
+        savedStateHandle["showAppointmentReviewsBottomSheet"] = show
+    }
+
+    fun showPackageReviewsBottomSheet(show: Boolean) {
+        savedStateHandle["showPackageReviewsBottomSheet"] = show
+    }
+
+    fun showPaymentCardsBottomSheet(show: Boolean) {
+        savedStateHandle["showPaymentCardsBottomSheet"] = show
+    }
+
+    fun showPaymentMethodBottomSheet(show: Boolean) {
+        savedStateHandle["showPaymentMethodBottomSheet"] = show
+    }
+
+    fun setSwitchVendorID(vendorId: Long) {
+        savedStateHandle["switchVendorId"] = vendorId
+    }
+
+    fun setSwitchVendorReason(switchReason: String) {
+        savedStateHandle["switchVendorReason"] = switchReason
+    }
+
+    fun setFavoriteProductIds(favoriteProductIds: List<FavoriteProductIdModel>) {
+        savedStateHandle["favoriteProductIds"] = favoriteProductIds
+    }
+
+    fun setOnBackPressed(onBackPressed: Boolean) {
+        savedStateHandle["onBackPressed"] = onBackPressed
+    }
+
+    fun setIsClickedSearchProduct(isSearching: Boolean) {
+        savedStateHandle["isClickedSearchProduct"] = isSearching
+    }
+
+    fun setDisplayedTab(displayedTab: String) {
+        savedStateHandle["displayedTab"] = displayedTab
     }
 
     fun setUnsavedOrderSize(size: Int) {
@@ -107,26 +225,16 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
         savedStateHandle["connectedVendor"] = vendor
     }
 
-    fun setUserId(userId: Int) {
-        savedStateHandle["currentUserId"] = userId
+    fun setDisplayCurrencyUnit(currencyUnit: String) {
+        savedStateHandle["displayCurrencyUnit"] = currencyUnit
     }
 
-    fun setVendorId(vendorId: Int) {
-        savedStateHandle["currentVendorId"] = vendorId
+    fun setDisplayCurrencyPath(currencyPath: String) {
+        savedStateHandle["displayCurrencyPath"] = currencyPath
     }
 
-    fun setTherapistId(therapistId: Int) {
-        savedStateHandle["currentTherapistId"] = therapistId
-    }
-
-    fun setUserFirstname(userFirstname: String) {
-        savedStateHandle["currentUserFirstname"] = userFirstname
-    }
-    fun setUserEmail(userEmail: String) {
-        savedStateHandle["currentUserEmail"] = userEmail
-    }
-    fun setVendorEmail(vendorEmail: String) {
-        savedStateHandle["currentVendorEmail"] = vendorEmail
+    fun setRecommendationServiceType(serviceTypeItem: ServiceTypeItem) {
+        savedStateHandle["recommendedServiceType"] = serviceTypeItem
     }
     fun setVendorBusinessLogoUrl(vendorLogoUrl: String) {
         savedStateHandle["currentVendorLogoUrl"] = vendorLogoUrl
@@ -136,64 +244,27 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
         savedStateHandle["userInfo"] = user
     }
 
-    fun setTherapistInfo(therapistInfo: TherapistInfo) {
-        savedStateHandle["therapistInfo"] = therapistInfo
-    }
-
     fun setSelectedService(selectedService: Services) {
         savedStateHandle["selectedService"] = selectedService
     }
-
-    fun setVendorRecommendation(vendorRecommendation: VendorRecommendation) {
-        savedStateHandle["vendorRecommendation"] = vendorRecommendation
+    fun setSelectedPackage(selectedPackage: VendorPackage) {
+        savedStateHandle["selectedPackage"] = selectedPackage
     }
-
-    fun setHomePageViewHeight(viewHeight: Int) {
-        savedStateHandle["homePageViewHeight"] = viewHeight
-    }
-
-    fun setCurrentUnsavedAppointments(unsavedAppointments: ArrayList<UnsavedAppointment>) {
-        savedStateHandle["currentUnsavedAppointments"] = unsavedAppointments
-    }
-
     fun setCurrentUnsavedOrders(orderItems: ArrayList<OrderItem>) {
         savedStateHandle["currentUnsavedOrders"] = orderItems
     }
-
-    fun setCurrentOrderReference(orderReference: Int) {
-        savedStateHandle["currentOrderReference"] = orderReference
-    }
-
-    fun clearUnsavedAppointments() {
-        savedStateHandle["currentUnsavedAppointments"] = ArrayList<UnsavedAppointment>()
-    }
-
     fun clearCurrentOrderReference() {
         savedStateHandle["currentOrderReference"] = -1
     }
 
     fun clearUnsavedOrders() {
         savedStateHandle["currentUnsavedOrders"] = ArrayList<OrderItem>()
+        savedStateHandle["currentUnsavedOrderSize"] = 0
     }
 
-    fun setHomePageInfo(homepageInfo: HomepageInfo) {
-        savedStateHandle["homePageInfo"] = homepageInfo
+    fun setIsRestart(isRestart: Boolean) {
+        savedStateHandle["isRestart"] = isRestart
     }
 
-    fun setVendorStatus(vendorStatus: ArrayList<VendorStatusModel>) {
-        savedStateHandle["vendorStatus"] = vendorStatus
-    }
 
-    fun removeLastAppointment() {
-        val unsavedAppointments: ArrayList<UnsavedAppointment> = savedStateHandle["currentUnsavedAppointments"]!!
-        unsavedAppointments.removeLastOrNull()
-        savedStateHandle["currentUnsavedAppointments"] = unsavedAppointments
-    }
-
-    fun clearVendorRecommendation() {
-        savedStateHandle["vendorRecommendation"] = VendorRecommendation()
-    }
-    fun setMainUIState(actionUIStates: ActionUIStates) {
-        savedStateHandle["mainUiState"] = actionUIStates
-    }
 }

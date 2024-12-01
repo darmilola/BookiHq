@@ -37,7 +37,7 @@ import presentations.components.TextFieldComponent
 
 
 @Composable
-fun InputWidget(iconRes: String, placeholderText: String, text: String = "", iconSize: Int, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), isFocusedByDefault: Boolean = false, viewHeight: Int = 70, isSingleLine: Boolean = false, maxLines: Int = 1, mBorderStroke: BorderStroke =  BorderStroke(1.dp, color  = Color.Transparent), isPasswordField: Boolean = false, onSaveClicked: Boolean = false, onValueChange: ((String) -> Unit)? = null) {
+fun InputWidget(iconRes: String, maxLength: Int, placeholderText: String, text: String = "", iconSize: Int, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), isFocusedByDefault: Boolean = false, viewHeight: Int = 70, isSingleLine: Boolean = false, maxLines: Int = 1, mBorderStroke: BorderStroke =  BorderStroke(1.dp, color  = Color.Transparent), isPasswordField: Boolean = false, onSaveClicked: Boolean = false, onValueChange: ((String) -> Unit)? = null) {
     var passwordIconRes by remember { mutableStateOf("drawable/not_visible.png") }
     var borderStroke by remember { mutableStateOf(mBorderStroke) }
     var iconTint by remember { mutableStateOf(Colors.primaryColor) }
@@ -62,11 +62,11 @@ fun InputWidget(iconRes: String, placeholderText: String, text: String = "", ico
     var isPassword by remember { mutableStateOf(isPasswordField) }
 
     val modifier  = Modifier
-        .padding(end = 10.dp, start = 10.dp, top = 20.dp)
+        .padding(top = 20.dp)
         .fillMaxWidth()
         .height(viewHeight.dp)
-        .border(border = borderStroke, shape = RoundedCornerShape(15.dp))
-        .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(15.dp))
+        .border(border = borderStroke, shape = RoundedCornerShape(10.dp))
+        .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(10.dp))
 
     Row(modifier = modifier,
         horizontalArrangement = Arrangement.Start,
@@ -93,7 +93,9 @@ fun InputWidget(iconRes: String, placeholderText: String, text: String = "", ico
             keyboardOptions = keyboardOptions,
             onValueChange = {
                 if (onValueChange != null) {
-                    onValueChange(it)
+                    if (it.trim().length < maxLength) {
+                        onValueChange(it)
+                    }
                 }
             },
             isSingleLine = isSingleLine,

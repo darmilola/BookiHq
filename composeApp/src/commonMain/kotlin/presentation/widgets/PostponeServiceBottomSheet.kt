@@ -26,11 +26,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import domain.Models.OrderItem
 import kotlinx.datetime.LocalDate
-import presentation.Products.ProductDetailContent
 import presentation.components.ButtonComponent
-import presentation.viewmodels.MainViewModel
 import presentations.components.TextComponent
 import theme.styles.Colors
 
@@ -69,7 +66,7 @@ fun PostponeServiceBottomSheetContent(onDismissRequest: () -> Unit,
                 TitleWidget(title = "Postpone Service", textColor = Color.White)
             }
           //  NewDateContent()
-            buttonContent(onDismissRequest = {
+            ButtonContent(onDismissRequest = {
                 onDismissRequest()
             }, onConfirmation = {
                 onConfirmation()
@@ -80,7 +77,7 @@ fun PostponeServiceBottomSheetContent(onDismissRequest: () -> Unit,
 }
 
 @Composable
-fun buttonContent(onDismissRequest: () -> Unit,
+fun ButtonContent(onDismissRequest: () -> Unit,
                   onConfirmation: () -> Unit){
     val buttonStyle = Modifier
         .fillMaxWidth(0.50f)

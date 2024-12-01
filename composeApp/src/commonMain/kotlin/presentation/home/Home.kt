@@ -1,11 +1,9 @@
 package presentation.home
 
+import GGSansBold
 import GGSansRegular
 import StackedSnackbarHost
-import StackedSnakbarHostState
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
+import UIStates.AppUIStates
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -15,11 +13,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,10 +28,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,62 +45,62 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.room.RoomDatabase
 import applications.device.ScreenSizeInfo
+import applications.room.AppDatabase
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
-import com.russhwolf.settings.set
-import domain.Models.Appointment
 import domain.Enums.AppointmentType
 import domain.Models.HomepageInfo
-import domain.Models.OrderItem
-import domain.Models.Product
 import domain.Models.VendorRecommendation
 import domain.Enums.RecommendationType
 import domain.Enums.Screens
+import domain.Enums.SharedPreferenceEnum
+import domain.Models.OrderItem
+import domain.Models.PlatformNavigator
+import domain.Models.Product
+import domain.Models.ServiceTypeItem
 import domain.Models.Services
-import domain.Models.VendorStatusModel
+import domain.Models.UserAppointment
+import drawable.ErrorOccurredWidget
+import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.HomepageHandler
 import presentation.components.StraightLine
-import presentation.widgets.HomeProductItem
-import presentation.components.FloatingActionButton
 import presentation.components.IndeterminateCircularProgressBar
-import presentation.viewmodels.ActionUIStateViewModel
 import presentation.viewmodels.HomePageViewModel
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.ScreenUIStateViewModel
-import presentation.widgets.BusinessWhatsAppStatusWidget
 import presentation.widgets.HomeServicesWidget
-import presentation.widgets.MeetingAppointmentWidget
-import presentation.widgets.RecommendedServiceItem
-import presentation.widgets.AppointmentWidget
+import presentation.widgets.VendorPicksItem
+import presentation.widgets.RecentAppointmentWidget
 import presentation.widgets.ProductDetailBottomSheet
-import presentation.widgets.ShowSnackBar
-import presentation.widgets.SnackBarType
+import presentation.widgets.RecentPackageAppointmentWidget
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import utils.calculateHomePageScreenHeight
-import utils.getPercentOfScreenHeight
-import utils.getPopularProductViewHeight
 import utils.getRecentAppointmentViewHeight
-import utils.getServicesViewHeight
 
-class HomeTab(private val mainViewModel: MainViewModel, private val homePageViewModel: HomePageViewModel) : Tab, KoinComponent {
+@Parcelize
+class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Parcelable {
 
-    private var screenUiStateViewModel: ScreenUIStateViewModel? = null
-    private val homepagePresenter: HomepagePresenter by inject()
-    private var userEmail: String = ""
-    private val preferenceSettings: Settings = Settings()
-    private var availabilityActionUIStateViewModel: ActionUIStateViewModel? = null
+    @Transient private val homepagePresenter: HomepagePresenter by inject()
+    @Transient private val preferenceSettings: Settings = Settings()
+    @Transient private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
+    @Transient private var mainViewModel: MainViewModel? = null
+    @Transient private var homePageViewModel: HomePageViewModel? = null
+    @Transient
+    private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 
   @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -122,176 +118,212 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
             }
         }
 
+    fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
+
+    fun setHomePageViewModel(homePageViewModel: HomePageViewModel){
+        this.homePageViewModel = homePageViewModel
+    }
+
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = databaseBuilder
+    }
 
 
+
+    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
-        userEmail = preferenceSettings["userEmail", "devprocess0@gmail.com"]
-
+        val userId = preferenceSettings[SharedPreferenceEnum.USER_ID.toPath(), -1L]
         val screenSizeInfo = ScreenSizeInfo()
-        if (screenUiStateViewModel == null) {
-            screenUiStateViewModel = kmpViewModel(
+
+        if (loadingScreenUiStateViewModel == null) {
+            loadingScreenUiStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    ScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                    LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
-            if (availabilityActionUIStateViewModel == null) {
-                availabilityActionUIStateViewModel = kmpViewModel(
-                    factory = viewModelFactory {
-                        ActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
-                    },
-                )
+        }
+
+
+        LaunchedEffect(true) {
+            val isSwitchVendor: Boolean = mainViewModel!!.isSwitchVendor.value
+
+            println("Vendor $isSwitchVendor")
+            if (isSwitchVendor) {
+                homePageViewModel!!.setHomePageInfo(HomepageInfo())
             }
 
-
-            val handler = HomepageHandler(screenUiStateViewModel!!, homepagePresenter,
-                onHomeInfoAvailable = { homePageInfo, vendorStatus ->
-                    val viewHeight = calculateHomePageScreenHeight(
-                        homepageInfo = homePageInfo,
-                        screenSizeInfo = screenSizeInfo,
-                        isStatusExpanded = false
-                    )
-                    homePageViewModel.setHomePageViewHeight(viewHeight)
-                    homePageViewModel.setHomePageInfo(homePageInfo)
-                    homePageViewModel.setVendorStatus(vendorStatus)
-                    mainViewModel.setConnectedVendor(homePageInfo.vendorInfo!!)
-                    mainViewModel.setUserEmail(homePageInfo.userInfo?.userEmail!!)
-                    mainViewModel.setUserFirstname(homePageInfo.userInfo.firstname!!)
-                    mainViewModel.setUserId(homePageInfo.userInfo.userId!!)
-                    mainViewModel.setVendorEmail(homePageInfo.vendorInfo.businessEmail)
-                    mainViewModel.setVendorId(homePageInfo.vendorInfo.vendorId!!)
-                    mainViewModel.setVendorBusinessLogoUrl(homePageInfo.vendorInfo.businessLogo)
-                    mainViewModel.setUserInfo(homePageInfo.userInfo)
-                    mainViewModel.setTherapistId(homePageInfo.therapistInfo?.id!!)
-                    saveAccountInfoFromServer(homePageInfo)
-                })
-            handler.init()
-
-            if (homePageViewModel.homePageInfo.value.userInfo == null) {
-                homepagePresenter.getUserHomepage(userEmail, "2348022510893")
+            if (homePageViewModel!!.homePageInfo.value.userInfo?.userId == null) {
+                homepagePresenter.getUserHomepage(userId)
             }
         }
 
-        val uiState = screenUiStateViewModel!!.uiStateInfo.collectAsState()
-        val homepageInfo = homePageViewModel.homePageInfo.collectAsState()
-        val mVendorStatus = homePageViewModel.vendorStatus.collectAsState()
-        val homePageViewHeight = homePageViewModel.homePageViewHeight.collectAsState()
-        val isStatusViewExpanded = remember { mutableStateOf(false) }
+        val handler = HomepageHandler(loadingScreenUiStateViewModel!!, homepagePresenter,
+            onHomeInfoAvailable = { homePageInfo,->
+                val viewHeight = calculateHomePageScreenHeight(homepageInfo = homePageInfo)
+                homePageViewModel!!.setHomePageViewHeight(viewHeight)
+                homePageViewModel!!.setHomePageInfo(homePageInfo)
+                mainViewModel!!.setVendorBusinessLogoUrl(homePageInfo.vendorInfo!!.businessLogo!!)
+            })
+        handler.init()
+
+        val homepageInfo = homePageViewModel!!.homePageInfo.collectAsState()
+        val homePageViewHeight = homePageViewModel!!.homePageViewHeight.collectAsState()
+        val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
+
+        if (homepageInfo.value.userInfo!!.userId != null){
+            loadingScreenUiStateViewModel!!.switchScreenUIState(AppUIStates(isSuccess = true))
+        }
+
+        val stackedSnackBarHostState = rememberStackedSnackbarHostState(
+            maxStack = 5,
+            animation = StackedSnackbarAnimation.Bounce
+        )
 
 
-        Box(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                .background(color = Colors.lighterPrimaryColor),
-            contentAlignment = Alignment.Center
-        ) {
-            if (uiState.value.loadingVisible) {
-                Box(
-                    modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                        .padding(top = 40.dp, start = 50.dp, end = 50.dp)
-                        .background(color = Color.Transparent, shape = RoundedCornerShape(20.dp)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    IndeterminateCircularProgressBar()
-                }
-            } else if (uiState.value.errorOccurred) {
-
-                val message = uiState.value.errorMessage
-
-                //Error Occurred
-
-            } else if (uiState.value.contentVisible) {
-                val popularProducts = homepageInfo.value.popularProducts
-                val recentAppointments = homepageInfo.value.recentAppointment
-                val vendorServices = homepageInfo.value.vendorServices
-                val vendorRecommendations = homepageInfo.value.recommendationRecommendations
-
-                val stackedSnackBarHostState = rememberStackedSnackbarHostState(
-                    maxStack = 5,
-                    animation = StackedSnackbarAnimation.Bounce
-                )
-
-                Scaffold(
+            Scaffold(
                     snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
                     topBar = {},
-                    floatingActionButton = {
-                        if (isStatusViewExpanded.value) {
-
-                            val buttonStyle = Modifier
-                                .padding(bottom = 60.dp)
-                                .clip(CircleShape)
-                                .size(60.dp)
-                            FloatingActionButton(
-                                modifier = buttonStyle,
-                                colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
-                                iconRes = "drawable/new_chat_icon.png",
-                                colorFilter = ColorFilter.tint(color = Color.White)
-                            )
-                        }
-                    },
                     content = {
-                        Column(
-                            Modifier
-                                .verticalScroll(state = rememberScrollState())
-                                .height(homePageViewHeight.value.dp)
-                                .padding(top = 5.dp)
-                                .background(color = Color.White)
-                                .fillMaxWidth()
-
+                        Box(
+                            modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                                .background(color = Color.White),
+                            contentAlignment = Alignment.TopStart
                         ) {
-                            BusinessStatusDisplay(
-                                mVendorStatus.value,
-                                onViewHeightChanged = { newHeight: Int, isStatusExpanded: Boolean ->
-                                    isStatusViewExpanded.value = isStatusExpanded
-                                })
+                            if (uiState.value.isLoading) {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                                        .padding(top = 40.dp, start = 50.dp, end = 50.dp)
+                                        .background(
+                                            color = Color.Transparent,
+                                            shape = RoundedCornerShape(20.dp)
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    IndeterminateCircularProgressBar()
+                                }
+                            } else if (uiState.value.isFailed) {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                                        .padding(top = 40.dp, start = 50.dp, end = 50.dp)
+                                        .background(
+                                            color = Color.Transparent,
+                                            shape = RoundedCornerShape(20.dp)
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    ErrorOccurredWidget(
+                                        uiState.value.errorMessage,
+                                        onRetryClicked = {
+                                            if (homePageViewModel!!.homePageInfo.value.userInfo?.userId == null) {
+                                                homepagePresenter.getUserHomepage(userId)
+                                            }
+                                        })
+                                }
+                            } else if (uiState.value.isSuccess) {
+                                val recentAppointments = homepageInfo.value.recentAppointments
+                                val vendorServices = homepageInfo.value.vendorServices
+                                val vendorRecommendations =
+                                    homepageInfo.value.recommendations
+                                Column(
+                                    Modifier
+                                        .verticalScroll(state = rememberScrollState())
+                                        .height(homePageViewHeight.value.dp)
+                                        .fillMaxWidth()
+                                        .padding(top = 5.dp, bottom = 100.dp)
 
-                            AttachOurServices()
-                            if (vendorServices != null) {
-                                ServiceGridScreen(vendorServices)
-                            }
-                            if (vendorRecommendations != null) {
-                                RecommendedSessions(vendorRecommendations)
-                            }
+                                ) {
+                                    if (!vendorServices.isNullOrEmpty()) {
+                                        AttachOurServices()
+                                        val servicesGridList = homepageInfo.value.servicesGridList!!
+                                        val pagerState = rememberPagerState(pageCount = {servicesGridList.size})
+                                        HorizontalPager(
+                                            state = pagerState,
+                                            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                                            pageSpacing = 10.dp
+                                        ) { page ->
+                                            ServiceGridScreen(servicesGridList[page], onServiceSelected = {
+                                                mainViewModel!!.setRecommendationServiceType(ServiceTypeItem())
+                                                mainViewModel!!.setScreenNav(
+                                                    Pair(
+                                                        Screens.MAIN_SCREEN.toPath(),
+                                                        Screens.BOOKING.toPath()
+                                                    )
+                                                )
+                                                mainViewModel!!.setRecommendationServiceType(ServiceTypeItem())
+                                                mainViewModel!!.setSelectedService(it)
+                                            })
+                                        }
+                                        Row(
+                                            Modifier
+                                                .height(5.dp)
+                                                .fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.Center
+                                        ) {
+                                            repeat(servicesGridList.size) { iteration ->
+                                                val color: Color
+                                                val width: Int
+                                                if (pagerState.currentPage == iteration) {
+                                                    color = Colors.primaryColor
+                                                    width = 20
+                                                } else {
+                                                    color = Color.LightGray
+                                                    width = 20
+                                                }
+                                                Box(
+                                                    modifier = Modifier
+                                                        .padding(2.dp)
+                                                        .clip(CircleShape)
+                                                        .background(color)
+                                                        .height(2.dp)
+                                                        .width(width.dp)
+                                                )
+                                            }
 
-                            PopularProducts()
-                            if (popularProducts != null) {
-                                PopularProductScreen(
-                                    popularProducts,
-                                    mainViewModel,
-                                    stackedSnackBarHostState
-                                )
+                                        }
+                                    }
+                                    if (!vendorRecommendations.isNullOrEmpty()) {
+                                        VendorPicks(vendorRecommendations, mainViewModel!!)
+                                    }
+                                    if (!recentAppointments.isNullOrEmpty()) {
+                                        AttachAppointmentsTitle("Recent Appointments")
+                                        AppointmentsScreen(
+                                            appointmentList = recentAppointments,
+                                            platformNavigator = platformNavigator
+                                        )
+                                    }
+                                }
                             }
-                            AttachAppointments()
-                            RecentAppointmentScreen(appointmentList = recentAppointments)
                         }
                     })
-            }
-        }
-    }
 
-    private fun saveAccountInfoFromServer(homePageInfo: HomepageInfo){
-        val preferenceSettings = Settings()
-        preferenceSettings["userEmail"] = homePageInfo.userInfo?.userEmail
-        preferenceSettings["userId"] = homePageInfo.userInfo?.userId
-        preferenceSettings["userFirstname"] = homePageInfo.userInfo?.firstname
-        preferenceSettings["vendorEmail"] = homePageInfo.vendorInfo?.businessEmail
-        preferenceSettings["vendorId"] = homePageInfo.vendorInfo?.vendorId
-        preferenceSettings["therapistId"] = homePageInfo.therapistInfo?.id
-        preferenceSettings["vendorBusinessLogoUrl"] = homePageInfo.vendorInfo?.businessLogo
     }
 
     @Composable
-    fun ServiceGridScreen(vendorServices: List<Services>) {
-        val viewHeight = getServicesViewHeight(vendorServices)
+    fun ServiceGridScreen(vendorServices: List<Services>, onServiceSelected: (Services) -> Unit) {
+        val viewHeight = if (vendorServices.size <= 2){
+            140
+        }
+        else if (vendorServices.size in 3..4){
+            280
+        }
+        else{
+            420
+        }
         LazyVerticalGrid(
-            columns = GridCells.Fixed(4),
-            modifier = Modifier.fillMaxWidth().height(viewHeight.dp),
+            columns = GridCells.Fixed(2),
+            modifier = Modifier.fillMaxWidth().height(420.dp),
             contentPadding = PaddingValues(5.dp),
             verticalArrangement = Arrangement.Center,
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.Start,
             userScrollEnabled = false
         ) {
             items(vendorServices.size) {
-                HomeServicesWidget(vendorServices[it], mainViewModel)
+                HomeServicesWidget(vendorServices[it], onServiceSelected = {
+                    onServiceSelected(it)
+                })
             }
         }
      }
@@ -308,8 +340,8 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
             ) {
                 TextComponent(
                     text = "Services",
-                    fontSize = 16,
-                    fontFamily = GGSansRegular,
+                    fontSize = 30,
+                    fontFamily = GGSansBold,
                     textStyle = MaterialTheme.typography.h6,
                     textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
@@ -317,14 +349,14 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                     lineHeight = 30,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    textModifier = Modifier.fillMaxWidth(0.20f)
+                    textModifier = Modifier.fillMaxWidth(0.35f)
                 )
                 StraightLine()
             }
     }
 
     @Composable
-    fun RecommendedSessions(recommendations: List<VendorRecommendation>) {
+    fun VendorPicks(recommendations: List<VendorRecommendation>, mainViewModel: MainViewModel) {
         Column(modifier = Modifier.fillMaxWidth().height(450.dp)) {
         Row(
             horizontalArrangement = Arrangement.Start,
@@ -335,10 +367,10 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                 .fillMaxWidth()
         ) {
             TextComponent(
-                text = "Recommendation",
-                textModifier = Modifier.fillMaxWidth(0.35f),
-                fontSize = 16,
-                fontFamily = GGSansRegular,
+                text = "Vendor Picks",
+                textModifier = Modifier.fillMaxWidth(0.50f),
+                fontSize = 30,
+                fontFamily = GGSansBold,
                 textStyle = MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
@@ -349,16 +381,17 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
             )
             StraightLine()
         }
-        RecommendedAppointmentList(recommendations)
-    }
+
+        RecommendedAppointmentList(recommendations, mainViewModel)
+       }
 
     }
 
 
     @Composable
-    fun AttachAppointments(){
+    fun AttachAppointmentsTitle(title: String){
         val rowModifier = Modifier
-            .padding(start = 10.dp, top = 10.dp, bottom = 20.dp)
+            .padding(start = 10.dp, top = 20.dp, bottom = 20.dp)
             .fillMaxWidth()
             Row(
                 horizontalArrangement = Arrangement.Start,
@@ -366,7 +399,7 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                 modifier = rowModifier
             ) {
                 TextComponent(
-                    text = "Recent Appointments",
+                    text = title,
                     fontSize = 16,
                     fontFamily = GGSansRegular,
                     textStyle = MaterialTheme.typography.h6,
@@ -374,137 +407,83 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                     textAlign = TextAlign.Left,
                     fontWeight = FontWeight.Black,
                     lineHeight = 10,
-                    textModifier = Modifier.fillMaxWidth(0.40f)
+                    textModifier = Modifier.fillMaxWidth(0.20f)
                 )
                 StraightLine()
             }
-    }
-
-
-    @Composable
-    fun PopularProducts(){
-        val rowModifier = Modifier
-            .padding(start = 10.dp, top = 30.dp)
-            .fillMaxWidth()
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = rowModifier
-            ) {
-                TextComponent(
-                    text = "Popular Products",
-                    fontSize = 18,
-                    fontFamily = GGSansRegular,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Colors.darkPrimary,
-                    textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.ExtraBold,
-                    lineHeight = 20,
-                    textModifier = Modifier.fillMaxWidth(0.42f),
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                StraightLine()
-            }
-
-        }
-
-
-
-
-    @Composable
-    fun PopularProductScreen(popularProducts: List<Product>, mainViewModel: MainViewModel, stackedSnackBarHostState: StackedSnakbarHostState) {
-
-        Column {
-
-            var showProductDetailBottomSheet by remember { mutableStateOf(false) }
-            val selectedProduct  = remember { mutableStateOf(Product()) }
-
-            if (showProductDetailBottomSheet) {
-                ProductDetailBottomSheet(mainViewModel,isViewedFromCart = false, OrderItem(itemProduct = selectedProduct.value), onDismiss = {
-                        isAddToCart,item -> if (isAddToCart){
-                    ShowSnackBar(title = "Successful",
-                        description = "Your Product has been successfully Added to Cart",
-                        actionLabel = "",
-                        duration = StackedSnackbarDuration.Short,
-                        snackBarType = SnackBarType.SUCCESS,
-                        stackedSnackBarHostState,
-                        onActionClick = {})
-                     }
-                    showProductDetailBottomSheet = false
-
-                }, onRemoveFromCart = {})
-            }
-
-            val viewHeight = getPopularProductViewHeight(popularProducts)
-
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth().padding(top = 10.dp).height(viewHeight.dp),
-                contentPadding = PaddingValues(top = 6.dp, bottom = 6.dp),
-                verticalArrangement = Arrangement.spacedBy(5.dp),
-                userScrollEnabled = false
-            ) {
-                items(popularProducts.size) {
-                    HomeProductItem(popularProducts[it],onProductClickListener = { it2 ->
-                        selectedProduct.value = it2
-                        showProductDetailBottomSheet = true
-                    })
-                }
-            }
-        }
     }
 
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun RecommendedAppointmentList(recommendations: List<VendorRecommendation>) {
+    fun RecommendedAppointmentList(recommendations: List<VendorRecommendation>, mainViewModel: MainViewModel) {
+        val selectedProduct = remember { mutableStateOf(Product()) }
+        var showProductDetailBottomSheet by remember { mutableStateOf(false) }
+
+        if (showProductDetailBottomSheet) {
+            mainViewModel.showProductBottomSheet(true)
+        }
+        else{
+            mainViewModel.showProductBottomSheet(false)
+        }
+
+        if (selectedProduct.value.productId != -1L) {
+            ProductDetailBottomSheet(
+                mainViewModel,
+                isViewOnly = false,
+                OrderItem(itemProduct = selectedProduct.value),
+                onDismiss = {
+                    selectedProduct.value = Product()
+                },
+                onAddToCart = { isAddToCart, item ->
+                    showProductDetailBottomSheet = false
+                })
+        }
+
+
+
         val pagerState = rememberPagerState(pageCount = {
             recommendations.size
         })
 
-        val boxModifier =
-            Modifier
-                .background(color = Color.White)
-                .fillMaxSize()
-                .padding(start = 5.dp)
 
-        val boxBgModifier =
-            Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-
-
-        Box(modifier = boxBgModifier) {
-            var showProductBottomSheet by remember { mutableStateOf(false) }
-
-
-            Box(contentAlignment = Alignment.BottomCenter, modifier = boxModifier) {
+        Column(modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth(),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally) {
                 HorizontalPager(
                     state = pagerState,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight(0.95f),
                     pageSpacing = 10.dp
                 ) { page ->
-                    RecommendedServiceItem (recommendations[page], onItemClickListener = {
+                    VendorPicksItem(recommendations[page],mainViewModel, onItemClickListener = {
                         when (it.recommendationType) {
                             RecommendationType.Services.toPath() -> {
-                                mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.BOOKING.toPath()))
+                                mainViewModel.setScreenNav(
+                                    Pair(
+                                        Screens.MAIN_SCREEN.toPath(),
+                                        Screens.BOOKING.toPath()
+                                    )
+                                )
                                 mainViewModel.setSelectedService(it.serviceTypeItem?.serviceDetails!!)
-                                //mainViewModel.setVendorRecommendation(it)
+                                mainViewModel.setRecommendationServiceType(it.serviceTypeItem)
                             }
+
                             RecommendationType.Products.toPath() -> {
-                                showProductBottomSheet = true
+                                selectedProduct.value = it.product!!
+                                showProductDetailBottomSheet = true
                             }
                         }
                     })
                 }
                 Row(
                     Modifier
-                        .wrapContentHeight()
+                        .fillMaxHeight()
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    repeat(pagerState.pageCount) { iteration ->
+                    repeat(recommendations.size) { iteration ->
                         val color: Color
                         val width: Int
                         if (pagerState.currentPage == iteration) {
@@ -519,74 +498,36 @@ class HomeTab(private val mainViewModel: MainViewModel, private val homePageView
                                 .padding(2.dp)
                                 .clip(CircleShape)
                                 .background(color)
-                                .height(3.dp)
+                                .height(2.dp)
                                 .width(width.dp)
                         )
                     }
 
                 }
-            }
+
         }
 
     }
 
     @Composable
-    fun RecentAppointmentScreen(appointmentList: List<Appointment>?) {
+    fun AppointmentsScreen(appointmentList: List<UserAppointment>?, platformNavigator: PlatformNavigator) {
         if (appointmentList != null) {
             val viewHeight = getRecentAppointmentViewHeight(appointmentList)
             LazyColumn(
                 modifier = Modifier.fillMaxWidth()
                     .height(viewHeight.dp), userScrollEnabled = false
             ) {
-                items(key = { it -> it.appointmentId!!}, items =  appointmentList) { item ->
-                    if (item.appointmentType == AppointmentType.MEETING.toPath()) {
-                        MeetingAppointmentWidget(
-                            appointment = item,
-                            appointmentPresenter = null,
-                            isFromHomeTab = true
-                        )
-                    } else {
-                        AppointmentWidget(
-                            item,
-                            appointmentPresenter = null,
-                            postponementViewModel = null,
-                            availabilityActionUIStateViewModel!!,
-                            isFromHomeTab = true
-                        )
-                    }
+                items(key = { it -> it.appointmentId }, items =  appointmentList) { item ->
+                    if (item.resources!!.appointmentType == AppointmentType.SINGLE.toPath()) {
+                        RecentAppointmentWidget(userAppointment = item)
+                      }
+                       else if (item.resources.appointmentType == AppointmentType.PACKAGE.toPath()) {
+                            RecentPackageAppointmentWidget(item)
+                        }
+
                 }
 
             }
-        }
-    }
-
-
-    @Composable
-    fun BusinessStatusDisplay(statusList: List<VendorStatusModel>, onViewHeightChanged: (Int, Boolean) -> Unit) {
-        val isStatusExpanded = remember { mutableStateOf(false) }
-        val isWidthGreaterThanHeight = remember { mutableStateOf(false) }
-        val screenSizeInfo = ScreenSizeInfo()
-        val percentChangeExpanded = if (isWidthGreaterThanHeight.value) 70 else 90
-        val percentChangeCollapsed = if (isWidthGreaterThanHeight.value) 50 else 70
-
-        val heightAtExpanded = getPercentOfScreenHeight(screenSizeInfo.heightPx.dp, percentChange = percentChangeExpanded)
-        val heightAtCollapsed = getPercentOfScreenHeight(screenSizeInfo.heightPx.dp, percentChange = percentChangeCollapsed)
-
-        val heightChange: Float by animateFloatAsState(targetValue = if (isStatusExpanded.value) heightAtExpanded.toFloat() else heightAtCollapsed.toFloat(),
-            animationSpec = tween(durationMillis = 600, easing = LinearOutSlowInEasing)
-        )
-        val viewHeight =  if (isStatusExpanded.value) heightAtExpanded else heightAtCollapsed
-        onViewHeightChanged(viewHeight, isStatusExpanded.value)
-        val modifier =
-            Modifier.fillMaxWidth()
-                .height(heightChange.dp)
-                .background(color = Color.White)
-        Box(modifier = modifier, contentAlignment = Alignment.TopCenter) {
-            BusinessWhatsAppStatusWidget(statusList, onStatusViewChanged = {
-                    isStatusViewExpanded -> isStatusExpanded.value = isStatusViewExpanded
-            }, onWidthGreaterThanHeight = {
-                 isWidthGreaterThanHeight.value = it
-            })
         }
     }
 }

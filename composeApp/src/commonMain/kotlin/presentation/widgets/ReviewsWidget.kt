@@ -23,22 +23,35 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Models.AppointmentReview
 import domain.Models.ProductReview
-import domain.Models.Reviewer
-import domain.Models.TherapistReviews
 import domain.Models.User
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun TherapistReviewsWidget(reviews: TherapistReviews) {
+fun AppointmentReviewsWidget(reviews: AppointmentReview) {
 
     val columnModifier = Modifier
         .padding(start = 5.dp, bottom = 10.dp)
         .fillMaxWidth()
     Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
-        AttachSpecialistReviewHeader(reviews)
-        AttachUserReviewsContent(reviews.reviewText!!)
+        AttachAppointmentReviewHeader(reviews)
+        AttachUserReviewsContent(reviews.reviewText)
+    }
+
+}
+
+
+@Composable
+fun PackageReviewsWidget(reviews: AppointmentReview) {
+
+    val columnModifier = Modifier
+        .padding(start = 5.dp, bottom = 10.dp)
+        .fillMaxWidth()
+    Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
+        AttachPackageReviewHeader(reviews)
+        AttachUserReviewsContent(reviews.reviewText)
     }
 
 }
@@ -74,7 +87,7 @@ fun AttachUserImage(profileImageUrl: String) {
 }
 
 @Composable
-fun AttachSpecialistReviewHeader(reviews: TherapistReviews) {
+fun AttachAppointmentReviewHeader(reviews: AppointmentReview) {
     val rowModifier = Modifier
         .fillMaxWidth()
         Row(
@@ -82,17 +95,39 @@ fun AttachSpecialistReviewHeader(reviews: TherapistReviews) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = rowModifier
         ) {
-            AttachUserImage(reviews.reviewer?.profileImageUrl!!)
+            AttachUserImage(reviews.customerInfo.profileImageUrl!!)
             val columnModifier = Modifier
                 .padding(start = 3.dp)
                 .fillMaxWidth()
             Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
-                AttachUserName(reviews.reviewer)
-                AttachReviewDate(reviews.reviewDate!!)
+                AttachUserName(reviews.customerInfo)
+                AttachReviewDate(reviews.createdAt)
             }
 
         }
     }
+
+
+@Composable
+fun AttachPackageReviewHeader(reviews: AppointmentReview) {
+    val rowModifier = Modifier
+        .fillMaxWidth()
+    Row(
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = rowModifier
+    ) {
+        AttachUserImage(reviews.customerInfo.profileImageUrl!!)
+        val columnModifier = Modifier
+            .padding(start = 3.dp)
+            .fillMaxWidth()
+        Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
+            AttachUserName(reviews.customerInfo)
+            AttachReviewDate(reviews.createdAt)
+        }
+
+    }
+}
 
 @Composable
 fun AttachProductReviewHeader(reviews: ProductReview) {
@@ -116,7 +151,7 @@ fun AttachProductReviewHeader(reviews: ProductReview) {
 }
 
 @Composable
-fun AttachUserName(reviewer: Reviewer){
+fun AttachUserName(user: User){
     val rowModifier = Modifier
         .padding(start = 5.dp)
         .wrapContentWidth()
@@ -127,7 +162,7 @@ fun AttachUserName(reviewer: Reviewer){
             modifier = rowModifier
         ) {
             TextComponent(
-                text = reviewer.firstname+" "+reviewer.lastname?.first().toString()
+                text = user.firstname+" "+user.lastname?.first().toString()
                     .uppercase() +".",
                 fontSize = 16,
                 fontFamily = GGSansRegular,

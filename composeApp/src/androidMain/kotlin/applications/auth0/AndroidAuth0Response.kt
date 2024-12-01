@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 data class AndroidAuth0ConnectionResponse(
     val connectionType: String? = Auth0ConnectionType.GOOGLE.toPath(),
     val email: String? = "", val action: String? = AuthenticationAction.SIGNUP.toPath(),
-    val status: String? = AuthenticationStatus.SUCCESS.toPath()): Parcelable {
+    val status: String? = AuthenticationStatus.AUTHENTICATION_SUCCESS.toPath()): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),

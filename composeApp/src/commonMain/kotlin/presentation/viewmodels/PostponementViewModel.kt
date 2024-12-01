@@ -1,36 +1,72 @@
 package presentation.viewmodels
 
-import UIStates.ActionUIStates
+import UIStates.AppUIStates
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Models.Appointment
 import domain.Models.AvailableTime
+import domain.Models.PlatformTime
+import domain.Models.UserAppointment
+import domain.Models.VendorTime
 import kotlinx.coroutines.flow.StateFlow
 import presentation.dataModeller.CalendarDataSource
 
 class PostponementViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
-    private var _therapistAvailableTimes = savedStateHandle.getStateFlow("therapistAvailableTimes", arrayListOf<AvailableTime>())
     private var _therapistBookedTimes = savedStateHandle.getStateFlow("therapistBookedAppointment", arrayListOf<Appointment>())
-    private var _currentAppointment = savedStateHandle.getStateFlow("currentAppointment",Appointment())
-    private var _postponementViewUIState = savedStateHandle.getStateFlow("postponementViewUIState", ActionUIStates())
+    private var _currentAppointment = savedStateHandle.getStateFlow("currentAppointment",UserAppointment())
+    private var _platformTimes = savedStateHandle.getStateFlow("platformTimes", listOf<PlatformTime>())
+    private var _vendorTimes = savedStateHandle.getStateFlow("vendorTimes", listOf<VendorTime>())
+    private var _postponementViewUIState = savedStateHandle.getStateFlow("postponementViewUIState", AppUIStates())
     private var _day =  savedStateHandle.getStateFlow("day", -1)
     private var _month =  savedStateHandle.getStateFlow("month", -1)
+    private var _monthName =  savedStateHandle.getStateFlow("monthName", "")
     private var _year =  savedStateHandle.getStateFlow("year", -1)
-    private var _newSelectedTime = savedStateHandle.getStateFlow("newSelectedTime", AvailableTime())
+    private var _newSelectedTime = savedStateHandle.getStateFlow("newSelectedTime", PlatformTime())
+    private var _vendorMorningHours = savedStateHandle.getStateFlow("morningHours", listOf<PlatformTime>())
+    private var _vendorAfternoonHours = savedStateHandle.getStateFlow("afternoonHours", listOf<PlatformTime>())
+    private var _vendorEveningHours = savedStateHandle.getStateFlow("eveningHours", listOf<PlatformTime>())
 
 
-    val therapistAvailableTimes: StateFlow<List<AvailableTime>>
-        get() = _therapistAvailableTimes
 
     val therapistBookedTimes: StateFlow<List<Appointment>>
         get() = _therapistBookedTimes
 
-    val currentAppointment: StateFlow<Appointment>
+    val currentAppointment: StateFlow<UserAppointment>
         get() = _currentAppointment
 
-    val postponementViewUIState: StateFlow<ActionUIStates>
+    val postponementViewUIState: StateFlow<AppUIStates>
         get() = _postponementViewUIState
+
+    val platformTimes: StateFlow<List<PlatformTime>>
+        get() = _platformTimes
+
+    val vendorTimes: StateFlow<List<VendorTime>>
+        get() = _vendorTimes
+
+    val vendorMorningHours: StateFlow<List<PlatformTime>>
+        get() = _vendorMorningHours
+
+    val vendorAfternoonHours: StateFlow<List<PlatformTime>>
+        get() = _vendorAfternoonHours
+
+
+    val vendorEveningHours: StateFlow<List<PlatformTime>>
+        get() = _vendorEveningHours
+
+
+    fun setVendorMorningHours(morningHours: List<PlatformTime>) {
+        savedStateHandle["morningHours"] = morningHours
+    }
+
+    fun setVendorAfternoonHours(afternoonHours: List<PlatformTime>) {
+        savedStateHandle["afternoonHours"] = afternoonHours
+    }
+
+    fun setVendorEveningHours(eveningHours: List<PlatformTime>) {
+        savedStateHandle["eveningHours"] = eveningHours
+    }
+
 
     val day: StateFlow<Int>
         get() = _day
@@ -38,25 +74,23 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
     val month: StateFlow<Int>
         get() = _month
 
+    val monthName: StateFlow<String>
+        get() = _monthName
+
     val year: StateFlow<Int>
         get() = _year
-    val selectedTime: StateFlow<AvailableTime>
+    val selectedTime: StateFlow<PlatformTime>
         get() = _newSelectedTime
-
-    fun setTherapistAvailableTimes(availableTimes: List<AvailableTime>) {
-        savedStateHandle["therapistAvailableTimes"] = availableTimes
-    }
-
-    fun setCurrentAppointment(currentAppointment: Appointment) {
-        savedStateHandle["currentAppointment"] = currentAppointment
+    fun setCurrentAppointment(userAppointment: UserAppointment) {
+        savedStateHandle["currentAppointment"] = userAppointment
     }
 
     fun setTherapistBookedAppointment(bookedAppointment: List<Appointment>) {
         savedStateHandle["therapistBookedAppointment"] = bookedAppointment
     }
 
-    fun setPostponementViewUIState(actionUIStates: ActionUIStates) {
-        savedStateHandle["postponementViewUIState"] = actionUIStates
+    fun setPostponementViewUIState(appUIStates: AppUIStates) {
+        savedStateHandle["postponementViewUIState"] = appUIStates
     }
 
     fun clearServiceTimes() {
@@ -75,9 +109,13 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
         savedStateHandle["year"] = year
     }
 
+    fun setMonthName(monthName: String) {
+        savedStateHandle["monthName"] = monthName
+    }
+
 
     fun clearPostponementSelection(){
-        savedStateHandle["newSelectedTime"] = AvailableTime()
+        savedStateHandle["newSelectedTime"] = PlatformTime()
         savedStateHandle["therapistAvailableTimes"] = arrayListOf<AvailableTime>()
         savedStateHandle["day"] = CalendarDataSource().today.dayOfMonth
         savedStateHandle["month"] = CalendarDataSource().today.monthNumber
@@ -85,8 +123,16 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
 
     }
 
-    fun setNewSelectedTime(availableTime: AvailableTime) {
-        savedStateHandle["newSelectedTime"] = availableTime
+    fun setNewSelectedTime(platformTime: PlatformTime) {
+        savedStateHandle["newSelectedTime"] = platformTime
+    }
+
+    fun setPlatformTimes(platformTimes: List<PlatformTime>) {
+        savedStateHandle["platformTimes"] = platformTimes
+    }
+
+    fun setVendorTimes(vendorTimes: List<VendorTime>) {
+        savedStateHandle["vendorTimes"] = vendorTimes
     }
 
 }

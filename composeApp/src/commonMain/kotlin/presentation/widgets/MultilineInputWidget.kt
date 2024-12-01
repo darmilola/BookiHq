@@ -46,11 +46,11 @@ fun MultilineInputWidget(defaultValue: String = "", keyboardOptions: KeyboardOpt
     }
 
     val modifier  = Modifier
-        .padding(end = 10.dp, start = 10.dp, top = 20.dp)
+        .padding(end = 10.dp, start = 10.dp, top = 15.dp)
         .fillMaxWidth()
         .height(viewHeight.dp)
-        .border(border = borderStroke, shape = RoundedCornerShape(15.dp))
-        .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(15.dp))
+        .border(border = borderStroke, shape = RoundedCornerShape(10.dp))
+        .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(10.dp))
 
     Row(modifier = modifier,
         horizontalArrangement = Arrangement.Start,

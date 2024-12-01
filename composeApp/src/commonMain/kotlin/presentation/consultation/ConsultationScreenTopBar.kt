@@ -101,9 +101,7 @@ fun leftTopBarItem(pagerState: PagerState, mainViewModel: MainViewModel) {
                 1 -> {
                     pagerState.animateScrollToPage(0)
                 }
-                else -> {
-                    mainViewModel.setScreenNav(Pair(Screens.CONSULTATION.toPath(), Screens.MAIN_TAB.toPath()))
-                }
+                else -> {}
             }
         }
 

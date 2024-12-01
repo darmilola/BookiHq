@@ -1,17 +1,16 @@
 package presentation.home
 
+import UIStates.AppUIStates
 import domain.Models.HomepageInfo
-import domain.Models.VendorStatusModel
-import UIStates.ScreenUIStates
 
 class HomepageContract {
     interface View {
-        fun showLce(uiState: ScreenUIStates)
-        fun showHome(homePageInfo: HomepageInfo, vendorStatus: ArrayList<VendorStatusModel>)
+        fun showLoadHomePageLce(appUIStates: AppUIStates)
+        fun showHome(homePageInfo: HomepageInfo)
     }
 
     abstract class Presenter {
         abstract fun registerUIContract(view: View?)
-        abstract fun getUserHomepage(userEmail: String, vendorWhatsAppPhone: String)
+        abstract fun getUserHomepage(userId: Long)
     }
 }

@@ -3,27 +3,29 @@ package presentation.DomainViewHandler
 import domain.Models.OrderResourceListEnvelope
 import presentation.Orders.OrderContract
 import presentation.Orders.OrderPresenter
-import UIStates.ActionUIStates
+import UIStates.AppUIStates
 import presentation.viewmodels.OrdersResourceListEnvelopeViewModel
-import presentation.viewmodels.ScreenUIStateViewModel
-import UIStates.ScreenUIStates
+import presentation.viewmodels.LoadingScreenUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 
 class OrderHandler(
     private val ordersResourceListEnvelopeViewModel: OrdersResourceListEnvelopeViewModel,
-    private val screenUiStateViewModel: ScreenUIStateViewModel,
+    private val loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel,
+    private val addReviewPerformedActionUIStateViewModel: PerformedActionUIStateViewModel,
     private val orderPresenter: OrderPresenter
 ) : OrderContract.View {
     fun init() {
         orderPresenter.registerUIContract(this)
     }
 
-    override fun showLce(uiState: ScreenUIStates, message: String) {
-        ordersResourceListEnvelopeViewModel.clearData(mutableListOf())
-        screenUiStateViewModel.switchScreenUIState(uiState)
+    override fun showLce(appUIStates: AppUIStates, message: String) {
+        loadingScreenUiStateViewModel.switchScreenUIState(appUIStates)
     }
 
-    override fun showAsyncLce(uiState: ActionUIStates, message: String) {
-        TODO("Not yet implemented")
+    override fun showAsyncLce(uiState: AppUIStates, message: String) {}
+
+    override fun showReviewsActionLce(uiState: AppUIStates, message: String) {
+        addReviewPerformedActionUIStateViewModel.switchAddProductReviewUiState(uiState)
     }
 
     override fun showUserOrders(orders: OrderResourceListEnvelope) {

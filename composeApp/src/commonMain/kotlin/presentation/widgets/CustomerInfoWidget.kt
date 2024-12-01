@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Enums.ServiceLocationEnum
 import domain.Models.Appointment
 import domain.Models.Vendor
 import presentations.components.ImageComponent
@@ -40,37 +42,13 @@ import theme.styles.Colors
 fun CustomerInfoWidget(appointment: Appointment) {
     val customerInfo = appointment.customerInfo
     val columnModifier = Modifier
-        .padding(start = 15.dp, end = 10.dp, top = 10.dp)
+        .padding(start = 15.dp, end = 10.dp)
         .fillMaxWidth()
          Column(
                 modifier = columnModifier,
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.Start
             ) {
-
-             VendorDisplayItem(appointment.vendor!!)
-
-             Row(
-                 horizontalArrangement = Arrangement.Start,
-                 verticalAlignment = Alignment.CenterVertically,
-                 modifier = Modifier.fillMaxWidth().height(30.dp)
-             ) {
-                 Box(modifier = Modifier.fillMaxWidth(0.08f).fillMaxHeight(), contentAlignment = Alignment.Center) {
-                     Box(modifier = Modifier.size(6.dp).clip(CircleShape).background(color = Colors.primaryColor)){}
-                 }
-                 TextComponent(
-                     text = "Customer Information",
-                     fontSize = 18,
-                     fontFamily = GGSansSemiBold,
-                     textStyle = TextStyle(),
-                     textColor = Colors.darkPrimary,
-                     textAlign = TextAlign.Left,
-                     fontWeight = FontWeight.SemiBold,
-                     maxLines = 1,
-                     overflow = TextOverflow.Ellipsis,
-                     lineHeight = 30,
-                     textModifier = Modifier
-                         .fillMaxWidth()) }
 
              Row(
                  horizontalArrangement = Arrangement.Start,
@@ -84,11 +62,70 @@ fun CustomerInfoWidget(appointment: Appointment) {
                      ImageComponent(
                          imageModifier = Modifier.size(25.dp),
                          imageRes = "drawable/user_outline.png",
-                         ColorFilter.tint(color = Color.Gray))
-                   }
+                         ColorFilter.tint(color = Color.Gray)
+                     )
+                 }
+
+                 TextComponent(
+                     text = customerInfo!!.firstname + " " + customerInfo.lastname,
+                     fontSize = 15,
+                     fontFamily = GGSansRegular,
+                     textStyle = MaterialTheme.typography.h6,
+                     textColor = Color.Gray,
+                     textAlign = TextAlign.Left,
+                     fontWeight = FontWeight.Bold,
+                     maxLines = 2,
+                     overflow = TextOverflow.Ellipsis,
+                     textModifier = Modifier.wrapContentSize()
+                         .padding(start = 10.dp, end = 10.dp)
+                 )
+                     Box(
+                         modifier = Modifier.width(25.dp).fillMaxHeight()
+                             .padding(start = 10.dp, end = 10.dp),
+                         contentAlignment = Alignment.Center
+                     ) {
+                         Box(
+                             modifier = Modifier.size(6.dp).clip(CircleShape)
+                                 .background(color = Colors.serviceLightGray)
+                         ) {}
+                     }
+                     Box(
+                         modifier = Modifier.wrapContentWidth().fillMaxHeight(),
+                         contentAlignment = Alignment.CenterStart
+                     ) {
+                         TextComponent(
+                             text = customerInfo.gender,
+                             textModifier = Modifier.wrapContentSize(),
+                             fontSize = 14,
+                             fontFamily = GGSansRegular,
+                             textStyle = MaterialTheme.typography.h6,
+                             textColor = Colors.serviceLightGray,
+                             textAlign = TextAlign.Start,
+                             fontWeight = FontWeight.Bold,
+                         )
+                     }
+             }
+
+             if (customerInfo!!.contactPhone != null) {
+
+                 Row(
+                     horizontalArrangement = Arrangement.Start,
+                     verticalAlignment = Alignment.CenterVertically,
+                     modifier = Modifier
+                         .fillMaxWidth().height(35.dp)
+                 ) {
+
+                     Box(Modifier.wrapContentSize(), contentAlignment = Alignment.CenterStart) {
+
+                         ImageComponent(
+                             imageModifier = Modifier.size(25.dp),
+                             imageRes = "drawable/phone_icon.png",
+                             ColorFilter.tint(color = Color.Gray)
+                         )
+                     }
 
                      TextComponent(
-                         text = customerInfo!!.firstname +" "+customerInfo.lastname,
+                         text = customerInfo.contactPhone.toString(),
                          fontSize = 15,
                          fontFamily = GGSansRegular,
                          textStyle = MaterialTheme.typography.h6,
@@ -98,72 +135,50 @@ fun CustomerInfoWidget(appointment: Appointment) {
                          maxLines = 2,
                          overflow = TextOverflow.Ellipsis,
                          textModifier = Modifier.wrapContentSize()
-                             .padding(start = 10.dp, end = 10.dp))
-                   }
-
-             Row(
-                 horizontalArrangement = Arrangement.Start,
-                 verticalAlignment = Alignment.CenterVertically,
-                 modifier = Modifier
-                     .fillMaxWidth().height(35.dp)
-             ) {
-
-                 Box(Modifier.wrapContentSize(), contentAlignment = Alignment.CenterStart) {
-
-                     ImageComponent(
-                         imageModifier = Modifier.size(25.dp),
-                         imageRes = "drawable/phone_icon.png",
-                         ColorFilter.tint(color = Color.Gray))
+                             .padding(start = 10.dp, end = 10.dp)
+                     )
                  }
-
-                 TextComponent(
-                     text = customerInfo!!.contactPhone.toString(),
-                     fontSize = 15,
-                     fontFamily = GGSansRegular,
-                     textStyle = MaterialTheme.typography.h6,
-                     textColor = Color.Gray,
-                     textAlign = TextAlign.Left,
-                     fontWeight = FontWeight.Bold,
-                     maxLines = 2,
-                     overflow = TextOverflow.Ellipsis,
-                     textModifier = Modifier.wrapContentSize()
-                         .padding(start = 10.dp, end = 10.dp))
              }
 
-             Row(
-                 horizontalArrangement = Arrangement.Start,
-                 verticalAlignment = Alignment.CenterVertically,
-                 modifier = Modifier
-                     .fillMaxWidth().height(40.dp)
-             ) {
+             if (appointment.serviceLocation == ServiceLocationEnum.MOBILE.toPath()) {
 
-                 Box(Modifier.wrapContentSize(), contentAlignment = Alignment.CenterStart) {
+                 Row(
+                     horizontalArrangement = Arrangement.Start,
+                     verticalAlignment = Alignment.CenterVertically,
+                     modifier = Modifier
+                         .fillMaxWidth().height(40.dp)
+                 ) {
 
-                     ImageComponent(
-                         imageModifier = Modifier.size(25.dp),
-                         imageRes = "drawable/location_icon.png",
-                         ColorFilter.tint(color = Color.Gray))
+                     Box(Modifier.wrapContentSize(), contentAlignment = Alignment.CenterStart) {
+
+                         ImageComponent(
+                             imageModifier = Modifier.size(25.dp),
+                             imageRes = "drawable/location_icon.png",
+                             ColorFilter.tint(color = Color.Gray)
+                         )
+                     }
+
+                     TextComponent(
+                         text = customerInfo.address.toString(),
+                         fontSize = 15,
+                         fontFamily = GGSansRegular,
+                         textStyle = MaterialTheme.typography.h6,
+                         textColor = Color.Gray,
+                         textAlign = TextAlign.Left,
+                         fontWeight = FontWeight.Bold,
+                         maxLines = 2,
+                         lineHeight = 20,
+                         overflow = TextOverflow.Ellipsis,
+                         textModifier = Modifier.wrapContentSize()
+                             .padding(start = 10.dp, end = 10.dp)
+                     )
                  }
-
-                 TextComponent(
-                     text = customerInfo?.address.toString(),
-                     fontSize = 15,
-                     fontFamily = GGSansRegular,
-                     textStyle = MaterialTheme.typography.h6,
-                     textColor = Color.Gray,
-                     textAlign = TextAlign.Left,
-                     fontWeight = FontWeight.Bold,
-                     maxLines = 2,
-                     lineHeight = 20,
-                     overflow = TextOverflow.Ellipsis,
-                     textModifier = Modifier.wrapContentSize()
-                         .padding(start = 10.dp, end = 10.dp))
-                  }
 
 
              }
-
          }
+
+}
 
 @Composable
 fun VendorDisplayItem(vendor: Vendor) {
@@ -193,10 +208,10 @@ fun VendorDisplayItem(vendor: Vendor) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = iconTextBoxModifier
             ) {
-                VendorImage(profileImageUrl = businessLogo, isAsync = true)
+                VendorImage(profileImageUrl = businessLogo!!, isAsync = true)
                 Box(modifier = Modifier.wrapContentWidth().fillMaxHeight(), contentAlignment = Alignment.CenterStart) {
                     TextComponent(
-                        text = vendor.businessName,
+                        text = vendor.businessName!!,
                         fontSize = 15,
                         fontFamily = GGSansRegular,
                         textStyle = MaterialTheme.typography.h6,
@@ -208,10 +223,7 @@ fun VendorDisplayItem(vendor: Vendor) {
                         textModifier = Modifier.wrapContentSize().padding(start = 10.dp, end = 10.dp))
                 }
 
-
             }
-
-
         }
     }
 }

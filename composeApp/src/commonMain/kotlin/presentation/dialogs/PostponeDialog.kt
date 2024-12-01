@@ -7,11 +7,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -24,63 +27,58 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import domain.Models.Appointment
 import domain.Models.PlatformTime
-import domain.Models.AvailableTime
+import domain.Models.PlatformNavigator
+import domain.Models.UserAppointment
+import drawable.ErrorOccurredWidget
 import presentation.appointments.AppointmentPresenter
 import presentation.components.IndeterminateCircularProgressBar
-import presentation.viewmodels.ActionUIStateViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
+import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PostponementViewModel
 import presentation.widgets.NewDateContent
-import presentation.widgets.TimeGrid
+import presentation.widgets.TimeGridDisplay
 import presentation.widgets.TitleWidget
-import presentation.widgets.buttonContent
+import presentation.widgets.ButtonContent
 import presentations.components.TextComponent
+import utils.calculateTherapistServiceTimes
 
 @Composable
-fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPresenter,postponementViewModel: PostponementViewModel,
-                  availabilityActionUIStateViewModel: ActionUIStateViewModel, onDismissRequest: () -> Unit,
-    onConfirmation: () -> Unit) {
+fun PostponeDialog(userAppointment: UserAppointment, appointmentPresenter: AppointmentPresenter,
+                   postponementViewModel: PostponementViewModel, mainViewModel: MainViewModel,
+                   availabilityPerformedActionUIStateViewModel: PerformedActionUIStateViewModel, onDismissRequest: () -> Unit, platformNavigator: PlatformNavigator,
+                   onConfirmation: (Appointment) -> Unit) {
     Dialog( properties = DialogProperties(usePlatformDefaultWidth = false), onDismissRequest = { onDismissRequest() }) {
 
-        val uiState = postponementViewModel.postponementViewUIState.collectAsState()
         val newSelectedDay = postponementViewModel.day.collectAsState()
         val newSelectedMonth = postponementViewModel.month.collectAsState()
         val newSelectedYear = postponementViewModel.year.collectAsState()
         val newSelectedTime = postponementViewModel.selectedTime.collectAsState()
-        val therapistBookedTimes = postponementViewModel.therapistBookedTimes.value
-        val therapistId = postponementViewModel.currentAppointment.value.therapistId
+        val therapistId = postponementViewModel.currentAppointment.value.resources?.therapistId
         val isNewDateSelected = remember { mutableStateOf(true) }
-        val availabilityUIStates = availabilityActionUIStateViewModel.availabilityStateInfo.collectAsState()
-
+        val availabilityUIStates = availabilityPerformedActionUIStateViewModel.availabilityStateInfo.collectAsState()
 
         appointmentPresenter.getTherapistAvailability(
-            therapistId,
+            therapistId!!,
             day = newSelectedDay.value,
             month = newSelectedMonth.value,
-            year = newSelectedYear.value
-        )
+            year = newSelectedYear.value,
+            vendorId = userAppointment.resources?.vendor?.vendorId!!)
 
         if (isNewDateSelected.value) {
             appointmentPresenter.getTherapistAvailability(
                 therapistId,
                 day = newSelectedDay.value,
                 month = newSelectedMonth.value,
-                year = newSelectedYear.value
+                year = newSelectedYear.value,
+                vendorId = userAppointment.resources.vendor.vendorId
             )
             isNewDateSelected.value = false
-        }
-
-
-        val normalisedBookedTimes = arrayListOf<PlatformTime>()
-        val bookedTimes = arrayListOf<AvailableTime>()
-        val displayTimes = remember { mutableStateOf(arrayListOf<AvailableTime>()) }
-        val normalisedTherapistTimes = arrayListOf<AvailableTime>()
-        for (item in therapistBookedTimes) {
-            normalisedBookedTimes.add(item.platformTime!!)
         }
 
 
@@ -103,6 +101,7 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
                            postponementViewModel.setSelectedDay(it.dayOfMonth)
                            postponementViewModel.setSelectedYear(it.year)
                            postponementViewModel.setSelectedMonth(it.monthNumber)
+                           postponementViewModel.setMonthName(it.month.name)
                            postponementViewModel.clearServiceTimes()
                            isNewDateSelected.value = true
                         })
@@ -116,54 +115,131 @@ fun PostponeDialog(appointment: Appointment,appointmentPresenter: AppointmentPre
                             }
                         }
                         else if (availabilityUIStates.value.isSuccess) {
+
+                            val workHours = calculateTherapistServiceTimes(platformTimes = postponementViewModel!!.platformTimes.value,
+                                vendorTimes = postponementViewModel.vendorTimes.value,
+                                bookedAppointment = postponementViewModel.therapistBookedTimes.value)
+
                             Column(
                                 modifier = Modifier
-                                    .padding(top = 5.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
+                                    .padding(top = 5.dp, bottom = 10.dp)
                                     .fillMaxWidth()
-                                    .height(320.dp),
+                                    .height(400.dp),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment  = Alignment.CenterHorizontally,
                             ) {
 
-                                TextComponent(
-                                    text = "Available Time",
-                                    fontSize = 18,
-                                    fontFamily = GGSansSemiBold,
-                                    textStyle = TextStyle(),
-                                    textColor = Colors.darkPrimary,
-                                    textAlign = TextAlign.Left,
-                                    fontWeight = FontWeight.Black,
-                                    textModifier = Modifier.fillMaxWidth().padding(start = 10.dp, bottom = 20.dp)
-                                )
-
-                                TimeGrid(displayTimes.value,onWorkHourClickListener = {
-                                    postponementViewModel.setNewSelectedTime(it)
+                               PostponeTimeContent(workHours, onWorkHourClickListener = {
+                                      postponementViewModel.setNewSelectedTime(it)
+                               })
+                            }
+                        }
+                        else if (availabilityUIStates.value.isFailed) {
+                            Box(modifier = Modifier .fillMaxWidth().height(400.dp), contentAlignment = Alignment.Center) {
+                                ErrorOccurredWidget(availabilityUIStates.value.errorMessage, onRetryClicked = {
+                                    appointmentPresenter.getTherapistAvailability(
+                                        therapistId,
+                                        day = newSelectedDay.value,
+                                        month = newSelectedMonth.value,
+                                        year = newSelectedYear.value,
+                                        vendorId = userAppointment.resources.vendor.vendorId
+                                    )
                                 })
                             }
                         }
-                        else {
-                            // onDismissRequest()
-                        }
 
-                        buttonContent(onDismissRequest = {
+                        ButtonContent(onDismissRequest = {
                             postponementViewModel.clearPostponementSelection()
                             onDismissRequest()
                         }, onConfirmation = {
-                          if (newSelectedTime.value.id != null) {
+                          if (newSelectedTime.value.id != null && newSelectedDay.value != -1 && newSelectedMonth.value != -1 && newSelectedYear.value != -1) {
                                 appointmentPresenter.postponeAppointment(
-                                    appointment,
+                                    userAppointment,
                                     newSelectedTime.value.id!!,
                                     day = newSelectedDay.value,
                                     month = newSelectedMonth.value,
-                                    year = newSelectedYear.value
+                                    year = newSelectedYear.value,
+                                    vendor = userAppointment.resources.vendor,
+                                    user = mainViewModel.currentUserInfo.value,
+                                    monthName = postponementViewModel.monthName.value,
+                                    platformNavigator = platformNavigator,
+                                    platformTime = newSelectedTime.value
                                 )
                               postponementViewModel.clearPostponementSelection()
-                              onConfirmation()
+                              onConfirmation(userAppointment.resources)
                             }
                         })
                     }
                 }
+           }
+    }
 
+}
+
+@Composable
+fun PostponeTimeContent(availableHours: Triple<ArrayList<PlatformTime>, ArrayList<PlatformTime>, ArrayList<PlatformTime>>, onWorkHourClickListener: (PlatformTime) -> Unit) {
+
+    Column(
+        modifier = Modifier
+            .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 10.dp)
+            .wrapContentHeight(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment  = Alignment.CenterHorizontally,
+    ) {
+
+        TextComponent(
+            text = "Available Times",
+            fontSize = 18,
+            fontFamily = GGSansSemiBold,
+            textStyle = TextStyle(),
+            textColor = Colors.darkPrimary,
+            textAlign = TextAlign.Left,
+            fontWeight = FontWeight.Black,
+            lineHeight = 30,
+            textModifier = Modifier
+                .fillMaxWidth().padding(start = 10.dp, bottom = 20.dp))
+        Row(modifier = Modifier.fillMaxWidth(0.90f).wrapContentHeight()) {
+            TextComponent(
+                text = "Morning",
+                fontSize = 16,
+                textStyle = TextStyle(),
+                textColor = theme.Colors.darkPrimary,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 25,
+                textModifier = Modifier.weight(1f).padding(bottom = 15.dp, top = 10.dp),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis)
+            TextComponent(
+                text = "Afternoon",
+                fontSize = 16,
+                textStyle = TextStyle(),
+                textColor = theme.Colors.darkPrimary,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 25,
+                textModifier = Modifier.weight(1f).padding(bottom = 15.dp, top = 10.dp),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis)
+            TextComponent(
+                text = "Evening",
+                fontSize = 16,
+                textStyle = TextStyle(),
+                textColor = theme.Colors.darkPrimary,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 25,
+                textModifier = Modifier.weight(1f).padding(bottom = 15.dp, top = 10.dp),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis)
+        }
+
+        Row(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
+            Column(modifier = Modifier.fillMaxWidth().wrapContentHeight(), horizontalAlignment = Alignment.CenterHorizontally) {
+                TimeGridDisplay(platformTimes = availableHours, onWorkHourClickListener = {
+                    onWorkHourClickListener(it)
+                })
             }
+        }
     }
 }

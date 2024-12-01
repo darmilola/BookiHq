@@ -1,16 +1,10 @@
 package domain.Enums
 
 enum class AppointmentType {
-    MEETING,
-    SERVICE;
-
+    SINGLE,
+    PACKAGE;
     fun toPath() = when (this) {
-        MEETING -> "meeting"
-        SERVICE -> "service"
-    }
-
-    fun toEventPropertyName() = when (this) {
-        MEETING -> "meeting"
-        SERVICE -> "service"
+        SINGLE -> "single"
+        PACKAGE -> "package"
     }
 }

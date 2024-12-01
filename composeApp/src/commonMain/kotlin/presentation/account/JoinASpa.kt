@@ -2,12 +2,16 @@ package presentation.account
 
 import GGSansSemiBold
 import StackedSnackbarHost
+import UIStates.AppUIStates
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,10 +26,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,40 +37,100 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.core.stack.StackEvent
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import cafe.adriel.voyager.transitions.ScreenTransition
+import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
+import com.hoc081098.kmp.viewmodel.createSavedStateHandle
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
+import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Enums.Screens
+import domain.Models.PlatformNavigator
+import domain.Models.Vendor
+import kotlinx.serialization.Transient
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import presentation.DomainViewHandler.ProfileHandler
 import presentation.components.RightIconButtonComponent
+import presentation.dialogs.ErrorDialog
+import presentation.dialogs.LoadingDialog
+import presentation.profile.ProfilePresenter
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
-import presentation.widgets.OTPTextField
+import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
+import utils.ParcelableScreen
 
-class JoinASpa(private val mainViewModel: MainViewModel) : Tab {
+@OptIn(ExperimentalVoyagerApi::class)
+@Parcelize
+class JoinASpa(private val platformNavigator: PlatformNavigator) : ParcelableScreen,KoinComponent,
+    ScreenTransition {
 
-    @OptIn(ExperimentalResourceApi::class)
-    override val options: TabOptions
-        @Composable
-        get() {
-            val title = "Join A Spa"
-            val icon = painterResource("profile_icon.png")
+    @Transient private var mainViewModel: MainViewModel? = null
+    @Transient
+    private val profilePresenter: ProfilePresenter by inject()
+    @Transient
+    private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
+    @Transient
+    private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
 
-            return remember {
-                TabOptions(
-                    index = 0u,
-                    title = title,
-                    icon = icon
-                )
-            }
-        }
+    override val key: ScreenKey = uniqueScreenKey
+
+    fun setMainViewModel(mainViewModel: MainViewModel){
+        this.mainViewModel = mainViewModel
+    }
 
     @Composable
     override fun Content() {
+
+        val navigator = LocalNavigator.currentOrThrow
+        if (performedActionUIStateViewModel == null) {
+            performedActionUIStateViewModel= kmpViewModel(
+                factory = viewModelFactory {
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+        if (loadingScreenUiStateViewModel == null) {
+            loadingScreenUiStateViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    LoadingScreenUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+        val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
+        if (onBackPressed.value){
+            mainViewModel!!.setOnBackPressed(false)
+            navigator.pop()
+        }
+
+        val vendorInfo = remember { mutableStateOf(Vendor()) }
+        val uiState = performedActionUIStateViewModel!!.uiStateInfo.collectAsState()
+
+        val profileHandler = ProfileHandler(profilePresenter,
+            onUserLocationReady = {},
+            onVendorInfoReady = { it ->
+               vendorInfo.value = it
+            },
+            performedActionUIStateViewModel!!)
+        profileHandler.init()
+
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -76,11 +139,29 @@ class JoinASpa(private val mainViewModel: MainViewModel) : Tab {
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {
-                JoinASpaTopBar(mainViewModel)
+                JoinASpaTopBar(onBackPressed = {
+                    navigator.pop()
+                })
             },
             backgroundColor = Color.White,
             floatingActionButton = {},
             content = {
+
+                if (uiState.value.isLoading) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        LoadingDialog("Getting Vendor")
+                    }
+                }
+                else if (uiState.value.isSuccess) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        performedActionUIStateViewModel!!.switchActionUIState(AppUIStates(isDefault = true))
+                        mainViewModel!!.setJoinSpaVendor(vendorInfo.value)
+
+                    }
+                }
+                else if (uiState.value.isFailed) {
+                    ErrorDialog("Error Occurred", "Close", onConfirmation = {})
+                }
 
                 val columnModifier = Modifier
                     .background(color = Color.White, shape = RoundedCornerShape(10.dp))
@@ -129,7 +210,7 @@ class JoinASpa(private val mainViewModel: MainViewModel) : Tab {
 
 
                             TextComponent(
-                                text = "Enter Invite Code to Proceed",
+                                text = "Scan Shop QR To Continue",
                                 fontSize = 16,
                                 fontFamily = GGSansSemiBold,
                                 textStyle = MaterialTheme.typography.h6,
@@ -141,29 +222,6 @@ class JoinASpa(private val mainViewModel: MainViewModel) : Tab {
                                 textModifier = Modifier.fillMaxWidth().padding(top = 40.dp),
                                 overflow = TextOverflow.Ellipsis)
 
-
-                            Row(modifier = Modifier
-                                .fillMaxWidth()
-                                .height(150.dp)
-                                .padding(start = 10.dp, end = 10.dp, top = 30.dp, bottom = 30.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-
-                            ) {
-
-                                var otpValue by remember {
-                                    mutableStateOf("")
-                                }
-
-                                OTPTextField(
-                                    otpText = otpValue,
-                                    onOTPTextChanged = { value, OTPInputField ->
-                                        otpValue = value
-                                    }
-                                )
-
-                            }
-
                             Column(modifier = Modifier.fillMaxWidth(),
                                     verticalArrangement = Arrangement.Center,
                                     horizontalAlignment = Alignment.CenterHorizontally) {
@@ -173,8 +231,13 @@ class JoinASpa(private val mainViewModel: MainViewModel) : Tab {
                                      .fillMaxWidth()
                                      .height(50.dp)
 
-                                 RightIconButtonComponent(modifier = buttonStyle, buttonText = "Proceed", borderStroke = BorderStroke(0.8.dp, Colors.darkPrimary), colors = ButtonDefaults.buttonColors(backgroundColor = Colors.lightPrimaryColor), fontSize = 16, shape = CircleShape, textColor = Colors.darkPrimary, style = MaterialTheme.typography.h4, iconRes = "drawable/forward_arrow.png",  colorFilter = ColorFilter.tint(color = Colors.darkPrimary)){
-                                     mainViewModel.setScreenNav(Pair(Screens.JOIN_SPA.toPath(), Screens.VENDOR_INFO.toPath()))
+                                 RightIconButtonComponent(modifier = buttonStyle, buttonText = "Scan QR", borderStroke = BorderStroke(0.8.dp, Colors.darkPrimary), colors = ButtonDefaults.buttonColors(backgroundColor = Colors.lightPrimaryColor), fontSize = 16, shape = CircleShape, textColor = Colors.darkPrimary, style = MaterialTheme.typography.h4, iconRes = "drawable/forward_arrow.png",  colorFilter = ColorFilter.tint(color = Colors.darkPrimary)){
+                                      platformNavigator.startScanningBarCode {
+                                          val vendorId =  it.toLongOrNull()
+                                          if (vendorId != null) {
+                                              profilePresenter.getVendorAccountInfo(it.toLong())
+                                          }
+                                      }
                                  }
                                }
                             }
@@ -186,7 +249,23 @@ class JoinASpa(private val mainViewModel: MainViewModel) : Tab {
             }
         )
     }
+
+    override fun enter(lastEvent: StackEvent): EnterTransition {
+        return slideIn { size ->
+            val x = if (lastEvent == StackEvent.Pop) -size.width else size.width
+            IntOffset(x = x, y = 0)
+        }
     }
+
+    override fun exit(lastEvent: StackEvent): ExitTransition {
+        return slideOut { size ->
+            val x = if (lastEvent == StackEvent.Pop) size.width else -size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
+
+}
 
     @Composable
     fun AppLogo(logoUrl: String) {

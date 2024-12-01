@@ -1,5 +1,6 @@
 package presentation.authentication
 
+import UIStates.AppUIStates
 import domain.authentication.AuthenticationRepositoryImpl
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
@@ -8,11 +9,11 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import UIStates.ScreenUIStates
 import com.badoo.reaktive.single.subscribe
 import domain.Models.User
-import UIStates.ActionUIStates
-
+import domain.Enums.ProfileStatus
+import domain.Enums.ServerResponse
+import utils.makeValidPhone
 
 class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Presenter() {
 
@@ -21,96 +22,173 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
     private val authenticationRepositoryImpl: AuthenticationRepositoryImpl = AuthenticationRepositoryImpl(apiService)
 
     override fun completeProfile(
+        firstname: String, lastname: String, userEmail: String, authPhone: String,
+        country: String,city: String, signupType: String, gender: String, profileImageUrl: String
+    ) {
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    contractView?.onCompleteProfileStarted()
+                    authenticationRepositoryImpl.completeProfile(firstname, lastname, userEmail, authPhone,country,city, signupType, gender, profileImageUrl)
+                        .subscribe(
+                            onSuccess = { result ->
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.onCompleteProfileDone(result.userInfo)
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.onCompleteProfileError()
+                                    }
+                                    else -> {
+                                        contractView?.onCompleteProfileError()
+                                    }
+                                }
+                            },
+                            onError = {
+                                contractView?.onCompleteProfileError()
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.onCompleteProfileError()
+            }
+        }
+    }
+
+    override fun updateProfile(
+        userId: Long,
         firstname: String,
         lastname: String,
-        userEmail: String,
         address: String,
         contactPhone: String,
-        countryId: Int,
-        cityId: Int,
+        country: String,
+        city: String,
         gender: String,
         profileImageUrl: String
     ) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(ScreenUIStates(loadingVisible = true))
-                    authenticationRepositoryImpl.completeProfile(firstname, lastname, userEmail, address, contactPhone, countryId, cityId, gender, profileImageUrl)
+                    contractView?.onProfileUpdateStarted()
+                    authenticationRepositoryImpl.updateProfile(userId, firstname, lastname, address, contactPhone, country,city, gender, profileImageUrl)
                         .subscribe(
                             onSuccess = { result ->
-                                if (result.status == "success"){
-                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
-                                    contractView?.goToConnectVendor(userEmail)
-                                }
-                                else{
-                                    contractView?.showLce(ScreenUIStates(errorOccurred = true))
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.onProfileUpdateEnded(isSuccessful = true)
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.onProfileUpdateEnded(isSuccessful = false)
+                                    }
+                                    else -> {
+                                        contractView?.onProfileUpdateEnded(isSuccessful = false)
+                                    }
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showLce(ScreenUIStates(errorOccurred = true), message = it1) }
+                                contractView?.onProfileUpdateEnded(isSuccessful = false)
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showLce(ScreenUIStates(errorOccurred = true))
+                contractView?.onProfileUpdateEnded(isSuccessful = false)
+            }
+        }
+    }
+    override fun validateEmail(userEmail: String) {
+        contractView?.onProfileValidationStarted()
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    authenticationRepositoryImpl.validateEmail(userEmail)
+                        .subscribe(
+                            onSuccess = { result ->
+                                if (result.status == ServerResponse.SUCCESS.toPath()){
+                                    when (result.profileStatus) {
+                                        ProfileStatus.DONE.toPath() -> {
+                                            contractView?.goToMainScreen(result.userInfo)
+                                        }
+                                        ProfileStatus.CONNECT_VENDOR.toPath() -> {
+                                            contractView?.goToConnectVendor(result.userInfo)
+                                        }
+                                        ProfileStatus.COMPLETE_PROFILE.toPath() -> {
+                                            contractView?.onProfileValidationEnded()
+                                            contractView?.goToCompleteProfileWithEmail(userEmail)
+                                        }
+                                    }
+                                }
+                                else{
+                                    contractView?.onProfileValidationError()
+                                }
+                            },
+                            onError = {
+                                contractView?.onProfileValidationError()
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.onProfileValidationError()
             }
         }
     }
 
-    override fun validateUserProfile(userEmail: String) {
+    override fun updateFcmToken(userId: Long, fcmToken: String) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showLce(ScreenUIStates(loadingVisible = true))
-                    authenticationRepositoryImpl.validateUserProfile(userEmail)
-                        .subscribe(
-                            onSuccess = { result ->
-                                if (result.status == "success"){
-                                    contractView?.showLce(ScreenUIStates(contentVisible = true))
-                                    directUser(result.userInfo)
-                                }
-                                else{
-                                    contractView?.showLce(ScreenUIStates(errorOccurred = true))
-                                    contractView?.goToCompleteProfile(userEmail)
-                                }
-                            },
-                            onError = {
-                                it.message?.let { it1 -> contractView?.showLce(ScreenUIStates(errorOccurred = true), message = it1) }
-                            },
-                        )
+                    authenticationRepositoryImpl.updateFcmToken(userId, fcmToken)
+                        .subscribe(onSuccess = { result -> }, onError = {})
                 }
                 result.dispose()
-            } catch(e: Exception) {
-                contractView?.showLce(ScreenUIStates(errorOccurred = true))
-            }
+            } catch(_: Exception) {}
         }
     }
 
-    override fun getUserLocation(lat: Double, lng: Double) {
+    override fun validatePhone(phone: String, requireValidation: Boolean) {
+       var validPhone = ""
+        validPhone = if (requireValidation) {
+            makeValidPhone(phone)
+        } else{
+            phone
+        }
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    contractView?.showAsyncLce(ActionUIStates(isLoading = true))
-                    authenticationRepositoryImpl.reverseGeocode(lat, lng)
+                    contractView?.onProfileValidationStarted()
+                    authenticationRepositoryImpl.validatePhone(validPhone)
                         .subscribe(
                             onSuccess = { result ->
-                                if (result?.country?.isNotEmpty() == true){
-                                    contractView?.showAsyncLce(ActionUIStates(isSuccess = true))
-                                    contractView?.showUserLocation(result)
+                                if (result.status == ServerResponse.SUCCESS.toPath()){
+                                    when (result.profileStatus) {
+                                        ProfileStatus.DONE.toPath() -> {
+                                            contractView?.onProfileValidationEnded()
+                                            contractView?.goToMainScreen(result.userInfo)
+                                        }
+                                        ProfileStatus.CONNECT_VENDOR.toPath() -> {
+                                            contractView?.onProfileValidationEnded()
+                                            contractView?.goToConnectVendor(result.userInfo)
+                                        }
+                                        ProfileStatus.COMPLETE_PROFILE.toPath() -> {
+                                            contractView?.onProfileValidationEnded()
+                                            contractView?.goToCompleteProfileWithPhone(phone)
+                                        }
+                                    }
                                 }
                                 else{
-                                    contractView?.showAsyncLce(ActionUIStates(isFailed = true))
+                                    contractView?.onProfileValidationError()
                                 }
                             },
                             onError = {
-                                it.message?.let { it1 -> contractView?.showAsyncLce(ActionUIStates(isFailed = true)) }
+                                contractView?.onProfileValidationError()
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showAsyncLce(ActionUIStates(isFailed = true))
+                contractView?.onProfileValidationError()
             }
         }
     }
@@ -118,22 +196,4 @@ class AuthenticationPresenter(apiService: HttpClient): AuthenticationContract.Pr
     override fun registerUIContract(view: AuthenticationContract.View?) {
         contractView = view
     }
-
-    override fun startAuth0() {
-        contractView?.onAuth0Started()
-    }
-
-    override fun endAuth0() {
-        contractView?.onAuth0Ended()
-    }
-
-    private fun directUser(user: User){
-        if (user.connectedVendor != -1){
-            contractView?.goToMainScreen(user.userEmail!!)
-        }
-        else if (user.connectedVendor == -1){
-            contractView?.goToConnectVendor(user.userEmail!!)
-        }
-    }
-
 }

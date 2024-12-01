@@ -66,25 +66,6 @@ fun AttachTherapistProfileImage(availableTherapist: ServiceTypeTherapists) {
                 .size(24.dp), imageRes = "drawable/check_mark_icon.png", colorFilter = ColorFilter.tint(color = Color.White))
 
         }
-        Row (horizontalArrangement = Arrangement.Center,
-            verticalAlignment  = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(4.dp)
-                .clip(shape = RoundedCornerShape(topEnd = 7.dp))
-                .width(50.dp)
-                .background(color = Colors.primaryColor)
-                .height(24.dp)) {
-            ImageComponent(imageModifier = Modifier.size(12.dp), imageRes = "drawable/star_icon.png", colorFilter = ColorFilter.tint(color = Color.White))
-            TextComponent(
-                text = availableTherapist.therapistInfo.rating.toString(),
-                fontSize = 12,
-                fontFamily = GGSansRegular,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.White,
-                textAlign = TextAlign.Left,
-                fontWeight = FontWeight.Black,
-                textModifier = Modifier.padding(start = 3.dp))
-        }
     }
 
 }

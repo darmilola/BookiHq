@@ -1,48 +1,19 @@
 
+      -------- Firebase ------
 
-      ------------ This file talks about the Architecture used in developing this Application ----------------
+      -- Authentication google-services.json placed in compose App controls storage and authentication for
+      both Android and ios, google-services  plugin does the job of reading from the json file
 
-  First we have the Application folder which holds the platform specific expectations in kotlin multiplatform including Ktor, Dateformatter
-  and the rest, they also have their respective actual implementations in IOSMain, AndroidMain, DesktopMain and the rest
-
-  The DI for dependency Injection with Koin
-
-  We also have the infrastructure folder for holding the infrastructure as a service code that powers the system, including Twilio, Cloudinary, Dyte
-  and the rest.
-
-  We have Domain folder that holds all the classes relating to working with the server which includes the Network Services,
-  Repository declaration, the repository implementation and the request contract
-
-  Next is presentations folder, holding all things that powers the User Interface including, the UI contract, the Presenter, DI Module,
-  and the UI Tab or screen itself containing respective composables
+      --- service-account cloud_messaging_v1.json in android assets controls cloud messaging for android to generate access key for making
+      upstream messaging and downstream receiving notification
+      the files has to be in assets folder because we will be reading with code not google plugin, so it has to be in accessible location
 
 
+      // deployment
 
-    ----------------- Below digs deeply about how the system works to display data from server to the UI and intreractions -------------------
-
-
-    The System utilises MVVM architecture, which implies that Once data is loaded from the server from the domain, the ViewModel takes care
-    of how to display in the UI using an intermediary called Handler, all screens or tab has a handler in the Handler folder, that implements the UI
-    contract and provide data to the viewmodel, in which viewmodel collectAsState and display when ready, the handler also handles the UIStates like
-    loading, error, updating, deleting, content creation and the rest as required.
-
-    Some actions that does not require domain or server actions including opening new tab or screen, new dialog are handled by the
-    mutableState of the various composables in the view.
-
-    There is a resourceListEnvelopeViewModel for handling paginated data, all paginated data classes have their respective resourceListEnvelopeViewModel
+      https://jyotibhambhu.medium.com/part-3-how-to-integrate-kotlin-multiplatform-kmp-into-your-ios-project-7dc4016f7fb5
+      https://medium.com/@junfeng0828/ffa0d0522998
+      https://www.netguru.com/blog/kotlin-multiplatform-resources
+      // Recommended Product Service on delete cascade
 
 
-
-      ----------------- Below talk about how all tabs, screens works on a normal use -------------------
-
-      First ---> is declaration of all variables, viewmodels and presenters used
-
-      Second ---> is the initialization of the variables and viewmodels, and also listening for mutableState changes for actions like
-      opening dialogs and more.
-
-      Next ---> is presenter calling various method to display data for the current UI
-
-
-      --------------------------- Limitations -------------------------
-
-      -- don't read fresh data from server on dialog, the dialog recomposes and cause presenter to be called multiple times

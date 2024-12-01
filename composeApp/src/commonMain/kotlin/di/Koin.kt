@@ -13,13 +13,15 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.context.stopKoin
 import presentation.Orders.OrderModule
-import presentation.bookings.BookingModule
+import presentation.Packages.PackageModule
+import presentation.appointmentBookings.BookingModule
 import presentation.Products.ProductModule
 import presentation.connectVendor.ConnectVendorModule
 import presentation.profile.ProfileModule
 import presentation.appointments.AppointmentModule
 import presentation.authentication.AuthenticationModule.AuthenticationModule
 import presentation.home.HomepageModule
+import presentation.payment.PaymentModule
 import presentation.therapist.TherapistModule
 
 fun initKoin(){
@@ -32,6 +34,8 @@ fun initKoin(){
         modules(ProfileModule.ProfileModule)
         modules(BookingModule.BookingModule)
         modules(ProductModule.ProductModule)
+        modules(PackageModule.PackageModule)
+        modules(PaymentModule.PaymentModule)
         modules(AppointmentModule.AppointmentModule)
         modules(TherapistModule.TherapistModule)
         modules(OrderModule.OrderModule)
@@ -39,11 +43,12 @@ fun initKoin(){
 }
 
 private val KtorModule = module {
+
     single {
         httpClient {
             defaultRequest {
                 url {
-                    host = "devprocess.onrender.com/api/v1"
+                    host = "/devprocess-xxqg.onrender.com/api/v1"
                     protocol = URLProtocol.HTTPS
                     port = 443
                 }
@@ -52,7 +57,7 @@ private val KtorModule = module {
                 level = LogLevel.BODY
             }
             install(HttpTimeout) {
-                requestTimeoutMillis = 30_000
+                requestTimeoutMillis = 45_000
             }
             install(ContentNegotiation) {
                 json(Json {

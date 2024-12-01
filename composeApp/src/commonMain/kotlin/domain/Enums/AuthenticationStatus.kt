@@ -1,15 +1,15 @@
 package domain.Enums
 
 enum class AuthenticationStatus {
-    SUCCESS,
-    FAILURE;
+    AUTHENTICATION_SUCCESS,
+    AUTHENTICATION_FAILURE;
     fun toPath() = when (this) {
-        SUCCESS -> "success"
-        FAILURE -> "failure"
+        AUTHENTICATION_SUCCESS -> "success"
+        AUTHENTICATION_FAILURE -> "failure"
     }
 
     fun toEventPropertyName() = when (this) {
-        SUCCESS -> "success"
-        FAILURE -> "failure"
+        AUTHENTICATION_SUCCESS -> "success"
+        AUTHENTICATION_FAILURE -> "failure"
     }
 }

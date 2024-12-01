@@ -5,9 +5,11 @@ import GGSansSemiBold
 import theme.styles.Colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,6 +33,7 @@ import presentations.components.TextComponent
 
 @Composable
 fun MobileDeliveryWidget(mainViewModel: MainViewModel) {
+    val userInfo = mainViewModel.currentUserInfo.value
     Row(
         modifier = Modifier.fillMaxWidth().height(90.dp).clickable {
             when (mainViewModel.screenNav.value.second) {
@@ -54,31 +57,37 @@ fun MobileDeliveryWidget(mainViewModel: MainViewModel) {
         }
 
         Column(modifier = Modifier.weight(3F)) {
-            TextComponent(
-                text = "Damilola Akinterinwa",
-                fontSize = 16,
-                fontFamily = GGSansSemiBold,
-                textStyle =  MaterialTheme.typography.h6,
-                textColor = Colors.darkPrimary,
-                textAlign = TextAlign.Left,
-                fontWeight = FontWeight.Black,
-                lineHeight = 30,
-                textModifier = Modifier
-                    .wrapContentHeight()
-                    .fillMaxWidth())
+            Box(modifier = Modifier.fillMaxHeight(0.50f), contentAlignment = Alignment.Center) {
+                TextComponent(
+                    text = userInfo.firstname.toString() + " " + userInfo.lastname.toString(),
+                    fontSize = 16,
+                    fontFamily = GGSansSemiBold,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Colors.darkPrimary,
+                    textAlign = TextAlign.Left,
+                    fontWeight = FontWeight.Black,
+                    lineHeight = 30,
+                    textModifier = Modifier
+                        .fillMaxHeight(0.50f)
+                        .fillMaxWidth()
+                )
+            }
 
-            TextComponent(
-                textModifier = Modifier.fillMaxWidth().padding(top = 5.dp),
-                text = "Lorem ipsum dolor sit amet consectetuer adipiscing Aenean commodo",
-                fontSize = 15, fontFamily = GGSansRegular,
-                textStyle = MaterialTheme.typography.h6, textColor = Color.LightGray, textAlign = TextAlign.Left,
-                fontWeight = FontWeight.Medium,
-                lineHeight = 23, maxLines = 1,
-                overflow = TextOverflow.Ellipsis)
-        }
-
-        Box(modifier = Modifier.weight(1F), contentAlignment =  Alignment.Center) {
-            ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/chevron_right.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+            Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.Center) {
+                TextComponent(
+                    textModifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                    text = userInfo.address.toString(),
+                    fontSize = 15,
+                    fontFamily = GGSansRegular,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Color.LightGray,
+                    textAlign = TextAlign.Left,
+                    fontWeight = FontWeight.Medium,
+                    lineHeight = 23,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
     }
 }

@@ -67,7 +67,7 @@ actual fun VideoPlayer(modifier: Modifier, url: String, videoStatusViewMeta: Vid
     val playerView = PlayerView(context)
     playerView.player = exoPlayer
     playerView.useController = false
-    playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+    playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
 
     AndroidView(
         factory = { ctx ->

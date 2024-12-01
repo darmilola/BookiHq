@@ -18,8 +18,9 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import domain.Enums.AuthSSOScreenNav
 import domain.Models.PlatformNavigator
-import presentation.authentication.AuthenticationScreen
-import presentation.authentication.WelcomeScreen
+import presentation.Screens.PhoneInputScreen
+import presentation.Screens.WelcomeScreen
+import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 
 @Composable
@@ -39,14 +40,8 @@ fun PageBackNavWidget(onBackPressed: (() -> Unit)) {
 }
 
 @Composable
-fun AuthenticationBackNav(goToScreen: Int = AuthSSOScreenNav.AUTH_LOGIN.toPath(), platformNavigator: PlatformNavigator) {
-    val navigator = LocalNavigator.currentOrThrow
+fun AuthenticationBackNav(mainViewModel: MainViewModel) {
     PageBackNavWidget {
-        if(goToScreen == AuthSSOScreenNav.WELCOME_SCREEN.toPath()){
-            navigator.replaceAll(WelcomeScreen(platformNavigator))
-        }
-        else {
-            navigator.replace(AuthenticationScreen(goToScreen, platformNavigator = platformNavigator))
-        }
+        mainViewModel.setOnBackPressed(true)
     }
 }

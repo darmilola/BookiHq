@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,22 +22,19 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import domain.Enums.Screens
 import domain.Models.Services
 import domain.Models.getWidget
-import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun HomeServicesWidget(vendorService:Services, mainViewModel: MainViewModel){
+fun HomeServicesWidget(vendorService:Services, onServiceSelected: (Services) -> Unit){
     val columnModifier = Modifier
         .padding(start = 5.dp, end = 5.dp, top = 5.dp, bottom = 5.dp)
         .clickable {
-            mainViewModel.setScreenNav(Pair(Screens.MAIN_TAB.toPath(), Screens.BOOKING.toPath()))
-            mainViewModel.setSelectedService(vendorService)
+            onServiceSelected(vendorService)
         }
-        .height(130.dp)
+        .height(120.dp)
         Column(
             modifier = columnModifier,
             verticalArrangement = Arrangement.Center,
@@ -45,9 +43,9 @@ fun HomeServicesWidget(vendorService:Services, mainViewModel: MainViewModel){
             val modifier = Modifier
                 .padding(top = 10.dp)
                 .fillMaxWidth()
-            AttachServiceImage(getWidget(vendorService.widgetCode))
+            AttachServiceImage(getWidget(vendorService.serviceInfo?.widgetCode!!))
             TextComponent(
-                text = vendorService.serviceTitle,
+                text = vendorService.serviceInfo?.title!!,
                 fontSize = 15,
                 fontFamily = GGSansRegular,
                 textStyle = MaterialTheme.typography.h6,
@@ -66,7 +64,7 @@ fun HomeServicesWidget(vendorService:Services, mainViewModel: MainViewModel){
 fun AttachServiceImage(iconRes: String, iconSize: Int = 40) {
     Box(
         Modifier
-            .clip(CircleShape)
+            .clip(RoundedCornerShape(10.dp))
             .fillMaxWidth()
             .height(80.dp)
             .background(color = Colors.lighterPrimaryColor),
