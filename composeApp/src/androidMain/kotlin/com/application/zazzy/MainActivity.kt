@@ -92,12 +92,17 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
 
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            override fun onVerificationCompleted(credential: PhoneAuthCredential) {}
-            override fun onVerificationFailed(e: FirebaseException) {}
+            override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                println("Open Completed")
+            }
+            override fun onVerificationFailed(e: FirebaseException) {
+                println("Open Failed ${e.message}")
+            }
             override fun onCodeSent(
                 verificationId: String,
                 token: PhoneAuthProvider.ForceResendingToken,
             ) {
+                println("Open Code Sent $verificationId $token")
                 storedVerificationId = verificationId
                 resendToken = token
             }
@@ -179,12 +184,14 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
     override fun verifyOTP(verificationCode: String, onVerificationSuccessful: (String) -> Unit,
                            onVerificationFailed: () -> Unit) {
-        val credential = PhoneAuthProvider.getCredential(storedVerificationId, verificationCode)
-        signInWithPhoneAuthCredential(credential, onVerificationSuccessful = {
-            onVerificationSuccessful(it)
-        }, onVerificationFailed = {
-            onVerificationFailed()
-        })
+        if (storedVerificationId.isNotEmpty()) {
+            val credential = PhoneAuthProvider.getCredential(storedVerificationId, verificationCode)
+            signInWithPhoneAuthCredential(credential, onVerificationSuccessful = {
+                onVerificationSuccessful(it)
+            }, onVerificationFailed = {
+                onVerificationFailed()
+            })
+        }
     }
 
     override fun startXSSO(onAuthSuccessful: (String) -> Unit, onAuthFailed: () -> Unit) {
@@ -198,17 +205,20 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                         onAuthSuccessful(it.user?.email!!)
                     }
                     else{
+                        println("Open ${pendingResultTask.exception!!.message}")
                         onAuthFailed()
                     }
 
                 }
                 .addOnFailureListener {
+                    println("Open 2 ${pendingResultTask.exception!!.message}")
                     onAuthFailed()
                 }
         } else {
             firebaseAuth!!
                 .startActivityForSignInWithProvider(this, provider.build())
                 .addOnSuccessListener {
+                    println("Open 3 ${it}")
                     if (it.user?.email != null){
                         onAuthSuccessful(it.user?.email!!)
                     }
@@ -217,6 +227,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                     }
                 }
                 .addOnFailureListener {
+                    println("Open 4 ${it.message}")
                     onAuthFailed()
                 }
         }

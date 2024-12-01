@@ -129,6 +129,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                         userDao.insert(user)
                     }
             }
+            verificationInProgress.value = false
             navigateToPlatform.value = true
         },
         completeProfile = { userEmail, userAuthPhone ->
