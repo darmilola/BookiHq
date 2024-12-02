@@ -249,7 +249,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                         textColor = Color(color = 0xFFFFFFFF),
                         style = MaterialTheme.typography.h4
                     ) {
-                        if (otpValue == "" || otpValue.length < 6) {
+                        if (otpValue.isEmpty() || otpValue.length < 6) {
                             ShowSnackBar(title = "Error",
                                 description = "Please Input OTP",
                                 actionLabel = "",
