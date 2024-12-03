@@ -4,6 +4,7 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,7 +17,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.room.RoomDatabase
@@ -49,6 +53,8 @@ import com.russhwolf.settings.set
 import domain.Enums.SharedPreferenceEnum
 import domain.Enums.VendorEnum
 import domain.Models.PlatformNavigator
+import domain.Models.Product
+import domain.Models.ProductItemUIModel
 import domain.Models.Vendor
 import domain.Models.VendorItemUIModel
 import domain.Models.getVendorListItemViewHeight
@@ -58,6 +64,7 @@ import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.ConnectPageHandler
+import presentation.components.ButtonComponent
 import presentation.widgets.SearchBar
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.ConnectPageViewModel
@@ -166,8 +173,24 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
         val selectedVendor = connectPageViewModel?.selectedVendor?.collectAsState()
         val vendorUIModel = remember { mutableStateOf(VendorItemUIModel()) }
 
+        val loadMoreState = vendorResourceListEnvelopeViewModel!!.isLoadingMore.collectAsState()
+        val totalVendorsCount =
+            vendorResourceListEnvelopeViewModel!!.totalItemCount.collectAsState()
+        val displayedVendorsCount =
+            vendorResourceListEnvelopeViewModel!!.displayedItemCount.collectAsState()
+        val lastIndex = vendorList!!.value.size.minus(1)
+
         if (vendorList!!.value.isNotEmpty()){
             vendorUIModel.value = VendorItemUIModel(selectedVendor?.value!!, vendorList.value)
+        }
+
+        if (!loadMoreState.value) {
+            vendorUIModel.value = vendorUIModel.value.copy(selectedVendor = selectedVendor!!.value,
+                vendorsList = vendorResourceListEnvelopeViewModel!!.resources.value.map { it2 ->
+                    it2.copy(
+                        isSelected = it2.vendorId == selectedVendor.value.vendorId
+                    )
+                })
         }
 
         var showSwitchReasonBottomSheet by remember { mutableStateOf(false) }
@@ -237,14 +260,57 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                         verticalArrangement = Arrangement.spacedBy(5.dp), userScrollEnabled = true
                     ) {
                      runBlocking {
-                        items(vendorUIModel.value.vendorsList.size) { i ->
-                            SwitchVendorBusinessItemComponent(vendor = vendorUIModel.value.vendorsList[i]) {
-                                mainViewModel!!.setSwitchVendorID(it.vendorId!!)
-                                mainViewModel!!.setSwitchVendor(it)
-                                showSwitchReasonBottomSheet = true
-                            }
-                          }
-                        }
+                         items(vendorUIModel.value.vendorsList.size) { i ->
+                             SwitchVendorBusinessItemComponent(vendor = vendorUIModel.value.vendorsList[i]) {
+                                 mainViewModel!!.setSwitchVendorID(it.vendorId!!)
+                                 mainViewModel!!.setSwitchVendor(it)
+                                 showSwitchReasonBottomSheet = true
+                             }
+                             if (i == lastIndex && loadMoreState.value) {
+                                 Box(
+                                     modifier = Modifier.fillMaxWidth().height(60.dp),
+                                     contentAlignment = Alignment.Center
+                                 ) {
+                                     IndeterminateCircularProgressBar()
+                                 }
+                             }
+                             else if (i == lastIndex && (displayedVendorsCount.value < totalVendorsCount.value)) {
+                                 val buttonStyle = Modifier
+                                     .height(55.dp)
+                                     .fillMaxWidth()
+                                     .padding(top = 10.dp, start = 10.dp, end = 10.dp)
+
+                                 ButtonComponent(
+                                     modifier = buttonStyle,
+                                     buttonText = "Show More",
+                                     borderStroke = BorderStroke(
+                                         1.dp,
+                                         theme.Colors.primaryColor
+                                     ),
+                                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                                     fontSize = 16,
+                                     shape = CircleShape,
+                                     textColor = theme.Colors.primaryColor,
+                                     style = TextStyle()
+                                 ) {
+                                     if (searchQuery.value.isEmpty()) {
+                                         if (vendorResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
+                                             connectVendorPresenter.getMoreVendor(country = country,city = city, connectedVendor = vendorId,
+                                                 nextPage = vendorResourceListEnvelopeViewModel!!.currentPage.value + 1)
+                                         }
+                                     }
+                                      else {
+                                         if (vendorResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
+                                             connectVendorPresenter.searchMoreVendors( country, vendorId, searchQuery.value,
+                                                 nextPage = vendorResourceListEnvelopeViewModel!!.currentPage.value + 1)
+                                         }
+                                     }
+                                 }
+                             }
+                         }
+                     }
+
+
                     }
                 }
             },

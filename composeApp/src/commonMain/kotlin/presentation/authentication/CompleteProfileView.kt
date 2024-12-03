@@ -24,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,6 +45,7 @@ import domain.Enums.Gender
 import domain.Enums.SharedPreferenceEnum
 import domain.Enums.getDisplayCurrency
 import domain.Models.PlatformNavigator
+import kotlinx.coroutines.launch
 import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.DomainViewHandler.PlatformHandler
 import presentation.components.ButtonComponent
@@ -87,6 +89,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
         maxStack = 5,
         animation = StackedSnackbarAnimation.Bounce
     )
+    val scope = rememberCoroutineScope()
 
     //View Contract Handler Initialisation
     val handler = PlatformHandler(profilePresenter, cityViewModel)
@@ -118,6 +121,15 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = userInfo.apiKey
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = authEmail
                 preferenceSettings[SharedPreferenceEnum.AUTH_PHONE.toPath()] = authPhone
+                mainViewModel.setUserInfo(userInfo)
+                scope.launch {
+                val userDao = databaseBuilder!!.build().getUserDao()
+                val userCount = userDao.count()
+                val vendorCount = userDao.count()
+                if (userCount == 0 && vendorCount == 0) {
+                    userDao.insert(userInfo)
+                }
+            }
                 navigateToConnectVendor.value = true
 
         }, onUpdateStarted = {}, onUpdateEnded = {}, onVerificationError = {})
