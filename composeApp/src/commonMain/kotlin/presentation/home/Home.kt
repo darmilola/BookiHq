@@ -285,7 +285,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                         }
                                     }
                                     if (!vendorRecommendations.isNullOrEmpty()) {
-                                        VendorPicks(vendorRecommendations, mainViewModel!!)
+                                        VendorRecommendation(vendorRecommendations, mainViewModel!!)
                                     }
                                     if (!recentAppointments.isNullOrEmpty()) {
                                         AttachAppointmentsTitle("Recent Appointments")
@@ -356,7 +356,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
     }
 
     @Composable
-    fun VendorPicks(recommendations: List<VendorRecommendation>, mainViewModel: MainViewModel) {
+    fun VendorRecommendation(recommendations: List<VendorRecommendation>, mainViewModel: MainViewModel) {
         Column(modifier = Modifier.fillMaxWidth().height(450.dp)) {
         Row(
             horizontalArrangement = Arrangement.Start,
@@ -367,9 +367,9 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 .fillMaxWidth()
         ) {
             TextComponent(
-                text = "Vendor Picks",
-                textModifier = Modifier.fillMaxWidth(0.50f),
-                fontSize = 30,
+                text = "Recommendations",
+                textModifier = Modifier.fillMaxWidth(0.60f),
+                fontSize = 28,
                 fontFamily = GGSansBold,
                 textStyle = MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,
