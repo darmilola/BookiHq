@@ -189,7 +189,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
         savedStateHandle["showPaymentMethodBottomSheet"] = show
     }
 
-    fun setSwitchVendorID(vendorId: Long) {
+    fun setSwitchVendorId(vendorId: Long) {
         savedStateHandle["switchVendorId"] = vendorId
     }
 

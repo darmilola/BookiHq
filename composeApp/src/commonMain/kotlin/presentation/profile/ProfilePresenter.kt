@@ -174,12 +174,12 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         }
     }
 
-    override fun switchVendor(userId: Long, vendorId: Long, action: String, exitReason: String, vendor: Vendor, platformNavigator: PlatformNavigator) {
+    override fun switchVendor(userId: Long, vendorId: Long, action: String, exitReason: String, vendor: Vendor, platformNavigator: PlatformNavigator,exitVendorId: Long) {
         switchVendorContract?.showActionLce(AppUIStates(isLoading = true))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    profileRepositoryImpl.switchVendor(userId, vendorId, action, exitReason)
+                    profileRepositoryImpl.switchVendor(userId, vendorId, action, exitReason,exitVendorId)
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {

@@ -26,7 +26,7 @@ interface ProfileRepository {
     suspend fun getVendorAccountInfo(vendorId: Long): Single<VendorAccountResponse>
     suspend fun joinSpa(vendorId: Long, therapistId: Long): Single<ServerResponse>
     suspend fun switchVendor(userId: Long, vendorId: Long, action: String,
-                             exitReason: String): Single<ServerResponse>
+                             exitReason: String,exitVendorId: Long): Single<ServerResponse>
     suspend fun getVendorAvailableTimes(vendorId: Long): Single<VendorAvailabilityResponse>
     suspend fun reverseGeocode(lat: Double, lng: Double): Single<Place?>
     suspend fun getCountryCities(country: String): Single<CountryCitiesResponse>

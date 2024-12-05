@@ -53,9 +53,10 @@ class ProfileRepositoryImpl(apiService: HttpClient): ProfileRepository {
         userId: Long,
         vendorId: Long,
         action: String,
-        exitReason: String
+        exitReason: String,
+        exitVendorId: Long
     ): Single<ServerResponse> {
-        val param = SwitchVendorRequest(userId, vendorId, action, exitReason)
+        val param = SwitchVendorRequest(userId, vendorId, action, exitReason,exitVendorId)
         return profileNetworkService.switchVendor(param)
     }
 

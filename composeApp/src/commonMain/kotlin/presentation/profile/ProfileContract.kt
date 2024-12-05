@@ -47,7 +47,7 @@ class ProfileContract {
         abstract fun getCities(country: String)
         abstract fun getVendorAvailability(vendorId: Long)
         abstract fun switchVendor(userId: Long, vendorId: Long, action: String,
-                         exitReason: String, vendor: Vendor, platformNavigator: PlatformNavigator)
+                         exitReason: String, vendor: Vendor, platformNavigator: PlatformNavigator, exitVendorId: Long)
         abstract fun getVendorAccountInfo(vendorId: Long)
         abstract fun joinSpa(vendorId: Long, therapistId: Long)
         abstract fun getUserLocation(lat: Double, lng: Double)

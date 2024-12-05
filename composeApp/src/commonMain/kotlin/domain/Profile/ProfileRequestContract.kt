@@ -19,7 +19,8 @@ data class DeleteProfileRequest(@SerialName("userEmail") val userEmail: String)
 
 @Serializable
 data class SwitchVendorRequest(@SerialName("userId") val userId: Long, @SerialName("vendorId") val vendorId: Long,
-                               @SerialName("action") val action: String, @SerialName("exit_reason") val exitReason: String)
+                               @SerialName("action") val action: String, @SerialName("exit_reason") val exitReason: String,
+                               @SerialName("exit_vendorId") val exitVendorId: Long)
 
 @Serializable
 data class GetVendorInfoRequest(@SerialName("vendor_id") val vendorId: Long)

@@ -89,6 +89,7 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
         handler.init()
 
         val switchVendorId = mainViewModel!!.switchVendorId.value
+        val connectedVendorId = mainViewModel!!.connectedVendor.value.vendorId
         val switchVendorReason = mainViewModel!!.switchVendorReason.value
         val switchVendorValue = mainViewModel!!.switchVendor.value
         val userInfo = mainViewModel!!.currentUserInfo.value
@@ -123,7 +124,7 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
                  BusinessInfoContent(switchVendorValue){
                  profilePresenter.switchVendor(userId = userInfo.userId!!,
                      vendorId = switchVendorId, action = CustomerMovementEnum.Exit.toPath(),
-                     exitReason = switchVendorReason, vendor = mainViewModel!!.connectedVendor.value, platformNavigator = platformNavigator)
+                     exitReason = switchVendorReason, vendor = mainViewModel!!.connectedVendor.value, platformNavigator = platformNavigator, exitVendorId = connectedVendorId!!)
                 }
             },
             backgroundColor = Color.Transparent

@@ -49,12 +49,8 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
-import com.russhwolf.settings.set
 import domain.Enums.SharedPreferenceEnum
-import domain.Enums.VendorEnum
 import domain.Models.PlatformNavigator
-import domain.Models.Product
-import domain.Models.ProductItemUIModel
 import domain.Models.Vendor
 import domain.Models.VendorItemUIModel
 import domain.Models.getVendorListItemViewHeight
@@ -262,7 +258,7 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                      runBlocking {
                          items(vendorUIModel.value.vendorsList.size) { i ->
                              SwitchVendorBusinessItemComponent(vendor = vendorUIModel.value.vendorsList[i]) {
-                                 mainViewModel!!.setSwitchVendorID(it.vendorId!!)
+                                 mainViewModel!!.setSwitchVendorId(it.vendorId!!)
                                  mainViewModel!!.setSwitchVendor(it)
                                  showSwitchReasonBottomSheet = true
                              }
