@@ -191,7 +191,7 @@ fun AvailableTimeContent(availableHours: Triple<ArrayList<PlatformTime>, ArrayLi
     ) {
 
         TextComponent(
-            text = "Available Times",
+            text = "Availability",
             fontSize = 18,
             fontFamily = GGSansSemiBold,
             textStyle = TextStyle(),
