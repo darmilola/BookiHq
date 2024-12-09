@@ -36,8 +36,14 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
                                     ServerResponse.SUCCESS.toPath() -> {
                                         val servicesGridList = calculateServicesGridList(response.homepageInfo.vendorServices!!)
                                         response.homepageInfo.servicesGridList = servicesGridList
-                                        contractView?.showLoadHomePageLce(AppUIStates(isSuccess = true))
+                                        val dayAvailabilityString = arrayListOf<String>()
+                                        val vendorDayAvailability = response.homepageInfo.dayAvailability
+                                        for (item in vendorDayAvailability!!){
+                                            dayAvailabilityString.add(item.platformDay!!.day!!)
+                                        }
                                         contractView?.showHome(response.homepageInfo)
+                                        contractView?.showVendorDayAvailability(dayAvailabilityString)
+                                        contractView?.showLoadHomePageLce(AppUIStates(isSuccess = true))
                                     }
                                     ServerResponse.FAILURE.toPath() -> {
                                         contractView?.showLoadHomePageLce(AppUIStates(isFailed = true, errorMessage = "Error Loading Home"))

@@ -50,12 +50,16 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _isSwitchVendor =  savedStateHandle.getStateFlow("isSwitchVendor", false)
     private var _orderItemComponents =  savedStateHandle.getStateFlow("orderItemComponents", arrayListOf<PlacedOrderItemComponent>())
     private var _favoriteProductIds =  savedStateHandle.getStateFlow("favoriteProductIds", listOf<FavoriteProductIdModel>())
+    private var _dayAvailability =  savedStateHandle.getStateFlow("dayAvailability", arrayListOf<String>())
 
     val screenTitle: StateFlow<String>
         get() = _screenTitle
 
     val selectedService: StateFlow<Services>
         get() = _selectedService
+
+    val dayAvailability: StateFlow<ArrayList<String>>
+        get() = _dayAvailability
 
     val selectedPackage: StateFlow<VendorPackage>
         get() = _selectedPackage
@@ -145,6 +149,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     }
     fun setJoinSpaVendor(vendor: Vendor) {
         savedStateHandle["joinSpaVendor"] = vendor
+    }
+    fun setDayAvailability(dayAvailability: ArrayList<String>) {
+        savedStateHandle["dayAvailability"] = dayAvailability
     }
     fun setOrderItemComponents(orderItemComponents: ArrayList<PlacedOrderItemComponent>) {
         savedStateHandle["orderItemComponents"] = orderItemComponents

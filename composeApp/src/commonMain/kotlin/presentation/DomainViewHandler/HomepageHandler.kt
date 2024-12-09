@@ -9,7 +9,8 @@ import presentation.viewmodels.LoadingScreenUIStateViewModel
 class HomepageHandler(
     private val loadingScreenUIStateViewModel: LoadingScreenUIStateViewModel,
     private val homepagePresenter: HomepagePresenter,
-    private val onHomeInfoAvailable: (HomepageInfo) -> Unit) : HomepageContract.View {
+    private val onHomeInfoAvailable: (HomepageInfo) -> Unit,
+    private val onDayAvailabilityInfoAvailable: (ArrayList<String>) -> Unit) : HomepageContract.View {
     fun init() {
         homepagePresenter.registerUIContract(this)
     }
@@ -19,5 +20,9 @@ class HomepageHandler(
     }
     override fun showHome(homePageInfo: HomepageInfo) {
         onHomeInfoAvailable(homePageInfo)
+    }
+
+    override fun showVendorDayAvailability(dayAvailability: ArrayList<String>) {
+        onDayAvailabilityInfoAvailable(dayAvailability)
     }
 }

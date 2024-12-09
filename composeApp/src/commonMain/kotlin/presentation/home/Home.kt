@@ -149,8 +149,6 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
         LaunchedEffect(true) {
             val isSwitchVendor: Boolean = mainViewModel!!.isSwitchVendor.value
-
-            println("Vendor $isSwitchVendor")
             if (isSwitchVendor) {
                 homePageViewModel!!.setHomePageInfo(HomepageInfo())
             }
@@ -166,6 +164,8 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 homePageViewModel!!.setHomePageViewHeight(viewHeight)
                 homePageViewModel!!.setHomePageInfo(homePageInfo)
                 mainViewModel!!.setVendorBusinessLogoUrl(homePageInfo.vendorInfo!!.businessLogo!!)
+            }, onDayAvailabilityInfoAvailable = {
+                mainViewModel!!.setDayAvailability(it)
             })
         handler.init()
 

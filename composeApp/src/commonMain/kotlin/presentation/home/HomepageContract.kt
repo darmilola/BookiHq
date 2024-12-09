@@ -7,6 +7,7 @@ class HomepageContract {
     interface View {
         fun showLoadHomePageLce(appUIStates: AppUIStates)
         fun showHome(homePageInfo: HomepageInfo)
+        fun showVendorDayAvailability(dayAvailability: ArrayList<String>)
     }
 
     abstract class Presenter {
