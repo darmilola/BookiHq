@@ -17,10 +17,9 @@ class CalendarDataSource {
 
     private val currentMoment: Instant = Clock.System.now()
     val today: LocalDate = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault()).date
-    val tomorrow: LocalDate = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault()).date.plus(DatePeriod(days = 1))
 
     fun getDate(startDate: LocalDate = today, lastSelectedDate: LocalDate): CalendarUiModel {
-        val endDayOfWeek = today.plus(30, DateTimeUnit.DAY)
+        val endDayOfWeek = startDate.plus(30, DateTimeUnit.DAY)
         val visibleDates = getDatesBetween(today, endDayOfWeek)
         return toUiModel(visibleDates, lastSelectedDate)
     }
@@ -39,17 +38,15 @@ class CalendarDataSource {
         lastSelectedDate: LocalDate
     ): CalendarUiModel {
         return CalendarUiModel(
-            selectedPlatformDate = toItemUiModel(lastSelectedDate, true),
+            selectedPlatformDate = toItemUiModel(lastSelectedDate, false),
             visiblePlatformDates = dateList.map {
-                toItemUiModel(it, it == lastSelectedDate)
+                toItemUiModel(it, false)
             },
         )
     }
 
     private fun toItemUiModel(date: LocalDate, isSelectedDate: Boolean) = PlatformDate(
         isSelected = isSelectedDate,
-        isToday = date == today,
-        isTomorrow = date == tomorrow,
-        date = date,
+        date = date
     )
 }

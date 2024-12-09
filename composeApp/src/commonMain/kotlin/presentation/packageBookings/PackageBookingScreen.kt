@@ -565,7 +565,16 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
 
                 coroutineScope.launch {
                     if (currentPage == 0) {
-                        if (bookingViewModel?.currentAppointmentBooking?.value?.pendingTime == null) {
+                        if (bookingViewModel?.currentAppointmentBooking?.value?.appointmentDay == -1) {
+                            ShowSnackBar(title = "No Day Selected",
+                                description = "Please Select Appointment Day to proceed",
+                                actionLabel = "",
+                                duration = StackedSnackbarDuration.Short,
+                                snackBarType = SnackBarType.ERROR,
+                                stackedSnackBarHostState,
+                                onActionClick = {})
+                        }
+                        else if (bookingViewModel?.currentAppointmentBooking?.value?.pendingTime == null) {
                             ShowSnackBar(title = "No Time Selected",
                                 description = "Please Select Appointment Time to proceed",
                                 actionLabel = "",
@@ -573,7 +582,8 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                                 snackBarType = SnackBarType.ERROR,
                                 stackedSnackBarHostState,
                                 onActionClick = {})
-                        } else {
+                        }
+                        else {
                             pagerState.animateScrollToPage(1)
                         }
                     }

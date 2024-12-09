@@ -122,15 +122,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
         val currentBooking = bookingViewModel.currentAppointmentBooking.value
         currentBooking.services = services
         currentBooking.serviceId = services.serviceId
-
-        currentBooking.appointmentYear = getYear()
-        currentBooking.appointmentMonth = getMonth()
-        currentBooking.appointmentDay = getDay()
-
         bookingViewModel.setCurrentAppointmentBooking(currentBooking)
-        bookingViewModel.setSelectedDay(currentBooking.appointmentDay!!)
-        bookingViewModel.setSelectedMonth(currentBooking.appointmentMonth!!)
-        bookingViewModel.setSelectedYear(currentBooking.appointmentYear!!)
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -206,7 +198,15 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
                             bookingViewModel.setCurrentAppointmentBooking(currentBooking)
                         })
                 }
-                BookingCalendar {
+                BookingCalendar(vendorAvailableDays = mainViewModel.dayAvailability.value, onUnAvailableDateSelected = {
+                    ShowSnackBar(title = "Not Available",
+                        description = "Not Available for Service on this Day",
+                        actionLabel = "",
+                        duration = StackedSnackbarDuration.Short,
+                        snackBarType = SnackBarType.INFO,
+                        stackedSnackBarHostState,
+                        onActionClick = {})
+                }, onDateSelected = {
                     bookingViewModel.undoTherapists()
                     currentBooking.appointmentDay = it.dayOfMonth
                     currentBooking.appointmentMonth = it.monthNumber
@@ -216,7 +216,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
                     bookingViewModel.setSelectedMonth(it.monthNumber)
                     bookingViewModel.setSelectedYear(it.year)
                     bookingViewModel.setSelectedMonthName(it.month.name)
-                }
+                })
             }
         }
     }

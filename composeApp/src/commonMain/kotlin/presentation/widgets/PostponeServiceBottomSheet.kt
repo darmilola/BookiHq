@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDate
 import presentation.components.ButtonComponent
+import presentation.viewmodels.MainViewModel
 import presentations.components.TextComponent
 import theme.styles.Colors
 
@@ -100,7 +101,7 @@ fun ButtonContent(onDismissRequest: () -> Unit,
 
 
 @Composable
-fun NewDateContent(onDateSelected: (LocalDate) -> Unit) {
+fun NewDateContent(mainViewModel: MainViewModel, onDateSelected: (LocalDate) -> Unit, onUnAvailableDateSelected: () -> Unit) {
     Column(
         modifier = Modifier
             .padding(top = 20.dp, start = 10.dp, end = 10.dp)
@@ -120,9 +121,11 @@ fun NewDateContent(onDateSelected: (LocalDate) -> Unit) {
             textModifier = Modifier.fillMaxWidth().padding(start = 10.dp)
         )
 
-        BookingCalendar(modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 20.dp)){
+        BookingCalendar(vendorAvailableDays = mainViewModel.dayAvailability.value,  onUnAvailableDateSelected = {
+            onUnAvailableDateSelected()
+        }, onDateSelected = {
             onDateSelected(it)
-        }
+        })
     }
 }
 

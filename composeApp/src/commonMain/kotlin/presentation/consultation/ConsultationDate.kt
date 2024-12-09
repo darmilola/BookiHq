@@ -44,7 +44,6 @@ fun ConsultationDate() {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        BookingCalendar(modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 20.dp)){}
         AvailableTimeContent()
         AttachServiceReviews()
     }

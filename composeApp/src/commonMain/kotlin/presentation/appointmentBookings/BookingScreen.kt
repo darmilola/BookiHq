@@ -539,10 +539,23 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                                     snackBarType = SnackBarType.ERROR,
                                     stackedSnackBarHostState,
                                     onActionClick = {})
-                            } else {
+                            }
+
+                            else if (bookingViewModel?.currentAppointmentBooking?.value?.appointmentDay == -1) {
+                                ShowSnackBar(title = "No Date Selected",
+                                    description = "Please Select a Date to proceed",
+                                    actionLabel = "",
+                                    duration = StackedSnackbarDuration.Short,
+                                    snackBarType = SnackBarType.ERROR,
+                                    stackedSnackBarHostState,
+                                    onActionClick = {})
+                            }
+                            else {
                                 pagerState.animateScrollToPage(1)
                             }
-                        } else if (currentPage == 1) {
+                        }
+
+                        else if (currentPage == 1) {
                             if (bookingViewModel?.currentAppointmentBooking?.value?.serviceTypeTherapists == null) {
                                 ShowSnackBar(title = "No Therapist Selected",
                                     description = "Please Select a Therapist to proceed",

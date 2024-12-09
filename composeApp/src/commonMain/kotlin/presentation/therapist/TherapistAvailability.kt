@@ -80,14 +80,6 @@ fun TherapistAvailability(mainViewModel: MainViewModel, therapistPresenter: Ther
                     actionUIStateViewModel.switchActionUIState(ScreenUIStates())
                 }*/
 
-                NewDateContent(onDateSelected = {
-                    currentDate.value = it
-                    therapistViewModel.setSelectedDay(it.dayOfMonth)
-                    therapistViewModel.setSelectedYear(it.year)
-                    therapistViewModel.setSelectedMonth(it.monthNumber)
-                    therapistViewModel.clearServiceTimes()
-                    isNewDateSelected.value = true
-                })
                 if (screenUiState.value.isLoading) {
                     Box(
                         modifier = Modifier.fillMaxWidth().height(60.dp),
