@@ -8,11 +8,11 @@ import kotlinx.serialization.Serializable
 @Serializable @Parcelize
 data class ProductReview(
     @SerialName("id")
-    val id: Int? = null,
+    val id: Long? = null,
     @SerialName("vendor_id")
-    val vendorId: Int? = null,
+    val vendorId: Long? = null,
     @SerialName("product_id")
-    val productId: Int? = null,
+    val productId: Long? = null,
     @SerialName("reviewer")
     val productReviewer: User? = null,
     @SerialName("reviewText")

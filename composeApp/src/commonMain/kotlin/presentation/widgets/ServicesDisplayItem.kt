@@ -45,7 +45,7 @@ fun HomeServicesWidget(vendorService:Services, onServiceSelected: (Services) -> 
                 .fillMaxWidth()
             AttachServiceImage(getWidget(vendorService.serviceInfo?.widgetCode!!))
             TextComponent(
-                text = vendorService.serviceInfo?.title!!,
+                text = vendorService.serviceInfo.title,
                 fontSize = 15,
                 fontFamily = GGSansRegular,
                 textStyle = MaterialTheme.typography.h6,

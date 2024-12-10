@@ -7,5 +7,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @Parcelize
-data class VendorDay(@SerialName("id") val id: Int? = null, @SerialName("day_id") val dayId: Int? = null,
+data class VendorDay(@SerialName("id") val id: Long? = null, @SerialName("day_id") val dayId: Int? = null,
                       @SerialName("platform_day") val platformDay: PlatformDay? = null): Parcelable
