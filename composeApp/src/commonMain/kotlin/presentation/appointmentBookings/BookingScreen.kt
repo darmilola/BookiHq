@@ -130,7 +130,6 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         val addMoreService = remember { mutableStateOf(false) }
         val lastItemRemoved = remember { mutableStateOf(false) }
         val completeProfile = remember { mutableStateOf(false) }
-        val currentUserInfo = mainViewModel!!.currentUserInfo.value
         val customerEmail = CustomerPaymentEnum.PAYMENT_EMAIL.toPath()
         val navigator = LocalNavigator.currentOrThrow
         val coroutineScope = rememberCoroutineScope()

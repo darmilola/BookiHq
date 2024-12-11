@@ -241,6 +241,19 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                     )
                 )
             }
+            Screens.RECOMMENDATIONS_SCREEN.toPath() -> {
+                val recommendationScreen = RecommendationsScreen(platformNavigator)
+                recommendationScreen.setMainViewModel(mainViewModel!!)
+                recommendationScreen.setDatabaseBuilder(databaseBuilder)
+                val nav = LocalNavigator.currentOrThrow
+                nav.push(recommendationScreen)
+                mainViewModel!!.setScreenNav(
+                    Pair(
+                        Screens.RECOMMENDATIONS_SCREEN.toPath(),
+                        Screens.DEFAULT.toPath()
+                    )
+                )
+            }
             Screens.JOIN_SPA.toPath() -> {
                 val joinASpa = JoinASpa(platformNavigator)
                 joinASpa.setMainViewModel(mainViewModel!!)
@@ -444,7 +457,6 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
 
 
     private fun showDefaultTab(mainViewModel: MainViewModel, homePageViewModel: HomePageViewModel): HomeTab {
-        println("Default is here")
         homeTab = HomeTab(platformNavigator)
         homeTab!!.setMainViewModel(mainViewModel)
         homeTab!!.setHomePageViewModel(homePageViewModel)

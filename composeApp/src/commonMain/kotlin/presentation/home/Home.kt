@@ -7,6 +7,7 @@ import UIStates.AppUIStates
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -82,7 +84,7 @@ import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.HomeServicesWidget
-import presentation.widgets.VendorPicksItem
+import presentation.widgets.VendorRecommendationsItem
 import presentation.widgets.RecentAppointmentWidget
 import presentation.widgets.ProductDetailBottomSheet
 import presentation.widgets.RecentPackageAppointmentWidget
@@ -285,7 +287,14 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                         }
                                     }
                                     if (!vendorRecommendations.isNullOrEmpty()) {
-                                        VendorRecommendation(vendorRecommendations, mainViewModel!!)
+                                        VendorRecommendation(vendorRecommendations, mainViewModel!!, onSeeAllRecommendations = {
+                                            mainViewModel!!.setScreenNav(
+                                                Pair(
+                                                    Screens.MAIN_SCREEN.toPath(),
+                                                    Screens.RECOMMENDATIONS_SCREEN.toPath()
+                                                )
+                                            )
+                                        })
                                     }
                                     if (!recentAppointments.isNullOrEmpty()) {
                                         AttachAppointmentsTitle("Recent Appointments")
@@ -356,7 +365,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
     }
 
     @Composable
-    fun VendorRecommendation(recommendations: List<VendorRecommendation>, mainViewModel: MainViewModel) {
+    fun VendorRecommendation(recommendations: List<VendorRecommendation>, mainViewModel: MainViewModel, onSeeAllRecommendations:() -> Unit) {
         Column(modifier = Modifier.fillMaxWidth().height(450.dp)) {
         Row(
             horizontalArrangement = Arrangement.Start,
@@ -367,8 +376,8 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 .fillMaxWidth()
         ) {
             TextComponent(
-                text = "Recommendations",
-                textModifier = Modifier.fillMaxWidth(0.60f),
+                text = "Recommended",
+                textModifier = Modifier.fillMaxWidth(0.50f),
                 fontSize = 28,
                 fontFamily = GGSansBold,
                 textStyle = MaterialTheme.typography.h6,
@@ -379,7 +388,28 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
-            StraightLine()
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.45f)
+                    .height(1.dp)
+                    .background(color =  Colors.lighterPrimaryColor)
+            )
+
+            Box(modifier = Modifier.fillMaxWidth().padding(end = 20.dp), contentAlignment = Alignment.CenterEnd){
+                TextComponent(
+                    text = "See All",
+                    textModifier = Modifier.wrapContentWidth().clickable { onSeeAllRecommendations() },
+                    fontSize = 18,
+                    fontFamily = GGSansBold,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Colors.primaryColor,
+                    textAlign = TextAlign.Left,
+                    fontWeight = FontWeight.ExtraBold,
+                    lineHeight = 30,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
 
         RecommendedAppointmentList(recommendations, mainViewModel)
@@ -457,7 +487,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                     modifier = Modifier.fillMaxWidth().fillMaxHeight(0.95f),
                     pageSpacing = 10.dp
                 ) { page ->
-                    VendorPicksItem(recommendations[page],mainViewModel, onItemClickListener = {
+                    VendorRecommendationsItem(recommendations[page],mainViewModel, onItemClickListener = {
                         when (it.recommendationType) {
                             RecommendationType.Services.toPath() -> {
                                 mainViewModel.setScreenNav(

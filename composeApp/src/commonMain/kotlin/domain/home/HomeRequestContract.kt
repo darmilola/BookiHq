@@ -8,4 +8,7 @@ import kotlinx.serialization.Serializable
 data class GetHomeRequest(@SerialName("userId") val userId: Long)
 
 @Serializable
+data class GetRecommendationRequest(@SerialName("vendor_id") val vendorId: Long)
+
+@Serializable
 data class GetHomeRequestWithStatus(@SerialName("userId") val userId: Long, @SerialName("vendorPhone") val vendorPhone: String)

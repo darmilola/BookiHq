@@ -22,4 +22,7 @@ class ProductListDataResponse(@SerialName("response") var listItem: ProductResou
 class OrderListDataResponse(@SerialName("response") var listItem: OrderResourceListEnvelope = OrderResourceListEnvelope(), @SerialName("status")  var status: String)
 
 @Serializable
+class RecommendationListDataResponse(@SerialName("response") var listItem: RecommendationResourceListEnvelope = RecommendationResourceListEnvelope(), @SerialName("status")  var status: String)
+
+@Serializable
 class VendorListDataResponse(@SerialName("response") var listItem: VendorResourceListEnvelope = VendorResourceListEnvelope(), @SerialName("status")  var status: String)

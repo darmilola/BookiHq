@@ -96,3 +96,14 @@ class VendorResourceListEnvelope(
     @SerialName("to") var displayedItemCount: Int? = null,
     @SerialName("total") var totalItemCount: Int? = null,
     @SerialName("path") var path: String? = null): Parcelable
+
+@Serializable @Parcelize
+class RecommendationResourceListEnvelope(
+    @SerialName("data") var resources: MutableList<VendorRecommendation>? = null,
+    @SerialName("next_page_url") val nextPageUrl: String? = null,
+    @SerialName("prev_page_url") val prevPageUrl: String? = null,
+    @SerialName("per_page") val perPage: String? = null,
+    @SerialName("current_page") val currentPage: Int? = null,
+    @SerialName("to") var displayedItemCount: Int? = null,
+    @SerialName("total") var totalItemCount: Int? = null,
+    @SerialName("path") var path: String? = null): Parcelable

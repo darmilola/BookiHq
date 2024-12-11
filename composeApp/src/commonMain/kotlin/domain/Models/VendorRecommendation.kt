@@ -12,3 +12,15 @@ data class VendorRecommendation(@SerialName("id") val recommendationId: Long = -
                                 @SerialName("description") val description: String = "", @SerialName("product_id") val productId: Long = -1,
                                 @SerialName("service_type_id") val serviceTypeId: Long = -1, @SerialName("service_type") val serviceTypeItem: ServiceTypeItem? = null,
                                 @SerialName("product") val product: Product? = null, @SerialName("imageUrl") val imageUrl: String = "", val isSelected: Boolean = false): Parcelable
+
+
+data class VendorRecommendationItemUIModel(val recommendationList: List<VendorRecommendation> = listOf())
+
+fun getVendorRecommendationListItemViewHeight(
+    itemList: List<VendorRecommendation>
+): Int {
+    val itemCount = itemList.size
+
+    return itemCount * 400
+}
+

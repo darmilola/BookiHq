@@ -17,6 +17,5 @@ fun StraightLine() {
             .fillMaxWidth()
             .height(1.dp)
             .background(color =  Colors.lighterPrimaryColor)
-    ) {
-    }
+    )
 }
