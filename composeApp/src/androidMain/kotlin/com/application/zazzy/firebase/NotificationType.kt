@@ -11,9 +11,11 @@ enum class NotificationType {
     APPOINTMENT_POSTPONED,
     APPOINTMENT_REMINDER,
     CONNECT_BUSINESS,
-    EXIT_BUSINESS;
+    EXIT_BUSINESS,
+    MARKETING;
 
     fun toPath() = when (this) {
+        MARKETING -> "marketing"
         MEETING_REMINDER -> "meeting_reminder"
         MEETING_STARTED -> "meeting_started"
         MEETING_BOOKING -> "meeting_booking"
@@ -39,5 +41,26 @@ enum class NotificationType {
         APPOINTMENT_REMINDER -> "appointment_reminder"
         CONNECT_BUSINESS -> "connect_business"
         EXIT_BUSINESS -> "exit_business"
+        MARKETING -> "marketing"
+    }
+}
+
+enum class FirebaseTopic {
+    CUSTOMER_TOPIC;
+
+    fun toPath() = when (this) {
+        CUSTOMER_TOPIC -> "customer"
+    }
+}
+
+enum class Channel {
+    NAME,
+    DESCRIPTION,
+    ADMIN_CHANNEL_ID;
+
+    fun toPath() = when (this) {
+        NAME -> "Parlors Notification"
+        DESCRIPTION -> "For Notifying Customers"
+        ADMIN_CHANNEL_ID -> "Admin Channel"
     }
 }

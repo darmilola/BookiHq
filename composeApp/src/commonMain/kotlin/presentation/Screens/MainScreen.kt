@@ -132,6 +132,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             productPresenter.getFavoriteProductIds(userId)
         })
 
+        platformNavigator.requestNotificationPermission()
         productPresenter.setMainViewModel(mainViewModel!!)
         screenNav = mainViewModel?.screenNav?.collectAsState()
 

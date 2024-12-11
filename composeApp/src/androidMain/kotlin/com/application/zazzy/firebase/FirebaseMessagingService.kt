@@ -31,14 +31,13 @@ import java.util.Random
 
 class AppFirebaseMessagingService : FirebaseMessagingService() {
     private var notificationManager: NotificationManager? = null
-    private val ADMIN_CHANNEL_ID = "App Notification Channel"
-  override  fun onMessageReceived(message: RemoteMessage) {
+    override  fun onMessageReceived(message: RemoteMessage) {
         val notificationId: Int = Random().nextInt(60000)
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
         val notificationData = NotificationMessage().getNotificationText(message)
         Glide.with(applicationContext)
           .asBitmap()
-          .load(notificationData.vendorLogoUrl)
+          .load(notificationData.logoUrl)
           .into(object : CustomTarget<Bitmap>() {
               override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                   val builder = createNotificationBuilder(notificationData)
@@ -66,7 +65,7 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
 
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         val defaultSoundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val builder =  NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
+        val builder =  NotificationCompat.Builder(this, Channel.ADMIN_CHANNEL_ID.toPath())
                 .setSmallIcon(com.application.zazzy.R.drawable.sample_logo)
                 .setContentTitle(notificationDisplayData.title)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(Html.fromHtml(notificationDisplayData.body)))
@@ -80,10 +79,10 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private fun setupChannels() {
         val adminChannel: NotificationChannel
-        val adminChannelName: CharSequence = "App Channel Name"
-        val adminChannelDescription = "App Channel Description"
+        val adminChannelName: CharSequence = Channel.NAME.toPath()
+        val adminChannelDescription = Channel.DESCRIPTION.toPath()
         adminChannel = NotificationChannel(
-            ADMIN_CHANNEL_ID,
+            Channel.ADMIN_CHANNEL_ID.toPath(),
             adminChannelName,
             NotificationManager.IMPORTANCE_HIGH
         )

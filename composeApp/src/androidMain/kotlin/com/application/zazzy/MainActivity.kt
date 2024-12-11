@@ -1,10 +1,12 @@
 package com.application.zazzy
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.location.LocationManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.OpenableColumns
@@ -13,6 +15,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -24,6 +27,7 @@ import co.paystack.android.PaystackSdk
 import co.paystack.android.Transaction
 import co.paystack.android.model.Card
 import co.paystack.android.model.Charge
+import com.application.zazzy.firebase.FirebaseTopic
 import com.application.zazzy.firebase.NotificationMessage
 import com.application.zazzy.firebase.NotificationService
 import com.application.zazzy.firebase.NotificationType
@@ -74,6 +78,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     lateinit var locationManager: LocationManager
     private val mainViewModel: MainViewModel by viewModels()
 
+    private val pushNotificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()
+    ) { granted -> }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PaystackSdk.initialize(applicationContext);
@@ -89,6 +96,15 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         firebaseAuth = FirebaseAuth.getInstance()
+        FirebaseMessaging.getInstance().subscribeToTopic(FirebaseTopic.CUSTOMER_TOPIC.toPath())
+            .addOnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    println("Failed")
+                }
+                else{
+                    println("Successful")
+                }
+            }
 
 
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -428,6 +444,11 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         } else {
             onPaymentFailed()
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    override fun requestNotificationPermission() {
+        pushNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
 
 }
