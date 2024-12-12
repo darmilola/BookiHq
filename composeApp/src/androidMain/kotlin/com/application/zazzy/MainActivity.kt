@@ -285,7 +285,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             .setBarcodeFormats(
                 Barcode.FORMAT_QR_CODE,
                 Barcode.FORMAT_AZTEC)
-        .enableAutoZoom()
+            .enableAutoZoom()
             .build()
 
         val scanner = GmsBarcodeScanning.getClient(this, options)

@@ -12,6 +12,8 @@ enum class NotificationType {
     APPOINTMENT_REMINDER,
     CONNECT_BUSINESS,
     EXIT_BUSINESS,
+    APPOINTMENT_DONE,
+    APPOINTMENT_CANCELLED,
     MARKETING;
 
     fun toPath() = when (this) {
@@ -27,6 +29,8 @@ enum class NotificationType {
         APPOINTMENT_REMINDER -> "appointment_reminder"
         CONNECT_BUSINESS -> "connect_business"
         EXIT_BUSINESS -> "exit_business"
+        APPOINTMENT_DONE -> "appointment_done"
+        APPOINTMENT_CANCELLED -> "appointment_cancelled"
     }
 
     fun toEventPropertyName() = when (this) {
@@ -42,6 +46,8 @@ enum class NotificationType {
         CONNECT_BUSINESS -> "connect_business"
         EXIT_BUSINESS -> "exit_business"
         MARKETING -> "marketing"
+        APPOINTMENT_DONE -> "appointment_done"
+        APPOINTMENT_CANCELLED -> "appointment_cancelled"
     }
 }
 

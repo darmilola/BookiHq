@@ -333,7 +333,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
         else if (addReviewsUIState.value.isSuccess) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 SuccessDialog("Review Added Successfully", "Close", onConfirmation = {
-                    addAppointmentReviewsUIStateViewModel!!.switchActionDeleteUIState(AppUIStates(isDefault = true))
+                    addAppointmentReviewsUIStateViewModel!!.switchAddAppointmentReviewUiState(AppUIStates(isDefault = true))
                 })
             }
         }

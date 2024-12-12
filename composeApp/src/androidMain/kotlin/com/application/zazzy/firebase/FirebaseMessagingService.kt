@@ -20,6 +20,7 @@ import android.text.Html
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.application.zazzy.MainActivity
+import com.application.zazzy.R
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -32,45 +33,35 @@ import java.util.Random
 class AppFirebaseMessagingService : FirebaseMessagingService() {
     private var notificationManager: NotificationManager? = null
     override  fun onMessageReceived(message: RemoteMessage) {
+
         val notificationId: Int = Random().nextInt(60000)
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
         val notificationData = NotificationMessage().getNotificationText(message)
-        Glide.with(applicationContext)
-          .asBitmap()
-          .load(notificationData.logoUrl)
-          .into(object : CustomTarget<Bitmap>() {
-              override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                  val builder = createNotificationBuilder(notificationData)
-                  builder.setLargeIcon(getCircleBitmap(resource))
-                  notificationManager!!.notify(notificationId, builder.build())
-              }
-              override fun onLoadCleared(placeholder: Drawable?) {}
-              override fun onLoadFailed(errorDrawable: Drawable?) {
-                  super.onLoadFailed(errorDrawable)
-              }
-          })
+        val actionTitle = NotificationMessage().getActionTitle(message)
+        val builder = createNotificationBuilder(notificationData,actionTitle)
+        notificationManager!!.notify(notificationId, builder.build())
     }
     override fun onNewToken(token: String) {
         super.onNewToken(token)
     }
 
-    private fun createNotificationBuilder(notificationDisplayData: NotificationMessage.NotificationDisplayData): NotificationCompat.Builder {
-
+    private fun createNotificationBuilder(notificationDisplayData: NotificationMessage.NotificationDisplayData, actionTitle: String): NotificationCompat.Builder {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             setupChannels()
         }
-        val intent = Intent(this, MainActivity::class.java).apply {
+        val activityIntent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
 
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_IMMUTABLE)
         val defaultSoundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val builder =  NotificationCompat.Builder(this, Channel.ADMIN_CHANNEL_ID.toPath())
-                .setSmallIcon(com.application.zazzy.R.drawable.sample_logo)
+                .setSmallIcon(R.drawable.sample_logo)
                 .setContentTitle(notificationDisplayData.title)
-                .setStyle(NotificationCompat.BigTextStyle().bigText(Html.fromHtml(notificationDisplayData.body)))
+                .setStyle(NotificationCompat.BigTextStyle().bigText(notificationDisplayData.body))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
+                .addAction(R.drawable.sample_logo, actionTitle, pendingIntent)
                 .setSound(defaultSoundUri)
 
         return builder
