@@ -8,6 +8,7 @@ import domain.Models.ListDataResponse
 import domain.Models.ServerResponse
 import domain.Models.Vendor
 import domain.Models.VendorListDataResponse
+import domain.Models.ViewVendorsResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.header
@@ -43,6 +44,14 @@ class ConnectVendorNetworkService (private val apiService: HttpClient) {
             setBody(getVendorRequest)
             header("Authorization", apiKey)
         }.body<VendorListDataResponse>().toSingle()
+
+    suspend fun viewVendor(viewVendorRequest: ViewVendorRequest) =
+        apiService.post {
+            url("/profile/vendor/view")
+            contentType(ContentType.Application.Json)
+            setBody(viewVendorRequest)
+            header("Authorization", apiKey)
+        }.body<ViewVendorsResponse>().toSingle()
 
 
 }

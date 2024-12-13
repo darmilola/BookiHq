@@ -1,6 +1,7 @@
 package presentation.DomainViewHandler
 
 import UIStates.AppUIStates
+import domain.Models.Vendor
 import domain.Models.VendorResourceListEnvelope
 import presentation.connectVendor.ConnectVendorContract
 import presentation.connectVendor.ConnectVendorPresenter
@@ -24,6 +25,8 @@ class VendorInfoPageHandler(
     }
 
     override fun showVendors(vendors: VendorResourceListEnvelope?, isFromSearch: Boolean, isLoadMore: Boolean) {}
+
+    override fun showVendorsView(nearbyVendor: List<Vendor>?, newVendor: List<Vendor>?) {}
 
     override fun onLoadMoreVendorStarted(isSuccess: Boolean) {}
 

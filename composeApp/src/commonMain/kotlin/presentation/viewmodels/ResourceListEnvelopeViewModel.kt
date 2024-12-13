@@ -721,6 +721,10 @@ class VendorsResourceListEnvelopeViewModel(private val savedStateHandle: SavedSt
 
     private var _resources =  savedStateHandle.getStateFlow("resources", mutableListOf<Vendor>())
 
+    private var _nearbyVendors =  savedStateHandle.getStateFlow("nearbyVendors", listOf<Vendor>())
+
+    private var _newVendors =  savedStateHandle.getStateFlow("newVendors", listOf<Vendor>())
+
     private var _nextPageUrl =  savedStateHandle.getStateFlow("nextPageUrl", "")
 
     private var _prevPageUrl =  savedStateHandle.getStateFlow("prevPageUrl", "")
@@ -740,6 +744,12 @@ class VendorsResourceListEnvelopeViewModel(private val savedStateHandle: SavedSt
 
     val resources: StateFlow<MutableList<Vendor>>
         get() = _resources
+
+    val nearbyVendors: StateFlow<List<Vendor>>
+        get() = _nearbyVendors
+
+    val newVendors: StateFlow<List<Vendor>>
+        get() = _newVendors
 
     val prevPageUrl: StateFlow<String>
         get() = _prevPageUrl
@@ -768,6 +778,14 @@ class VendorsResourceListEnvelopeViewModel(private val savedStateHandle: SavedSt
 
     fun setResources(resources: MutableList<Vendor>?) {
         savedStateHandle["resources"] = resources
+    }
+
+    fun setNearbyVendor(nearbyVendors: List<Vendor>?) {
+        savedStateHandle["nearbyVendors"] = nearbyVendors
+    }
+
+    fun setNewVendor(newVendors: List<Vendor>?) {
+        savedStateHandle["newVendors"] = newVendors
     }
 
     fun setPrevPageUrl(prevPageUrl: String) {

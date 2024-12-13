@@ -24,7 +24,6 @@ fun SwitchVendorHeader(onBackPressed: () -> Unit){
         ConnectBusinessTitle(onBackPressed = {
             onBackPressed()
         })
-        ConnectBusinessDescription()
     }
 }
 

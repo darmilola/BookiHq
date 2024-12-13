@@ -71,3 +71,8 @@ data class FavoriteProductResponse(@SerialName("status") val status: String = ""
 @Serializable
 data class FavoriteProductIdResponse(@SerialName("status") val status: String = "",
                                       @SerialName("items") val favoriteProductIds: List<FavoriteProductIdModel>)
+
+@Serializable
+data class ViewVendorsResponse(@SerialName("status") val status: String = "",
+                               @SerialName("nearbyVendor") val nearbyVendors: List<Vendor>,
+                               @SerialName("newVendor") val newVendors: List<Vendor> )

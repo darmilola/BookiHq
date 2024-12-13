@@ -5,6 +5,7 @@ import domain.Models.ListDataResponse
 import domain.Models.ServerResponse
 import domain.Models.Vendor
 import domain.Models.VendorListDataResponse
+import domain.Models.ViewVendorsResponse
 import io.ktor.client.HttpClient
 
  class ConnectVendorRepositoryImpl(apiService: HttpClient): ConnectVendorRepository {
@@ -24,4 +25,13 @@ import io.ktor.client.HttpClient
         val param = SearchVendorRequest(country = country, query = searchQuery, connectedVendor = connectedVendor)
         return connectVendorNetworkService.searchVendor(param,nextPage)
     }
-}
+
+     override suspend fun viewVendors(
+         country: String,
+         city: String,
+         connectedVendor: Long
+     ): Single<ViewVendorsResponse> {
+         val param = ViewVendorRequest(country = country, connectedVendor = connectedVendor, city = city)
+         return connectVendorNetworkService.viewVendor(param)
+     }
+ }
