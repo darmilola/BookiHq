@@ -9,6 +9,7 @@ class NotificationMessage {
         when (message.data["type"]) {
             NotificationType.MARKETING.toPath() -> return getMarketingMessage(message)
             NotificationType.APPOINTMENT_DONE.toPath() -> return getAppointmentDoneMessage(message)
+            NotificationType.APPOINTMENT_CANCELLED.toPath() -> return getAppointmentCancelledMessage(message)
         }
         return NotificationDisplayData(logoUrl = "", title = "", body = "")
     }
@@ -18,6 +19,7 @@ class NotificationMessage {
         when (message.data["type"]) {
             NotificationType.MARKETING.toPath() -> return "Book A Session"
             NotificationType.APPOINTMENT_DONE.toPath() -> return "Add Review"
+            NotificationType.APPOINTMENT_CANCELLED.toPath() -> return "Book Another Session"
         }
         return ""
     }
@@ -37,6 +39,20 @@ class NotificationMessage {
     }
 
     private fun getAppointmentDoneMessage(message: RemoteMessage): NotificationDisplayData {
+
+        val body = message.data["body"]
+        val title = message.data["title"]
+        val logoUrl = message.data["logoUrl"]
+
+        return NotificationDisplayData(
+            logoUrl = logoUrl.toString(),
+            title = title!!,
+            body = body!!
+        )
+
+    }
+
+    private fun getAppointmentCancelledMessage(message: RemoteMessage): NotificationDisplayData {
 
         val body = message.data["body"]
         val title = message.data["title"]

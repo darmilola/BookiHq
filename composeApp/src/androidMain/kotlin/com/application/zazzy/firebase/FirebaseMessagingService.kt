@@ -33,7 +33,6 @@ import java.util.Random
 class AppFirebaseMessagingService : FirebaseMessagingService() {
     private var notificationManager: NotificationManager? = null
     override  fun onMessageReceived(message: RemoteMessage) {
-
         val notificationId: Int = Random().nextInt(60000)
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
         val notificationData = NotificationMessage().getNotificationText(message)
