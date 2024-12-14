@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -485,7 +486,8 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier.fillMaxWidth().fillMaxHeight(0.95f),
-                    pageSpacing = 10.dp
+                    pageSpacing = 10.dp,
+                    pageSize = PageSize.Fixed(300.dp)
                 ) { page ->
                     VendorRecommendationsItem(recommendations[page],mainViewModel, onItemClickListener = {
                         when (it.recommendationType) {

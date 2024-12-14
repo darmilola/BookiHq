@@ -152,8 +152,9 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
         }
 
         LaunchedEffect(key1 = true) {
-                connectVendorPresenter.getVendor(country = country, city = city, connectedVendor = vendorId)
-                vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                //connectVendorPresenter.getVendor(country = country, city = city, connectedVendor = vendorId)
+               connectVendorPresenter.viewVendors(country = country, city = city, connectedVendor = vendorId)
+               vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
             }
 
         // View Contract Handler Initialisation
@@ -168,6 +169,8 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
         val vendorList = vendorResourceListEnvelopeViewModel?.resources?.collectAsState()
         val selectedVendor = connectPageViewModel?.selectedVendor?.collectAsState()
         val vendorUIModel = remember { mutableStateOf(VendorItemUIModel()) }
+        val nearbyVendor = vendorResourceListEnvelopeViewModel!!.nearbyVendors.collectAsState()
+        val newVendor = vendorResourceListEnvelopeViewModel!!.newVendors.collectAsState()
 
         val loadMoreState = vendorResourceListEnvelopeViewModel!!.isLoadingMore.collectAsState()
         val totalVendorsCount =
@@ -214,11 +217,12 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                     SwitchVendorHeader(onBackPressed = {
                         navigator.pop()
                     })
-                    SearchBar(placeholderText = "search @vendor", onValueChange = {
+                    SearchBar(placeholderText = "search @vendor", searchIcon = "drawable/search_icon.png" ,onValueChange = {
                         vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                         searchQuery.value = it
                         connectVendorPresenter.searchVendor(country,connectedVendor = vendorId,searchQuery = it)
                     }, onBackPressed = {
+                        searchQuery.value = ""
                         vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                         connectVendorPresenter.getVendor(country = country, city = city, connectedVendor = vendorId)
                     })
@@ -249,13 +253,20 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                     }
                 }
                 else if (loadVendorUiState.value.isSuccess) {
-                    LazyColumn(
+                    if (searchQuery.value.isEmpty()) {
+                        VendorsView(
+                            nearbyVendor = nearbyVendor.value,
+                            newVendor = newVendor.value,
+                            mainViewModel = mainViewModel!!,
+                            onSeeAllNearbyVendor = {})
+                    }
+                    else {
+                         LazyColumn(
                         modifier = Modifier.padding(top = 10.dp).fillMaxWidth()
                             .height(getVendorListItemViewHeight(vendorUIModel.value.vendorsList).dp),
                         contentPadding = PaddingValues(6.dp),
                         verticalArrangement = Arrangement.spacedBy(5.dp), userScrollEnabled = true
                     ) {
-                     runBlocking {
                          items(vendorUIModel.value.vendorsList.size) { i ->
                              SwitchVendorBusinessItemComponent(vendor = vendorUIModel.value.vendorsList[i]) {
                                  mainViewModel!!.setSwitchVendorId(it.vendorId!!)
@@ -289,24 +300,22 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                                      textColor = theme.Colors.primaryColor,
                                      style = TextStyle()
                                  ) {
-                                     if (searchQuery.value.isEmpty()) {
+                                    /* if (searchQuery.value.isEmpty()) {
                                          if (vendorResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
                                              connectVendorPresenter.getMoreVendor(country = country,city = city, connectedVendor = vendorId,
                                                  nextPage = vendorResourceListEnvelopeViewModel!!.currentPage.value + 1)
                                          }
-                                     }
-                                      else {
+                                     }*/
+
                                          if (vendorResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
                                              connectVendorPresenter.searchMoreVendors( country, vendorId, searchQuery.value,
                                                  nextPage = vendorResourceListEnvelopeViewModel!!.currentPage.value + 1)
                                          }
-                                     }
+
                                  }
                              }
                          }
-                     }
-
-
+                    }
                     }
                 }
             },

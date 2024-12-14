@@ -41,6 +41,7 @@ import presentations.components.TextFieldComponent
 fun SearchBarWidget(iconRes: String, placeholderText: String, iconSize: Int, onBackPressed:() -> Unit, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     isPasswordField: Boolean = false, onValueChange: (String) -> Unit) {
     var text by remember { mutableStateOf("") }
+    var iconResValue by remember { mutableStateOf(iconRes) }
     var borderStroke by remember { mutableStateOf(BorderStroke(1.dp, color  = Color.Gray)) }
 
     val modifier  = Modifier
@@ -57,11 +58,12 @@ fun SearchBarWidget(iconRes: String, placeholderText: String, iconSize: Int, onB
         Box(modifier = Modifier.fillMaxHeight().width(50.dp), contentAlignment = Alignment.Center){
             ImageComponent(imageModifier = Modifier
                 .size(iconSize.dp).clickable {
-                      if(iconRes == "drawable/back_arrow.png"){
+                      if(iconResValue == "drawable/back_arrow.png"){
                           text = ""
+                          iconResValue = "drawable/search_icon.png"
                           onBackPressed()
                       }
-                }, imageRes = iconRes, colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+                }, imageRes = iconResValue, colorFilter = ColorFilter.tint(color = Colors.primaryColor))
         }
         TextFieldComponent(
             text = text,
@@ -70,6 +72,12 @@ fun SearchBarWidget(iconRes: String, placeholderText: String, iconSize: Int, onB
             modifier = Modifier.fillMaxHeight().fillMaxWidth().padding(end = 10.dp),
             keyboardOptions = keyboardOptions,
             onValueChange = {
+                if(it.isNotEmpty()){
+                    iconResValue = "drawable/back_arrow.png"
+                }
+                else{
+                    iconResValue = "drawable/search_icon.png"
+                }
                 text = it
                 onValueChange(it)
             } , isSingleLine = true, placeholderText = placeholderText, onFocusChange = { it ->

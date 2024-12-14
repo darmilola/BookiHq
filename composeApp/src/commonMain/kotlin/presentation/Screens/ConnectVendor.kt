@@ -184,7 +184,7 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally) {
                         SwitchVendorHeader(title = "Connect Vendor")
-                        SearchBar(placeholderText = "search @vendor", onValueChange = {
+                        SearchBar(placeholderText = "search @vendor", searchIcon = "drawable/search_icon.png", onValueChange = {
                             vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                             searchQuery.value = it
                             connectVendorPresenter.searchVendor(country,connectedVendor = VendorEnum.DEFAULT_VENDOR_ID.toPath(),searchQuery = it)

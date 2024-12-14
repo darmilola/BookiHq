@@ -197,6 +197,9 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                                    it
                                )
                            }
+                        else {
+                           mainViewModel!!.setIsClickedSearchProduct(false)
+                        }
                }, onBackPressed = {
                     mainViewModel!!.setIsClickedSearchProduct(false)
                     searchQuery.value = ""
