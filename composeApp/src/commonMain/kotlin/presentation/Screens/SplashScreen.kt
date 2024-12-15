@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.room.RoomDatabase
-import applications.device.deviceInfo
 import applications.room.AppDatabase
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
@@ -33,8 +32,6 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import di.initKoin
 import domain.Enums.AuthType
-import domain.Enums.DeviceType
-import domain.Enums.ProductType
 import domain.Enums.SharedPreferenceEnum
 import domain.Enums.getDisplayCurrency
 import presentation.components.SplashScreenBackground
@@ -46,6 +43,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.authentication.AuthenticationPresenter
+import presentation.connectVendor.ConnectVendor
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.SplashScreenWidget
 

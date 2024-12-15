@@ -43,7 +43,7 @@ import theme.styles.Colors
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun VendorsView(nearbyVendor: List<Vendor>, newVendor: List<Vendor>, mainViewModel: MainViewModel, onSeeAllNearbyVendor:() -> Unit) {
+fun VendorsView(nearbyVendor: List<Vendor>, newVendor: List<Vendor>, mainViewModel: MainViewModel, onSeeAllNearbyVendor:() -> Unit, onVendorClickListener: (Vendor) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth().fillMaxHeight().verticalScroll(rememberScrollState())) {
         Row(
             horizontalArrangement = Arrangement.Start,
@@ -54,7 +54,7 @@ fun VendorsView(nearbyVendor: List<Vendor>, newVendor: List<Vendor>, mainViewMod
                 .fillMaxWidth()
         ) {
             TextComponent(
-                text = "Nearby Salons",
+                text = "Nearby Parlors",
                 textModifier = Modifier.fillMaxWidth(0.50f),
                 fontSize = 28,
                 fontFamily = GGSansBold,
@@ -100,8 +100,7 @@ fun VendorsView(nearbyVendor: List<Vendor>, newVendor: List<Vendor>, mainViewMod
             runBlocking {
                 items(nearbyVendor.size) { i ->
                     SwitchVendorBusinessItemComponent(vendor = nearbyVendor[i]) {
-                        mainViewModel!!.setSwitchVendorId(it.vendorId!!)
-                        mainViewModel!!.setSwitchVendor(it)
+                        onVendorClickListener(it)
                     }
                 }
             }
@@ -153,7 +152,9 @@ fun VendorsView(nearbyVendor: List<Vendor>, newVendor: List<Vendor>, mainViewMod
                 pageSpacing = 10.dp,
                 pageSize = PageSize.Fixed(300.dp)
             ) { page ->
-                NewVendorItem(newVendor[page],mainViewModel, onItemClickListener = {})
+                NewVendorItem(newVendor[page], onItemClickListener = {
+                    onVendorClickListener(it)
+                })
             }
             Row(
                 Modifier

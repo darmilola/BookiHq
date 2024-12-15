@@ -8,6 +8,10 @@ import androidx.compose.animation.slideOut
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
 import androidx.room.RoomDatabase
@@ -39,6 +43,7 @@ import presentation.profile.ProfilePresenter
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.BusinessInfoContent
+import presentation.widgets.SwitchVendorBottomSheet
 import presentation.widgets.VendorDetailsTitle
 import utils.ParcelableScreen
 
@@ -50,8 +55,6 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
     private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
     private val profilePresenter: ProfilePresenter by inject()
-    @Transient
-    private val preferenceSettings: Settings = Settings()
     @Transient private val bookingPresenter: BookingPresenter by inject()
     @Transient
     private var mainViewModel: MainViewModel? = null
@@ -96,6 +99,19 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
         val switchVendorUiState = performedActionUIStateViewModel!!.switchVendorUiState.collectAsState()
         performedActionUIStateViewModel!!.switchVendorActionUIState(AppUIStates(isDefault = true))
 
+        var showSwitchReasonBottomSheet by remember { mutableStateOf(false) }
+
+        if (showSwitchReasonBottomSheet) {
+            SwitchVendorBottomSheet(onDismiss = {
+                showSwitchReasonBottomSheet = false
+            }, onConfirmation = {
+                mainViewModel!!.setSwitchVendorReason(it)
+                profilePresenter.switchVendor(userId = userInfo.userId!!,
+                    vendorId = switchVendorId, action = CustomerMovementEnum.Exit.toPath(),
+                    exitReason = switchVendorReason, vendor = mainViewModel!!.connectedVendor.value, platformNavigator = platformNavigator, exitVendorId = connectedVendorId!!)
+            })
+        }
+
 
         Scaffold(
             topBar = {
@@ -122,9 +138,7 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
                 }
 
                  BusinessInfoContent(switchVendorValue){
-                 profilePresenter.switchVendor(userId = userInfo.userId!!,
-                     vendorId = switchVendorId, action = CustomerMovementEnum.Exit.toPath(),
-                     exitReason = switchVendorReason, vendor = mainViewModel!!.connectedVendor.value, platformNavigator = platformNavigator, exitVendorId = connectedVendorId!!)
+                     showSwitchReasonBottomSheet = true
                 }
             },
             backgroundColor = Color.Transparent

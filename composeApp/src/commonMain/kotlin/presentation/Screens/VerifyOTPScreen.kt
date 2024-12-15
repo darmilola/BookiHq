@@ -49,6 +49,7 @@ import org.koin.core.component.inject
 import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.authentication.AuthenticationPresenter
 import presentation.components.ButtonComponent
+import presentation.connectVendor.ConnectVendor
 import presentation.dialogs.LoadingDialog
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.AuthenticationBackNav

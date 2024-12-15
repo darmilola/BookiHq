@@ -31,7 +31,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.room.RoomDatabase
-import applications.device.deviceInfo
 import applications.room.AppDatabase
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -41,7 +40,6 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import domain.Enums.AuthType
-import domain.Enums.DeviceType
 import domain.Enums.SharedPreferenceEnum
 import domain.Enums.getDisplayCurrency
 import kotlinx.coroutines.runBlocking
@@ -51,6 +49,7 @@ import org.koin.core.component.inject
 import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.authentication.AuthenticationPresenter
 import presentation.components.IconButtonComponent
+import presentation.connectVendor.ConnectVendor
 import presentation.dialogs.LoadingDialog
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.welcomeScreenScrollWidget

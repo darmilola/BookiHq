@@ -3,6 +3,7 @@ package presentation.widgets
 import GGSansRegular
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,12 +33,12 @@ import presentations.components.TextComponent
 import theme.styles.Colors
 
 @Composable
-fun NewVendorItem(vendor: Vendor, mainViewModel: MainViewModel, onItemClickListener: (Vendor) -> Unit) {
+fun NewVendorItem(vendor: Vendor, onItemClickListener: (Vendor) -> Unit) {
 
     val columnModifier = Modifier
         .fillMaxHeight()
         .fillMaxWidth()
-    Card(modifier = Modifier.height(360.dp).fillMaxWidth(),
+    Card(modifier = Modifier.height(360.dp).fillMaxWidth().clickable { onItemClickListener(vendor) },
         shape = RoundedCornerShape(topStart = 5.dp, bottomStart = 5.dp),
         border = BorderStroke(0.5.dp, color = Colors.lighterPrimaryColor),
         colors = CardDefaults.cardColors(containerColor = Color.White)) {

@@ -43,9 +43,6 @@ import presentations.components.TextComponent
     fun SwitchVendorBusinessItemComponent(vendor: Vendor, onVendorClickListener: (Vendor) -> Unit) {
         val columnModifier = Modifier
             .padding(start = 5.dp, top = 5.dp, bottom = 5.dp)
-            .clickable {
-                onVendorClickListener(vendor)
-            }
             .wrapContentHeight()
             Row(modifier = columnModifier,
                 horizontalArrangement = Arrangement.Center,
@@ -64,6 +61,7 @@ import presentations.components.TextComponent
                         .background(color = Color.Transparent)
                         .height(40.dp)
                     ButtonComponent(modifier = buttonStyle, buttonText = "Connect", borderStroke = BorderStroke((1).dp, color = Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 14, shape = RoundedCornerShape(12.dp), textColor =  Colors.primaryColor, style = TextStyle(fontFamily = GGSansRegular)){
+                        onVendorClickListener(vendor)
                     }
                 }
             }

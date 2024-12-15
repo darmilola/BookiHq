@@ -1,16 +1,13 @@
-package presentation.Screens
+package presentation.connectVendor
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.room.RoomDatabase
-import applications.device.deviceInfo
 import applications.room.AppDatabase
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -30,11 +27,10 @@ import presentation.viewmodels.LoadingScreenUIStateViewModel
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.set
 import domain.Enums.CustomerMovementEnum
-import domain.Enums.DeviceType
 import domain.Enums.SharedPreferenceEnum
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.VendorInfoPageHandler
-import presentation.connectVendor.ConnectVendorPresenter
+import presentation.Screens.MainScreen
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.widgets.BusinessInfoContent

@@ -74,6 +74,7 @@ import presentation.Packages.PackageInfo
 import presentation.Products.ProductPresenter
 import presentation.account.FavoriteProducts
 import presentation.account.PaymentMethods
+import presentation.connectVendor.ConnectVendorDetailsScreen
 import presentation.profile.EditProfile
 import presentation.therapist.TherapistDashboard
 import presentation.viewmodels.HomePageViewModel

@@ -1,6 +1,10 @@
 package presentation.Screens
 
 import StackedSnackbarHost
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,13 +33,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.room.RoomDatabase
 import applications.room.AppDatabase
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
@@ -83,8 +91,10 @@ import rememberStackedSnackbarHostState
 import theme.Colors
 import utils.ParcelableScreen
 
+@OptIn(ExperimentalVoyagerApi::class)
 @Parcelize
-class RecommendationsScreen(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinComponent {
+class RecommendationsScreen(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinComponent,
+    ScreenTransition {
 
     @Transient
     private val preferenceSettings: Settings = Settings()
@@ -255,7 +265,7 @@ class RecommendationsScreen(val platformNavigator: PlatformNavigator) : Parcelab
                                         userScrollEnabled = true
                                     ) {
                                         runBlocking {
-                                            items(recommendationsList!!.value.size) { it ->
+                                            items(recommendationsList.value.size) { it ->
                                                 VendorRecommendationsItem(recommendationUIModel.value.recommendationList[it],mainViewModel!!, onItemClickListener = {
                                                     when (it.recommendationType) {
                                                         RecommendationType.Services.toPath() -> {
@@ -274,14 +284,15 @@ class RecommendationsScreen(val platformNavigator: PlatformNavigator) : Parcelab
                                                     }
                                                 })
 
-                                                if (it == lastIndex && loadMoreState!!.value) {
+                                                if (it == lastIndex && loadMoreState.value) {
                                                     Box(
                                                         modifier = Modifier.fillMaxWidth().height(60.dp),
                                                         contentAlignment = Alignment.Center
                                                     ) {
                                                         IndeterminateCircularProgressBar()
                                                     }
-                                                } else if (it == lastIndex && (displayedItemCount?.value!! < totalItemCount?.value!!)) {
+                                                }
+                                                else if (it == lastIndex && (displayedItemCount?.value!! < totalItemCount?.value!!)) {
                                                     val buttonStyle = Modifier
                                                         .height(60.dp)
                                                         .fillMaxWidth()
@@ -349,6 +360,20 @@ class RecommendationsScreen(val platformNavigator: PlatformNavigator) : Parcelab
                 .fillMaxHeight(),
                 contentAlignment = Alignment.Center) {
             }
+        }
+    }
+
+    override fun enter(lastEvent: StackEvent): EnterTransition {
+        return slideIn { size ->
+            val x = if (lastEvent == StackEvent.Pop) -size.width else size.width
+            IntOffset(x = x, y = 0)
+        }
+    }
+
+    override fun exit(lastEvent: StackEvent): ExitTransition {
+        return slideOut { size ->
+            val x = if (lastEvent == StackEvent.Pop) size.width else -size.width
+            IntOffset(x = x, y = 0)
         }
     }
 }

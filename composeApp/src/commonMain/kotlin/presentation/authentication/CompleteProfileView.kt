@@ -20,7 +20,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,7 +49,7 @@ import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.DomainViewHandler.PlatformHandler
 import presentation.components.ButtonComponent
 import presentation.components.ToggleButton
-import presentation.Screens.ConnectVendor
+import presentation.connectVendor.ConnectVendor
 import presentation.dialogs.LoadingDialog
 import presentation.profile.ProfilePresenter
 import presentation.viewmodels.MainViewModel

@@ -97,10 +97,8 @@ class AccountTab : Tab, Parcelable {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = columnModifier
             ) {
-                runBlocking{
-                    val userDao = databaseBuilder!!.build().getUserDao()
-                    userInfo = userDao.getUser()
-                }
+
+                userInfo = mainViewModel!!.currentUserInfo.value
                 AccountProfileImage(
                            profileImageUrl = userInfo!!.profileImageUrl!!,
                            showEditIcon = false,
@@ -242,7 +240,7 @@ class AccountTab : Tab, Parcelable {
 
                 ActionItemComponent(
                     modifier = actionStyle,
-                    buttonText = "Switch Vendor",
+                    buttonText = "Switch Parlor",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
                     textColor = Colors.darkPrimary,
