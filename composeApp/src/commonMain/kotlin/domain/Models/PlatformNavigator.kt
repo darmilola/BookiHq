@@ -21,6 +21,7 @@ interface PlatformNavigator: Parcelable {
                                 appointmentDay: String, appointmentMonth: String, appointmentYear: String, appointmentTime: String,
                                 serviceType: String, fcmToken: String)
     fun requestNotificationPermission()
+    fun requestCameraPermission()
 
     fun exitApp()
     fun restartApp()

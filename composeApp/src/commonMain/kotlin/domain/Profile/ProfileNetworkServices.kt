@@ -70,7 +70,7 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
 
     suspend fun getVendorInfo(getVendorInfoRequest: GetVendorInfoRequest) =
         apiService.post {
-            url("/vendor/account/get")
+            url("/profile/vendor/account/get")
             contentType(ContentType.Application.Json)
             setBody(getVendorInfoRequest)
             header("Authorization", apiKey)

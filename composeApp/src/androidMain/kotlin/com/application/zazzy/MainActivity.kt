@@ -81,6 +81,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     private val pushNotificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()
     ) { granted -> }
 
+    private val cameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()
+    ) { granted -> }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PaystackSdk.initialize(applicationContext);
@@ -449,6 +452,10 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun requestNotificationPermission() {
         pushNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+    }
+
+    override fun requestCameraPermission() {
+        cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
     }
 
 }

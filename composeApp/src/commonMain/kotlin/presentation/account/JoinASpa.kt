@@ -149,7 +149,7 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : ParcelableScr
 
                 if (uiState.value.isLoading) {
                     Box(modifier = Modifier.fillMaxWidth()) {
-                        LoadingDialog("Getting Vendor")
+                        LoadingDialog("Getting Parlor")
                     }
                 }
                 else if (uiState.value.isSuccess) {
