@@ -71,11 +71,9 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.BookingStatus
 import domain.Enums.CustomerPaymentEnum
 import domain.Enums.PaymentMethod
-import domain.Enums.VendorEnum
 import domain.Models.PaymentAuthorizationResult
 import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
-import domain.Models.VendorPackage
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.CancelContractHandler
@@ -130,6 +128,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         val addMoreService = remember { mutableStateOf(false) }
         val lastItemRemoved = remember { mutableStateOf(false) }
         val completeProfile = remember { mutableStateOf(false) }
+        val paystackPaymentFailed = remember { mutableStateOf(false) }
         val customerEmail = CustomerPaymentEnum.PAYMENT_EMAIL.toPath()
         val navigator = LocalNavigator.currentOrThrow
         val coroutineScope = rememberCoroutineScope()
@@ -286,6 +285,12 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             }
         }
 
+        if (paystackPaymentFailed.value){
+            Box(modifier = Modifier.fillMaxWidth()) {
+                ErrorDialog("Payment Failed", actionTitle = "Retry", onConfirmation = {})
+            }
+        }
+
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
             animation = StackedSnackbarAnimation.Bounce
@@ -354,9 +359,12 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                         cvv = selectedCard!!.cvv,
                         onPaymentLoading = {},
                         onPaymentSuccessful = {
+                            paystackPaymentFailed.value = false
                             createAppointment()
                         },
-                        onPaymentFailed = {})
+                        onPaymentFailed = {
+                            paystackPaymentFailed.value = true
+                        })
                 }
             })
         paymentHandler.init()

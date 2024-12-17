@@ -166,6 +166,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
             )
         }
         val completeProfile = remember { mutableStateOf(false) }
+        val paystackPaymentFailed = remember { mutableStateOf(false) }
         val userProfile = mainViewModel!!.currentUserInfo.value
         val cartItems = mainViewModel!!.unSavedOrders.collectAsState()
         val cartSize = mainViewModel!!.unSavedOrderSize.collectAsState()
@@ -261,11 +262,12 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                                 cvv = selectedCard!!.cvv,
                                 onPaymentLoading = {},
                                 onPaymentSuccessful = {
+                                    paystackPaymentFailed.value = false
                                      customerPaidAmount = paymentAmount
                                      createOrder()
                                 },
                                 onPaymentFailed = {
-
+                                    paystackPaymentFailed.value = true
                                 })
                         }
                     })
@@ -306,6 +308,12 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                 else if (paymentActionUiState.value.isFailed) {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         ErrorDialog("Payment Authentication Failed", actionTitle = "Retry", onConfirmation = {})
+                    }
+                }
+
+                if (paystackPaymentFailed.value){
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        ErrorDialog("Payment Failed", actionTitle = "Retry", onConfirmation = {})
                     }
                 }
 

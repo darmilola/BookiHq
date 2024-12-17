@@ -434,7 +434,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                     onPaymentSuccessful()
                 }
 
-                override fun beforeValidate(transaction: Transaction?) {}
+                override fun beforeValidate(transaction: Transaction?) {
+                    onPaymentLoading()
+                }
 
                 fun showLoading(isProcessing: Boolean?) {
                     onPaymentLoading()

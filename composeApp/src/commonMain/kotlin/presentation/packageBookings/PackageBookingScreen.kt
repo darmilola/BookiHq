@@ -152,6 +152,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
         val lastItemRemoved = remember { mutableStateOf(false) }
         val currentPage = remember { mutableStateOf(-1) }
         val currentUserInfo = mainViewModel!!.currentUserInfo.value
+        val paystackPaymentFailed = remember { mutableStateOf(false) }
         val customerEmail = CustomerPaymentEnum.PAYMENT_EMAIL.toPath()
         val navigator = LocalNavigator.currentOrThrow
         val coroutineScope = rememberCoroutineScope()
@@ -304,6 +305,12 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
             }
         }
 
+        if (paystackPaymentFailed.value){
+            Box(modifier = Modifier.fillMaxWidth()) {
+                ErrorDialog("Payment Failed", actionTitle = "Retry", onConfirmation = {})
+            }
+        }
+
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -365,9 +372,12 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                         cvv = selectedCard!!.cvv,
                         onPaymentLoading = {},
                         onPaymentSuccessful = {
+                            paystackPaymentFailed.value = false
                             createAppointment()
                         },
-                        onPaymentFailed = {})
+                        onPaymentFailed = {
+                            paystackPaymentFailed.value = true
+                        })
                 }
             })
         paymentHandler.init()
