@@ -13,4 +13,5 @@ interface TherapistRepository {
     suspend fun archiveAppointment(appointmentId: Long): Single<ServerResponse>
     suspend fun doneAppointment(appointmentId: Long): Single<ServerResponse>
     suspend fun getTherapistAppointments(therapistId: Long, nextPage: Int = 1): Single<TherapistAppointmentListDataResponse>
+    suspend fun getFilteredTherapistAppointments(therapistId: Long, filter: String, nextPage: Int = 1): Single<TherapistAppointmentListDataResponse>
 }

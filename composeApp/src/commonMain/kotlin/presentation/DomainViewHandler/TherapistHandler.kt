@@ -14,6 +14,7 @@ class TherapistHandler(
     private val therapistPresenter: TherapistPresenter,
     private val loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel,
     private val performedActionUIStateViewModel: PerformedActionUIStateViewModel,
+    private val onShowRefreshing: (AppUIStates) -> Unit,
     private val appointmentResourceListEnvelopeViewModel: TherapistAppointmentResourceListEnvelopeViewModel? = null) : TherapistContract.View {
     fun init() {
         therapistPresenter.registerUIContract(this)
@@ -53,6 +54,10 @@ class TherapistHandler(
 
     override fun onLoadMoreAppointmentEnded() {
         appointmentResourceListEnvelopeViewModel!!.setLoadingMore(false)
+    }
+
+    override fun showRefreshing(uiState: AppUIStates) {
+        onShowRefreshing(uiState)
     }
 
 

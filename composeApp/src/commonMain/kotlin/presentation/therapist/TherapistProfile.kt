@@ -2,6 +2,7 @@ package presentation.therapist
 
 import GGSansRegular
 import StackedSnackbarHost
+import UIStates.AppUIStates
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -75,6 +76,7 @@ fun TherapistProfile(therapistInfo: TherapistInfo, therapistPresenter: Therapist
     }
 
     else if (updateUiState.value.isSuccess) {
+         performedActionUIStateViewModel.switchActionUIState(AppUIStates(isDefault = true))
          onUpdateSuccess()
     }
     else if (updateUiState.value.isFailed){

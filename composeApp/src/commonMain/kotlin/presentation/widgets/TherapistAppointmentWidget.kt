@@ -91,17 +91,22 @@ fun TherapistDashboardAppointmentWidget(appointment: Appointment,
     when (appointmentStatus) {
         BookingStatus.PENDING.toPath() -> {
             iconRes = "drawable/schedule.png"
-            statusText = "Pending"
+            statusText = BookingStatus.PENDING.toName()
             statusColor = Colors.primaryColor
         }
         BookingStatus.POSTPONED.toPath() -> {
             iconRes = "drawable/appointment_postponed.png"
-            statusText = "Postponed"
+            statusText = BookingStatus.POSTPONED.toName()
+            statusColor = Colors.pinkColor
+        }
+        BookingStatus.CANCELLED.toPath() -> {
+            iconRes = "drawable/appointment_postponed.png"
+            statusText = BookingStatus.CANCELLED.toName()
             statusColor = Colors.pinkColor
         }
         BookingStatus.DONE.toPath() -> {
             iconRes = "drawable/appointment_done.png"
-            statusText = "Done"
+            statusText = BookingStatus.DONE.toName()
             statusColor = Colors.greenColor
         }
     }
