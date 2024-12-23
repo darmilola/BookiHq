@@ -60,6 +60,7 @@ import presentation.widgets.SnackBarType
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
+import utils.formatServiceLength
 
 @Composable
 fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: BookingViewModel,
@@ -266,7 +267,10 @@ fun AttachServiceDropDownWidget(mainViewModel: MainViewModel, bookingViewModel: 
     }
     else{
         for (item in bookingViewModel.serviceTypeList.value){
-            serviceTypeList.add(item.title)
+            val title = item.title
+            val length = formatServiceLength(item.length)
+            val display = "$title  $length"
+            serviceTypeList.add(display)
         }
     }
     var selectedService: ServiceTypeItem? = null

@@ -39,6 +39,26 @@ fun getOrderViewHeight(
     return itemCount * 350
 }
 
+fun formatServiceLength(serviceLength: Int): String {
+    var length = ""
+    val oneHourMins = 60
+
+    if (serviceLength < oneHourMins){
+        length = "$serviceLength mins"
+    }
+    else {
+        val hours = serviceLength / oneHourMins
+        val minutes = serviceLength % oneHourMins
+        if (minutes == 0){
+            length = "$hours hr"
+        }
+        else {
+            length = "$hours hr $minutes min"
+        }
+    }
+    return length
+}
+
 fun getFormattedContactPhone(userCountry: String = CountryEnum.DEFAULT.toPath(), contactPhone: String): String {
     val validContactPhone = if (contactPhone.startsWith("0")) contactPhone.drop(1) else contactPhone
     val countryCode = when(userCountry){
