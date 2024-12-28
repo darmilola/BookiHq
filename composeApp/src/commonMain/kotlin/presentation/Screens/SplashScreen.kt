@@ -69,7 +69,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
                 mainViewModel.setDisplayCurrencyUnit(displayCurrencyUnit)
                 mainViewModel.setDisplayCurrencyPath(displayCurrencyPath)
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
-                preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
+                preferenceSettings[SharedPreferenceEnum.STATE.toPath()] = user.state?.id
                 preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendorId
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
@@ -91,7 +91,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
         connectVendor = { user ->
             runBlocking {
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
-                preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
+                preferenceSettings[SharedPreferenceEnum.STATE.toPath()] = user.state?.id
                 preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendorId
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey

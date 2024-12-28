@@ -37,11 +37,11 @@ class AuthenticationRepositoryImpl(apiService: HttpClient):
         address: String,
         contactPhone: String,
         country: String,
-        city: String,
+        state: Long,
         gender: String,
         profileImageUrl: String
     ): Single<ServerResponse> {
-        val param = UpdateProfileRequest(userId, firstname, lastname, contactPhone, address,country,city, gender, profileImageUrl)
+        val param = UpdateProfileRequest(userId, firstname, lastname, contactPhone, address,country,state, gender, profileImageUrl)
         return authenticationNetworkService.updateProfile(param)
     }
 
@@ -57,12 +57,12 @@ class AuthenticationRepositoryImpl(apiService: HttpClient):
         userEmail: String,
         authPhone: String,
         country: String,
-        city: String,
+        state: Long,
         signupType: String,
         gender: String,
         profileImageUrl: String
     ): Single<CompleteProfileResponse> {
-        val param = CompleteProfileRequest(firstname = firstname,lastname =  lastname,userEmail =  userEmail, authPhone = authPhone, signupType = signupType, gender = gender, country = country, city = city, profileImageUrl = profileImageUrl)
+        val param = CompleteProfileRequest(firstname = firstname,lastname =  lastname,userEmail =  userEmail, authPhone = authPhone, signupType = signupType, gender = gender, country = country, state = state, profileImageUrl = profileImageUrl)
         return authenticationNetworkService.completeProfile(param)
     }
 

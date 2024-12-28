@@ -37,6 +37,7 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
                     homeRepositoryImpl.getUserHomePage(userId)
                         .subscribe(
                             onSuccess = { response ->
+                                println("Error 0 $response")
                                 when (response.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
                                         val servicesGridList = calculateServicesGridList(response.homepageInfo.vendorServices!!)
@@ -56,12 +57,14 @@ class HomepagePresenter(apiService: HttpClient): HomepageContract.Presenter() {
                                 }
                             },
                             onError = {
+                                println("Error 1 ${it.message}")
                                 contractView?.showLoadHomePageLce(AppUIStates(isFailed = true, errorMessage = "Error Loading Home"))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
+                println("Error 2 ${e.message}")
                 contractView?.showLoadHomePageLce(AppUIStates(isFailed = true, errorMessage = "Error Loading Home"))
             }
         }

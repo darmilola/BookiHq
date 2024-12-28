@@ -115,7 +115,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                 mainViewModel!!.setDisplayCurrencyUnit(displayCurrencyUnit)
                 mainViewModel!!.setDisplayCurrencyPath(displayCurrencyPath)
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
-                preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
+                preferenceSettings[SharedPreferenceEnum.STATE.toPath()] = user.state?.id
                 preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendorId
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
@@ -142,7 +142,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                 preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.PHONE.toPath()
                 preferenceSettings[SharedPreferenceEnum.AUTH_PHONE.toPath()] = user.authPhone
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
-                preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
+                preferenceSettings[SharedPreferenceEnum.STATE.toPath()] = user.state?.id
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
                 preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
 
@@ -168,7 +168,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
 
 
         if (navigateToCompleteProfile.value){
-                navigator.replaceAll(CompleteProfileScreen(platformNavigator, authPhone = authPhone.value, authEmail = ""))
+                navigator.replaceAll(CompleteProfileScreen(platformNavigator, authPhone = authPhone.value, authEmail = "empty"))
         }
         else if (navigateToConnectVendor.value){
             val connectScreen = ConnectVendor(platformNavigator)

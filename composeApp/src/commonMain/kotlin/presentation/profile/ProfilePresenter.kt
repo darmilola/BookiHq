@@ -112,34 +112,30 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         }
     }
 
-    override fun getCities(country: String) {
-        val cityList: ArrayList<String> = arrayListOf()
+    override fun getCountryStates(countryId: Long) {
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    profileRepositoryImpl.getCountryCities(country)
+                    profileRepositoryImpl.getCountryStates(countryId)
                         .subscribe(
                             onSuccess = { response ->
                                 when (response.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
-                                        response.countryCities.cities.map {
-                                            cityList.add(it)
-                                        }
-                                        platformContractView?.showCities(cityList)
+                                        platformContractView?.showStates(response.states)
                                     }
                                     ServerResponse.FAILURE.toPath() -> {
-                                        platformContractView?.showCities(cityList)
+                                        platformContractView?.showStates(arrayListOf())
                                     }
                                 }
                             },
                             onError = {
-                                platformContractView?.showCities(cityList)
+                                platformContractView?.showStates(arrayListOf())
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                platformContractView?.showCities(cityList)
+                platformContractView?.showStates(arrayListOf())
             }
         }
     }

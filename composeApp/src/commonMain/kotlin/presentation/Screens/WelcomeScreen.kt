@@ -114,7 +114,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                 mainViewModel.setUserInfo(user)
                 mainViewModel.setConnectedVendor(user.vendorInfo!!)
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
-                preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
+                preferenceSettings[SharedPreferenceEnum.STATE.toPath()] = user.state?.id
                 preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendorId
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
@@ -138,7 +138,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
         connectVendor = { user ->
             runBlocking {
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
-                preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
+                preferenceSettings[SharedPreferenceEnum.STATE.toPath()] = user.state?.id
                 preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendorId
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
@@ -171,7 +171,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
 
 
     if (navigateToCompleteProfile.value){
-        val completeProfile = CompleteProfileScreen(platformNavigator, authPhone = "", authEmail = authEmail.value)
+        val completeProfile = CompleteProfileScreen(platformNavigator, authPhone = "empty", authEmail = authEmail.value)
         completeProfile.setMainViewModel(mainViewModel = mainViewModel)
         completeProfile.setDatabaseBuilder(databaseBuilder = databaseBuilder)
         navigator.replaceAll(completeProfile)

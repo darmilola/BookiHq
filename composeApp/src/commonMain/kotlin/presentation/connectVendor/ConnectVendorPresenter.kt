@@ -55,12 +55,12 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
         }
     }
 
-    override fun getVendor(country: String, city: String, connectedVendor: Long) {
+    override fun getVendor(country: String, state: Long, connectedVendor: Long) {
         contractView?.showScreenLce(AppUIStates(isLoading = true, loadingMessage = "Getting Vendors"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    connectVendorRepositoryImpl.getVendor(country, city, connectedVendor,1)
+                    connectVendorRepositoryImpl.getVendor(country, state, connectedVendor,1)
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {
@@ -88,12 +88,12 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
         }
     }
 
-    override fun getMoreVendor(country: String, city: String, connectedVendor: Long, nextPage: Int) {
+    override fun getMoreVendor(country: String, state: Long, connectedVendor: Long, nextPage: Int) {
         contractView?.onLoadMoreVendorStarted(true)
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    connectVendorRepositoryImpl.getVendor(country,city,connectedVendor,nextPage)
+                    connectVendorRepositoryImpl.getVendor(country,state,connectedVendor,nextPage)
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {
@@ -188,12 +188,12 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
         }
     }
 
-    override fun viewVendors(country: String, city: String, connectedVendor: Long) {
+    override fun viewVendors(country: String, state: Long, connectedVendor: Long) {
         contractView?.showScreenLce(AppUIStates(isLoading = true, loadingMessage = "Loading Parlors"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    connectVendorRepositoryImpl.viewVendors(country,city,connectedVendor)
+                    connectVendorRepositoryImpl.viewVendors(country,state,connectedVendor)
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {

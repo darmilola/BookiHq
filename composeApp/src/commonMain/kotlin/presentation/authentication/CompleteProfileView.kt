@@ -44,6 +44,8 @@ import domain.Enums.Gender
 import domain.Enums.SharedPreferenceEnum
 import domain.Enums.getDisplayCurrency
 import domain.Models.PlatformNavigator
+import domain.Models.State
+import getCountryId
 import kotlinx.coroutines.launch
 import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.DomainViewHandler.PlatformHandler
@@ -53,12 +55,13 @@ import presentation.connectVendor.ConnectVendor
 import presentation.dialogs.LoadingDialog
 import presentation.profile.ProfilePresenter
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.CityViewModel
+import presentation.viewmodels.StatesViewModel
 import presentation.widgets.AccountProfileImage
 import presentation.widgets.DropDownWidget
 import presentation.widgets.SnackBarType
 import presentation.widgets.TitleWidget
 import presentation.widgets.ShowSnackBar
+import presentation.widgets.StateDropDownWidget
 import presentations.components.TextComponent
 import presentations.widgets.InputWidget
 import rememberStackedSnackbarHostState
@@ -66,14 +69,14 @@ import utils.InputValidator
 
 @Composable
 fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail: String, authPhone: String,
-                    platformNavigator: PlatformNavigator, cityViewModel: CityViewModel, profilePresenter: ProfilePresenter, mainViewModel: MainViewModel, databaseBuilder: RoomDatabase.Builder<AppDatabase>?) {
+                    platformNavigator: PlatformNavigator, statesViewModel: StatesViewModel, profilePresenter: ProfilePresenter, mainViewModel: MainViewModel, databaseBuilder: RoomDatabase.Builder<AppDatabase>?) {
 
     val placeHolderImage = "drawable/user_icon.png"
     val firstname = remember { mutableStateOf("") }
     val lastname = remember { mutableStateOf("") }
     val gender = remember { mutableStateOf(Gender.MALE.toPath()) }
     val userCountry = remember { mutableStateOf("") }
-    val city = remember { mutableStateOf("") }
+    val state = remember { mutableStateOf(State()) }
     val completeProfileInProgress = remember { mutableStateOf(false) }
     val navigateToConnectVendor = remember { mutableStateOf(false) }
     val profileImageUrl = remember { mutableStateOf(placeHolderImage) }
@@ -91,11 +94,12 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
     val scope = rememberCoroutineScope()
 
     //View Contract Handler Initialisation
-    val handler = PlatformHandler(profilePresenter, cityViewModel)
+    val handler = PlatformHandler(profilePresenter, statesViewModel)
     handler.init()
 
     inputList.add(firstname.value)
     inputList.add(lastname.value)
+    inputList.add(state.value.stateName)
 
 
     val authHandler = AuthenticationScreenHandler(authenticationPresenter,
@@ -115,7 +119,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                 mainViewModel.setDisplayCurrencyPath(displayCurrencyPath)
                 mainViewModel.setUserInfo(userInfo)
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = userInfo.country
-                preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = userInfo.city
+                preferenceSettings[SharedPreferenceEnum.STATE.toPath()] = userInfo.state?.id
                 preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = userInfo.userId
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = userInfo.apiKey
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = authEmail
@@ -141,6 +145,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
     }
 
     else if (navigateToConnectVendor.value){
+        navigateToConnectVendor.value = false
         val connectVendor = ConnectVendor(platformNavigator)
         connectVendor.setMainViewModel(mainViewModel)
         connectVendor.setDatabaseBuilder(databaseBuilder = databaseBuilder)
@@ -222,11 +227,12 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                     }
                 }
                 CountryDropDownWidget {
-                    profilePresenter.getCities(country = it)
                     userCountry.value = it
+                    profilePresenter.getCountryStates(countryId = getCountryId(it))
                 }
-                CityDropDownWidget(cityViewModel = cityViewModel, onMenuItemClick = {
-                    city.value = it
+
+                AttachStateDropDownWidget(statesViewModel = statesViewModel, onMenuItemClick = {
+                    state.value = it
                 }, onMenuExpanded = {})
 
                 Column(
@@ -281,11 +287,15 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                         ShowSnackBar(title = "Profile Image Required", description = "Please Upload a required Profile Image", actionLabel = "", duration = StackedSnackbarDuration.Short, snackBarType = SnackBarType.ERROR,
                             stackedSnackBarHostState,onActionClick = {})
                     }
+                    else if (state.value.stateName.isEmpty()) {
+                        ShowSnackBar(title = "Input Required", description = "Please Select your State", actionLabel = "", duration = StackedSnackbarDuration.Short, snackBarType = SnackBarType.ERROR,
+                            stackedSnackBarHostState,onActionClick = {})
+                    }
                     else {
                         authenticationPresenter.completeProfile(
                             firstname.value, lastname.value,
                             userEmail = authEmail, authPhone = authPhone, signupType = authType, country = userCountry.value,
-                            city = city.value, gender = gender.value, profileImageUrl = profileImageUrl.value)
+                            state = state.value.id, gender = gender.value, profileImageUrl = profileImageUrl.value)
                     }
                 }
             }
@@ -301,16 +311,20 @@ fun CountryDropDownWidget(onMenuItemClick : (String) -> Unit) {
     }, onExpandMenuItemClick = {})
 }
 
+
+
 @Composable
-fun CityDropDownWidget(cityViewModel: CityViewModel, onMenuItemClick : (String) -> Unit, onMenuExpanded:() -> Unit) {
-    val cityListState = cityViewModel.cities.collectAsState()
+fun AttachStateDropDownWidget(statesViewModel: StatesViewModel, onMenuItemClick : (State) -> Unit, onMenuExpanded:() -> Unit) {
+    val cityListState = statesViewModel.platformStates.collectAsState()
     val cityList = cityListState.value
-    DropDownWidget(menuItems = cityList, iconRes = "drawable/urban_icon.png", placeHolderText = "Select City", onMenuItemClick = {
+    StateDropDownWidget(menuItems = cityList, iconRes = "drawable/urban_icon.png", placeHolderText = "Select City", onMenuItemClick = {
         onMenuItemClick(cityList[it])
     }, onExpandMenuItemClick = {
         onMenuExpanded()
     })
 }
+
+
 
 
 

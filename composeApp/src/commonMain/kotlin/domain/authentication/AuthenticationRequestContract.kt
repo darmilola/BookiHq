@@ -12,7 +12,7 @@ data class CompleteProfileRequest(
     @SerialName("signupType") val signupType: String,
     @SerialName("gender") val gender: String,
     @SerialName("country") val country: String,
-    @SerialName("city") val city: String,
+    @SerialName("state") val state: Long,
     @SerialName("imageUrl") val profileImageUrl: String)
 
 
@@ -24,7 +24,7 @@ data class UpdateProfileRequest(
     @SerialName("contactPhone") val contactPhone: String,
     @SerialName("address") val address: String,
     @SerialName("country") val country: String,
-    @SerialName("city") val city: String,
+    @SerialName("state") val state: Long,
     @SerialName("gender") val gender: String,
     @SerialName("imageUrl") val profileImageUrl: String)
 

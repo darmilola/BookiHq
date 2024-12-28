@@ -9,7 +9,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -25,10 +24,8 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,37 +47,25 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
-import domain.Enums.RecommendationType
 import domain.Enums.SharedPreferenceEnum
-import domain.Models.OrderItem
 import domain.Models.PlatformNavigator
-import domain.Models.Product
 import domain.Models.VendorItemUIModel
-import domain.Models.VendorRecommendationItemUIModel
 import domain.Models.getVendorListItemViewHeight
-import domain.Models.getVendorRecommendationListItemViewHeight
 import drawable.ErrorOccurredWidget
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.ConnectPageHandler
-import presentation.DomainViewHandler.RecommendationsHandler
-import presentation.appointmentBookings.BookingScreen
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
-import presentation.home.HomepagePresenter
 import presentation.viewmodels.ConnectPageViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
-import presentation.viewmodels.RecommendationsResourceListEnvelopeViewModel
 import presentation.viewmodels.VendorsResourceListEnvelopeViewModel
 import presentation.widgets.EmptyContentWidget
 import presentation.widgets.PageBackNavWidget
-import presentation.widgets.ProductDetailBottomSheet
 import presentation.widgets.TitleWidget
-import presentation.widgets.VendorRecommendationsItem
 import rememberStackedSnackbarHostState
 import theme.Colors
 import utils.ParcelableScreen
@@ -129,7 +114,7 @@ class SeeAllVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
         val vendorId: Long = preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath(),-1L]
         val country = preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""]
-        val city = preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""]
+        val userState = preferenceSettings[SharedPreferenceEnum.STATE.toPath(), -1L]
         val navigator = LocalNavigator.currentOrThrow
 
         if (onBackPressed.value){
@@ -199,7 +184,7 @@ class SeeAllVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
             if (vendorResourceListEnvelopeViewModel!!.resources.value.isEmpty()) {
                 connectVendorPresenter.getVendor(
                     country = country,
-                    city = city,
+                    state = userState,
                     connectedVendor = vendorId
                 )
             }
@@ -241,7 +226,7 @@ class SeeAllVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                 else if (loadVendorUiState.value.isFailed) {
                     Box(modifier = Modifier .fillMaxWidth().height(400.dp), contentAlignment = Alignment.Center) {
                         ErrorOccurredWidget(loadVendorUiState.value.errorMessage, onRetryClicked = {
-                            connectVendorPresenter.getVendor(country = country, city = city, connectedVendor = vendorId)
+                            connectVendorPresenter.getVendor(country = country, state = userState, connectedVendor = vendorId)
                             vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                         })
                     }
@@ -309,7 +294,7 @@ class SeeAllVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                                         if (vendorResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
                                             connectVendorPresenter.getMoreVendor(
                                                 country = country,
-                                                city = city,
+                                                state = userState,
                                                 connectedVendor = vendorId,
                                                 nextPage = vendorResourceListEnvelopeViewModel!!.currentPage.value + 1
                                             )

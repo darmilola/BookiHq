@@ -1,6 +1,5 @@
 package domain.Models
 
-import applications.room.FavoriteProductDao
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.ProfileStatus
@@ -24,8 +23,8 @@ data class CompleteProfileResponse(@SerialName("status") val status: String = ""
 data class HomePageResponse(@SerialName("status") val status: String = "", @SerialName("homePage") val homepageInfo: HomepageInfo = HomepageInfo())
 
 @Serializable @Parcelize
-data class CountryCitiesResponse(@SerialName("status") val status: String = "",
-                                 @SerialName("cities") val countryCities: CityLoads): Parcelable
+data class CountryStatesResponse(@SerialName("status") val status: String = "",
+                                 @SerialName("states") val states: ArrayList<State>): Parcelable
 
 @Serializable
 data class ServiceTherapistsResponse(@SerialName("status") val status: String = "", @SerialName("therapists") val serviceTherapists: List<ServiceTypeTherapists> = arrayListOf(),

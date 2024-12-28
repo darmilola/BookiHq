@@ -116,7 +116,7 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
     override fun Content() {
         val searchQuery = remember { mutableStateOf("") }
         val country = preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""]
-        val city = preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""]
+        val userState = preferenceSettings[SharedPreferenceEnum.STATE.toPath(), -1L]
         val vendorId: Long = preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath(),-1L]
         val navigator = LocalNavigator.currentOrThrow
 
@@ -172,7 +172,7 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
             if (vendorResourceListEnvelopeViewModel!!.newVendors.value.isEmpty()) {
                 connectVendorPresenter.viewVendors(
                     country = country,
-                    city = city,
+                    state = userState,
                     connectedVendor = vendorId
                 )
             }
@@ -271,7 +271,7 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                         vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                         connectVendorPresenter.viewVendors(
                             country = country,
-                            city = city,
+                            state = userState,
                             connectedVendor = vendorId
                         )
                     })
@@ -313,7 +313,7 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                             vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                             connectVendorPresenter.viewVendors(
                                 country = country,
-                                city = city,
+                                state = userState,
                                 connectedVendor = vendorId
                             )
                             })

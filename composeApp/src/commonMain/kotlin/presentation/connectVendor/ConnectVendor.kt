@@ -1,7 +1,6 @@
 package presentation.connectVendor
 
 import UIStates.AppUIStates
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.room.RoomDatabase
 import applications.room.AppDatabase
@@ -60,7 +57,6 @@ import drawable.ErrorOccurredWidget
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.ConnectPageHandler
 import presentation.DomainViewHandler.ProfileHandler
-import presentation.components.ButtonComponent
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
 import presentation.profile.ProfilePresenter
@@ -105,7 +101,7 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
         var country = preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""]
-        var city = preferenceSettings[SharedPreferenceEnum.CITY.toPath(), ""]
+        var userState = preferenceSettings[SharedPreferenceEnum.STATE.toPath(), -1L]
 
         if (onBackPressed.value){
             platformNavigator.exitApp()
@@ -147,7 +143,7 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
             if (vendorResourceListEnvelopeViewModel!!.newVendors.value.isEmpty()) {
                 connectVendorPresenter.viewVendors(
                     country = country,
-                    city = city,
+                    state = userState,
                     connectedVendor = VendorEnum.DEFAULT_VENDOR_ID.toPath()
                 )
                 vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
@@ -260,7 +256,7 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
                             vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                             connectVendorPresenter.viewVendors(
                                 country = country,
-                                city = city,
+                                state = userState,
                                 connectedVendor = VendorEnum.DEFAULT_VENDOR_ID.toPath()
                             )
                         })
@@ -300,7 +296,7 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
                         Box(modifier = Modifier .fillMaxWidth().height(400.dp), contentAlignment = Alignment.Center) {
                             ErrorOccurredWidget(loadVendorUiState.value.errorMessage, onRetryClicked = {
                                 vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                                connectVendorPresenter.getVendor(country = country, city = city, connectedVendor = VendorEnum.DEFAULT_VENDOR_ID.toPath())
+                                connectVendorPresenter.getVendor(country = country, state = userState, connectedVendor = VendorEnum.DEFAULT_VENDOR_ID.toPath())
                             })
                         }
                     }
