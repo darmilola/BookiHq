@@ -11,7 +11,6 @@ class CartViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     private var _subtotal =  savedStateHandle.getStateFlow("subtotal", 0L)
     private var _total =  savedStateHandle.getStateFlow("total", 0L)
     private var _deliveryFee =  savedStateHandle.getStateFlow("deliveryFee", 0L)
-    private var _paymentMethod = savedStateHandle.getStateFlow("paymentMethod", PaymentMethod.CARD_PAYMENT.toPath())
 
 
     val subtotal: StateFlow<Long>
@@ -23,9 +22,6 @@ class CartViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     val deliveryFee: StateFlow<Long>
         get() = _deliveryFee
 
-    val paymentMethod: StateFlow<String>
-        get() = _paymentMethod
-
     fun setSubTotal(subtotal: Long) {
         savedStateHandle["subtotal"] = subtotal
     }
@@ -36,10 +32,6 @@ class CartViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
 
     fun setDeliveryFee(deliveryFee: Long) {
         savedStateHandle["deliveryFee"] = deliveryFee
-    }
-
-    fun setPaymentMethod(paymentMethod: String) {
-        savedStateHandle["paymentMethod"] = paymentMethod
     }
 
 

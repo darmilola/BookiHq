@@ -60,13 +60,12 @@ class BookingRepositoryImpl(apiService: HttpClient): BookingRepository {
         userId: Long,
         vendorId: Long,
         paymentAmount: Int,
-        paymentMethod: String,
         bookingStatus: String,
         day: Int,
         month: Int,
         year: Int,
     ): Single<ServerResponse> {
-        val param = CreateAppointmentRequest(userId, vendorId, day, month, year, bookingStatus, paymentAmount, paymentMethod)
+        val param = CreateAppointmentRequest(userId, vendorId, day, month, year, bookingStatus, paymentAmount)
         return bookingNetworkService.createAppointment(param)
     }
 

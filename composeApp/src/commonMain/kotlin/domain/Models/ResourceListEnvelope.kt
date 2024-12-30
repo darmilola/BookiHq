@@ -57,7 +57,6 @@ class UserAppointment(
     @SerialName("id") val id: Long = -1,
     @SerialName("user_id") val userId: Long = -1,
     @SerialName("appointment_id") val appointmentId: Long = -1,
-    @SerialName("paymentMethod") val paymentMethod: String? = PaymentMethod.CARD_PAYMENT.toPath(),
     @SerialName("bookingStatus") val bookingStatus: String? = BookingStatus.PENDING.toPath(),
     @SerialName("appointments") val resources: Appointment? = null): Parcelable
 

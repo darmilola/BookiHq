@@ -332,29 +332,6 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
             }
         }
 
-        val showPaymentMethodBottomSheet = mainViewModel!!.showPaymentMethodBottomSheet.collectAsState()
-
-        if (showPaymentMethodBottomSheet.value) {
-            AppointmentPaymentMethodBottomSheet(
-                mainViewModel!!,
-                onDismiss = {
-                    mainViewModel!!.showPaymentMethodBottomSheet(false)
-                },
-                onCardPaymentSelected = {
-                    runBlocking {
-                        cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
-                    }
-                    bookingViewModel!!.setPaymentMethod(PaymentMethod.CARD_PAYMENT.toPath())
-                    mainViewModel!!.showPaymentMethodBottomSheet(false)
-                    mainViewModel!!.showPaymentCardsBottomSheet(true)
-
-                }, onCashSelected = {
-                     mainViewModel!!.showPaymentMethodBottomSheet(false)
-                     bookingViewModel!!.setPaymentMethod(PaymentMethod.PAYMENT_ON_DELIVERY.toPath())
-                     createAppointment()
-                })
-        }
-
         // View Contract Handler Initialisation
         val paymentHandler = CreateAppointmentPaymentHandler(
             paymentPresenter = paymentPresenter,
@@ -507,14 +484,12 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
     }
 
     private fun createAppointment(){
-        val paymentMethod = bookingViewModel!!.paymentMethod.value
         val userId = mainViewModel!!.currentUserInfo.value.userId
         val vendorId = mainViewModel!!.connectedVendor.value.vendorId
         val paymentAmount = calculatePackageAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
 
         bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.PENDING.toPath(), day = getDay(),
-            month = getMonth(), year = getYear(), paymentAmount = paymentAmount,
-            paymentMethod = paymentMethod, platformNavigator = platformNavigator, vendor = mainViewModel!!.connectedVendor.value)
+            month = getMonth(), year = getYear(), paymentAmount = paymentAmount, platformNavigator = platformNavigator, vendor = mainViewModel!!.connectedVendor.value)
     }
 
     @OptIn(ExperimentalFoundationApi::class)
@@ -599,7 +574,10 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                     }
                 }
                 if (currentPage == 1){
-                    mainViewModel.showPaymentMethodBottomSheet(true)
+                    runBlocking {
+                        cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
+                        mainViewModel!!.showPaymentCardsBottomSheet(true)
+                    }
                 }
             }
         }

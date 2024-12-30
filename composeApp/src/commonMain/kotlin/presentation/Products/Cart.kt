@@ -376,7 +376,6 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                     val paymentCurrency = mainViewModel!!.displayCurrencyPath.value
 
                     if (showSelectPaymentCards.value) {
-                        mainViewModel!!.showPaymentMethodBottomSheet(false)
                         PaymentCardBottomSheet(
                             mainViewModel!!,
                             cardList,
@@ -413,18 +412,11 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                                 mainViewModel!!.setDeliveryMethod(DeliveryMethodEnum.PICKUP.toPath())
 
                             })
-                        PaymentMethodWidget(onCashSelectedListener = {
-                             cartViewModel!!.setPaymentMethod(PaymentMethod.PAYMENT_ON_DELIVERY.toPath())
-                        }, onCardPaymentSelectedListener = {
-                            cartViewModel!!.setPaymentMethod(PaymentMethod.CARD_PAYMENT.toPath())
-                        })
                         CheckOutSummaryWidget(cartViewModel!!,mainViewModel!!,onCardCheckOutStarted = {
                             runBlocking {
                                 cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
                                 mainViewModel!!.showPaymentCardsBottomSheet(true)
                             }
-                        }, onCheckOutStarted = {
-                             createOrder()
                         })
 
                     }
@@ -439,7 +431,6 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
         val vendorId = mainViewModel!!.connectedVendor.value.vendorId
         val userId = mainViewModel!!.currentUserInfo.value.userId
         val deliveryLocation = mainViewModel!!.deliveryMethod.value
-        val paymentMethod = cartViewModel!!.paymentMethod.value
         val year = getYear()
         val month = getMonth()
         val day = getDay()
@@ -449,7 +440,6 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
             vendorId!!,
             userId!!,
             deliveryLocation,
-            paymentMethod,
             day,
             month,
             year,
