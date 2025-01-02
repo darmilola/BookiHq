@@ -413,7 +413,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             }
         }
 
-        RecommendedAppointmentList(recommendations, mainViewModel)
+        RecommendedList(recommendations, mainViewModel)
        }
 
     }
@@ -447,7 +447,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun RecommendedAppointmentList(recommendations: List<VendorRecommendation>, mainViewModel: MainViewModel) {
+    fun RecommendedList(recommendations: List<VendorRecommendation>, mainViewModel: MainViewModel) {
         val selectedProduct = remember { mutableStateOf(Product()) }
         var showProductDetailBottomSheet by remember { mutableStateOf(false) }
 

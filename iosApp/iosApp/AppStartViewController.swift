@@ -204,6 +204,10 @@ class AppStartViewController: UIViewController, PlatformNavigator, UINavigationC
     }
     
    func exitApp() {}
+    
+   func requestCameraPermission() {}
+    
+   func requestNotificationPermission() {}
 
    func goToMainScreen() {
        mainView = MainScreenView(platformNavigator: self)

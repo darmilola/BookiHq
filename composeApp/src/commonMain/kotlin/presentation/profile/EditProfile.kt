@@ -319,12 +319,6 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
                     profilePresenter.getCountryStates(countryId = getCountryId(userCountry.value))
                 })
 
-               /* EditProfileCityDropDownWidget(selectedCity = userCity.value,statesViewModel = statesViewModel!!, onMenuItemClick = {
-                    userCity.value = it
-                }, onMenuExpanded = {
-                    //profilePresenter.getCountryStates(country = userCountry.value)
-                })*/
-
                    Box(
                         modifier = Modifier.fillMaxWidth()
                             .padding(start = 10.dp),
