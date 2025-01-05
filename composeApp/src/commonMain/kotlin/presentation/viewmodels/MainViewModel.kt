@@ -3,7 +3,6 @@ package presentation.viewmodels
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Enums.Currency
-import domain.Enums.DeliveryMethodEnum
 import domain.Enums.MainTabEnum
 import domain.Enums.ProductType
 import domain.Models.FavoriteProductIdModel
@@ -31,7 +30,6 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _recommendedServiceType =  savedStateHandle.getStateFlow("recommendedServiceType", ServiceTypeItem())
     private var _currentUnsavedOrders =  savedStateHandle.getStateFlow("currentUnsavedOrders", ArrayList<OrderItem>())
     private var _currentUnsavedOrderSize =  savedStateHandle.getStateFlow("currentUnsavedOrderSize", 0)
-    private var _deliveryMethod =  savedStateHandle.getStateFlow("deliveryMethod", DeliveryMethodEnum.PICKUP.toPath())
     private var _selectedProductType =  savedStateHandle.getStateFlow("selectedProductType", ProductType.COSMETICS.toPath())
     private var _currentMainDisplayTab =  savedStateHandle.getStateFlow("displayedTab", MainTabEnum.HOME.toPath())
     private var _isClickedSearchProductState =  savedStateHandle.getStateFlow("isClickedSearchProduct", false)
@@ -80,9 +78,6 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     val restartApp: StateFlow<Boolean>
         get() = _restartApp
-
-    val deliveryMethod: StateFlow<String>
-        get() = _deliveryMethod
 
     val selectedProductType: StateFlow<String>
         get() = _selectedProductType
@@ -159,9 +154,6 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
         savedStateHandle["switchVendor"] = vendor
     }
 
-    fun setDeliveryMethod(deliveryMethod: String) {
-        savedStateHandle["deliveryMethod"] = deliveryMethod
-    }
     fun setSelectedProductType(productType: String) {
         savedStateHandle["selectedProductType"] = productType
     }

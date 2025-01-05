@@ -28,10 +28,10 @@ import presentations.components.TextComponent
 import utils.getDeliveryMethodDisplayName
 
 @Composable
-fun ProductDeliveryAddressWidget(mainViewModel: MainViewModel, isDisabled: Boolean = false,
+fun ProductDeliveryAddressWidget(cartViewModel: CartViewModel, isDisabled: Boolean = false,
                                  onPickupSelectedListener:() -> Unit, onMobileSelectedListener:() -> Unit){
 
-    val deliveryMethod =  mainViewModel.deliveryMethod.collectAsState()
+    val deliveryMethod =  cartViewModel.deliveryMethod.collectAsState()
     val isRightSelection = deliveryMethod.value == DeliveryMethodEnum.MOBILE.toPath()
     val columnModifier = Modifier
         .padding(start = 10.dp, bottom = 10.dp, top = 15.dp, end = 10.dp)

@@ -32,7 +32,7 @@ import presentations.components.TextComponent
 @Composable
 fun CheckOutSummaryWidget(cartViewModel: CartViewModel,mainViewModel: MainViewModel, onCardCheckOutStarted:() -> Unit) {
 
-    val deliveryMethod = mainViewModel.deliveryMethod.collectAsState()
+    val deliveryMethod = cartViewModel.deliveryMethod.collectAsState()
     val currencyUnit = mainViewModel.displayCurrencyUnit.value
     val subtotal = cartViewModel.subtotal.collectAsState()
     val total = cartViewModel.total.collectAsState()
@@ -77,8 +77,6 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel,mainViewModel: MainViewMo
                  textModifier = Modifier.fillMaxWidth()
              )
          }
-
-        println(deliveryMethod.value)
 
         if (deliveryMethod.value == DeliveryMethodEnum.MOBILE.toPath()) {
             Row(modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)) {
