@@ -351,9 +351,6 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
         TabNavigator(showDefaultTab(mainViewModel!!, homePageViewModel)) {
                 it2 ->
             Scaffold(
-                topBar = {
-                    MainTopBar(mainViewModel!!)
-                },
                 content = {
                     Box(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
                         CurrentTab()

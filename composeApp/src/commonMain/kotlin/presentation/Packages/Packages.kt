@@ -59,6 +59,7 @@ import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PackagesResourceListEnvelopeViewModel
 import presentation.widgets.EmptyContentWidget
 import presentation.widgets.PackageItem
+import presentation.widgets.TitleWidget
 import rememberStackedSnackbarHostState
 import theme.Colors
 
@@ -166,7 +167,12 @@ class Packages : Tab, KoinComponent, Parcelable {
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
                 .background(color = Color.White),
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
-            topBar = {},
+            topBar = {
+                val screenTitle =  mainViewModel!!.screenTitle.collectAsState()
+                Box(modifier = Modifier.fillMaxWidth().height(50.dp), contentAlignment = Alignment.Center){
+                    TitleWidget(textColor = theme.styles.Colors.primaryColor, title = screenTitle.value)
+                }
+            },
             content = {
                 Column(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
                     val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()

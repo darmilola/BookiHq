@@ -72,12 +72,6 @@ fun SearchBarWidget(iconRes: String, placeholderText: String, iconSize: Int, onB
             modifier = Modifier.fillMaxHeight().fillMaxWidth().padding(end = 10.dp),
             keyboardOptions = keyboardOptions,
             onValueChange = {
-                if(it.isNotEmpty()){
-                    iconResValue = "drawable/back_arrow.png"
-                }
-                else{
-                    iconResValue = "drawable/search_icon.png"
-                }
                 text = it
                 onValueChange(it)
             } , isSingleLine = true, placeholderText = placeholderText, onFocusChange = { it ->

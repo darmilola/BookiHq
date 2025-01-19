@@ -71,6 +71,7 @@ import presentation.widgets.AppointmentWidget
 import presentation.widgets.EmptyContentWidget
 import presentation.widgets.PackageAppointmentWidget
 import presentation.widgets.PendingPackageAppointmentWidget
+import presentation.widgets.TitleWidget
 import utils.getAppointmentViewHeight
 import rememberStackedSnackbarHostState
 import theme.Colors
@@ -359,7 +360,12 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
 
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
-            topBar = {},
+            topBar = {
+                val screenTitle =  mainViewModel!!.screenTitle.collectAsState()
+                Box(modifier = Modifier.fillMaxWidth().height(50.dp), contentAlignment = Alignment.Center){
+                    TitleWidget(textColor = theme.styles.Colors.primaryColor, title = screenTitle.value)
+                }
+            },
             content = {
                 val handler = AppointmentsHandler(
                     appointmentResourceListEnvelopeViewModel!!,

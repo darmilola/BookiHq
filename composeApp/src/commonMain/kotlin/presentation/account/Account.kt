@@ -2,10 +2,12 @@ package presentation.account
 
 
 import GGSansSemiBold
+import StackedSnackbarHost
 import theme.styles.Colors
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -19,7 +21,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -49,7 +53,9 @@ import presentation.components.ButtonComponent
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.ActionItemComponent
 import presentation.widgets.AccountProfileImage
+import presentation.widgets.TitleWidget
 import presentations.components.TextComponent
+import rememberStackedSnackbarHostState
 
 @Parcelize
 class AccountTab : Tab, Parcelable {
@@ -86,39 +92,59 @@ class AccountTab : Tab, Parcelable {
 
     @Composable
     override fun Content() {
-        val columnModifier = Modifier
-            .padding(top = 5.dp)
-            .fillMaxHeight()
-            .verticalScroll(rememberScrollState())
-            .fillMaxWidth()
 
-            Column(
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = columnModifier
-            ) {
+        val stackedSnackBarHostState = rememberStackedSnackbarHostState(
+            maxStack = 5,
+            animation = StackedSnackbarAnimation.Bounce
+        )
 
-                userInfo = mainViewModel!!.currentUserInfo.value
-                AccountProfileImage(
-                           profileImageUrl = userInfo!!.profileImageUrl!!,
-                           showEditIcon = false,
-                           isAsync = true
-                       ) {}
-                       UserAccountName(userInfo!!.firstname!!, userInfo!!.lastname!!)
-                       EditProfileButton(
-                           TextStyle(
-                               fontFamily = GGSansSemiBold,
-                               fontWeight = FontWeight.Black,
-                               fontSize = TextUnit(18f, TextUnitType.Sp)
-                           )
-                       )
-                       Divider(
-                           color = Color(color = 0x90C8C8C8),
-                           thickness = 2.dp,
-                           modifier = Modifier.fillMaxWidth(0.90f).padding(top = 30.dp)
-                       )
-                       AttachAccountAction()
-            }
+        Scaffold(
+            modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                .background(color = Color.White),
+            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
+            topBar = {
+                val screenTitle =  mainViewModel!!.screenTitle.collectAsState()
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
+                    TitleWidget(textColor = Colors.primaryColor, title = screenTitle.value)
+                }
+            },
+            content = {
+
+                val columnModifier = Modifier
+                    .padding(top = 5.dp)
+                    .fillMaxHeight()
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxWidth()
+
+                Column(
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = columnModifier
+                ) {
+
+                    userInfo = mainViewModel!!.currentUserInfo.value
+                    AccountProfileImage(
+                        profileImageUrl = userInfo!!.profileImageUrl!!,
+                        showEditIcon = false,
+                        isAsync = true
+                    ) {}
+                    UserAccountName(userInfo!!.firstname!!, userInfo!!.lastname!!)
+                    EditProfileButton(
+                        TextStyle(
+                            fontFamily = GGSansSemiBold,
+                            fontWeight = FontWeight.Black,
+                            fontSize = TextUnit(18f, TextUnitType.Sp)
+                        )
+                    )
+                    Divider(
+                        color = Color(color = 0x90C8C8C8),
+                        thickness = 2.dp,
+                        modifier = Modifier.fillMaxWidth(0.90f).padding(top = 30.dp)
+                    )
+                    AttachAccountAction()
+                }
+
+            })
         }
 
 

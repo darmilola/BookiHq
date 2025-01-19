@@ -2,11 +2,13 @@ package presentation.home
 
 import GGSansBold
 import GGSansRegular
+import GGSansSemiBold
 import StackedSnackbarHost
 import UIStates.AppUIStates
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,9 +16,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -81,6 +85,7 @@ import org.koin.core.component.inject
 import presentation.DomainViewHandler.HomepageHandler
 import presentation.components.StraightLine
 import presentation.components.IndeterminateCircularProgressBar
+import presentation.main.VendorLogo
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.MainViewModel
@@ -89,6 +94,8 @@ import presentation.widgets.VendorRecommendationsItem
 import presentation.widgets.RecentAppointmentWidget
 import presentation.widgets.ProductDetailBottomSheet
 import presentation.widgets.RecentPackageAppointmentWidget
+import presentation.widgets.TitleWidget
+import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import utils.calculateHomePageScreenHeight
@@ -175,6 +182,8 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
         val homepageInfo = homePageViewModel!!.homePageInfo.collectAsState()
         val homePageViewHeight = homePageViewModel!!.homePageViewHeight.collectAsState()
         val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
+        val vendorInfo = mainViewModel!!.connectedVendor.collectAsState()
+        val userInfo = mainViewModel!!.currentUserInfo.value
 
         if (homepageInfo.value.userInfo!!.userId != null){
             loadingScreenUiStateViewModel!!.switchScreenUIState(AppUIStates(isSuccess = true))
@@ -188,7 +197,79 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
             Scaffold(
                     snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
-                    topBar = {},
+                    topBar = {
+                        Row(modifier = Modifier.fillMaxWidth().height(80.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Row(modifier = Modifier.weight(4f).height(60.dp)) {
+                              Box(modifier = Modifier.weight(0.8f).fillMaxHeight(), contentAlignment = Alignment.Center) {
+
+                                  Box(Modifier.size(60.dp), contentAlignment = Alignment.Center) {
+                                      Box(
+                                          Modifier
+                                              .size(60.dp)
+                                              .clip(CircleShape)
+                                              .background(color = Color.Transparent)
+                                      ) {
+                                          val modifier = Modifier
+                                              .padding(2.dp)
+                                              .clip(CircleShape)
+                                              .border(
+                                                  width = 0.4.dp,
+                                                  color = Color.White,
+                                                  shape = CircleShape)
+                                              .fillMaxSize()
+                                          ImageComponent(imageModifier = modifier, imageRes = userInfo.profileImageUrl!!, isAsync = true)
+                                      }
+                                  }
+
+                              }
+                                Column(modifier = Modifier.weight(3f).fillMaxHeight(), horizontalAlignment = Alignment.Start, verticalArrangement = Arrangement.Center) {
+
+                                    Box(modifier = Modifier.fillMaxWidth().weight(1f)){
+                                        TextComponent(
+                                            text = "Hello ${userInfo.firstname}",
+                                            fontSize = 18,
+                                            fontFamily = GGSansRegular,
+                                            textStyle = MaterialTheme.typography.h6,
+                                            textColor = Color.Gray,
+                                            textAlign = TextAlign.Left,
+                                            fontWeight = FontWeight.ExtraBold,
+                                            lineHeight = 30,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            textModifier = Modifier.fillMaxWidth()
+                                        )
+                                    }
+
+                                    Box(modifier = Modifier.fillMaxWidth().weight(1f)){
+                                        TextComponent(
+                                            text = "Good morning!",
+                                            fontSize = 20,
+                                            fontFamily = GGSansSemiBold,
+                                            textStyle = MaterialTheme.typography.h6,
+                                            textColor = Colors.darkPrimary,
+                                            textAlign = TextAlign.Left,
+                                            fontWeight = FontWeight.ExtraBold,
+                                            lineHeight = 30,
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis,
+                                            textModifier = Modifier.fillMaxWidth()
+                                        )
+                                    }
+
+                                }
+                            }
+                            Box(modifier = Modifier.weight(1f).height(60.dp), contentAlignment = Alignment.Center) {
+                                VendorLogo(imageUrl = vendorInfo.value.businessLogo!!, onVendorLogoClicked = {
+                                    mainViewModel!!.setScreenNav(
+                                        Pair(
+                                            Screens.MAIN_SCREEN.toPath(),
+                                            Screens.VENDOR_INFO_SCREEN.toPath()
+                                        )
+                                    )
+                                })
+                            }
+                        }
+                    },
                     content = {
                         Box(
                             modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -313,15 +394,6 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
     @Composable
     fun ServiceGridScreen(vendorServices: List<Services>, onServiceSelected: (Services) -> Unit) {
-        val viewHeight = if (vendorServices.size <= 2){
-            140
-        }
-        else if (vendorServices.size in 3..4){
-            280
-        }
-        else{
-            420
-        }
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier.fillMaxWidth().height(420.dp),
