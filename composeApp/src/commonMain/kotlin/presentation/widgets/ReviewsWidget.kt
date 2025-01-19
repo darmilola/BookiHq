@@ -208,7 +208,7 @@ fun AttachProductReviewerUserName(reviewer: User){
 
 @Composable
 fun AttachReviewDate(reviewDate: String){
-    val formattedDate = DateTime.getFormattedDate(reviewDate)
+    val formattedDate = DateTime.getFormattedReviewDate(reviewDate)
     val rowModifier = Modifier
         .padding(start = 5.dp, top = 7.dp)
         .wrapContentWidth()

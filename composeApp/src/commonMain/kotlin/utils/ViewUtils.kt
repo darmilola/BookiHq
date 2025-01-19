@@ -7,6 +7,7 @@ import androidx.compose.ui.unit.Dp
 import domain.Enums.CardType
 import domain.Enums.DeliveryMethodEnum
 import domain.Enums.SessionEnum
+import domain.Enums.Time
 import domain.Models.Appointment
 import domain.Models.HomepageInfo
 import domain.Models.PaymentCard
@@ -389,6 +390,20 @@ fun getDeliveryMethodDisplayName(deliveryMethod: String): String {
         DeliveryMethodEnum.PICKUP.toPath() -> "Pickup"
         else -> "Pickup"
     }
+}
+
+fun getHourOfDayDisplay(hourOfDay: Int): String {
+    var hourOfDayString = Time.MORNING.toPath()
+    if (hourOfDay < 12){
+        hourOfDayString = Time.MORNING.toPath()
+    }
+    else if (hourOfDay in 12..16){
+        hourOfDayString = Time.AFTERNOON.toPath()
+    }
+    else{
+        hourOfDayString = Time.EVENING.toPath()
+    }
+    return hourOfDayString
 }
 
 

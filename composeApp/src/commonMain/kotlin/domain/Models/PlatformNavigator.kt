@@ -23,6 +23,8 @@ interface PlatformNavigator: Parcelable {
     fun requestNotificationPermission()
     fun requestCameraPermission()
 
+    fun getHourOfDay(): Int
+
     fun exitApp()
     fun restartApp()
     fun goToMainScreen()

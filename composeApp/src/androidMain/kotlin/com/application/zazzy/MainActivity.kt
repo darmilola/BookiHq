@@ -55,6 +55,7 @@ import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import presentation.Screens.SplashScreen
 import java.io.IOException
+import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
 
@@ -88,6 +89,8 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         super.onCreate(savedInstanceState)
         PaystackSdk.initialize(applicationContext);
         val database = getAppDatabase(applicationContext)
+
+
 
         setContent {
             val splashScreen = SplashScreen(platformNavigator = this)
@@ -458,6 +461,12 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
     override fun requestCameraPermission() {
         cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+    }
+
+    override fun getHourOfDay(): Int {
+        val c = Calendar.getInstance()
+        val hour = c.get(Calendar.HOUR_OF_DAY)
+        return hour
     }
 
 }

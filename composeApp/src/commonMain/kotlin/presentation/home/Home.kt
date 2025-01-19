@@ -99,6 +99,7 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import utils.calculateHomePageScreenHeight
+import utils.getHourOfDayDisplay
 import utils.getRecentAppointmentViewHeight
 
 @Parcelize
@@ -157,6 +158,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
         }
 
 
+
         LaunchedEffect(true) {
             val isSwitchVendor: Boolean = mainViewModel!!.isSwitchVendor.value
             if (isSwitchVendor) {
@@ -184,6 +186,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
         val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
         val vendorInfo = mainViewModel!!.connectedVendor.collectAsState()
         val userInfo = mainViewModel!!.currentUserInfo.value
+        val hourOfDay = getHourOfDayDisplay(platformNavigator.getHourOfDay())
 
         if (homepageInfo.value.userInfo!!.userId != null){
             loadingScreenUiStateViewModel!!.switchScreenUIState(AppUIStates(isSuccess = true))
@@ -242,7 +245,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
                                     Box(modifier = Modifier.fillMaxWidth().weight(1f)){
                                         TextComponent(
-                                            text = "Good morning!",
+                                            text = "Good $hourOfDay",
                                             fontSize = 20,
                                             fontFamily = GGSansSemiBold,
                                             textStyle = MaterialTheme.typography.h6,
