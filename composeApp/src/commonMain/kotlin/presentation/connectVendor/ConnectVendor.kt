@@ -53,7 +53,7 @@ import presentation.viewmodels.LoadingScreenUIStateViewModel
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.SharedPreferenceEnum
 import domain.Enums.VendorEnum
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.ConnectPageHandler
 import presentation.DomainViewHandler.ProfileHandler

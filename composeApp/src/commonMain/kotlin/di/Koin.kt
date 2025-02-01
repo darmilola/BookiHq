@@ -48,7 +48,7 @@ private val KtorModule = module {
         httpClient {
             defaultRequest {
                 url {
-                    host = "/zappyapp-server.onrender.com/api/v1"
+                    host = "/jameela.onrender.com/api/v1"
                     protocol = URLProtocol.HTTPS
                     port = 443
                 }

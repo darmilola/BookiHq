@@ -78,7 +78,7 @@ import domain.Models.Product
 import domain.Models.ServiceTypeItem
 import domain.Models.Services
 import domain.Models.UserAppointment
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -94,7 +94,6 @@ import presentation.widgets.VendorRecommendationsItem
 import presentation.widgets.RecentAppointmentWidget
 import presentation.widgets.ProductDetailBottomSheet
 import presentation.widgets.RecentPackageAppointmentWidget
-import presentation.widgets.TitleWidget
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState

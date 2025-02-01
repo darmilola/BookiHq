@@ -59,7 +59,7 @@ import domain.Models.Product
 import domain.Models.ProductItemUIModel
 import domain.Enums.Screens
 import domain.Enums.SharedPreferenceEnum
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent

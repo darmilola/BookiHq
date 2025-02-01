@@ -30,7 +30,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import domain.Models.AppointmentReview
 import domain.Models.TherapistInfo
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import presentation.DomainViewHandler.TherapistProfileHandler
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar

@@ -44,7 +44,7 @@ import domain.Enums.Screens
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.VendorPackage
 import domain.Models.VendorPackageItemUIModel
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import org.jetbrains.compose.resources.ExperimentalResourceApi

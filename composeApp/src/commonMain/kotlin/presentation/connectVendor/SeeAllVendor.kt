@@ -51,7 +51,7 @@ import domain.Enums.SharedPreferenceEnum
 import domain.Models.PlatformNavigator
 import domain.Models.VendorItemUIModel
 import domain.Models.getVendorListItemViewHeight
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

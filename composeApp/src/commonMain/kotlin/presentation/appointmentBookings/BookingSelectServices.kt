@@ -39,14 +39,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import applications.date.getDay
-import applications.date.getMonth
-import applications.date.getYear
-import domain.Enums.Screens
 import domain.Models.Appointment
 import domain.Models.ServiceTypeItem
 import domain.Models.Services
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel

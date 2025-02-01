@@ -59,14 +59,12 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Enums.BookingStatus
 import domain.Enums.CustomerPaymentEnum
-import domain.Enums.PaymentMethod
-import domain.Enums.VendorEnum
 import domain.Models.PaymentAuthorizationResult
 import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
 import domain.Models.Services
 import domain.Models.VendorPackage
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
@@ -87,14 +85,12 @@ import presentation.profile.EditProfile
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
-import presentation.widgets.AppointmentPaymentMethodBottomSheet
 import presentation.widgets.PaymentCardBottomSheet
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
 import utils.ParcelableScreen
-import utils.calculateAppointmentPaymentAmount
 import utils.calculatePackageAppointmentPaymentAmount
 
 @OptIn(ExperimentalVoyagerApi::class)

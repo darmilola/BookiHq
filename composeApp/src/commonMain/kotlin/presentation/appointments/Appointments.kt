@@ -59,7 +59,7 @@ import dev.materii.pullrefresh.rememberPullRefreshState
 import domain.Enums.AppointmentType
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.Appointment
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.CancelContractHandler
 import presentation.appointmentBookings.BookingPresenter
@@ -70,7 +70,6 @@ import presentation.widgets.AddPackageAppointmentsReviewBottomSheet
 import presentation.widgets.AppointmentWidget
 import presentation.widgets.EmptyContentWidget
 import presentation.widgets.PackageAppointmentWidget
-import presentation.widgets.PendingPackageAppointmentWidget
 import presentation.widgets.TitleWidget
 import utils.getAppointmentViewHeight
 import rememberStackedSnackbarHostState

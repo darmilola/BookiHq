@@ -37,7 +37,7 @@ import domain.Enums.BookingStatus
 import domain.Models.Appointment
 import domain.Models.TherapistAppointmentItemUIModel
 import domain.Models.TherapistInfo
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import presentation.DomainViewHandler.TherapistHandler
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar

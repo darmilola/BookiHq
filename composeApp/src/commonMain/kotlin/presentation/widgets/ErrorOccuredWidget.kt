@@ -1,4 +1,4 @@
-package drawable
+package presentation.widgets
 
 import GGSansRegular
 import GGSansSemiBold

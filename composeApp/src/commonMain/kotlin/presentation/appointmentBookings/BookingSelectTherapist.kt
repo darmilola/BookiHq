@@ -35,7 +35,7 @@ import domain.Models.AppointmentReview
 import domain.Models.PlatformTime
 import domain.Models.ServiceTypeTherapists
 import domain.Models.ServiceTypeTherapistUIModel
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.BookingViewModel
