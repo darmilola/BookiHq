@@ -288,7 +288,7 @@ class AccountTab : Tab, Parcelable {
 
                 ActionItemComponent(
                     modifier = actionStyle,
-                    buttonText = "Join a Salon/Spa",
+                    buttonText = "Therapist SignIn",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
                     textColor = Colors.darkPrimary,
