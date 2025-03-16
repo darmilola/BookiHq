@@ -95,6 +95,7 @@ class PostponementViewModel(private val savedStateHandle: SavedStateHandle): Vie
 
     fun clearServiceTimes() {
         savedStateHandle["therapistAvailableTimes"] = arrayListOf<AvailableTime>()
+        savedStateHandle["newSelectedTime"] = PlatformTime()
     }
 
     fun setSelectedDay(day: Int) {

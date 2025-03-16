@@ -1,10 +1,12 @@
 package com.application.zazzy
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.location.LocationManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.OpenableColumns
@@ -13,6 +15,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -24,6 +27,7 @@ import co.paystack.android.PaystackSdk
 import co.paystack.android.Transaction
 import co.paystack.android.model.Card
 import co.paystack.android.model.Charge
+import com.application.zazzy.firebase.FirebaseTopic
 import com.application.zazzy.firebase.NotificationMessage
 import com.application.zazzy.firebase.NotificationService
 import com.application.zazzy.firebase.NotificationType
@@ -51,6 +55,7 @@ import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import presentation.Screens.SplashScreen
 import java.io.IOException
+import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
 
@@ -74,10 +79,18 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     lateinit var locationManager: LocationManager
     private val mainViewModel: MainViewModel by viewModels()
 
+    private val pushNotificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()
+    ) { granted -> }
+
+    private val cameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()
+    ) { granted -> }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PaystackSdk.initialize(applicationContext);
         val database = getAppDatabase(applicationContext)
+
+
 
         setContent {
             val splashScreen = SplashScreen(platformNavigator = this)
@@ -89,6 +102,15 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         firebaseAuth = FirebaseAuth.getInstance()
+        FirebaseMessaging.getInstance().subscribeToTopic(FirebaseTopic.CUSTOMER_TOPIC.toPath())
+            .addOnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    println("Failed")
+                }
+                else{
+                    println("Successful")
+                }
+            }
 
 
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -269,7 +291,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             .setBarcodeFormats(
                 Barcode.FORMAT_QR_CODE,
                 Barcode.FORMAT_AZTEC)
-        .enableAutoZoom()
+            .enableAutoZoom()
             .build()
 
         val scanner = GmsBarcodeScanning.getClient(this, options)
@@ -415,7 +437,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                     onPaymentSuccessful()
                 }
 
-                override fun beforeValidate(transaction: Transaction?) {}
+                override fun beforeValidate(transaction: Transaction?) {
+                    onPaymentLoading()
+                }
 
                 fun showLoading(isProcessing: Boolean?) {
                     onPaymentLoading()
@@ -428,6 +452,21 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         } else {
             onPaymentFailed()
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    override fun requestNotificationPermission() {
+        pushNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+    }
+
+    override fun requestCameraPermission() {
+        cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+    }
+
+    override fun getHourOfDay(): Int {
+        val c = Calendar.getInstance()
+        val hour = c.get(Calendar.HOUR_OF_DAY)
+        return hour
     }
 
 }

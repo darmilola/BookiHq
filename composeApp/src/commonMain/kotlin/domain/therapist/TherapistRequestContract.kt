@@ -18,3 +18,9 @@ data class UpdateTherapistAvailabilityRequest(@SerialName("id") val therapistId:
 
 @Serializable
 data class GetTherapistAppointmentRequest(@SerialName("therapist_id") val therapistId: Long)
+
+@Serializable
+data class GetFilteredTherapistAppointmentRequest(
+    @SerialName("therapist_id") val therapistId: Long,
+    @SerialName("filter") val filter: String
+)

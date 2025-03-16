@@ -11,6 +11,7 @@ data class HomepageInfo (
     @SerialName("vendor_info") val vendorInfo: Vendor? = Vendor(),
     @SerialName("vendor_services") val vendorServices: ArrayList<Services>? = arrayListOf(),
     @SerialName("vendor_recommendations") val recommendations: ArrayList<VendorRecommendation>? = arrayListOf(),
+    @SerialName("vendor_day_availability") val dayAvailability: ArrayList<VendorDay>? = arrayListOf(),
     @SerialName("recent_appointments") val recentAppointments: ArrayList<UserAppointment>? = arrayListOf(),
     @SerialName("therapist_info") val therapistInfo: TherapistInfo? = null,
     var servicesGridList: ArrayList<ArrayList<Services>>? = null

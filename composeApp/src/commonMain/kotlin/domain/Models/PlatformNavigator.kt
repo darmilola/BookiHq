@@ -20,6 +20,10 @@ interface PlatformNavigator: Parcelable {
     fun sendPostponedAppointmentNotification(customerName: String, vendorLogoUrl: String, businessName: String,
                                 appointmentDay: String, appointmentMonth: String, appointmentYear: String, appointmentTime: String,
                                 serviceType: String, fcmToken: String)
+    fun requestNotificationPermission()
+    fun requestCameraPermission()
+
+    fun getHourOfDay(): Int
 
     fun exitApp()
     fun restartApp()

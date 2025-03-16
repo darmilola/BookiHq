@@ -7,148 +7,71 @@ class NotificationMessage {
     fun getNotificationText(message: RemoteMessage): NotificationDisplayData {
 
         when (message.data["type"]) {
-            NotificationType.MEETING_REMINDER.toPath() -> return getMeetingReminder(message)
-            NotificationType.APPOINTMENT_REMINDER.toPath() -> return getAppointmentReminder(message)
-            NotificationType.MEETING_STARTED.toPath() -> return getMeetingStarted(message)
-            NotificationType.ORDER_DELIVERY.toPath() -> return getOrderDelivery(message)
-            NotificationType.ORDER_DELIVERED.toPath() -> return getOrderDelivered(message)
-
+            NotificationType.MARKETING.toPath() -> return getMarketingMessage(message)
+            NotificationType.APPOINTMENT_DONE.toPath() -> return getAppointmentDoneMessage(message)
+            NotificationType.APPOINTMENT_CANCELLED.toPath() -> return getAppointmentCancelledMessage(message)
         }
-
-        return NotificationDisplayData(vendorLogoUrl = "", title = "", body = "")
+        return NotificationDisplayData(logoUrl = "", title = "", body = "")
     }
 
-    private fun getAppointmentReminder(message: RemoteMessage): NotificationDisplayData {
+    fun getActionTitle(message: RemoteMessage): String {
 
-        val customerName = message.data["customerName"]
-        val serviceType = message.data["serviceType"]
-        val businessName = message.data["businessName"]
-        val appointmentDay = message.data["appointmentDay"]
-        val appointmentMonth = message.data["appointmentMonth"]
-        val appointmentYear = message.data["appointmentYear"]
-        val appointmentTime = message.data["appointmentTime"]
-        val isToday = message.data["isToday"]
-
-
-        val formattedCustomerName = "<b>$customerName</b>"
-        val formattedServiceType = "<b>$serviceType</b>"
-        val formattedBusinessName = "<b>$businessName\uD83D\uDC86</b>"
-        val formattedDate = "<b>$appointmentMonth, $appointmentDay</b>"
-        val formattedAppointmentTime = "<b>\uD83D\uDD5E$appointmentTime</b>"
-        val title = "Reminder"
-        val vendorLogoUrl = message.data["vendorLogoUrl"]
-        var body = ""
-
-        body = if (isToday.toString() == "true") {
-            "Hi $formattedCustomerName your $formattedServiceType appointment at $formattedBusinessName is today at $formattedAppointmentTime d'ont forget to bring your cat\uD83D\uDE39\uD83D\uDE39"
-        } else {
-            "Hi $formattedCustomerName your $formattedServiceType appointment at $formattedBusinessName is on $formattedDate at $formattedAppointmentTime d'ont forget to bring your cat\uD83D\uDE39\uD83D\uDE39"
+        when (message.data["type"]) {
+            NotificationType.MARKETING.toPath() -> return "Book A Session"
+            NotificationType.APPOINTMENT_DONE.toPath() -> return "Add Review"
+            NotificationType.APPOINTMENT_CANCELLED.toPath() -> return "Book Another Session"
         }
-
-        return NotificationDisplayData(
-            vendorLogoUrl = vendorLogoUrl.toString(),
-            title = title,
-            body = body
-        )
+        return ""
     }
 
-    private fun getMeetingReminder(message: RemoteMessage): NotificationDisplayData {
+    private fun getMarketingMessage(message: RemoteMessage): NotificationDisplayData {
 
-        val customerName = message.data["customerName"]
-        val businessName = message.data["businessName"]
-        val meetingDay = message.data["meetingDay"]
-        val meetingMonth = message.data["meetingMonth"]
-        val meetingYear = message.data["meetingYear"]
-        val meetingTime = message.data["meetingTime"]
-
-        val formattedCustomerName = "<b>$customerName</b>"
-        val formattedBusinessName = "<b>$businessName\uD83D\uDC86</b>"
-        val formattedDate = "<b>$meetingMonth, $meetingDay</b>"
-        val formattedAppointmentTime = "<b>\uD83D\uDD5E$meetingTime</b>"
-        val isToday = message.data["isToday"]
-        val title = "Reminder"
-        val vendorLogoUrl = message.data["vendorLogoUrl"]
-        var body = ""
-
-
-        body = if (isToday.toString() == "true") {
-            "Hi $formattedCustomerName your Consultation with $formattedBusinessName is today at $formattedAppointmentTime"
-        } else {
-            "Hi $formattedCustomerName your Consultation with $formattedBusinessName is on $formattedDate at $formattedAppointmentTime"
-        }
+        val body = message.data["body"]
+        val title = message.data["title"]
+        val logoUrl = message.data["logoUrl"]
 
         return NotificationDisplayData(
-            vendorLogoUrl = vendorLogoUrl.toString(),
-            title = title,
-            body = body
+            logoUrl = logoUrl.toString(),
+            title = title!!,
+            body = body!!
         )
 
     }
 
+    private fun getAppointmentDoneMessage(message: RemoteMessage): NotificationDisplayData {
 
-    private fun getMeetingStarted(message: RemoteMessage): NotificationDisplayData {
-
-        val customerName = message.data["customerName"]
-        val businessName = message.data["businessName"]
-
-        val formattedCustomerName = "<b>$customerName</b>"
-        val formattedBusinessName = "<b>$businessName\uD83D\uDC86</b>"
-        val title = "Consultation"
-        val vendorLogoUrl = message.data["vendorLogoUrl"]
-
-        val body =  "Hi $formattedCustomerName your Consultation with $formattedBusinessName has started"
+        val body = message.data["body"]
+        val title = message.data["title"]
+        val logoUrl = message.data["logoUrl"]
 
         return NotificationDisplayData(
-            vendorLogoUrl = vendorLogoUrl.toString(),
-            title = title,
-            body = body
+            logoUrl = logoUrl.toString(),
+            title = title!!,
+            body = body!!
         )
 
     }
 
-    private fun getOrderDelivery(message: RemoteMessage): NotificationDisplayData {
+    private fun getAppointmentCancelledMessage(message: RemoteMessage): NotificationDisplayData {
 
-        val customerName = message.data["customerName"]
-        val businessName = message.data["businessName"]
-
-        val formattedCustomerName = "<b>$customerName</b>"
-        val formattedBusinessName = "<b>$businessName\uD83D\uDC86</b>"
-        val title = "Order Update"
-        val vendorLogoUrl = message.data["vendorLogoUrl"]
-
-        val body =  "Hi $formattedCustomerName your Order with $formattedBusinessName delivery is on the way"
+        val body = message.data["body"]
+        val title = message.data["title"]
+        val logoUrl = message.data["logoUrl"]
 
         return NotificationDisplayData(
-            vendorLogoUrl = vendorLogoUrl.toString(),
-            title = title,
-            body = body
+            logoUrl = logoUrl.toString(),
+            title = title!!,
+            body = body!!
         )
 
     }
 
-    private fun getOrderDelivered(message: RemoteMessage): NotificationDisplayData {
-        val customerName = message.data["customerName"]
-        val businessName = message.data["businessName"]
-
-        val formattedCustomerName = "<b>$customerName</b>"
-        val formattedBusinessName = "<b>$businessName\uD83D\uDC86</b>"
-        val title = "Order Update"
-        val vendorLogoUrl = message.data["vendorLogoUrl"]
-
-        val body =  "Hi $formattedCustomerName your Order with $formattedBusinessName has been delivered"
-
-        return NotificationDisplayData(
-            vendorLogoUrl = vendorLogoUrl.toString(),
-            title = title,
-            body = body
-        )
-    }
 
 
 
 
     data class NotificationDisplayData(
-        val vendorLogoUrl: String,
+        val logoUrl: String = "",
         val title: String = "",
         val body: String = ""
     )

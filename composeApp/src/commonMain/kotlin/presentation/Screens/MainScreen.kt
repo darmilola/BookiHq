@@ -74,6 +74,7 @@ import presentation.Packages.PackageInfo
 import presentation.Products.ProductPresenter
 import presentation.account.FavoriteProducts
 import presentation.account.PaymentMethods
+import presentation.connectVendor.ConnectVendorDetailsScreen
 import presentation.profile.EditProfile
 import presentation.therapist.TherapistDashboard
 import presentation.viewmodels.HomePageViewModel
@@ -132,6 +133,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             productPresenter.getFavoriteProductIds(userId)
         })
 
+        platformNavigator.requestNotificationPermission()
         productPresenter.setMainViewModel(mainViewModel!!)
         screenNav = mainViewModel?.screenNav?.collectAsState()
 
@@ -241,6 +243,19 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                     )
                 )
             }
+            Screens.RECOMMENDATIONS_SCREEN.toPath() -> {
+                val recommendationScreen = RecommendationsScreen(platformNavigator)
+                recommendationScreen.setMainViewModel(mainViewModel!!)
+                recommendationScreen.setDatabaseBuilder(databaseBuilder)
+                val nav = LocalNavigator.currentOrThrow
+                nav.push(recommendationScreen)
+                mainViewModel!!.setScreenNav(
+                    Pair(
+                        Screens.RECOMMENDATIONS_SCREEN.toPath(),
+                        Screens.DEFAULT.toPath()
+                    )
+                )
+            }
             Screens.JOIN_SPA.toPath() -> {
                 val joinASpa = JoinASpa(platformNavigator)
                 joinASpa.setMainViewModel(mainViewModel!!)
@@ -336,9 +351,6 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
         TabNavigator(showDefaultTab(mainViewModel!!, homePageViewModel)) {
                 it2 ->
             Scaffold(
-                topBar = {
-                    MainTopBar(mainViewModel!!)
-                },
                 content = {
                     Box(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
                         CurrentTab()
@@ -444,7 +456,6 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
 
 
     private fun showDefaultTab(mainViewModel: MainViewModel, homePageViewModel: HomePageViewModel): HomeTab {
-        println("Default is here")
         homeTab = HomeTab(platformNavigator)
         homeTab!!.setMainViewModel(mainViewModel)
         homeTab!!.setHomePageViewModel(homePageViewModel)

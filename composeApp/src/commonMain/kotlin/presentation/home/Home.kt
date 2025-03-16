@@ -2,27 +2,34 @@ package presentation.home
 
 import GGSansBold
 import GGSansRegular
+import GGSansSemiBold
 import StackedSnackbarHost
 import UIStates.AppUIStates
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -71,24 +78,27 @@ import domain.Models.Product
 import domain.Models.ServiceTypeItem
 import domain.Models.Services
 import domain.Models.UserAppointment
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.HomepageHandler
 import presentation.components.StraightLine
 import presentation.components.IndeterminateCircularProgressBar
+import presentation.main.VendorLogo
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.HomeServicesWidget
-import presentation.widgets.VendorPicksItem
+import presentation.widgets.VendorRecommendationsItem
 import presentation.widgets.RecentAppointmentWidget
 import presentation.widgets.ProductDetailBottomSheet
 import presentation.widgets.RecentPackageAppointmentWidget
+import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import utils.calculateHomePageScreenHeight
+import utils.getHourOfDayDisplay
 import utils.getRecentAppointmentViewHeight
 
 @Parcelize
@@ -147,10 +157,9 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
         }
 
 
+
         LaunchedEffect(true) {
             val isSwitchVendor: Boolean = mainViewModel!!.isSwitchVendor.value
-
-            println("Vendor $isSwitchVendor")
             if (isSwitchVendor) {
                 homePageViewModel!!.setHomePageInfo(HomepageInfo())
             }
@@ -166,12 +175,17 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 homePageViewModel!!.setHomePageViewHeight(viewHeight)
                 homePageViewModel!!.setHomePageInfo(homePageInfo)
                 mainViewModel!!.setVendorBusinessLogoUrl(homePageInfo.vendorInfo!!.businessLogo!!)
+            }, onDayAvailabilityInfoAvailable = {
+                mainViewModel!!.setDayAvailability(it)
             })
         handler.init()
 
         val homepageInfo = homePageViewModel!!.homePageInfo.collectAsState()
         val homePageViewHeight = homePageViewModel!!.homePageViewHeight.collectAsState()
         val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
+        val vendorInfo = mainViewModel!!.connectedVendor.collectAsState()
+        val userInfo = mainViewModel!!.currentUserInfo.value
+        val hourOfDay = getHourOfDayDisplay(platformNavigator.getHourOfDay())
 
         if (homepageInfo.value.userInfo!!.userId != null){
             loadingScreenUiStateViewModel!!.switchScreenUIState(AppUIStates(isSuccess = true))
@@ -185,7 +199,79 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
             Scaffold(
                     snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
-                    topBar = {},
+                    topBar = {
+                        Row(modifier = Modifier.fillMaxWidth().height(80.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Row(modifier = Modifier.weight(4f).height(60.dp)) {
+                              Box(modifier = Modifier.weight(0.8f).fillMaxHeight(), contentAlignment = Alignment.Center) {
+
+                                  Box(Modifier.size(60.dp), contentAlignment = Alignment.Center) {
+                                      Box(
+                                          Modifier
+                                              .size(60.dp)
+                                              .clip(CircleShape)
+                                              .background(color = Color.Transparent)
+                                      ) {
+                                          val modifier = Modifier
+                                              .padding(2.dp)
+                                              .clip(CircleShape)
+                                              .border(
+                                                  width = 0.4.dp,
+                                                  color = Color.White,
+                                                  shape = CircleShape)
+                                              .fillMaxSize()
+                                          ImageComponent(imageModifier = modifier, imageRes = userInfo.profileImageUrl!!, isAsync = true)
+                                      }
+                                  }
+
+                              }
+                                Column(modifier = Modifier.weight(3f).fillMaxHeight(), horizontalAlignment = Alignment.Start, verticalArrangement = Arrangement.Center) {
+
+                                    Box(modifier = Modifier.fillMaxWidth().weight(1f)){
+                                        TextComponent(
+                                            text = "Hello ${userInfo.firstname}",
+                                            fontSize = 18,
+                                            fontFamily = GGSansRegular,
+                                            textStyle = MaterialTheme.typography.h6,
+                                            textColor = Color.Gray,
+                                            textAlign = TextAlign.Left,
+                                            fontWeight = FontWeight.ExtraBold,
+                                            lineHeight = 30,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            textModifier = Modifier.fillMaxWidth()
+                                        )
+                                    }
+
+                                    Box(modifier = Modifier.fillMaxWidth().weight(1f)){
+                                        TextComponent(
+                                            text = "Good $hourOfDay",
+                                            fontSize = 20,
+                                            fontFamily = GGSansSemiBold,
+                                            textStyle = MaterialTheme.typography.h6,
+                                            textColor = Colors.darkPrimary,
+                                            textAlign = TextAlign.Left,
+                                            fontWeight = FontWeight.ExtraBold,
+                                            lineHeight = 30,
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis,
+                                            textModifier = Modifier.fillMaxWidth()
+                                        )
+                                    }
+
+                                }
+                            }
+                            Box(modifier = Modifier.weight(1f).height(60.dp), contentAlignment = Alignment.Center) {
+                                VendorLogo(imageUrl = vendorInfo.value.businessLogo!!, onVendorLogoClicked = {
+                                    mainViewModel!!.setScreenNav(
+                                        Pair(
+                                            Screens.MAIN_SCREEN.toPath(),
+                                            Screens.VENDOR_INFO_SCREEN.toPath()
+                                        )
+                                    )
+                                })
+                            }
+                        }
+                    },
                     content = {
                         Box(
                             modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -285,7 +371,14 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                         }
                                     }
                                     if (!vendorRecommendations.isNullOrEmpty()) {
-                                        VendorPicks(vendorRecommendations, mainViewModel!!)
+                                        VendorRecommendation(vendorRecommendations, mainViewModel!!, onSeeAllRecommendations = {
+                                            mainViewModel!!.setScreenNav(
+                                                Pair(
+                                                    Screens.MAIN_SCREEN.toPath(),
+                                                    Screens.RECOMMENDATIONS_SCREEN.toPath()
+                                                )
+                                            )
+                                        })
                                     }
                                     if (!recentAppointments.isNullOrEmpty()) {
                                         AttachAppointmentsTitle("Recent Appointments")
@@ -303,15 +396,6 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
     @Composable
     fun ServiceGridScreen(vendorServices: List<Services>, onServiceSelected: (Services) -> Unit) {
-        val viewHeight = if (vendorServices.size <= 2){
-            140
-        }
-        else if (vendorServices.size in 3..4){
-            280
-        }
-        else{
-            420
-        }
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier.fillMaxWidth().height(420.dp),
@@ -356,7 +440,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
     }
 
     @Composable
-    fun VendorPicks(recommendations: List<VendorRecommendation>, mainViewModel: MainViewModel) {
+    fun VendorRecommendation(recommendations: List<VendorRecommendation>, mainViewModel: MainViewModel, onSeeAllRecommendations:() -> Unit) {
         Column(modifier = Modifier.fillMaxWidth().height(450.dp)) {
         Row(
             horizontalArrangement = Arrangement.Start,
@@ -367,9 +451,9 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 .fillMaxWidth()
         ) {
             TextComponent(
-                text = "Vendor Picks",
+                text = "Recommended",
                 textModifier = Modifier.fillMaxWidth(0.50f),
-                fontSize = 30,
+                fontSize = 28,
                 fontFamily = GGSansBold,
                 textStyle = MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,
@@ -379,10 +463,31 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
-            StraightLine()
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.45f)
+                    .height(1.dp)
+                    .background(color =  Colors.lighterPrimaryColor)
+            )
+
+            Box(modifier = Modifier.fillMaxWidth().padding(end = 20.dp), contentAlignment = Alignment.CenterEnd){
+                TextComponent(
+                    text = "See All",
+                    textModifier = Modifier.wrapContentWidth().clickable { onSeeAllRecommendations() },
+                    fontSize = 18,
+                    fontFamily = GGSansBold,
+                    textStyle = MaterialTheme.typography.h6,
+                    textColor = Colors.primaryColor,
+                    textAlign = TextAlign.Left,
+                    fontWeight = FontWeight.ExtraBold,
+                    lineHeight = 30,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
 
-        RecommendedAppointmentList(recommendations, mainViewModel)
+        RecommendedList(recommendations, mainViewModel)
        }
 
     }
@@ -416,7 +521,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun RecommendedAppointmentList(recommendations: List<VendorRecommendation>, mainViewModel: MainViewModel) {
+    fun RecommendedList(recommendations: List<VendorRecommendation>, mainViewModel: MainViewModel) {
         val selectedProduct = remember { mutableStateOf(Product()) }
         var showProductDetailBottomSheet by remember { mutableStateOf(false) }
 
@@ -455,9 +560,10 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier.fillMaxWidth().fillMaxHeight(0.95f),
-                    pageSpacing = 10.dp
+                    pageSpacing = 10.dp,
+                    pageSize = PageSize.Fixed(300.dp)
                 ) { page ->
-                    VendorPicksItem(recommendations[page],mainViewModel, onItemClickListener = {
+                    VendorRecommendationsItem(recommendations[page],mainViewModel, onItemClickListener = {
                         when (it.recommendationType) {
                             RecommendationType.Services.toPath() -> {
                                 mainViewModel.setScreenNav(

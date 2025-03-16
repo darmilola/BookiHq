@@ -1,6 +1,7 @@
 package presentation.therapist
 
 import StackedSnackbarHost
+import UIStates.AppUIStates
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,11 +30,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import dev.materii.pullrefresh.PullRefreshIndicator
+import dev.materii.pullrefresh.PullRefreshLayout
+import dev.materii.pullrefresh.rememberPullRefreshState
 import domain.Enums.BookingStatus
 import domain.Models.Appointment
 import domain.Models.TherapistAppointmentItemUIModel
 import domain.Models.TherapistInfo
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import presentation.DomainViewHandler.TherapistHandler
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
@@ -41,6 +45,7 @@ import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.TherapistAppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
+import presentation.widgets.DropDownWidget
 import presentation.widgets.EmptyContentWidget
 import presentation.widgets.TherapistDashboardAppointmentWidget
 import rememberStackedSnackbarHostState
@@ -54,20 +59,45 @@ fun TherapistAppointment(mainViewModel: MainViewModel, loadingScreenUiStateViewM
                          performedActionUIStateViewModel: PerformedActionUIStateViewModel) {
 
 
+    val filterList = arrayListOf<String>()
+    filterList.add(BookingStatus.ALL.toPath())
+    filterList.add(BookingStatus.PENDING.toPath())
+    filterList.add(BookingStatus.POSTPONED.toPath())
+    filterList.add(BookingStatus.CANCELLED.toPath())
+    filterList.add(BookingStatus.DONE.toPath())
+
+    val currentFilter = remember { mutableStateOf(BookingStatus.ALL.toPath()) }
+
+    val isRefreshing = remember { mutableStateOf(false) }
+    val refreshActionUIStates = remember { mutableStateOf(AppUIStates()) }
+
+    if (refreshActionUIStates.value.isLoading){
+        isRefreshing.value = true
+    }
+    else if(refreshActionUIStates.value.isSuccess){
+        isRefreshing.value = false
+    }
+    else if (refreshActionUIStates.value.isFailed){
+        isRefreshing.value = false
+    }
+
     val stackedSnackBarHostState = rememberStackedSnackbarHostState(
         maxStack = 5,
         animation = StackedSnackbarAnimation.Bounce
     )
 
     LaunchedEffect(true) {
-        appointmentResourceListEnvelopeViewModel!!.setResources(mutableListOf())
-        appointmentResourceListEnvelopeViewModel.clearData(mutableListOf())
-        therapistPresenter.getTherapistAppointments(therapistInfo.id!!)
+        if (appointmentResourceListEnvelopeViewModel!!.resources.value.isEmpty()) {
+            therapistPresenter.getTherapistAppointments(therapistInfo.id!!)
+        }
     }
 
     val handler = TherapistHandler(therapistPresenter,
         loadingScreenUiStateViewModel = loadingScreenUiStateViewModel,
         performedActionUIStateViewModel,
+        onShowRefreshing = {
+            refreshActionUIStates.value = it
+        },
         appointmentResourceListEnvelopeViewModel!!)
     handler.init()
 
@@ -129,6 +159,7 @@ fun TherapistAppointment(mainViewModel: MainViewModel, loadingScreenUiStateViewM
                 }
             }
             else if (uiState.value.isSuccess) {
+
                 val columnModifier = Modifier
                     .padding(top = 5.dp)
                     .fillMaxHeight()
@@ -146,6 +177,35 @@ fun TherapistAppointment(mainViewModel: MainViewModel, loadingScreenUiStateViewM
                             .background(color = Color.White)
                     ) {
 
+                        attachFilters {
+                            currentFilter.value = filterList.get(it)
+                            if (it == 0) {
+                                appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                                therapistPresenter.getTherapistAppointments(therapistInfo.id!!)
+                            } else {
+                                appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                                therapistPresenter.getFilteredTherapistAppointments(therapistId = therapistInfo.id!!,currentFilter.value)
+                            }
+                        }
+
+                        val pullRefreshState = rememberPullRefreshState(refreshing = isRefreshing.value, onRefresh = {
+                            currentFilter.value = BookingStatus.ALL.toPath()
+                            appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                            therapistPresenter.refreshTherapistAppointments(therapistInfo.id!!)
+                        })
+                        PullRefreshLayout(
+                            modifier = Modifier.fillMaxSize().background(color = Color.White),
+                            state = pullRefreshState,
+                            flipped = false,
+                            indicator = {
+                                PullRefreshIndicator(
+                                    state = pullRefreshState,
+                                    backgroundColor = Color.Yellow,
+                                    contentColor = Colors.darkPrimary
+                                )
+                            }
+                        ) {
+
                         LazyColumn(
                             modifier = Modifier.fillMaxWidth()
                                 .height(getAppointmentViewHeight(appointmentUIModel.appointmentList.size).dp),
@@ -153,9 +213,9 @@ fun TherapistAppointment(mainViewModel: MainViewModel, loadingScreenUiStateViewM
                         ) {
                             itemsIndexed(items = appointmentUIModel.appointmentList) { it, item ->
                                 TherapistDashboardAppointmentWidget(item, onArchiveAppointment = {
-                                      therapistPresenter.archiveAppointment(it.appointmentId!!)
+                                    therapistPresenter.archiveAppointment(it.appointmentId!!)
                                 }, onUpdateToDone = {
-                                      therapistPresenter.doneAppointment(it.appointmentId!!)
+                                    therapistPresenter.doneAppointment(it.appointmentId!!)
                                 })
                                 if (it == lastIndex && loadMoreState.value) {
                                     Box(
@@ -181,10 +241,15 @@ fun TherapistAppointment(mainViewModel: MainViewModel, loadingScreenUiStateViewM
                                         style = TextStyle()
                                     ) {
                                         if (appointmentResourceListEnvelopeViewModel.nextPageUrl.value.isNotEmpty()) {
-                                            therapistPresenter.getMoreTherapistAppointments(
-                                                therapistInfo.id!!,
-                                                nextPage = appointmentResourceListEnvelopeViewModel.currentPage.value + 1
-                                            )
+                                            if (currentFilter.value == BookingStatus.ALL.toPath()) {
+                                                therapistPresenter.getMoreTherapistAppointments(
+                                                    therapistInfo.id!!,
+                                                    nextPage = appointmentResourceListEnvelopeViewModel.currentPage.value + 1
+                                                )
+                                            }
+                                            else {
+                                                therapistPresenter.getMoreFilteredTherapistAppointments(therapistInfo.id!!,currentFilter.value,appointmentResourceListEnvelopeViewModel?.currentPage?.value!! + 1)
+                                            }
                                         }
                                     }
                                 }
@@ -194,8 +259,25 @@ fun TherapistAppointment(mainViewModel: MainViewModel, loadingScreenUiStateViewM
 
                     }
                 }
+                }
 
             }
         })
 
+}
+
+@Composable
+fun attachFilters(onMenuItemClick : (Int) -> Unit){
+    val nameList = arrayListOf<String>()
+    nameList.add(BookingStatus.ALL.toName())
+    nameList.add(BookingStatus.PENDING.toName())
+    nameList.add(BookingStatus.POSTPONED.toName())
+    nameList.add(BookingStatus.CANCELLED.toName())
+    nameList.add(BookingStatus.DONE.toName())
+
+    DropDownWidget(menuItems = nameList, selectedIndex = 0,iconRes = "drawable/urban_icon.png", placeHolderText = "Select Filter", onMenuItemClick = {
+        onMenuItemClick(it)
+    }, onExpandMenuItemClick = {
+
+    })
 }

@@ -10,9 +10,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Parcelize
 data class CustomerOrder (
-    @SerialName("id") val id: Int? = null,
-    @SerialName("user_id") val userId: Int? = null,
-    @SerialName("vendor_id") val vendorId: Int? = null,
+    @SerialName("id") val id: Long? = null,
+    @SerialName("user_id") val userId: Long? = null,
+    @SerialName("vendor_id") val vendorId: Long? = null,
     @SerialName("orderStatus") val orderStatus: String? = OrderStatusEnum.PROCESSING.toPath(),
     @SerialName("paymentMethod") val paymentMethod: String = PaymentMethod.CARD_PAYMENT.toString(),
     @SerialName("order_items") var orderItems: OrderItem? = null,

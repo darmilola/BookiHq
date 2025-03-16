@@ -1,6 +1,7 @@
 package presentation.DomainViewHandler
 
 import UIStates.AppUIStates
+import domain.Models.Vendor
 import domain.Models.VendorResourceListEnvelope
 import kotlinx.coroutines.runBlocking
 import presentation.connectVendor.ConnectVendorContract
@@ -81,6 +82,11 @@ class ConnectPageHandler(
                 vendorResourceListEnvelopeViewModel.setResources(vendors.resources!!.toMutableList())
             }
         }
+    }
+
+    override fun showVendorsView(nearbyVendor: List<Vendor>?, newVendor: List<Vendor>?) {
+        vendorResourceListEnvelopeViewModel.setNearbyVendor(nearbyVendor)
+        vendorResourceListEnvelopeViewModel.setNewVendor(newVendor)
     }
 
     override fun onLoadMoreVendorStarted(isSuccess: Boolean) {

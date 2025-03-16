@@ -35,7 +35,7 @@ import domain.Models.AppointmentReview
 import domain.Models.PlatformTime
 import domain.Models.ServiceTypeTherapists
 import domain.Models.ServiceTypeTherapistUIModel
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.BookingViewModel
@@ -191,7 +191,7 @@ fun AvailableTimeContent(availableHours: Triple<ArrayList<PlatformTime>, ArrayLi
     ) {
 
         TextComponent(
-            text = "Available Times",
+            text = "Availability",
             fontSize = 18,
             fontFamily = GGSansSemiBold,
             textStyle = TextStyle(),

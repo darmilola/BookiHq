@@ -30,7 +30,7 @@ class AppointmentRepositoryImpl(apiService: HttpClient): AppointmentRepository {
         val param = PostponeAppointmentRequest(userId = appointment.userId!!, vendorId = appointment.vendorId, serviceId = appointment.serviceId, packageId = appointment.packageId,
             serviceTypeId = appointment.serviceTypeId!!, therapistId = appointment.therapistId, appointmentTime = appointmentTime, appointmentType = userAppointment.resources.appointmentType,
             day = day, month = month, year = year, serviceLocation = appointment.serviceLocation,
-            appointmentId = appointment.appointmentId!!, bookingStatus = BookingStatus.PENDING.toPath(), paymentMethod = userAppointment.paymentMethod!!)
+            appointmentId = appointment.appointmentId!!, bookingStatus = BookingStatus.PENDING.toPath())
         return appointmentNetworkService.postponeAppointment(param)
     }
 

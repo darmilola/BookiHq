@@ -132,8 +132,7 @@ class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScr
                     textColor = Color(color = 0xFFFFFFFF),
                     style = MaterialTheme.typography.h4
                 ) {
-                   // phone.value = "+16505553434"
-                    if (phone.value == "") {
+                    if (phone.value.isEmpty()) {
                         ShowSnackBar(title = "Error",
                             description = "Please Input your Phone number",
                             actionLabel = "",

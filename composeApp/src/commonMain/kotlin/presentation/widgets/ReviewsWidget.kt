@@ -28,6 +28,7 @@ import domain.Models.ProductReview
 import domain.Models.User
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
+import utils.DateTime
 
 @Composable
 fun AppointmentReviewsWidget(reviews: AppointmentReview) {
@@ -207,6 +208,7 @@ fun AttachProductReviewerUserName(reviewer: User){
 
 @Composable
 fun AttachReviewDate(reviewDate: String){
+    val formattedDate = DateTime.getFormattedReviewDate(reviewDate)
     val rowModifier = Modifier
         .padding(start = 5.dp, top = 7.dp)
         .wrapContentWidth()
@@ -217,7 +219,7 @@ fun AttachReviewDate(reviewDate: String){
             modifier = rowModifier
         ) {
             TextComponent(
-                text = reviewDate,
+                text = formattedDate,
                 fontSize = 14,
                 fontFamily = GGSansRegular,
                 textStyle = MaterialTheme.typography.h6,

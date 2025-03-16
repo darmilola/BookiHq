@@ -59,7 +59,7 @@ import dev.materii.pullrefresh.rememberPullRefreshState
 import domain.Enums.AppointmentType
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.Appointment
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.CancelContractHandler
 import presentation.appointmentBookings.BookingPresenter
@@ -70,7 +70,7 @@ import presentation.widgets.AddPackageAppointmentsReviewBottomSheet
 import presentation.widgets.AppointmentWidget
 import presentation.widgets.EmptyContentWidget
 import presentation.widgets.PackageAppointmentWidget
-import presentation.widgets.PendingPackageAppointmentWidget
+import presentation.widgets.TitleWidget
 import utils.getAppointmentViewHeight
 import rememberStackedSnackbarHostState
 import theme.Colors
@@ -296,6 +296,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
         else if (deleteActionUIStates.value.isSuccess) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 SuccessDialog("Delete Successful", "Close", onConfirmation = {
+                    deletePerformedActionUIStateViewModel!!.switchActionDeleteUIState(AppUIStates(isDefault = true))
                     appointmentPresenter.refreshUserAppointments(userId)
                 })
             }
@@ -333,7 +334,7 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
         else if (addReviewsUIState.value.isSuccess) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 SuccessDialog("Review Added Successfully", "Close", onConfirmation = {
-                    addAppointmentReviewsUIStateViewModel!!.switchActionDeleteUIState(AppUIStates(isDefault = true))
+                    addAppointmentReviewsUIStateViewModel!!.switchAddAppointmentReviewUiState(AppUIStates(isDefault = true))
                 })
             }
         }
@@ -359,7 +360,12 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
 
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
-            topBar = {},
+            topBar = {
+                val screenTitle =  mainViewModel!!.screenTitle.collectAsState()
+                Box(modifier = Modifier.fillMaxWidth().height(50.dp), contentAlignment = Alignment.Center){
+                    TitleWidget(textColor = theme.styles.Colors.primaryColor, title = screenTitle.value)
+                }
+            },
             content = {
                 val handler = AppointmentsHandler(
                     appointmentResourceListEnvelopeViewModel!!,

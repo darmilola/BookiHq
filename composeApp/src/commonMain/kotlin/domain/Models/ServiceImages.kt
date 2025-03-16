@@ -6,4 +6,4 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable @Parcelize
-data class ServiceImages (@SerialName("id") val id: Int?, @SerialName("service_id") val serviceId: Int?, @SerialName("imageUrl") val imageUrl: String? = ""): Parcelable
+data class ServiceImages (@SerialName("id") val id: Long?, @SerialName("service_id") val serviceId: Long?, @SerialName("imageUrl") val imageUrl: String? = ""): Parcelable

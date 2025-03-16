@@ -8,5 +8,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @Parcelize
-data class TimeObject(@SerialName("id") val recommendationId: Int = -1, @SerialName("vendor_id") val vendorId: Int = -1,
+data class TimeObject(@SerialName("id") val recommendationId: Long = -1, @SerialName("vendor_id") val vendorId: Long = -1,
                       @SerialName("time_id") val timeId: Int = -1, @SerialName("platform_time") val platformTime: PlatformTime = PlatformTime()): Parcelable

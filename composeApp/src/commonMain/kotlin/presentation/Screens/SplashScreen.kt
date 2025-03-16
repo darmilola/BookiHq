@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.room.RoomDatabase
-import applications.device.deviceInfo
 import applications.room.AppDatabase
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
@@ -33,8 +32,6 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import di.initKoin
 import domain.Enums.AuthType
-import domain.Enums.DeviceType
-import domain.Enums.ProductType
 import domain.Enums.SharedPreferenceEnum
 import domain.Enums.getDisplayCurrency
 import presentation.components.SplashScreenBackground
@@ -46,6 +43,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.authentication.AuthenticationPresenter
+import presentation.connectVendor.ConnectVendor
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.SplashScreenWidget
 
@@ -71,7 +69,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
                 mainViewModel.setDisplayCurrencyUnit(displayCurrencyUnit)
                 mainViewModel.setDisplayCurrencyPath(displayCurrencyPath)
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
-                preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
+                preferenceSettings[SharedPreferenceEnum.STATE.toPath()] = user.state?.id
                 preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendorId
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
@@ -93,7 +91,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
         connectVendor = { user ->
             runBlocking {
                 preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = user.country
-                preferenceSettings[SharedPreferenceEnum.CITY.toPath()] = user.city
+                preferenceSettings[SharedPreferenceEnum.STATE.toPath()] = user.state?.id
                 preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = user.userId
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendorId
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey

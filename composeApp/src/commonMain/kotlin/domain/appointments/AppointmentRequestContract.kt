@@ -30,11 +30,10 @@ data class PostponeAppointmentRequest(@SerialName("user_id") val userId: Long,
                                       @SerialName("year") val year: Int,
                                       @SerialName("serviceLocation") val serviceLocation: String,
                                       @SerialName("appointment_id") val appointmentId: Long,
-                                      @SerialName("bookingStatus") val bookingStatus: String,
-                                      @SerialName("paymentMethod") val paymentMethod: String)
+                                      @SerialName("bookingStatus") val bookingStatus: String)
 
 @Serializable
-data class DeleteAppointmentRequest(@SerialName("appointmentId") val appointmentId: Long)
+data class DeleteAppointmentRequest(@SerialName("id") val appointmentId: Long)
 
 @Serializable
 data class JoinMeetingRequest(@SerialName("custom_participant_id") val customParticipantId: String,

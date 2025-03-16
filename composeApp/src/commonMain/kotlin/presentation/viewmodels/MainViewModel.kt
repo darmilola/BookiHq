@@ -3,7 +3,6 @@ package presentation.viewmodels
 import com.hoc081098.kmp.viewmodel.SavedStateHandle
 import com.hoc081098.kmp.viewmodel.ViewModel
 import domain.Enums.Currency
-import domain.Enums.DeliveryMethodEnum
 import domain.Enums.MainTabEnum
 import domain.Enums.ProductType
 import domain.Models.FavoriteProductIdModel
@@ -31,7 +30,6 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _recommendedServiceType =  savedStateHandle.getStateFlow("recommendedServiceType", ServiceTypeItem())
     private var _currentUnsavedOrders =  savedStateHandle.getStateFlow("currentUnsavedOrders", ArrayList<OrderItem>())
     private var _currentUnsavedOrderSize =  savedStateHandle.getStateFlow("currentUnsavedOrderSize", 0)
-    private var _deliveryMethod =  savedStateHandle.getStateFlow("deliveryMethod", DeliveryMethodEnum.PICKUP.toPath())
     private var _selectedProductType =  savedStateHandle.getStateFlow("selectedProductType", ProductType.COSMETICS.toPath())
     private var _currentMainDisplayTab =  savedStateHandle.getStateFlow("displayedTab", MainTabEnum.HOME.toPath())
     private var _isClickedSearchProductState =  savedStateHandle.getStateFlow("isClickedSearchProduct", false)
@@ -43,19 +41,22 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _showProductBottomSheet =  savedStateHandle.getStateFlow("showProductBottomSheet", false)
     private var _showPaymentCardsBottomSheet =  savedStateHandle.getStateFlow("showPaymentCardsBottomSheet", false)
     private var _showProductReviewsBottomSheet =  savedStateHandle.getStateFlow("showProductReviewsBottomSheet", false)
-    private var _showPaymentMethodBottomSheet =  savedStateHandle.getStateFlow("showPaymentMethodBottomSheet", false)
     private var _showAppointmentReviewsBottomSheet =  savedStateHandle.getStateFlow("showAppointmentReviewsBottomSheet", false)
     private var _showPackageReviewsBottomSheet =  savedStateHandle.getStateFlow("showPackageReviewsBottomSheet", false)
     private var _onBackPressed =  savedStateHandle.getStateFlow("onBackPressed", false)
     private var _isSwitchVendor =  savedStateHandle.getStateFlow("isSwitchVendor", false)
     private var _orderItemComponents =  savedStateHandle.getStateFlow("orderItemComponents", arrayListOf<PlacedOrderItemComponent>())
     private var _favoriteProductIds =  savedStateHandle.getStateFlow("favoriteProductIds", listOf<FavoriteProductIdModel>())
+    private var _dayAvailability =  savedStateHandle.getStateFlow("dayAvailability", arrayListOf<String>())
 
     val screenTitle: StateFlow<String>
         get() = _screenTitle
 
     val selectedService: StateFlow<Services>
         get() = _selectedService
+
+    val dayAvailability: StateFlow<ArrayList<String>>
+        get() = _dayAvailability
 
     val selectedPackage: StateFlow<VendorPackage>
         get() = _selectedPackage
@@ -78,9 +79,6 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     val restartApp: StateFlow<Boolean>
         get() = _restartApp
 
-    val deliveryMethod: StateFlow<String>
-        get() = _deliveryMethod
-
     val selectedProductType: StateFlow<String>
         get() = _selectedProductType
 
@@ -98,9 +96,6 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     val showPackageReviewsBottomSheet: StateFlow<Boolean>
         get() = _showPackageReviewsBottomSheet
-
-    val showPaymentMethodBottomSheet: StateFlow<Boolean>
-        get() = _showPaymentMethodBottomSheet
 
     val isSwitchVendor: StateFlow<Boolean>
         get() = _isSwitchVendor
@@ -146,6 +141,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     fun setJoinSpaVendor(vendor: Vendor) {
         savedStateHandle["joinSpaVendor"] = vendor
     }
+    fun setDayAvailability(dayAvailability: ArrayList<String>) {
+        savedStateHandle["dayAvailability"] = dayAvailability
+    }
     fun setOrderItemComponents(orderItemComponents: ArrayList<PlacedOrderItemComponent>) {
         savedStateHandle["orderItemComponents"] = orderItemComponents
     }
@@ -156,9 +154,6 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
         savedStateHandle["switchVendor"] = vendor
     }
 
-    fun setDeliveryMethod(deliveryMethod: String) {
-        savedStateHandle["deliveryMethod"] = deliveryMethod
-    }
     fun setSelectedProductType(productType: String) {
         savedStateHandle["selectedProductType"] = productType
     }
@@ -185,11 +180,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
         savedStateHandle["showPaymentCardsBottomSheet"] = show
     }
 
-    fun showPaymentMethodBottomSheet(show: Boolean) {
-        savedStateHandle["showPaymentMethodBottomSheet"] = show
-    }
-
-    fun setSwitchVendorID(vendorId: Long) {
+    fun setSwitchVendorId(vendorId: Long) {
         savedStateHandle["switchVendorId"] = vendorId
     }
 

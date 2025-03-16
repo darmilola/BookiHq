@@ -49,11 +49,11 @@ fun AppointmentPaymentMethodBottomSheet(mainViewModel: MainViewModel, onCardPaym
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true))
     val isCardPaymentMethod = remember { mutableStateOf(true) }
 
-    val showBottomSheet = mainViewModel.showPaymentMethodBottomSheet.collectAsState()
+    //val showBottomSheet = mainViewModel.showPaymentMethodBottomSheet.collectAsState()
     scope.launch {
         scaffoldState.bottomSheetState.hide()
     }
-    if (showBottomSheet.value){
+ /*   if (showBottomSheet.value){
         scope.launch {
             scaffoldState.bottomSheetState.show()
         }
@@ -63,7 +63,7 @@ fun AppointmentPaymentMethodBottomSheet(mainViewModel: MainViewModel, onCardPaym
             scaffoldState.bottomSheetState.hide()
             onDismiss()
         }
-    }
+    }*/
 
     ModalBottomSheet(
         modifier = Modifier.padding(top = 20.dp).height(375.dp),

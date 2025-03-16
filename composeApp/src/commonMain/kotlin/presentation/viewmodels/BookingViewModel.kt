@@ -26,7 +26,6 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
     private var _currentAppointmentBooking =  savedStateHandle.getStateFlow("currentAppointmentBooking", Appointment())
     private var _vendorTimes = savedStateHandle.getStateFlow("vendorTimes", listOf<VendorTime>())
     private var _platformTimes = savedStateHandle.getStateFlow("platformTimes", listOf<PlatformTime>())
-    private var _paymentMethod = savedStateHandle.getStateFlow("paymentMethod", PaymentMethod.CARD_PAYMENT.toPath())
 
 
     val serviceTherapists: StateFlow<List<ServiceTypeTherapists>>
@@ -48,8 +47,6 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
 
     val selectedServiceType: StateFlow<ServiceTypeItem>
         get() = _selectedServiceType
-    val paymentMethod: StateFlow<String>
-        get() = _paymentMethod
 
     val day: StateFlow<Int>
         get() = _day
@@ -81,11 +78,6 @@ class BookingViewModel(private val savedStateHandle: SavedStateHandle): ViewMode
     fun setPendingAppointments(pendingAppointments: List<UserAppointment>) {
         savedStateHandle["pendingAppointments"] = pendingAppointments
     }
-
-    fun setPaymentMethod(paymentMethod: String) {
-        savedStateHandle["paymentMethod"] = paymentMethod
-    }
-
 
     val isMobileService: StateFlow<Boolean>
         get() = _isMobileService

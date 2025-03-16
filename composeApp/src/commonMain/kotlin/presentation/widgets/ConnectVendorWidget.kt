@@ -42,7 +42,6 @@ fun SwitchVendorHeader(title: String){
            verticalArrangement = Arrangement.Center,
            horizontalAlignment = Alignment.CenterHorizontally) {
         ConnectBusinessTitle(title)
-        ConnectBusinessDescription()
     }
 }
 

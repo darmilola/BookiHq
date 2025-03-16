@@ -18,6 +18,7 @@
 		5955C0872BB5B324002DDE7C /* ApplicationServiceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C0862BB5B324002DDE7C /* ApplicationServiceManager.swift */; };
 		5955C0892BB5B420002DDE7C /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C0882BB5B420002DDE7C /* Coordinator.swift */; };
 		5955C08B2BB5B4AE002DDE7C /* ZazzyNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5955C08A2BB5B4AE002DDE7C /* ZazzyNavigationController.swift */; };
+		596ABF922D255DE800834128 /* AppStartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* AppStartViewController.swift */; };
 		5975F9852BB6C28A0026F9B5 /* ZazzyApp+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5975F9842BB6C28A0026F9B5 /* ZazzyApp+Colors.swift */; };
 		5975F9872BB6C30F0026F9B5 /* ZazzyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5975F9862BB6C30F0026F9B5 /* ZazzyApp.swift */; };
 		5975F9892BB6C3850026F9B5 /* UiColor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5975F9882BB6C3850026F9B5 /* UiColor+Ext.swift */; };
@@ -31,7 +32,6 @@
 		597800BD2C5E89CA00314D60 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 597800BC2C5E89CA00314D60 /* FirebaseMessaging */; };
 		597800BF2C5E89CA00314D60 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 597800BE2C5E89CA00314D60 /* FirebaseStorage */; };
 		597800C12C5E8A4000314D60 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 597800C02C5E8A4000314D60 /* GoogleService-Info.plist */; };
-		7555FF83242A565900829871 /* AppStartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* AppStartViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -258,7 +258,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		597356A62C5CFF9B009F6426 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
@@ -269,9 +269,9 @@
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd \"$SRCROOT/..\"\n./gradlew :composeApp:packForXCode -PXCODE_CONFIGURATION=${CONFIGURATION}\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd \"$SRCROOT/..\"\n./gradlew :composeApp:embedAndSignAppleFrameworkForXcode\n";
 		};
 		F36B1CEB2AD83DDC00CB74D5 /* Compile Kotlin Framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -294,6 +294,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				596ABF922D255DE800834128 /* AppStartViewController.swift in Sources */,
 				5955C08B2BB5B4AE002DDE7C /* ZazzyNavigationController.swift in Sources */,
 				5975F9892BB6C3850026F9B5 /* UiColor+Ext.swift in Sources */,
 				5975F9852BB6C28A0026F9B5 /* ZazzyApp+Colors.swift in Sources */,
@@ -301,7 +302,6 @@
 				5955C07F2BB5B123002DDE7C /* ZazzyAppSceneDelegate.swift in Sources */,
 				5955C0872BB5B324002DDE7C /* ApplicationServiceManager.swift in Sources */,
 				5955C0832BB5B236002DDE7C /* ApplicationStateServices.swift in Sources */,
-				7555FF83242A565900829871 /* AppStartViewController.swift in Sources */,
 				5955C0852BB5B2B7002DDE7C /* UiWindow+Ext.swift in Sources */,
 				5955C07D2BB5B0FC002DDE7C /* ZazzyAppDelegate.swift in Sources */,
 				5955C0812BB5B220002DDE7C /* UiSetupApplicationService.swift in Sources */,
@@ -480,10 +480,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = "${TEAM_ID}";
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
-					"$(inherited)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "";
 				INFOPLIST_FILE = iosApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;

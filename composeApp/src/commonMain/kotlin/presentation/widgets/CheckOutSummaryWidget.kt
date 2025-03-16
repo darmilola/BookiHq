@@ -30,20 +30,13 @@ import presentation.viewmodels.MainViewModel
 import presentations.components.TextComponent
 
 @Composable
-fun CheckOutSummaryWidget(cartViewModel: CartViewModel,mainViewModel: MainViewModel, onCheckOutStarted: () -> Unit, onCardCheckOutStarted:() -> Unit) {
+fun CheckOutSummaryWidget(cartViewModel: CartViewModel,mainViewModel: MainViewModel, onCardCheckOutStarted:() -> Unit) {
 
-    val deliveryMethod = mainViewModel.deliveryMethod.collectAsState()
+    val deliveryMethod = cartViewModel.deliveryMethod.collectAsState()
     val currencyUnit = mainViewModel.displayCurrencyUnit.value
     val subtotal = cartViewModel.subtotal.collectAsState()
     val total = cartViewModel.total.collectAsState()
     val deliveryFee = if (cartViewModel.deliveryFee.value == 0L) "Free" else cartViewModel.deliveryFee.value.toString()
-    val checkOutMethod = cartViewModel.paymentMethod.collectAsState()
-    val checkOutText = if (checkOutMethod.value == PaymentMethod.CARD_PAYMENT.toPath()) {
-        "Proceed to Checkout"
-    }
-    else{
-        "Place Order"
-    }
 
     val columnModifier = Modifier
         .padding(start = 10.dp, bottom = 10.dp, end = 10.dp)
@@ -84,8 +77,6 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel,mainViewModel: MainViewMo
                  textModifier = Modifier.fillMaxWidth()
              )
          }
-
-        println(deliveryMethod.value)
 
         if (deliveryMethod.value == DeliveryMethodEnum.MOBILE.toPath()) {
             Row(modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)) {
@@ -147,14 +138,8 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel,mainViewModel: MainViewMo
             )
         }
 
-        ButtonComponent(modifier = buttonStyle, buttonText = checkOutText, borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Colors.primaryColor, style = TextStyle()){
-            if (checkOutMethod.value == PaymentMethod.CARD_PAYMENT.toPath()) {
-                onCardCheckOutStarted()
-            }
-            else{
-                onCheckOutStarted()
-            }
-
+        ButtonComponent(modifier = buttonStyle, buttonText = "Proceed to Checkout", borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Colors.primaryColor, style = TextStyle()){
+            onCardCheckOutStarted()
         }
 
     }

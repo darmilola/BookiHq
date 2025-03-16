@@ -55,12 +55,12 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
         }
     }
 
-    override fun getVendor(country: String, city: String, connectedVendor: Long) {
+    override fun getVendor(country: String, state: Long, connectedVendor: Long) {
         contractView?.showScreenLce(AppUIStates(isLoading = true, loadingMessage = "Getting Vendors"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    connectVendorRepositoryImpl.getVendor(country, city, connectedVendor,1)
+                    connectVendorRepositoryImpl.getVendor(country, state, connectedVendor,1)
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {
@@ -88,12 +88,12 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
         }
     }
 
-    override fun getMoreVendor(country: String, city: String, connectedVendor: Long, nextPage: Int) {
+    override fun getMoreVendor(country: String, state: Long, connectedVendor: Long, nextPage: Int) {
         contractView?.onLoadMoreVendorStarted(true)
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    connectVendorRepositoryImpl.getVendor(country,city,connectedVendor,nextPage)
+                    connectVendorRepositoryImpl.getVendor(country,state,connectedVendor,nextPage)
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {
@@ -184,6 +184,40 @@ class ConnectVendorPresenter(apiService: HttpClient): ConnectVendorContract.Pres
                 result.dispose()
             } catch(e: Exception) {
                 contractView?.onLoadMoreVendorEnded(false)
+            }
+        }
+    }
+
+    override fun viewVendors(country: String, state: Long, connectedVendor: Long) {
+        contractView?.showScreenLce(AppUIStates(isLoading = true, loadingMessage = "Loading Parlors"))
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    connectVendorRepositoryImpl.viewVendors(country,state,connectedVendor)
+                        .subscribe(
+                            onSuccess = { result ->
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.showScreenLce(AppUIStates(isSuccess = true))
+                                        contractView?.showVendorsView(result.nearbyVendors, result.newVendors)
+
+                                    }
+                                    ServerResponse.EMPTY.toPath() -> {
+                                        contractView?.showScreenLce(AppUIStates(isEmpty = true, emptyMessage = "Vendor Not Found"))
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.showScreenLce(AppUIStates(isFailed = true, errorMessage = "Error Getting Vendors"))
+                                    }
+                                }
+                            },
+                            onError = {
+                                contractView?.showScreenLce(AppUIStates(isFailed = true, errorMessage = "Error Getting Vendors"))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.showScreenLce(AppUIStates(isFailed = true, errorMessage = "Error Getting Vendors"))
             }
         }
     }

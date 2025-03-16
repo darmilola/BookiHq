@@ -59,7 +59,7 @@ import domain.Models.Product
 import domain.Models.ProductItemUIModel
 import domain.Enums.Screens
 import domain.Enums.SharedPreferenceEnum
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
@@ -76,6 +76,7 @@ import presentation.widgets.EmptyContentWidget
 import presentation.widgets.ProductItem
 import presentation.widgets.ProductDetailBottomSheet
 import presentation.widgets.SearchBar
+import presentation.widgets.TitleWidget
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
@@ -187,42 +188,94 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                 .background(color = Color.White),
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {
-                if (isClickedSearchProduct.value){
-                    SearchBar(onValueChange = {
-                    if (it.isNotEmpty()) {
-                               productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                               searchQuery.value = it
-                               productPresenter.searchProducts(
-                                   mainViewModel!!.connectedVendor.value.vendorId!!,
-                                   it
-                               )
-                           }
-               }, onBackPressed = {
-                    mainViewModel!!.setIsClickedSearchProduct(false)
-                    searchQuery.value = ""
-                    productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                    preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath()] = ProductType.COSMETICS.toPath()
-                    productPresenter.getProductsByType(vendorId, productType = selectedProductType)
-               })
-              }
-                else {
-                    val isRightSelected = selectedProductType == ProductType.ACCESSORIES.toPath()
-                    ToggleButton(shape = CircleShape,
-                        isRightSelection = isRightSelected,
-                        onLeftClicked = {
-                            preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath()] = ProductType.COSMETICS.toPath()
-                            productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                            selectedProductType = ProductType.COSMETICS.toPath()
-                            productPresenter.getProductsByType(vendorId, productType = selectedProductType)
-                        },
-                        onRightClicked = {
-                            preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath()] = ProductType.ACCESSORIES.toPath()
-                            productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                            selectedProductType = ProductType.ACCESSORIES.toPath()
-                            productPresenter.getProductsByType(vendorId, productType = selectedProductType)
-                        },
-                        leftText = ProductType.COSMETICS.toTitle(),
-                        rightText = ProductType.ACCESSORIES.toTitle())
+                Column(modifier = Modifier.height(150.dp).fillMaxWidth()) {
+                    val screenTitle = mainViewModel!!.screenTitle.collectAsState()
+
+                    Row(modifier = Modifier.fillMaxWidth().height(70.dp)) {
+                        Box(
+                            modifier = Modifier.weight(1f).fillMaxHeight(),
+                            contentAlignment = Alignment.Center
+                        ) {}
+                        Box(
+                            modifier = Modifier.weight(2f).fillMaxHeight(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            TitleWidget(textColor = Colors.primaryColor, title = screenTitle.value)
+                        }
+
+                        Box(
+                            modifier = Modifier.weight(1f).fillMaxHeight().padding(end = 10.dp),
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
+                            val iconModifier = Modifier
+                                .padding(top = 5.dp)
+                                .clickable {
+                                    mainViewModel!!.setIsClickedSearchProduct(true)
+                                }
+                                .size(24.dp)
+                            ImageComponent(
+                                imageModifier = iconModifier,
+                                imageRes = "drawable/search_icon.png",
+                                colorFilter = ColorFilter.tint(color = Colors.primaryColor)
+                            )
+
+                        }
+
+                    }
+
+                    Row(modifier = Modifier.fillMaxWidth().height(70.dp)) {
+                        if (isClickedSearchProduct.value) {
+                            SearchBar(onValueChange = {
+                                if (it.isNotEmpty()) {
+                                    productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                                    searchQuery.value = it
+                                    productPresenter.searchProducts(
+                                        mainViewModel!!.connectedVendor.value.vendorId!!,
+                                        it
+                                    )
+                                }
+                            }, onBackPressed = {
+                                mainViewModel!!.setIsClickedSearchProduct(false)
+                                searchQuery.value = ""
+                                productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                                preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath()] =
+                                    ProductType.COSMETICS.toPath()
+                                productPresenter.getProductsByType(
+                                    vendorId,
+                                    productType = selectedProductType
+                                )
+                            })
+                        } else {
+                            val isRightSelected =
+                                selectedProductType == ProductType.ACCESSORIES.toPath()
+                            ToggleButton(
+                                shape = CircleShape,
+                                isRightSelection = isRightSelected,
+                                onLeftClicked = {
+                                    preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath()] =
+                                        ProductType.COSMETICS.toPath()
+                                    productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                                    selectedProductType = ProductType.COSMETICS.toPath()
+                                    productPresenter.getProductsByType(
+                                        vendorId,
+                                        productType = selectedProductType
+                                    )
+                                },
+                                onRightClicked = {
+                                    preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath()] =
+                                        ProductType.ACCESSORIES.toPath()
+                                    productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                                    selectedProductType = ProductType.ACCESSORIES.toPath()
+                                    productPresenter.getProductsByType(
+                                        vendorId,
+                                        productType = selectedProductType
+                                    )
+                                },
+                                leftText = ProductType.COSMETICS.toTitle(),
+                                rightText = ProductType.ACCESSORIES.toTitle()
+                            )
+                        }
+                    }
                 }
             },
             content = {

@@ -7,18 +7,18 @@ enum class CountryEnum {
 
     fun toPath() = when (this) {
         NIGERIA -> "Nigeria"
-        SOUTH_AFRICA -> "South Africa"
+        SOUTH_AFRICA -> "SouthAfrica"
         KENYA -> "Kenya"
         GHANA -> "Ghana"
         DEFAULT -> "default"
     }
 
     fun getId() = when (this) {
-        NIGERIA -> 0
-        SOUTH_AFRICA -> 1
-        KENYA -> 2
+        NIGERIA -> 1
+        SOUTH_AFRICA -> 2
         GHANA -> 3
-        DEFAULT -> 4
+        KENYA -> 4
+        DEFAULT -> -1
     }
 
     fun getCode() = when (this) {
@@ -45,4 +45,17 @@ fun countryList(): ArrayList<String>{
     countryList.add(CountryEnum.GHANA.toPath())
     countryList.add(CountryEnum.KENYA.toPath())*/
     return countryList
+}
+
+fun getCountryId(countryName: String): Long {
+    val id =  when(countryName){
+        CountryEnum.NIGERIA.toPath() -> CountryEnum.NIGERIA.getId()
+        CountryEnum.SOUTH_AFRICA.toPath() -> CountryEnum.SOUTH_AFRICA.getId()
+        CountryEnum.KENYA.toPath() -> CountryEnum.KENYA.getId()
+        CountryEnum.GHANA.toPath() -> CountryEnum.GHANA.getId()
+        else -> {
+            CountryEnum.DEFAULT.getId()
+        }
+    }
+    return id.toLong()
 }

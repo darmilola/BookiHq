@@ -4,6 +4,9 @@ import com.badoo.reaktive.single.toSingle
 import com.russhwolf.settings.Settings
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.HomePageResponse
+import domain.Models.OrderListDataResponse
+import domain.Models.RecommendationListDataResponse
+import domain.Orders.GetOrderRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.header
@@ -24,5 +27,13 @@ open class HomeNetworkService(private val apiService: HttpClient) {
             setBody(getHomeRequest)
             header("Authorization", apiKey)
         }.body<HomePageResponse>().toSingle()
+
+    suspend fun getRecommendations(getRecommendationRequest: GetRecommendationRequest, nextPage: Int = 1) =
+        apiService.post {
+            url("/recommendations?page=$nextPage")
+            contentType(ContentType.Application.Json)
+            setBody(getRecommendationRequest)
+            header("Authorization", apiKey)
+        }.body<RecommendationListDataResponse>().toSingle()
 
 }

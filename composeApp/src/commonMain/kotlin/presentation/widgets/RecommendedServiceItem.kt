@@ -38,7 +38,7 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun VendorPicksItem(vendorRecommendation: VendorRecommendation, mainViewModel: MainViewModel, onItemClickListener: (VendorRecommendation) -> Unit) {
+fun VendorRecommendationsItem(vendorRecommendation: VendorRecommendation, mainViewModel: MainViewModel, onItemClickListener: (VendorRecommendation) -> Unit) {
 
     val columnModifier = Modifier
         .fillMaxHeight()

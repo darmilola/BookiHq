@@ -51,7 +51,7 @@ import com.russhwolf.settings.get
 import domain.Enums.SharedPreferenceEnum
 import domain.Models.UserOrderItemUIModel
 import domain.Models.UserOrders
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

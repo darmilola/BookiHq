@@ -37,6 +37,14 @@ open class TherapistNetworkService(private val apiService: HttpClient) {
             header("Authorization", apiKey)
         }.body<TherapistAppointmentListDataResponse>().toSingle()
 
+    suspend fun getFilteredTherapistAppointments(getFilteredTherapistAppointmentRequest: GetFilteredTherapistAppointmentRequest, nextPage: Int = 1) =
+        apiService.post {
+            url("/therapist/appointments/filter/get?page=$nextPage")
+            contentType(ContentType.Application.Json)
+            setBody(getFilteredTherapistAppointmentRequest)
+            header("Authorization", apiKey)
+        }.body<TherapistAppointmentListDataResponse>().toSingle()
+
     suspend fun doneAppointment(doneAppointmentRequest: DoneAppointmentRequest) =
         apiService.post {
             url("/therapist/appointment/done")

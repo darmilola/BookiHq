@@ -23,7 +23,7 @@ import domain.Enums.AppointmentType
 import domain.Enums.BookingStatus
 import domain.Enums.ServiceLocationEnum
 import domain.Models.UserAppointment
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog

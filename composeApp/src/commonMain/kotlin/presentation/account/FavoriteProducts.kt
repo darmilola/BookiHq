@@ -52,7 +52,7 @@ import domain.Models.FavoriteProductIdModel
 import domain.Models.OrderItem
 import domain.Models.Product
 import domain.Models.ProductItemUIModel
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

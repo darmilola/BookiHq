@@ -252,7 +252,7 @@ fun PendingPackageAppointmentWidget(appointment: UserAppointment, onDeleteAppoin
     serviceMenuItems.add("Cancel Booking")
 
     val serviceIconRes = "drawable/schedule.png"
-    val serviceStatusText = "Pending"
+    val serviceStatusText = BookingStatus.BOOKING.toName()
     val serviceStatusColor: Color = Colors.primaryColor
 
     val boxBgModifier =
@@ -292,7 +292,7 @@ fun RecentPackageAppointmentWidget(appointment: UserAppointment) {
     val serviceMenuItems = arrayListOf<String>()
 
     var serviceIconRes = "drawable/schedule.png"
-    var serviceStatusText = "Pending"
+    var serviceStatusText = BookingStatus.PENDING.toName()
     var serviceStatusColor: Color = Colors.primaryColor
 
 
@@ -302,7 +302,9 @@ fun RecentPackageAppointmentWidget(appointment: UserAppointment) {
         BookingStatus.POSTPONED.toPath() -> {
             "Delete"
         }
-
+        BookingStatus.BOOKING.toPath() -> {
+            "Cancel Booking"
+        }
         else -> {
             "Postpone"
         }
@@ -318,22 +320,22 @@ fun RecentPackageAppointmentWidget(appointment: UserAppointment) {
     when (serviceAppointmentStatus) {
         BookingStatus.PENDING.toPath() -> {
             serviceIconRes = "drawable/schedule.png"
-            serviceStatusText = "Pending"
+            serviceStatusText = BookingStatus.PENDING.toName()
             serviceStatusColor = Colors.primaryColor
         }
         BookingStatus.BOOKING.toPath() -> {
             serviceIconRes = "drawable/schedule.png"
-            serviceStatusText = "Booking"
+            serviceStatusText = BookingStatus.BOOKING.toName()
             serviceStatusColor = Colors.primaryColor
         }
         BookingStatus.POSTPONED.toPath() -> {
             serviceIconRes = "drawable/appointment_postponed.png"
-            serviceStatusText = "Postponed"
+            serviceStatusText = BookingStatus.POSTPONED.toName()
             serviceStatusColor = Colors.pinkColor
         }
         BookingStatus.DONE.toPath() -> {
             serviceIconRes = "drawable/appointment_done.png"
-            serviceStatusText = "Done"
+            serviceStatusText = BookingStatus.DONE.toName()
             serviceStatusColor = Colors.greenColor
         }
     }

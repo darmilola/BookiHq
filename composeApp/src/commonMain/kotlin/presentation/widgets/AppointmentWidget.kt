@@ -65,7 +65,7 @@ fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPrese
                 "Delete"
             }
             BookingStatus.BOOKING.toPath() -> {
-                "Cancel Appointment"
+                "Cancel Booking"
             }
             else -> {
                 "Postpone"
@@ -165,7 +165,7 @@ fun RecentAppointmentWidget(userAppointment: UserAppointment? = null) {
             "Delete"
         }
         BookingStatus.BOOKING.toPath() -> {
-            "Cancel Appointment"
+            "Cancel Booking"
         }
         else -> {
             "Postpone"
@@ -190,22 +190,22 @@ fun RecentAppointmentWidget(userAppointment: UserAppointment? = null) {
     when (serviceAppointmentStatus) {
         BookingStatus.PENDING.toPath() -> {
             serviceIconRes = "drawable/schedule.png"
-            serviceStatusText = "Pending"
+            serviceStatusText = BookingStatus.PENDING.toName()
+            serviceStatusColor = Colors.primaryColor
+        }
+        BookingStatus.BOOKING.toPath() -> {
+            serviceIconRes = "drawable/schedule.png"
+            serviceStatusText = BookingStatus.BOOKING.toName()
             serviceStatusColor = Colors.primaryColor
         }
         BookingStatus.POSTPONED.toPath() -> {
             serviceIconRes = "drawable/appointment_postponed.png"
-            serviceStatusText = "Postponed"
+            serviceStatusText = BookingStatus.POSTPONED.toName()
             serviceStatusColor = Colors.pinkColor
-        }
-        BookingStatus.BOOKING.toPath() -> {
-            serviceIconRes = "drawable/schedule.png"
-            serviceStatusText = "Booking"
-            serviceStatusColor = Colors.primaryColor
         }
         BookingStatus.DONE.toPath() -> {
             serviceIconRes = "drawable/appointment_done.png"
-            serviceStatusText = "Done"
+            serviceStatusText = BookingStatus.DONE.toName()
             serviceStatusColor = Colors.greenColor
         }
     }

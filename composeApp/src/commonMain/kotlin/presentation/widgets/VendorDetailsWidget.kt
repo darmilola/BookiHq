@@ -24,7 +24,6 @@ fun SwitchVendorHeader(onBackPressed: () -> Unit){
         ConnectBusinessTitle(onBackPressed = {
             onBackPressed()
         })
-        ConnectBusinessDescription()
     }
 }
 
@@ -116,5 +115,5 @@ fun VendorInfoTopBarItem(onBackPressed: () -> Unit) {
 
 @Composable
 fun SwitchTitle(){
-    TitleWidget(title = "Switch Vendor", textColor = Colors.primaryColor)
+    TitleWidget(title = "Switch Parlor", textColor = Colors.primaryColor)
 }

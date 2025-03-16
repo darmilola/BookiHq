@@ -222,13 +222,6 @@ class TalkWithATherapist(val platformNavigator: PlatformNavigator) : ParcelableS
                                 textModifier = Modifier
                                     .fillMaxWidth().padding(start = 10.dp)
                             )
-
-                            BookingCalendar(modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(top = 10.dp)) {
-                                currentBooking.day = it.dayOfMonth
-                                currentBooking.month = it.monthNumber
-                                currentBooking.year = it.year
-                                currentBooking.monthName = it.month.name
-                            }
                         }
 
                         Column(

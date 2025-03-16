@@ -9,9 +9,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Parcelize
 data class UserOrders (
-    @SerialName("id") val id: Int? = null,
-    @SerialName("user_id") val userId: Int? = null,
-    @SerialName("order_id") val orderId: Int? = null,
+    @SerialName("id") val id: Long? = null,
+    @SerialName("user_id") val userId: Long? = null,
+    @SerialName("order_id") val orderId: Long? = null,
     @SerialName("order") val customerOrder: CustomerOrder? = null,
     val isSelected: Boolean = false): Parcelable
 

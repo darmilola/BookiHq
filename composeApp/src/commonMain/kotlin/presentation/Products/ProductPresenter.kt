@@ -109,8 +109,22 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                             onSuccess = { result ->
                                 when (result.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
-                                        contractView?.showLce(AppUIStates(isSuccess = true))
-                                        contractView?.showProducts(result.listItem, isLoadMore = false, isFromSearch = true)
+                                        runBlocking {
+                                            val favoriteList = mainViewModel!!.favoriteProductIds.value
+                                            val favoriteIdList = arrayListOf<Long>()
+                                            favoriteList.map {
+                                                favoriteIdList.add(it.productId)
+                                            }
+                                            val updatedProductList = result.listItem.resources?.map {
+                                                if (it.productId in favoriteIdList){
+                                                    it.isFavorite = true
+                                                }
+                                                it
+                                            }
+                                            result.listItem.resources = updatedProductList
+                                            contractView?.showLce(AppUIStates(isSuccess = true))
+                                            contractView?.showProducts(result.listItem, isLoadMore = false, isFromSearch = true)
+                                        }
                                     }
                                     ServerResponse.EMPTY.toPath() -> {
                                         contractView?.showLce(AppUIStates(isEmpty = true, emptyMessage = "Product Not Found"))
@@ -142,8 +156,22 @@ class ProductPresenter(apiService: HttpClient): ProductContract.Presenter() {
                             onSuccess = { result ->
                                 when (result.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
-                                        contractView?.onLoadMoreProductEnded()
-                                        contractView?.showProducts(result.listItem, isLoadMore = true, isFromSearch = true)
+                                        runBlocking {
+                                            val favoriteList = mainViewModel!!.favoriteProductIds.value
+                                            val favoriteIdList = arrayListOf<Long>()
+                                            favoriteList.map {
+                                                favoriteIdList.add(it.productId)
+                                            }
+                                            val updatedProductList = result.listItem.resources?.map {
+                                                if (it.productId in favoriteIdList){
+                                                    it.isFavorite = true
+                                                }
+                                                it
+                                            }
+                                            result.listItem.resources = updatedProductList
+                                            contractView?.onLoadMoreProductEnded()
+                                            contractView?.showProducts(result.listItem, isLoadMore = true, isFromSearch = true)
+                                        }
                                     }
                                     ServerResponse.FAILURE.toPath() -> {
                                         contractView?.onLoadMoreProductEnded()

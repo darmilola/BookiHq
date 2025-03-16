@@ -170,7 +170,6 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
         userId: Long,
         vendorId: Long,
         paymentAmount: Int,
-        paymentMethod: String,
         bookingStatus: String,
         day: Int,
         month: Int,
@@ -182,7 +181,7 @@ class BookingPresenter(apiService: HttpClient): BookingContract.Presenter() {
             try {
                 val result = withContext(Dispatchers.IO) {
                     contractView?.showCreateAppointmentActionLce(AppUIStates(isLoading = true))
-                    bookingRepositoryImpl.createAppointment(userId, vendorId, paymentAmount, paymentMethod, bookingStatus, day, month, year)
+                    bookingRepositoryImpl.createAppointment(userId, vendorId, paymentAmount, bookingStatus, day, month, year)
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {

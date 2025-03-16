@@ -42,4 +42,13 @@ class TherapistRepositoryImpl(apiService: HttpClient): TherapistRepository {
         return therapistNetworkService.getTherapistAppointments(param, nextPage)
     }
 
+    override suspend fun getFilteredTherapistAppointments(
+        therapistId: Long,
+        filter: String,
+        nextPage: Int
+    ): Single<TherapistAppointmentListDataResponse> {
+        val param = GetFilteredTherapistAppointmentRequest(therapistId,filter)
+        return therapistNetworkService.getFilteredTherapistAppointments(param, nextPage)
+    }
+
 }

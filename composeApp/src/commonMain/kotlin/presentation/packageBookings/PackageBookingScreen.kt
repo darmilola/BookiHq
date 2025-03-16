@@ -59,14 +59,12 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Enums.BookingStatus
 import domain.Enums.CustomerPaymentEnum
-import domain.Enums.PaymentMethod
-import domain.Enums.VendorEnum
 import domain.Models.PaymentAuthorizationResult
 import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
 import domain.Models.Services
 import domain.Models.VendorPackage
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
@@ -87,14 +85,12 @@ import presentation.profile.EditProfile
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
-import presentation.widgets.AppointmentPaymentMethodBottomSheet
 import presentation.widgets.PaymentCardBottomSheet
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
 import utils.ParcelableScreen
-import utils.calculateAppointmentPaymentAmount
 import utils.calculatePackageAppointmentPaymentAmount
 
 @OptIn(ExperimentalVoyagerApi::class)
@@ -152,6 +148,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
         val lastItemRemoved = remember { mutableStateOf(false) }
         val currentPage = remember { mutableStateOf(-1) }
         val currentUserInfo = mainViewModel!!.currentUserInfo.value
+        val paystackPaymentFailed = remember { mutableStateOf(false) }
         val customerEmail = CustomerPaymentEnum.PAYMENT_EMAIL.toPath()
         val navigator = LocalNavigator.currentOrThrow
         val coroutineScope = rememberCoroutineScope()
@@ -304,6 +301,12 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
             }
         }
 
+        if (paystackPaymentFailed.value){
+            Box(modifier = Modifier.fillMaxWidth()) {
+                ErrorDialog("Payment Failed", actionTitle = "Retry", onConfirmation = {})
+            }
+        }
+
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -325,29 +328,6 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
             }
         }
 
-        val showPaymentMethodBottomSheet = mainViewModel!!.showPaymentMethodBottomSheet.collectAsState()
-
-        if (showPaymentMethodBottomSheet.value) {
-            AppointmentPaymentMethodBottomSheet(
-                mainViewModel!!,
-                onDismiss = {
-                    mainViewModel!!.showPaymentMethodBottomSheet(false)
-                },
-                onCardPaymentSelected = {
-                    runBlocking {
-                        cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
-                    }
-                    bookingViewModel!!.setPaymentMethod(PaymentMethod.CARD_PAYMENT.toPath())
-                    mainViewModel!!.showPaymentMethodBottomSheet(false)
-                    mainViewModel!!.showPaymentCardsBottomSheet(true)
-
-                }, onCashSelected = {
-                     mainViewModel!!.showPaymentMethodBottomSheet(false)
-                     bookingViewModel!!.setPaymentMethod(PaymentMethod.PAYMENT_ON_DELIVERY.toPath())
-                     createAppointment()
-                })
-        }
-
         // View Contract Handler Initialisation
         val paymentHandler = CreateAppointmentPaymentHandler(
             paymentPresenter = paymentPresenter,
@@ -365,9 +345,12 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                         cvv = selectedCard!!.cvv,
                         onPaymentLoading = {},
                         onPaymentSuccessful = {
+                            paystackPaymentFailed.value = false
                             createAppointment()
                         },
-                        onPaymentFailed = {})
+                        onPaymentFailed = {
+                            paystackPaymentFailed.value = true
+                        })
                 }
             })
         paymentHandler.init()
@@ -497,14 +480,12 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
     }
 
     private fun createAppointment(){
-        val paymentMethod = bookingViewModel!!.paymentMethod.value
         val userId = mainViewModel!!.currentUserInfo.value.userId
         val vendorId = mainViewModel!!.connectedVendor.value.vendorId
         val paymentAmount = calculatePackageAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
 
         bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.PENDING.toPath(), day = getDay(),
-            month = getMonth(), year = getYear(), paymentAmount = paymentAmount,
-            paymentMethod = paymentMethod, platformNavigator = platformNavigator, vendor = mainViewModel!!.connectedVendor.value)
+            month = getMonth(), year = getYear(), paymentAmount = paymentAmount, platformNavigator = platformNavigator, vendor = mainViewModel!!.connectedVendor.value)
     }
 
     @OptIn(ExperimentalFoundationApi::class)
@@ -565,7 +546,16 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
 
                 coroutineScope.launch {
                     if (currentPage == 0) {
-                        if (bookingViewModel?.currentAppointmentBooking?.value?.pendingTime == null) {
+                        if (bookingViewModel?.currentAppointmentBooking?.value?.appointmentDay == -1) {
+                            ShowSnackBar(title = "No Day Selected",
+                                description = "Please Select Appointment Day to proceed",
+                                actionLabel = "",
+                                duration = StackedSnackbarDuration.Short,
+                                snackBarType = SnackBarType.ERROR,
+                                stackedSnackBarHostState,
+                                onActionClick = {})
+                        }
+                        else if (bookingViewModel?.currentAppointmentBooking?.value?.pendingTime == null) {
                             ShowSnackBar(title = "No Time Selected",
                                 description = "Please Select Appointment Time to proceed",
                                 actionLabel = "",
@@ -573,13 +563,17 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                                 snackBarType = SnackBarType.ERROR,
                                 stackedSnackBarHostState,
                                 onActionClick = {})
-                        } else {
+                        }
+                        else {
                             pagerState.animateScrollToPage(1)
                         }
                     }
                 }
                 if (currentPage == 1){
-                    mainViewModel.showPaymentMethodBottomSheet(true)
+                    runBlocking {
+                        cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
+                        mainViewModel!!.showPaymentCardsBottomSheet(true)
+                    }
                 }
             }
         }

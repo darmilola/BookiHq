@@ -14,9 +14,7 @@ data class CalendarUiModel(
 
 data class PlatformDate(
     val date: LocalDate,
-    val isSelected: Boolean,
-    val isToday: Boolean,
-    val isTomorrow: Boolean
+    val isSelected: Boolean
 ) {
     val day: DayOfWeek = date.dayOfWeek   // get the day by formatting the date
 }

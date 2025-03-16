@@ -34,7 +34,9 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
@@ -43,14 +45,14 @@ import presentations.components.ImageComponent
 import presentations.components.TextComponent
 
 @Composable
-fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 30.dp),onDateSelected: (LocalDate) -> Unit) {
+fun BookingCalendar(vendorAvailableDays: ArrayList<String>,onDateSelected: (LocalDate) -> Unit, onUnAvailableDateSelected: () -> Unit) {
     val dataSource = CalendarDataSource()
     val calendarUiModel = dataSource.getDate(lastSelectedDate = dataSource.today)
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
 
-    Column(modifier = modifier) {
+    Column(modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 30.dp)) {
         var selectedUIModel by remember { mutableStateOf(calendarUiModel) }
         var initialVisibleDates by remember { mutableStateOf(5) }
 
@@ -66,7 +68,7 @@ fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 
                     listState.animateScrollToItem(index = initialVisibleDates)
                 }
             })
-        CalenderContent(selectedUIModel, onDateClickListener = { it ->
+        CalenderContent(vendorAvailableDays,selectedUIModel, onDateClickListener = { it ->
             selectedUIModel = selectedUIModel.copy(
                 selectedPlatformDate = it,
                 visiblePlatformDates = selectedUIModel.visiblePlatformDates.map { it2 ->
@@ -76,16 +78,18 @@ fun BookingCalendar(modifier: Modifier = Modifier.fillMaxSize().padding(start = 
                 }
             )
             onDateSelected(selectedUIModel.selectedPlatformDate.date)
-        }, listState = listState)
+        }, onUnAvailableDateClickListener = {
+            onUnAvailableDateSelected()
+        } ,listState = listState)
     }
 }
 
 @Composable
-fun CalenderContent(calendarUiModel: CalendarUiModel, onDateClickListener: (PlatformDate) -> Unit, listState: LazyListState) {
+fun CalenderContent(vendorAvailableDays: ArrayList<String>,calendarUiModel: CalendarUiModel, onDateClickListener: (PlatformDate) -> Unit,onUnAvailableDateClickListener: (PlatformDate) -> Unit, listState: LazyListState) {
 
     LazyRow(modifier = Modifier.padding( top = 10.dp).fillMaxWidth(), state = listState) {
         items(items = calendarUiModel.visiblePlatformDates) { date ->
-            ContentItem(date, onDateClickListener)
+            ContentItem(vendorAvailableDays, date, onDateClickListener, onUnAvailableDateClickListener)
         }
     }
 }
@@ -93,7 +97,16 @@ fun CalenderContent(calendarUiModel: CalendarUiModel, onDateClickListener: (Plat
 
 
 @Composable
-fun ContentItem(platformDate: PlatformDate, onClickListener: (PlatformDate) -> Unit) {
+fun ContentItem(vendorAvailableDays: ArrayList<String>, platformDate: PlatformDate, onDateClickListener: (PlatformDate) -> Unit,
+                onUnAvailableDateClickListener: (PlatformDate) -> Unit) {
+    println(vendorAvailableDays)
+    println(platformDate.date.dayOfWeek)
+    var isAvailable = false
+    vendorAvailableDays.map {
+        if (it.toUpperCase(Locale.current) == platformDate.date.dayOfWeek.name){
+            isAvailable = true
+        }
+    }
     val textColor: Color = if(platformDate.isSelected){
         Color.White
     }
@@ -101,13 +114,15 @@ fun ContentItem(platformDate: PlatformDate, onClickListener: (PlatformDate) -> U
         Colors.darkPrimary
     }
 
-    val bgColor: Color = if(platformDate.isSelected){
+    val bgColor: Color = if(platformDate.isSelected && isAvailable){
         Colors.primaryColor
+    }
+    else if (!isAvailable){
+        Colors.lightPinkColor
     }
     else{
         Colors.lighterPrimaryColor
     }
-
 
     Card(colors = CardDefaults.cardColors(
         containerColor = bgColor
@@ -121,7 +136,12 @@ fun ContentItem(platformDate: PlatformDate, onClickListener: (PlatformDate) -> U
                 .width(70.dp)
                 .height(80.dp)
                 .clickable {
-                    onClickListener(platformDate)
+                    if (isAvailable) {
+                        onDateClickListener(platformDate)
+                    }
+                    else{
+                        onUnAvailableDateClickListener(platformDate)
+                    }
                 }
                 .padding(4.dp),
             verticalArrangement = Arrangement.Center,
@@ -173,26 +193,13 @@ fun CalenderHeader(calendarUiModel: CalendarUiModel, onPrevClickListener: (Local
 
         Row(modifier = Modifier.weight(2f),horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Top) {
-            TextComponent(
-                text = if (calendarUiModel.selectedPlatformDate.isToday) {
-                    "Today"
-                }
-                else if (calendarUiModel.selectedPlatformDate.isTomorrow){
-                    val formattedMonth = calendarUiModel.selectedPlatformDate.date.month.toString()
-                        .lowercase()
-                        .replaceFirstChar {
-                                char -> char.titlecase()
-                        }
-                    "Tomorrow, " + formattedMonth + " " + calendarUiModel.selectedPlatformDate.date.dayOfMonth.toString()
-                }
-                else {
-                    val formattedMonth = calendarUiModel.selectedPlatformDate.date.month.toString()
-                        .lowercase()
-                        .replaceFirstChar {
+            val formattedMonth = calendarUiModel.selectedPlatformDate.date.month.toString()
+                .lowercase()
+                .replaceFirstChar {
                         char -> char.titlecase()
-                    }
-                    formattedMonth + ", " + calendarUiModel.selectedPlatformDate.date.dayOfMonth.toString()
-                },
+                }
+            TextComponent(
+                text = formattedMonth + ", " + calendarUiModel.selectedPlatformDate.date.dayOfMonth.toString(),
                 textModifier = Modifier
                     .align(Alignment.CenterVertically),
                 fontSize = 16,

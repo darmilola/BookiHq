@@ -2,6 +2,7 @@ package presentation.therapist
 
 import GGSansRegular
 import StackedSnackbarHost
+import UIStates.AppUIStates
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +30,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import domain.Models.AppointmentReview
 import domain.Models.TherapistInfo
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import presentation.DomainViewHandler.TherapistProfileHandler
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
@@ -75,6 +76,7 @@ fun TherapistProfile(therapistInfo: TherapistInfo, therapistPresenter: Therapist
     }
 
     else if (updateUiState.value.isSuccess) {
+         performedActionUIStateViewModel.switchActionUIState(AppUIStates(isDefault = true))
          onUpdateSuccess()
     }
     else if (updateUiState.value.isFailed){

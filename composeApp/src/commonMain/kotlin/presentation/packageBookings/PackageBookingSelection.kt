@@ -34,6 +34,8 @@ import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.BookingCalendar
 import presentation.widgets.ServiceLocationToggle
+import presentation.widgets.ShowSnackBar
+import presentation.widgets.SnackBarType
 import presentation.widgets.TimeGridDisplay
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
@@ -54,18 +56,10 @@ fun PackageBookingSelection(mainViewModel: MainViewModel, bookingViewModel: Book
     currentBooking.packageInfo = vendorPackage
     currentBooking.packageId = vendorPackage.packageId
 
-    currentBooking.appointmentYear = getYear()
-    currentBooking.appointmentMonth = getMonth()
-    currentBooking.appointmentDay = getDay()
-
     val vendorTimes = bookingViewModel.vendorTimes.collectAsState()
     val platformTimes = bookingViewModel.platformTimes.collectAsState()
-
-
     bookingViewModel.setCurrentAppointmentBooking(currentBooking)
-    bookingViewModel.setSelectedDay(currentBooking.appointmentDay!!)
-    bookingViewModel.setSelectedMonth(currentBooking.appointmentMonth!!)
-    bookingViewModel.setSelectedYear(currentBooking.appointmentYear!!)
+
 
     val stackedSnackBarHostState = rememberStackedSnackbarHostState(
         maxStack = 5,
@@ -97,7 +91,16 @@ fun PackageBookingSelection(mainViewModel: MainViewModel, bookingViewModel: Book
                         bookingViewModel.setCurrentAppointmentBooking(currentBooking)
                     })
             }
-            BookingCalendar {
+            BookingCalendar(vendorAvailableDays = mainViewModel.dayAvailability.value, onUnAvailableDateSelected = {
+                ShowSnackBar(title = "Not Available",
+                    description = "Not Available for Service on this Day",
+                    actionLabel = "",
+                    duration = StackedSnackbarDuration.Short,
+                    snackBarType = SnackBarType.INFO,
+                    stackedSnackBarHostState,
+                    onActionClick = {})
+
+            }, onDateSelected = {
                 bookingViewModel.undoTherapists()
                 currentBooking.appointmentDay = it.dayOfMonth
                 currentBooking.appointmentMonth = it.monthNumber
@@ -107,7 +110,7 @@ fun PackageBookingSelection(mainViewModel: MainViewModel, bookingViewModel: Book
                 bookingViewModel.setSelectedMonth(it.monthNumber)
                 bookingViewModel.setSelectedYear(it.year)
                 bookingViewModel.setSelectedMonthName(it.month.name)
-            }
+            })
            if (platformTimes.value.isNotEmpty()) {
 
                val workHours = calculatePackageServiceTimes(

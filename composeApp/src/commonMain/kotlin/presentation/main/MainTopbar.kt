@@ -47,7 +47,6 @@ fun MainTopBar(mainViewModel: MainViewModel) {
                     .fillMaxHeight()
                     .background(color = Color.White)
             ) {
-                appLogoTitleItem(mainViewModel)
                 mainTopBarItem(mainViewModel)
             }
         }
@@ -80,19 +79,14 @@ fun appLogo() {
 
 @Composable
 fun VendorLogo(imageUrl: String, onVendorLogoClicked: () -> Unit) {
-    Box(Modifier.size(50.dp), contentAlignment = Alignment.Center) {
+    Box(Modifier.size(60.dp), contentAlignment = Alignment.Center) {
         Box(
             Modifier
-                .size(50.dp)
+                .size(60.dp)
                 .clip(CircleShape)
                 .clickable {
                     onVendorLogoClicked()
                 }
-                .border(
-                    width = (0.6).dp,
-                    color = Colors.primaryColor,
-                    shape = CircleShape
-                )
                 .background(color = Color.Transparent)
         ) {
             val modifier = Modifier
@@ -136,15 +130,7 @@ fun mainTopBarItem(mainViewModel: MainViewModel) {
                     })
                 }
             }
-            MainTabEnum.PRODUCTS.toPath() -> {
-                val iconModifier = Modifier
-                    .padding(top = 5.dp)
-                    .clickable {
-                        mainViewModel.setIsClickedSearchProduct(true)
-                    }
-                    .size(24.dp)
-                ImageComponent(imageModifier = iconModifier, imageRes = "drawable/search_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
-            }
+            MainTabEnum.PRODUCTS.toPath() -> {}
             MainTabEnum.APPOINTMENT.toPath() -> {}
             MainTabEnum.MORE.toPath() -> {}
 

@@ -10,7 +10,6 @@ import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
-import countryList
 import domain.Models.PlatformNavigator
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
@@ -19,14 +18,13 @@ import presentation.authentication.AuthenticationPresenter
 import presentation.authentication.CompleteProfile
 import presentation.profile.ProfilePresenter
 import presentation.viewmodels.MainViewModel
-import presentation.viewmodels.CityViewModel
-import presentation.widgets.DropDownWidget
+import presentation.viewmodels.StatesViewModel
 import utils.ParcelableScreen
 
 @Parcelize
 data class CompleteProfileScreen(val platformNavigator: PlatformNavigator, val authEmail: String, val authPhone: String) : ParcelableScreen, KoinComponent {
 
-    private var cityViewModel: CityViewModel? = null
+    private var statesViewModel: StatesViewModel? = null
     @Transient
     private var mainViewModel: MainViewModel? = null
     @Transient
@@ -50,10 +48,10 @@ data class CompleteProfileScreen(val platformNavigator: PlatformNavigator, val a
             platformNavigator.exitApp()
         }
 
-        if (cityViewModel == null) {
-            cityViewModel = kmpViewModel(
+        if (statesViewModel == null) {
+            statesViewModel = kmpViewModel(
                 factory = viewModelFactory {
-                    CityViewModel(savedStateHandle = createSavedStateHandle())
+                    StatesViewModel(savedStateHandle = createSavedStateHandle())
                 },
             )
         }
@@ -62,7 +60,7 @@ data class CompleteProfileScreen(val platformNavigator: PlatformNavigator, val a
         val profilePresenter : ProfilePresenter by inject()
 
 
-        CompleteProfile(authenticationPresenter,authEmail = authEmail, authPhone = authPhone, platformNavigator = platformNavigator, cityViewModel!!,
+        CompleteProfile(authenticationPresenter,authEmail = authEmail, authPhone = authPhone, platformNavigator = platformNavigator, statesViewModel!!,
             profilePresenter, mainViewModel = mainViewModel!!, databaseBuilder = databaseBuilder)
     }
 

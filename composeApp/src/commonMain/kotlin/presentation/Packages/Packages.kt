@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,10 +42,9 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import domain.Enums.Screens
 import domain.Enums.SharedPreferenceEnum
-import domain.Models.AppointmentItemUIModel
 import domain.Models.VendorPackage
 import domain.Models.VendorPackageItemUIModel
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -54,20 +52,16 @@ import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.PackagesHandler
-import presentation.DomainViewHandler.ShopProductsHandler
 import presentation.components.ButtonComponent
 import presentation.components.IndeterminateCircularProgressBar
-import presentation.viewmodels.AppointmentResourceListEnvelopeViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PackagesResourceListEnvelopeViewModel
-import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.widgets.EmptyContentWidget
 import presentation.widgets.PackageItem
-import presentation.widgets.ProductItem
+import presentation.widgets.TitleWidget
 import rememberStackedSnackbarHostState
 import theme.Colors
-import utils.getProductViewHeight
 
 @Parcelize
 class Packages : Tab, KoinComponent, Parcelable {
@@ -135,13 +129,12 @@ class Packages : Tab, KoinComponent, Parcelable {
 
         val loadMoreState = packagesResourceListEnvelopeViewModel?.isLoadingMore?.collectAsState()
         val packageList = packagesResourceListEnvelopeViewModel?.resources?.collectAsState()
-        val totalAppointmentsCount = packagesResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
-        val displayedAppointmentsCount = packagesResourceListEnvelopeViewModel?.displayedItemCount?.collectAsState()
+        val totalItemsCount = packagesResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
+        val displayedItemsCount = packagesResourceListEnvelopeViewModel?.displayedItemCount?.collectAsState()
         val lastIndex = packageList?.value?.size?.minus(1)
 
         LaunchedEffect(true) {
             val isSwitchVendor: Boolean = mainViewModel!!.isSwitchVendor.value
-            println("Vendor $isSwitchVendor")
             if (isSwitchVendor){
                 packagesResourceListEnvelopeViewModel!!.clearData(mutableListOf())
             }
@@ -174,7 +167,12 @@ class Packages : Tab, KoinComponent, Parcelable {
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
                 .background(color = Color.White),
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
-            topBar = {},
+            topBar = {
+                val screenTitle =  mainViewModel!!.screenTitle.collectAsState()
+                Box(modifier = Modifier.fillMaxWidth().height(50.dp), contentAlignment = Alignment.Center){
+                    TitleWidget(textColor = theme.styles.Colors.primaryColor, title = screenTitle.value)
+                }
+            },
             content = {
                 Column(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
                     val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
@@ -243,7 +241,7 @@ class Packages : Tab, KoinComponent, Parcelable {
                                                     ) {
                                                         IndeterminateCircularProgressBar()
                                                     }
-                                                } else if (it == lastIndex && (displayedAppointmentsCount?.value!! < totalAppointmentsCount?.value!!)) {
+                                                } else if (it == lastIndex && (displayedItemsCount?.value!! < totalItemsCount?.value!!)) {
                                                     val buttonStyle = Modifier
                                                         .height(60.dp)
                                                         .fillMaxWidth()
@@ -277,13 +275,5 @@ class Packages : Tab, KoinComponent, Parcelable {
             },
             backgroundColor = Color.Transparent,
         )
-    }
-
-
-    @Composable
-    fun PackageContent(
-        vendorPackages: List<VendorPackage>,
-        onPackageSelected: (VendorPackage) -> Unit) {
-
     }
 }

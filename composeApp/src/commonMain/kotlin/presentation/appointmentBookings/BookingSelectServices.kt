@@ -39,14 +39,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import applications.date.getDay
-import applications.date.getMonth
-import applications.date.getYear
-import domain.Enums.Screens
 import domain.Models.Appointment
 import domain.Models.ServiceTypeItem
 import domain.Models.Services
-import drawable.ErrorOccurredWidget
+import presentation.widgets.ErrorOccurredWidget
 import presentation.components.IndeterminateCircularProgressBar
 import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
@@ -60,6 +56,7 @@ import presentation.widgets.SnackBarType
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
+import utils.formatServiceLength
 
 @Composable
 fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: BookingViewModel,
@@ -122,15 +119,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
         val currentBooking = bookingViewModel.currentAppointmentBooking.value
         currentBooking.services = services
         currentBooking.serviceId = services.serviceId
-
-        currentBooking.appointmentYear = getYear()
-        currentBooking.appointmentMonth = getMonth()
-        currentBooking.appointmentDay = getDay()
-
         bookingViewModel.setCurrentAppointmentBooking(currentBooking)
-        bookingViewModel.setSelectedDay(currentBooking.appointmentDay!!)
-        bookingViewModel.setSelectedMonth(currentBooking.appointmentMonth!!)
-        bookingViewModel.setSelectedYear(currentBooking.appointmentYear!!)
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -206,7 +195,15 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
                             bookingViewModel.setCurrentAppointmentBooking(currentBooking)
                         })
                 }
-                BookingCalendar {
+                BookingCalendar(vendorAvailableDays = mainViewModel.dayAvailability.value, onUnAvailableDateSelected = {
+                    ShowSnackBar(title = "Not Available",
+                        description = "Not Available for Service on this Day",
+                        actionLabel = "",
+                        duration = StackedSnackbarDuration.Short,
+                        snackBarType = SnackBarType.INFO,
+                        stackedSnackBarHostState,
+                        onActionClick = {})
+                }, onDateSelected = {
                     bookingViewModel.undoTherapists()
                     currentBooking.appointmentDay = it.dayOfMonth
                     currentBooking.appointmentMonth = it.monthNumber
@@ -216,7 +213,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
                     bookingViewModel.setSelectedMonth(it.monthNumber)
                     bookingViewModel.setSelectedYear(it.year)
                     bookingViewModel.setSelectedMonthName(it.month.name)
-                }
+                })
             }
         }
     }
@@ -266,7 +263,10 @@ fun AttachServiceDropDownWidget(mainViewModel: MainViewModel, bookingViewModel: 
     }
     else{
         for (item in bookingViewModel.serviceTypeList.value){
-            serviceTypeList.add(item.title)
+            val title = item.title
+            val length = formatServiceLength(item.length)
+            val display = "$title  $length"
+            serviceTypeList.add(display)
         }
     }
     var selectedService: ServiceTypeItem? = null

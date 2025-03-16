@@ -5,6 +5,7 @@ import domain.Models.VendorTime
 import UIStates.AppUIStates
 import domain.Models.PlatformNavigator
 import domain.Models.PlatformTime
+import domain.Models.State
 import domain.Models.User
 import domain.Models.Vendor
 
@@ -30,7 +31,7 @@ class ProfileContract {
     }
 
     interface PlatformContract {
-        fun showCities(cities: ArrayList<String>)
+        fun showStates(states: ArrayList<State>)
 
     }
 
@@ -44,10 +45,10 @@ class ProfileContract {
                                    cityId: Int, gender: String, profileImageUrl: String)
         abstract fun deleteProfile(userEmail: String)
         abstract fun registerPlatformContract(view: PlatformContract?)
-        abstract fun getCities(country: String)
+        abstract fun getCountryStates(countryId: Long)
         abstract fun getVendorAvailability(vendorId: Long)
         abstract fun switchVendor(userId: Long, vendorId: Long, action: String,
-                         exitReason: String, vendor: Vendor, platformNavigator: PlatformNavigator)
+                         exitReason: String, vendor: Vendor, platformNavigator: PlatformNavigator, exitVendorId: Long)
         abstract fun getVendorAccountInfo(vendorId: Long)
         abstract fun joinSpa(vendorId: Long, therapistId: Long)
         abstract fun getUserLocation(lat: Double, lng: Double)

@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Enums.BookingStatus
 import domain.Models.UserAppointment
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
@@ -43,7 +44,7 @@ fun PendingAppointmentWidget(appointment: UserAppointment, onDeleteAppointment: 
     serviceMenuItems.add("Cancel Booking")
 
     val serviceIconRes = "drawable/schedule.png"
-    val serviceStatusText = "Pending"
+    val serviceStatusText = BookingStatus.BOOKING.toName()
     val serviceStatusColor: Color = Colors.primaryColor
 
     val boxBgModifier =

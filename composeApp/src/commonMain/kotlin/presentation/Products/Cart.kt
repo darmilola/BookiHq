@@ -165,11 +165,13 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                 },
             )
         }
+
         val completeProfile = remember { mutableStateOf(false) }
+        val paystackPaymentFailed = remember { mutableStateOf(false) }
         val userProfile = mainViewModel!!.currentUserInfo.value
         val cartItems = mainViewModel!!.unSavedOrders.collectAsState()
         val cartSize = mainViewModel!!.unSavedOrderSize.collectAsState()
-        val deliveryMethod = mainViewModel!!.deliveryMethod.collectAsState()
+        val deliveryMethod = cartViewModel!!.deliveryMethod.collectAsState()
         val isProfileCompleted = userProfile.address.trim().isNotEmpty() && userProfile.contactPhone.trim().isNotEmpty()
         val vendorDeliveryFee = mainViewModel!!.connectedVendor.value.deliveryFee
         if (deliveryMethod.value == DeliveryMethodEnum.MOBILE.toPath()){
@@ -180,7 +182,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
         }
 
         LaunchedEffect(true) {
-
+            cartViewModel!!.setDeliveryMethod(DeliveryMethodEnum.PICKUP.toPath())
             if (!isProfileCompleted){
                 ShowSnackBar(title = "Only Pickup is Available",
                     description = "Please Complete Your Profile for Mobile Delivery",
@@ -237,11 +239,6 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {},
             content = {
-
-                LaunchedEffect(true) {
-                    mainViewModel!!.setDeliveryMethod(DeliveryMethodEnum.PICKUP.toPath())
-                }
-
                 val customerEmail = CustomerPaymentEnum.PAYMENT_EMAIL.toPath()
                 val paymentAmount = cartViewModel!!.total.value
                 val handler = CreateOrderScreenHandler(
@@ -261,11 +258,12 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                                 cvv = selectedCard!!.cvv,
                                 onPaymentLoading = {},
                                 onPaymentSuccessful = {
+                                    paystackPaymentFailed.value = false
                                      customerPaidAmount = paymentAmount
                                      createOrder()
                                 },
                                 onPaymentFailed = {
-
+                                    paystackPaymentFailed.value = true
                                 })
                         }
                     })
@@ -306,6 +304,12 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                 else if (paymentActionUiState.value.isFailed) {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         ErrorDialog("Payment Authentication Failed", actionTitle = "Retry", onConfirmation = {})
+                    }
+                }
+
+                if (paystackPaymentFailed.value){
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        ErrorDialog("Payment Failed", actionTitle = "Retry", onConfirmation = {})
                     }
                 }
 
@@ -368,7 +372,6 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                     val paymentCurrency = mainViewModel!!.displayCurrencyPath.value
 
                     if (showSelectPaymentCards.value) {
-                        mainViewModel!!.showPaymentMethodBottomSheet(false)
                         PaymentCardBottomSheet(
                             mainViewModel!!,
                             cardList,
@@ -398,25 +401,18 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                         PopulateCartItemList(mainViewModel!!,stackedSnackBarHostState)
 
 
-                        ProductDeliveryAddressWidget(mainViewModel!!, isDisabled = !isProfileCompleted, onMobileSelectedListener = {
-                                mainViewModel!!.setDeliveryMethod(DeliveryMethodEnum.MOBILE.toPath())
+                        ProductDeliveryAddressWidget(cartViewModel!!, isDisabled = !isProfileCompleted, onMobileSelectedListener = {
+                                cartViewModel!!.setDeliveryMethod(DeliveryMethodEnum.MOBILE.toPath())
 
                             }, onPickupSelectedListener = {
-                                mainViewModel!!.setDeliveryMethod(DeliveryMethodEnum.PICKUP.toPath())
+                              cartViewModel!!.setDeliveryMethod(DeliveryMethodEnum.PICKUP.toPath())
 
                             })
-                        PaymentMethodWidget(onCashSelectedListener = {
-                             cartViewModel!!.setPaymentMethod(PaymentMethod.PAYMENT_ON_DELIVERY.toPath())
-                        }, onCardPaymentSelectedListener = {
-                            cartViewModel!!.setPaymentMethod(PaymentMethod.CARD_PAYMENT.toPath())
-                        })
                         CheckOutSummaryWidget(cartViewModel!!,mainViewModel!!,onCardCheckOutStarted = {
                             runBlocking {
                                 cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
                                 mainViewModel!!.showPaymentCardsBottomSheet(true)
                             }
-                        }, onCheckOutStarted = {
-                             createOrder()
                         })
 
                     }
@@ -430,8 +426,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
         val orderItemList = mainViewModel!!.unSavedOrders.value
         val vendorId = mainViewModel!!.connectedVendor.value.vendorId
         val userId = mainViewModel!!.currentUserInfo.value.userId
-        val deliveryLocation = mainViewModel!!.deliveryMethod.value
-        val paymentMethod = cartViewModel!!.paymentMethod.value
+        val deliveryLocation = cartViewModel!!.deliveryMethod.value
         val year = getYear()
         val month = getMonth()
         val day = getDay()
@@ -441,7 +436,6 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
             vendorId!!,
             userId!!,
             deliveryLocation,
-            paymentMethod,
             day,
             month,
             year,

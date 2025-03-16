@@ -37,7 +37,7 @@ open class AppointmentNetworkService(private val apiService: HttpClient) {
 
     suspend fun deleteAppointment(deleteAppointmentRequest: DeleteAppointmentRequest) =
         apiService.post {
-            url("/appointment/delete")
+            url("services/appointment/delete")
             contentType(ContentType.Application.Json)
             setBody(deleteAppointmentRequest)
             header("Authorization", apiKey)

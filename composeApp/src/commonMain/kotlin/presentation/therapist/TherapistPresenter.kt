@@ -3,7 +3,7 @@ package presentation.therapist
 import UIStates.AppUIStates
 import com.badoo.reaktive.single.Single
 import com.badoo.reaktive.single.subscribe
-import domain.Models.ServerResponse
+import domain.Enums.ServerResponse
 import domain.therapist.TherapistRepositoryImpl
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
@@ -36,14 +36,14 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {
-                                    domain.Enums.ServerResponse.SUCCESS.toPath() -> {
+                                    ServerResponse.SUCCESS.toPath() -> {
                                         dashboardContractView?.showScreenLce(AppUIStates(isSuccess = true))
                                         dashboardContractView?.showReviews(result.reviews)
                                     }
-                                    domain.Enums.ServerResponse.EMPTY.toPath() -> {
+                                    ServerResponse.EMPTY.toPath() -> {
                                         dashboardContractView?.showScreenLce(AppUIStates(isEmpty = true, errorMessage = "No Reviews Available"))
                                     }
-                                    domain.Enums.ServerResponse.FAILURE.toPath() -> {
+                                    ServerResponse.FAILURE.toPath() -> {
                                         dashboardContractView?.showScreenLce(AppUIStates(isFailed = true, errorMessage = "Error Occurred"))
                                     }
                                 }
@@ -60,6 +60,39 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
         }
     }
 
+    override fun refreshTherapistAppointments(therapistId: Long) {
+        contractView?.showRefreshing(AppUIStates(isLoading = true))
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    therapistRepositoryImpl.getTherapistAppointments(therapistId)
+                        .subscribe(
+                            onSuccess = { result ->
+                                when (result.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.showRefreshing(AppUIStates(isSuccess = true))
+                                        contractView?.showAppointments(result.listItem)
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.showRefreshing(AppUIStates(isFailed = true, errorMessage = "Error Getting Appointments"))
+                                    }
+                                    ServerResponse.EMPTY.toPath() -> {
+                                        contractView?.showRefreshing(AppUIStates(isEmpty = true, emptyMessage = "No Appointments"))
+                                    }
+                                }
+                            },
+                            onError = {
+                                contractView?.showRefreshing(AppUIStates(isFailed = true, errorMessage = "Error Getting Appointments"))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.showRefreshing(AppUIStates(isFailed = true, errorMessage = "Error Getting Appointments"))
+            }
+        }
+    }
+
     override fun getTherapistAppointments(therapistId: Long) {
         contractView?.showScreenLce(AppUIStates(isLoading = true, loadingMessage = "Loading Appointments"))
         scope.launch(Dispatchers.Main) {
@@ -69,14 +102,14 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {
-                                    domain.Enums.ServerResponse.SUCCESS.toPath() -> {
+                                    ServerResponse.SUCCESS.toPath() -> {
                                         contractView?.showScreenLce(AppUIStates(isSuccess = true))
                                         contractView?.showAppointments(result.listItem)
                                     }
-                                    domain.Enums.ServerResponse.FAILURE.toPath() -> {
+                                    ServerResponse.FAILURE.toPath() -> {
                                         contractView?.showScreenLce(AppUIStates(isFailed = true, errorMessage = "Error Getting Appointments"))
                                     }
-                                    domain.Enums.ServerResponse.EMPTY.toPath() -> {
+                                    ServerResponse.EMPTY.toPath() -> {
                                         contractView?.showScreenLce(AppUIStates(isEmpty = true, emptyMessage = "No Appointments"))
                                     }
                                 }
@@ -93,6 +126,73 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
         }
     }
 
+    override fun getFilteredTherapistAppointments(therapistId: Long, filter: String) {
+        contractView?.showRefreshing(AppUIStates(isLoading = true))
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    therapistRepositoryImpl.getFilteredTherapistAppointments(therapistId,filter)
+                        .subscribe(
+                            onSuccess = { response ->
+                                when (response.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.showRefreshing(AppUIStates(isSuccess = true))
+                                        contractView?.showAppointments(response.listItem)
+                                    }
+                                    ServerResponse.EMPTY.toPath() -> {
+                                        contractView?.showRefreshing(AppUIStates(isEmpty = true, emptyMessage = "No Appointment"))
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.showRefreshing(AppUIStates(isFailed = true, errorMessage = "Error Occurred"))
+                                    }
+                                }
+                            },
+                            onError = {
+                                contractView?.showRefreshing(AppUIStates(isFailed = true, errorMessage = "Error Occurred"))
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.showRefreshing(AppUIStates(isFailed = true, errorMessage = "Error Occurred"))
+            }
+        }
+    }
+
+    override fun getMoreFilteredTherapistAppointments(
+        therapistId: Long,
+        filter: String,
+        nextPage: Int
+    ) {
+        contractView?.onLoadMoreAppointmentStarted()
+        scope.launch(Dispatchers.Main) {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    therapistRepositoryImpl.getFilteredTherapistAppointments(therapistId,filter,nextPage)
+                        .subscribe(
+                            onSuccess = { response ->
+                                when (response.status) {
+                                    ServerResponse.SUCCESS.toPath() -> {
+                                        contractView?.onLoadMoreAppointmentEnded()
+                                        contractView?.showAppointments(response.listItem)
+                                    }
+                                    ServerResponse.FAILURE.toPath() -> {
+                                        contractView?.onLoadMoreAppointmentEnded()
+                                    }
+                                }
+                            },
+                            onError = {
+                                contractView?.onLoadMoreAppointmentEnded()
+                            },
+                        )
+                }
+                result.dispose()
+            } catch(e: Exception) {
+                contractView?.onLoadMoreAppointmentEnded()
+            }
+        }
+    }
+
     override fun getMoreTherapistAppointments(therapistId: Long, nextPage: Int) {
         contractView?.onLoadMoreAppointmentStarted()
         scope.launch(Dispatchers.Main) {
@@ -102,11 +202,11 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {
-                                    domain.Enums.ServerResponse.SUCCESS.toPath() -> {
+                                    ServerResponse.SUCCESS.toPath() -> {
                                         contractView?.onLoadMoreAppointmentEnded()
                                         contractView?.showAppointments(result.listItem)
                                     }
-                                    domain.Enums.ServerResponse.FAILURE.toPath() -> {
+                                    ServerResponse.FAILURE.toPath() -> {
                                         contractView?.onLoadMoreAppointmentEnded()
                                     }
                                 }
@@ -132,10 +232,10 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {
-                                    domain.Enums.ServerResponse.SUCCESS.toPath() -> {
+                                    ServerResponse.SUCCESS.toPath() -> {
                                         contractView?.showActionLce(AppUIStates(isSuccess = true))
                                     }
-                                    domain.Enums.ServerResponse.FAILURE.toPath() -> {
+                                    ServerResponse.FAILURE.toPath() -> {
                                         contractView?.showActionLce(AppUIStates(isFailed = true, errorMessage = "Error Occurred"))
                                     }
                                 }
@@ -161,10 +261,10 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {
-                                    domain.Enums.ServerResponse.SUCCESS.toPath() -> {
+                                    ServerResponse.SUCCESS.toPath() -> {
                                         contractView?.showActionLce(AppUIStates(isSuccess = true))
                                     }
-                                    domain.Enums.ServerResponse.FAILURE.toPath() -> {
+                                    ServerResponse.FAILURE.toPath() -> {
                                         contractView?.showActionLce(AppUIStates(isFailed = true, errorMessage = "Error Occurred"))
                                     }
                                 }
@@ -194,10 +294,10 @@ class TherapistPresenter(apiService: HttpClient): TherapistContract.Presenter() 
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {
-                                    domain.Enums.ServerResponse.SUCCESS.toPath() -> {
+                                    ServerResponse.SUCCESS.toPath() -> {
                                         dashboardContractView?.showUpdateScreenLce(AppUIStates(isSuccess = true))
                                     }
-                                    domain.Enums.ServerResponse.FAILURE.toPath() -> {
+                                    ServerResponse.FAILURE.toPath() -> {
                                         dashboardContractView?.showUpdateScreenLce(AppUIStates(isFailed = true, errorMessage = "Error Occurred"))
                                     }
                                 }

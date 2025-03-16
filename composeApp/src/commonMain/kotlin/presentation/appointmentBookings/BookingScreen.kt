@@ -71,11 +71,9 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.BookingStatus
 import domain.Enums.CustomerPaymentEnum
 import domain.Enums.PaymentMethod
-import domain.Enums.VendorEnum
 import domain.Models.PaymentAuthorizationResult
 import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
-import domain.Models.VendorPackage
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import presentation.DomainViewHandler.CancelContractHandler
@@ -130,7 +128,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         val addMoreService = remember { mutableStateOf(false) }
         val lastItemRemoved = remember { mutableStateOf(false) }
         val completeProfile = remember { mutableStateOf(false) }
-        val currentUserInfo = mainViewModel!!.currentUserInfo.value
+        val paystackPaymentFailed = remember { mutableStateOf(false) }
         val customerEmail = CustomerPaymentEnum.PAYMENT_EMAIL.toPath()
         val navigator = LocalNavigator.currentOrThrow
         val coroutineScope = rememberCoroutineScope()
@@ -287,6 +285,12 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             }
         }
 
+        if (paystackPaymentFailed.value){
+            Box(modifier = Modifier.fillMaxWidth()) {
+                ErrorDialog("Payment Failed", actionTitle = "Retry", onConfirmation = {})
+            }
+        }
+
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
             animation = StackedSnackbarAnimation.Bounce
@@ -316,29 +320,6 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             nav.push(editProfile)
         }
 
-        val showPaymentMethodBottomSheet = mainViewModel!!.showPaymentMethodBottomSheet.collectAsState()
-        if (showPaymentMethodBottomSheet.value) {
-            AppointmentPaymentMethodBottomSheet(
-                mainViewModel!!,
-                onDismiss = {
-                    mainViewModel!!.showPaymentMethodBottomSheet(false)
-                },
-                onCardPaymentSelected = {
-                    runBlocking {
-                        cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
-                    }
-                    bookingViewModel!!.setPaymentMethod(PaymentMethod.CARD_PAYMENT.toPath())
-                    mainViewModel!!.showPaymentMethodBottomSheet(false)
-                    mainViewModel!!.showPaymentCardsBottomSheet(true)
-
-                },
-                onCashSelected = {
-                    bookingViewModel!!.setPaymentMethod(PaymentMethod.PAYMENT_ON_DELIVERY.toPath())
-                    createAppointment()
-                    mainViewModel!!.showPaymentMethodBottomSheet(false)
-                })
-        }
-
         val paymentHandler = CreateAppointmentPaymentHandler(
             paymentPresenter = paymentPresenter,
             paymentActionUIStateViewModel!!,
@@ -355,9 +336,12 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                         cvv = selectedCard!!.cvv,
                         onPaymentLoading = {},
                         onPaymentSuccessful = {
+                            paystackPaymentFailed.value = false
                             createAppointment()
                         },
-                        onPaymentFailed = {})
+                        onPaymentFailed = {
+                            paystackPaymentFailed.value = true
+                        })
                 }
             })
         paymentHandler.init()
@@ -463,14 +447,12 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         )}
 
     private fun createAppointment(){
-        val paymentMethod = bookingViewModel!!.paymentMethod.value
         val userId = mainViewModel!!.currentUserInfo.value.userId
         val vendorId = mainViewModel!!.connectedVendor.value.vendorId
         val paymentAmount = calculateAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
 
         bookingPresenter.createAppointment(userId!!, vendorId!!, bookingStatus = BookingStatus.PENDING.toPath(), day = getDay(),
-            month = getMonth(), year = getYear(), paymentAmount = paymentAmount,
-            paymentMethod = paymentMethod, platformNavigator = platformNavigator, vendor = mainViewModel!!.connectedVendor.value)
+            month = getMonth(), year = getYear(), paymentAmount = paymentAmount, platformNavigator = platformNavigator, vendor = mainViewModel!!.connectedVendor.value)
     }
 
     @OptIn(ExperimentalFoundationApi::class)
@@ -539,10 +521,23 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                                     snackBarType = SnackBarType.ERROR,
                                     stackedSnackBarHostState,
                                     onActionClick = {})
-                            } else {
+                            }
+
+                            else if (bookingViewModel?.currentAppointmentBooking?.value?.appointmentDay == -1) {
+                                ShowSnackBar(title = "No Date Selected",
+                                    description = "Please Select a Date to proceed",
+                                    actionLabel = "",
+                                    duration = StackedSnackbarDuration.Short,
+                                    snackBarType = SnackBarType.ERROR,
+                                    stackedSnackBarHostState,
+                                    onActionClick = {})
+                            }
+                            else {
                                 pagerState.animateScrollToPage(1)
                             }
-                        } else if (currentPage == 1) {
+                        }
+
+                        else if (currentPage == 1) {
                             if (bookingViewModel?.currentAppointmentBooking?.value?.serviceTypeTherapists == null) {
                                 ShowSnackBar(title = "No Therapist Selected",
                                     description = "Please Select a Therapist to proceed",
@@ -565,7 +560,10 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                         }
                     }
                 if (currentPage == 2){
-                    mainViewModel.showPaymentMethodBottomSheet(true)
+                    runBlocking {
+                        cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
+                        mainViewModel!!.showPaymentCardsBottomSheet(true)
+                    }
                   }
                 }
             }
