@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,6 +38,7 @@ import domain.Enums.Screens
 import domain.Models.Vendor
 import kotlinx.coroutines.runBlocking
 import presentation.viewmodels.MainViewModel
+import presentation.widgets.EmptyContentWidget
 import presentation.widgets.NewVendorItem
 import presentations.components.TextComponent
 import theme.styles.Colors
@@ -90,17 +92,24 @@ fun VendorsView(nearbyVendor: List<Vendor>, newVendor: List<Vendor>, mainViewMod
             }
         }
 
-        LazyColumn(
-            modifier = Modifier.padding(top = 10.dp).fillMaxWidth()
-                .background(color = Color.Red)
-                .height(350.dp),
-            contentPadding = PaddingValues(6.dp),
-            verticalArrangement = Arrangement.spacedBy(5.dp), userScrollEnabled = true
-        ) {
-            runBlocking {
-                items(nearbyVendor.size) { i ->
-                    SwitchVendorBusinessItemComponent(vendor = nearbyVendor[i]) {
-                        onVendorClickListener(it)
+        if (nearbyVendor.isEmpty()){
+                Box(modifier = Modifier.fillMaxWidth().height(350.dp), contentAlignment = Alignment.Center) {
+                    EmptyContentWidget(emptyText = "No Nearby Parlor")
+                }
+        }
+        else {
+
+            LazyColumn(
+                modifier = Modifier.padding(top = 10.dp).fillMaxWidth()
+                    .height(350.dp),
+                contentPadding = PaddingValues(6.dp),
+                verticalArrangement = Arrangement.spacedBy(5.dp), userScrollEnabled = true
+            ) {
+                runBlocking {
+                    items(nearbyVendor.size) { i ->
+                        SwitchVendorBusinessItemComponent(vendor = nearbyVendor[i]) {
+                            onVendorClickListener(it)
+                        }
                     }
                 }
             }
@@ -110,7 +119,6 @@ fun VendorsView(nearbyVendor: List<Vendor>, newVendor: List<Vendor>, mainViewMod
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .background(color = Color.Yellow)
                 .padding(start = 10.dp, top = 10.dp)
                 .height(40.dp)
                 .fillMaxWidth()

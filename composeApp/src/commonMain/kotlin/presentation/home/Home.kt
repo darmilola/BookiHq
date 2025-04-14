@@ -209,6 +209,11 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                           Modifier
                                               .size(60.dp)
                                               .clip(CircleShape)
+                                              .border(
+                                                  width = (2.5).dp,
+                                                  color = theme.Colors.primaryColor,
+                                                  shape = CircleShape
+                                              )
                                               .background(color = Color.Transparent)
                                       ) {
                                           val modifier = Modifier
@@ -424,7 +429,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             ) {
                 TextComponent(
                     text = "Services",
-                    fontSize = 30,
+                    fontSize = 25,
                     fontFamily = GGSansBold,
                     textStyle = MaterialTheme.typography.h6,
                     textColor = Colors.darkPrimary,
@@ -453,7 +458,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             TextComponent(
                 text = "Recommended",
                 textModifier = Modifier.fillMaxWidth(0.50f),
-                fontSize = 28,
+                fontSize = 25,
                 fontFamily = GGSansBold,
                 textStyle = MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,

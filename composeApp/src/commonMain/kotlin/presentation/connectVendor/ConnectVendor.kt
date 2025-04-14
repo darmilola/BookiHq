@@ -213,7 +213,7 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
         handler.init()
 
            Scaffold(
-               floatingActionButton = {
+              /* floatingActionButton = {
                    Box(
                        modifier = Modifier.size(140.dp), contentAlignment = Alignment.CenterEnd
                    ) {
@@ -241,7 +241,7 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
                            )
                        }
                    }
-               },
+               },*/
                 topBar = {
                     Column(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
                         verticalArrangement = Arrangement.Center,

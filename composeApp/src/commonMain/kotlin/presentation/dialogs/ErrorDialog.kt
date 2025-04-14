@@ -48,7 +48,7 @@ fun ErrorDialog(dialogTitle: String, actionTitle: String, onConfirmation: () -> 
         Surface(
             shape = RoundedCornerShape(10.dp),
             color = Colors.lighterPrimaryColor,
-            modifier = Modifier.fillMaxWidth(0.90f).height(250.dp)
+            modifier = Modifier.fillMaxWidth(0.70f).fillMaxHeight(0.30f)
         ) {
             ErrorDialogContent(dialogTitle,actionTitle, onConfirmation = {
                 onConfirmation()
@@ -60,7 +60,7 @@ fun ErrorDialog(dialogTitle: String, actionTitle: String, onConfirmation: () -> 
 
 @Composable
 fun ErrorDialogContent(dialogTitle: String, actionTitle: String,
-                                       onConfirmation: () -> Unit){
+                       onConfirmation: () -> Unit){
 
     Card(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
         shape = RoundedCornerShape(10.dp),
@@ -74,7 +74,7 @@ fun ErrorDialogContent(dialogTitle: String, actionTitle: String,
             ) {
                 val modifier = Modifier
                     .padding(top = 2.dp)
-                    .size(80.dp)
+                    .size(50.dp)
                 ImageComponent(imageModifier = modifier, imageRes = "drawable/error_icon.png", colorFilter = ColorFilter.tint(color = Color.White))
             }
 
@@ -95,31 +95,15 @@ fun ErrorDialogContent(dialogTitle: String, actionTitle: String,
                         fontSize = 20,
                         textStyle = TextStyle(),
                         textColor = Colors.darkPrimary,
-                        textAlign = TextAlign.Left,
+                        textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold,
                         lineHeight = 23,
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis
                     )
-
-
-                    TextComponent(
-                        textModifier = Modifier.fillMaxWidth().wrapContentHeight()
-                            .padding(start = 15.dp, end = 15.dp, bottom = 10.dp, top = 20.dp),
-                        text = "Please fix the error message displayed above to continue",
-                        fontSize = 17,
-                        textStyle = TextStyle(),
-                        textColor = Colors.darkPrimary,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Normal,
-                        lineHeight = 23,
-                        maxLines = 3)
-
-
-
                 }
             }
-            Box(modifier = Modifier.fillMaxWidth().height(55.dp), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.fillMaxWidth().weight(1.5f), contentAlignment = Alignment.Center) {
                 ErrorDialogButtonContent(actionTitle, onConfirmation = {
                     onConfirmation()
                 })
@@ -134,7 +118,7 @@ fun ErrorDialogContent(dialogTitle: String, actionTitle: String,
 @Composable
 fun ErrorDialogButtonContent(actionTitle: String, onConfirmation: () -> Unit){
     val buttonStyle = Modifier
-        .fillMaxWidth()
+        .fillMaxWidth(1f)
         .height(50.dp)
 
     Row (horizontalArrangement = Arrangement.Center,

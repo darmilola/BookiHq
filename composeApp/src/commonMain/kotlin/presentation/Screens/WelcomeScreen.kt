@@ -261,7 +261,7 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful:
                         onAuthFailed: () -> Unit, mainViewModel: MainViewModel, databaseBuilder: RoomDatabase.Builder<AppDatabase>){
     val navigator = LocalNavigator.currentOrThrow
     val buttonStyle = Modifier
-        .padding(bottom = 15.dp)
+        .padding(bottom = 15.dp, top = 15.dp)
         .fillMaxWidth(0.90f)
         .height(45.dp)
 
@@ -292,12 +292,25 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful:
             })
         }
 
-        IconButtonComponent(modifier = phoneButtonStyle, buttonText = "Sign In with Phone Number", borderStroke = BorderStroke((0.01).dp, Colors.primaryColor), iconSize = 24, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor = Color.White, style = MaterialTheme.typography.h4, iconRes = "drawable/care_icon.png", colorFilter = ColorFilter.tint(color = Color.White)){
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            TextComponent(
+                text = "Or",
+                fontSize = 23,
+                fontFamily = GGSansRegular,
+                textStyle = TextStyle(),
+                textColor = Color.White,
+                textAlign = TextAlign.Start,
+                fontWeight = FontWeight.SemiBold,
+                lineHeight = 30
+            )
+        }
+
+        /*IconButtonComponent(modifier = phoneButtonStyle, buttonText = "Sign In with Phone Number", borderStroke = BorderStroke((0.01).dp, Colors.primaryColor), iconSize = 24, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor = Color.White, style = MaterialTheme.typography.h4, iconRes = "drawable/care_icon.png", colorFilter = ColorFilter.tint(color = Color.White)){
            val continueWithPhone = PhoneInputScreen(platformNavigator)
             continueWithPhone.setMainViewModel(mainViewModel = mainViewModel)
             continueWithPhone.setDatabaseBuilder(databaseBuilder = databaseBuilder)
             navigator.push(continueWithPhone)
-        }
+        }*/
 
         IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with X", borderStroke = BorderStroke(0.8.dp, Color.White), iconSize = 20, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 16, shape = CircleShape, textColor = Color.Black, style = MaterialTheme.typography.h4, iconRes = "drawable/x_icon.png", colorFilter = ColorFilter.tint(color = Color.Black)){
             platformNavigator.startXSSO(onAuthSuccessful = {

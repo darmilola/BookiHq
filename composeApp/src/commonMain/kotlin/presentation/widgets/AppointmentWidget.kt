@@ -413,8 +413,18 @@ fun AttachServiceAppointmentContent(appointment: Appointment) {
 
 
 @Composable
-fun TherapistDisplayItem(therapistInfo: TherapistInfo) {
-    val profileInfo = therapistInfo.profileInfo
+fun TherapistDisplayItem(therapistInfo: TherapistInfo?) {
+    var profileName = ""
+    var imageUrl = ""
+    if (therapistInfo == null){
+        profileName = "No Therapist"
+        imageUrl = "drawable/facials_icon.png"
+    }
+    else{
+        val profileInfo = therapistInfo.profileInfo
+        profileName = profileInfo!!.firstname+ " "+profileInfo.lastname
+        imageUrl = profileInfo.profileImageUrl!!
+    }
     val rowModifier = Modifier
         .fillMaxWidth().height(40.dp)
 
@@ -436,10 +446,10 @@ fun TherapistDisplayItem(therapistInfo: TherapistInfo) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = iconTextBoxModifier
             ) {
-                TherapistProfileImage(profileImageUrl = profileInfo?.profileImageUrl!!, isAsync = true)
+                TherapistProfileImage(profileImageUrl = imageUrl, isAsync = therapistInfo != null)
                 Box(modifier = Modifier.wrapContentWidth().fillMaxHeight(), contentAlignment = Alignment.CenterStart) {
                     TextComponent(
-                        text = profileInfo.firstname+ " "+profileInfo.lastname,
+                        text = profileName,
                         fontSize = 15,
                         fontFamily = GGSansRegular,
                         textStyle = MaterialTheme.typography.h6,

@@ -84,6 +84,11 @@ fun VendorLogo(imageUrl: String, onVendorLogoClicked: () -> Unit) {
             Modifier
                 .size(60.dp)
                 .clip(CircleShape)
+                .border(
+                    width = (2.5).dp,
+                    color = theme.Colors.primaryColor,
+                    shape = CircleShape
+                )
                 .clickable {
                     onVendorLogoClicked()
                 }

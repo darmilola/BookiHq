@@ -1,8 +1,10 @@
 package presentation.widgets
 
+import GGSansBold
 import GGSansRegular
 import theme.styles.Colors
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,10 +32,11 @@ import presentations.components.TextComponent
 @Composable
 fun HomeServicesWidget(vendorService:Services, onServiceSelected: (Services) -> Unit){
     val columnModifier = Modifier
-        .padding(start = 5.dp, end = 5.dp, top = 5.dp, bottom = 5.dp)
+        .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
         .clickable {
             onServiceSelected(vendorService)
         }
+        .border(width = 1.dp, color = Colors.lightGray, shape = RoundedCornerShape(20.dp))
         .height(120.dp)
         Column(
             modifier = columnModifier,
@@ -47,7 +50,7 @@ fun HomeServicesWidget(vendorService:Services, onServiceSelected: (Services) -> 
             TextComponent(
                 text = vendorService.serviceInfo.title,
                 fontSize = 15,
-                fontFamily = GGSansRegular,
+                fontFamily = GGSansBold,
                 textStyle = MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Center,
@@ -61,18 +64,17 @@ fun HomeServicesWidget(vendorService:Services, onServiceSelected: (Services) -> 
 
 
 @Composable
-fun AttachServiceImage(iconRes: String, iconSize: Int = 40) {
+fun AttachServiceImage(iconRes: String, iconSize: Int = 50) {
     Box(
         Modifier
             .clip(RoundedCornerShape(10.dp))
             .fillMaxWidth()
-            .height(80.dp)
-            .background(color = Colors.lighterPrimaryColor),
+            .height(50.dp),
         contentAlignment = Alignment.Center
     ) {
         val modifier = Modifier
             .size(iconSize.dp)
-        ImageComponent(imageModifier = modifier, imageRes = iconRes, colorFilter = ColorFilter.tint(color = Colors.darkPrimary))
+        ImageComponent(imageModifier = modifier, imageRes = iconRes, colorFilter = ColorFilter.tint(color = Colors.iconTint))
     }
 
 }

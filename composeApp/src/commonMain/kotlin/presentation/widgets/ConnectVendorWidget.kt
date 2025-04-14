@@ -181,7 +181,6 @@ fun BusinessInfoContent(vendor: Vendor, isViewOnly: Boolean = false, onConnected
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Normal,
                     lineHeight = 25,
-                    maxLines = 3,
                     overflow = TextOverflow.Ellipsis
                 )
 

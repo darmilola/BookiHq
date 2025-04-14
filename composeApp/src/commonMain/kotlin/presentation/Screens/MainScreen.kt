@@ -404,7 +404,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                                     ) {
                                         isBottomNavSelected = true
                                     }
-                                    packages = Packages()
+                                    /*packages = Packages()
                                     packages!!.setMainViewModel(mainViewModel!!)
                                     TabNavigationItem(
                                         packages!!,
@@ -417,7 +417,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                                         mainViewModel = mainViewModel!!
                                     ) {
                                         isBottomNavSelected = true
-                                    }
+                                    }*/
                                     appointmentsTab = AppointmentsTab(platformNavigator)
                                     appointmentsTab!!.setMainViewModel(mainViewModel!!)
                                     TabNavigationItem(

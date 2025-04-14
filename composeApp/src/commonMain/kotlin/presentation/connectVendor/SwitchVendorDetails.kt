@@ -134,7 +134,9 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
                     navigator.replaceAll(splashScreen)
 
                 } else if (switchVendorUiState.value.isFailed) {
-                    ErrorDialog(dialogTitle = "Error Occurred Please Try Again", actionTitle = "Retry"){}
+                    ErrorDialog(dialogTitle = "Error Occurred Please Try Again", actionTitle = "Close") {
+
+                    }
                 }
 
                  BusinessInfoContent(switchVendorValue){
