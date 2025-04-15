@@ -309,7 +309,7 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                 }
                 else if (loadVendorUiState.value.isFailed) {
                     Box(modifier = Modifier .fillMaxWidth().height(400.dp), contentAlignment = Alignment.Center) {
-                        ErrorOccurredWidget(loadVendorUiState.value.errorMessage, onRetryClicked = {
+                        ErrorOccurredWidget("Error Getting Salon and Spas", onRetryClicked = {
                             vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                             connectVendorPresenter.viewVendors(
                                 country = country,

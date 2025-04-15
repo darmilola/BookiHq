@@ -386,7 +386,7 @@ fun calculateVendorServiceTimes(platformTimes: List<PlatformTime>, vendorTimes: 
 
 fun getDeliveryMethodDisplayName(deliveryMethod: String): String {
     return when(deliveryMethod){
-        DeliveryMethodEnum.MOBILE.toPath() -> "Mobile Delivery"
+        DeliveryMethodEnum.MOBILE.toPath() -> "Home Delivery"
         DeliveryMethodEnum.PICKUP.toPath() -> "Pickup"
         else -> "Pickup"
     }

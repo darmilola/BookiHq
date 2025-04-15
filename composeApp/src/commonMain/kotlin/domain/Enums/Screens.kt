@@ -23,6 +23,7 @@ enum class Screens {
     FAVORITE_PRODUCTS,
     VENDOR_INFO_SCREEN,
     RECOMMENDATIONS_SCREEN,
+    JOIN_SPA_DETAILS,
     DEFAULT;
     fun toPath() = when (this) {
         DEFAULT -> -1
@@ -47,5 +48,6 @@ enum class Screens {
         FAVORITE_PRODUCTS -> 19
         VENDOR_INFO_SCREEN -> 20
         RECOMMENDATIONS_SCREEN -> 21
+        JOIN_SPA_DETAILS -> 22
     }
 }

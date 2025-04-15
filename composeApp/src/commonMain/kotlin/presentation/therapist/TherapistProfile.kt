@@ -118,7 +118,7 @@ fun TherapistProfile(therapistInfo: TherapistInfo, therapistPresenter: Therapist
                            }
                            else if (uiState.value.isEmpty) {
                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                   EmptyContentWidget(emptyText = uiState.value.emptyMessage)
+                                   EmptyContentWidget(emptyText = "No Reviews Available")
                                }
                            }
                            else if (uiState.value.isSuccess) {
@@ -131,13 +131,13 @@ fun TherapistProfile(therapistInfo: TherapistInfo, therapistPresenter: Therapist
                                  Switch(checked = isAvailableForBooking.value!!, onCheckedChange = {
                                      isAvailableForBooking.value = it
                                  })
-                                 TitleWidget(textColor = Colors.primaryColor, title = "Is Available for booking")
+                                 TitleWidget(textColor = Colors.primaryColor, title = "Available for Booking")
                              }
                            Row(modifier = Modifier.fillMaxWidth().height(50.dp), horizontalArrangement = Arrangement.Center) {
                                Switch(checked = isMobileServiceAvailable.value!!, onCheckedChange = {
                                    isMobileServiceAvailable.value = it
                                })
-                               TitleWidget(textColor = Colors.primaryColor, title = "Mobile Service Available")
+                               TitleWidget(textColor = Colors.primaryColor, title = "Home Service Available")
                            }
 
                            val buttonStyle = Modifier

@@ -103,19 +103,6 @@ fun SuccessDialogContent(dialogTitle: String, actionTitle: String,
                     )
 
 
-                    TextComponent(
-                        textModifier = Modifier.fillMaxWidth().wrapContentHeight()
-                            .padding(start = 15.dp, end = 15.dp, bottom = 10.dp, top = 20.dp),
-                        text = "There is a successful action that has just been made",
-                        fontSize = 17,
-                        textStyle = TextStyle(),
-                        textColor = Colors.darkPrimary,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Normal,
-                        lineHeight = 23,
-                        maxLines = 3)
-
-
 
                 }
             }

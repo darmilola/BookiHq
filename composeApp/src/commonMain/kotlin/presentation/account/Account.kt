@@ -286,17 +286,24 @@ class AccountTab : Tab, Parcelable {
                     iconRes = "drawable/support.png",
                     isDestructiveAction = false)
 
-                ActionItemComponent(
-                    modifier = actionStyle,
-                    buttonText = "Therapist SignIn",
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                    fontSize = 20,
-                    textColor = Colors.darkPrimary,
-                    style = TextStyle(),
-                    iconRes = "drawable/join.png",
-                    isDestructiveAction = false, onClick = {
-                        mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.JOIN_SPA.toPath()))
-                    })
+                if (mainViewModel!!.currentUserInfo.value.isTherapist == false) {
+                    ActionItemComponent(
+                        modifier = actionStyle,
+                        buttonText = "Therapist SignIn",
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                        fontSize = 20,
+                        textColor = Colors.darkPrimary,
+                        style = TextStyle(),
+                        iconRes = "drawable/join.png",
+                        isDestructiveAction = false, onClick = {
+                            mainViewModel!!.setScreenNav(
+                                Pair(
+                                    Screens.MAIN_SCREEN.toPath(),
+                                    Screens.JOIN_SPA.toPath()
+                                )
+                            )
+                        })
+                }
 
                 ActionItemComponent(
                     modifier = actionStyle,

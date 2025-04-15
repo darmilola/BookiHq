@@ -185,7 +185,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
             cartViewModel!!.setDeliveryMethod(DeliveryMethodEnum.PICKUP.toPath())
             if (!isProfileCompleted){
                 ShowSnackBar(title = "Only Pickup is Available",
-                    description = "Please Complete Your Profile for Mobile Delivery",
+                    description = "Please Complete Your Profile for Home Delivery",
                     actionLabel = "Complete Profile",
                     duration = StackedSnackbarDuration.Long,
                     snackBarType = SnackBarType.INFO,
