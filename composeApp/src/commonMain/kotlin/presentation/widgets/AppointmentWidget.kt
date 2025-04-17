@@ -366,7 +366,7 @@ fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String
                                else if (title.contentEquals("Delete", true)) {
                                    onDeleteAppointment(userAppointment)
                                }
-                               else if (title.contentEquals("Cancel Appointment")){
+                               else if (title.contentEquals("Cancel Booking")){
                                    onCancelAppointment(userAppointment)
                                }
                                else if (title.contentEquals("Add Review", true)) {

@@ -133,6 +133,20 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             productPresenter.getFavoriteProductIds(userId)
         })
 
+        val logOut = mainViewModel!!.logOut.collectAsState()
+        if (logOut.value){
+            mainViewModel!!.logOut(false)
+            val preferenceSettings = Settings()
+            preferenceSettings.clear()
+            val navigator = LocalNavigator
+            val welcomeScreen = WelcomeScreen(platformNavigator)
+            welcomeScreen.setMainViewModel(mainViewModel!!)
+            welcomeScreen.setDatabaseBuilder(databaseBuilder!!)
+            navigator.currentOrThrow.replaceAll(welcomeScreen)
+            return
+        }
+
+
         platformNavigator.requestNotificationPermission()
         productPresenter.setMainViewModel(mainViewModel!!)
         screenNav = mainViewModel?.screenNav?.collectAsState()

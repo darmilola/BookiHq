@@ -289,7 +289,7 @@ class AccountTab : Tab, Parcelable {
                 if (mainViewModel!!.currentUserInfo.value.isTherapist == false) {
                     ActionItemComponent(
                         modifier = actionStyle,
-                        buttonText = "Therapist SignIn",
+                        buttonText = "Join Salon/Spa",
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                         fontSize = 20,
                         textColor = Colors.darkPrimary,
@@ -315,8 +315,6 @@ class AccountTab : Tab, Parcelable {
                     iconRes = "drawable/privacy_icon.png",
                     isDestructiveAction = false)
 
-                Divider(color = Color(color = 0x70FA2D65), thickness = 0.5.dp, modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 20.dp))
-
                 ActionItemComponent(
                     modifier = actionStyle,
                     buttonText = "Log Out",
@@ -325,8 +323,13 @@ class AccountTab : Tab, Parcelable {
                     textColor = Colors.pinkColor,
                     style = TextStyle(),
                     iconRes = "drawable/logout_icon.png",
-                    isDestructiveAction = true
+                    isDestructiveAction = false,
+                    onClick = {
+                        mainViewModel!!.logOut(true)
+                    }
                 )
+
+                Divider(color = Color(color = 0x70FA2D65), thickness = 0.5.dp, modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 20.dp))
 
                 ButtonComponent(
                     modifier = Modifier

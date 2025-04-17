@@ -125,7 +125,6 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
             mainViewModel!!.setOnBackPressed(false)
             navigator.pop()
         }
-        platformNavigator.requestCameraPermission()
 
         if (vendorResourceListEnvelopeViewModel == null) {
             vendorResourceListEnvelopeViewModel = kmpViewModel(
@@ -226,35 +225,6 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
 
 
         Scaffold(
-            floatingActionButton = {
-                Box(
-                    modifier = Modifier.size(140.dp), contentAlignment = Alignment.CenterEnd
-                ) {
-                    Box(
-                        Modifier
-                            .clip(CircleShape)
-                            .size(70.dp)
-                            .clickable {
-                                platformNavigator.startScanningBarCode {
-                                    val vendorId =  it.toLongOrNull()
-                                    if (vendorId != null) {
-                                        profilePresenter.getVendorAccountInfo(it.toLong())
-                                    }
-                                }
-                            }
-                            .background(color = Colors.darkPrimary),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        val modifier = Modifier
-                            .size(40.dp)
-                        ImageComponent(
-                            imageModifier = modifier,
-                            imageRes = "drawable/shopping_cart.png",
-                            colorFilter = ColorFilter.tint(color = Color.White)
-                        )
-                    }
-                }
-            },
             topBar = {
                 Column(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
                     verticalArrangement = Arrangement.Center,

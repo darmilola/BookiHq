@@ -81,7 +81,7 @@ fun BookingOverview(mainViewModel: MainViewModel, bookingPresenter: BookingPrese
         })
     }
     else if (deleteActionUiState.value.isFailed) {
-        ErrorDialog("success", actionTitle = "", onConfirmation = {})
+        ErrorDialog("Appointment Cancelled", actionTitle = "", onConfirmation = {})
     }
 
 

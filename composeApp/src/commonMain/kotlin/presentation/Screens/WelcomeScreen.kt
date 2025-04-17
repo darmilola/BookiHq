@@ -266,7 +266,6 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful:
         .height(45.dp)
 
     val phoneButtonStyle = Modifier
-        .padding(bottom = 15.dp)
         .fillMaxWidth(0.90f)
         .height(45.dp)
         .background(
@@ -292,7 +291,7 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful:
             })
         }
 
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        /*Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             TextComponent(
                 text = "Or",
                 fontSize = 23,
@@ -303,14 +302,14 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful:
                 fontWeight = FontWeight.SemiBold,
                 lineHeight = 30
             )
-        }
+        }*/
 
-        /*IconButtonComponent(modifier = phoneButtonStyle, buttonText = "Sign In with Phone Number", borderStroke = BorderStroke((0.01).dp, Colors.primaryColor), iconSize = 24, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor = Color.White, style = MaterialTheme.typography.h4, iconRes = "drawable/care_icon.png", colorFilter = ColorFilter.tint(color = Color.White)){
+        IconButtonComponent(modifier = phoneButtonStyle, buttonText = "Sign In with Phone Number", borderStroke = BorderStroke((0.01).dp, Colors.primaryColor), iconSize = 24, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor = Color.White, style = MaterialTheme.typography.h4, iconRes = "drawable/care_icon.png", colorFilter = ColorFilter.tint(color = Color.White)){
            val continueWithPhone = PhoneInputScreen(platformNavigator)
             continueWithPhone.setMainViewModel(mainViewModel = mainViewModel)
             continueWithPhone.setDatabaseBuilder(databaseBuilder = databaseBuilder)
             navigator.push(continueWithPhone)
-        }*/
+        }
 
         IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with X", borderStroke = BorderStroke(0.8.dp, Color.White), iconSize = 20, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 16, shape = CircleShape, textColor = Color.Black, style = MaterialTheme.typography.h4, iconRes = "drawable/x_icon.png", colorFilter = ColorFilter.tint(color = Color.Black)){
             platformNavigator.startXSSO(onAuthSuccessful = {
