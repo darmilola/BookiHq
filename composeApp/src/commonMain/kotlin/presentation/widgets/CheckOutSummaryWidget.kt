@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import applications.formatter.formatNumber
 import domain.Enums.DeliveryMethodEnum
 import domain.Enums.PaymentMethod
 import presentation.components.ButtonComponent
@@ -36,7 +37,7 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel,mainViewModel: MainViewMo
     val currencyUnit = mainViewModel.displayCurrencyUnit.value
     val subtotal = cartViewModel.subtotal.collectAsState()
     val total = cartViewModel.total.collectAsState()
-    val deliveryFee = if (cartViewModel.deliveryFee.value == 0L) "Free" else cartViewModel.deliveryFee.value.toString()
+    val deliveryFee = if (cartViewModel.deliveryFee.value == 0L) "Free" else formatNumber(cartViewModel.deliveryFee.value)
 
     val columnModifier = Modifier
         .padding(start = 10.dp, bottom = 10.dp, end = 10.dp)
@@ -64,7 +65,7 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel,mainViewModel: MainViewMo
                  textModifier = Modifier.fillMaxWidth(0.50f)
              )
              TextComponent(
-                 text = currencyUnit+subtotal.value.toString(),
+                 text = currencyUnit+ formatNumber(subtotal.value),
                  fontSize = 18,
                  fontFamily = GGSansSemiBold,
                  textStyle = MaterialTheme.typography.h6,
@@ -124,7 +125,7 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel,mainViewModel: MainViewMo
                 textModifier = Modifier.fillMaxWidth(0.50f)
             )
             TextComponent(
-                text = currencyUnit+total.value.toString(),
+                text = currencyUnit+ formatNumber(total.value),
                 fontSize = 18,
                 fontFamily = GGSansSemiBold,
                 textStyle = MaterialTheme.typography.h6,

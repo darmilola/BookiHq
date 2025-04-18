@@ -31,6 +31,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import applications.formatter.formatNumber
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import domain.Models.CustomerOrder
@@ -48,6 +49,7 @@ fun UserOrderComponent(mainViewModel: MainViewModel, customerOrder: CustomerOrde
       val itemList = Json.decodeFromString<ArrayList<PlacedOrderItemComponent>>(customerOrder.orderItems?.orderItemJson!!)
       val totalCost = calculatePlacedOrderTotalPrice(itemList)
       val navigator = LocalNavigator.currentOrThrow
+      val currencyUnit = mainViewModel.displayCurrencyUnit.value
       val columnModifier = Modifier
         .padding(start = 10.dp, top = 35.dp, bottom = 10.dp, end = 10.dp)
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
@@ -118,7 +120,7 @@ fun UserOrderComponent(mainViewModel: MainViewModel, customerOrder: CustomerOrde
                     textModifier = Modifier.padding(top = 5.dp).height(30.dp).fillMaxWidth(0.20f)
                 )
                 TextComponent(
-                    text = "$$totalCost",
+                    text = "$currencyUnit${formatNumber(totalCost)}",
                     fontSize = 20,
                     fontFamily = GGSansRegular,
                     textStyle = TextStyle(),

@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import applications.formatter.formatNumber
 import domain.Enums.Currency
 import domain.Models.OrderItem
 import presentations.components.ImageComponent
@@ -137,7 +138,7 @@ fun CartProductPriceInfoContent(orderItem: OrderItem,currencyUnit: String,) {
             .fillMaxHeight(),
     ) {
         TextComponent(
-            text = "$currencyUnit${product!!.productPrice}",
+            text = "$currencyUnit${formatNumber(product!!.productPrice)}",
             fontSize = 16,
             fontFamily = GGSansSemiBold,
             textStyle = MaterialTheme.typography.h6,

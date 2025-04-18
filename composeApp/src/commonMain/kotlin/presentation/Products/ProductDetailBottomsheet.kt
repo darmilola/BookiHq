@@ -43,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import applications.formatter.formatNumber
 import domain.Models.OrderItem
 import domain.Models.Product
 import domain.Enums.ValuesLimit
@@ -231,7 +232,7 @@ fun ProductPriceInfoContent(product: Product, currencyUnit: String) {
     ) {
 
         TextComponent(
-            text = "$currencyUnit${product.productPrice}",
+            text = "$currencyUnit${formatNumber(product.productPrice)}",
             fontSize = 20,
             fontFamily = GGSansBold,
             textStyle = TextStyle(),

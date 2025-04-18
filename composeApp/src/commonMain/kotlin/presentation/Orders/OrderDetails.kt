@@ -78,6 +78,7 @@ class OrderDetails() : ParcelableScreen, ScreenTransition, KoinComponent {
         val showAddReviewBottomSheet = mainViewModel!!.showProductReviewsBottomSheet.collectAsState()
         val addReviewsUIState = reviewPerformedActionUIStateViewModel!!.addProductReviewUiState.collectAsState()
         val selectedProductId = remember { mutableStateOf(-1L) }
+        val currencyUnit = mainViewModel!!.displayCurrencyUnit.value
 
         if (onBackPressed.value){
             mainViewModel!!.setOnBackPressed(false)
@@ -146,7 +147,7 @@ class OrderDetails() : ParcelableScreen, ScreenTransition, KoinComponent {
             }
             val itemList = mainViewModel!!.orderItemComponents.value
 
-            OrderDetailList(itemList, onAddReviewClicked = {
+            OrderDetailList(itemList,currencyUnit, onAddReviewClicked = {
                 selectedProductId.value = it
                 mainViewModel!!.showProductReviewsBottomSheet(true)
             })

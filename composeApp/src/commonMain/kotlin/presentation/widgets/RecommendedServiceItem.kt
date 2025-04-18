@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import applications.formatter.formatNumber
 import domain.Models.VendorRecommendation
 import domain.Enums.RecommendationType
 import presentation.viewmodels.MainViewModel
@@ -83,10 +84,10 @@ fun RecommendedServicePriceAndAction(vendorRecommendation: VendorRecommendation,
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically) {
             if (vendorRecommendation.recommendationType == RecommendationType.Services.toPath()){
-                PopularServicePriceContent(vendorRecommendation.serviceTypeItem?.price.toString(), currencyUnit)
+                PopularServicePriceContent(formatNumber(vendorRecommendation.serviceTypeItem?.price!!.toLong()), currencyUnit)
             }
             else{
-                PopularServicePriceContent(vendorRecommendation.product?.productPrice.toString(), currencyUnit)
+                PopularServicePriceContent(formatNumber(vendorRecommendation.product?.productPrice!!.toLong()), currencyUnit)
             }
 
         }
