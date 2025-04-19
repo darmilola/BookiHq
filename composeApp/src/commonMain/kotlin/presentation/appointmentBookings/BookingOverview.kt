@@ -72,7 +72,7 @@ fun BookingOverview(mainViewModel: MainViewModel, bookingPresenter: BookingPrese
         LoadingDialog("Cancelling Appointment")
     }
     else if (deleteActionUiState.value.isSuccess) {
-        SuccessDialog("success", actionTitle = "", onConfirmation = {
+        SuccessDialog("Cancelled Successfully", actionTitle = "Close", onConfirmation = {
             deleteActionUIStateViewModel.switchDeletePendingAppointmentUiState(AppUIStates(isDefault = true))
             bookingPresenter.getPendingBookingAppointment(
                 mainViewModel.currentUserInfo.value.userId!!,
@@ -81,7 +81,7 @@ fun BookingOverview(mainViewModel: MainViewModel, bookingPresenter: BookingPrese
         })
     }
     else if (deleteActionUiState.value.isFailed) {
-        ErrorDialog("Appointment Cancelled", actionTitle = "", onConfirmation = {})
+        ErrorDialog("Error Occurred", actionTitle = "Retry", onConfirmation = {})
     }
 
 

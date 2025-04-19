@@ -59,6 +59,7 @@ import androidx.room.RoomDatabase
 import applications.date.getDay
 import applications.date.getMonth
 import applications.date.getYear
+import applications.formatter.formatNumber
 import applications.room.AppDatabase
 import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.ScreenKey
@@ -436,7 +437,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                                     completeProfile.value = true
                                 }
                             )
-                            AttachActionButtons(pagerState, mainViewModel!!, stackedSnackBarHostState, bookingPresenter, onAddMoreServicesClicked = {
+                            AttachActionButtons(pagerState, mainViewModel!!,bookingViewModel!!, stackedSnackBarHostState, bookingPresenter, onAddMoreServicesClicked = {
                                 addMoreService.value = true
                             })
                         }
@@ -457,16 +458,22 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun AttachActionButtons(pagerState: PagerState, mainViewModel: MainViewModel, stackedSnackBarHostState: StackedSnakbarHostState, bookingPresenter: BookingPresenter, onAddMoreServicesClicked: () -> Unit){
+    fun AttachActionButtons(pagerState: PagerState, mainViewModel: MainViewModel,bookingViewModel: BookingViewModel, stackedSnackBarHostState: StackedSnakbarHostState, bookingPresenter: BookingPresenter, onAddMoreServicesClicked: () -> Unit){
 
         var btnFraction by remember { mutableStateOf(0f) }
         val currentPage = pagerState.currentPage
-
+        val currencyUnit = mainViewModel.displayCurrencyUnit.value
+        val pendingAppointment = bookingViewModel.pendingAppointments.collectAsState()
+        var paymentAmount by remember { mutableStateOf(0) }
 
         btnFraction = if (pagerState.currentPage == 1){
             0.5f
         } else {
             0f
+        }
+
+        if (pendingAppointment.value.isNotEmpty()){
+            paymentAmount = calculateAppointmentPaymentAmount(bookingViewModel.pendingAppointments.value)
         }
 
         val coroutineScope = rememberCoroutineScope()
@@ -500,7 +507,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                 }
             }
 
-            val bookingNavText = if(currentPage == 2) "Go To Payments" else "Continue"
+            val bookingNavText = if(currentPage == 2) "Pay $currencyUnit${formatNumber(paymentAmount.toLong())}" else "Continue"
             ButtonComponent(modifier = Modifier
                     .padding(start = 5.dp, end = 5.dp, top = 10.dp, bottom = 10.dp)
                 .fillMaxWidth()
