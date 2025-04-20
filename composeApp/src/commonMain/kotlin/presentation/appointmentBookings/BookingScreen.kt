@@ -509,7 +509,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
 
             val bookingNavText = if(currentPage == 2) "Pay $currencyUnit${formatNumber(paymentAmount.toLong())}" else "Continue"
             ButtonComponent(modifier = Modifier
-                    .padding(start = 5.dp, end = 5.dp, top = 10.dp, bottom = 10.dp)
+                    .padding(start = 5.dp, end = 5.dp)
                 .fillMaxWidth()
                 .clip(CircleShape)
                 .height(45.dp),
