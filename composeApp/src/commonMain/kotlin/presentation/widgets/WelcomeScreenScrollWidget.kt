@@ -47,13 +47,13 @@ fun welcomeScreenScrollWidget() {
     val textList = arrayListOf<String>()
     val imgList = arrayListOf<String>()
 
-    textList.add("Lorem Ipsum is a dummy in typesetting industry")
-    textList.add("Lorem Ipsum is a dummy in typesetting industry since 1900")
-    textList.add("Lorem Ipsum is a dummy in typesetting industry")
+    textList.add("Stay connected with your preferred salon and spa")
+    textList.add("Easily book your services with your trusted salon and spa provider")
+    textList.add("Stock up on beauty essentials from your favorite salon and spa")
 
-    imgList.add("drawable/washing_man.jpg")
-    imgList.add("drawable/woman_welcome.jpg")
     imgList.add("drawable/massage_therapy.jpg")
+    imgList.add("drawable/washing_man.jpg")
+    imgList.add("drawable/product.jpg")
 
     Column(
         modifier = Modifier

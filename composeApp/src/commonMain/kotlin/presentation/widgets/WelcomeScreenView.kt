@@ -42,7 +42,7 @@ fun welcomeScreenView(displayText: String, imageRes: String) {
         )
     Box(modifier = Modifier.fillMaxHeight().fillMaxWidth()) {
         ImageComponent(imageModifier = Modifier.fillMaxHeight().fillMaxWidth(),
-            imageRes = imageRes, contentScale = ContentScale.FillWidth)
+            imageRes = imageRes, contentScale = ContentScale.FillBounds)
         Box(modifier = bgStyle)
         AttachTextContent(displayText = displayText)
     }
