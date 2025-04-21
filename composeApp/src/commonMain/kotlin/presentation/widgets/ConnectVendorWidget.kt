@@ -254,7 +254,7 @@ fun BusinessInfoContent(vendor: Vendor, isViewOnly: Boolean = false, onConnected
                         TextComponent(
                             textModifier = Modifier.wrapContentWidth()
                                 .padding(start = 5.dp),
-                            text = if (vendor.isMobileServiceAvailable) "Mobile Service Available" else "No Mobile Service",
+                            text = if (vendor.isMobileServiceAvailable) "Home Service Available" else "No Home Service",
                             fontSize = 16,
                             textStyle = TextStyle(),
                             textColor = Color.DarkGray,
