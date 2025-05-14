@@ -1,4 +1,4 @@
-package presentation.welcomeScreen
+package presentation.Screens.welcomeScreen
 
 import GGSansBold
 import GGSansRegular
@@ -76,10 +76,8 @@ import presentations.components.TextComponent
 import theme.styles.Colors
 
 @Parcelize
-class LandingScreen() : Screen, KoinComponent, Parcelable {
+class LandingScreen() : Screen, Parcelable {
 
-    @Transient
-    private val authenticationPresenter: AuthenticationPresenter by inject()
     @Transient
     private var mainViewModel: MainViewModel? = null
     @Transient
@@ -102,6 +100,7 @@ class LandingScreen() : Screen, KoinComponent, Parcelable {
 
     @Composable
     fun LandingScreenCompose() {
+        val navigator = LocalNavigator.currentOrThrow
         Box(modifier = Modifier.fillMaxHeight().fillMaxWidth()) {
             ImageComponent(
                 imageModifier = Modifier.fillMaxHeight().fillMaxWidth(),
@@ -173,7 +172,9 @@ class LandingScreen() : Screen, KoinComponent, Parcelable {
                             shape = RoundedCornerShape(15.dp),
                             textColor = Color.Black,
                             style = MaterialTheme.typography.h4
-                        ) {}
+                        ) {
+                            navigator.replaceAll(OnBoardingScreen())
+                        }
 
                         Box(
                             modifier = Modifier

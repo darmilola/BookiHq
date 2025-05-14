@@ -42,6 +42,7 @@ import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.AuthenticationScreenHandler
+import presentation.Screens.welcomeScreen.LandingScreen
 import presentation.authentication.AuthenticationPresenter
 import presentation.connectVendor.ConnectVendor
 import presentation.viewmodels.MainViewModel
@@ -153,7 +154,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
                     val welcomeScreen = WelcomeScreen(platformNavigator)
                     welcomeScreen.setDatabaseBuilder(databaseBuilder)
                     welcomeScreen.setMainViewModel(mainViewModel)
-                    navigator.replaceAll(welcomeScreen)
+                    navigator.replaceAll(LandingScreen())
 
              })
         }
