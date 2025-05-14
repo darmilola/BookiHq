@@ -154,7 +154,7 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
                     val welcomeScreen = WelcomeScreen(platformNavigator)
                     welcomeScreen.setDatabaseBuilder(databaseBuilder)
                     welcomeScreen.setMainViewModel(mainViewModel)
-                    navigator.replaceAll(LandingScreen())
+                    navigator.replaceAll(welcomeScreen)
 
              })
         }
