@@ -76,7 +76,7 @@ import presentations.components.TextComponent
 import theme.styles.Colors
 
 @Parcelize
-class LandingScreen() : Screen, Parcelable {
+data class LandingScreen(val platformNavigator: PlatformNavigator) : Screen, Parcelable {
 
     @Transient
     private var mainViewModel: MainViewModel? = null
@@ -95,12 +95,15 @@ class LandingScreen() : Screen, Parcelable {
 
     @Composable
     override fun Content() {
-        LandingScreenCompose()
+        LandingScreenCompose(platformNavigator = platformNavigator)
     }
 
     @Composable
-    fun LandingScreenCompose() {
+    fun LandingScreenCompose(platformNavigator: PlatformNavigator) {
         val navigator = LocalNavigator.currentOrThrow
+        val onBoardingScreen = OnBoardingScreen(platformNavigator)
+        onBoardingScreen.setMainViewModel(mainViewModel)
+        onBoardingScreen.setDatabaseBuilder(databaseBuilder)
         Box(modifier = Modifier.fillMaxHeight().fillMaxWidth()) {
             ImageComponent(
                 imageModifier = Modifier.fillMaxHeight().fillMaxWidth(),
@@ -173,7 +176,7 @@ class LandingScreen() : Screen, Parcelable {
                             textColor = Color.Black,
                             style = MaterialTheme.typography.h4
                         ) {
-                            navigator.replaceAll(OnBoardingScreen())
+                            navigator.replaceAll(onBoardingScreen)
                         }
 
                         Box(

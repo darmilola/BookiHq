@@ -150,7 +150,14 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
                    authEmail.value = it
                    authType.value = AuthType.EMAIL.toPath()
                    authenticationPresenter.validateEmail(it)
-             }, onWelcome = {
+             },
+             onOnBoard = {
+                 val landingScreen = LandingScreen(platformNavigator)
+                 landingScreen.setDatabaseBuilder(databaseBuilder)
+                 landingScreen.setMainViewModel(mainViewModel)
+                 navigator.replaceAll(landingScreen)
+             },
+                onWelcome = {
                     val welcomeScreen = WelcomeScreen(platformNavigator)
                     welcomeScreen.setDatabaseBuilder(databaseBuilder)
                     welcomeScreen.setMainViewModel(mainViewModel)
@@ -160,11 +167,15 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
         }
     }
 
- private fun authenticateSplashScreen(settings: Settings, onPhoneAuthentication: (String) -> Unit, onEmailAuthentication :(String) -> Unit, onWelcome :() -> Unit){
+ private fun authenticateSplashScreen(settings: Settings, onPhoneAuthentication: (String) -> Unit, onEmailAuthentication :(String) -> Unit, onOnBoard:() -> Unit, onWelcome :() -> Unit){
      val authEmail = settings.getString(SharedPreferenceEnum.AUTH_EMAIL.toPath(), "")
      val authPhone = settings.getString(SharedPreferenceEnum.AUTH_PHONE.toPath(), "")
+     val authOnBoard = settings.getBoolean(SharedPreferenceEnum.AUTH_ONBOARDING.toPath(), false)
 
-     if (authEmail.trim().isNotEmpty()){
+     if (!authOnBoard){
+        onOnBoard()
+     }
+     else if (authEmail.trim().isNotEmpty()){
          onEmailAuthentication(authEmail)
      }
      else if (authPhone.trim().isNotEmpty()){

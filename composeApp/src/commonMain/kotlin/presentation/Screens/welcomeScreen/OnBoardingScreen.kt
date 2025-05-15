@@ -8,6 +8,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -50,11 +51,16 @@ import applications.room.AppDatabase
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import domain.Models.PlatformNavigator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.serialization.Transient
+import presentation.Screens.WelcomeScreen
+import presentation.Screens.auth.SignupScreen
 import presentation.components.ButtonComponent
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.onBoardingScreenView
@@ -66,7 +72,7 @@ import theme.styles.Colors
 import kotlin.math.absoluteValue
 
 @Parcelize
-class OnBoardingScreen() : Screen, Parcelable {
+data class OnBoardingScreen(val platformNavigator: PlatformNavigator) : Screen, Parcelable {
 
     @Transient
     private var mainViewModel: MainViewModel? = null
@@ -97,156 +103,179 @@ class OnBoardingScreen() : Screen, Parcelable {
                     .background(color = Color.White),
                 contentAlignment = Alignment.Center
             ) {
-                OnBoardingScreenScrollWidget()
+                OnBoardingScreenScrollWidget(platformNavigator)
             }
         }
 
     }
 
-}
 
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun OnBoardingScreenScrollWidget() {
-    val pagerState = rememberPagerState(pageCount = { 3 })
-    val userScrollNext = remember { mutableStateOf(false) }
-    val titleTextList = arrayListOf<String>()
-    val subtitleTextList = arrayListOf<String>()
-    val imgList = arrayListOf<String>()
+    @OptIn(ExperimentalFoundationApi::class)
+    @Composable
+    fun OnBoardingScreenScrollWidget(platformNavigator: PlatformNavigator) {
+        val navigator = LocalNavigator.currentOrThrow
+        val pagerState = rememberPagerState(pageCount = { 3 })
+        val userScrollNext = remember { mutableStateOf(false) }
+        val titleTextList = arrayListOf<String>()
+        val subtitleTextList = arrayListOf<String>()
+        val imgList = arrayListOf<String>()
 
-    titleTextList.add("Luxury Spa Experience")
-    titleTextList.add("Fresh Cuts, Premium Experience")
-    titleTextList.add("Relax, Recharge, Rejuvenate")
+        titleTextList.add("Luxury Spa Experience")
+        titleTextList.add("Fresh Cuts, Premium Experience")
+        titleTextList.add("Relax, Recharge, Rejuvenate")
 
-    subtitleTextList.add("Book your perfect spa day with our expert therapists and premium treatments")
-    subtitleTextList.add("Book your perfect haircut with our expert barbers and top-quality grooming services.")
-    subtitleTextList.add("Book your perfect therapy session with our skilled therapists and personalized treatments.")
+        subtitleTextList.add("Book your perfect spa day with our expert therapists and premium treatments")
+        subtitleTextList.add("Book your perfect haircut with our expert barbers and top-quality grooming services.")
+        subtitleTextList.add("Book your perfect therapy session with our skilled therapists and personalized treatments.")
 
-    imgList.add("drawable/onboarding_image1.png")
-    imgList.add("drawable/onboarding_image2.png")
-    imgList.add("drawable/onboarding_image3.png")
+        imgList.add("drawable/onboarding_image1.png")
+        imgList.add("drawable/onboarding_image2.png")
+        imgList.add("drawable/onboarding_image3.png")
 
-    Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth().background(color = Color.Transparent),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start
-    ) {
-        Box(modifier = Modifier.fillMaxWidth().height(50.dp)
-            .padding(end = 20.dp)
-            .background(color = Color.White), contentAlignment = Alignment.CenterEnd) {
-            TextComponent(
-                text = "Skip",
-                fontSize = 20,
-                fontFamily = GGSansRegular,
-                textStyle = TextStyle(),
-                textColor = Colors.primaryColor,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Normal,
-                lineHeight = 25,
-                textModifier = Modifier.wrapContentWidth()
-            )
-        }
-        val isDraggedState = pagerState.interactionSource.collectIsDraggedAsState()
-        HorizontalPager(
-            state = pagerState,
-            userScrollEnabled = true,
-            flingBehavior = PagerDefaults.flingBehavior(state = pagerState, snapPositionalThreshold = 0.2f),
-            modifier = Modifier.fillMaxWidth().fillMaxHeight(0.80f)
-        ) { currentPage ->
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth().background(color = Color.Transparent),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start
+        ) {
             Box(
-                modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                    .pagerFadeTransition(pagerState.currentPage, pagerState)
-                    .background(color = Color.Transparent)
+                modifier = Modifier.fillMaxWidth().height(50.dp)
+                    .padding(end = 20.dp)
+                    .background(color = Color.White), contentAlignment = Alignment.CenterEnd
             ) {
-                onBoardingScreenView(subtitleTextList[currentPage], titleTextList[currentPage], imgList[currentPage])
+                TextComponent(
+                    text = "Skip",
+                    fontSize = 20,
+                    fontFamily = GGSansRegular,
+                    textStyle = TextStyle(),
+                    textColor = Colors.primaryColor,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Normal,
+                    lineHeight = 25,
+                    textModifier = Modifier.wrapContentWidth().clickable {
+                        val welcomeScreen = WelcomeScreen(platformNavigator = platformNavigator)
+                        welcomeScreen.setDatabaseBuilder(databaseBuilder = databaseBuilder!!)
+                        welcomeScreen.setMainViewModel(mainViewModel = mainViewModel!!)
+                        navigator.replaceAll(welcomeScreen)
+                        userScrollNext.value = false
+                    }
+                )
             }
-        }
-        // Start auto-scroll effect
-
-        if (userScrollNext.value) {
-        LaunchedEffect(isDraggedState) {
-            if (pagerState.currentPage == pagerState.pageCount - 1) {
-                                    // go to sign up
-                userScrollNext.value = false
-                                }else {
-                                    pagerState.animateScrollToPage(
-                                        pagerState.currentPage + 1,
-                                        animationSpec = tween(
-                                            easing = LinearEasing,
-                                            durationMillis = 1000
-                                        )
-                                    )
-                userScrollNext.value = false
-                                }
-                        }
-        }
-
-        Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.15f), contentAlignment = Alignment.Center){
-            Row(
-                Modifier
-                    .height(10.dp)
-                    .fillMaxWidth(0.20f)
-                    .background(color = Color.Transparent),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                repeat(3) { iteration ->
-                    val color =
-                        if (pagerState.currentPage == iteration) Colors.darkPrimary else Colors.darkPrimary.copy(
-                            alpha = 0.5f
-                        )
-                    Box(
-                        modifier = Modifier
-                            .padding(start = 3.dp, end = 3.dp)
-                            .clip(CircleShape)
-                            .background(color)
-                            .height(3.dp)
-                            .weight(1f, fill = true)
+            val isDraggedState = pagerState.interactionSource.collectIsDraggedAsState()
+            HorizontalPager(
+                state = pagerState,
+                userScrollEnabled = true,
+                flingBehavior = PagerDefaults.flingBehavior(
+                    state = pagerState,
+                    snapPositionalThreshold = 0.2f
+                ),
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(0.80f)
+            ) { currentPage ->
+                Box(
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                        .pagerFadeTransition(pagerState.currentPage, pagerState)
+                        .background(color = Color.Transparent)
+                ) {
+                    onBoardingScreenView(
+                        subtitleTextList[currentPage],
+                        titleTextList[currentPage],
+                        imgList[currentPage]
                     )
+                }
+            }
+            // Start auto-scroll effect
+
+            if (userScrollNext.value) {
+                LaunchedEffect(isDraggedState) {
+                    if (pagerState.currentPage == pagerState.pageCount - 1) {
+                        val welcomeScreen = WelcomeScreen(platformNavigator = platformNavigator)
+                        welcomeScreen.setDatabaseBuilder(databaseBuilder = databaseBuilder!!)
+                        welcomeScreen.setMainViewModel(mainViewModel = mainViewModel!!)
+                        navigator.replaceAll(welcomeScreen)
+                        userScrollNext.value = false
+                    } else {
+                        pagerState.animateScrollToPage(
+                            pagerState.currentPage + 1,
+                            animationSpec = tween(
+                                easing = LinearEasing,
+                                durationMillis = 1000
+                            )
+                        )
+                        userScrollNext.value = false
+                    }
+                }
+            }
+
+            Box(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(0.15f),
+                contentAlignment = Alignment.Center
+            ) {
+                Row(
+                    Modifier
+                        .height(10.dp)
+                        .fillMaxWidth(0.20f)
+                        .background(color = Color.Transparent),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    repeat(3) { iteration ->
+                        val color =
+                            if (pagerState.currentPage == iteration) Colors.darkPrimary else Colors.darkPrimary.copy(
+                                alpha = 0.5f
+                            )
+                        Box(
+                            modifier = Modifier
+                                .padding(start = 3.dp, end = 3.dp)
+                                .clip(CircleShape)
+                                .background(color)
+                                .height(3.dp)
+                                .weight(1f, fill = true)
+                        )
+                    }
+
                 }
 
             }
-
-        }
-        Box(
-            modifier = Modifier.fillMaxHeight().fillMaxWidth()
-                .background(color = Color.White),
-            contentAlignment = Alignment.TopCenter
-        ) {
-
-            val buttonStyle = Modifier
-                .padding(top = 30.dp, start = 20.dp, end = 20.dp)
-                .fillMaxWidth()
-                .height(50.dp)
-
-            ButtonComponent(
-                modifier = buttonStyle,
-                buttonText = "Next",
-                borderStroke = null,
-                colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
-                fontSize = 18,
-                shape = RoundedCornerShape(15.dp),
-                textColor = Color.White,
-                style = MaterialTheme.typography.h4
+            Box(
+                modifier = Modifier.fillMaxHeight().fillMaxWidth()
+                    .background(color = Color.White),
+                contentAlignment = Alignment.TopCenter
             ) {
-                userScrollNext.value = true
+
+                val buttonStyle = Modifier
+                    .padding(top = 30.dp, start = 20.dp, end = 20.dp)
+                    .fillMaxWidth()
+                    .height(50.dp)
+
+                ButtonComponent(
+                    modifier = buttonStyle,
+                    buttonText = "Next",
+                    borderStroke = null,
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
+                    fontSize = 18,
+                    shape = RoundedCornerShape(15.dp),
+                    textColor = Color.White,
+                    style = MaterialTheme.typography.h4
+                ) {
+                    userScrollNext.value = true
+                }
             }
+
+        }
+    }
+
+    @OptIn(ExperimentalFoundationApi::class)
+    fun Modifier.pagerFadeTransition(page: Int, pagerState: PagerState) =
+        graphicsLayer {
+            val pageOffset = pagerState.calculateCurrentOffsetForPage(page)
+            translationX = pageOffset * size.width
+            alpha = 1 - pageOffset.absoluteValue
         }
 
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-fun Modifier.pagerFadeTransition(page: Int, pagerState: PagerState) =
-    graphicsLayer {
-        val pageOffset = pagerState.calculateCurrentOffsetForPage(page)
-        translationX = pageOffset * size.width
-        alpha = 1 - pageOffset.absoluteValue
+    @OptIn(ExperimentalFoundationApi::class)
+    fun PagerState.calculateCurrentOffsetForPage(page: Int): Float {
+        return (currentPage - page) + currentPageOffsetFraction
     }
 
-@OptIn(ExperimentalFoundationApi::class)
-fun PagerState.calculateCurrentOffsetForPage(page: Int): Float {
-    return (currentPage - page) + currentPageOffsetFraction
 }

@@ -118,7 +118,7 @@ fun ServiceAppointmentInfoWidget(appointment: Appointment) {
                             contentAlignment = Alignment.CenterStart
                         ) {
                             TextComponent(
-                                text = "Mobile Service",
+                                text = "Home Service",
                                 textModifier = Modifier.wrapContentSize(),
                                 fontSize = 14,
                                 fontFamily = GGSansRegular,

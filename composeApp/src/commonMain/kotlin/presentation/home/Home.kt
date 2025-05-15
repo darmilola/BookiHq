@@ -66,7 +66,9 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
+import com.russhwolf.settings.set
 import domain.Enums.AppointmentType
+import domain.Enums.AuthType
 import domain.Models.HomepageInfo
 import domain.Models.VendorRecommendation
 import domain.Enums.RecommendationType
@@ -146,6 +148,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
     @Composable
     override fun Content() {
         val userId = preferenceSettings[SharedPreferenceEnum.USER_ID.toPath(), -1L]
+        preferenceSettings[SharedPreferenceEnum.AUTH_ONBOARDING.toPath()] = true
         val screenSizeInfo = ScreenSizeInfo()
 
         if (loadingScreenUiStateViewModel == null) {
