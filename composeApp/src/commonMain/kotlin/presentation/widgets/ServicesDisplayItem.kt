@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -32,11 +33,11 @@ import presentations.components.TextComponent
 @Composable
 fun HomeServicesWidget(vendorService:Services, onServiceSelected: (Services) -> Unit){
     val columnModifier = Modifier
-        .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
+        .padding(start = 5.dp, end = 5.dp, top = 5.dp, bottom = 5.dp)
         .clickable {
             onServiceSelected(vendorService)
         }
-        .border(width = 1.dp, color = Colors.lightGray, shape = RoundedCornerShape(20.dp))
+        .border(width = 1.dp, color = Colors.lightGray, shape = RoundedCornerShape(10.dp))
         .height(120.dp)
         Column(
             modifier = columnModifier,
@@ -74,7 +75,7 @@ fun AttachServiceImage(iconRes: String, iconSize: Int = 50) {
     ) {
         val modifier = Modifier
             .size(iconSize.dp)
-        ImageComponent(imageModifier = modifier, imageRes = iconRes, colorFilter = ColorFilter.tint(color = Colors.iconTint))
+        ImageComponent(imageModifier = modifier, imageRes = iconRes, colorFilter = ColorFilter.tint(color = Color.Black))
     }
 
 }

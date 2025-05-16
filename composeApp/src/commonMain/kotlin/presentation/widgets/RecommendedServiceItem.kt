@@ -105,7 +105,7 @@ fun RecommendedServicePriceAndAction(vendorRecommendation: VendorRecommendation,
                     text = if(vendorRecommendation.recommendationType == RecommendationType.Services.toPath()) "Book Now" else "Buy Now",
                     fontFamily = GGSansRegular,
                     textStyle = MaterialTheme.typography.h6,
-                    textColor = Colors.primaryColor,
+                    textColor = Color.Black,
                     textAlign = TextAlign.Right,
                     fontWeight = FontWeight.ExtraBold,
                     lineHeight = 20,
@@ -114,7 +114,7 @@ fun RecommendedServicePriceAndAction(vendorRecommendation: VendorRecommendation,
                     overflow = TextOverflow.Ellipsis,
                     textModifier = Modifier.wrapContentSize().padding(end = 7.dp))
 
-                    ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+                    ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = Color.Black))
             }
 
         }
@@ -128,7 +128,7 @@ fun PopularServicePriceContent(price: String, currencyUnit: String) {
             fontSize = 16,
             fontFamily = GGSansRegular,
             textStyle = MaterialTheme.typography.h6,
-            textColor = Colors.primaryColor,
+            textColor = Color.Black,
             textAlign = TextAlign.Right,
             fontWeight = FontWeight.ExtraBold,
             lineHeight = 20,
@@ -171,7 +171,7 @@ fun RecommendedServiceDescription(vendorRecommendation: VendorRecommendation) {
             text = vendorRecommendation.description,
             fontSize = 14, fontFamily = GGSansRegular,
             textStyle = MaterialTheme.typography.h6,
-            textColor = Colors.darkPrimary,
+            textColor = Color.Gray,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.ExtraBold,
             lineHeight = 20,

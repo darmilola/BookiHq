@@ -356,7 +356,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                                 val color: Color
                                                 val width: Int
                                                 if (pagerState.currentPage == iteration) {
-                                                    color = Colors.primaryColor
+                                                    color = Color.Black
                                                     width = 20
                                                 } else {
                                                     color = Color.LightGray
@@ -597,7 +597,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                         val color: Color
                         val width: Int
                         if (pagerState.currentPage == iteration) {
-                            color = Colors.primaryColor
+                            color = Color.Black
                             width = 20
                         } else {
                             color = Color.LightGray
