@@ -176,7 +176,7 @@ fun RecommendedServiceDescription(vendorRecommendation: VendorRecommendation) {
             fontWeight = FontWeight.ExtraBold,
             lineHeight = 20,
             maxLines = 2,
-            overflow = TextOverflow.Ellipsis)
+            overflow = TextOverflow.Clip)
 
          StraightLine()
 

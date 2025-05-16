@@ -216,7 +216,7 @@ fun RecentAppointmentWidget(userAppointment: UserAppointment? = null) {
             .padding(bottom = 5.dp, top = 5.dp, start = 10.dp, end = 10.dp)
             .fillMaxHeight()
             .fillMaxWidth()
-            .border(border = BorderStroke(1.4.dp, Colors.lightGray), shape = RoundedCornerShape(10.dp))
+            .border(border = BorderStroke(1.4.dp, Colors.lightGray), shape = RoundedCornerShape(5.dp))
 
     Box(modifier = boxBgModifier) {
 

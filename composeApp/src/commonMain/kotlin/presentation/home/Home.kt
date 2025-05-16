@@ -68,7 +68,6 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import domain.Enums.AppointmentType
-import domain.Enums.AuthType
 import domain.Models.HomepageInfo
 import domain.Models.VendorRecommendation
 import domain.Enums.RecommendationType
@@ -203,24 +202,17 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             Scaffold(
                     snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
                     topBar = {
-                        Row(modifier = Modifier.fillMaxWidth().height(80.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Row(modifier = Modifier.weight(4f).height(60.dp)) {
-                              Box(modifier = Modifier.weight(0.8f).fillMaxHeight(), contentAlignment = Alignment.Center) {
+                        Row(modifier = Modifier.fillMaxWidth().height(60.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Row(modifier = Modifier.weight(4f).height(50.dp)) {
+                              Box(modifier = Modifier.weight(0.7f).fillMaxHeight(), contentAlignment = Alignment.Center) {
 
-                                  Box(Modifier.size(60.dp), contentAlignment = Alignment.Center) {
+                                  Box(Modifier.size(50.dp), contentAlignment = Alignment.Center) {
                                       Box(
                                           Modifier
-                                              .size(60.dp)
-                                              .clip(CircleShape)
-                                              .border(
-                                                  width = (2.5).dp,
-                                                  color = theme.Colors.primaryColor,
-                                                  shape = CircleShape
-                                              )
+                                              .size(50.dp)
                                               .background(color = Color.Transparent)
                                       ) {
                                           val modifier = Modifier
-                                              .padding(2.dp)
                                               .clip(CircleShape)
                                               .fillMaxSize()
                                           ImageComponent(imageModifier = modifier, imageRes = "drawable/dribble_icon.png", isAsync = false)
@@ -264,7 +256,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
                                 }
                             }
-                            Box(modifier = Modifier.weight(1f).height(60.dp), contentAlignment = Alignment.Center) {
+                            Box(modifier = Modifier.weight(1f).height(50.dp), contentAlignment = Alignment.Center) {
                                 VendorLogo(imageUrl = vendorInfo.value.businessLogo!!, onVendorLogoClicked = {
                                     mainViewModel!!.setScreenNav(
                                         Pair(
@@ -326,7 +318,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
                                 ) {
                                     if (!vendorServices.isNullOrEmpty()) {
-                                        AttachOurServices()
+                                        AttachFeaturedServices()
                                         val servicesGridList = homepageInfo.value.servicesGridList!!
                                         val pagerState = rememberPagerState(pageCount = {servicesGridList.size})
                                         HorizontalPager(
@@ -348,7 +340,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                         }
                                         Row(
                                             Modifier
-                                                .height(5.dp)
+                                                .height(10.dp)
                                                 .fillMaxWidth(),
                                             horizontalArrangement = Arrangement.Center
                                         ) {
@@ -417,7 +409,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
      }
 
 @Composable
-    fun AttachOurServices(){
+    fun AttachFeaturedServices(){
         val rowModifier = Modifier
             .padding(start = 10.dp, top = 20.dp)
             .fillMaxWidth()
@@ -427,7 +419,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 modifier = rowModifier
             ) {
                 TextComponent(
-                    text = "Services",
+                    text = "Featured Services",
                     fontSize = 25,
                     fontFamily = GGSansBold,
                     textStyle = MaterialTheme.typography.h6,
@@ -437,7 +429,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                     lineHeight = 30,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    textModifier = Modifier.fillMaxWidth(0.35f)
+                    textModifier = Modifier.fillMaxWidth(0.60f)
                 )
                 StraightLine()
             }
@@ -509,14 +501,16 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             ) {
                 TextComponent(
                     text = title,
-                    fontSize = 16,
-                    fontFamily = GGSansRegular,
+                    fontSize = 25,
+                    fontFamily = GGSansBold,
                     textStyle = MaterialTheme.typography.h6,
                     textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Black,
-                    lineHeight = 10,
-                    textModifier = Modifier.fillMaxWidth(0.20f)
+                    fontWeight = FontWeight.ExtraBold,
+                    lineHeight = 30,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    textModifier = Modifier.fillMaxWidth(0.70f)
                 )
                 StraightLine()
             }

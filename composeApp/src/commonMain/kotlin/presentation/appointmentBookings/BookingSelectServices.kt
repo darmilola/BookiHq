@@ -270,7 +270,7 @@ fun AttachServiceDropDownWidget(mainViewModel: MainViewModel, bookingViewModel: 
         }
     }
     var selectedService: ServiceTypeItem? = null
-    DropDownWidget(menuItems = serviceTypeList, selectedIndex = selectedIndex, shape = CircleShape ,iconRes = "drawable/spa_treatment_leaves.png",
+    DropDownWidget(menuItems = serviceTypeList, selectedIndex = selectedIndex, shape = RoundedCornerShape(10.dp) ,iconRes = "drawable/spa_treatment_leaves.png",
         placeHolderText = "Select Service Type", iconSize = 20, onMenuItemClick = {
         if (!isRecommendationType) {
             selectedService = serviceTypes.value[it]

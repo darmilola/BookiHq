@@ -407,8 +407,8 @@ fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, isRightSelection: Boo
 
     var isLeftChecked by remember { mutableStateOf(!isRightSelection) }
 
-    val leftTint  = if(isLeftChecked && isDisabled) Colors.disabledPrimaryColor else if(isLeftChecked) Colors.primaryColor else Color.Transparent
-    val rightTint  =  if(!isLeftChecked && isDisabled) Colors.disabledPrimaryColor else if(!isLeftChecked) Colors.primaryColor else Color.Transparent
+    val leftTint  = if(isLeftChecked && isDisabled) Colors.disabledPrimaryColor else if(isLeftChecked) Colors.darkPrimary else Color.Transparent
+    val rightTint  =  if(!isLeftChecked && isDisabled) Colors.disabledPrimaryColor else if(!isLeftChecked) Colors.darkPrimary else Color.Transparent
 
     val leftTextColor = if (isLeftChecked) Color.White else Colors.primaryColor
 
@@ -418,7 +418,7 @@ fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, isRightSelection: Boo
         .padding(top = 15.dp, end = 10.dp, start = 10.dp)
         .fillMaxWidth()
         .height(50.dp)
-        .background(color = Colors.lightPrimaryColor, shape = CircleShape)
+        .background(color = Colors.lightPrimaryColor, shape = shape)
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
