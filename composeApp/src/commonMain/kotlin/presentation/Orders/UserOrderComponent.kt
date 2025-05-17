@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import applications.formatter.formatNumber
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import domain.Enums.OrderStatusEnum
 import domain.Models.CustomerOrder
 import domain.Models.PlacedOrderItemComponent
 import kotlinx.serialization.json.Json
@@ -71,7 +72,7 @@ fun UserOrderComponent(mainViewModel: MainViewModel, customerOrder: CustomerOrde
                 ) {
 
                    TextComponent(
-                        text = customerOrder.orderStatus.toString(),
+                        text = getOrderStatusDisplay(customerOrder.orderStatus.toString()),
                         fontSize = 18,
                         fontFamily = GGSansRegular,
                         textStyle = TextStyle(),
@@ -134,6 +135,17 @@ fun UserOrderComponent(mainViewModel: MainViewModel, customerOrder: CustomerOrde
             StraightLine()
         }
     }
+
+fun getOrderStatusDisplay(orderStatus: String): String{
+   val orderStatusDisplay =  when(orderStatus){
+        OrderStatusEnum.DELIVERED.toPath() -> "Order Delivered"
+        OrderStatusEnum.CANCELLED.toPath() -> "Order Cancelled"
+        OrderStatusEnum.PROCESSING.toPath() -> "Order Processing"
+        else -> ""
+
+    }
+    return orderStatusDisplay
+}
 
 
 @Composable

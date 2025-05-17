@@ -276,7 +276,7 @@ class AccountTab : Tab, Parcelable {
                         mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.CONNECT_VENDOR.toPath()))
                     })
 
-                ActionItemComponent(
+               /* ActionItemComponent(
                     modifier = actionStyle,
                     buttonText = "Customer Care",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
@@ -284,7 +284,7 @@ class AccountTab : Tab, Parcelable {
                     textColor = Colors.darkPrimary,
                     style = TextStyle(),
                     iconRes = "drawable/support.png",
-                    isDestructiveAction = false)
+                    isDestructiveAction = false)*/
 
                 if (mainViewModel!!.currentUserInfo.value.isTherapist == false) {
                     ActionItemComponent(
@@ -305,7 +305,7 @@ class AccountTab : Tab, Parcelable {
                         })
                 }
 
-                ActionItemComponent(
+              /*  ActionItemComponent(
                     modifier = actionStyle,
                     buttonText = "Privacy Policy",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
@@ -313,7 +313,7 @@ class AccountTab : Tab, Parcelable {
                     textColor = Colors.darkPrimary,
                     style = TextStyle(),
                     iconRes = "drawable/privacy_icon.png",
-                    isDestructiveAction = false)
+                    isDestructiveAction = false)*/
 
                 ActionItemComponent(
                     modifier = actionStyle,

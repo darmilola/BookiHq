@@ -160,7 +160,7 @@ fun ProductBottomSheetContent(product: Product, mainViewModel: MainViewModel) {
         ProductNameInfoContent(product, currencyUnit)
         Divider(color = Color(color = 0x90C8C8C8), thickness = 1.dp, modifier = Modifier.fillMaxWidth(0.90f).padding(top = 20.dp))
 
-        ToggleButton(shape = CircleShape, onLeftClicked = {
+        ToggleButton(shape = RoundedCornerShape(5.dp), onLeftClicked = {
            currentTabScreen = 0
         }, onRightClicked = {
             currentTabScreen = 1

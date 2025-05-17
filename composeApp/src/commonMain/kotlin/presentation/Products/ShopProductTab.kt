@@ -249,7 +249,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                             val isRightSelected =
                                 selectedProductType == ProductType.ACCESSORIES.toPath()
                             ToggleButton(
-                                shape = CircleShape,
+                                shape = RoundedCornerShape(5.dp),
                                 isRightSelection = isRightSelected,
                                 onLeftClicked = {
                                     preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath()] =

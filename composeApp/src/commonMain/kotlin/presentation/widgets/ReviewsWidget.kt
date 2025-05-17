@@ -1,15 +1,18 @@
 package presentation.widgets
 
 import GGSansRegular
+import androidx.compose.foundation.BorderStroke
 import theme.styles.Colors
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,6 +38,7 @@ fun AppointmentReviewsWidget(reviews: AppointmentReview) {
 
     val columnModifier = Modifier
         .padding(start = 5.dp, bottom = 10.dp)
+        .wrapContentHeight()
         .fillMaxWidth()
     Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
         AttachAppointmentReviewHeader(reviews)
@@ -236,9 +240,11 @@ fun AttachReviewDate(reviewDate: String){
 fun AttachUserReviewsContent(reviewText: String) {
     val columnModifier = Modifier
         .padding(bottom = 20.dp, top = 5.dp)
+        .wrapContentHeight()
         .fillMaxWidth()
     Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
         val modifier = Modifier
+            .wrapContentHeight()
             .fillMaxWidth()
         TextComponent(
             textModifier = modifier, text = reviewText, fontSize = 16, fontFamily = GGSansRegular,

@@ -28,7 +28,7 @@ import theme.styles.Colors
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AppointmentReviewScreen(appointmentReviews: List<AppointmentReview>) {
+fun TherapistReviewScreen(appointmentReviews: List<AppointmentReview>) {
     val pagerState = rememberPagerState(pageCount = {
         appointmentReviews.size
     })
