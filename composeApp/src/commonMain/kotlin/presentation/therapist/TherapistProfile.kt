@@ -108,7 +108,7 @@ fun TherapistProfile(therapistInfo: TherapistInfo, therapistPresenter: Therapist
 
                            if (uiState.value.isLoading) {
                                Box(
-                                   modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                                   modifier = Modifier.fillMaxWidth().fillMaxHeight(0.50f)
                                        .padding(top = 40.dp, start = 50.dp, end = 50.dp)
                                        .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
                                    contentAlignment = Alignment.Center
@@ -117,15 +117,30 @@ fun TherapistProfile(therapistInfo: TherapistInfo, therapistPresenter: Therapist
                                }
                            }
                            else if (uiState.value.isFailed) {
+                               Column(
+                                   modifier = Modifier.fillMaxWidth().fillMaxHeight(0.50f),
+                                   horizontalAlignment = Alignment.CenterHorizontally,
+                                   verticalArrangement = Arrangement.Center
+                               ) {
                                Box(modifier = Modifier .fillMaxWidth().height(400.dp), contentAlignment = Alignment.Center) {
                                    ErrorOccurredWidget(uiState.value.errorMessage, onRetryClicked = {
                                        therapistPresenter.getTherapistReviews(therapistInfo.id!!)
                                    })
                                }
                            }
+                               }
                            else if (uiState.value.isEmpty) {
-                               Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                   EmptyContentWidget(emptyText = "No Reviews Available")
+                               Column(
+                                   modifier = Modifier.fillMaxWidth().fillMaxHeight(0.50f),
+                                   horizontalAlignment = Alignment.CenterHorizontally,
+                                   verticalArrangement = Arrangement.Center
+                               ) {
+                                   Box(
+                                       modifier = Modifier.fillMaxSize(),
+                                       contentAlignment = Alignment.Center
+                                   ) {
+                                       EmptyContentWidget(emptyText = "No Reviews Available")
+                                   }
                                }
                            }
                            else if (uiState.value.isSuccess) {
