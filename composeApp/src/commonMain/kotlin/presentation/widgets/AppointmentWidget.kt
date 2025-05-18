@@ -64,6 +64,9 @@ fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPrese
             BookingStatus.POSTPONED.toPath() -> {
                 "Delete"
             }
+            BookingStatus.CANCELLED.toPath() -> {
+                "Delete"
+            }
             BookingStatus.BOOKING.toPath() -> {
                 "Cancel Booking"
             }
@@ -96,6 +99,11 @@ fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPrese
         BookingStatus.BOOKING.toPath() -> {
             serviceIconRes = "drawable/schedule.png"
             serviceStatusText = "Booking"
+            serviceStatusColor = Colors.primaryColor
+        }
+        BookingStatus.CANCELLED.toPath() -> {
+            serviceIconRes = "drawable/schedule.png"
+            serviceStatusText = "Cancelled"
             serviceStatusColor = Colors.primaryColor
         }
         BookingStatus.POSTPONED.toPath() -> {

@@ -326,7 +326,7 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
                     ) {
                         InputWidget(
                             iconRes = "drawable/address.png",
-                            placeholderText = "Mobile Address",
+                            placeholderText = "Home Address",
                             iconSize = 28,
                             text = address.value,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),

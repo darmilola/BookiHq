@@ -24,6 +24,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -53,6 +54,7 @@ import presentation.components.ButtonComponent
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.ActionItemComponent
 import presentation.widgets.AccountProfileImage
+import presentation.widgets.DeleteAccountDialog
 import presentation.widgets.TitleWidget
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
@@ -98,6 +100,17 @@ class AccountTab : Tab, Parcelable {
             animation = StackedSnackbarAnimation.Bounce
         )
 
+        val deleteAccountAction = remember { mutableStateOf(false) }
+
+        if (deleteAccountAction.value){
+            DeleteAccountDialog(onCancel = {
+                deleteAccountAction.value = false
+            }, onConfirmation = {
+
+            })
+        }
+
+
         Scaffold(
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
                 .background(color = Color.White),
@@ -141,7 +154,9 @@ class AccountTab : Tab, Parcelable {
                         thickness = 2.dp,
                         modifier = Modifier.fillMaxWidth(0.90f).padding(top = 30.dp)
                     )
-                    AttachAccountAction()
+                    AttachAccountAction(onDeleteAccountClicked = {
+                        deleteAccountAction.value = true
+                    })
                 }
 
             })
@@ -194,7 +209,7 @@ class AccountTab : Tab, Parcelable {
 
 
     @Composable
-    fun AttachAccountAction() {
+    fun AttachAccountAction(onDeleteAccountClicked:() -> Unit) {
         val columnModifier = Modifier
             .padding(top = 10.dp, start = 5.dp, bottom = 100.dp)
             .fillMaxWidth()
@@ -342,7 +357,9 @@ class AccountTab : Tab, Parcelable {
                     fontSize = 16,
                     shape = RoundedCornerShape(10.dp),
                     textColor = theme.Colors.pinkColor,
-                    style = TextStyle()) {}
+                    style = TextStyle()) {
+                    onDeleteAccountClicked()
+                }
 
             }
         }
