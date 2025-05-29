@@ -56,8 +56,8 @@ fun VendorsView(nearbyVendor: List<Vendor>, newVendor: List<Vendor>, mainViewMod
                 .fillMaxWidth()
         ) {
             TextComponent(
-                text = "Nearby Parlors",
-                textModifier = Modifier.fillMaxWidth(0.50f),
+                text = "Nearby",
+                textModifier = Modifier.fillMaxWidth(0.30f),
                 fontSize = 28,
                 fontFamily = GGSansBold,
                 textStyle = MaterialTheme.typography.h6,
@@ -70,7 +70,7 @@ fun VendorsView(nearbyVendor: List<Vendor>, newVendor: List<Vendor>, mainViewMod
             )
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(0.45f)
+                    .fillMaxWidth(0.55f)
                     .height(1.dp)
                     .background(color =  Colors.lighterPrimaryColor)
             )
