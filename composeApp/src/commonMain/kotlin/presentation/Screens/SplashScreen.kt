@@ -43,6 +43,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.Screens.welcomeScreen.LandingScreen
+import presentation.Screens.welcomeScreen.OnBoardingScreen
 import presentation.authentication.AuthenticationPresenter
 import presentation.connectVendor.ConnectVendor
 import presentation.viewmodels.MainViewModel
@@ -152,10 +153,15 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
                    authenticationPresenter.validateEmail(it)
              },
              onOnBoard = {
-                 val landingScreen = LandingScreen(platformNavigator)
+                 val onBoardingScreen = OnBoardingScreen(platformNavigator)
+                 onBoardingScreen.setMainViewModel(mainViewModel)
+                 onBoardingScreen.setDatabaseBuilder(databaseBuilder)
+                 navigator.replaceAll(onBoardingScreen)
+
+               /*  val landingScreen = LandingScreen(platformNavigator)
                  landingScreen.setDatabaseBuilder(databaseBuilder)
                  landingScreen.setMainViewModel(mainViewModel)
-                 navigator.replaceAll(landingScreen)
+                 navigator.replaceAll(landingScreen)*/
              },
                 onWelcome = {
                     val welcomeScreen = WelcomeScreen(platformNavigator)
