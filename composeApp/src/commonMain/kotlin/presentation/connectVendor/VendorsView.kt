@@ -94,7 +94,7 @@ fun VendorsView(nearbyVendor: List<Vendor>, newVendor: List<Vendor>, mainViewMod
 
         if (nearbyVendor.isEmpty()){
                 Box(modifier = Modifier.fillMaxWidth().height(350.dp), contentAlignment = Alignment.Center) {
-                    EmptyContentWidget(emptyText = "No Nearby Parlor")
+                    EmptyContentWidget(emptyText = "No Nearby Vendor")
                 }
         }
         else {

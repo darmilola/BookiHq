@@ -232,7 +232,7 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                     SwitchVendorHeader(onBackPressed = {
                         navigator.pop()
                     })
-                    SearchBar(placeholderText = "search @parlor", searchIcon = "drawable/search_icon.png" ,onValueChange = {
+                    SearchBar(placeholderText = "search @vendor", searchIcon = "drawable/search_icon.png" ,onValueChange = {
                         vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                         searchQuery.value = it
                         connectVendorPresenter.searchVendor(country,connectedVendor = vendorId,searchQuery = it)
@@ -250,7 +250,7 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
             content = {
                 if (barCodeUiState.value.isLoading) {
                     Box(modifier = Modifier.fillMaxWidth()) {
-                        LoadingDialog("Getting Parlor")
+                        LoadingDialog("Getting Vendor")
                     }
                 }
                 else if (barCodeUiState.value.isSuccess) {

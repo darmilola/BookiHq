@@ -35,6 +35,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -52,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -90,6 +92,7 @@ import presentation.main.VendorLogo
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.MainViewModel
+import presentation.widgets.ActionItemComponent
 import presentation.widgets.HomeServicesWidget
 import presentation.widgets.VendorRecommendationsItem
 import presentation.widgets.RecentAppointmentWidget
@@ -318,6 +321,21 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
                                 ) {
                                     if (!vendorServices.isNullOrEmpty()) {
+
+                                        ActionItemComponent(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(60.dp),
+                                            buttonText = "Switch Vendor",
+                                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                                            fontSize = 20,
+                                            textColor = Colors.darkPrimary,
+                                            style = TextStyle(),
+                                            iconRes = "drawable/switch.png",
+                                            isDestructiveAction = false, onClick = {
+                                                mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.CONNECT_VENDOR.toPath()))
+                                            })
+
                                         AttachFeaturedServices()
                                         val servicesGridList = homepageInfo.value.servicesGridList!!
                                         val pagerState = rememberPagerState(pageCount = {servicesGridList.size})
@@ -411,7 +429,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 @Composable
     fun AttachFeaturedServices(){
         val rowModifier = Modifier
-            .padding(start = 10.dp, top = 20.dp)
+            .padding(start = 10.dp, top = 10.dp)
             .fillMaxWidth()
             Row(
                 horizontalArrangement = Arrangement.Start,

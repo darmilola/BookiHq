@@ -281,7 +281,7 @@ class AccountTab : Tab, Parcelable {
 
                 ActionItemComponent(
                     modifier = actionStyle,
-                    buttonText = "Switch Parlor",
+                    buttonText = "Switch Vendor",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
                     textColor = Colors.darkPrimary,
@@ -344,7 +344,7 @@ class AccountTab : Tab, Parcelable {
                     }
                 )
 
-                Divider(color = Color(color = 0x70FA2D65), thickness = 0.5.dp, modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 20.dp))
+                /*Divider(color = Color(color = 0x70FA2D65), thickness = 0.5.dp, modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 20.dp))
 
                 ButtonComponent(
                     modifier = Modifier
@@ -359,7 +359,7 @@ class AccountTab : Tab, Parcelable {
                     textColor = theme.Colors.pinkColor,
                     style = TextStyle()) {
                     onDeleteAccountClicked()
-                }
+                }*/
 
             }
         }
