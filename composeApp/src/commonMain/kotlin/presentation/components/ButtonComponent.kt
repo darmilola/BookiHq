@@ -181,9 +181,7 @@ fun bottomSheetIconButtonComponent(modifier: Modifier, buttonText: String, borde
 
     Button(
         onClick = {
-            if (onClick != null) {
-                onClick(buttonText)
-            }
+            onClick(buttonText)
         },
         border = borderStroke,
         shape = shape,

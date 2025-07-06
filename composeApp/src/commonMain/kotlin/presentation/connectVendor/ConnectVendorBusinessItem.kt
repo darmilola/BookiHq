@@ -48,7 +48,7 @@ import presentations.components.TextComponent
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(modifier = Modifier.size(100.dp), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.size(80.dp), contentAlignment = Alignment.Center) {
                     BusinessLogo(vendor.businessLogo!!)
                 }
                 Box(modifier = Modifier.fillMaxWidth(0.70f), contentAlignment = Alignment.Center) {
@@ -72,7 +72,7 @@ import presentations.components.TextComponent
     fun BusinessLogo(logoUrl: String) {
             Box(
                 modifier = Modifier
-                    .size(100.dp)
+                    .size(80.dp)
                     .clip(CircleShape),
                 contentAlignment = Alignment.Center
             ) {
