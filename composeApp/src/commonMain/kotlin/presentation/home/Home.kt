@@ -218,7 +218,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                           val modifier = Modifier
                                               .clip(CircleShape)
                                               .fillMaxSize()
-                                          ImageComponent(imageModifier = modifier, imageRes = "drawable/dribble_icon.png", isAsync = false)
+                                          ImageComponent(imageModifier = modifier, imageRes = "drawable/main_icon.png", isAsync = false)
                                       }
                                   }
 
