@@ -125,7 +125,7 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
                     }
                 }
             },
-            backgroundColor = Color.Transparent,
+            backgroundColor = Color.White,
         )
     }
 }

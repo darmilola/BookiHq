@@ -143,7 +143,7 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
                      showSwitchReasonBottomSheet = true
                 }
             },
-            backgroundColor = Color.Transparent
+            backgroundColor = Color.White
         )
     }
 

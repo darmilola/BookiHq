@@ -1,5 +1,6 @@
 package presentation.widgets
 
+import androidx.compose.foundation.background
 import theme.styles.Colors
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 
@@ -74,6 +76,7 @@ fun ConnectBusinessTitle(onBackPressed: () -> Unit){
 fun VendorDetailsTitle(onBackPressed: () -> Unit){
     val rowModifier = Modifier
         .fillMaxWidth()
+        .background(color = Color.White)
         .padding(top = 20.dp)
         .height(40.dp)
 

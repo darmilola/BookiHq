@@ -71,7 +71,7 @@ class VendorInfoScreen(val vendor: Vendor, val  platformNavigator: PlatformNavig
             content = {
                 BusinessInfoContent(vendor, isViewOnly = true) {}
             },
-            backgroundColor = Color.Transparent,
+            backgroundColor = Color.White,
         )
     }
 }

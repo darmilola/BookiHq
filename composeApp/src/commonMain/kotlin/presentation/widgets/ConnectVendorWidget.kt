@@ -123,19 +123,12 @@ fun ConnectTitle(title: String){
 @Composable
 fun BusinessInfoContent(vendor: Vendor, isViewOnly: Boolean = false, onConnectedListener: () -> Unit) {
     val columnModifier = Modifier
-        .background(color = Color.White, shape = RoundedCornerShape(10.dp))
+        .background(color = Color.White)
         .padding(start = 10.dp, end = 10.dp)
         .fillMaxHeight()
         .verticalScroll(rememberScrollState())
         .fillMaxWidth()
     Box(modifier = Modifier.fillMaxSize()) {
-        Card(
-            modifier = Modifier
-                .padding(start = 10.dp, end = 10.dp)
-                .fillMaxHeight(0.90f)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp)
-        ) {
             Column(
                 modifier = columnModifier,
                 verticalArrangement = Arrangement.Center,
@@ -337,7 +330,6 @@ fun BusinessInfoContent(vendor: Vendor, isViewOnly: Boolean = false, onConnected
                     }
                 }
             }
-        }
     }
 }
 
