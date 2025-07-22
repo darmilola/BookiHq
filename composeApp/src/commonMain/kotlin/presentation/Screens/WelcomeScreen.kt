@@ -277,8 +277,8 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful:
                     Colors.primaryColor,
                     Colors.primaryColor,
                     Colors.primaryColor,
-                    Colors.postPrimaryColor,
-                    Colors.postPrimaryColor
+                    Colors.primaryColor,
+                    Colors.primaryColor
                 )
             )
         )
