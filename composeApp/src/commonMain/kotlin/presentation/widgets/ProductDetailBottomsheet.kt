@@ -22,7 +22,7 @@ import presentation.viewmodels.MainViewModel
 fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewOnly: Boolean = false, selectedProduct: OrderItem, onAddToCart: (isAddToCart: Boolean, OrderItem) -> Unit,
                              onDismiss: () -> Unit) {
     val scope = rememberCoroutineScope()
-    val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false))
+    val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true))
     val showBottomSheet = mainViewModel.showProductBottomSheet.collectAsState()
     scope.launch {
         scaffoldState.bottomSheetState.hide()

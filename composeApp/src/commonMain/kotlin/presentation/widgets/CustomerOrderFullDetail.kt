@@ -73,7 +73,6 @@ fun OrderDetailList(itemList: ArrayList<PlacedOrderItemComponent>,currencyUnit: 
 @Composable
 fun OrderItemDetail(itemList: ArrayList<PlacedOrderItemComponent>,currencyUnit: String, onAddReviewClicked: (Long) -> Unit) {
     val columnModifier = Modifier
-        .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .fillMaxHeight()
     Column(modifier = columnModifier,
