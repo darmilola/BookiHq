@@ -64,6 +64,9 @@ fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPrese
             BookingStatus.POSTPONED.toPath() -> {
                 "Delete"
             }
+            BookingStatus.CANCELLED.toPath() -> {
+                "Delete"
+            }
             BookingStatus.BOOKING.toPath() -> {
                 "Cancel Booking"
             }
@@ -96,6 +99,11 @@ fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPrese
         BookingStatus.BOOKING.toPath() -> {
             serviceIconRes = "drawable/schedule.png"
             serviceStatusText = "Booking"
+            serviceStatusColor = Colors.primaryColor
+        }
+        BookingStatus.CANCELLED.toPath() -> {
+            serviceIconRes = "drawable/schedule.png"
+            serviceStatusText = "Cancelled"
             serviceStatusColor = Colors.primaryColor
         }
         BookingStatus.POSTPONED.toPath() -> {
@@ -216,7 +224,7 @@ fun RecentAppointmentWidget(userAppointment: UserAppointment? = null) {
             .padding(bottom = 5.dp, top = 5.dp, start = 10.dp, end = 10.dp)
             .fillMaxHeight()
             .fillMaxWidth()
-            .border(border = BorderStroke(1.4.dp, Colors.lightGray), shape = RoundedCornerShape(10.dp))
+            .border(border = BorderStroke(1.4.dp, Colors.lightGray), shape = RoundedCornerShape(5.dp))
 
     Box(modifier = boxBgModifier) {
 
@@ -366,7 +374,7 @@ fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String
                                else if (title.contentEquals("Delete", true)) {
                                    onDeleteAppointment(userAppointment)
                                }
-                               else if (title.contentEquals("Cancel Appointment")){
+                               else if (title.contentEquals("Cancel Booking")){
                                    onCancelAppointment(userAppointment)
                                }
                                else if (title.contentEquals("Add Review", true)) {
@@ -413,8 +421,18 @@ fun AttachServiceAppointmentContent(appointment: Appointment) {
 
 
 @Composable
-fun TherapistDisplayItem(therapistInfo: TherapistInfo) {
-    val profileInfo = therapistInfo.profileInfo
+fun TherapistDisplayItem(therapistInfo: TherapistInfo?) {
+    var profileName = ""
+    var imageUrl = ""
+    if (therapistInfo == null){
+        profileName = "No Therapist"
+        imageUrl = "drawable/facials_icon.png"
+    }
+    else{
+        val profileInfo = therapistInfo.profileInfo
+        profileName = profileInfo!!.firstname+ " "+profileInfo.lastname
+        imageUrl = profileInfo.profileImageUrl!!
+    }
     val rowModifier = Modifier
         .fillMaxWidth().height(40.dp)
 
@@ -436,10 +454,10 @@ fun TherapistDisplayItem(therapistInfo: TherapistInfo) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = iconTextBoxModifier
             ) {
-                TherapistProfileImage(profileImageUrl = profileInfo?.profileImageUrl!!, isAsync = true)
+                TherapistProfileImage(profileImageUrl = imageUrl, isAsync = therapistInfo != null)
                 Box(modifier = Modifier.wrapContentWidth().fillMaxHeight(), contentAlignment = Alignment.CenterStart) {
                     TextComponent(
-                        text = profileInfo.firstname+ " "+profileInfo.lastname,
+                        text = profileName,
                         fontSize = 15,
                         fontFamily = GGSansRegular,
                         textStyle = MaterialTheme.typography.h6,

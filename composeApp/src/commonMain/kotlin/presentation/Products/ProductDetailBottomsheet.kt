@@ -43,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import applications.formatter.formatNumber
 import domain.Models.OrderItem
 import domain.Models.Product
 import domain.Enums.ValuesLimit
@@ -159,7 +160,7 @@ fun ProductBottomSheetContent(product: Product, mainViewModel: MainViewModel) {
         ProductNameInfoContent(product, currencyUnit)
         Divider(color = Color(color = 0x90C8C8C8), thickness = 1.dp, modifier = Modifier.fillMaxWidth(0.90f).padding(top = 20.dp))
 
-        ToggleButton(shape = CircleShape, onLeftClicked = {
+        ToggleButton(shape = RoundedCornerShape(5.dp), onLeftClicked = {
            currentTabScreen = 0
         }, onRightClicked = {
             currentTabScreen = 1
@@ -231,7 +232,7 @@ fun ProductPriceInfoContent(product: Product, currencyUnit: String) {
     ) {
 
         TextComponent(
-            text = "$currencyUnit${product.productPrice}",
+            text = "$currencyUnit${formatNumber(product.productPrice)}",
             fontSize = 20,
             fontFamily = GGSansBold,
             textStyle = TextStyle(),

@@ -148,8 +148,8 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
                     if (it.mobileServiceAvailable) {
                         isServiceTypeMobileServiceAvailable.value = true
                         if (isProfileCompleted) {
-                            ShowSnackBar(title = "Mobile Service Is Available",
-                                description = "You can go Mobile for this service",
+                            ShowSnackBar(title = "Home Service Is Available",
+                                description = "You can use your address for this service",
                                 actionLabel = "",
                                 duration = StackedSnackbarDuration.Short,
                                 snackBarType = SnackBarType.INFO,
@@ -157,7 +157,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
                                 onActionClick = {})
                         }
                         else{
-                            ShowSnackBar(title = "Mobile Service Is Available",
+                            ShowSnackBar(title = "Home Service Is Available",
                                 description = "Please complete your profile",
                                 actionLabel = "Complete Profile",
                                 duration = StackedSnackbarDuration.Long,
@@ -270,7 +270,7 @@ fun AttachServiceDropDownWidget(mainViewModel: MainViewModel, bookingViewModel: 
         }
     }
     var selectedService: ServiceTypeItem? = null
-    DropDownWidget(menuItems = serviceTypeList, selectedIndex = selectedIndex, shape = CircleShape ,iconRes = "drawable/spa_treatment_leaves.png",
+    DropDownWidget(menuItems = serviceTypeList, selectedIndex = selectedIndex, shape = RoundedCornerShape(10.dp) ,iconRes = "drawable/spa_treatment_leaves.png",
         placeHolderText = "Select Service Type", iconSize = 20, onMenuItemClick = {
         if (!isRecommendationType) {
             selectedService = serviceTypes.value[it]

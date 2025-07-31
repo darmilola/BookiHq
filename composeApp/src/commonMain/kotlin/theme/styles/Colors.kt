@@ -3,16 +3,17 @@ package theme.styles
 import androidx.compose.ui.graphics.Color
 
 object Colors {
-    val primaryColor: Color = Color(color = 0xFF03C3F7)
+    val primaryColor: Color = Color(color = 0xFF053549)
     val postPrimaryColor: Color = Color(color = 0xFF03f7ae)
+    val iconTint: Color = Color(color = 0XFF00c2ed)
     val postPrimaryColor1: Color = Color(color = 0xFF03e7f7)
-    val disabledPrimaryColor: Color = Color(color = 0x8003C3F7)
-    val transparentPrimaryColor: Color = Color(color = 0x80004659)
+    val disabledPrimaryColor: Color = Color(color = 0x80053549)
+    val transparentPrimaryColor: Color = Color(color = 0x40000000)
     val lightPrimaryColor: Color = Color(color = 0xFFE6F8FF)
     val serviceLightGray: Color = Color(color = 0xFF8D9093)
     val serviceDarkText: Color = Color(color = 0xFF4a5a6b)
     val surfaceColor: Color = Color(color = 0xFFF5FAFC)
-    val darkPrimary: Color = Color(color = 0xFF011e26)
+    val darkPrimary: Color = Color(color = 0xFF053549)
     val serviceTypeDark: Color = Color(color = 0xFF064f63)
     val pinkColor: Color = Color(color = 0xFFFA2D65)
     val blue: Color = Color(color = 0xFF3A8AF2)

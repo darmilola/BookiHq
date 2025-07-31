@@ -35,6 +35,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -52,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -66,6 +68,7 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
+import com.russhwolf.settings.set
 import domain.Enums.AppointmentType
 import domain.Models.HomepageInfo
 import domain.Models.VendorRecommendation
@@ -89,6 +92,7 @@ import presentation.main.VendorLogo
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.MainViewModel
+import presentation.widgets.ActionItemComponent
 import presentation.widgets.HomeServicesWidget
 import presentation.widgets.VendorRecommendationsItem
 import presentation.widgets.RecentAppointmentWidget
@@ -146,6 +150,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
     @Composable
     override fun Content() {
         val userId = preferenceSettings[SharedPreferenceEnum.USER_ID.toPath(), -1L]
+        preferenceSettings[SharedPreferenceEnum.AUTH_ONBOARDING.toPath()] = true
         val screenSizeInfo = ScreenSizeInfo()
 
         if (loadingScreenUiStateViewModel == null) {
@@ -200,26 +205,20 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             Scaffold(
                     snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
                     topBar = {
-                        Row(modifier = Modifier.fillMaxWidth().height(80.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Row(modifier = Modifier.weight(4f).height(60.dp)) {
-                              Box(modifier = Modifier.weight(0.8f).fillMaxHeight(), contentAlignment = Alignment.Center) {
+                        Row(modifier = Modifier.fillMaxWidth().height(60.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Row(modifier = Modifier.weight(4f).height(50.dp)) {
+                              Box(modifier = Modifier.weight(0.7f).fillMaxHeight(), contentAlignment = Alignment.Center) {
 
-                                  Box(Modifier.size(60.dp), contentAlignment = Alignment.Center) {
+                                  Box(Modifier.size(50.dp), contentAlignment = Alignment.Center) {
                                       Box(
                                           Modifier
-                                              .size(60.dp)
-                                              .clip(CircleShape)
+                                              .size(50.dp)
                                               .background(color = Color.Transparent)
                                       ) {
                                           val modifier = Modifier
-                                              .padding(2.dp)
                                               .clip(CircleShape)
-                                              .border(
-                                                  width = 0.4.dp,
-                                                  color = Color.White,
-                                                  shape = CircleShape)
                                               .fillMaxSize()
-                                          ImageComponent(imageModifier = modifier, imageRes = userInfo.profileImageUrl!!, isAsync = true)
+                                          ImageComponent(imageModifier = modifier, imageRes = "drawable/main_icon.png", isAsync = false)
                                       }
                                   }
 
@@ -260,7 +259,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
 
                                 }
                             }
-                            Box(modifier = Modifier.weight(1f).height(60.dp), contentAlignment = Alignment.Center) {
+                            Box(modifier = Modifier.weight(1f).height(50.dp), contentAlignment = Alignment.Center) {
                                 VendorLogo(imageUrl = vendorInfo.value.businessLogo!!, onVendorLogoClicked = {
                                     mainViewModel!!.setScreenNav(
                                         Pair(
@@ -318,11 +317,26 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                         .verticalScroll(state = rememberScrollState())
                                         .height(homePageViewHeight.value.dp)
                                         .fillMaxWidth()
-                                        .padding(top = 5.dp, bottom = 100.dp)
+                                        .padding(top = 5.dp, bottom = 70.dp)
 
                                 ) {
                                     if (!vendorServices.isNullOrEmpty()) {
-                                        AttachOurServices()
+
+                                        ActionItemComponent(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(60.dp),
+                                            buttonText = "Switch Vendor",
+                                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                                            fontSize = 20,
+                                            textColor = Colors.darkPrimary,
+                                            style = TextStyle(),
+                                            iconRes = "drawable/switch.png",
+                                            isDestructiveAction = false, onClick = {
+                                                mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.CONNECT_VENDOR.toPath()))
+                                            })
+
+                                        AttachFeaturedServices()
                                         val servicesGridList = homepageInfo.value.servicesGridList!!
                                         val pagerState = rememberPagerState(pageCount = {servicesGridList.size})
                                         HorizontalPager(
@@ -344,7 +358,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                         }
                                         Row(
                                             Modifier
-                                                .height(5.dp)
+                                                .height(10.dp)
                                                 .fillMaxWidth(),
                                             horizontalArrangement = Arrangement.Center
                                         ) {
@@ -352,7 +366,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                                 val color: Color
                                                 val width: Int
                                                 if (pagerState.currentPage == iteration) {
-                                                    color = Colors.primaryColor
+                                                    color = Color.Black
                                                     width = 20
                                                 } else {
                                                     color = Color.LightGray
@@ -413,9 +427,9 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
      }
 
 @Composable
-    fun AttachOurServices(){
+    fun AttachFeaturedServices(){
         val rowModifier = Modifier
-            .padding(start = 10.dp, top = 20.dp)
+            .padding(start = 10.dp, top = 10.dp)
             .fillMaxWidth()
             Row(
                 horizontalArrangement = Arrangement.Start,
@@ -423,8 +437,8 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                 modifier = rowModifier
             ) {
                 TextComponent(
-                    text = "Services",
-                    fontSize = 30,
+                    text = "Featured Services",
+                    fontSize = 25,
                     fontFamily = GGSansBold,
                     textStyle = MaterialTheme.typography.h6,
                     textColor = Colors.darkPrimary,
@@ -433,7 +447,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                     lineHeight = 30,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    textModifier = Modifier.fillMaxWidth(0.35f)
+                    textModifier = Modifier.fillMaxWidth(0.60f)
                 )
                 StraightLine()
             }
@@ -453,7 +467,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             TextComponent(
                 text = "Recommended",
                 textModifier = Modifier.fillMaxWidth(0.50f),
-                fontSize = 28,
+                fontSize = 25,
                 fontFamily = GGSansBold,
                 textStyle = MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,
@@ -505,14 +519,16 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             ) {
                 TextComponent(
                     text = title,
-                    fontSize = 16,
-                    fontFamily = GGSansRegular,
+                    fontSize = 25,
+                    fontFamily = GGSansBold,
                     textStyle = MaterialTheme.typography.h6,
                     textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Black,
-                    lineHeight = 10,
-                    textModifier = Modifier.fillMaxWidth(0.20f)
+                    fontWeight = FontWeight.ExtraBold,
+                    lineHeight = 30,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    textModifier = Modifier.fillMaxWidth(0.70f)
                 )
                 StraightLine()
             }
@@ -593,7 +609,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                         val color: Color
                         val width: Int
                         if (pagerState.currentPage == iteration) {
-                            color = Colors.primaryColor
+                            color = Color.Black
                             width = 20
                         } else {
                             color = Color.LightGray

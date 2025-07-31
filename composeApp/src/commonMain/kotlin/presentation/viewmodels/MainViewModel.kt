@@ -48,6 +48,7 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
     private var _orderItemComponents =  savedStateHandle.getStateFlow("orderItemComponents", arrayListOf<PlacedOrderItemComponent>())
     private var _favoriteProductIds =  savedStateHandle.getStateFlow("favoriteProductIds", listOf<FavoriteProductIdModel>())
     private var _dayAvailability =  savedStateHandle.getStateFlow("dayAvailability", arrayListOf<String>())
+    private var _logOutData =  savedStateHandle.getStateFlow("logout", false)
 
     val screenTitle: StateFlow<String>
         get() = _screenTitle
@@ -134,6 +135,9 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     val screenNav: StateFlow<Pair<Int,Int>>
         get() = _screenNav
+
+    val logOut: StateFlow<Boolean>
+        get() = _logOutData
 
     fun setTitle(newTitle: String) {
         savedStateHandle["screenTitle"] = newTitle
@@ -255,6 +259,10 @@ class MainViewModel(val savedStateHandle: SavedStateHandle): ViewModel(){
 
     fun setIsRestart(isRestart: Boolean) {
         savedStateHandle["isRestart"] = isRestart
+    }
+
+    fun logOut(logOut: Boolean) {
+        savedStateHandle["logout"] = logOut
     }
 
 

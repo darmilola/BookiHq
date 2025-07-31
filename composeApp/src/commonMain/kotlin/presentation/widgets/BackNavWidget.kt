@@ -26,7 +26,6 @@ import presentations.components.ImageComponent
 @Composable
 fun PageBackNavWidget(onBackPressed: (() -> Unit)) {
     val boxModifier = Modifier
-            .border(border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(15.dp))
             .background(color = Color.Transparent)
             .clickable {
               onBackPressed()
@@ -35,7 +34,7 @@ fun PageBackNavWidget(onBackPressed: (() -> Unit)) {
     Box(modifier = boxModifier,
             contentAlignment = Alignment.Center
         ) {
-            ImageComponent(imageModifier = Modifier.size(20.dp), imageRes = "drawable/nav_back_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+            ImageComponent(imageModifier = Modifier.size(30.dp), imageRes = "drawable/back_arrow.png", colorFilter = ColorFilter.tint(color = Color.Black))
         }
 }
 

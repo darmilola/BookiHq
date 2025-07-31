@@ -17,7 +17,7 @@ data class Vendor(
     @ColumnInfo @SerialName("businessAddress") val businessAddress: String? = null, @ColumnInfo @SerialName("businessHandle") val businessHandle: String? = null,
     @ColumnInfo @SerialName("businessAbout") val businessAbout: String? = null, @ColumnInfo @SerialName("openingTime") val openingTime: String? = null,
     @ColumnInfo @SerialName("deliveryFee") val deliveryFee: Long = 0L,
-    @ColumnInfo @SerialName("fcmToken") val fcmToken: String? = null, @ColumnInfo @SerialName("country") val country: String? = null, @ColumnInfo @SerialName("city") val city: String? = null, @ColumnInfo @SerialName("whatsappPhone") val whatsAppPhone: String? = null,
+    @ColumnInfo @SerialName("fcmToken") val fcmToken: String? = null, @ColumnInfo @SerialName("country") val country: String? = null, @ColumnInfo @SerialName("city") val city: String? = null, @ColumnInfo @SerialName("contactPhone") val contactPhone: String? = "",
     @ColumnInfo @SerialName("isMobileServicesAvailable") val isMobileServiceAvailable: Boolean = false, val isSelected: Boolean = false): Parcelable
 
 data class VendorItemUIModel(

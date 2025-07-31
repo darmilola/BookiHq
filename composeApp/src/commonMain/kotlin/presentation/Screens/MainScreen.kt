@@ -69,13 +69,13 @@ import presentation.appointmentBookings.BookingScreen
 import presentation.connectVendor.SwitchVendor
 import presentation.consultation.VirtualConsultationRoom
 import presentation.home.HomeTab
-import presentation.main.MainTopBar
 import presentation.Packages.PackageInfo
 import presentation.Products.ProductPresenter
 import presentation.account.FavoriteProducts
 import presentation.account.PaymentMethods
 import presentation.connectVendor.ConnectVendorDetailsScreen
 import presentation.profile.EditProfile
+import presentation.profile.JoinSpaDetails
 import presentation.therapist.TherapistDashboard
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
@@ -132,6 +132,20 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             }
             productPresenter.getFavoriteProductIds(userId)
         })
+
+        val logOut = mainViewModel!!.logOut.collectAsState()
+        if (logOut.value){
+            mainViewModel!!.logOut(false)
+            val preferenceSettings = Settings()
+            preferenceSettings.clear()
+            val navigator = LocalNavigator
+            val welcomeScreen = WelcomeScreen(platformNavigator)
+            welcomeScreen.setMainViewModel(mainViewModel!!)
+            welcomeScreen.setDatabaseBuilder(databaseBuilder!!)
+            navigator.currentOrThrow.replaceAll(welcomeScreen)
+            return
+        }
+
 
         platformNavigator.requestNotificationPermission()
         productPresenter.setMainViewModel(mainViewModel!!)
@@ -259,6 +273,8 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             Screens.JOIN_SPA.toPath() -> {
                 val joinASpa = JoinASpa(platformNavigator)
                 joinASpa.setMainViewModel(mainViewModel!!)
+                mainViewModel!!.setJoinSpaVendor(mainViewModel!!.connectedVendor.value)
+                joinASpa.setDatabaseBuilder(databaseBuilder)
                 val nav = LocalNavigator.currentOrThrow
                 nav.push(joinASpa)
                 mainViewModel!!.setScreenNav(
@@ -267,6 +283,10 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                         Screens.DEFAULT.toPath()
                     )
                 )
+            }
+
+            Screens.JOIN_SPA_DETAILS.toPath() -> {
+
             }
 
             Screens.EDIT_PROFILE.toPath() -> {
@@ -404,7 +424,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                                     ) {
                                         isBottomNavSelected = true
                                     }
-                                    packages = Packages()
+                                    /*packages = Packages()
                                     packages!!.setMainViewModel(mainViewModel!!)
                                     TabNavigationItem(
                                         packages!!,
@@ -417,7 +437,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                                         mainViewModel = mainViewModel!!
                                     ) {
                                         isBottomNavSelected = true
-                                    }
+                                    }*/
                                     appointmentsTab = AppointmentsTab(platformNavigator)
                                     appointmentsTab!!.setMainViewModel(mainViewModel!!)
                                     TabNavigationItem(

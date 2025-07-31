@@ -149,7 +149,7 @@ fun ViewProductFromHome(product: Product,onProductClickListener: (Product) -> Un
         .fillMaxWidth()
         .background(color = Color.Transparent)
         .height(40.dp)
-    ButtonComponent(modifier = buttonStyle, buttonText = "View Product", borderStroke = BorderStroke((1).dp, color = Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 14, shape = RoundedCornerShape(12.dp), textColor =  Colors.primaryColor, style = TextStyle(fontFamily = GGSansRegular)){
+    ButtonComponent(modifier = buttonStyle, buttonText = "View Product", borderStroke = BorderStroke((1).dp, color = Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 14, shape = RoundedCornerShape(5.dp), textColor =  Colors.primaryColor, style = TextStyle(fontFamily = GGSansRegular)){
         onProductClickListener(product)
     }
 }

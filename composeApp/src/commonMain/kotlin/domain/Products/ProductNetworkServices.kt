@@ -52,6 +52,7 @@ open class ProductNetworkService(private val apiService: HttpClient) {
             contentType(ContentType.Application.Json)
             setBody(getProductTypeRequest)
             header("Authorization", apiKey)
+            println("My Api Key is $apiKey")
         }.body<ProductListDataResponse>().toSingle()
 
     suspend fun addFavoriteProduct(addFavoriteProductRequest: AddFavoriteProductRequest) =

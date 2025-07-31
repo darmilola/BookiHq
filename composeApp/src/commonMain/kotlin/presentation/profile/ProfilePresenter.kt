@@ -209,28 +209,32 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                             onSuccess = { result ->
                                 when (result.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
-                                        contractView?.showActionLce(AppUIStates(isSuccess = true))
+                                        println("Success ${result.vendorInfo}")
                                         contractView?.showVendorInfo(result.vendorInfo)
+                                        contractView?.showActionLce(AppUIStates(isSuccess = true))
                                     }
                                     ServerResponse.FAILURE.toPath() -> {
+                                        println("Failure 0")
                                         contractView?.showActionLce(AppUIStates(isFailed = true))
                                     }
                                 }
                             },
                             onError = {
+                                println("Failure 1 ${it.message}")
                                 contractView?.showActionLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
+                println("Failure 2 ${e.message}")
                 contractView?.showActionLce(AppUIStates(isFailed = true))
             }
         }
     }
 
     override fun joinSpa(vendorId: Long, therapistId: Long) {
-        contractView?.showActionLce(AppUIStates(isLoading = true, loadingMessage = "Joining Spa"))
+        contractView?.showActionLce(AppUIStates(isLoading = true, loadingMessage = "Joining Business"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
@@ -247,13 +251,15 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                                 }
                             },
                             onError = {
-                                contractView?.showActionLce(AppUIStates(isFailed = true, errorMessage = "Error Occurred"))
+                                println("Error 1 ${it.message}")
+                                contractView?.showActionLce(AppUIStates(isFailed = true, errorMessage = it.message!!))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                contractView?.showActionLce(AppUIStates(isFailed = true, errorMessage = "Error Occurred"))
+                println("Error 2 ${e.message}")
+                contractView?.showActionLce(AppUIStates(isFailed = true, errorMessage = e.message!!))
             }
         }
     }

@@ -213,7 +213,7 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
         handler.init()
 
            Scaffold(
-               floatingActionButton = {
+              /* floatingActionButton = {
                    Box(
                        modifier = Modifier.size(140.dp), contentAlignment = Alignment.CenterEnd
                    ) {
@@ -241,13 +241,13 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
                            )
                        }
                    }
-               },
+               },*/
                 topBar = {
                     Column(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally) {
-                        SwitchVendorHeader(title = "Connect Parlor")
-                        SearchBar(placeholderText = "search @parlor", searchIcon = "drawable/search_icon.png", onValueChange = {
+                        SwitchVendorHeader(title = "Connect Vendor")
+                        SearchBar(placeholderText = "search @vendor", searchIcon = "drawable/search_icon.png", onValueChange = {
                             vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
                             searchQuery.value = it
                             connectVendorPresenter.searchVendor(country,connectedVendor = VendorEnum.DEFAULT_VENDOR_ID.toPath(),searchQuery = it)
@@ -265,7 +265,7 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
                 content = {
                     if (barCodeUiState.value.isLoading) {
                         Box(modifier = Modifier.fillMaxWidth()) {
-                            LoadingDialog("Getting Parlor")
+                            LoadingDialog("Getting Vendor")
                         }
                     }
                     else if (barCodeUiState.value.isSuccess) {

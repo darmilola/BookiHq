@@ -15,8 +15,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
@@ -121,18 +123,12 @@ fun ConnectTitle(title: String){
 @Composable
 fun BusinessInfoContent(vendor: Vendor, isViewOnly: Boolean = false, onConnectedListener: () -> Unit) {
     val columnModifier = Modifier
-        .background(color = Color.White, shape = RoundedCornerShape(10.dp))
+        .background(color = Color.White)
         .padding(start = 10.dp, end = 10.dp)
         .fillMaxHeight()
+        .verticalScroll(rememberScrollState())
         .fillMaxWidth()
     Box(modifier = Modifier.fillMaxSize()) {
-        Card(
-            modifier = Modifier
-                .padding(start = 10.dp, end = 10.dp)
-                .fillMaxHeight(0.90f)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp)
-        ) {
             Column(
                 modifier = columnModifier,
                 verticalArrangement = Arrangement.Center,
@@ -181,7 +177,6 @@ fun BusinessInfoContent(vendor: Vendor, isViewOnly: Boolean = false, onConnected
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Normal,
                     lineHeight = 25,
-                    maxLines = 3,
                     overflow = TextOverflow.Ellipsis
                 )
 
@@ -255,7 +250,46 @@ fun BusinessInfoContent(vendor: Vendor, isViewOnly: Boolean = false, onConnected
                         TextComponent(
                             textModifier = Modifier.wrapContentWidth()
                                 .padding(start = 5.dp),
-                            text = if (vendor.isMobileServiceAvailable) "Mobile Service Available" else "No Mobile Service",
+                            text = if (vendor.isMobileServiceAvailable) "Home Service Available" else "No Home Service",
+                            fontSize = 16,
+                            textStyle = TextStyle(),
+                            textColor = Color.DarkGray,
+                            textAlign = TextAlign.Left,
+                            fontWeight = FontWeight.Normal,
+                            lineHeight = 23,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Box(
+                        modifier = Modifier.fillMaxHeight().wrapContentWidth(),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        val modifier = Modifier
+                            .size(24.dp)
+                        ImageComponent(
+                            imageModifier = modifier,
+                            imageRes = "drawable/phone_icon.png",
+                            colorFilter = ColorFilter.tint(color = Colors.primaryColor)
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier.fillMaxHeight().wrapContentWidth(),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        TextComponent(
+                            textModifier = Modifier.wrapContentWidth()
+                                .padding(start = 5.dp),
+                            text = vendor.contactPhone!!,
                             fontSize = 16,
                             textStyle = TextStyle(),
                             textColor = Color.DarkGray,
@@ -296,7 +330,6 @@ fun BusinessInfoContent(vendor: Vendor, isViewOnly: Boolean = false, onConnected
                     }
                 }
             }
-        }
     }
 }
 

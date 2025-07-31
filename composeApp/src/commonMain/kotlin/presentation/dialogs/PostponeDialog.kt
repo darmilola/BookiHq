@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Surface
 import androidx.compose.material3.Scaffold
@@ -95,7 +97,7 @@ fun PostponeDialog(userAppointment: UserAppointment, appointmentPresenter: Appoi
 
 
         Scaffold(
-            modifier = Modifier.wrapContentHeight(),
+            modifier = Modifier.fillMaxSize(),
             containerColor = Color.Transparent,
             contentColor = Color.Transparent,
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) }
@@ -140,7 +142,7 @@ fun PostponeDialog(userAppointment: UserAppointment, appointmentPresenter: Appoi
 
                             if (availabilityUIStates.value.isLoading) {
                                 Box(
-                                    modifier = Modifier.fillMaxWidth().height(60.dp),
+                                    modifier = Modifier.fillMaxWidth().height(300.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     IndeterminateCircularProgressBar()
@@ -157,18 +159,19 @@ fun PostponeDialog(userAppointment: UserAppointment, appointmentPresenter: Appoi
                                     modifier = Modifier
                                         .padding(top = 5.dp, bottom = 10.dp)
                                         .fillMaxWidth()
-                                        .height(400.dp),
+                                        .verticalScroll(rememberScrollState())
+                                        .height(300.dp),
                                     verticalArrangement = Arrangement.Center,
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                 ) {
-
                                     PostponeTimeContent(workHours, onWorkHourClickListener = {
                                         postponementViewModel.setNewSelectedTime(it)
                                     })
                                 }
-                            } else if (availabilityUIStates.value.isFailed) {
+                            }
+                            else if (availabilityUIStates.value.isFailed) {
                                 Box(
-                                    modifier = Modifier.fillMaxWidth().height(400.dp),
+                                    modifier = Modifier.fillMaxWidth().height(300.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     ErrorOccurredWidget(
@@ -239,6 +242,7 @@ fun PostponeTimeContent(availableHours: Triple<ArrayList<PlatformTime>, ArrayLis
     Column(
         modifier = Modifier
             .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 10.dp)
+            .verticalScroll(rememberScrollState())
             .wrapContentHeight(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment  = Alignment.CenterHorizontally,

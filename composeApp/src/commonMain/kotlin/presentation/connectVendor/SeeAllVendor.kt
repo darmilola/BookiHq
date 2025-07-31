@@ -335,7 +335,7 @@ class SeeAllVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
             Box(modifier =  Modifier.weight(3.0f)
                 .fillMaxHeight(),
                 contentAlignment = Alignment.Center) {
-                TitleWidget(title = "Nearby Parlors", textColor = theme.styles.Colors.primaryColor)
+                TitleWidget(title = "Nearby Vendors", textColor = theme.styles.Colors.primaryColor)
 
             }
 

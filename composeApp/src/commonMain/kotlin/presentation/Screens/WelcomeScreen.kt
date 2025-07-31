@@ -120,6 +120,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
                 preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.EMAIL.toPath()
+                println("My Key is ${user.apiKey}")
                     val userDao = databaseBuilder.build().getUserDao()
                     val vendorDao = databaseBuilder.build().getVendorDao()
                     val userCount = userDao.count()
@@ -127,9 +128,10 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                     if (userCount == 0 && vendorCount == 0) {
                         userDao.insert(user)
                     }
+
+                verificationInProgress.value = false
+                navigateToPlatform.value = true
             }
-            verificationInProgress.value = false
-            navigateToPlatform.value = true
         },
         completeProfile = { userEmail, userAuthPhone ->
             preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.EMAIL.toPath()
@@ -261,12 +263,11 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful:
                         onAuthFailed: () -> Unit, mainViewModel: MainViewModel, databaseBuilder: RoomDatabase.Builder<AppDatabase>){
     val navigator = LocalNavigator.currentOrThrow
     val buttonStyle = Modifier
-        .padding(bottom = 15.dp)
+        .padding(bottom = 15.dp, top = 15.dp)
         .fillMaxWidth(0.90f)
         .height(45.dp)
 
     val phoneButtonStyle = Modifier
-        .padding(bottom = 15.dp)
         .fillMaxWidth(0.90f)
         .height(45.dp)
         .background(
@@ -276,8 +277,8 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful:
                     Colors.primaryColor,
                     Colors.primaryColor,
                     Colors.primaryColor,
-                    Colors.postPrimaryColor,
-                    Colors.postPrimaryColor
+                    Colors.primaryColor,
+                    Colors.primaryColor
                 )
             )
         )
@@ -291,6 +292,19 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful:
                 onAuthFailed()
             })
         }
+
+        /*Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            TextComponent(
+                text = "Or",
+                fontSize = 23,
+                fontFamily = GGSansRegular,
+                textStyle = TextStyle(),
+                textColor = Color.White,
+                textAlign = TextAlign.Start,
+                fontWeight = FontWeight.SemiBold,
+                lineHeight = 30
+            )
+        }*/
 
         IconButtonComponent(modifier = phoneButtonStyle, buttonText = "Sign In with Phone Number", borderStroke = BorderStroke((0.01).dp, Colors.primaryColor), iconSize = 24, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor = Color.White, style = MaterialTheme.typography.h4, iconRes = "drawable/care_icon.png", colorFilter = ColorFilter.tint(color = Color.White)){
            val continueWithPhone = PhoneInputScreen(platformNavigator)

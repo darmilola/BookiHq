@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -53,7 +54,7 @@ fun ProductDeliveryAddressWidget(cartViewModel: CartViewModel, isDisabled: Boole
         )
 
         Row(modifier = Modifier.fillMaxWidth()) {
-            ToggleButton(shape = CircleShape, isRightSelection = isRightSelection, onLeftClicked = {
+            ToggleButton(shape = RoundedCornerShape(5.dp), isRightSelection = isRightSelection, onLeftClicked = {
                 onPickupSelectedListener()
             }, onRightClicked = {
                 onMobileSelectedListener()

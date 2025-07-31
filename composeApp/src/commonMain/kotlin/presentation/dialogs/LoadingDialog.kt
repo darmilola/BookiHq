@@ -43,7 +43,7 @@ fun LoadingDialog(dialogTitle: String) {
             Surface(
                 shape = RoundedCornerShape(10.dp),
                 color = Color.White,
-                modifier = Modifier.fillMaxWidth(0.70f)
+                modifier = Modifier.fillMaxWidth(0.80f)
             ) {
                 LoadingDialogContent(dialogTitle)
             }

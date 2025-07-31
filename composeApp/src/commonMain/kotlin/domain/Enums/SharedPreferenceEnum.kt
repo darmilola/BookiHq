@@ -9,6 +9,7 @@ enum class SharedPreferenceEnum {
     AUTH_TYPE,
     AUTH_EMAIL,
     AUTH_PHONE,
+    AUTH_ONBOARDING,
     API_KEY;
 
     fun toPath() = when (this) {
@@ -19,6 +20,7 @@ enum class SharedPreferenceEnum {
         AUTH_TYPE -> "authType"
         AUTH_EMAIL -> "authEmail"
         AUTH_PHONE -> "authPhone"
+        AUTH_ONBOARDING -> "authOnBoard"
         API_KEY -> "apiKey"
         SELECTED_PRODUCT_TYPE -> "selectedProductType"
     }

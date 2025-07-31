@@ -1,8 +1,10 @@
 package presentation.widgets
 
+import GGSansBold
 import GGSansRegular
 import theme.styles.Colors
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -34,6 +37,7 @@ fun HomeServicesWidget(vendorService:Services, onServiceSelected: (Services) -> 
         .clickable {
             onServiceSelected(vendorService)
         }
+        .border(width = 1.dp, color = Colors.lightGray, shape = RoundedCornerShape(10.dp))
         .height(120.dp)
         Column(
             modifier = columnModifier,
@@ -47,7 +51,7 @@ fun HomeServicesWidget(vendorService:Services, onServiceSelected: (Services) -> 
             TextComponent(
                 text = vendorService.serviceInfo.title,
                 fontSize = 15,
-                fontFamily = GGSansRegular,
+                fontFamily = GGSansBold,
                 textStyle = MaterialTheme.typography.h6,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Center,
@@ -61,18 +65,17 @@ fun HomeServicesWidget(vendorService:Services, onServiceSelected: (Services) -> 
 
 
 @Composable
-fun AttachServiceImage(iconRes: String, iconSize: Int = 40) {
+fun AttachServiceImage(iconRes: String, iconSize: Int = 50) {
     Box(
         Modifier
             .clip(RoundedCornerShape(10.dp))
             .fillMaxWidth()
-            .height(80.dp)
-            .background(color = Colors.lighterPrimaryColor),
+            .height(50.dp),
         contentAlignment = Alignment.Center
     ) {
         val modifier = Modifier
             .size(iconSize.dp)
-        ImageComponent(imageModifier = modifier, imageRes = iconRes, colorFilter = ColorFilter.tint(color = Colors.darkPrimary))
+        ImageComponent(imageModifier = modifier, imageRes = iconRes, colorFilter = ColorFilter.tint(color = Color.Black))
     }
 
 }

@@ -79,11 +79,16 @@ fun appLogo() {
 
 @Composable
 fun VendorLogo(imageUrl: String, onVendorLogoClicked: () -> Unit) {
-    Box(Modifier.size(60.dp), contentAlignment = Alignment.Center) {
+    Box(Modifier.size(50.dp), contentAlignment = Alignment.Center) {
         Box(
             Modifier
-                .size(60.dp)
+                .size(50.dp)
                 .clip(CircleShape)
+                .border(
+                    width = (2.5).dp,
+                    color = theme.Colors.primaryColor,
+                    shape = CircleShape
+                )
                 .clickable {
                     onVendorLogoClicked()
                 }

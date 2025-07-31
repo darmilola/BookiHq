@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -74,7 +75,7 @@ fun ServiceLocationToggle(bookingViewModel: BookingViewModel, isDisabled: Boolea
             textModifier = Modifier
                 .fillMaxWidth().padding(start = 10.dp))
 
-        ToggleButton(shape = CircleShape,onLeftClicked = {
+        ToggleButton(shape = RoundedCornerShape(10.dp), onLeftClicked = {
             onSpaSelectedListener()
             locationType = ServiceLocationEnum.SPA.toPath()
         }, onRightClicked = {

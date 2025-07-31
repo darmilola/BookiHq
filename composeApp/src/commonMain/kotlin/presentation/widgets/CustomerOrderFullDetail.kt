@@ -36,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import applications.formatter.formatNumber
 import domain.Models.PlacedOrderItemComponent
 import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
@@ -44,7 +45,7 @@ import theme.styles.Colors
 import utils.calculatePlacedOrderTotalPrice
 
 @Composable
-fun OrderDetailList(itemList: ArrayList<PlacedOrderItemComponent>, onAddReviewClicked: (Long) -> Unit) {
+fun OrderDetailList(itemList: ArrayList<PlacedOrderItemComponent>,currencyUnit: String, onAddReviewClicked: (Long) -> Unit) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
         .verticalScroll(rememberScrollState())
@@ -56,7 +57,7 @@ fun OrderDetailList(itemList: ArrayList<PlacedOrderItemComponent>, onAddReviewCl
         ) {
 
             Box(modifier = Modifier.padding(top = 10.dp).fillMaxWidth().fillMaxHeight()) {
-                    OrderItemDetail(itemList, onAddReviewClicked = {
+                    OrderItemDetail(itemList,currencyUnit, onAddReviewClicked = {
                         onAddReviewClicked(it)
                     })
             }
@@ -70,9 +71,8 @@ fun OrderDetailList(itemList: ArrayList<PlacedOrderItemComponent>, onAddReviewCl
 }
 
 @Composable
-fun OrderItemDetail(itemList: ArrayList<PlacedOrderItemComponent>, onAddReviewClicked: (Long) -> Unit) {
+fun OrderItemDetail(itemList: ArrayList<PlacedOrderItemComponent>,currencyUnit: String, onAddReviewClicked: (Long) -> Unit) {
     val columnModifier = Modifier
-        .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
         .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         .fillMaxHeight()
     Column(modifier = columnModifier,
@@ -84,7 +84,7 @@ fun OrderItemDetail(itemList: ArrayList<PlacedOrderItemComponent>, onAddReviewCl
             contentPadding = PaddingValues(6.dp)
         ) {
             itemsIndexed(items = itemList) { it, item ->
-                OrderProductItemComponent(item, onAddReviewClicked = {
+                OrderProductItemComponent(item,currencyUnit, onAddReviewClicked = {
                     onAddReviewClicked(it)
                 })
             }
@@ -105,7 +105,7 @@ fun OrderItemDetail(itemList: ArrayList<PlacedOrderItemComponent>, onAddReviewCl
                 textModifier = Modifier.padding(top = 5.dp).height(30.dp).fillMaxWidth(0.20f)
             )
             TextComponent(
-                text = calculatePlacedOrderTotalPrice(itemList).toString(),
+                text = currencyUnit+formatNumber(calculatePlacedOrderTotalPrice(itemList)),
                 fontSize = 20,
                 fontFamily = GGSansRegular,
                 textStyle = TextStyle(),
@@ -120,7 +120,7 @@ fun OrderItemDetail(itemList: ArrayList<PlacedOrderItemComponent>, onAddReviewCl
 }
 
 @Composable
-fun OrderProductItemComponent(placedOrderItemComponent: PlacedOrderItemComponent, onAddReviewClicked: (Long) -> Unit) {
+fun OrderProductItemComponent(placedOrderItemComponent: PlacedOrderItemComponent,currencyUnit: String, onAddReviewClicked: (Long) -> Unit) {
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 10.dp, bottom = 10.dp)
         .height(90.dp)
@@ -132,7 +132,7 @@ fun OrderProductItemComponent(placedOrderItemComponent: PlacedOrderItemComponent
             OrderProductItemImage(placedOrderItemComponent)
         }
         Box(modifier = Modifier.weight(3f).fillMaxHeight(), contentAlignment = Alignment.Center){
-            OrderProductItemName(placedOrderItemComponent)
+            OrderProductItemName(placedOrderItemComponent, currencyUnit)
         }
         Box(modifier = Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.Center){
             TextComponent(
@@ -187,7 +187,7 @@ fun OrderProductItemImage(placedOrderItemComponent: PlacedOrderItemComponent) {
 
 
 @Composable
-fun OrderProductItemName(placedOrderItemComponent: PlacedOrderItemComponent) {
+fun OrderProductItemName(placedOrderItemComponent: PlacedOrderItemComponent, currencyUnit: String) {
     val columnModifier = Modifier
         .padding(start = 10.dp, end = 10.dp)
         .fillMaxHeight()
@@ -213,13 +213,13 @@ fun OrderProductItemName(placedOrderItemComponent: PlacedOrderItemComponent) {
             textModifier = modifier,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis)
-        OrderProductItemQty(placedOrderItemComponent)
+        OrderProductItemQty(placedOrderItemComponent, currencyUnit)
     }
 }
 
 
 @Composable
-fun OrderProductItemQty(placedOrderItemComponent: PlacedOrderItemComponent) {
+fun OrderProductItemQty(placedOrderItemComponent: PlacedOrderItemComponent, currencyUnit: String) {
     Row(
         modifier = Modifier
             .height(40.dp)
@@ -241,7 +241,7 @@ fun OrderProductItemQty(placedOrderItemComponent: PlacedOrderItemComponent) {
                 .wrapContentSize())
 
         TextComponent(
-            text = placedOrderItemComponent.productPrice.toString()+"$",
+            text = currencyUnit+formatNumber(placedOrderItemComponent.productPrice.toLong()),
             fontSize = 20,
             fontFamily = GGSansRegular,
             textStyle = TextStyle(),

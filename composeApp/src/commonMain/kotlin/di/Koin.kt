@@ -48,7 +48,7 @@ private val KtorModule = module {
         httpClient {
             defaultRequest {
                 url {
-                    host = "/yesbeauty.onrender.com/api/v1"
+                    host = "/booki-0kc3.onrender.com/api/v1"
                     protocol = URLProtocol.HTTPS
                     port = 443
                 }

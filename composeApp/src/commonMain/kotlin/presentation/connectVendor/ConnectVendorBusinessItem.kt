@@ -48,19 +48,19 @@ import presentations.components.TextComponent
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(modifier = Modifier.size(100.dp), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.size(80.dp), contentAlignment = Alignment.Center) {
                     BusinessLogo(vendor.businessLogo!!)
                 }
                 Box(modifier = Modifier.fillMaxWidth(0.70f), contentAlignment = Alignment.Center) {
                     BusinessNameAndHandle(vendor)
                 }
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.Center) {
                     val buttonStyle = Modifier
                         .padding(top = 10.dp)
                         .fillMaxWidth()
                         .background(color = Color.Transparent)
-                        .height(40.dp)
-                    ButtonComponent(modifier = buttonStyle, buttonText = "Connect", borderStroke = BorderStroke((1).dp, color = Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 14, shape = RoundedCornerShape(12.dp), textColor =  Colors.primaryColor, style = TextStyle(fontFamily = GGSansRegular)){
+                        .height(30.dp)
+                    ButtonComponent(modifier = buttonStyle, buttonText = "Connect", borderStroke = BorderStroke((1).dp, color = Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 12, shape = RoundedCornerShape(12.dp), textColor =  Colors.primaryColor, style = TextStyle(fontFamily = GGSansRegular)){
                         onVendorClickListener(vendor)
                     }
                 }
@@ -72,7 +72,7 @@ import presentations.components.TextComponent
     fun BusinessLogo(logoUrl: String) {
             Box(
                 modifier = Modifier
-                    .size(100.dp)
+                    .size(80.dp)
                     .clip(CircleShape),
                 contentAlignment = Alignment.Center
             ) {

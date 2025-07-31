@@ -26,6 +26,7 @@ open class HomeNetworkService(private val apiService: HttpClient) {
             contentType(ContentType.Application.Json)
             setBody(getHomeRequest)
             header("Authorization", apiKey)
+            println("API Key is $apiKey")
         }.body<HomePageResponse>().toSingle()
 
     suspend fun getRecommendations(getRecommendationRequest: GetRecommendationRequest, nextPage: Int = 1) =

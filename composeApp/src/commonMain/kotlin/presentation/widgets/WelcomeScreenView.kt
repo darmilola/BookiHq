@@ -1,10 +1,12 @@
 package presentation.widgets
 
+import GGSansBold
 import GGSansRegular
 import GGSansSemiBold
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,19 +14,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
+import theme.styles.Colors
 
 @Composable
 fun welcomeScreenView(displayText: String, imageRes: String) {
@@ -42,7 +48,7 @@ fun welcomeScreenView(displayText: String, imageRes: String) {
         )
     Box(modifier = Modifier.fillMaxHeight().fillMaxWidth()) {
         ImageComponent(imageModifier = Modifier.fillMaxHeight().fillMaxWidth(),
-            imageRes = imageRes, contentScale = ContentScale.FillWidth)
+            imageRes = imageRes, contentScale = ContentScale.FillBounds)
         Box(modifier = bgStyle)
         AttachTextContent(displayText = displayText)
     }
@@ -63,4 +69,48 @@ fun AttachTextContent(displayText: String){
         )
     }
 }
+
+
+@Composable
+fun onBoardingScreenView(subtitleText: String, titleText: String, imageRes: String) {
+    Column(modifier = Modifier.fillMaxHeight().fillMaxWidth()) {
+        Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.50f), contentAlignment = Alignment.Center){
+            ImageComponent(
+                imageModifier = Modifier.size(200.dp),
+                imageRes = imageRes)
+        }
+
+        Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.40f), contentAlignment = Alignment.TopCenter){
+            TextComponent(
+                text = titleText,
+                fontSize = 25,
+                fontFamily = GGSansBold,
+                textStyle = MaterialTheme.typography.h6,
+                textColor = Colors.darkPrimary,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.ExtraBold,
+                lineHeight = 30,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                textModifier = Modifier.fillMaxWidth(0.70f)
+            )
+        }
+
+        Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.TopCenter){
+            TextComponent(
+                text = subtitleText,
+                fontSize = 20,
+                fontFamily = GGSansRegular,
+                textStyle = TextStyle(),
+                textColor = Color.Black,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Normal,
+                lineHeight = 25,
+                textModifier = Modifier.fillMaxWidth(0.70f)
+            )
+        }
+    }
+}
+
+
 

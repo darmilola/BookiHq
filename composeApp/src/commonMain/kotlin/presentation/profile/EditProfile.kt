@@ -231,7 +231,7 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
             navigator.replaceAll(splashScreen)
         }
         else if(updateProfileEnded.value && !updateProfileSuccessful.value){
-            ErrorDialog(dialogTitle = "Error Occurred", actionTitle = "", onConfirmation = {})
+            ErrorDialog(dialogTitle = "Error Occurred", actionTitle = "Retry", onConfirmation = {})
         }
 
 
@@ -326,7 +326,7 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
                     ) {
                         InputWidget(
                             iconRes = "drawable/address.png",
-                            placeholderText = "Mobile Address",
+                            placeholderText = "Home Address",
                             iconSize = 28,
                             text = address.value,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),

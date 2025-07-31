@@ -24,6 +24,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -53,6 +54,7 @@ import presentation.components.ButtonComponent
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.ActionItemComponent
 import presentation.widgets.AccountProfileImage
+import presentation.widgets.DeleteAccountDialog
 import presentation.widgets.TitleWidget
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
@@ -98,6 +100,17 @@ class AccountTab : Tab, Parcelable {
             animation = StackedSnackbarAnimation.Bounce
         )
 
+        val deleteAccountAction = remember { mutableStateOf(false) }
+
+        if (deleteAccountAction.value){
+            DeleteAccountDialog(onCancel = {
+                deleteAccountAction.value = false
+            }, onConfirmation = {
+
+            })
+        }
+
+
         Scaffold(
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
                 .background(color = Color.White),
@@ -141,7 +154,9 @@ class AccountTab : Tab, Parcelable {
                         thickness = 2.dp,
                         modifier = Modifier.fillMaxWidth(0.90f).padding(top = 30.dp)
                     )
-                    AttachAccountAction()
+                    AttachAccountAction(onDeleteAccountClicked = {
+                        deleteAccountAction.value = true
+                    })
                 }
 
             })
@@ -194,7 +209,7 @@ class AccountTab : Tab, Parcelable {
 
 
     @Composable
-    fun AttachAccountAction() {
+    fun AttachAccountAction(onDeleteAccountClicked:() -> Unit) {
         val columnModifier = Modifier
             .padding(top = 10.dp, start = 5.dp, bottom = 100.dp)
             .fillMaxWidth()
@@ -266,7 +281,7 @@ class AccountTab : Tab, Parcelable {
 
                 ActionItemComponent(
                     modifier = actionStyle,
-                    buttonText = "Switch Parlor",
+                    buttonText = "Switch Vendor",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
                     textColor = Colors.darkPrimary,
@@ -276,7 +291,7 @@ class AccountTab : Tab, Parcelable {
                         mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.CONNECT_VENDOR.toPath()))
                     })
 
-                ActionItemComponent(
+               /* ActionItemComponent(
                     modifier = actionStyle,
                     buttonText = "Customer Care",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
@@ -284,21 +299,28 @@ class AccountTab : Tab, Parcelable {
                     textColor = Colors.darkPrimary,
                     style = TextStyle(),
                     iconRes = "drawable/support.png",
-                    isDestructiveAction = false)
+                    isDestructiveAction = false)*/
 
-                ActionItemComponent(
-                    modifier = actionStyle,
-                    buttonText = "Therapist SignIn",
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                    fontSize = 20,
-                    textColor = Colors.darkPrimary,
-                    style = TextStyle(),
-                    iconRes = "drawable/join.png",
-                    isDestructiveAction = false, onClick = {
-                        mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.JOIN_SPA.toPath()))
-                    })
+                if (mainViewModel!!.currentUserInfo.value.isTherapist == false) {
+                    ActionItemComponent(
+                        modifier = actionStyle,
+                        buttonText = "Join Salon/Spa",
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                        fontSize = 20,
+                        textColor = Colors.darkPrimary,
+                        style = TextStyle(),
+                        iconRes = "drawable/join.png",
+                        isDestructiveAction = false, onClick = {
+                            mainViewModel!!.setScreenNav(
+                                Pair(
+                                    Screens.MAIN_SCREEN.toPath(),
+                                    Screens.JOIN_SPA.toPath()
+                                )
+                            )
+                        })
+                }
 
-                ActionItemComponent(
+              /*  ActionItemComponent(
                     modifier = actionStyle,
                     buttonText = "Privacy Policy",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
@@ -306,9 +328,7 @@ class AccountTab : Tab, Parcelable {
                     textColor = Colors.darkPrimary,
                     style = TextStyle(),
                     iconRes = "drawable/privacy_icon.png",
-                    isDestructiveAction = false)
-
-                Divider(color = Color(color = 0x70FA2D65), thickness = 0.5.dp, modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 20.dp))
+                    isDestructiveAction = false)*/
 
                 ActionItemComponent(
                     modifier = actionStyle,
@@ -318,8 +338,13 @@ class AccountTab : Tab, Parcelable {
                     textColor = Colors.pinkColor,
                     style = TextStyle(),
                     iconRes = "drawable/logout_icon.png",
-                    isDestructiveAction = true
+                    isDestructiveAction = false,
+                    onClick = {
+                        mainViewModel!!.logOut(true)
+                    }
                 )
+
+                /*Divider(color = Color(color = 0x70FA2D65), thickness = 0.5.dp, modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 20.dp))
 
                 ButtonComponent(
                     modifier = Modifier
@@ -332,7 +357,9 @@ class AccountTab : Tab, Parcelable {
                     fontSize = 16,
                     shape = RoundedCornerShape(10.dp),
                     textColor = theme.Colors.pinkColor,
-                    style = TextStyle()) {}
+                    style = TextStyle()) {
+                    onDeleteAccountClicked()
+                }*/
 
             }
         }

@@ -78,7 +78,7 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
 
     suspend fun joinSpa(joinSpaRequest: JoinSpaRequest) =
         apiService.post {
-            url("/vendor/therapist/add")
+            url("/user/business/join")
             contentType(ContentType.Application.Json)
             setBody(joinSpaRequest)
             header("Authorization", apiKey)

@@ -39,36 +39,36 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.room.RoomDatabase
+import applications.room.AppDatabase
 import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import cafe.adriel.voyager.navigator.tab.Tab
-import cafe.adriel.voyager.navigator.tab.TabOptions
 import cafe.adriel.voyager.transitions.ScreenTransition
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
-import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Enums.Screens
 import domain.Models.PlatformNavigator
 import domain.Models.Vendor
 import kotlinx.serialization.Transient
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import presentation.DomainViewHandler.ProfileHandler
 import presentation.components.RightIconButtonComponent
 import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
+import presentation.profile.JoinSpaDetails
 import presentation.profile.ProfilePresenter
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.LoadingScreenUIStateViewModel
+import presentation.widgets.ShowSnackBar
+import presentation.widgets.SnackBarType
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
@@ -87,12 +87,19 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : ParcelableScr
     private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
     @Transient
     private var loadingScreenUiStateViewModel: LoadingScreenUIStateViewModel? = null
+    @Transient
+    private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
 
     override val key: ScreenKey = uniqueScreenKey
 
     fun setMainViewModel(mainViewModel: MainViewModel){
         this.mainViewModel = mainViewModel
     }
+
+    fun setDatabaseBuilder(databaseBuilder: RoomDatabase.Builder<AppDatabase>?){
+        this.databaseBuilder = databaseBuilder
+    }
+
 
     @Composable
     override fun Content() {
@@ -121,12 +128,15 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : ParcelableScr
         }
 
         val vendorInfo = remember { mutableStateOf(Vendor()) }
+        val onInfoReady = remember { mutableStateOf(false) }
         val uiState = performedActionUIStateViewModel!!.uiStateInfo.collectAsState()
 
         val profileHandler = ProfileHandler(profilePresenter,
             onUserLocationReady = {},
             onVendorInfoReady = { it ->
-               vendorInfo.value = it
+                vendorInfo.value = it
+                mainViewModel!!.setJoinSpaVendor(vendorInfo.value)
+                onInfoReady.value = true
             },
             performedActionUIStateViewModel!!)
         profileHandler.init()
@@ -146,18 +156,21 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : ParcelableScr
             backgroundColor = Color.White,
             floatingActionButton = {},
             content = {
+                if (onInfoReady.value){
+                    onInfoReady.value = false
+                    val joinASpaDetails = JoinSpaDetails(platformNavigator)
+                    joinASpaDetails.setMainViewModel(mainViewModel!!)
+                    joinASpaDetails.setDatabaseBuilder(databaseBuilder)
+                    navigator.push(joinASpaDetails)
+                }
 
                 if (uiState.value.isLoading) {
                     Box(modifier = Modifier.fillMaxWidth()) {
-                        LoadingDialog("Getting Parlor")
+                        LoadingDialog("Getting Business")
                     }
                 }
                 else if (uiState.value.isSuccess) {
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        performedActionUIStateViewModel!!.switchActionUIState(AppUIStates(isDefault = true))
-                        mainViewModel!!.setJoinSpaVendor(vendorInfo.value)
 
-                    }
                 }
                 else if (uiState.value.isFailed) {
                     ErrorDialog("Error Occurred", "Close", onConfirmation = {})
@@ -194,7 +207,7 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : ParcelableScr
                             ) {
 
                                 TextComponent(
-                                    text = "Join A Spa",
+                                    text = "Join A Business",
                                     fontSize = 35,
                                     fontFamily = GGSansSemiBold,
                                     textStyle = TextStyle(),
@@ -210,7 +223,7 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : ParcelableScr
 
 
                             TextComponent(
-                                text = "Scan Shop QR To Continue",
+                                text = "Scan Business QR To Continue",
                                 fontSize = 16,
                                 fontFamily = GGSansSemiBold,
                                 textStyle = MaterialTheme.typography.h6,

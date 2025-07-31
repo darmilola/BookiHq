@@ -28,7 +28,7 @@ import theme.styles.Colors
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AppointmentReviewScreen(appointmentReviews: List<AppointmentReview>) {
+fun TherapistReviewScreen(appointmentReviews: List<AppointmentReview>) {
     val pagerState = rememberPagerState(pageCount = {
         appointmentReviews.size
     })
@@ -40,10 +40,10 @@ fun AppointmentReviewScreen(appointmentReviews: List<AppointmentReview>) {
 
     val boxBgModifier =
         Modifier
-            .padding(bottom = 10.dp, top = 10.dp, start = 15.dp)
+            .padding(bottom = 10.dp, top = 10.dp, start = 15.dp, end = 15.dp)
             .wrapContentHeight()
             .fillMaxWidth()
-            .border(border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(topStart = 7.dp, bottomStart = 7.dp))
+            .border(border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(7.dp))
 
 
     Box(modifier = boxBgModifier) {
