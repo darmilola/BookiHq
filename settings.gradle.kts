@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
-rootProject.name = "Zazzy"
+rootProject.name = "BookiHq"
