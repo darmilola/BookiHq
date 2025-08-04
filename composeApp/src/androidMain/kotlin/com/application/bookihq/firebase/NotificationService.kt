@@ -22,7 +22,7 @@ class NotificationService {
 
         val thread = Thread(Runnable {
             try {
-                val url = URL("https://fcm.googleapis.com/v1/projects/carediva-8e117/messages:send")
+                val url = URL("https://fcm.googleapis.com/v1/projects/booki-1eacf/messages:send")
                 val client = OkHttpClient()
                 val request = Request.Builder()
                     .addHeader("Authorization", "Bearer $accessToken")
