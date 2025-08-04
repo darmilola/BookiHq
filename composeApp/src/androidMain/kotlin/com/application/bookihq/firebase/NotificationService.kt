@@ -1,4 +1,4 @@
-package com.application.zazzy.firebase
+package com.application.bookihq.firebase
 
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

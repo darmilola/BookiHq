@@ -1,6 +1,6 @@
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import com.application.zazzy.R
+import com.application.bookihq.R
 
 
 actual val GGSansBold: FontFamily =  FontFamily(

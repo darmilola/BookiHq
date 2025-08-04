@@ -1,4 +1,4 @@
-package com.application.zazzy.firebase
+package com.application.bookihq.firebase
 
 enum class NotificationType {
     MEETING_REMINDER,

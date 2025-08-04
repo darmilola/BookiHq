@@ -1,38 +1,32 @@
-package com.application.zazzy.firebase
+package com.application.bookihq.firebase
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
-import android.graphics.drawable.Drawable
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
-import android.text.Html
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import com.application.zazzy.MainActivity
-import com.application.zazzy.R
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
+import com.application.bookihq.MainActivity
+import com.application.bookihq.R
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.seiko.imageloader.Bitmap
 import java.util.Random
 
 
 class AppFirebaseMessagingService : FirebaseMessagingService() {
     private var notificationManager: NotificationManager? = null
     override  fun onMessageReceived(message: RemoteMessage) {
+        print("Message Received $message")
         val notificationId: Int = Random().nextInt(60000)
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
         val notificationData = NotificationMessage().getNotificationText(message)
@@ -55,12 +49,12 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_IMMUTABLE)
         val defaultSoundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val builder =  NotificationCompat.Builder(this, Channel.ADMIN_CHANNEL_ID.toPath())
-                .setSmallIcon(R.drawable.sample_logo)
+                .setSmallIcon(R.drawable.main_icon)
                 .setContentTitle(notificationDisplayData.title)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(notificationDisplayData.body))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
-                .addAction(R.drawable.sample_logo, actionTitle, pendingIntent)
+                .addAction(R.drawable.main_icon, actionTitle, pendingIntent)
                 .setSound(defaultSoundUri)
 
         return builder

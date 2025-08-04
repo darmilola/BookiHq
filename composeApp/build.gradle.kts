@@ -191,7 +191,7 @@ room {
 }
 
 android {
-    namespace = "com.application.zazzy"
+    namespace = "com.application.bookihq"
     compileSdk = 34
 
 
@@ -200,7 +200,7 @@ android {
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
-        applicationId = "com.application.zazzy"
+        applicationId = "com.application.bookihq"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
