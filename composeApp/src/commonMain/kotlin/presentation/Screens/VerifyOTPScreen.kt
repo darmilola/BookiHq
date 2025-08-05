@@ -135,6 +135,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                 navigateToPlatform.value = true
             },
             completeProfile = { userEmail, userPhone ->
+                authPhone.value = userPhone
                 preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.PHONE.toPath()
                 navigateToCompleteProfile.value = true
             },

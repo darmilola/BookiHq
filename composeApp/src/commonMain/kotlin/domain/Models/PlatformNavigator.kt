@@ -7,6 +7,7 @@ interface PlatformNavigator: Parcelable {
      fun startScanningBarCode(onCodeReady: (String) -> Unit)
      fun startGoogleSSO(onAuthSuccessful: (String) -> Unit,
                         onAuthFailed: () -> Unit)
+     fun signOut()
      fun startPhoneSS0(phone: String)
      fun verifyOTP(verificationCode: String, onVerificationSuccessful: (String) -> Unit,
                    onVerificationFailed: () -> Unit)

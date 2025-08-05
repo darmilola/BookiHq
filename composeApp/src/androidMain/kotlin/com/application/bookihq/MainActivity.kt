@@ -154,12 +154,16 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                     val imageUri: Uri? = result.data?.data
                     val imageName = getFileName(applicationContext, imageUri!!)
 
-                    val uploadTask = storageRef.child("file/$imageName").putFile(imageUri)
+                    val uploadTask = storageRef.child("images/$imageName").putFile(imageUri)
                     uploadTask.addOnSuccessListener {
-                        storageRef.child("file/$imageName").downloadUrl.addOnSuccessListener {
+                        storageRef.child("images/$imageName").downloadUrl.addOnSuccessListener {
                             mainViewModel.setImageUrl(it.toString())
-                        }.addOnFailureListener {}
-                    }.addOnFailureListener {}
+                        }.addOnFailureListener {
+                            println("Error 1 ${it.message}")
+                        }
+                    }.addOnFailureListener {
+                        println("Error 2 ${it.message}")
+                    }
                 }
             }
 
@@ -201,7 +205,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
 
     override fun startPhoneSS0(phone: String) {
         val options = PhoneAuthOptions.newBuilder(firebaseAuth!!)
-            .setPhoneNumber("+16505553434")
+            .setPhoneNumber(phone)
             .setTimeout(30L, TimeUnit.SECONDS)
             .setActivity(this)
             .setCallbacks(callbacks!!)
@@ -473,6 +477,10 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         val c = Calendar.getInstance()
         val hour = c.get(Calendar.HOUR_OF_DAY)
         return hour
+    }
+
+    override fun signOut() {
+        FirebaseAuth.getInstance().signOut()
     }
 
 }
