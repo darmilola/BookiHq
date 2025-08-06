@@ -164,6 +164,7 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
                 userCountry.value = it.country.toString()
             },
             onVendorInfoReady = {},
+            onUserProfileDeleted = {},
             performedActionUIStateViewModel!!)
         profileHandler.init()
 

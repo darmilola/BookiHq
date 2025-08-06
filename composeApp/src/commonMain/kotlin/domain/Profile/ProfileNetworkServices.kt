@@ -29,7 +29,7 @@ open class ProfileNetworkService(private val apiService: HttpClient) {
 
     suspend fun deleteProfile(deleteProfileRequest: DeleteProfileRequest) =
         apiService.post {
-            url("/auth/user/profile/delete")
+            url("/user/profile/delete")
             contentType(ContentType.Application.Json)
             setBody(deleteProfileRequest)
             header("Authorization", apiKey)

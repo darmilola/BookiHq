@@ -31,8 +31,8 @@ class ProfileRepositoryImpl(apiService: HttpClient): ProfileRepository {
         return profileNetworkService.updateProfile(param)
     }
 
-    override suspend fun deleteProfile(userEmail: String): Single<ServerResponse> {
-        val param = DeleteProfileRequest(userEmail)
+    override suspend fun deleteProfile(userId: Long): Single<ServerResponse> {
+        val param = DeleteProfileRequest(userId)
         return profileNetworkService.deleteProfile(param)
     }
 

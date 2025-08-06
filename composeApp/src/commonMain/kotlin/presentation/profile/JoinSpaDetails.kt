@@ -84,6 +84,7 @@ class JoinSpaDetails(val platformNavigator: PlatformNavigator) : ParcelableScree
         val profileHandler = ProfileHandler(profilePresenter,
             onUserLocationReady = {},
             onVendorInfoReady = { it -> },
+            onUserProfileDeleted = {},
             performedActionUIStateViewModel!!)
         profileHandler.init()
 

@@ -11,12 +11,15 @@ class ProfileHandler(
     private val profilePresenter: ProfilePresenter,
     private val onUserLocationReady:(Place)-> Unit,
     private val onVendorInfoReady:(Vendor)-> Unit,
+    private val onUserProfileDeleted:()-> Unit,
     private val performedActionUIStateViewModel: PerformedActionUIStateViewModel
 ) : ProfileContract.View {
     fun init() {
         profilePresenter.registerUIContract(this)
     }
-    override fun onProfileDeleted() {}
+    override fun onProfileDeleted() {
+        onUserProfileDeleted()
+    }
 
     override fun onProfileUpdated() {}
     override fun showUserLocation(place: Place) {
