@@ -48,7 +48,7 @@ private val KtorModule = module {
         httpClient {
             defaultRequest {
                 url {
-                    host = "/booki-0kc3.onrender.com/api/v1"
+                    host = "/bookihq-backend.onrender.com/api/v1"
                     protocol = URLProtocol.HTTPS
                     port = 443
                 }
