@@ -233,13 +233,23 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
             }
         }
 
+        fun generateRandomEmail(domain: String = "booki.africa"): String {
+            val chars = ('a'..'z') + ('0'..'9')
+            val usernameLength = (8..12).random()
+            val username = (1..usernameLength)
+                .map { chars.random() }
+                .joinToString("")
+            return "$username@$domain"
+        }
+
 
 
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
             topBar = {},
             content = {
-                val customerEmail = CustomerPaymentEnum.PAYMENT_EMAIL.toPath()
+                val userInfo = mainViewModel!!.currentUserInfo.value
+                val customerEmail = if (userInfo.email != "empty") generateRandomEmail() else generateRandomEmail()
                 val paymentAmount = cartViewModel!!.total.value
                 val handler = CreateOrderScreenHandler(
                     cartPresenter,
@@ -249,7 +259,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                     onAuthorizationSuccessful = {
                         if (it.status) {
                             platformNavigator.startPaymentProcess(paymentAmount = (paymentAmount * 100).toString(),
-                                customerEmail = customerEmail,
+                                customerEmail = customerEmail!!,
                                 accessCode = it.paymentAuthorizationData.accessCode,
                                 currency = mainViewModel!!.displayCurrencyPath.value,
                                 cardNumber = selectedCard!!.cardNumber,
@@ -379,7 +389,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                             onCardSelected = {
                                 mainViewModel!!.showPaymentCardsBottomSheet(false)
                                 selectedCard = it
-                                paymentPresenter.initCheckOut(amount = (paymentAmount * 100).toString(), customerEmail = customerEmail, currency = paymentCurrency)
+                                paymentPresenter.initCheckOut(amount = (paymentAmount * 100).toString(), customerEmail = customerEmail!!, currency = paymentCurrency)
                             },
                             onDismiss = {
                                 mainViewModel!!.showPaymentCardsBottomSheet(false)

@@ -432,9 +432,10 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         customerEmail: String,
         onPaymentLoading: () -> Unit,
         onPaymentSuccessful: () -> Unit,
-        onPaymentFailed: () -> Unit
+        onPaymentFailed: (message: String) -> Unit
     ) {
         val card = Card(cardNumber, expiryMonth.toInt(), expiryYear.toInt(), cvv)
+        println(card)
         if (card.isValid) {
             val charge = Charge()
             charge.setCard(card)
@@ -451,16 +452,19 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                     onPaymentLoading()
                 }
 
-                fun showLoading(isProcessing: Boolean?) {
+                override fun showLoading(isProcessing: Boolean?) {
                     onPaymentLoading()
                 }
 
                 override fun onError(error: Throwable?, transaction: Transaction?) {
-                    onPaymentFailed()
+                    println(error!!.message)
+                    println(transaction!!.reference)
+
+                    onPaymentFailed(error!!.message!!)
                 }
             })
         } else {
-            onPaymentFailed()
+            onPaymentFailed("")
         }
     }
 
