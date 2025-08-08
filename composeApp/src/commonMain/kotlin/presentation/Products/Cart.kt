@@ -249,7 +249,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
             topBar = {},
             content = {
                 val userInfo = mainViewModel!!.currentUserInfo.value
-                val customerEmail = if (userInfo.email != "empty") generateRandomEmail() else generateRandomEmail()
+                val customerEmail = if (userInfo.email != "empty") userInfo.email else generateRandomEmail()
                 val paymentAmount = cartViewModel!!.total.value
                 val handler = CreateOrderScreenHandler(
                     cartPresenter,
