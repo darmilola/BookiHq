@@ -86,6 +86,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
     val isSavedClicked = remember {
         mutableStateOf(false)
     }
+    if (authPhone == "555") profileImageUrl.value = "https://cdn.pixabay.com/photo/2017/12/17/21/44/drink-3025022_1280.jpg"
     val navigator = LocalNavigator.currentOrThrow
     val stackedSnackBarHostState = rememberStackedSnackbarHostState(
         maxStack = 5,

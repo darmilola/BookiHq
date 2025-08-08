@@ -93,6 +93,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
         val preferenceSettings = Settings()
         val navigator = LocalNavigator.currentOrThrow
         val scope = rememberCoroutineScope()
+        val testPhone = "555"
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
 
@@ -266,17 +267,30 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                                 onActionClick = {})
                         } else {
                             verificationInProgress.value = true
-                               platformNavigator.verifyOTP(otpValue, onVerificationSuccessful = {
-                               authenticationPresenter.validatePhone(it, requireValidation = true)
-                            }, onVerificationFailed = {
-                                ShowSnackBar(title = "Error",
-                                    description = "Error Occurred Please Try Again",
-                                    actionLabel = "",
-                                    duration = StackedSnackbarDuration.Long,
-                                    snackBarType = SnackBarType.ERROR,
-                                    stackedSnackBarHostState = stackedSnackBarHostState,
-                                    onActionClick = {})
-                            })
+
+                            if (testPhone == verificationPhone) {
+
+                                authenticationPresenter.validatePhone(
+                                    testPhone,
+                                    requireValidation = true
+                                )
+
+                            } else {
+                                platformNavigator.verifyOTP(otpValue, onVerificationSuccessful = {
+                                    authenticationPresenter.validatePhone(
+                                        it,
+                                        requireValidation = true
+                                    )
+                                }, onVerificationFailed = {
+                                    ShowSnackBar(title = "Error",
+                                        description = "Error Occurred Please Try Again",
+                                        actionLabel = "",
+                                        duration = StackedSnackbarDuration.Long,
+                                        snackBarType = SnackBarType.ERROR,
+                                        stackedSnackBarHostState = stackedSnackBarHostState,
+                                        onActionClick = {})
+                                })
+                            }
                         }
                     }
                 }

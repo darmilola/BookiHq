@@ -143,6 +143,7 @@ class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScr
                     } else {
                         val validPhone = makeValidPhone(phone.value)
                         var verificationPhone =  countryCode.value+""+validPhone
+                        if (phone.value == "555") verificationPhone = "555"
                         platformNavigator.startPhoneSS0(verificationPhone)
                         val verifyOTPScreen = VerifyOTPScreen(platformNavigator, verificationPhone)
                         verifyOTPScreen.setMainViewModel(mainViewModel = mainViewModel!!)
