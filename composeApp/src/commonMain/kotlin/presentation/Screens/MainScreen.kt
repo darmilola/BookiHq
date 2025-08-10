@@ -136,6 +136,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
         val logOut = mainViewModel!!.logOut.collectAsState()
         if (logOut.value){
             mainViewModel!!.logOut(false)
+            platformNavigator.signOut()
             val preferenceSettings = Settings()
             preferenceSettings.clear()
             val navigator = LocalNavigator

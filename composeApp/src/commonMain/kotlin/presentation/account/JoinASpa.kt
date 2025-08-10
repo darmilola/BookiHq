@@ -133,12 +133,13 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : ParcelableScr
 
         val profileHandler = ProfileHandler(profilePresenter,
             onUserLocationReady = {},
+            onUserProfileDeleted = {},
             onVendorInfoReady = { it ->
                 vendorInfo.value = it
                 mainViewModel!!.setJoinSpaVendor(vendorInfo.value)
                 onInfoReady.value = true
             },
-            performedActionUIStateViewModel!!)
+            performedActionUIStateViewModel = performedActionUIStateViewModel!!)
         profileHandler.init()
 
 

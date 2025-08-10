@@ -122,6 +122,15 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         this.databaseBuilder = databaseBuilder
     }
 
+    fun generateRandomEmail(domain: String = "booki.africa"): String {
+        val chars = ('a'..'z') + ('0'..'9')
+        val usernameLength = (8..12).random()
+        val username = (1..usernameLength)
+            .map { chars.random() }
+            .joinToString("")
+        return "$username@$domain"
+    }
+
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
@@ -130,7 +139,9 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         val lastItemRemoved = remember { mutableStateOf(false) }
         val completeProfile = remember { mutableStateOf(false) }
         val paystackPaymentFailed = remember { mutableStateOf(false) }
-        val customerEmail = CustomerPaymentEnum.PAYMENT_EMAIL.toPath()
+        val paystackPaymentFailedMessage = remember { mutableStateOf("") }
+        val userInfo = mainViewModel!!.currentUserInfo.value
+        val customerEmail = if (userInfo.email != "empty") userInfo.email else generateRandomEmail()
         val navigator = LocalNavigator.currentOrThrow
         val coroutineScope = rememberCoroutineScope()
         val currentPage = remember { mutableStateOf(-1) }
@@ -288,7 +299,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
 
         if (paystackPaymentFailed.value){
             Box(modifier = Modifier.fillMaxWidth()) {
-                ErrorDialog("Payment Failed", actionTitle = "Retry", onConfirmation = {})
+                ErrorDialog(paystackPaymentFailedMessage.value, actionTitle = "Retry", onConfirmation = {})
             }
         }
 
@@ -326,9 +337,10 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             paymentActionUIStateViewModel!!,
             onAuthorizationSuccessful = {
                 if (it.status) {
+                    println(it.paymentAuthorizationData.accessCode)
                     val paymentAmount = calculateAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
                     platformNavigator.startPaymentProcess(paymentAmount = (paymentAmount * 100).toString(),
-                        customerEmail = customerEmail,
+                        customerEmail = customerEmail!!,
                         accessCode = it.paymentAuthorizationData.accessCode,
                         currency = mainViewModel!!.displayCurrencyPath.value,
                         cardNumber = selectedCard!!.cardNumber,
@@ -341,6 +353,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                             createAppointment()
                         },
                         onPaymentFailed = {
+                            paystackPaymentFailedMessage.value = it
                             paystackPaymentFailed.value = true
                         })
                 }
@@ -352,6 +365,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         if (showSelectPaymentCards.value) {
             val paymentAmount = calculateAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
             val paymentCurrency = mainViewModel!!.displayCurrencyPath.value
+            println("Amount $paymentAmount  Currency $paymentCurrency")
             PaymentCardBottomSheet(
                 mainViewModel!!,
                 cardList,
@@ -359,7 +373,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                 onCardSelected = {
                     mainViewModel!!.showPaymentCardsBottomSheet(false)
                     selectedCard = it
-                    paymentPresenter.initCheckOut(amount = (paymentAmount * 100).toString(), customerEmail = customerEmail, currency = paymentCurrency)
+                    paymentPresenter.initCheckOut(amount = (paymentAmount * 100).toString(), customerEmail = customerEmail!!, currency = paymentCurrency)
                 },
                 onDismiss = {
                     mainViewModel!!.showPaymentCardsBottomSheet(false)

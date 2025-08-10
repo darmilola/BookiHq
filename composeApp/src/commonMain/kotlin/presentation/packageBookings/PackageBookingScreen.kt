@@ -138,6 +138,15 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
         this.vendorPackage = vendorPackage
     }
 
+    fun generateRandomEmail(domain: String = "booki.africa"): String {
+        val chars = ('a'..'z') + ('0'..'9')
+        val usernameLength = (8..12).random()
+        val username = (1..usernameLength)
+            .map { chars.random() }
+            .joinToString("")
+        return "$username@$domain"
+    }
+
 
 
     @OptIn(ExperimentalFoundationApi::class)
@@ -149,7 +158,8 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
         val currentPage = remember { mutableStateOf(-1) }
         val currentUserInfo = mainViewModel!!.currentUserInfo.value
         val paystackPaymentFailed = remember { mutableStateOf(false) }
-        val customerEmail = CustomerPaymentEnum.PAYMENT_EMAIL.toPath()
+        val userInfo = mainViewModel!!.currentUserInfo.value
+        val customerEmail = if (userInfo.email != "empty") userInfo.email else generateRandomEmail()
         val navigator = LocalNavigator.currentOrThrow
         val coroutineScope = rememberCoroutineScope()
         val completeProfile = remember { mutableStateOf(false) }
@@ -336,7 +346,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                 if (it.status) {
                     val paymentAmount = calculatePackageAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
                     platformNavigator.startPaymentProcess(paymentAmount = (paymentAmount * 100).toString(),
-                        customerEmail = customerEmail,
+                        customerEmail = customerEmail!!,
                         accessCode = it.paymentAuthorizationData.accessCode,
                         currency = mainViewModel!!.displayCurrencyPath.value,
                         cardNumber = selectedCard!!.cardNumber,
@@ -367,7 +377,7 @@ class PackageBookingScreen(val platformNavigator: PlatformNavigator) :  KoinComp
                     val paymentAmount = calculatePackageAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
                     mainViewModel!!.showPaymentCardsBottomSheet(false)
                     selectedCard = it
-                    paymentPresenter.initCheckOut(amount = (paymentAmount * 100).toString(), customerEmail = customerEmail, currency = paymentCurrency)
+                    paymentPresenter.initCheckOut(amount = (paymentAmount * 100).toString(), customerEmail = customerEmail!!, currency = paymentCurrency)
                 },
                 onDismiss = {
                     mainViewModel!!.showPaymentCardsBottomSheet(false)

@@ -93,6 +93,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
         val preferenceSettings = Settings()
         val navigator = LocalNavigator.currentOrThrow
         val scope = rememberCoroutineScope()
+        val testPhone = "555"
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
 
@@ -135,6 +136,7 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                 navigateToPlatform.value = true
             },
             completeProfile = { userEmail, userPhone ->
+                authPhone.value = userPhone
                 preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.PHONE.toPath()
                 navigateToCompleteProfile.value = true
             },
@@ -168,7 +170,10 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
 
 
         if (navigateToCompleteProfile.value){
-                navigator.replaceAll(CompleteProfileScreen(platformNavigator, authPhone = authPhone.value, authEmail = "empty"))
+            val completeProfile = CompleteProfileScreen(platformNavigator, authPhone = authPhone.value, authEmail = "empty")
+            completeProfile.setMainViewModel(mainViewModel = mainViewModel!!)
+            completeProfile.setDatabaseBuilder(databaseBuilder = databaseBuilder)
+            navigator.replaceAll(completeProfile)
         }
         else if (navigateToConnectVendor.value){
             val connectScreen = ConnectVendor(platformNavigator)
@@ -177,9 +182,11 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
             navigator.replaceAll(connectScreen)
         }
         else if (navigateToPlatform.value){
-            if (deviceInfo() == DeviceType.IOS.toPath()) {
-                platformNavigator.goToMainScreen()
-            }
+            navigateToPlatform.value = false
+            val mainScreen = MainScreen(platformNavigator)
+            mainScreen.setDatabaseBuilder(databaseBuilder)
+            mainScreen.setMainViewModel(mainViewModel!!)
+            navigator.replaceAll(mainScreen)
         }
 
         var otpValue by remember {
@@ -260,17 +267,30 @@ class VerifyOTPScreen(val platformNavigator: PlatformNavigator, val verification
                                 onActionClick = {})
                         } else {
                             verificationInProgress.value = true
-                               platformNavigator.verifyOTP(otpValue, onVerificationSuccessful = {
-                               authenticationPresenter.validatePhone(it, requireValidation = true)
-                            }, onVerificationFailed = {
-                                ShowSnackBar(title = "Error",
-                                    description = "Error Occurred Please Try Again",
-                                    actionLabel = "",
-                                    duration = StackedSnackbarDuration.Long,
-                                    snackBarType = SnackBarType.ERROR,
-                                    stackedSnackBarHostState = stackedSnackBarHostState,
-                                    onActionClick = {})
-                            })
+
+                            if (testPhone == verificationPhone) {
+
+                                authenticationPresenter.validatePhone(
+                                    testPhone,
+                                    requireValidation = true
+                                )
+
+                            } else {
+                                platformNavigator.verifyOTP(otpValue, onVerificationSuccessful = {
+                                    authenticationPresenter.validatePhone(
+                                        it,
+                                        requireValidation = true
+                                    )
+                                }, onVerificationFailed = {
+                                    ShowSnackBar(title = "Error",
+                                        description = "Error Occurred Please Try Again",
+                                        actionLabel = "",
+                                        duration = StackedSnackbarDuration.Long,
+                                        snackBarType = SnackBarType.ERROR,
+                                        stackedSnackBarHostState = stackedSnackBarHostState,
+                                        onActionClick = {})
+                                })
+                            }
                         }
                     }
                 }

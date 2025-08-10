@@ -82,12 +82,12 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
         }
     }
 
-    override fun deleteProfile(userEmail: String) {
+    override fun deleteProfile(userId: Long) {
         contractView?.showActionLce(AppUIStates(isLoading = true, loadingMessage = "Deleting Profile"))
         scope.launch(Dispatchers.Main) {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    profileRepositoryImpl.deleteProfile(userEmail)
+                    profileRepositoryImpl.deleteProfile(userId)
                         .subscribe(
                             onSuccess = { result ->
                                 when (result.status) {

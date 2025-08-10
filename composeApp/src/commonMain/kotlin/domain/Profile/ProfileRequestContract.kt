@@ -15,7 +15,7 @@ data class UpdateProfileRequest(@SerialName("firstname") val firstname: String,
                                 @SerialName("profileImageUrl") val profileImageUrl: String)
 
 @Serializable
-data class DeleteProfileRequest(@SerialName("userEmail") val userEmail: String)
+data class DeleteProfileRequest(@SerialName("userId") val userId: Long)
 
 @Serializable
 data class SwitchVendorRequest(@SerialName("userId") val userId: Long, @SerialName("vendorId") val vendorId: Long,

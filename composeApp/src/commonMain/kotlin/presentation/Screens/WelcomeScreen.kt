@@ -120,7 +120,6 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
                 preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.EMAIL.toPath()
-                println("My Key is ${user.apiKey}")
                     val userDao = databaseBuilder.build().getUserDao()
                     val vendorDao = databaseBuilder.build().getVendorDao()
                     val userCount = userDao.count()
@@ -235,7 +234,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                             .background(color = Color.Black).padding(start = 20.dp, end = 20.dp),
                         contentAlignment = Alignment.TopCenter
                     ) {
-                        TextComponent(
+                        /*TextComponent(
                             text = "An “agree to terms and conditions” is a method of protecting your business by requiring that users acknowledge the rules",
                             fontSize = 14,
                             fontFamily = GGSansRegular,
@@ -244,7 +243,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                             textAlign = TextAlign.Center,
                             fontWeight = FontWeight.Normal,
                             lineHeight = 15
-                        )
+                        )*/
                     }
                 }
 

@@ -1,4 +1,4 @@
-package com.application.zazzy
+package com.application.bookihq
 
 import android.content.Intent
 import android.os.Bundle
@@ -40,7 +40,7 @@ class Authentication : AppCompatActivity() {
         WebAuthProvider.login(account)
             .withConnection(connectionType)
             .withScheme("demo")
-            .withRedirectUri("demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy/callback")
+            .withRedirectUri("demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.bookihq/callback")
             .start(this, object : Callback<Credentials, AuthenticationException> {
                 override fun onFailure(error: AuthenticationException) {
                     val intent = Intent(this@Authentication, MainActivity::class.java)
@@ -78,7 +78,7 @@ class Authentication : AppCompatActivity() {
             .withConnection(connectionType)
             .withScheme("demo")
             .withScope("openid profile email")
-            .withRedirectUri("demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy/callback")
+            .withRedirectUri("demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.bookihq/callback")
             .start(this, object : Callback<Credentials, AuthenticationException> {
                 override fun onFailure(error: AuthenticationException) {
                     val intent = Intent(this@Authentication, MainActivity::class.java)
@@ -114,7 +114,7 @@ class Authentication : AppCompatActivity() {
     private fun logout() {
         WebAuthProvider.logout(account)
             .withScheme("demo")
-            .withReturnToUrl("demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.zazzy/callback")
+            .withReturnToUrl("demo://dev-6s0tarpbfr017qxp.us.auth0.com/android/com.application.bookihq/callback")
             .start(this, object: Callback<Void?, AuthenticationException> {
                 override fun onSuccess(result: Void?) {
                     preferenceSettings.clear()

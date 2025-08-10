@@ -43,15 +43,25 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.room.RoomDatabase
 import applications.room.AppDatabase
+import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
+import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
+import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Enums.Screens
 import domain.Models.User
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import presentation.DomainViewHandler.ProfileHandler
 import presentation.components.ButtonComponent
+import presentation.dialogs.ErrorDialog
+import presentation.dialogs.LoadingDialog
+import presentation.profile.ProfilePresenter
 import presentation.viewmodels.MainViewModel
+import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.widgets.ActionItemComponent
 import presentation.widgets.AccountProfileImage
 import presentation.widgets.DeleteAccountDialog
@@ -60,12 +70,16 @@ import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 
 @Parcelize
-class AccountTab : Tab, Parcelable {
+class AccountTab : Tab, Parcelable, KoinComponent {
 
     private var mainViewModel: MainViewModel? = null
     @Transient
     private var databaseBuilder: RoomDatabase.Builder<AppDatabase>? = null
     private var userInfo: User? = null
+    @Transient
+    private val profilePresenter: ProfilePresenter by inject()
+    @Transient
+    private var performedActionUIStateViewModel: PerformedActionUIStateViewModel? = null
 
     @OptIn(ExperimentalResourceApi::class)
     override val options: TabOptions
@@ -100,15 +114,34 @@ class AccountTab : Tab, Parcelable {
             animation = StackedSnackbarAnimation.Bounce
         )
 
+        userInfo = mainViewModel!!.currentUserInfo.value
+
         val deleteAccountAction = remember { mutableStateOf(false) }
 
         if (deleteAccountAction.value){
             DeleteAccountDialog(onCancel = {
                 deleteAccountAction.value = false
             }, onConfirmation = {
-
+                  profilePresenter.deleteProfile(userInfo!!.userId!!)
             })
         }
+
+        if (performedActionUIStateViewModel == null) {
+            performedActionUIStateViewModel= kmpViewModel(
+                factory = viewModelFactory {
+                    PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
+
+        val uiState = performedActionUIStateViewModel!!.uiStateInfo.collectAsState()
+
+        val profileHandler = ProfileHandler(profilePresenter,
+            onUserLocationReady = {},
+            onUserProfileDeleted = {},
+            onVendorInfoReady = { it -> },
+            performedActionUIStateViewModel = performedActionUIStateViewModel!!)
+        profileHandler.init()
 
 
         Scaffold(
@@ -123,6 +156,18 @@ class AccountTab : Tab, Parcelable {
             },
             content = {
 
+                if (uiState.value.isLoading) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        LoadingDialog("Deleting Your Account")
+                    }
+                }
+                else if (uiState.value.isSuccess) {
+                    mainViewModel!!.logOut(true)
+                }
+                else if (uiState.value.isFailed) {
+                    ErrorDialog("Error Occurred", "Close", onConfirmation = {})
+                }
+
                 val columnModifier = Modifier
                     .padding(top = 5.dp)
                     .fillMaxHeight()
@@ -135,7 +180,6 @@ class AccountTab : Tab, Parcelable {
                     modifier = columnModifier
                 ) {
 
-                    userInfo = mainViewModel!!.currentUserInfo.value
                     AccountProfileImage(
                         profileImageUrl = userInfo!!.profileImageUrl!!,
                         showEditIcon = false,
@@ -291,15 +335,6 @@ class AccountTab : Tab, Parcelable {
                         mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.CONNECT_VENDOR.toPath()))
                     })
 
-               /* ActionItemComponent(
-                    modifier = actionStyle,
-                    buttonText = "Customer Care",
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                    fontSize = 20,
-                    textColor = Colors.darkPrimary,
-                    style = TextStyle(),
-                    iconRes = "drawable/support.png",
-                    isDestructiveAction = false)*/
 
                 if (mainViewModel!!.currentUserInfo.value.isTherapist == false) {
                     ActionItemComponent(
@@ -320,15 +355,6 @@ class AccountTab : Tab, Parcelable {
                         })
                 }
 
-              /*  ActionItemComponent(
-                    modifier = actionStyle,
-                    buttonText = "Privacy Policy",
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                    fontSize = 20,
-                    textColor = Colors.darkPrimary,
-                    style = TextStyle(),
-                    iconRes = "drawable/privacy_icon.png",
-                    isDestructiveAction = false)*/
 
                 ActionItemComponent(
                     modifier = actionStyle,
@@ -344,22 +370,22 @@ class AccountTab : Tab, Parcelable {
                     }
                 )
 
-                /*Divider(color = Color(color = 0x70FA2D65), thickness = 0.5.dp, modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 20.dp))
+                Divider(color = Color(color = 0x70FA2D65), thickness = 0.5.dp, modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 20.dp))
 
                 ButtonComponent(
                     modifier = Modifier
-                        .height(50.dp)
+                        .height(100.dp)
                         .fillMaxWidth()
-                        .padding(top = 10.dp, start = 10.dp, end = 10.dp),
-                    buttonText = "Delete My Account",
-                    borderStroke = BorderStroke(1.dp, theme.Colors.pinkColor),
+                        .padding(top = 40.dp, start = 10.dp, end = 10.dp),
+                    buttonText = "Close Account",
+                    borderStroke = BorderStroke(1.dp, Color.White),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 16,
                     shape = RoundedCornerShape(10.dp),
                     textColor = theme.Colors.pinkColor,
                     style = TextStyle()) {
                     onDeleteAccountClicked()
-                }*/
+                }
 
             }
         }

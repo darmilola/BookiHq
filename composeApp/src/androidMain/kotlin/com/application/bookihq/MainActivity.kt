@@ -1,4 +1,4 @@
-package com.application.zazzy
+package com.application.bookihq
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -27,11 +27,11 @@ import co.paystack.android.PaystackSdk
 import co.paystack.android.Transaction
 import co.paystack.android.model.Card
 import co.paystack.android.model.Charge
-import com.application.zazzy.firebase.FirebaseTopic
-import com.application.zazzy.firebase.NotificationMessage
-import com.application.zazzy.firebase.NotificationService
-import com.application.zazzy.firebase.NotificationType
-import com.application.zazzy.viewmodels.MainViewModel
+import com.application.bookihq.firebase.FirebaseTopic
+import com.application.bookihq.firebase.NotificationMessage
+import com.application.bookihq.firebase.NotificationService
+import com.application.bookihq.firebase.NotificationType
+import com.application.bookihq.viewmodels.MainViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -136,12 +136,16 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             val data = result.data
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
+                println(task)
                 val account = task.getResult(ApiException::class.java)
+                println("My Account $account")
                 firebaseAuthWithGoogle(account.idToken!!, onAuthSuccessful = {
                     mainViewModel.setGoogleAuth(it)
 
                 }, onAuthFailed = {})
-            } catch (e: ApiException) {}
+            } catch (e: ApiException) {
+                println("Exception ${e.status} ${e.message}")
+            }
         }
 
          imagePickerActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -150,12 +154,16 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                     val imageUri: Uri? = result.data?.data
                     val imageName = getFileName(applicationContext, imageUri!!)
 
-                    val uploadTask = storageRef.child("file/$imageName").putFile(imageUri)
+                    val uploadTask = storageRef.child("images/$imageName").putFile(imageUri)
                     uploadTask.addOnSuccessListener {
-                        storageRef.child("file/$imageName").downloadUrl.addOnSuccessListener {
+                        storageRef.child("images/$imageName").downloadUrl.addOnSuccessListener {
                             mainViewModel.setImageUrl(it.toString())
-                        }.addOnFailureListener {}
-                    }.addOnFailureListener {}
+                        }.addOnFailureListener {
+                            println("Error 1 ${it.message}")
+                        }
+                    }.addOnFailureListener {
+                        println("Error 2 ${it.message}")
+                    }
                 }
             }
 
@@ -173,7 +181,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
     }
     override fun startGoogleSSO(onAuthSuccessful: (String) -> Unit, onAuthFailed: () -> Unit) {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("114387254114-knn5thuj39m2hgnns9vnl8ic35f15nhp.apps.googleusercontent.com")
+            .requestIdToken("180139598970-n3t73sb3qcq08hc8timdm3849k6tggvu.apps.googleusercontent.com")
             .requestEmail()
             .requestProfile()
             .build()
@@ -186,6 +194,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mainViewModel.googleAuthUiState.collect {
                     if (it.trim().isNotEmpty()) {
+                        print(it)
                         onAuthSuccessful(it)
                     }
                 }
@@ -273,6 +282,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         firebaseAuth!!.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
+                print(task.toString())
                 if (task.isSuccessful) {
                     val user = firebaseAuth!!.currentUser
                     onAuthSuccessful(user?.email!!)
@@ -422,9 +432,10 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         customerEmail: String,
         onPaymentLoading: () -> Unit,
         onPaymentSuccessful: () -> Unit,
-        onPaymentFailed: () -> Unit
+        onPaymentFailed: (message: String) -> Unit
     ) {
         val card = Card(cardNumber, expiryMonth.toInt(), expiryYear.toInt(), cvv)
+        println(card)
         if (card.isValid) {
             val charge = Charge()
             charge.setCard(card)
@@ -441,16 +452,19 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
                     onPaymentLoading()
                 }
 
-                fun showLoading(isProcessing: Boolean?) {
+                override fun showLoading(isProcessing: Boolean?) {
                     onPaymentLoading()
                 }
 
                 override fun onError(error: Throwable?, transaction: Transaction?) {
-                    onPaymentFailed()
+                    println(error!!.message)
+                    println(transaction!!.reference)
+
+                    onPaymentFailed(error!!.message!!)
                 }
             })
         } else {
-            onPaymentFailed()
+            onPaymentFailed("")
         }
     }
 
@@ -467,6 +481,10 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         val c = Calendar.getInstance()
         val hour = c.get(Calendar.HOUR_OF_DAY)
         return hour
+    }
+
+    override fun signOut() {
+        FirebaseAuth.getInstance().signOut()
     }
 
 }

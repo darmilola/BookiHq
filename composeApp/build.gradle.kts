@@ -67,7 +67,11 @@ kotlin {
             implementation("com.google.firebase:firebase-storage")
             implementation("com.google.auth:google-auth-library-oauth2-http:1.24.0")
             implementation("com.github.bumptech.glide:glide:4.16.0")
-            implementation("co.paystack.android:paystack:3.1.3")
+            implementation("co.paystack.android:paystack:3.3.0")
+            implementation("co.paystack.android.design.widget:pinpad:1.0.8")
+            implementation("androidx.lifecycle:lifecycle-common:2.8.0")
+            implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
+            implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.0")
         }
 
         commonMain.dependencies {
@@ -78,6 +82,7 @@ kotlin {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
             val voyagerVersion = "1.1.0-beta02"
+
 
             // Navigator
             implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
@@ -191,8 +196,8 @@ room {
 }
 
 android {
-    namespace = "com.application.zazzy"
-    compileSdk = 34
+    namespace = "com.application.bookihq"
+    compileSdk = 35
 
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
@@ -200,11 +205,11 @@ android {
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
-        applicationId = "com.application.zazzy"
+        applicationId = "com.application.bookihq"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
         manifestPlaceholders["auth0Domain"] = "@string/com_auth0_domain"
         manifestPlaceholders["auth0Scheme"] = "demo"
     }

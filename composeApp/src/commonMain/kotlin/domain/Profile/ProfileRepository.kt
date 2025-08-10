@@ -20,7 +20,7 @@ interface ProfileRepository {
         profileImageUrl: String
     ): Single<ServerResponse>
 
-    suspend fun deleteProfile(userEmail: String): Single<ServerResponse>
+    suspend fun deleteProfile(userId: Long): Single<ServerResponse>
     suspend fun getVendorAccountInfo(vendorId: Long): Single<VendorAccountResponse>
     suspend fun joinSpa(vendorId: Long, therapistId: Long): Single<ServerResponse>
     suspend fun switchVendor(userId: Long, vendorId: Long, action: String,

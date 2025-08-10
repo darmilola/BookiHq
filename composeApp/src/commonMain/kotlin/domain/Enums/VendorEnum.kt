@@ -13,6 +13,6 @@ enum class CustomerPaymentEnum {
     PAYMENT_EMAIL;
 
     fun toPath() = when (this) {
-        PAYMENT_EMAIL -> "damilolaakinterinwa@gmail.com"
+        PAYMENT_EMAIL -> "bookihq@gmail.com"
     }
 }

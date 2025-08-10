@@ -1,4 +1,4 @@
-package com.application.zazzy.firebase
+package com.application.bookihq.firebase
 
 import com.google.firebase.messaging.RemoteMessage
 import kotlinx.serialization.Serializable

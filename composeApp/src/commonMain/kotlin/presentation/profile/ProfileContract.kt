@@ -43,7 +43,7 @@ class ProfileContract {
         abstract fun updateProfile(firstname: String, lastname: String, userEmail: String, address: String,
                                    contactPhone: String,   countryId: Int,
                                    cityId: Int, gender: String, profileImageUrl: String)
-        abstract fun deleteProfile(userEmail: String)
+        abstract fun deleteProfile(userId: Long)
         abstract fun registerPlatformContract(view: PlatformContract?)
         abstract fun getCountryStates(countryId: Long)
         abstract fun getVendorAvailability(vendorId: Long)

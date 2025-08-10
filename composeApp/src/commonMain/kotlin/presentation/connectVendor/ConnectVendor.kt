@@ -200,6 +200,7 @@ class ConnectVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen
             onVendorInfoReady = { it ->
                 vendorInfo.value = it
             },
+            onUserProfileDeleted = {},
             barCodePerformedActionUIStateViewModel!!)
         profileHandler.init()
 
