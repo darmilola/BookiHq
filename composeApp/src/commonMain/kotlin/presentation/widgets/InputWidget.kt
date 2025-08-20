@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,15 +38,15 @@ import presentations.components.TextFieldComponent
 
 
 @Composable
-fun InputWidget(iconRes: String, maxLength: Int, placeholderText: String, text: String = "", iconSize: Int, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), isFocusedByDefault: Boolean = false, viewHeight: Int = 70, isSingleLine: Boolean = false, maxLines: Int = 1, mBorderStroke: BorderStroke =  BorderStroke(1.dp, color  = Color.Transparent), isPasswordField: Boolean = false, onSaveClicked: Boolean = false, onValueChange: ((String) -> Unit)? = null) {
+fun InputWidget(iconRes: String, maxLength: Int, placeholderText: String, text: String = "", iconSize: Int, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), isFocusedByDefault: Boolean = false, isReadOnly: Boolean = false, viewHeight: Int = 70, isSingleLine: Boolean = true, maxLines: Int = 1, mBorderStroke: BorderStroke =  BorderStroke(1.dp, color  = Color.Transparent), isPasswordField: Boolean = false, onSaveClicked: Boolean = false, onValueChange: ((String) -> Unit)? = null) {
     var passwordIconRes by remember { mutableStateOf("drawable/not_visible.png") }
     var borderStroke by remember { mutableStateOf(mBorderStroke) }
     var iconTint by remember { mutableStateOf(Colors.primaryColor) }
     if (onSaveClicked){
         borderStroke = if (text.isEmpty()) {
-            BorderStroke(2.dp, color = Colors.pinkColor)
+            BorderStroke(1.dp, color = Colors.pinkColor)
         } else {
-            BorderStroke(2.dp, color = Color.Transparent)
+            BorderStroke(1.dp, color = Color.Transparent)
         }
         iconTint = if (text.isEmpty()){
             Colors.pinkColor
@@ -62,11 +63,11 @@ fun InputWidget(iconRes: String, maxLength: Int, placeholderText: String, text: 
     var isPassword by remember { mutableStateOf(isPasswordField) }
 
     val modifier  = Modifier
-        .padding(top = 20.dp)
+        .padding(end = 10.dp, start = 10.dp, top = 20.dp)
         .fillMaxWidth()
         .height(viewHeight.dp)
-        .border(border = borderStroke, shape = RoundedCornerShape(10.dp))
-        .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(10.dp))
+        .border(border = borderStroke, shape = RoundedCornerShape(15.dp))
+        .background(color = Colors.inputGrayColor, shape = RoundedCornerShape(15.dp))
 
     Row(modifier = modifier,
         horizontalArrangement = Arrangement.Start,
@@ -82,14 +83,9 @@ fun InputWidget(iconRes: String, maxLength: Int, placeholderText: String, text: 
         }
         TextFieldComponent(
             text = text,
-            readOnly = false,
-            textStyle = TextStyle(
-                fontSize = TextUnit(18f, TextUnitType.Sp),
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Start,
-                color = Color.Gray
-            ),
-            modifier = Modifier.fillMaxHeight().fillMaxWidth(0.85f).padding(end = 10.dp),
+            readOnly = isReadOnly,
+            textStyle = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.fillMaxHeight().fillMaxWidth(0.95f).padding(end = 10.dp),
             keyboardOptions = keyboardOptions,
             onValueChange = {
                 if (onValueChange != null) {
@@ -102,16 +98,16 @@ fun InputWidget(iconRes: String, maxLength: Int, placeholderText: String, text: 
             placeholderText = placeholderText,
             onFocusChange = { it ->
                 borderStroke = if (it) {
-                    BorderStroke(2.dp, color = Colors.primaryColor)
+                    BorderStroke(1.dp, color = Colors.primaryColor)
                 } else {
-                    BorderStroke(2.dp, color = Color.Transparent)
+                    BorderStroke(1.dp, color = Color.Transparent)
                 }
             },
             isPasswordField = isPassword,
             placeholderTextSize = 16f,
             maxLines = maxLines
         )
-        if (isPassword) {
+        if (isPasswordField) {
             Box(
                 modifier = Modifier.fillMaxHeight().width(50.dp),
                 contentAlignment = Alignment.Center
@@ -119,11 +115,12 @@ fun InputWidget(iconRes: String, maxLength: Int, placeholderText: String, text: 
                 ImageComponent(
                     imageModifier = Modifier
                         .size(iconSize.dp).clickable {
-                            isPassword = !isPassword
-                            passwordIconRes = if(isPassword){
-                                "drawable/not_visible.png"
+                            if (passwordIconRes == "drawable/not_visible.png"){
+                                isPassword = false
+                                passwordIconRes = "drawable/visible.png"
                             } else{
-                                "drawable/visible.png"
+                                isPassword = true
+                                passwordIconRes = "drawable/not_visible.png"
                             }
                         },
                     imageRes = passwordIconRes,

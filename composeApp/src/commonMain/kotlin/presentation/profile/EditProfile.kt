@@ -276,7 +276,7 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
                                 profileImageUrl.value = it
                             }
                         })
-                    Row(modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp)) {
+                    Row(modifier = Modifier.fillMaxWidth()) {
                         Box(
                             modifier = Modifier.weight(1f),
                             contentAlignment = Alignment.Center
@@ -321,8 +321,7 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
                 })
 
                    Box(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(start = 10.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         contentAlignment = Alignment.Center
                     ) {
                         InputWidget(
@@ -342,8 +341,7 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
                     }
 
                     Box(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(start = 10.dp, end = 10.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         contentAlignment = Alignment.Center
                     ) {
                         InputWidget(
@@ -364,7 +362,7 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
 
                     Column(
                         modifier = Modifier
-                            .padding(top = 20.dp)
+                            .padding(top = 10.dp)
                             .fillMaxWidth()
                             .wrapContentHeight(),
                         verticalArrangement = Arrangement.Center,

@@ -30,7 +30,6 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,8 +49,6 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Enums.Screens
 import domain.Models.User
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -64,7 +61,7 @@ import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.widgets.ActionItemComponent
 import presentation.widgets.AccountProfileImage
-import presentation.widgets.DeleteAccountDialog
+import presentation.dialogs.DeleteAccountDialog
 import presentation.widgets.TitleWidget
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState

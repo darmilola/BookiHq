@@ -51,7 +51,7 @@ import presentations.components.TextComponent
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-public fun ButtonComponent(modifier: Modifier, buttonText: String, borderStroke: BorderStroke?, shape: Shape, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, onClick: ()-> Unit) {
+public fun ButtonComponent(modifier: Modifier, buttonText: String, borderStroke: BorderStroke? = null, shape: Shape, colors: ButtonColors, textColor: Color, fontSize: Int, style: TextStyle, onClick: ()-> Unit) {
        Button(
              onClick = {
                   onClick()
@@ -416,7 +416,7 @@ fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, isRightSelection: Boo
         .padding(top = 15.dp, end = 10.dp, start = 10.dp)
         .fillMaxWidth()
         .height(50.dp)
-        .background(color = Colors.lightPrimaryColor, shape = shape)
+        .background(color = theme.Colors.inputGrayColor, shape = shape)
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,

@@ -58,9 +58,8 @@ fun ErrorOccurredWidget(errorText: String, onRetryClicked: () -> Unit) {
         }
         TextComponent(
             text = errorText,
-            fontSize = 15,
-            fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6,
+            fontSize = 17,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Medium,
@@ -74,12 +73,11 @@ fun ErrorOccurredWidget(errorText: String, onRetryClicked: () -> Unit) {
             .background(color = Color.Transparent)
             .height(45.dp)
 
-        ButtonComponent(modifier = buttonStyle, buttonText = "Retry", borderStroke = BorderStroke(1.dp, color = Color.DarkGray), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor =  Color.DarkGray, style = TextStyle(
-            fontFamily = GGSansSemiBold,
-            fontWeight = FontWeight.Black,
-            fontSize = TextUnit(18f, TextUnitType.Sp))){
+        ButtonComponent(modifier = buttonStyle, buttonText = "Retry", borderStroke = BorderStroke(1.dp, color = Colors.darkPrimary), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor =  Colors.darkPrimary,
+            style = androidx.compose.material3.MaterialTheme.typography.titleMedium,){
             onRetryClicked()
         }
     }
 
 }
+

@@ -12,12 +12,14 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Card
 import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,45 +34,51 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import presentation.components.IndeterminateCircularProgressBar
+import presentation.components.SpinningProgressBar
 import presentations.components.TextComponent
 
 @Composable
 fun LoadingDialog(dialogTitle: String) {
-        Dialog(properties = DialogProperties(usePlatformDefaultWidth = true), onDismissRequest = {
+
+    AppTheme {
+        Dialog(properties = DialogProperties(usePlatformDefaultWidth = false), onDismissRequest = {
 
         }) {
             Surface(
                 shape = RoundedCornerShape(10.dp),
                 color = Color.White,
-                modifier = Modifier.fillMaxWidth(0.80f)
+                modifier = Modifier.fillMaxWidth(0.70f)
             ) {
                 LoadingDialogContent(dialogTitle)
             }
         }
     }
 
+}
+
 
 @Composable
 fun LoadingDialogContent(dialogTitle: String){
 
-    Card(modifier = Modifier.fillMaxWidth(0.20f).height(120.dp),
+    Card(modifier = Modifier.fillMaxWidth(0.70f).height(300.dp),
         shape = RoundedCornerShape(10.dp),
         elevation = 15.dp, border = BorderStroke((0.5).dp, color = Colors.primaryColor)
     ) {
-        Row(modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(start = 20.dp, end = 20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+        Column(modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(start = 10.dp, end = 10.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
 
-            IndeterminateCircularProgressBar()
+            SpinningProgressBar(modifier = Modifier.size(90.dp))
 
-            Box(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
+            Box(modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(top = 30.dp), contentAlignment = Alignment.Center) {
                 TextComponent(
                     textModifier = Modifier.wrapContentWidth().wrapContentHeight()
                         .padding(start = 15.dp, end = 15.dp),
                     text = dialogTitle,
                     fontSize = 20,
-                    textStyle = TextStyle(),
+                    textStyle = MaterialTheme.typography.bodyMedium,
                     textColor = Color.Black,
-                    textAlign = TextAlign.Left,
+                    textAlign = TextAlign.Center,
                     fontWeight = FontWeight.SemiBold,
                     lineHeight = 23,
                     maxLines = 3,
@@ -81,4 +89,3 @@ fun LoadingDialogContent(dialogTitle: String){
     }
 
 }
-

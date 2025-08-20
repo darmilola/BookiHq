@@ -127,7 +127,7 @@ fun StateDropDownWidget(menuItems: ArrayList<State>, iconRes: String = "drawable
         .fillMaxWidth()
         .height(60.dp)
         .border(border = BorderStroke(1.dp, color  = Colors.primaryColor), shape = RoundedCornerShape(15.dp))
-        .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(15.dp))
+        .background(color = theme.Colors.inputGrayColor, shape = RoundedCornerShape(15.dp))
 
     Column (
         modifier = modifier,
@@ -249,7 +249,7 @@ fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_
         .fillMaxWidth()
         .height(55.dp)
         .border(border = BorderStroke(1.dp, color  = Colors.primaryColor), shape = shape)
-        .background(color = Colors.lightPrimaryColor, shape = shape)
+        .background(color = theme.Colors.inputGrayColor, shape = shape)
 
     Column (
         modifier = modifier,
