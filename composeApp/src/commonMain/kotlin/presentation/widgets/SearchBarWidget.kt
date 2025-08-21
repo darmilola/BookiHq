@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.OnBackPressed
 import presentations.components.ImageComponent
 import presentations.components.TextFieldComponent
+import presentations.components.TextFieldComponentV2
 
 @Composable
 fun SearchBarWidget(iconRes: String, placeholderText: String, iconSize: Int, onBackPressed:() -> Unit, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
@@ -65,7 +66,7 @@ fun SearchBarWidget(iconRes: String, placeholderText: String, iconSize: Int, onB
                       }
                 }, imageRes = iconResValue, colorFilter = ColorFilter.tint(color = Colors.primaryColor))
         }
-        TextFieldComponent(
+        TextFieldComponentV2(
             text = text,
             readOnly = false,
             textStyle = TextStyle(),

@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import presentations.components.ImageComponent
 import presentations.components.TextFieldComponent
+import presentations.components.TextFieldComponentV2
 import theme.Colors
 
 @Composable
@@ -55,7 +56,7 @@ fun ReplyWidget(iconRes: String, placeholderText: String, defaultValue: String =
     Row(modifier = modifier,
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.Top) {
-        TextFieldComponent(
+        TextFieldComponentV2(
             text = text,
             readOnly = false,
             textStyle = TextStyle(

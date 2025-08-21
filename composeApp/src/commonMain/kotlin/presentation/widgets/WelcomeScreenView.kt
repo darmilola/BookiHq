@@ -76,37 +76,35 @@ fun onBoardingScreenView(subtitleText: String, titleText: String, imageRes: Stri
     Column(modifier = Modifier.fillMaxHeight().fillMaxWidth()) {
         Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.50f), contentAlignment = Alignment.Center){
             ImageComponent(
-                imageModifier = Modifier.size(200.dp),
+                imageModifier = Modifier.size(250.dp),
                 imageRes = imageRes)
         }
 
-        Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.40f), contentAlignment = Alignment.TopCenter){
+        Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.30f), contentAlignment = Alignment.TopCenter){
             TextComponent(
                 text = titleText,
-                fontSize = 25,
-                fontFamily = GGSansBold,
-                textStyle = MaterialTheme.typography.h6,
+                fontSize = 28,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.ExtraBold,
-                lineHeight = 30,
+                lineHeight = 40,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                textModifier = Modifier.fillMaxWidth(0.70f)
+                textModifier = Modifier.fillMaxWidth(0.80f)
             )
         }
 
         Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.TopCenter){
             TextComponent(
                 text = subtitleText,
-                fontSize = 20,
-                fontFamily = GGSansRegular,
-                textStyle = TextStyle(),
-                textColor = Color.Black,
+                fontSize = 18,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Normal,
+                fontWeight = FontWeight.Medium,
                 lineHeight = 25,
-                textModifier = Modifier.fillMaxWidth(0.70f)
+                textModifier = Modifier.fillMaxWidth(0.80f)
             )
         }
     }

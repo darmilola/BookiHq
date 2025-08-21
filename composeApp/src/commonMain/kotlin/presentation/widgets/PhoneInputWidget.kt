@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import presentations.components.TextFieldComponent
+import presentations.components.TextFieldComponentV2
 
 @Composable
 fun PhoneInputWidget(userCountry: String = CountryEnum.DEFAULT.toPath(), onValueChange: ((String) -> Unit)? = null, onCodeSelectionChange: (PhoneExtensionModel) -> Unit) {
@@ -79,7 +80,7 @@ fun PhoneInputWidget(userCountry: String = CountryEnum.DEFAULT.toPath(), onValue
         Box(modifier = Modifier.fillMaxWidth(0.05f).fillMaxHeight(), contentAlignment = Alignment.Center) {
             Box(modifier = Modifier.width(2.dp).fillMaxHeight(0.40f).background(color = Color.DarkGray)) }
 
-        TextFieldComponent(
+        TextFieldComponentV2(
             text = text,
             readOnly = false,
             textStyle = TextStyle(fontSize = TextUnit(23f, TextUnitType.Sp), fontFamily = GGSansSemiBold, fontWeight = FontWeight.Normal, textAlign = TextAlign.Start, color = Color.DarkGray),

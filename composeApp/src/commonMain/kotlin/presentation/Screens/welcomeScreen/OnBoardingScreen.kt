@@ -53,6 +53,7 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Models.PlatformNavigator
@@ -97,13 +98,16 @@ data class OnBoardingScreen(val platformNavigator: PlatformNavigator) : Screen, 
 
     @Composable
     fun OnBoardingScreenCompose() {
-        Column(modifier = Modifier.fillMaxHeight().fillMaxWidth()) {
-            Box(
-                modifier = Modifier.fillMaxHeight().fillMaxWidth()
-                    .background(color = Color.White),
-                contentAlignment = Alignment.Center
-            ) {
-                OnBoardingScreenScrollWidget(platformNavigator)
+
+        AppTheme {
+            Column(modifier = Modifier.fillMaxHeight().fillMaxWidth()) {
+                Box(
+                    modifier = Modifier.fillMaxHeight().fillMaxWidth()
+                        .background(color = theme.Colors.dashboardBackground),
+                    contentAlignment = Alignment.Center
+                ) {
+                    OnBoardingScreenScrollWidget(platformNavigator)
+                }
             }
         }
 
@@ -124,9 +128,9 @@ data class OnBoardingScreen(val platformNavigator: PlatformNavigator) : Screen, 
         titleTextList.add("Fresh Cuts, Premium Experience")
         titleTextList.add("Relax, Recharge, Rejuvenate")
 
-        subtitleTextList.add("Book your perfect spa day with our expert therapists and premium treatments")
-        subtitleTextList.add("Book your perfect haircut with our expert barbers and top-quality grooming services.")
-        subtitleTextList.add("Book your perfect therapy session with our skilled therapists and personalized treatments.")
+        subtitleTextList.add("Relax and recharge—book your perfect spa day with expert care and premium services.")
+        subtitleTextList.add("Sharp style, expert barbers, and top-tier grooming—all in one place")
+        subtitleTextList.add("Book your perfect session—expert guidance, personalized treatments, lasting results")
 
         imgList.add("drawable/onboarding_image1.png")
         imgList.add("drawable/onboarding_image2.png")
@@ -135,20 +139,19 @@ data class OnBoardingScreen(val platformNavigator: PlatformNavigator) : Screen, 
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .fillMaxWidth().background(color = Color.Transparent),
+                .fillMaxWidth().background(color = theme.Colors.dashboardBackground),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
             Box(
                 modifier = Modifier.fillMaxWidth().height(50.dp)
                     .padding(end = 20.dp)
-                    .background(color = Color.White), contentAlignment = Alignment.CenterEnd
+                    .background(color = theme.Colors.dashboardBackground), contentAlignment = Alignment.CenterEnd
             ) {
                 TextComponent(
                     text = "Skip",
-                    fontSize = 20,
-                    fontFamily = GGSansRegular,
-                    textStyle = TextStyle(),
+                    fontSize = 16,
+                    textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                     textColor = Colors.primaryColor,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Normal,
@@ -239,7 +242,7 @@ data class OnBoardingScreen(val platformNavigator: PlatformNavigator) : Screen, 
             }
             Box(
                 modifier = Modifier.fillMaxHeight().fillMaxWidth()
-                    .background(color = Color.White),
+                    .background(color = theme.Colors.dashboardBackground),
                 contentAlignment = Alignment.TopCenter
             ) {
 
@@ -252,11 +255,11 @@ data class OnBoardingScreen(val platformNavigator: PlatformNavigator) : Screen, 
                     modifier = buttonStyle,
                     buttonText = "Next",
                     borderStroke = null,
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Colors.darkPrimary),
                     fontSize = 18,
                     shape = RoundedCornerShape(15.dp),
                     textColor = Color.White,
-                    style = MaterialTheme.typography.h4
+                    style = androidx.compose.material3.MaterialTheme.typography.titleMedium
                 ) {
                     userScrollNext.value = true
                 }

@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.LocalTextStyle
@@ -57,11 +59,12 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
+import theme.Colors
 
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-public fun TextComponent(textModifier: Modifier, text: String, fontSize: Int, textStyle: TextStyle, textColor: Color, textAlign: TextAlign, fontWeight: FontWeight?, fontFamily: FontFamily? = null, lineHeight: Int = 10,maxLines: Int = 20, overflow: TextOverflow = TextOverflow.Clip, letterSpacing: Int = 0, textDecoration: TextDecoration? = null) {
+public fun TextComponent(textModifier: Modifier, text: String, fontSize: Int, textStyle: TextStyle, textColor: Color, textAlign: TextAlign, fontWeight: FontWeight?, fontFamily: FontFamily? = null, lineHeight: Int = 10,maxLines: Int = 10, overflow: TextOverflow = TextOverflow.Clip, letterSpacing: Int = 0, textDecoration: TextDecoration? = null) {
     Text(text, fontSize = fontSize.sp, fontFamily = fontFamily, modifier = textModifier, style = textStyle, color = textColor, textAlign = textAlign,fontWeight = fontWeight, lineHeight = lineHeight.sp, overflow = overflow, maxLines = maxLines, letterSpacing = letterSpacing.sp, textDecoration = textDecoration)
 }
 
@@ -88,17 +91,12 @@ fun TextFieldComponent(text: TextFieldValue, readOnly: Boolean = false, modifier
 
 @Composable
 fun PlaceholderTextComponent(placeholderTile: String, textColor: Color = Color.LightGray, textSize: Float = 18f) {
-    val textStyle = TextStyle(
-        fontSize = TextUnit(textSize, TextUnitType.Sp),
-        textAlign = TextAlign.Start,
-        fontWeight = FontWeight.Normal
-    )
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
+    Box(modifier = Modifier.fillMaxHeight().wrapContentWidth(), contentAlignment = Alignment.CenterStart) {
         TextComponent(
             text = placeholderTile,
             fontSize = textSize.toInt(),
-            textStyle = textStyle,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
             textColor = textColor,
             textAlign = TextAlign.Start,
             fontWeight = FontWeight.Normal,
@@ -108,31 +106,47 @@ fun PlaceholderTextComponent(placeholderTile: String, textColor: Color = Color.L
     }
 }
 
-
 @Composable
-fun MultilinePlaceholderTextComponent(placeholderTile: String, textColor: Color = Color.LightGray, textSize: Float = 18f) {
-    val textStyle = TextStyle(
-        fontSize = TextUnit(textSize, TextUnitType.Sp),
-        textAlign = TextAlign.Start,
-        fontWeight = FontWeight.Normal
-    )
+fun TextFieldComponent(text: String, readOnly: Boolean = false, modifier: Modifier, textStyle: TextStyle = LocalTextStyle.current, onValueChange: (String) -> Unit, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), isSingleLine: Boolean = false, isPasswordField: Boolean = false, isReadOnly: Boolean = false, placeholderText: String, onFocusChange: (Boolean) -> Unit, placeholderTextSize: Float = 18f, maxLines: Int = 1, iconRes: String,
+                       shape: RoundedCornerShape = RoundedCornerShape(15.dp)
+) {
 
-        TextComponent(
-            text = placeholderTile,
-            fontSize = textSize.toInt(),
-            textStyle = textStyle,
-            textColor = textColor,
-            textAlign = TextAlign.Start,
-            fontWeight = FontWeight.Normal,
-            textModifier = Modifier.wrapContentSize(),
-            letterSpacing = 0
-        )
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
+    onFocusChange(isFocused)
+    val visualTransformation: VisualTransformation = if (isPasswordField) PasswordVisualTransformation() else VisualTransformation.None
+
+    androidx.compose.material3.OutlinedTextField(value = text,
+        modifier = modifier,
+        textStyle = textStyle,
+        readOnly = isReadOnly,
+        singleLine = isSingleLine,
+        keyboardOptions = keyboardOptions,
+        visualTransformation = visualTransformation,
+        onValueChange = onValueChange,
+        interactionSource = interactionSource,
+        maxLines = maxLines,
+        label = {
+            PlaceholderTextComponent(
+                placeholderText,
+                textColor = Color.Gray,
+                textSize = placeholderTextSize
+            )
+        },
+        leadingIcon = {
+            ImageComponent(
+                imageModifier = Modifier
+                    .size(24.dp),
+                imageRes = iconRes
+            )
+        },
+        shape = shape,
+        colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(focusedBorderColor = Colors.primaryColor)
+    )
 }
 
-
-
 @Composable
-fun TextFieldComponent(text: String, readOnly: Boolean = false, modifier: Modifier, textStyle: TextStyle = LocalTextStyle.current, onValueChange: (String) -> Unit, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), color: TextFieldColors = TextFieldDefaults.textFieldColors(
+fun TextFieldComponentV2(text: String, readOnly: Boolean = false, modifier: Modifier, textStyle: TextStyle = LocalTextStyle.current, onValueChange: (String) -> Unit, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), color: TextFieldColors = TextFieldDefaults.textFieldColors(
     disabledTextColor = Color.Transparent,
     focusedIndicatorColor = Color.Transparent,
     unfocusedIndicatorColor = Color.Transparent,
@@ -140,18 +154,13 @@ fun TextFieldComponent(text: String, readOnly: Boolean = false, modifier: Modifi
 ), isSingleLine: Boolean = false, isPasswordField: Boolean = false, isReadOnly: Boolean = false, placeholderText: String, onFocusChange: (Boolean) -> Unit, placeholderTextSize: Float = 18f, maxLines: Int = 1) {
 
     val interactionSource = remember { MutableInteractionSource() }
-    val isFocused = interactionSource.collectIsFocusedAsState()
-    if (isFocused.value){
-        onFocusChange(true)
-    }else{
-        onFocusChange(false)
-    }
-
+    val isFocused by interactionSource.collectIsFocusedAsState()
+    onFocusChange(isFocused)
     val visualTransformation: VisualTransformation = if (isPasswordField) PasswordVisualTransformation() else VisualTransformation.None
 
     BasicTextField(value = text, modifier = modifier, textStyle = textStyle, readOnly = isReadOnly, singleLine = isSingleLine, keyboardOptions = keyboardOptions, visualTransformation = visualTransformation, onValueChange = onValueChange, interactionSource = interactionSource, maxLines = maxLines, decorationBox = { innerTextField ->
         Row(modifier = Modifier.fillMaxWidth()) {
-            if (text.trim().isEmpty()) {
+            if (text.trim().isEmpty() || text.trim().contentEquals("0")) {
                 PlaceholderTextComponent(placeholderText, textColor = Color.Gray, textSize = placeholderTextSize)
             }
         }
@@ -162,35 +171,6 @@ fun TextFieldComponent(text: String, readOnly: Boolean = false, modifier: Modifi
 }
 
 
-@Composable
-fun MultilineTextFieldComponent(text: String, readOnly: Boolean = false, modifier: Modifier, textStyle: TextStyle = LocalTextStyle.current, onValueChange: (String) -> Unit, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), color: TextFieldColors = TextFieldDefaults.textFieldColors(
-    disabledTextColor = Color.Transparent,
-    focusedIndicatorColor = Color.Transparent,
-    unfocusedIndicatorColor = Color.Transparent,
-    disabledIndicatorColor = Color.Transparent
-), isSingleLine: Boolean = false, isPasswordField: Boolean = false, isReadOnly: Boolean = false, placeholderText: String, onFocusChange: (Boolean) -> Unit, placeholderTextSize: Float = 18f, maxLines: Int = 1) {
-
-    val interactionSource = remember { MutableInteractionSource() }
-    val isFocused = interactionSource.collectIsFocusedAsState()
-    if (isFocused.value){
-        onFocusChange(true)
-    }else{
-        onFocusChange(false)
-    }
-
-    val visualTransformation: VisualTransformation = if (isPasswordField) PasswordVisualTransformation() else VisualTransformation.None
-
-    BasicTextField(value = text, modifier = modifier, textStyle = textStyle, readOnly = isReadOnly, singleLine = isSingleLine, keyboardOptions = keyboardOptions, visualTransformation = visualTransformation, onValueChange = onValueChange, interactionSource = interactionSource, maxLines = maxLines, decorationBox = { innerTextField ->
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopStart) {
-            if (text.isEmpty()) {
-                MultilinePlaceholderTextComponent(placeholderText, textColor = Color.Gray, textSize = placeholderTextSize)
-            }
-        }
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopStart) {
-            innerTextField()
-        }
-    })
-}
 
 
 
