@@ -379,7 +379,7 @@ data class SignupScreen(val platformNavigator: PlatformNavigator) : ParcelableSc
     fun AttachStateDropDownWidget(statesViewModel: StatesViewModel, onMenuItemClick : (State) -> Unit, onMenuExpanded:() -> Unit) {
         val cityListState = statesViewModel.platformStates.collectAsState()
         val cityList = cityListState.value
-        StateDropDownWidget(menuItems = cityList, iconRes = "drawable/urban_icon.png", placeHolderText = "Select City", onMenuItemClick = {
+        StateDropDownWidget(menuItems = cityList, iconRes = "drawable/urban_icon.png", placeHolderText = "State", onMenuItemClick = {
             onMenuItemClick(cityList[it])
         }, onExpandMenuItemClick = {
             onMenuExpanded()

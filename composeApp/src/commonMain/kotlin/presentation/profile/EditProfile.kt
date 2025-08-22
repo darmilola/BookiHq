@@ -484,7 +484,7 @@ fun AttachStateDropDownWidget(selectedState: State, statesViewModel: StatesViewM
     if (cityState.value.isEmpty()) {
         cityState.value.add(selectedState)
     }
-    StateDropDownWidget(menuItems = cityState.value, selectedIndex = 0,iconRes = "drawable/urban_icon.png", placeHolderText = "Select State", onMenuItemClick = {
+    StateDropDownWidget(menuItems = cityState.value, selectedIndex = 0,iconRes = "drawable/urban_icon.png", placeHolderText = "State", onMenuItemClick = {
         onMenuItemClick(cityState.value[it])
     }, onExpandMenuItemClick = {
         onMenuExpanded()
