@@ -53,14 +53,14 @@ fun VendorsView(nearbyVendor: List<Vendor>, newVendor: List<Vendor>, mainViewMod
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .padding(start = 10.dp, top = 10.dp)
-                    .height(40.dp)
+                    .padding(start = 10.dp, top = 15.dp)
+                    .height(30.dp)
                     .fillMaxWidth()
             ) {
                 TextComponent(
-                    text = "Nearby",
-                    textModifier = Modifier.fillMaxWidth(0.30f),
-                    fontSize = 23,
+                    text = "Nearby Vendor",
+                    textModifier = Modifier.fillMaxWidth(0.70f),
+                    fontSize = 20,
                     textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                     textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
@@ -100,8 +100,8 @@ fun VendorsView(nearbyVendor: List<Vendor>, newVendor: List<Vendor>, mainViewMod
         else {
 
             LazyColumn(
-                modifier = Modifier.padding(top = 10.dp).fillMaxWidth()
-                    .height(320.dp),
+                modifier = Modifier.fillMaxWidth()
+                    .height(330.dp),
                 contentPadding = PaddingValues(6.dp),
                 verticalArrangement = Arrangement.spacedBy(5.dp), userScrollEnabled = true
             ) {

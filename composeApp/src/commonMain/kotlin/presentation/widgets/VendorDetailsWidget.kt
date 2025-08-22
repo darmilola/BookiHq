@@ -76,8 +76,8 @@ fun ConnectBusinessTitle(onBackPressed: () -> Unit){
 fun VendorDetailsTitle(onBackPressed: () -> Unit){
     val rowModifier = Modifier
         .fillMaxWidth()
-        .background(color = Color.White)
-        .padding(top = 20.dp)
+        .background(color = theme.Colors.dashboardBackground)
+        .padding(top = 10.dp)
         .height(40.dp)
 
         Row(modifier = rowModifier,
@@ -95,7 +95,7 @@ fun VendorDetailsTitle(onBackPressed: () -> Unit){
             Box(modifier =  Modifier.weight(3.0f)
                 .fillMaxHeight(),
                 contentAlignment = Alignment.Center) {
-                TitleWidget(title = "Vendor Details", textColor = Colors.primaryColor)
+                SubtitleTextWidget(text = "Vendor Details", textColor = Colors.primaryColor, fontSize = 20)
 
             }
 

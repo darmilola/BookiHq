@@ -52,18 +52,18 @@ import presentations.components.TextComponent
                 Box(modifier = Modifier.size(80.dp), contentAlignment = Alignment.Center) {
                     BusinessLogo(vendor.businessLogo!!)
                 }
-                Box(modifier = Modifier.fillMaxWidth(0.70f), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.fillMaxWidth(0.80f), contentAlignment = Alignment.Center) {
                     BusinessNameAndHandle(vendor)
                 }
-                Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.Center) {
-                    val buttonStyle = Modifier
-                        .padding(top = 5.dp)
-                        .fillMaxWidth()
-                        .background(color = Color.Transparent)
-                        .height(45.dp)
-                    ButtonComponent(modifier = buttonStyle, buttonText = "Connect", borderStroke = BorderStroke((1).dp, color = Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 14, shape = RoundedCornerShape(12.dp), textColor =  Colors.primaryColor, style = androidx.compose.material3.MaterialTheme.typography.titleMedium){
-                        onVendorClickListener(vendor)
-                    }
+                Box(modifier = Modifier.fillMaxWidth().fillMaxHeight().clickable {
+                    onVendorClickListener(vendor)
+                }, contentAlignment = Alignment.Center) {
+
+                    ImageComponent(
+                        imageModifier = Modifier.size(30.dp),
+                        imageRes = "drawable/forward_icon.png",
+                        colorFilter = ColorFilter.tint(color = theme.Colors.darkPrimary)
+                    )
                 }
             }
         }

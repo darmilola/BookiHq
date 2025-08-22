@@ -13,6 +13,7 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
@@ -35,6 +36,7 @@ import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.widgets.BusinessInfoContent
 import presentation.widgets.VendorDetailsTitle
+import theme.Colors
 import utils.ParcelableScreen
 
 @Parcelize
@@ -112,6 +114,7 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
 
 
 
+        AppTheme {
         Scaffold(
             topBar = {
                 VendorDetailsTitle(onBackPressed = {
@@ -125,7 +128,8 @@ class ConnectVendorDetailsScreen(val vendor: Vendor,val  platformNavigator: Plat
                     }
                 }
             },
-            backgroundColor = Color.White,
+            backgroundColor = Colors.dashboardBackground,
         )
     }
+        }
 }
