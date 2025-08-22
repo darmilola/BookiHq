@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,8 +46,12 @@ fun SearchBarWidget(iconRes: String, placeholderText: String, iconSize: Int, onB
     var iconResValue by remember { mutableStateOf(iconRes) }
     var borderStroke by remember { mutableStateOf(BorderStroke(1.dp, color  = Color.Gray)) }
 
+    if (text.isNotEmpty()){
+        iconResValue = "drawable/back_arrow.png"
+    }
+
     val modifier  = Modifier
-        .padding(end = 10.dp, start = 10.dp, top = 20.dp)
+        .padding(end = 10.dp, start = 10.dp, top = 10.dp)
         .fillMaxWidth()
         .height(50.dp)
         .border(border = borderStroke, shape = CircleShape)
@@ -69,7 +74,7 @@ fun SearchBarWidget(iconRes: String, placeholderText: String, iconSize: Int, onB
         TextFieldComponentV2(
             text = text,
             readOnly = false,
-            textStyle = TextStyle(),
+            textStyle = MaterialTheme.typography.titleMedium,
             modifier = Modifier.fillMaxHeight().fillMaxWidth().padding(end = 10.dp),
             keyboardOptions = keyboardOptions,
             onValueChange = {

@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.Vendor
 import presentation.components.ButtonComponent
@@ -56,11 +57,11 @@ import presentations.components.TextComponent
                 }
                 Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.Center) {
                     val buttonStyle = Modifier
-                        .padding(top = 10.dp)
+                        .padding(top = 5.dp)
                         .fillMaxWidth()
                         .background(color = Color.Transparent)
-                        .height(30.dp)
-                    ButtonComponent(modifier = buttonStyle, buttonText = "Connect", borderStroke = BorderStroke((1).dp, color = Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 12, shape = RoundedCornerShape(12.dp), textColor =  Colors.primaryColor, style = TextStyle(fontFamily = GGSansRegular)){
+                        .height(45.dp)
+                    ButtonComponent(modifier = buttonStyle, buttonText = "Connect", borderStroke = BorderStroke((1).dp, color = Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 14, shape = RoundedCornerShape(12.dp), textColor =  Colors.primaryColor, style = androidx.compose.material3.MaterialTheme.typography.titleMedium){
                         onVendorClickListener(vendor)
                     }
                 }
@@ -106,23 +107,22 @@ import presentations.components.TextComponent
                 TextComponent(
                     text = vendor.businessName!!,
                     fontSize = 16,
-                    fontFamily = GGSansRegular,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.DarkGray,
+                    textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                    textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
                     fontWeight = FontWeight.ExtraBold,
                     lineHeight = 25,
+                    overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                     textModifier = modifier)
 
                 TextComponent(
                     text = vendor.businessAddress!!,
                     fontSize = 14,
-                    fontFamily = GGSansRegular,
-                    textStyle = TextStyle(),
+                    textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                     textColor = Color.Gray,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.ExtraBold,
+                    fontWeight = FontWeight.Normal,
                     lineHeight = 17,
                     maxLines = 2,
                     textModifier = modifier)
@@ -132,12 +132,13 @@ import presentations.components.TextComponent
                     TextComponent(
                         text = "@"+vendor.businessHandle,
                         fontSize = 14,
-                        fontFamily = GGSansRegular,
-                        textStyle = TextStyle(),
+                        textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                         textColor = Colors.primaryColor,
                         textAlign = TextAlign.Right,
                         fontWeight = FontWeight.Normal,
                         lineHeight = 30,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         textModifier = Modifier
                             .padding(end = 20.dp, top = 10.dp)
                             .wrapContentSize())

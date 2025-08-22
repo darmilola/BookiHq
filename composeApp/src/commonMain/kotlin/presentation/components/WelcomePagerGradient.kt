@@ -16,6 +16,6 @@ fun StraightLine() {
         modifier = Modifier
             .fillMaxWidth()
             .height(1.dp)
-            .background(color =  Colors.lighterPrimaryColor)
+            .background(color =  theme.Colors.lightGrayColor)
     )
 }

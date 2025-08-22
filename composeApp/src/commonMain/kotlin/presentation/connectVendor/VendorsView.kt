@@ -46,54 +46,54 @@ import theme.styles.Colors
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun VendorsView(nearbyVendor: List<Vendor>, newVendor: List<Vendor>, mainViewModel: MainViewModel, onSeeAllNearbyVendor:() -> Unit, onVendorClickListener: (Vendor) -> Unit) {
-    Column(modifier = Modifier.fillMaxWidth().fillMaxHeight().verticalScroll(rememberScrollState())) {
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(start = 10.dp, top = 10.dp)
-                .height(40.dp)
-                .fillMaxWidth()
-        ) {
-            TextComponent(
-                text = "Nearby",
-                textModifier = Modifier.fillMaxWidth(0.30f),
-                fontSize = 28,
-                fontFamily = GGSansBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Colors.darkPrimary,
-                textAlign = TextAlign.Left,
-                fontWeight = FontWeight.ExtraBold,
-                lineHeight = 30,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.55f)
-                    .height(1.dp)
-                    .background(color =  Colors.lighterPrimaryColor)
-            )
+    Column(modifier = Modifier.fillMaxWidth().fillMaxHeight().background(color = theme.Colors.dashboardBackground).verticalScroll(rememberScrollState())) {
 
-            Box(modifier = Modifier.fillMaxWidth().padding(end = 20.dp), contentAlignment = Alignment.CenterEnd){
+        if (nearbyVendor.isNotEmpty()) {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(start = 10.dp, top = 10.dp)
+                    .height(40.dp)
+                    .fillMaxWidth()
+            ) {
                 TextComponent(
-                    text = "See All",
-                    textModifier = Modifier.wrapContentWidth().clickable { onSeeAllNearbyVendor() },
-                    fontSize = 18,
-                    fontFamily = GGSansBold,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Colors.primaryColor,
+                    text = "Nearby",
+                    textModifier = Modifier.fillMaxWidth(0.30f),
+                    fontSize = 23,
+                    textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+                    textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.ExtraBold,
+                    fontWeight = FontWeight.Bold,
                     lineHeight = 30,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
+
+
+                Box(
+                    modifier = Modifier.fillMaxWidth().padding(end = 20.dp),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    TextComponent(
+                        text = "See All",
+                        textModifier = Modifier.wrapContentWidth()
+                            .clickable { onSeeAllNearbyVendor() },
+                        fontSize = 15,
+                        textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+                        textColor = Colors.primaryColor,
+                        textAlign = TextAlign.Left,
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = 30,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
         }
 
         if (nearbyVendor.isEmpty()){
-                Box(modifier = Modifier.fillMaxWidth().height(350.dp), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.fillMaxWidth().height(320.dp), contentAlignment = Alignment.Center) {
                     EmptyContentWidget(emptyText = "No Nearby Vendor")
                 }
         }
@@ -101,7 +101,7 @@ fun VendorsView(nearbyVendor: List<Vendor>, newVendor: List<Vendor>, mainViewMod
 
             LazyColumn(
                 modifier = Modifier.padding(top = 10.dp).fillMaxWidth()
-                    .height(350.dp),
+                    .height(320.dp),
                 contentPadding = PaddingValues(6.dp),
                 verticalArrangement = Arrangement.spacedBy(5.dp), userScrollEnabled = true
             ) {
@@ -115,7 +115,7 @@ fun VendorsView(nearbyVendor: List<Vendor>, newVendor: List<Vendor>, mainViewMod
             }
         }
 
-        Row(
+        /*Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -126,23 +126,16 @@ fun VendorsView(nearbyVendor: List<Vendor>, newVendor: List<Vendor>, mainViewMod
             TextComponent(
                 text = "New",
                 textModifier = Modifier.fillMaxWidth(0.50f),
-                fontSize = 28,
-                fontFamily = GGSansBold,
-                textStyle = MaterialTheme.typography.h6,
+                fontSize = 25,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
-                fontWeight = FontWeight.ExtraBold,
+                fontWeight = FontWeight.Bold,
                 lineHeight = 30,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(color =  Colors.lighterPrimaryColor)
-            )
-        }
+        }*/
 
         val pagerState = rememberPagerState(pageCount = {
             newVendor.size
@@ -150,14 +143,14 @@ fun VendorsView(nearbyVendor: List<Vendor>, newVendor: List<Vendor>, mainViewMod
 
 
         Column(modifier = Modifier
-            .height(450.dp)
+            .height(400.dp)
             .fillMaxWidth(),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally) {
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxWidth().fillMaxHeight(0.95f),
-                pageSpacing = 10.dp,
+                pageSpacing = 5.dp,
                 pageSize = PageSize.Fixed(300.dp)
             ) { page ->
                 NewVendorItem(newVendor[page], onItemClickListener = {

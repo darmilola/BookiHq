@@ -56,7 +56,7 @@ fun ConnectBusinessTitle(title: String){
         .height(40.dp)
 
     val colModifier = Modifier
-        .padding(top = 20.dp, end = 0.dp)
+        .padding(top = 10.dp)
         .fillMaxWidth()
         .height(40.dp)
 
@@ -116,7 +116,7 @@ fun leftTopBarItem(onBackPressed: () -> Unit) {
 
 @Composable
 fun ConnectTitle(title: String){
-    TitleWidget(title = title, textColor = Colors.primaryColor)
+    SubtitleTextWidget(text = title, textColor = Colors.primaryColor, fontSize = 20)
 }
 
 
