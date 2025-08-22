@@ -136,9 +136,7 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             val data = result.data
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
-                println(task)
                 val account = task.getResult(ApiException::class.java)
-                println("My Account $account")
                 firebaseAuthWithGoogle(account.idToken!!, onAuthSuccessful = {
                     mainViewModel.setGoogleAuth(it)
 
@@ -194,7 +192,6 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mainViewModel.googleAuthUiState.collect {
                     if (it.trim().isNotEmpty()) {
-                        print(it)
                         onAuthSuccessful(it)
                     }
                 }
@@ -282,7 +279,6 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         firebaseAuth!!.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
-                print(task.toString())
                 if (task.isSuccessful) {
                     val user = firebaseAuth!!.currentUser
                     onAuthSuccessful(user?.email!!)
