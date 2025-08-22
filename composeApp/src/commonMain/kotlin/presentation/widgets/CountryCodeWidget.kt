@@ -26,7 +26,7 @@ import presentations.components.TextComponent
 fun CountryCodeView(countryCode: String, countryFlagRes: String) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
+            .wrapContentWidth()
             .wrapContentHeight(),
          horizontalArrangement = Arrangement.Start,
          verticalAlignment = Alignment.CenterVertically,
@@ -34,10 +34,10 @@ fun CountryCodeView(countryCode: String, countryFlagRes: String) {
 
         ImageComponent(imageModifier = Modifier.size(25.dp), imageRes = countryFlagRes)
 
-        TextComponent(
+        /*TextComponent(
             textModifier = Modifier.wrapContentWidth().padding(start = 15.dp), text = countryCode, fontSize = 20,
             textStyle = TextStyle(fontSize = TextUnit(20f, TextUnitType.Sp), fontFamily = GGSansSemiBold, fontWeight = FontWeight.Normal, textAlign = TextAlign.Start, color = Color.DarkGray), textColor = Color.DarkGray, textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Normal, lineHeight = 23, maxLines = 1,  overflow = TextOverflow.Ellipsis)
+            fontWeight = FontWeight.Normal, lineHeight = 23, maxLines = 1,  overflow = TextOverflow.Ellipsis)*/
     }
 
 }

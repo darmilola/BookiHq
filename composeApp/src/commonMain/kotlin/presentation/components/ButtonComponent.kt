@@ -443,11 +443,11 @@ fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, isRightSelection: Boo
                     TextComponent(
                         text = leftText,
                         fontSize = 15,
-                        textStyle = MaterialTheme.typography.h6,
+                        textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                         fontFamily = GGSansRegular,
                         textColor = leftTextColor,
                         textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.ExtraBold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }
@@ -472,11 +472,10 @@ fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, isRightSelection: Boo
                     TextComponent(
                         text = rightText,
                         fontSize = 15,
-                        textStyle = MaterialTheme.typography.h6,
-                        fontFamily = GGSansRegular,
+                        textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                         textColor = rightTextColor,
                         textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.ExtraBold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }

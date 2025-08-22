@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -81,12 +82,7 @@ private fun CharView(
         index > text.length -> ""
         else -> text[index].toString()
     }
-        val textStyle = TextStyle(
-            fontSize = TextUnit(40f, TextUnitType.Sp),
-            fontFamily = GGSansRegular,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Normal
-        )
+
        Box(modifier = Modifier
            .fillMaxWidth()
            .height(70.dp)
@@ -98,13 +94,14 @@ private fun CharView(
                }, RoundedCornerShape(15.dp)
            ), contentAlignment = Alignment.Center) {
            Text(text = char,
-               style = textStyle,
+               style = MaterialTheme.typography.titleMedium,
                color = if (isFocused) {
                    Color.LightGray
                } else {
                    Colors.darkPrimary
                },
-               textAlign = TextAlign.Center
+               textAlign = TextAlign.Center,
+               fontSize = TextUnit(40f, TextUnitType.Sp)
            )
        }
 }

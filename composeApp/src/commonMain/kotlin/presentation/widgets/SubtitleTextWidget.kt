@@ -42,14 +42,13 @@ fun SubtitleTextWidget(text: String, fontSize: Int = 20, textAlign: TextAlign = 
     .wrapContentWidth()
     .wrapContentHeight(), textDecoration: TextDecoration? = null, lineHeight: Int = 30) {
     Column(
-        modifier = modifier
-            .padding(start = 3.dp),
+        modifier = modifier,
         verticalArrangement = Arrangement.Top,
         horizontalAlignment  = Alignment.Start,
     ) {
         TextComponent(
             textModifier = modifier, text = text, fontSize = fontSize,
-            textStyle = androidx.compose.material3.MaterialTheme.typography.labelMedium, textColor = textColor, textAlign = textAlign,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium, textColor = textColor, textAlign = textAlign,
             fontWeight = FontWeight.Normal, lineHeight = lineHeight, maxLines = 3,  overflow = TextOverflow.Ellipsis, textDecoration = textDecoration)
     }
 

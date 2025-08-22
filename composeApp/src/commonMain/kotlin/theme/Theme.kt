@@ -67,12 +67,12 @@ fun AppTheme(content: @Composable () -> Unit) {
         titleLarge = TextStyle(
             fontFamily = poppinsSemiBold,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 16.sp,
+            fontSize = 20.sp,
         ),
         titleMedium = TextStyle(
             fontFamily = poppinsRegular,
             fontWeight = FontWeight.Normal,
-            fontSize = 16.sp,
+            fontSize = 20.sp,
         ),
         bodyLarge = TextStyle(
             fontFamily = poppinsRegular, fontWeight = FontWeight.Normal, fontSize = 23.sp

@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,21 +58,20 @@ fun PhoneInputWidget(userCountry: String = CountryEnum.DEFAULT.toPath(), onValue
         )
     }
     var text by remember { mutableStateOf("") }
-    var borderStroke by remember { mutableStateOf(BorderStroke(2.dp, color  = Color.Transparent)) }
 
     val modifier  = Modifier
         .padding(end = 10.dp, start = 10.dp, top = 20.dp)
         .fillMaxWidth()
         .height(70.dp)
-        .border(border = borderStroke, shape = RoundedCornerShape(15.dp))
-        .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(15.dp))
+        .border(border = BorderStroke(1.5.dp, color  = theme.Colors.darkPrimary), shape = RoundedCornerShape(15.dp))
+        .background(color = theme.Colors.inputGrayColor, shape = RoundedCornerShape(15.dp))
 
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
-        Box(modifier = Modifier.fillMaxWidth(0.30f).fillMaxHeight().padding(start = 20.dp), contentAlignment = Alignment.Center) {
+        Box(modifier = Modifier.fillMaxWidth(0.20f).fillMaxHeight().padding(start = 20.dp), contentAlignment = Alignment.Center) {
             CountryCodeDropDownWidget(menuItems = countryCodeList, onSelectionChange = {
                 onCodeSelectionChange(countryCodeList[it])
             })
@@ -83,20 +83,13 @@ fun PhoneInputWidget(userCountry: String = CountryEnum.DEFAULT.toPath(), onValue
         TextFieldComponentV2(
             text = text,
             readOnly = false,
-            textStyle = TextStyle(fontSize = TextUnit(23f, TextUnitType.Sp), fontFamily = GGSansSemiBold, fontWeight = FontWeight.Normal, textAlign = TextAlign.Start, color = Color.DarkGray),
+            textStyle = MaterialTheme.typography.titleMedium,
             modifier = Modifier.wrapContentSize(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             onValueChange = {
                 text = it
                 onValueChange!!(text)
-            } , isSingleLine = true, placeholderText = "000 0000 000", onFocusChange = {
-                    it ->
-                borderStroke = if (it){
-                    BorderStroke(2.dp, color  = Colors.primaryColor)
-                } else{
-                    BorderStroke(2.dp, color  = Color.Transparent)
-                }
-            },
+            } , isSingleLine = true, placeholderText = "000 0000 000", onFocusChange = { it -> },
             isPasswordField = false, placeholderTextSize = 25f
         )
     }

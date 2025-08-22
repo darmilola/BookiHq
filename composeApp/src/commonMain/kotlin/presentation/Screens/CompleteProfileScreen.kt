@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase
 import applications.room.AppDatabase
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
@@ -44,7 +45,7 @@ data class CompleteProfileScreen(val platformNavigator: PlatformNavigator, val a
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
 
-        if (onBackPressed.value){
+        if (onBackPressed.value) {
             platformNavigator.exitApp()
         }
 
@@ -56,12 +57,23 @@ data class CompleteProfileScreen(val platformNavigator: PlatformNavigator, val a
             )
         }
 
-        val authenticationPresenter : AuthenticationPresenter by inject()
-        val profilePresenter : ProfilePresenter by inject()
+        val authenticationPresenter: AuthenticationPresenter by inject()
+        val profilePresenter: ProfilePresenter by inject()
 
 
-        CompleteProfile(authenticationPresenter,authEmail = authEmail, authPhone = authPhone, platformNavigator = platformNavigator, statesViewModel!!,
-            profilePresenter, mainViewModel = mainViewModel!!, databaseBuilder = databaseBuilder)
+        AppTheme {
+
+            CompleteProfile(
+                authenticationPresenter,
+                authEmail = authEmail,
+                authPhone = authPhone,
+                platformNavigator = platformNavigator,
+                statesViewModel!!,
+                profilePresenter,
+                mainViewModel = mainViewModel!!,
+                databaseBuilder = databaseBuilder
+            )
+        }
     }
 
 }
