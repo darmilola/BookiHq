@@ -125,8 +125,8 @@ data class OnBoardingScreen(val platformNavigator: PlatformNavigator) : Screen, 
         val imgList = arrayListOf<String>()
 
         titleTextList.add("Luxury Spa Experience")
-        titleTextList.add("Fresh Cuts, Premium Experience")
-        titleTextList.add("Relax, Recharge, Rejuvenate")
+        titleTextList.add("Fresh Cuts, Premium\nExperience")
+        titleTextList.add("Relax, Recharge, \nRejuvenate")
 
         subtitleTextList.add("Relax and recharge—book your perfect spa day with expert care and premium services.")
         subtitleTextList.add("Sharp style, expert barbers, and top-tier grooming—all in one place")

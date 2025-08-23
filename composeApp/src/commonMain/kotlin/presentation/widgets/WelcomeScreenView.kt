@@ -83,7 +83,7 @@ fun onBoardingScreenView(subtitleText: String, titleText: String, imageRes: Stri
         Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.30f), contentAlignment = Alignment.TopCenter){
             TextComponent(
                 text = titleText,
-                fontSize = 28,
+                fontSize = 26,
                 textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Center,
@@ -91,7 +91,7 @@ fun onBoardingScreenView(subtitleText: String, titleText: String, imageRes: Stri
                 lineHeight = 40,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                textModifier = Modifier.fillMaxWidth(0.80f)
+                textModifier = Modifier.fillMaxWidth(0.90f)
             )
         }
 

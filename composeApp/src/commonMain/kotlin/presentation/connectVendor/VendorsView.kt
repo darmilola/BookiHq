@@ -101,7 +101,7 @@ fun VendorsView(nearbyVendor: List<Vendor>, newVendor: List<Vendor>, mainViewMod
 
             LazyColumn(
                 modifier = Modifier.fillMaxWidth()
-                    .height(330.dp),
+                    .height(350.dp),
                 contentPadding = PaddingValues(6.dp),
                 verticalArrangement = Arrangement.spacedBy(5.dp), userScrollEnabled = true
             ) {

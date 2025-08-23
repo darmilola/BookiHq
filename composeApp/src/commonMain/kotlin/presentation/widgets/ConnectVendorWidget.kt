@@ -126,7 +126,7 @@ fun ConnectTitle(title: String){
 
 
 @Composable
-fun BusinessInfoContent(vendor: Vendor, isViewOnly: Boolean = false, onConnectedListener: () -> Unit) {
+fun BusinessInfoContent(vendor: Vendor) {
 
     val isMobileServiceAvailable = vendor?.isMobileServiceAvailable
 
@@ -156,7 +156,7 @@ fun BusinessInfoContent(vendor: Vendor, isViewOnly: Boolean = false, onConnected
                 modifier = Modifier.fillMaxWidth().fillMaxHeight()
                     .verticalScroll(rememberScrollState())
                     .padding(start = 15.dp, end = 10.dp, bottom = 10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Top
             ) {
 
@@ -168,35 +168,6 @@ fun BusinessInfoContent(vendor: Vendor, isViewOnly: Boolean = false, onConnected
                 businessInfo(title = "Opening Time", info = vendor.openingTime!!)
                 businessInfo(title = "Contact Phone", info = vendor.contactPhone!!)
                 businessInfo(title = "Home Services", info = if (isMobileServiceAvailable!!) "Available" else "No Home Service")
-
-
-                if (!isViewOnly) {
-
-                    val buttonStyle = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 25.dp)
-                        .height(45.dp)
-
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-
-                        ButtonComponent(
-                            modifier = buttonStyle,
-                            buttonText = "Connect",
-                            borderStroke = null,
-                            colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
-                            fontSize = 16,
-                            shape = CircleShape,
-                            textColor = Color.White,
-                            style = TextStyle()
-                        ) {
-                            onConnectedListener()
-                        }
-                    }
-                }
             }
         }
     }
@@ -205,7 +176,7 @@ fun BusinessInfoContent(vendor: Vendor, isViewOnly: Boolean = false, onConnected
 @Composable
 fun businessInfo(title: String, info: String){
     Column(
-        modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(top = 20.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center){
+        modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(top = 20.dp)){
 
         TextComponent(
             textModifier = Modifier.wrapContentWidth()
@@ -214,7 +185,7 @@ fun businessInfo(title: String, info: String){
             fontSize = 16,
             textStyle = MaterialTheme.typography.titleMedium,
             textColor = Color(0xFFb0afaf),
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Left,
             fontWeight = FontWeight.SemiBold,
             lineHeight = 23,
             maxLines = 1,
@@ -227,7 +198,7 @@ fun businessInfo(title: String, info: String){
             fontSize = 16,
             textStyle = MaterialTheme.typography.titleMedium,
             textColor = theme.Colors.darkPrimary,
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Left,
             fontWeight = FontWeight.SemiBold,
             lineHeight = 23,
             maxLines = 20,

@@ -69,7 +69,7 @@ class VendorInfoScreen(val vendor: Vendor, val  platformNavigator: PlatformNavig
                 })
             },
             content = {
-                BusinessInfoContent(vendor, isViewOnly = true) {}
+                BusinessInfoContent(vendor)
             },
             backgroundColor = Color.White,
         )
