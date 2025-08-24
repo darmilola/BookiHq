@@ -2,10 +2,14 @@ package presentation.Screens
 
 import domain.Models.PlatformNavigator
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -13,7 +17,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.room.RoomDatabase
@@ -34,7 +40,6 @@ import di.initKoin
 import domain.Enums.AuthType
 import domain.Enums.SharedPreferenceEnum
 import domain.Enums.getDisplayCurrency
-import presentation.components.SplashScreenBackground
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -48,6 +53,8 @@ import presentation.authentication.AuthenticationPresenter
 import presentation.connectVendor.ConnectVendor
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.SplashScreenWidget
+import presentations.components.ImageComponent
+import theme.Colors
 
 @Composable
 fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPresenter: AuthenticationPresenter, mainViewModel: MainViewModel, databaseBuilder: RoomDatabase.Builder<AppDatabase>) {
@@ -127,17 +134,11 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
    val  modifier =
         Modifier.fillMaxWidth()
             .fillMaxHeight()
-            .background(color = Color.White)
+            .background(color = Colors.dashboardBackground)
         // AnimationEffect
-        Box(modifier = modifier, contentAlignment = Alignment.Center) {
+        Box(modifier = modifier, contentAlignment = Alignment.TopCenter) {
             SplashScreenBackground()
-            SplashScreenWidget(textStyle = TextStyle())
-            Box(modifier = Modifier
-                .padding(bottom = 70.dp)
-                .fillMaxHeight()
-                .fillMaxWidth(),
-                contentAlignment = Alignment.BottomCenter) {
-            }
+            SplashScreenWidget()
         }
         LaunchedEffect(key1 = true) {
             delay(3000L)
@@ -172,6 +173,14 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
              })
         }
     }
+
+@Composable
+fun SplashScreenBackground() {
+    Box(contentAlignment = Alignment.TopCenter, modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
+        ImageComponent(imageModifier = Modifier.fillMaxWidth().fillMaxHeight(0.60f), imageRes = "drawable/spa_bg.png", contentScale = ContentScale.Crop)
+    }
+}
+
 
  private fun authenticateSplashScreen(settings: Settings, onPhoneAuthentication: (String) -> Unit, onEmailAuthentication :(String) -> Unit, onOnBoard:() -> Unit, onWelcome :() -> Unit){
      val authEmail = settings.getString(SharedPreferenceEnum.AUTH_EMAIL.toPath(), "")
@@ -221,7 +230,15 @@ class SplashScreen(val platformNavigator: PlatformNavigator) : Screen, KoinCompo
         }
 
         initKoin()
-        SplashScreenCompose(platformNavigator = platformNavigator, authenticationPresenter,mainViewModel!!,databaseBuilder!!)
+        Scaffold(content = {
+            SplashScreenCompose(
+                platformNavigator = platformNavigator,
+                authenticationPresenter,
+                mainViewModel!!,
+                databaseBuilder!!
+            )
+         },
+        containerColor = Colors.dashboardBackground)
     }
 }
 

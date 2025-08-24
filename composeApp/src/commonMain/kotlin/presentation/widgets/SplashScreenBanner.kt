@@ -18,14 +18,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
+import theme.Colors
 
 @Composable
-fun SplashScreenWidget(textStyle: TextStyle) {
+fun SplashScreenWidget() {
     val bgStyle = Modifier
         .fillMaxWidth()
         .fillMaxHeight()
 
-    Column(modifier = bgStyle, verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(modifier = bgStyle, verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally) {
         attachCompanyLogo()
     }
 }
@@ -34,14 +35,5 @@ fun SplashScreenWidget(textStyle: TextStyle) {
 fun attachCompanyLogo() {
     val modifier = Modifier
         .size(400.dp)
-    ImageComponent(imageModifier = modifier, imageRes = "drawable/bookilogo.png", ColorFilter.tint(color = Color.White), contentScale = ContentScale.Inside)
-}
-
-@Composable
-fun attachCompanyName(textStyle: TextStyle) {
-    val modifier = Modifier
-        .fillMaxWidth()
-    TextComponent(
-        textModifier = modifier, text = "Company Name", fontSize = 40, textStyle = textStyle, textColor = Color.White, textAlign = TextAlign.Center,
-        fontWeight = FontWeight.ExtraBold)
+    ImageComponent(imageModifier = modifier, imageRes = "drawable/bookilogo.png", ColorFilter.tint(color = Colors.darkPrimary), contentScale = ContentScale.Inside)
 }
