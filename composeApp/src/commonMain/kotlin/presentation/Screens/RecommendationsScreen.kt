@@ -384,7 +384,7 @@ class RecommendationsScreen(val platformNavigator: PlatformNavigator) : Parcelab
                 }
             }
 
-            Box(modifier =  Modifier.weight(3.0f)
+            Box(modifier =  Modifier.weight(4.0f)
                 .fillMaxHeight(),
                 contentAlignment = Alignment.Center) {
                 SubtitleTextWidget(text = "Recommendations", textColor = theme.styles.Colors.primaryColor)

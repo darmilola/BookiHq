@@ -571,18 +571,16 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             ) {
                 TextComponent(
                     text = title,
-                    fontSize = 25,
-                    fontFamily = GGSansBold,
-                    textStyle = MaterialTheme.typography.h6,
+                    fontSize = 23,
+                    textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                     textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.ExtraBold,
+                    fontWeight = FontWeight.Normal,
                     lineHeight = 30,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     textModifier = Modifier.fillMaxWidth(0.70f)
                 )
-                StraightLine()
             }
     }
 

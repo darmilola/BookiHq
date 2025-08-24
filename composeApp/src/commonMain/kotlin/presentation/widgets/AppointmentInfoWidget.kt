@@ -52,7 +52,7 @@ fun ServiceAppointmentInfoWidget(appointment: Appointment) {
     val appointmentTime = platformTime.time +" "+isAm
 
     val columnModifier = Modifier
-        .padding(start = 15.dp, end = 10.dp)
+        .padding(start = 10.dp, end = 10.dp)
         .fillMaxWidth()
     Column(
         verticalArrangement = Arrangement.Top,
@@ -62,13 +62,11 @@ fun ServiceAppointmentInfoWidget(appointment: Appointment) {
         TextComponent(
             text = appointment.serviceTypeItem?.title.toString(),
             fontSize = 16,
-            fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Colors.darkPrimary,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+            textColor = theme.Colors.grayColor,
             textAlign = TextAlign.Start,
-            fontWeight = FontWeight.Bold,
-            textModifier = Modifier
-                .fillMaxWidth().padding(start = 5.dp)
+            fontWeight = FontWeight.Normal,
+            textModifier = Modifier.fillMaxWidth()
         )
 
 
@@ -92,14 +90,12 @@ fun ServiceAppointmentInfoWidget(appointment: Appointment) {
                     ) {
                         TextComponent(
                             text = "$appointmentTime $appointmentDate",
-                            textModifier = Modifier.wrapContentSize()
-                                .padding(start = 5.dp),
+                            textModifier = Modifier.wrapContentSize(),
                             fontSize = 15,
-                            fontFamily = GGSansRegular,
-                            textStyle = MaterialTheme.typography.h6,
-                            textColor = Colors.serviceLightGray,
+                            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                            textColor = theme.Colors.grayColor,
                             textAlign = TextAlign.Start,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.Normal
                         )
                     }
                     if (appointment.serviceLocation == ServiceLocationEnum.MOBILE.toPath()) {
@@ -110,7 +106,7 @@ fun ServiceAppointmentInfoWidget(appointment: Appointment) {
                         ) {
                             Box(
                                 modifier = Modifier.size(6.dp).clip(CircleShape)
-                                    .background(color = Colors.serviceLightGray)
+                                    .background(color = theme.Colors.greenColor)
                             ) {}
                         }
                         Box(
@@ -121,11 +117,10 @@ fun ServiceAppointmentInfoWidget(appointment: Appointment) {
                                 text = "Home Service",
                                 textModifier = Modifier.wrapContentSize(),
                                 fontSize = 14,
-                                fontFamily = GGSansRegular,
-                                textStyle = MaterialTheme.typography.h6,
-                                textColor = Colors.serviceLightGray,
+                                textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+                                textColor = theme.Colors.greenColor,
                                 textAlign = TextAlign.Start,
-                                fontWeight = FontWeight.Bold,
+                                fontWeight = FontWeight.Normal,
                             )
                         }
                     }
