@@ -14,6 +14,7 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
@@ -37,6 +38,7 @@ import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.widgets.BusinessInfoContent
 import presentation.widgets.VendorDetailsTitle
+import theme.Colors
 import utils.ParcelableScreen
 
 
@@ -57,21 +59,23 @@ class VendorInfoScreen(val vendor: Vendor, val  platformNavigator: PlatformNavig
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
-        if (onBackPressed.value){
+        if (onBackPressed.value) {
             mainViewModel!!.setOnBackPressed(false)
             navigator.pop()
         }
 
-        Scaffold(
-            topBar = {
-                VendorDetailsTitle(onBackPressed = {
-                    mainViewModel!!.setOnBackPressed(true)
-                })
-            },
-            content = {
-                BusinessInfoContent(vendor)
-            },
-            backgroundColor = Color.White,
-        )
+        AppTheme {
+            Scaffold(
+                topBar = {
+                    VendorDetailsTitle(onBackPressed = {
+                        mainViewModel!!.setOnBackPressed(true)
+                    })
+                },
+                content = {
+                    BusinessInfoContent(vendor)
+                },
+                backgroundColor = Colors.dashboardBackground,
+            )
+        }
     }
 }

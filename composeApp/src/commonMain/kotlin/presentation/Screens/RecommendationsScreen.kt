@@ -44,6 +44,7 @@ import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
@@ -73,6 +74,7 @@ import presentation.viewmodels.RecommendationsResourceListEnvelopeViewModel
 import presentation.widgets.EmptyContentWidget
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.ProductDetailBottomSheet
+import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
 import presentation.widgets.VendorRecommendationsItem
 import rememberStackedSnackbarHostState
@@ -110,10 +112,10 @@ class RecommendationsScreen(val platformNavigator: PlatformNavigator) : Parcelab
     override fun Content() {
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
-        val vendorId: Long = preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath(),-1L]
+        val vendorId: Long = preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath(), -1L]
         val navigator = LocalNavigator.currentOrThrow
 
-        if (onBackPressed.value){
+        if (onBackPressed.value) {
             mainViewModel!!.setOnBackPressed(false)
             navigator.pop()
         }
@@ -134,9 +136,11 @@ class RecommendationsScreen(val platformNavigator: PlatformNavigator) : Parcelab
             )
         }
 
-        val handler = RecommendationsHandler(recommendationsResourceListEnvelopeViewModel!!,
+        val handler = RecommendationsHandler(
+            recommendationsResourceListEnvelopeViewModel!!,
             loadingScreenUiStateViewModel!!,
-            homepagePresenter!!)
+            homepagePresenter!!
+        )
         handler.init()
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
@@ -146,18 +150,23 @@ class RecommendationsScreen(val platformNavigator: PlatformNavigator) : Parcelab
 
         val recommendationUIModel = remember { mutableStateOf(VendorRecommendationItemUIModel()) }
 
-        val loadMoreState = recommendationsResourceListEnvelopeViewModel?.isLoadingMore?.collectAsState()
-        val recommendationsList = recommendationsResourceListEnvelopeViewModel?.resources?.collectAsState()
-        val totalItemCount = recommendationsResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
-        val displayedItemCount = recommendationsResourceListEnvelopeViewModel?.displayedItemCount?.collectAsState()
+        val loadMoreState =
+            recommendationsResourceListEnvelopeViewModel?.isLoadingMore?.collectAsState()
+        val recommendationsList =
+            recommendationsResourceListEnvelopeViewModel?.resources?.collectAsState()
+        val totalItemCount =
+            recommendationsResourceListEnvelopeViewModel?.totalItemCount?.collectAsState()
+        val displayedItemCount =
+            recommendationsResourceListEnvelopeViewModel?.displayedItemCount?.collectAsState()
         val lastIndex = recommendationsList?.value?.size?.minus(1)
 
-        if (recommendationsList!!.value.isNotEmpty()){
+        if (recommendationsList!!.value.isNotEmpty()) {
             recommendationUIModel.value = VendorRecommendationItemUIModel(recommendationsList.value)
         }
 
         if (!loadMoreState!!.value) {
-            recommendationUIModel.value = recommendationUIModel.value.copy(recommendationList = recommendationsResourceListEnvelopeViewModel!!.resources.value)
+            recommendationUIModel.value =
+                recommendationUIModel.value.copy(recommendationList = recommendationsResourceListEnvelopeViewModel!!.resources.value)
         }
 
 
@@ -167,138 +176,176 @@ class RecommendationsScreen(val platformNavigator: PlatformNavigator) : Parcelab
         }
 
 
-        Scaffold(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                .background(color = Color.White),
-            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
-            topBar = {
-                RecommendationsScreenTitle(onBackPressed = {
-                    mainViewModel!!.setOnBackPressed(true)
-                })
-            },
-            content = {
-                val selectedProduct = remember { mutableStateOf(Product()) }
-                var showProductDetailBottomSheet by remember { mutableStateOf(false) }
+        AppTheme {
+            Scaffold(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                    .background(color = Colors.dashboardBackground),
+                snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
+                topBar = {
+                    RecommendationsScreenTitle(onBackPressed = {
+                        mainViewModel!!.setOnBackPressed(true)
+                    })
+                },
+                content = {
+                    val selectedProduct = remember { mutableStateOf(Product()) }
+                    var showProductDetailBottomSheet by remember { mutableStateOf(false) }
 
-                if (showProductDetailBottomSheet) {
-                    mainViewModel!!.showProductBottomSheet(true)
-                }
-                else{
-                    mainViewModel!!.showProductBottomSheet(false)
-                }
-
-                if (selectedProduct.value.productId != -1L) {
-                    ProductDetailBottomSheet(
-                        mainViewModel!!,
-                        isViewOnly = false,
-                        OrderItem(itemProduct = selectedProduct.value),
-                        onDismiss = {
-                            selectedProduct.value = Product()
-                        },
-                        onAddToCart = { isAddToCart, item ->
-                            showProductDetailBottomSheet = false
-                        })
-                }
-                Column(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
-                    val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
-                    if (uiState.value.isLoading) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                                .padding(top = 40.dp, start = 50.dp, end = 50.dp)
-                                .background(color = Color.Transparent, shape = RoundedCornerShape(20.dp)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            IndeterminateCircularProgressBar()
-                        }
+                    if (showProductDetailBottomSheet) {
+                        mainViewModel!!.showProductBottomSheet(true)
+                    } else {
+                        mainViewModel!!.showProductBottomSheet(false)
                     }
-                    else if (uiState.value.isFailed) {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            ErrorOccurredWidget(uiState.value.errorMessage, onRetryClicked = {
-                               homepagePresenter.getRecommendations(vendorId)
+
+                    if (selectedProduct.value.productId != -1L) {
+                        ProductDetailBottomSheet(
+                            mainViewModel!!,
+                            isViewOnly = false,
+                            OrderItem(itemProduct = selectedProduct.value),
+                            onDismiss = {
+                                selectedProduct.value = Product()
+                            },
+                            onAddToCart = { isAddToCart, item ->
+                                showProductDetailBottomSheet = false
                             })
-                        }
                     }
-                    else if (uiState.value.isEmpty) {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            EmptyContentWidget(emptyText = uiState.value.emptyMessage)
-                        }
-                    }
-                    else if (uiState.value.isSuccess) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth()
-                                .fillMaxHeight(),
-                            contentAlignment = Alignment.Center
-                        ) {
-
-                            val columnModifier = Modifier
-                                .fillMaxHeight()
-                                .fillMaxWidth()
-                            Column(
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = columnModifier
+                    Column(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
+                        val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
+                        if (uiState.value.isLoading) {
+                            Box(
+                                modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                                    .padding(top = 40.dp, start = 50.dp, end = 50.dp),
+                                contentAlignment = Alignment.Center
                             ) {
-                                Row(
-                                    Modifier
-                                        .fillMaxHeight()
-                                        .fillMaxWidth()
-                                        .background(color = Color.White),
-                                    horizontalArrangement = Arrangement.Center
+                                IndeterminateCircularProgressBar()
+                            }
+                        } else if (uiState.value.isFailed) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                ErrorOccurredWidget(uiState.value.errorMessage, onRetryClicked = {
+                                    homepagePresenter.getRecommendations(vendorId)
+                                })
+                            }
+                        } else if (uiState.value.isEmpty) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                EmptyContentWidget(emptyText = uiState.value.emptyMessage)
+                            }
+                        } else if (uiState.value.isSuccess) {
+                            Box(
+                                modifier = Modifier.fillMaxWidth()
+                                    .fillMaxHeight(),
+                                contentAlignment = Alignment.Center
+                            ) {
+
+                                val columnModifier = Modifier
+                                    .fillMaxHeight()
+                                    .fillMaxWidth()
+                                Column(
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = columnModifier
                                 ) {
-                                    LazyColumn(
-                                        modifier = Modifier.fillMaxWidth()
-                                            .height(getVendorRecommendationListItemViewHeight(recommendationUIModel.value.recommendationList).dp),
-                                        contentPadding = PaddingValues(top = 6.dp, bottom = 6.dp),
-                                        verticalArrangement = Arrangement.spacedBy(5.dp),
-                                        userScrollEnabled = true
+                                    Row(
+                                        Modifier
+                                            .fillMaxHeight()
+                                            .fillMaxWidth()
+                                            .background(color = Colors.dashboardBackground),
+                                        horizontalArrangement = Arrangement.Center
                                     ) {
-                                        runBlocking {
-                                            items(recommendationsList.value.size) { it ->
-                                                VendorRecommendationsItem(recommendationUIModel.value.recommendationList[it],mainViewModel!!, onItemClickListener = {
-                                                    when (it.recommendationType) {
-                                                        RecommendationType.Services.toPath() -> {
-                                                            val bookingScreen = BookingScreen(platformNavigator!!)
-                                                            bookingScreen.setDatabaseBuilder(databaseBuilder!!)
-                                                            bookingScreen.setMainViewModel(mainViewModel!!)
-                                                            navigator.push(bookingScreen)
-                                                            mainViewModel!!.setSelectedService(it.serviceTypeItem?.serviceDetails!!)
-                                                            mainViewModel!!.setRecommendationServiceType(it.serviceTypeItem)
+                                        LazyColumn(
+                                            modifier = Modifier.fillMaxWidth()
+                                                .height(
+                                                    getVendorRecommendationListItemViewHeight(
+                                                        recommendationUIModel.value.recommendationList
+                                                    ).dp
+                                                ),
+                                            contentPadding = PaddingValues(
+                                                top = 6.dp,
+                                                bottom = 6.dp
+                                            ),
+                                            verticalArrangement = Arrangement.spacedBy(5.dp),
+                                            userScrollEnabled = true
+                                        ) {
+                                            runBlocking {
+                                                items(recommendationsList.value.size) { it ->
+                                                    VendorRecommendationsItem(
+                                                        recommendationUIModel.value.recommendationList[it],
+                                                        mainViewModel!!,
+                                                        onItemClickListener = {
+                                                            when (it.recommendationType) {
+                                                                RecommendationType.Services.toPath() -> {
+                                                                    val bookingScreen =
+                                                                        BookingScreen(
+                                                                            platformNavigator!!
+                                                                        )
+                                                                    bookingScreen.setDatabaseBuilder(
+                                                                        databaseBuilder!!
+                                                                    )
+                                                                    bookingScreen.setMainViewModel(
+                                                                        mainViewModel!!
+                                                                    )
+                                                                    navigator.push(bookingScreen)
+                                                                    mainViewModel!!.setSelectedService(
+                                                                        it.serviceTypeItem?.serviceDetails!!
+                                                                    )
+                                                                    mainViewModel!!.setRecommendationServiceType(
+                                                                        it.serviceTypeItem
+                                                                    )
+                                                                }
+
+                                                                RecommendationType.Products.toPath() -> {
+                                                                    selectedProduct.value =
+                                                                        it.product!!
+                                                                    showProductDetailBottomSheet =
+                                                                        true
+                                                                }
+                                                            }
+                                                        })
+
+                                                    if (it == lastIndex && loadMoreState.value) {
+                                                        Box(
+                                                            modifier = Modifier.fillMaxWidth()
+                                                                .height(60.dp),
+                                                            contentAlignment = Alignment.Center
+                                                        ) {
+                                                            IndeterminateCircularProgressBar()
                                                         }
+                                                    } else if (it == lastIndex && (displayedItemCount?.value!! < totalItemCount?.value!!)) {
+                                                        val buttonStyle = Modifier
+                                                            .height(60.dp)
+                                                            .fillMaxWidth()
+                                                            .padding(
+                                                                top = 10.dp,
+                                                                start = 10.dp,
+                                                                end = 10.dp
+                                                            )
 
-                                                        RecommendationType.Products.toPath() -> {
-                                                            selectedProduct.value = it.product!!
-                                                            showProductDetailBottomSheet = true
-                                                        }
-                                                    }
-                                                })
+                                                        ButtonComponent(
+                                                            modifier = buttonStyle,
+                                                            buttonText = "Show More",
+                                                            borderStroke = BorderStroke(
+                                                                1.dp,
+                                                                Colors.primaryColor
+                                                            ),
+                                                            colors = ButtonDefaults.buttonColors(
+                                                                backgroundColor = Color.White
+                                                            ),
+                                                            fontSize = 16,
+                                                            shape = CircleShape,
+                                                            textColor = Colors.primaryColor,
+                                                            style = TextStyle()
+                                                        ) {
+                                                            if (recommendationsResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
+                                                                homepagePresenter.getMoreRecommendations(
+                                                                    vendorId,
+                                                                    nextPage = recommendationsResourceListEnvelopeViewModel!!.currentPage.value + 1
+                                                                )
 
-                                                if (it == lastIndex && loadMoreState.value) {
-                                                    Box(
-                                                        modifier = Modifier.fillMaxWidth().height(60.dp),
-                                                        contentAlignment = Alignment.Center
-                                                    ) {
-                                                        IndeterminateCircularProgressBar()
-                                                    }
-                                                }
-                                                else if (it == lastIndex && (displayedItemCount?.value!! < totalItemCount?.value!!)) {
-                                                    val buttonStyle = Modifier
-                                                        .height(60.dp)
-                                                        .fillMaxWidth()
-                                                        .padding(top = 10.dp, start = 10.dp, end = 10.dp)
-
-                                                    ButtonComponent(
-                                                        modifier = buttonStyle,
-                                                        buttonText = "Show More",
-                                                        borderStroke = BorderStroke(1.dp, Colors.primaryColor),
-                                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-                                                        fontSize = 16,
-                                                        shape = CircleShape,
-                                                        textColor = Colors.primaryColor,
-                                                        style = TextStyle()
-                                                    ) {
-                                                        if (recommendationsResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
-                                                            homepagePresenter.getMoreRecommendations(vendorId, nextPage = recommendationsResourceListEnvelopeViewModel!!.currentPage.value + 1)
-
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -308,21 +355,21 @@ class RecommendationsScreen(val platformNavigator: PlatformNavigator) : Parcelab
                                 }
                             }
                         }
+
                     }
-
-                }
-            },
-            backgroundColor = Color.Transparent,
-        )
+                },
+                backgroundColor = Colors.dashboardBackground,
+            )
 
 
+        }
     }
 
     @Composable
     fun RecommendationsScreenTitle(onBackPressed: () -> Unit){
         val rowModifier = Modifier
             .fillMaxWidth()
-            .padding(top = 20.dp)
+            .padding(top = 10.dp)
             .height(40.dp)
 
         Row(modifier = rowModifier,
@@ -340,7 +387,7 @@ class RecommendationsScreen(val platformNavigator: PlatformNavigator) : Parcelab
             Box(modifier =  Modifier.weight(3.0f)
                 .fillMaxHeight(),
                 contentAlignment = Alignment.Center) {
-                TitleWidget(title = "Recommendations", textColor = theme.styles.Colors.primaryColor)
+                SubtitleTextWidget(text = "Recommendations", textColor = theme.styles.Colors.primaryColor)
 
             }
 

@@ -81,11 +81,10 @@ fun ActionItemComponent(modifier: Modifier, buttonText: String, colors: ButtonCo
                     TextComponent(
                         text = buttonText,
                         fontSize = 16,
-                        fontFamily = GGSansSemiBold,
-                        textStyle = MaterialTheme.typography.h6,
+                        textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                         textColor = Colors.darkPrimary,
                         textAlign = TextAlign.Left,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Normal,
                         lineHeight = 20,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -108,7 +107,7 @@ fun ActionItemComponent(modifier: Modifier, buttonText: String, colors: ButtonCo
 
 @Composable
 fun AttachItemImage(iconRes: String, isDestructiveAction: Boolean = false) {
-    val imageBgColor = if(isDestructiveAction) Color(color = 0x20fa2d65) else Colors.lightPrimaryColor
+    val imageBgColor = if(isDestructiveAction) Color(color = 0x20fa2d65) else theme.Colors.inputGrayColor
     val imageTintColor = if(isDestructiveAction) Color(color = 0xfffa2d65) else Colors.darkPrimary
     Box(
         Modifier
