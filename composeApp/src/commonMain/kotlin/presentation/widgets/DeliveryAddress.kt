@@ -42,8 +42,7 @@ fun ProductDeliveryAddressWidget(cartViewModel: CartViewModel, isDisabled: Boole
         TextComponent(
             text = "Delivery Location",
             fontSize = 18,
-            fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Bold,

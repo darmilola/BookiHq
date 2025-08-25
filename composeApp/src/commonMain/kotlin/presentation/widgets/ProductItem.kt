@@ -127,11 +127,10 @@ fun HomeProductDescription(product: Product,onProductClickListener: (Product) ->
             TextComponent(
                 text = product.productName,
                 fontSize = 16,
-                fontFamily = GGSansRegular,
-                textStyle = MaterialTheme.typography.h6,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
-                fontWeight = FontWeight.ExtraBold,
+                fontWeight = FontWeight.Bold,
                 lineHeight = 20,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 2)
@@ -149,7 +148,7 @@ fun ViewProductFromHome(product: Product,onProductClickListener: (Product) -> Un
         .fillMaxWidth()
         .background(color = Color.Transparent)
         .height(40.dp)
-    ButtonComponent(modifier = buttonStyle, buttonText = "View Product", borderStroke = BorderStroke((1).dp, color = Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 14, shape = RoundedCornerShape(5.dp), textColor =  Colors.primaryColor, style = TextStyle(fontFamily = GGSansRegular)){
+    ButtonComponent(modifier = buttonStyle, buttonText = "View Product", borderStroke = BorderStroke((1).dp, color = Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 14, shape = RoundedCornerShape(5.dp), textColor =  Colors.primaryColor, style = androidx.compose.material3.MaterialTheme.typography.titleMedium){
         onProductClickListener(product)
     }
 }
@@ -171,9 +170,8 @@ fun HomeProductProductDescriptionText(product: Product) {
         TextComponent(
             text = product.productDescription,
             fontSize = 15,
-            fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color.DarkGray,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+            textColor = theme.Colors.grayColor,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Medium,
             lineHeight = 20,

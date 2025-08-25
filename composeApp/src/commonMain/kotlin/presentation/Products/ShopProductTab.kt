@@ -45,6 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.room.RoomDatabase
 import applications.room.AppDatabase
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
@@ -76,6 +77,7 @@ import presentation.widgets.EmptyContentWidget
 import presentation.widgets.ProductItem
 import presentation.widgets.ProductDetailBottomSheet
 import presentation.widgets.SearchBar
+import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
@@ -130,8 +132,8 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
 
     @Composable
     override fun Content() {
-        val vendorId: Long = preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath(),-1L]
-        val userId: Long = preferenceSettings[SharedPreferenceEnum.USER_ID.toPath(),-1L]
+        val vendorId: Long = preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath(), -1L]
+        val userId: Long = preferenceSettings[SharedPreferenceEnum.USER_ID.toPath(), -1L]
         val onCartChanged = remember { mutableStateOf(false) }
         val searchQuery = remember { mutableStateOf("") }
         val isClickedSearchProduct = mainViewModel!!.clickedSearchProduct.collectAsState()
@@ -167,197 +169,222 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
         }
 
         val productHandler = ShopProductsHandler(
-            loadingScreenUiStateViewModel!!, productResourceListEnvelopeViewModel!!, productPresenter)
+            loadingScreenUiStateViewModel!!,
+            productResourceListEnvelopeViewModel!!,
+            productPresenter
+        )
         productHandler.init()
 
         LaunchedEffect(true) {
             val isSwitchVendor: Boolean = mainViewModel!!.isSwitchVendor.value
-            if (isSwitchVendor){
+            if (isSwitchVendor) {
                 productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
             }
 
-            if (productResourceListEnvelopeViewModel!!.resources.value.isEmpty()){
+            if (productResourceListEnvelopeViewModel!!.resources.value.isEmpty()) {
                 productResourceListEnvelopeViewModel!!.setResources(mutableListOf())
                 productPresenter.getProductsByType(vendorId, productType = selectedProductType)
             }
         }
 
 
-        Scaffold(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                .background(color = Color.White),
-            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
-            topBar = {
-                Column(modifier = Modifier.height(150.dp).fillMaxWidth()) {
-                    val screenTitle = mainViewModel!!.screenTitle.collectAsState()
+        AppTheme {
 
-                    Row(modifier = Modifier.fillMaxWidth().height(70.dp)) {
-                        Box(
-                            modifier = Modifier.weight(1f).fillMaxHeight(),
-                            contentAlignment = Alignment.Center
-                        ) {}
-                        Box(
-                            modifier = Modifier.weight(2f).fillMaxHeight(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            TitleWidget(textColor = Colors.primaryColor, title = screenTitle.value)
-                        }
+            Scaffold(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                    .background(color = Color.White),
+                snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
+                topBar = {
+                    Column(modifier = Modifier.height(130.dp).fillMaxWidth()) {
+                        val screenTitle = mainViewModel!!.screenTitle.collectAsState()
 
-                        Box(
-                            modifier = Modifier.weight(1f).fillMaxHeight().padding(end = 10.dp),
-                            contentAlignment = Alignment.CenterEnd
-                        ) {
-                            val iconModifier = Modifier
-                                .padding(top = 5.dp)
-                                .clickable {
-                                    mainViewModel!!.setIsClickedSearchProduct(true)
-                                }
-                                .size(24.dp)
-                            ImageComponent(
-                                imageModifier = iconModifier,
-                                imageRes = "drawable/search_icon.png",
-                                colorFilter = ColorFilter.tint(color = Colors.primaryColor)
-                            )
-
-                        }
-
-                    }
-
-                    Row(modifier = Modifier.fillMaxWidth().height(70.dp)) {
-                        if (isClickedSearchProduct.value) {
-                            SearchBar(onValueChange = {
-                                if (it.isNotEmpty()) {
-                                    productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                                    searchQuery.value = it
-                                    productPresenter.searchProducts(
-                                        mainViewModel!!.connectedVendor.value.vendorId!!,
-                                        it
-                                    )
-                                }
-                            }, onBackPressed = {
-                                mainViewModel!!.setIsClickedSearchProduct(false)
-                                searchQuery.value = ""
-                                productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                                preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath()] =
-                                    ProductType.COSMETICS.toPath()
-                                productPresenter.getProductsByType(
-                                    vendorId,
-                                    productType = selectedProductType
+                        Row(modifier = Modifier.fillMaxWidth().height(50.dp)) {
+                            Box(
+                                modifier = Modifier.weight(1f).fillMaxHeight(),
+                                contentAlignment = Alignment.Center
+                            ) {}
+                            Box(
+                                modifier = Modifier.weight(2f).fillMaxHeight(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                SubtitleTextWidget(
+                                    textColor = Colors.primaryColor,
+                                    text = screenTitle.value
                                 )
-                            })
-                        } else {
-                            val isRightSelected =
-                                selectedProductType == ProductType.ACCESSORIES.toPath()
-                            ToggleButton(
-                                shape = RoundedCornerShape(5.dp),
-                                isRightSelection = isRightSelected,
-                                onLeftClicked = {
+                            }
+
+                            Box(
+                                modifier = Modifier.weight(1f).fillMaxHeight().padding(end = 10.dp),
+                                contentAlignment = Alignment.CenterEnd
+                            ) {
+                                val iconModifier = Modifier
+                                    .padding(top = 5.dp)
+                                    .clickable {
+                                        mainViewModel!!.setIsClickedSearchProduct(true)
+                                    }
+                                    .size(24.dp)
+                                ImageComponent(
+                                    imageModifier = iconModifier,
+                                    imageRes = "drawable/search_icon.png",
+                                    colorFilter = ColorFilter.tint(color = Colors.primaryColor)
+                                )
+
+                            }
+
+                        }
+
+                        Row(modifier = Modifier.fillMaxWidth().height(70.dp)) {
+                            if (isClickedSearchProduct.value) {
+                                SearchBar(onValueChange = {
+                                    if (it.isNotEmpty()) {
+                                        productResourceListEnvelopeViewModel!!.clearData(
+                                            mutableListOf()
+                                        )
+                                        searchQuery.value = it
+                                        productPresenter.searchProducts(
+                                            mainViewModel!!.connectedVendor.value.vendorId!!,
+                                            it
+                                        )
+                                    }
+                                }, onBackPressed = {
+                                    mainViewModel!!.setIsClickedSearchProduct(false)
+                                    searchQuery.value = ""
+                                    productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
                                     preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath()] =
                                         ProductType.COSMETICS.toPath()
-                                    productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                                    selectedProductType = ProductType.COSMETICS.toPath()
                                     productPresenter.getProductsByType(
                                         vendorId,
                                         productType = selectedProductType
                                     )
-                                },
-                                onRightClicked = {
-                                    preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath()] =
-                                        ProductType.ACCESSORIES.toPath()
-                                    productResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                                    selectedProductType = ProductType.ACCESSORIES.toPath()
-                                    productPresenter.getProductsByType(
-                                        vendorId,
-                                        productType = selectedProductType
-                                    )
-                                },
-                                leftText = ProductType.COSMETICS.toTitle(),
-                                rightText = ProductType.ACCESSORIES.toTitle()
-                            )
+                                })
+                            } else {
+                                val isRightSelected =
+                                    selectedProductType == ProductType.ACCESSORIES.toPath()
+                                ToggleButton(
+                                    shape = RoundedCornerShape(5.dp),
+                                    isRightSelection = isRightSelected,
+                                    onLeftClicked = {
+                                        preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath()] =
+                                            ProductType.COSMETICS.toPath()
+                                        productResourceListEnvelopeViewModel!!.clearData(
+                                            mutableListOf()
+                                        )
+                                        selectedProductType = ProductType.COSMETICS.toPath()
+                                        productPresenter.getProductsByType(
+                                            vendorId,
+                                            productType = selectedProductType
+                                        )
+                                    },
+                                    onRightClicked = {
+                                        preferenceSettings[SharedPreferenceEnum.SELECTED_PRODUCT_TYPE.toPath()] =
+                                            ProductType.ACCESSORIES.toPath()
+                                        productResourceListEnvelopeViewModel!!.clearData(
+                                            mutableListOf()
+                                        )
+                                        selectedProductType = ProductType.ACCESSORIES.toPath()
+                                        productPresenter.getProductsByType(
+                                            vendorId,
+                                            productType = selectedProductType
+                                        )
+                                    },
+                                    leftText = ProductType.COSMETICS.toTitle(),
+                                    rightText = ProductType.ACCESSORIES.toTitle()
+                                )
+                            }
                         }
                     }
-                }
-            },
-            content = {
-                var showProductDetailBottomSheet by remember { mutableStateOf(false) }
-                val selectedProduct = remember { mutableStateOf(Product()) }
+                },
+                content = {
+                    var showProductDetailBottomSheet by remember { mutableStateOf(false) }
+                    val selectedProduct = remember { mutableStateOf(Product()) }
 
-                if (showProductDetailBottomSheet) {
-                    mainViewModel!!.showProductBottomSheet(true)
-                }
-                else{
-                    mainViewModel!!.showProductBottomSheet(false)
-                }
+                    if (showProductDetailBottomSheet) {
+                        mainViewModel!!.showProductBottomSheet(true)
+                    } else {
+                        mainViewModel!!.showProductBottomSheet(false)
+                    }
 
-                if (selectedProduct.value.productId != -1L) {
-                    ProductDetailBottomSheet(
-                        mainViewModel!!,
-                        isViewOnly = false,
-                        OrderItem(itemProduct = selectedProduct.value),
-                        onDismiss = {
-                            selectedProduct.value = Product()
-                        },
-                        onAddToCart = { isAddToCart, item ->
-                            if (isAddToCart) {
-                                onCartChanged.value
-                            }
-                            showProductDetailBottomSheet = false
-                        })
-                }
+                    if (selectedProduct.value.productId != -1L) {
+                        ProductDetailBottomSheet(
+                            mainViewModel!!,
+                            isViewOnly = false,
+                            OrderItem(itemProduct = selectedProduct.value),
+                            onDismiss = {
+                                selectedProduct.value = Product()
+                            },
+                            onAddToCart = { isAddToCart, item ->
+                                if (isAddToCart) {
+                                    onCartChanged.value
+                                }
+                                showProductDetailBottomSheet = false
+                            })
+                    }
 
-                val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
-                if (uiState.value.isLoading) {
+                    val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
+                    if (uiState.value.isLoading) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                                .padding(top = 40.dp, start = 50.dp, end = 50.dp)
+                                .background(
+                                    color = Color.Transparent,
+                                    shape = RoundedCornerShape(20.dp)
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            IndeterminateCircularProgressBar()
+                        }
+                    } else if (uiState.value.isFailed) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            ErrorOccurredWidget(uiState.value.errorMessage, onRetryClicked = {
+                                if (productResourceListEnvelopeViewModel!!.resources.value.isEmpty()) {
+                                    productResourceListEnvelopeViewModel!!.setResources(
+                                        mutableListOf()
+                                    )
+                                    productPresenter.getProductsByType(
+                                        vendorId,
+                                        productType = selectedProductType
+                                    )
+                                }
+                            })
+                        }
+                    } else if (uiState.value.isEmpty) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            EmptyContentWidget(emptyText = uiState.value.emptyMessage)
+                        }
+                    } else if (uiState.value.isSuccess) {
+                        ProductContent(
+                            productResourceListEnvelopeViewModel = productResourceListEnvelopeViewModel!!,
+                            searchQuery = searchQuery.value,
+                            vendorId = vendorId,
+                            userId = userId,
+                            onProductSelected = {
+                                selectedProduct.value = it
+                                showProductDetailBottomSheet = true
+
+                            },
+                            selectedProductType
+                        )
+                    }
+                },
+                backgroundColor = theme.Colors.dashboardBackground,
+                floatingActionButton = {
+                    val cartSize = mainViewModel!!.unSavedOrderSize.collectAsState()
+                    val cartContainer = if (cartSize.value > 0) 140 else 0
                     Box(
-                        modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                            .padding(top = 40.dp, start = 50.dp, end = 50.dp)
-                            .background(color = Color.Transparent, shape = RoundedCornerShape(20.dp)),
-                        contentAlignment = Alignment.Center
+                        modifier = Modifier.size(cartContainer.dp)
+                            .padding(bottom = 45.dp), contentAlignment = Alignment.CenterEnd
                     ) {
-                        IndeterminateCircularProgressBar()
+                        AttachShoppingCartImage("drawable/shopping_cart.png", mainViewModel!!)
                     }
                 }
-                else if (uiState.value.isFailed) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        ErrorOccurredWidget(uiState.value.errorMessage, onRetryClicked = {
-                            if (productResourceListEnvelopeViewModel!!.resources.value.isEmpty()){
-                                productResourceListEnvelopeViewModel!!.setResources(mutableListOf())
-                                productPresenter.getProductsByType(vendorId, productType = selectedProductType)
-                            }
-                        })
-                    }
-                }
-                else if (uiState.value.isEmpty) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        EmptyContentWidget(emptyText = uiState.value.emptyMessage)
-                    }
-                }
-                else if (uiState.value.isSuccess) {
-                    ProductContent(
-                        productResourceListEnvelopeViewModel = productResourceListEnvelopeViewModel!!,
-                        searchQuery = searchQuery.value,
-                        vendorId = vendorId,
-                        userId = userId,
-                        onProductSelected = {
-                         selectedProduct.value = it
-                         showProductDetailBottomSheet = true
-
-                        },
-                        selectedProductType
-                    )
-                }
-            },
-            backgroundColor = Color.Transparent,
-            floatingActionButton = {
-                val cartSize = mainViewModel!!.unSavedOrderSize.collectAsState()
-                val cartContainer = if (cartSize.value > 0) 140 else 0
-                Box(
-                    modifier = Modifier.size(cartContainer.dp)
-                        .padding(bottom = 45.dp), contentAlignment = Alignment.CenterEnd
-                ) {
-                    AttachShoppingCartImage("drawable/shopping_cart.png", mainViewModel!!)
-                }
-            }
-        )
+            )
+        }
     }
 
     @Composable
@@ -395,8 +422,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                 TextComponent(
                     text = currentOrderSize.value.toString(),
                     fontSize = 17,
-                    fontFamily = GGSansRegular,
-                    textStyle = MaterialTheme.typography.h6,
+                    textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                     textColor = Color.White,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.ExtraBold
@@ -462,8 +488,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                     Row(
                         Modifier
                             .fillMaxHeight()
-                            .fillMaxWidth()
-                            .background(color = Color.White),
+                            .fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ) {
                         LazyColumn(

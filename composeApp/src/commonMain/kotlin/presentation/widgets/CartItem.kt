@@ -109,8 +109,7 @@ fun CartItemDetail(orderItem: OrderItem,currencyUnit: String,onItemCountChanged:
             TextComponent(
                 text = orderedProduct?.productName!!,
                 fontSize = 16,
-                fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
                 fontWeight = FontWeight.Bold,
@@ -140,9 +139,8 @@ fun CartProductPriceInfoContent(orderItem: OrderItem,currencyUnit: String,) {
         TextComponent(
             text = "$currencyUnit${formatNumber(product!!.productPrice)}",
             fontSize = 16,
-            fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Colors.primaryColor,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+            textColor = theme.Colors.darkPrimary,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Bold,
             lineHeight = 20,

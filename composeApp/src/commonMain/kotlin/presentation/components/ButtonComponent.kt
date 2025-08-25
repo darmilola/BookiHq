@@ -444,7 +444,6 @@ fun ToggleButton(shape: Shape, onLeftClicked: () ->  Unit, isRightSelection: Boo
                         text = leftText,
                         fontSize = 15,
                         textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
-                        fontFamily = GGSansRegular,
                         textColor = leftTextColor,
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.SemiBold

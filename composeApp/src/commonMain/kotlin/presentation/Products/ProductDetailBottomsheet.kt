@@ -115,7 +115,7 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewOnly: Boolean = fal
                             fontSize = 16,
                             shape = RoundedCornerShape(15.dp),
                             textColor = Color(color = 0xFFFFFFFF),
-                            style = TextStyle(),
+                            style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                             borderStroke = null
                         ) {
                             currentOrder.value.add(orderItem.value)
@@ -158,7 +158,7 @@ fun ProductBottomSheetContent(product: Product, mainViewModel: MainViewModel) {
             ProductBottomSheetContentHeader()
         }
         ProductNameInfoContent(product, currencyUnit)
-        Divider(color = Color(color = 0x90C8C8C8), thickness = 1.dp, modifier = Modifier.fillMaxWidth(0.90f).padding(top = 20.dp))
+        Divider(color = theme.Colors.lightGrayColor, thickness = 1.dp, modifier = Modifier.fillMaxWidth(0.90f).padding(top = 20.dp))
 
         ToggleButton(shape = RoundedCornerShape(5.dp), onLeftClicked = {
            currentTabScreen = 0
@@ -184,24 +184,10 @@ fun ProductDescription(product: Product) {
     ) {
 
         TextComponent(
-            text = "Description",
-            fontSize = 18,
-            fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Colors.darkPrimary,
-            textAlign = TextAlign.Left,
-            fontWeight = FontWeight.ExtraBold,
-            lineHeight = 20,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            textModifier = Modifier
-                .fillMaxWidth())
-
-        TextComponent(
             textModifier = Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 20.dp), text = product.productDescription,
-            fontSize = 16, fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6, textColor = Color.DarkGray, textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Medium, lineHeight = 25)
+            fontSize = 16,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium, textColor = Color.DarkGray, textAlign = TextAlign.Left,
+            fontWeight = FontWeight.Medium, lineHeight = 23)
     }
 
 }
@@ -234,10 +220,9 @@ fun ProductPriceInfoContent(product: Product, currencyUnit: String) {
         TextComponent(
             text = "$currencyUnit${formatNumber(product.productPrice)}",
             fontSize = 20,
-            fontFamily = GGSansBold,
-            textStyle = TextStyle(),
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Right,
-            fontWeight = FontWeight.ExtraBold,
+            fontWeight = FontWeight.Bold,
             lineHeight = 20,
             textColor = Colors.primaryColor,
             maxLines = 1,
@@ -299,11 +284,10 @@ fun ProductTitle(product: Product){
         TextComponent(
             text = product.productName,
             fontSize = 18,
-            fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.ExtraBold,
+            fontWeight = FontWeight.Bold,
             lineHeight = 20,
             maxLines = 2,
             textModifier = Modifier
@@ -327,7 +311,6 @@ fun AttachScrollingProductImages(product: Product){
             .fillMaxHeight()
             .fillMaxWidth()
 
-    // AnimationEffect
     Box(contentAlignment = Alignment.BottomCenter, modifier = boxModifier) {
         HorizontalPager(
             state = pagerState,

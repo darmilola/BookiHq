@@ -68,6 +68,7 @@ import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.ActionType
 import domain.Enums.CustomerPaymentEnum
@@ -94,6 +95,7 @@ import presentation.widgets.PaymentMethodWidget
 import presentation.widgets.ProductDetailBottomSheet
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
+import presentation.widgets.SubtitleTextWidget
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import utils.ParcelableScreen
@@ -140,7 +142,8 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
     override fun Content() {
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
-            animation = StackedSnackbarAnimation.Bounce)
+            animation = StackedSnackbarAnimation.Bounce
+        )
 
         if (createOrderActionUIStateViewModel == null) {
             createOrderActionUIStateViewModel = kmpViewModel(
@@ -158,7 +161,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
             )
         }
 
-        if(cartViewModel == null) {
+        if (cartViewModel == null) {
             cartViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     CartViewModel(savedStateHandle = createSavedStateHandle())
@@ -172,18 +175,18 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
         val cartItems = mainViewModel!!.unSavedOrders.collectAsState()
         val cartSize = mainViewModel!!.unSavedOrderSize.collectAsState()
         val deliveryMethod = cartViewModel!!.deliveryMethod.collectAsState()
-        val isProfileCompleted = userProfile.address.trim().isNotEmpty() && userProfile.contactPhone.trim().isNotEmpty()
+        val isProfileCompleted =
+            userProfile.address.trim().isNotEmpty() && userProfile.contactPhone.trim().isNotEmpty()
         val vendorDeliveryFee = mainViewModel!!.connectedVendor.value.deliveryFee
-        if (deliveryMethod.value == DeliveryMethodEnum.MOBILE.toPath()){
+        if (deliveryMethod.value == DeliveryMethodEnum.MOBILE.toPath()) {
             cartViewModel!!.setDeliveryFee(vendorDeliveryFee)
-        }
-        else{
+        } else {
             cartViewModel!!.setDeliveryFee(0L)
         }
 
         LaunchedEffect(true) {
             cartViewModel!!.setDeliveryMethod(DeliveryMethodEnum.PICKUP.toPath())
-            if (!isProfileCompleted){
+            if (!isProfileCompleted) {
                 ShowSnackBar(title = "Only Pickup is Available",
                     description = "Please Complete Your Profile for Home Delivery",
                     actionLabel = "Complete Profile",
@@ -197,7 +200,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
 
         }
 
-        if (completeProfile.value){
+        if (completeProfile.value) {
             completeProfile.value = false
             val editProfile = EditProfile(platformNavigator)
             editProfile.setMainViewModel(mainViewModel!!)
@@ -207,7 +210,8 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
         }
 
         val actionUiState = createOrderActionUIStateViewModel!!.uiStateInfo.collectAsState()
-        val paymentActionUiState = paymentActionUIStateViewModel!!.paymentUiStateInfo.collectAsState()
+        val paymentActionUiState =
+            paymentActionUIStateViewModel!!.paymentUiStateInfo.collectAsState()
 
         val subtotal = calculateCartCheckoutSubTotal(cartItems.value)
         val total = calculateTotal(subtotal, cartViewModel!!.deliveryFee.value)
@@ -216,7 +220,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
 
         val navigator = LocalNavigator.currentOrThrow
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
-        if (onBackPressed.value || cartSize.value == 0){
+        if (onBackPressed.value || cartSize.value == 0) {
             mainViewModel!!.setOnBackPressed(false)
             navigator.pop()
         }
@@ -244,49 +248,50 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
 
 
 
-        Scaffold(
-            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
-            topBar = {},
-            content = {
-                val userInfo = mainViewModel!!.currentUserInfo.value
-                val customerEmail = if (userInfo.email != "empty") userInfo.email else generateRandomEmail()
-                val paymentAmount = cartViewModel!!.total.value
-                val handler = CreateOrderScreenHandler(
-                    cartPresenter,
-                    paymentPresenter = paymentPresenter,
-                    createOrderActionUIStateViewModel!!,
-                    paymentActionUIStateViewModel!!,
-                    onAuthorizationSuccessful = {
-                        if (it.status) {
-                            platformNavigator.startPaymentProcess(paymentAmount = (paymentAmount * 100).toString(),
-                                customerEmail = customerEmail!!,
-                                accessCode = it.paymentAuthorizationData.accessCode,
-                                currency = mainViewModel!!.displayCurrencyPath.value,
-                                cardNumber = selectedCard!!.cardNumber,
-                                expiryMonth = selectedCard!!.expiryMonth,
-                                expiryYear = selectedCard!!.expiryYear,
-                                cvv = selectedCard!!.cvv,
-                                onPaymentLoading = {},
-                                onPaymentSuccessful = {
-                                    paystackPaymentFailed.value = false
-                                     customerPaidAmount = paymentAmount
-                                     createOrder()
-                                },
-                                onPaymentFailed = {
-                                    paystackPaymentFailed.value = true
-                                })
+        AppTheme {
+            Scaffold(
+                snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
+                topBar = {},
+                content = {
+                    val userInfo = mainViewModel!!.currentUserInfo.value
+                    val customerEmail =
+                        if (userInfo.email != "empty") userInfo.email else generateRandomEmail()
+                    val paymentAmount = cartViewModel!!.total.value
+                    val handler = CreateOrderScreenHandler(
+                        cartPresenter,
+                        paymentPresenter = paymentPresenter,
+                        createOrderActionUIStateViewModel!!,
+                        paymentActionUIStateViewModel!!,
+                        onAuthorizationSuccessful = {
+                            if (it.status) {
+                                platformNavigator.startPaymentProcess(paymentAmount = (paymentAmount * 100).toString(),
+                                    customerEmail = customerEmail!!,
+                                    accessCode = it.paymentAuthorizationData.accessCode,
+                                    currency = mainViewModel!!.displayCurrencyPath.value,
+                                    cardNumber = selectedCard!!.cardNumber,
+                                    expiryMonth = selectedCard!!.expiryMonth,
+                                    expiryYear = selectedCard!!.expiryYear,
+                                    cvv = selectedCard!!.cvv,
+                                    onPaymentLoading = {},
+                                    onPaymentSuccessful = {
+                                        paystackPaymentFailed.value = false
+                                        customerPaidAmount = paymentAmount
+                                        createOrder()
+                                    },
+                                    onPaymentFailed = {
+                                        paystackPaymentFailed.value = true
+                                    })
+                            }
+                        })
+                    handler.init()
+
+
+                    if (actionUiState.value.isLoading) {
+                        Box(modifier = Modifier.fillMaxWidth(0.90f)) {
+                            LoadingDialog(actionUiState.value.loadingMessage)
                         }
-                    })
-                handler.init()
-
-
-                if (actionUiState.value.isLoading) {
-                    Box(modifier = Modifier.fillMaxWidth(0.90f)) {
-                        LoadingDialog(actionUiState.value.loadingMessage)
-                    }
-                }
-                else if (actionUiState.value.isSuccess) {
-                    Box(modifier = Modifier.fillMaxWidth()) {
+                    } else if (actionUiState.value.isSuccess) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
                             SuccessDialog(
                                 "Creating Order Successful",
                                 actionTitle = "Done",
@@ -295,141 +300,157 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
                                     mainViewModel!!.clearCurrentOrderReference()
                                     navigator.pop()
                                 })
-                    }
-                }
-                else if (actionUiState.value.isFailed) {
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        ErrorDialog("Creating Order Failed", actionTitle = "Retry",
-                            onConfirmation = {
-                                 createOrder()
-                            })
-                    }
-                }
-
-                if (paymentActionUiState.value.isLoading) {
-                    Box(modifier = Modifier.fillMaxWidth(0.90f)) {
-                        LoadingDialog("Processing Payment")
-                    }
-                }
-                else if (paymentActionUiState.value.isFailed) {
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        ErrorDialog("Payment Authentication Failed", actionTitle = "Retry", onConfirmation = {})
-                    }
-                }
-
-                if (paystackPaymentFailed.value){
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        ErrorDialog("Payment Failed", actionTitle = "Retry", onConfirmation = {})
-                    }
-                }
-
-
-                val rowModifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .padding(start = 15.dp)
-
-                val colModifier = Modifier
-                    .padding(top = 10.dp, end = 0.dp)
-                    .fillMaxSize()
-
-                Column(
-                    modifier = colModifier,
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Row(
-                        modifier = rowModifier,
-                        horizontalArrangement = Arrangement.Start,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        Box(
-                            modifier = Modifier.weight(1.0f)
-                                .fillMaxWidth()
-                                .fillMaxHeight(),
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            leftTopBarItem(onBackPressed = {
-                                navigator.pop()
-                            })
                         }
-
-                        Box(
-                            modifier = Modifier.weight(3.0f)
-                                .fillMaxWidth()
-                                .fillMaxHeight(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CartScreenTitle(cartItems.value.size)
+                    } else if (actionUiState.value.isFailed) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            ErrorDialog("Creating Order Failed", actionTitle = "Retry",
+                                onConfirmation = {
+                                    createOrder()
+                                })
                         }
+                    }
 
-                        Box(
-                            modifier = Modifier.weight(1.0f)
-                                .fillMaxWidth(0.20f)
-                                .fillMaxHeight(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            rightTopBarItem()
+                    if (paymentActionUiState.value.isLoading) {
+                        Box(modifier = Modifier.fillMaxWidth(0.90f)) {
+                            LoadingDialog("Processing Payment")
                         }
+                    } else if (paymentActionUiState.value.isFailed) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            ErrorDialog(
+                                "Payment Authentication Failed",
+                                actionTitle = "Retry",
+                                onConfirmation = {})
+                        }
+                    }
 
+                    if (paystackPaymentFailed.value) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            ErrorDialog(
+                                "Payment Failed",
+                                actionTitle = "Retry",
+                                onConfirmation = {})
+                        }
                     }
 
 
+                    val rowModifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp)
+                        .padding(start = 15.dp)
 
-
-                    val showSelectPaymentCards = mainViewModel!!.showPaymentCardsBottomSheet.collectAsState()
-                    val paymentCurrency = mainViewModel!!.displayCurrencyPath.value
-
-                    if (showSelectPaymentCards.value) {
-                        PaymentCardBottomSheet(
-                            mainViewModel!!,
-                            cardList,
-                            databaseBuilder = databaseBuilder,
-                            onCardSelected = {
-                                mainViewModel!!.showPaymentCardsBottomSheet(false)
-                                selectedCard = it
-                                paymentPresenter.initCheckOut(amount = (paymentAmount * 100).toString(), customerEmail = customerEmail!!, currency = paymentCurrency)
-                            },
-                            onDismiss = {
-                                mainViewModel!!.showPaymentCardsBottomSheet(false)
-                            }, onAddNewSelected = {
-                                mainViewModel!!.showPaymentCardsBottomSheet(false)
-                                openAddDebitCardDialog.value = true
-                            })
-                    }
+                    val colModifier = Modifier
+                        .padding(top = 10.dp, end = 0.dp)
+                        .fillMaxSize()
 
                     Column(
-                        modifier = Modifier
-                            .padding(end = 0.dp, bottom = 50.dp)
-                            .fillMaxWidth()
-                            .fillMaxHeight()
-                            .verticalScroll(rememberScrollState())
-                            .weight(1f, false)
+                        modifier = colModifier,
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        Row(
+                            modifier = rowModifier,
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
 
-                        PopulateCartItemList(mainViewModel!!,stackedSnackBarHostState)
-
-
-                        ProductDeliveryAddressWidget(cartViewModel!!, isDisabled = !isProfileCompleted, onMobileSelectedListener = {
-                                cartViewModel!!.setDeliveryMethod(DeliveryMethodEnum.MOBILE.toPath())
-
-                            }, onPickupSelectedListener = {
-                              cartViewModel!!.setDeliveryMethod(DeliveryMethodEnum.PICKUP.toPath())
-
-                            })
-                        CheckOutSummaryWidget(cartViewModel!!,mainViewModel!!,onCardCheckOutStarted = {
-                            runBlocking {
-                                cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
-                                mainViewModel!!.showPaymentCardsBottomSheet(true)
+                            Box(
+                                modifier = Modifier.weight(1.0f)
+                                    .fillMaxWidth()
+                                    .fillMaxHeight(),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                leftTopBarItem(onBackPressed = {
+                                    navigator.pop()
+                                })
                             }
-                        })
+
+                            Box(
+                                modifier = Modifier.weight(3.0f)
+                                    .fillMaxWidth()
+                                    .fillMaxHeight(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CartScreenTitle(cartItems.value.size)
+                            }
+
+                            Box(
+                                modifier = Modifier.weight(1.0f)
+                                    .fillMaxWidth(0.20f)
+                                    .fillMaxHeight(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                rightTopBarItem()
+                            }
+
+                        }
+
+
+                        val showSelectPaymentCards =
+                            mainViewModel!!.showPaymentCardsBottomSheet.collectAsState()
+                        val paymentCurrency = mainViewModel!!.displayCurrencyPath.value
+
+                        if (showSelectPaymentCards.value) {
+                            PaymentCardBottomSheet(
+                                mainViewModel!!,
+                                cardList,
+                                databaseBuilder = databaseBuilder,
+                                onCardSelected = {
+                                    mainViewModel!!.showPaymentCardsBottomSheet(false)
+                                    selectedCard = it
+                                    paymentPresenter.initCheckOut(
+                                        amount = (paymentAmount * 100).toString(),
+                                        customerEmail = customerEmail!!,
+                                        currency = paymentCurrency
+                                    )
+                                },
+                                onDismiss = {
+                                    mainViewModel!!.showPaymentCardsBottomSheet(false)
+                                }, onAddNewSelected = {
+                                    mainViewModel!!.showPaymentCardsBottomSheet(false)
+                                    openAddDebitCardDialog.value = true
+                                })
+                        }
+
+                        Column(
+                            modifier = Modifier
+                                .padding(end = 0.dp, bottom = 50.dp)
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                                .verticalScroll(rememberScrollState())
+                                .weight(1f, false)
+                        ) {
+
+                            PopulateCartItemList(mainViewModel!!, stackedSnackBarHostState)
+
+
+                            ProductDeliveryAddressWidget(
+                                cartViewModel!!,
+                                isDisabled = !isProfileCompleted,
+                                onMobileSelectedListener = {
+                                    cartViewModel!!.setDeliveryMethod(DeliveryMethodEnum.MOBILE.toPath())
+
+                                },
+                                onPickupSelectedListener = {
+                                    cartViewModel!!.setDeliveryMethod(DeliveryMethodEnum.PICKUP.toPath())
+
+                                })
+                            CheckOutSummaryWidget(
+                                cartViewModel!!,
+                                mainViewModel!!,
+                                onCardCheckOutStarted = {
+                                    runBlocking {
+                                        cardList = databaseBuilder!!.build().getPaymentCardDao()
+                                            .getAllPaymentCards()
+                                        mainViewModel!!.showPaymentCardsBottomSheet(true)
+                                    }
+                                })
+
+                        }
 
                     }
+                })
 
-                }
-            })
-
+        }
     }
 
     private fun createOrder(){
@@ -556,15 +577,7 @@ class Cart(val platformNavigator: PlatformNavigator) : ParcelableScreen, KoinCom
 
     @Composable
     fun CartScreenTitle(itemCount: Int){
-            TextComponent(
-                text = "Cart($itemCount)",
-                fontSize = 20,
-                fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
-                textColor = Colors.darkPrimary,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Black,
-            )
+        SubtitleTextWidget(text = "Cart($itemCount)", textColor = theme.Colors.darkPrimary)
         }
 
 
