@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -90,10 +91,10 @@ fun ButtonContent(onDismissRequest: () -> Unit,
         .height(45.dp)
     Row (horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 30.dp, start = 20.dp, end = 20.dp)) {
-        ButtonComponent(modifier = buttonStyle, buttonText = "Cancel", borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Colors.primaryColor, style = TextStyle()){
+        ButtonComponent(modifier = buttonStyle, buttonText = "Cancel", borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Colors.primaryColor, style = MaterialTheme.typography.titleMedium){
             onDismissRequest()
         }
-        ButtonComponent(modifier = buttonStyle2, buttonText = "Save", colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Color(color = 0xFFFFFFFF), style = TextStyle(), borderStroke = null){
+        ButtonComponent(modifier = buttonStyle2, buttonText = "Save", colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.titleMedium, borderStroke = null){
             onConfirmation()
         }
     }

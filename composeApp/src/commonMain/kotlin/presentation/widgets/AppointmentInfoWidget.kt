@@ -100,27 +100,17 @@ fun ServiceAppointmentInfoWidget(appointment: Appointment) {
                     }
                     if (appointment.serviceLocation == ServiceLocationEnum.MOBILE.toPath()) {
                         Box(
-                            modifier = Modifier.width(25.dp).fillMaxHeight()
-                                .padding(start = 10.dp, end = 10.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Box(
-                                modifier = Modifier.size(6.dp).clip(CircleShape)
-                                    .background(color = theme.Colors.greenColor)
-                            ) {}
-                        }
-                        Box(
-                            modifier = Modifier.wrapContentWidth().fillMaxHeight(),
+                            modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(start = 5.dp),
                             contentAlignment = Alignment.CenterStart
                         ) {
                             TextComponent(
                                 text = "Home Service",
                                 textModifier = Modifier.wrapContentSize(),
-                                fontSize = 14,
+                                fontSize = 13,
                                 textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                                 textColor = theme.Colors.greenColor,
                                 textAlign = TextAlign.Start,
-                                fontWeight = FontWeight.Normal,
+                                fontWeight = FontWeight.Bold,
                             )
                         }
                     }

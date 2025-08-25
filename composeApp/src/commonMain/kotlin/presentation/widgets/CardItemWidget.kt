@@ -38,7 +38,7 @@ fun PaymentCardItem(paymentCard: PaymentCard, onPaymentCardSelected: (PaymentCar
     val selectedBgColor: Color = if (paymentCard.isSelected) Colors.lightPrimaryColor else Color.White
     val rowModifier = Modifier
         .background(color = selectedBgColor, shape = RoundedCornerShape(15.dp))
-        .padding(start = 10.dp, top = 10.dp, bottom = 10.dp)
+        .padding(top = 10.dp, bottom = 10.dp)
         .clickable {
             onPaymentCardSelected(paymentCard)
         }
@@ -125,11 +125,10 @@ fun CardDescription(paymentCard: PaymentCard, onPaymentCardRemoved: (PaymentCard
                 TextComponent(
                     text = lastFourDigit,
                     fontSize = 20,
-                    fontFamily = GGSansRegular,
-                    textStyle = MaterialTheme.typography.h6,
+                    textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                     textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.ExtraBold,
+                    fontWeight = FontWeight.SemiBold,
                     lineHeight = 20,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2
@@ -139,8 +138,7 @@ fun CardDescription(paymentCard: PaymentCard, onPaymentCardRemoved: (PaymentCard
             TextComponent(
                 text = paymentCard.expiryMonth + "/" + paymentCard.expiryYear,
                 fontSize = 16,
-                fontFamily = GGSansRegular,
-                textStyle = MaterialTheme.typography.h6,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
                 fontWeight = FontWeight.ExtraBold,

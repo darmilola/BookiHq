@@ -83,7 +83,7 @@ fun SuccessDialogContent(dialogTitle: String, actionTitle: String,
                 Box(modifier = Modifier.size(60.dp).background(color = Colors.lightGreen, shape = RoundedCornerShape(20.dp)), contentAlignment = Alignment.Center) {
                     ImageComponent(
                         imageModifier = modifier,
-                        imageRes = "drawable/success_icon.png",
+                        imageRes = "drawable/success_icon_v2.png",
                         colorFilter = ColorFilter.tint(color = Colors.greenColor)
                     )
                 }

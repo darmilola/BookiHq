@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.State
 import presentations.components.ImageComponent
@@ -62,7 +63,7 @@ fun DropDownWidgetView(menuItems: List<String>,
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().fillMaxHeight()
+            modifier = Modifier.fillMaxWidth().wrapContentHeight()
         ) {
 
             Box(modifier = Modifier.fillMaxHeight().width(50.dp), contentAlignment = Alignment.Center){
@@ -70,7 +71,7 @@ fun DropDownWidgetView(menuItems: List<String>,
                     .size(iconSize.dp), imageRes = iconRes, colorFilter = ColorFilter.tint(color = Colors.primaryColor))
             }
 
-            Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.8f), contentAlignment = Alignment.Center){
+            Box(modifier = Modifier.height(50.dp).fillMaxWidth(0.8f), contentAlignment = Alignment.CenterStart){
 
                 TextComponent(
                     text =  if(selectedIndex != -1) menuItems[selectedIndex] else placeHolderText,
@@ -78,8 +79,10 @@ fun DropDownWidgetView(menuItems: List<String>,
                     textStyle = MaterialTheme.typography.titleMedium,
                     textColor = if(selectedIndex != -1) Colors.darkPrimary else  Color.Gray,
                     textAlign = TextAlign.Start,
-                    fontWeight = FontWeight.Normal,
-                    textModifier = Modifier.wrapContentHeight().fillMaxWidth().padding(end = 5.dp))
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textModifier = Modifier.fillMaxWidth().padding(end = 5.dp))
             }
 
             Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(), contentAlignment = Alignment.Center){
@@ -268,7 +271,7 @@ fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_
         .fillMaxWidth()
         .height(55.dp)
         .border(border = BorderStroke(1.dp, color  = Colors.primaryColor), shape = shape)
-        .background(color = Color.White, shape = shape)
+        .background(color = Color.Transparent, shape = shape)
 
     Column (
         modifier = modifier,

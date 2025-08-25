@@ -33,6 +33,7 @@ import presentation.viewmodels.BookingViewModel
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.PendingAppointmentWidget
 import presentation.widgets.PendingPackageAppointmentWidget
+import theme.styles.Colors
 import utils.getAppointmentViewHeight
 
 
@@ -89,8 +90,7 @@ fun BookingOverview(mainViewModel: MainViewModel, bookingPresenter: BookingPrese
     if (loadingPendingActionUiState.value.isLoading) {
         Box(
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                .padding(top = 40.dp, start = 50.dp, end = 50.dp)
-                .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
+                .padding(top = 40.dp, start = 50.dp, end = 50.dp),
             contentAlignment = Alignment.Center
         ) {
             IndeterminateCircularProgressBar()
@@ -112,7 +112,8 @@ fun BookingOverview(mainViewModel: MainViewModel, bookingPresenter: BookingPrese
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .background(color = theme.Colors.dashboardBackground),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

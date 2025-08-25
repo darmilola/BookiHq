@@ -161,24 +161,23 @@ fun AttachUserName(user: User){
         .padding(start = 5.dp)
         .wrapContentWidth()
 
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.Top,
-            modifier = rowModifier
-        ) {
-            TextComponent(
-                text = user.firstname+" "+user.lastname?.first().toString()
-                    .uppercase() +".",
-                fontSize = 16,
-                fontFamily = GGSansRegular,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
-                textAlign = TextAlign.Start,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
+    Row(
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.Top,
+        modifier = rowModifier
+    ) {
+        TextComponent(
+            text = user.firstname+" "+user.lastname?.first().toString()
+                .uppercase() +".",
+            fontSize = 16,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+            textColor = Colors.darkPrimary,
+            textAlign = TextAlign.Start,
+            fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
     }
 
 
@@ -217,38 +216,35 @@ fun AttachReviewDate(reviewDate: String){
         .padding(start = 5.dp, top = 7.dp)
         .wrapContentWidth()
 
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.Top,
-            modifier = rowModifier
-        ) {
-            TextComponent(
-                text = formattedDate,
-                fontSize = 14,
-                fontFamily = GGSansRegular,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.Gray,
-                textAlign = TextAlign.Start,
-                fontWeight = FontWeight.Medium
-            )
+    Row(
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.Top,
+        modifier = rowModifier
+    ) {
+        TextComponent(
+            text = formattedDate,
+            fontSize = 14,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+            textColor = theme.Colors.darkPrimary,
+            textAlign = TextAlign.Start,
+            fontWeight = FontWeight.Medium
+        )
 
 
-        }
+    }
     }
 
 @Composable
 fun AttachUserReviewsContent(reviewText: String) {
     val columnModifier = Modifier
         .padding(bottom = 20.dp, top = 5.dp)
-        .wrapContentHeight()
         .fillMaxWidth()
     Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start, modifier = columnModifier) {
         val modifier = Modifier
-            .wrapContentHeight()
             .fillMaxWidth()
         TextComponent(
-            textModifier = modifier, text = reviewText, fontSize = 16, fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6, textColor = Color.DarkGray, textAlign = TextAlign.Left,
+            textModifier = modifier, text = reviewText, fontSize = 16,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium, textColor = theme.Colors.darkPrimary, textAlign = TextAlign.Left,
             fontWeight = FontWeight.Medium, lineHeight = 25)
 
     }

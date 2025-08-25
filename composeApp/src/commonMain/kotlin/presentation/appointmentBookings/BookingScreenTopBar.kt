@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.StepsProgressBar
+import presentation.widgets.SubtitleTextWidget
 import presentations.components.TextComponent
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -31,7 +32,7 @@ fun BookingScreenTopBar(pagerState: PagerState, onBackPressed: (Int) -> Unit) {
 
     val rowModifier = Modifier
         .fillMaxWidth()
-        .height(60.dp)
+        .height(40.dp)
 
     val stepList = arrayListOf<String>()
     stepList.add("Service")
@@ -40,7 +41,7 @@ fun BookingScreenTopBar(pagerState: PagerState, onBackPressed: (Int) -> Unit) {
 
     val colModifier = Modifier
         .fillMaxWidth()
-        .height(140.dp)
+        .height(120.dp)
 
     Column(modifier = colModifier,
         verticalArrangement = Arrangement.Center,
@@ -96,14 +97,8 @@ fun leftTopBarItem(pagerState: PagerState, onBackPressed:(Int) -> Unit) {
 
 @Composable
 fun BookingTitle(){
-        TextComponent(
-                text = "Book Appointment",
-                fontSize = 16,
-                fontFamily = GGSansRegular,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Color.DarkGray,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-            )
-    }
+
+    SubtitleTextWidget(text = "Book Appointment", textColor = theme.styles.Colors.primaryColor)
+
+}
 

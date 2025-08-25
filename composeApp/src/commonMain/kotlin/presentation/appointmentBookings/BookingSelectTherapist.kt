@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -95,8 +96,7 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, performedActionUIState
     if (getTherapistActionUiStates.value.isLoading) {
         Box(
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                .padding(top = 40.dp, start = 50.dp, end = 50.dp)
-                .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
+                .padding(top = 40.dp, start = 50.dp, end = 50.dp),
             contentAlignment = Alignment.Center
         ) {
             IndeterminateCircularProgressBar()
@@ -142,7 +142,7 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, performedActionUIState
                     modifier = Modifier
                         .padding(top = 5.dp, bottom = 10.dp)
                         .fillMaxWidth()
-                        .height(400.dp),
+                        .height(380.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment  = Alignment.CenterHorizontally,
                 ) {
@@ -156,17 +156,31 @@ fun BookingSelectTherapists(mainViewModel: MainViewModel, performedActionUIState
                     Column(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
                         TextComponent(
                             text = "$therapistName's Service Reviews",
-                            fontSize = 18,
-                            fontFamily = GGSansSemiBold,
-                            textStyle = TextStyle(),
+                            fontSize = 16,
+                            textStyle = MaterialTheme.typography.titleMedium,
                             textColor = Colors.darkPrimary,
                             textAlign = TextAlign.Left,
-                            fontWeight = FontWeight.Black,
+                            fontWeight = FontWeight.SemiBold,
                             lineHeight = 30,
                             textModifier = Modifier
-                                .fillMaxWidth().padding(start = 10.dp, bottom = 20.dp))
+                                .fillMaxWidth().padding(start = 10.dp, bottom = 10.dp)
+                        )
 
-                        AttachServiceReviews(selectedTherapist.value.therapistInfo!!.reviews!!)
+                        if (selectedTherapist.value.therapistInfo!!.reviews!!.isEmpty()) {
+                            Box(
+                                modifier = Modifier.fillMaxWidth().height(200.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    EmptyContentWidget(emptyText = "No Reviews")
+                                }
+                            }
+                        } else {
+                            AttachServiceReviews(selectedTherapist.value.therapistInfo!!.reviews!!)
+                        }
                     }
                 }
             }
@@ -184,7 +198,7 @@ fun AvailableTimeContent(availableHours: Triple<ArrayList<PlatformTime>, ArrayLi
 
     Column(
         modifier = Modifier
-            .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 10.dp)
+            .padding(top = 5.dp, bottom = 10.dp)
             .wrapContentHeight(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment  = Alignment.CenterHorizontally,
@@ -192,12 +206,11 @@ fun AvailableTimeContent(availableHours: Triple<ArrayList<PlatformTime>, ArrayLi
 
         TextComponent(
             text = "Availability",
-            fontSize = 18,
-            fontFamily = GGSansSemiBold,
-            textStyle = TextStyle(),
+            fontSize = 16,
+            textStyle = MaterialTheme.typography.titleMedium,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Black,
+            fontWeight = FontWeight.SemiBold,
             lineHeight = 30,
             textModifier = Modifier
                 .fillMaxWidth().padding(start = 10.dp, bottom = 20.dp))
@@ -205,34 +218,34 @@ fun AvailableTimeContent(availableHours: Triple<ArrayList<PlatformTime>, ArrayLi
             TextComponent(
                 text = "Morning",
                 fontSize = 16,
-                textStyle = TextStyle(),
+                textStyle = MaterialTheme.typography.titleMedium,
                 textColor = theme.Colors.darkPrimary,
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.SemiBold,
                 lineHeight = 25,
-                textModifier = Modifier.weight(1f).padding(bottom = 15.dp, top = 10.dp),
+                textModifier = Modifier.weight(1f).padding(bottom = 10.dp, top = 10.dp),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis)
             TextComponent(
                 text = "Afternoon",
                 fontSize = 16,
-                textStyle = TextStyle(),
+                textStyle = MaterialTheme.typography.titleMedium,
                 textColor = theme.Colors.darkPrimary,
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.SemiBold,
                 lineHeight = 25,
-                textModifier = Modifier.weight(1f).padding(bottom = 15.dp, top = 10.dp),
+                textModifier = Modifier.weight(1f).padding(bottom = 10.dp, top = 10.dp),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis)
             TextComponent(
                 text = "Evening",
                 fontSize = 16,
-                textStyle = TextStyle(),
+                textStyle = MaterialTheme.typography.titleMedium,
                 textColor = theme.Colors.darkPrimary,
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.SemiBold,
                 lineHeight = 25,
-                textModifier = Modifier.weight(1f).padding(bottom = 15.dp, top = 10.dp),
+                textModifier = Modifier.weight(1f).padding(bottom = 10.dp, top = 10.dp),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis)
         }
@@ -272,12 +285,11 @@ fun TherapistContent(bookingViewModel: BookingViewModel, therapists: List<Servic
 
         TextComponent(
             text = "Choose Therapist",
-            fontSize = 18,
-            fontFamily = GGSansSemiBold,
-            textStyle = TextStyle(),
+            fontSize = 16,
+            textStyle = MaterialTheme.typography.titleMedium,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Black,
+            fontWeight = FontWeight.SemiBold,
             lineHeight = 30,
             textModifier = Modifier
                 .fillMaxWidth().padding(start = 10.dp))

@@ -500,7 +500,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             ) {
                 TextComponent(
                     text = "Featured Services",
-                    fontSize = 23,
+                    fontSize = 20,
                     textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                     textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
@@ -508,7 +508,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                     lineHeight = 30,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    textModifier = Modifier.fillMaxWidth(0.60f)
+                    textModifier = Modifier.fillMaxWidth(0.70f)
                 )
             }
     }
@@ -526,8 +526,8 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
         ) {
             TextComponent(
                 text = "Recommended",
-                textModifier = Modifier.fillMaxWidth(0.50f),
-                fontSize = 23,
+                textModifier = Modifier.fillMaxWidth(0.70f),
+                fontSize = 20,
                 textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
@@ -562,7 +562,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
     @Composable
     fun AttachAppointmentsTitle(title: String){
         val rowModifier = Modifier
-            .padding(start = 10.dp, top = 20.dp, bottom = 20.dp)
+            .padding(start = 10.dp, top = 10.dp, bottom = 10.dp)
             .fillMaxWidth()
             Row(
                 horizontalArrangement = Arrangement.Start,
@@ -571,7 +571,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
             ) {
                 TextComponent(
                     text = title,
-                    fontSize = 23,
+                    fontSize = 20,
                     textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                     textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
@@ -579,7 +579,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                     lineHeight = 30,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    textModifier = Modifier.fillMaxWidth(0.70f)
+                    textModifier = Modifier.fillMaxWidth(0.90f)
                 )
             }
     }

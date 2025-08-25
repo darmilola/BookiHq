@@ -52,7 +52,7 @@ fun BookingCalendar(vendorAvailableDays: ArrayList<String>,onDateSelected: (Loca
     val listState = rememberLazyListState()
 
 
-    Column(modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 30.dp)) {
+    Column(modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 20.dp)) {
         var selectedUIModel by remember { mutableStateOf(calendarUiModel) }
         var initialVisibleDates by remember { mutableStateOf(5) }
 

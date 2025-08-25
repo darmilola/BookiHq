@@ -104,17 +104,17 @@ fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPrese
         BookingStatus.CANCELLED.toPath() -> {
             serviceIconRes = "drawable/schedule.png"
             serviceStatusText = "Cancelled"
-            serviceStatusColor = Colors.primaryColor
+            serviceStatusColor = theme.Colors.redColor
         }
         BookingStatus.POSTPONED.toPath() -> {
             serviceIconRes = "drawable/appointment_postponed.png"
             serviceStatusText = "Postponed"
-            serviceStatusColor = Colors.pinkColor
+            serviceStatusColor = theme.Colors.redColor
         }
         BookingStatus.DONE.toPath() -> {
             serviceIconRes = "drawable/appointment_done.png"
             serviceStatusText = "Done"
-            serviceStatusColor = Colors.greenColor
+            serviceStatusColor = theme.Colors.greenColor
         }
     }
 
@@ -254,16 +254,16 @@ fun AttachRecentServiceAppointmentHeader(statusText: String, statusDrawableRes: 
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 5.dp)
+        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 5.dp, top = 5.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth(0.70f).height(55.dp)
+            modifier = Modifier.fillMaxWidth(0.70f).height(45.dp)
         ) {
             TextComponent(
                 text = appointment.services?.serviceInfo?.title.toString(),
-                fontSize = 18,
+                fontSize = 16,
                 textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
@@ -322,9 +322,8 @@ fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String
             }
             TextComponent(
                 text = userAppointment.resources?.services?.serviceInfo?.title.toString(),
-                fontSize = 18,
-                fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
+                fontSize = 16,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
                 fontWeight = FontWeight.SemiBold,
@@ -350,7 +349,7 @@ fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String
                    AttachIcon(
                        iconRes = "drawable/overflow_menu.png",
                        iconSize = 20,
-                       iconTint = statusColor
+                       iconTint = theme.Colors.darkPrimary
                    ) {
                        expandedMenuItem.value = true
                    }
@@ -378,7 +377,7 @@ fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String
                                    onAddReview(userAppointment.resources!!)
                                }
                            }) {
-                           MultiLineTextWidget(text = title, fontSize = 16)
+                           SubtitleTextWidget(text = title, fontSize = 16)
                        }
                    }
                }

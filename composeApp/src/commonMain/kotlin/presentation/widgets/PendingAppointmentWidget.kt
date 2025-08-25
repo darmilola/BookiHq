@@ -52,6 +52,7 @@ fun PendingAppointmentWidget(appointment: UserAppointment, onDeleteAppointment: 
             .padding(bottom = 5.dp, top = 5.dp, start = 10.dp, end = 10.dp)
             .fillMaxHeight()
             .fillMaxWidth()
+            .background(color = Color.White)
             .border(border = BorderStroke(1.4.dp, Colors.lightGray), shape = RoundedCornerShape(10.dp))
 
     Box(modifier = boxBgModifier) {
@@ -87,21 +88,18 @@ fun AttachPendingAppointmentHeader(statusText: String, statusDrawableRes: String
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 5.dp, top = 15.dp)
+        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 5.dp, top = 5.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth(0.70f).height(60.dp)
+            modifier = Modifier.fillMaxWidth(0.70f).height(45.dp)
         ) {
-            Box(modifier = Modifier.fillMaxWidth(0.08f).fillMaxHeight(), contentAlignment = Alignment.Center) {
-                Box(modifier = Modifier.size(6.dp).clip(CircleShape).background(color = statusColor)){}
-            }
+
             TextComponent(
                 text = appointment.resources!!.services?.serviceInfo?.title.toString(),
-                fontSize = 18,
-                fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
+                fontSize = 16,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
                 fontWeight = FontWeight.SemiBold,
@@ -116,8 +114,8 @@ fun AttachPendingAppointmentHeader(statusText: String, statusDrawableRes: String
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth().padding(end = 10.dp)
         ) {
-            ImageComponent(imageModifier = Modifier.size(20.dp).padding(bottom = 2.dp), imageRes = statusDrawableRes, colorFilter = ColorFilter.tint(color = statusColor))
-            AttachAppointmentStatus(statusText, statusColor)
+            //ImageComponent(imageModifier = Modifier.size(20.dp).padding(bottom = 2.dp), imageRes = statusDrawableRes, colorFilter = ColorFilter.tint(color = statusColor))
+            //AttachAppointmentStatus(statusText, statusColor)
                  Row(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -145,7 +143,7 @@ fun AttachPendingAppointmentHeader(statusText: String, statusDrawableRes: String
                                     onDeleteAppointment(appointment)
                                 }
                             }) {
-                            MultiLineTextWidget(text = title, fontSize = 16)
+                            SubtitleTextWidget(text = title, fontSize = 16)
                         }
                     }
                 }

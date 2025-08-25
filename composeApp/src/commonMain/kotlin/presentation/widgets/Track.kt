@@ -237,7 +237,7 @@ fun TrackOrderStepView(viewHeightMultiplier: Int = 0, currentStep: Int, currentO
 
 @Composable
 fun Step(modifier: Modifier = Modifier, isCompete: Boolean, isCurrentStep: Boolean, isLastStep: Boolean = false, itemTitle: String = "") {
-    val color = if (isCompete) Colors.primaryColor else Color.LightGray
+    val color = if (isCompete) theme.Colors.greenColor else Colors.lightGray
     val imageRes: String = if (isCompete) "drawable/check.png" else "drawable/close.png"
 
     Column(verticalArrangement = Arrangement.Top,
@@ -251,7 +251,7 @@ fun Step(modifier: Modifier = Modifier, isCompete: Boolean, isCurrentStep: Boole
             //Line
 
             Box(
-                modifier = Modifier.size(32.dp).background(color = color, shape = CircleShape),
+                modifier = Modifier.size(28.dp).background(color = color, shape = CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 ImageComponent(
@@ -270,9 +270,8 @@ fun Step(modifier: Modifier = Modifier, isCompete: Boolean, isCurrentStep: Boole
         TextComponent(
             text = itemTitle,
             fontSize = 16,
-            fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color.DarkGray,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+            textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Bold,
             textModifier = Modifier.padding(bottom = 5.dp, top = 5.dp).fillMaxWidth().fillMaxHeight()

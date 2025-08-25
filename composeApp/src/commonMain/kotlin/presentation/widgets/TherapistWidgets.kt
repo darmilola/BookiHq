@@ -100,11 +100,10 @@ fun TherapistName(profileInfo: User){
                 text = profileInfo.firstname+" "+ profileInfo.lastname?.first().toString()
                     .uppercase() +".",
                 fontSize = 16,
-                fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.SemiBold
             )
         }
     }

@@ -411,10 +411,10 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                                 homeTab!!.setDatabaseBuilder(databaseBuilder)
                                 TabNavigationItem(
                                     homeTab!!,
-                                    selectedImage = "drawable/house_icon_filled.png",
-                                    unselectedImage = "drawable/house_icon_outline.png",
+                                    selectedImage = "drawable/icon_home.png",
+                                    unselectedImage = "drawable/icon_home.png",
                                     labelText = "Home",
-                                    imageSize = 20,
+                                    imageSize = 26,
                                     currentTabId = 0,
                                     tabNavigator = it2,
                                     mainViewModel = mainViewModel!!
@@ -426,8 +426,8 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                                 shopProductTab!!.setDatabaseBuilder(databaseBuilder)
                                 TabNavigationItem(
                                     shopProductTab!!,
-                                    selectedImage = "drawable/shopping_basket.png",
-                                    unselectedImage = "drawable/shopping_basket_outline.png",
+                                    selectedImage = "drawable/icon_product.png",
+                                    unselectedImage = "drawable/icon_product.png",
                                     labelText = "Product",
                                     imageSize = 20,
                                     currentTabId = 1,
@@ -454,8 +454,8 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                                 appointmentsTab!!.setMainViewModel(mainViewModel!!)
                                 TabNavigationItem(
                                     appointmentsTab!!,
-                                    selectedImage = "drawable/appointment_icon.png",
-                                    unselectedImage = "drawable/appointment_outline.png",
+                                    selectedImage = "drawable/icon_booking.png",
+                                    unselectedImage = "drawable/icon_booking.png",
                                     labelText = "Bookings",
                                     imageSize = 22,
                                     currentTabId = 3,
@@ -469,10 +469,10 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                                 accountTab!!.setDatabaseBuilder(databaseBuilder)
                                 TabNavigationItem(
                                     accountTab!!,
-                                    selectedImage = "drawable/more_circle_filled_icon.png",
-                                    unselectedImage = "drawable/more_icon_outlined.png",
+                                    selectedImage = "drawable/icon_profile.png",
+                                    unselectedImage = "drawable/icon_profile.png",
                                     labelText = "Profile",
-                                    imageSize = 22,
+                                    imageSize = 24,
                                     currentTabId = 4,
                                     tabNavigator = it2,
                                     mainViewModel = mainViewModel!!
@@ -571,11 +571,11 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                 ) {
                     TextComponent(
                         text = labelText,
-                        fontSize = 15,
+                        fontSize = 13,
                         textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                         textColor = imageTint,
                         textAlign = TextAlign.Left,
-                        fontWeight = FontWeight.Normal,
+                        fontWeight = FontWeight.Bold,
                         lineHeight = 20,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,

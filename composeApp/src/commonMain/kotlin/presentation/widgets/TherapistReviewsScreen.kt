@@ -40,10 +40,14 @@ fun TherapistReviewScreen(appointmentReviews: List<AppointmentReview>) {
 
     val boxBgModifier =
         Modifier
-            .padding(bottom = 10.dp, top = 10.dp, start = 15.dp, end = 15.dp)
+            .padding(bottom = 10.dp, top = 10.dp, start = 10.dp, end = 10.dp)
             .wrapContentHeight()
+            .background(color = Color.White)
             .fillMaxWidth()
-            .border(border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(7.dp))
+            .border(
+                border = BorderStroke(1.dp, theme.Colors.lightGrayColor),
+                shape = RoundedCornerShape(7.dp)
+            )
 
 
     Box(modifier = boxBgModifier) {
