@@ -538,7 +538,7 @@ class ShopProductTab : Tab, KoinComponent, Parcelable {
                                         fontSize = 16,
                                         shape = CircleShape,
                                         textColor = theme.Colors.primaryColor,
-                                        style = TextStyle()
+                                        style = androidx.compose.material3.MaterialTheme.typography.titleMedium
                                     ) {
 
                                         if (searchQuery.isEmpty()) {

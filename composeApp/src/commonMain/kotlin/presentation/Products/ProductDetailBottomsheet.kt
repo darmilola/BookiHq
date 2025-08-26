@@ -74,7 +74,7 @@ fun ProductDetailContent(mainViewModel: MainViewModel, isViewOnly: Boolean = fal
         content = {
             ProductBottomSheetContent(selectedProduct.itemProduct!!, mainViewModel)
         },
-        backgroundColor = Color.White,
+        backgroundColor = theme.Colors.dashboardBackground,
         bottomBar = {
             BottomNavigation(modifier = Modifier
                 .padding(top = 10.dp, bottom = 30.dp)

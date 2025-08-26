@@ -47,6 +47,7 @@ fun AttachProductReviews(product: Product){
             .padding(bottom = 10.dp, top = 10.dp, start = 15.dp, end = 15.dp)
             .fillMaxHeight()
             .fillMaxWidth()
+            .background(color = Color.White)
             .border(border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(7.dp))
 
 

@@ -52,7 +52,7 @@ fun BookingCalendar(vendorAvailableDays: ArrayList<String>,onDateSelected: (Loca
     val listState = rememberLazyListState()
 
 
-    Column(modifier = Modifier.fillMaxSize().padding(start = 10.dp, end = 10.dp, top = 20.dp)) {
+    Column(modifier = Modifier.fillMaxSize().padding(start = 5.dp, end = 5.dp, top = 20.dp)) {
         var selectedUIModel by remember { mutableStateOf(calendarUiModel) }
         var initialVisibleDates by remember { mutableStateOf(5) }
 
@@ -87,7 +87,7 @@ fun BookingCalendar(vendorAvailableDays: ArrayList<String>,onDateSelected: (Loca
 @Composable
 fun CalenderContent(vendorAvailableDays: ArrayList<String>,calendarUiModel: CalendarUiModel, onDateClickListener: (PlatformDate) -> Unit,onUnAvailableDateClickListener: (PlatformDate) -> Unit, listState: LazyListState) {
 
-    LazyRow(modifier = Modifier.padding( top = 10.dp).fillMaxWidth(), state = listState) {
+    LazyRow(modifier = Modifier.padding(top = 10.dp).fillMaxWidth(), state = listState) {
         items(items = calendarUiModel.visiblePlatformDates) { date ->
             ContentItem(vendorAvailableDays, date, onDateClickListener, onUnAvailableDateClickListener)
         }
@@ -99,8 +99,6 @@ fun CalenderContent(vendorAvailableDays: ArrayList<String>,calendarUiModel: Cale
 @Composable
 fun ContentItem(vendorAvailableDays: ArrayList<String>, platformDate: PlatformDate, onDateClickListener: (PlatformDate) -> Unit,
                 onUnAvailableDateClickListener: (PlatformDate) -> Unit) {
-    println(vendorAvailableDays)
-    println(platformDate.date.dayOfWeek)
     var isAvailable = false
     vendorAvailableDays.map {
         if (it.toUpperCase(Locale.current) == platformDate.date.dayOfWeek.name){
@@ -151,21 +149,19 @@ fun ContentItem(vendorAvailableDays: ArrayList<String>, platformDate: PlatformDa
                 text = platformDate.date.dayOfMonth.toString(),
                 textModifier = Modifier.align(Alignment.CenterHorizontally),
                 fontSize = 23,
-                fontFamily = GGSansSemiBold,
                 fontWeight = FontWeight.Black,
                 textColor = textColor,
                 textAlign = TextAlign.Center,
-                textStyle = MaterialTheme.typography.h6
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge
             )
             TextComponent(
                 text = platformDate.date.dayOfWeek.toString().substring(0,3),
                 textModifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 10.dp),
                 fontSize = 13,
-                fontFamily = GGSansSemiBold,
-                fontWeight = FontWeight.Light,
+                fontWeight = FontWeight.Medium,
                 textColor = textColor,
                 textAlign = TextAlign.Center,
-                textStyle = MaterialTheme.typography.h4)
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium)
         }
     }
 }
@@ -203,11 +199,10 @@ fun CalenderHeader(calendarUiModel: CalendarUiModel, onPrevClickListener: (Local
                 textModifier = Modifier
                     .align(Alignment.CenterVertically),
                 fontSize = 16,
-                fontFamily = GGSansSemiBold,
                 fontWeight = FontWeight.Bold,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Center,
-                textStyle = MaterialTheme.typography.h6
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium
             )
         }
 

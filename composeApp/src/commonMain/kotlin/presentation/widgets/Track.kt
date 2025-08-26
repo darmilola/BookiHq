@@ -270,11 +270,11 @@ fun Step(modifier: Modifier = Modifier, isCompete: Boolean, isCurrentStep: Boole
         TextComponent(
             text = itemTitle,
             fontSize = 15,
-            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Bold,
-            textModifier = Modifier.padding(bottom = 5.dp, top = 5.dp).fillMaxWidth().fillMaxHeight()
+            textModifier = Modifier.fillMaxWidth().fillMaxHeight()
                 .alpha(if (isCurrentStep) 1F else 0F)
         )
     }

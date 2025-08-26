@@ -17,6 +17,7 @@ import domain.Models.OrderItem
 import kotlinx.coroutines.launch
 import presentation.Products.ProductDetailContent
 import presentation.viewmodels.MainViewModel
+import theme.styles.Colors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,7 +50,7 @@ fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewOnly: Boolean =
             },
             sheetState = scaffoldState.bottomSheetState,
             shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
-            containerColor = Color(0xFFF3F3F3),
+            containerColor = theme.Colors.dashboardBackground,
             dragHandle = {},
         ) {
             ProductDetailContent(mainViewModel, isViewOnly, selectedProduct, onAddToCart = {

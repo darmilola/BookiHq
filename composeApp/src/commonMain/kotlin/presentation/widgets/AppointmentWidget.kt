@@ -124,6 +124,7 @@ fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPrese
             .padding(bottom = 5.dp, top = 5.dp, start = 10.dp, end = 10.dp)
             .fillMaxHeight()
             .fillMaxWidth()
+            .background(color = Color.White)
             .border(border = BorderStroke(1.4.dp, Colors.lightGray), shape = RoundedCornerShape(10.dp))
 
     Box(modifier = boxBgModifier) {
@@ -214,7 +215,7 @@ fun RecentAppointmentWidget(userAppointment: UserAppointment? = null) {
         BookingStatus.DONE.toPath() -> {
             serviceIconRes = "drawable/appointment_done.png"
             serviceStatusText = BookingStatus.DONE.toName()
-            serviceStatusColor = Colors.greenColor
+            serviceStatusColor = theme.Colors.greenColor
         }
     }
 
@@ -310,16 +311,14 @@ fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 5.dp, top = 15.dp)
+        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 5.dp, top = 5.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth(0.70f).height(60.dp)
+            modifier = Modifier.fillMaxWidth(0.70f).height(45.dp)
         ) {
-            Box(modifier = Modifier.fillMaxWidth(0.08f).fillMaxHeight(), contentAlignment = Alignment.Center) {
-                Box(modifier = Modifier.size(6.dp).clip(CircleShape).background(color = statusColor)){}
-            }
+
             TextComponent(
                 text = userAppointment.resources?.services?.serviceInfo?.title.toString(),
                 fontSize = 16,

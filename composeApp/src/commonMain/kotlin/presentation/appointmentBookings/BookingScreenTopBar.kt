@@ -37,7 +37,7 @@ fun BookingScreenTopBar(pagerState: PagerState, onBackPressed: (Int) -> Unit) {
     val stepList = arrayListOf<String>()
     stepList.add("Service")
     stepList.add("Therapist")
-    stepList.add("Overview")
+    stepList.add("Payment")
 
     val colModifier = Modifier
         .fillMaxWidth()

@@ -114,8 +114,7 @@ fun NewDateContent(mainViewModel: MainViewModel, onDateSelected: (LocalDate) -> 
         TextComponent(
             text = "New Date",
             fontSize = 18,
-            fontFamily = GGSansSemiBold,
-            textStyle = TextStyle(),
+            textStyle = MaterialTheme.typography.titleLarge,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Black,

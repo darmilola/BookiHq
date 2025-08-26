@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,6 +51,7 @@ import presentation.DomainViewHandler.AuthenticationScreenHandler
 import presentation.Screens.welcomeScreen.LandingScreen
 import presentation.Screens.welcomeScreen.OnBoardingScreen
 import presentation.authentication.AuthenticationPresenter
+import presentation.components.IndeterminateCircularProgressBar
 import presentation.connectVendor.ConnectVendor
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.SplashScreenWidget
@@ -139,6 +141,13 @@ fun SplashScreenCompose(platformNavigator: PlatformNavigator, authenticationPres
         Box(modifier = modifier, contentAlignment = Alignment.TopCenter) {
             SplashScreenBackground()
             SplashScreenWidget()
+            Box(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                    .padding(bottom = 50.dp),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                IndeterminateCircularProgressBar()
+            }
         }
         LaunchedEffect(key1 = true) {
             delay(3000L)
