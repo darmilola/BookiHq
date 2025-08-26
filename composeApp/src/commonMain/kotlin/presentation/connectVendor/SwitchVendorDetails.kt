@@ -41,6 +41,7 @@ import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
@@ -95,7 +96,7 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         if (performedActionUIStateViewModel == null) {
-            performedActionUIStateViewModel= kmpViewModel(
+            performedActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
@@ -103,13 +104,15 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
         }
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
-        if (onBackPressed.value){
+        if (onBackPressed.value) {
             mainViewModel!!.setOnBackPressed(false)
             navigator.pop()
         }
 
-        val handler = SwitchVendorHandler(profilePresenter,
-            performedActionUIStateViewModel!!)
+        val handler = SwitchVendorHandler(
+            profilePresenter,
+            performedActionUIStateViewModel!!
+        )
         handler.init()
 
         val switchVendorId = mainViewModel!!.switchVendorId.value
@@ -117,7 +120,8 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
         val switchVendorReason = mainViewModel!!.switchVendorReason.value
         val switchVendorValue = mainViewModel!!.switchVendor.value
         val userInfo = mainViewModel!!.currentUserInfo.value
-        val switchVendorUiState = performedActionUIStateViewModel!!.switchVendorUiState.collectAsState()
+        val switchVendorUiState =
+            performedActionUIStateViewModel!!.switchVendorUiState.collectAsState()
         performedActionUIStateViewModel!!.switchVendorActionUIState(AppUIStates(isDefault = true))
 
         var showSwitchReasonBottomSheet by remember { mutableStateOf(false) }
@@ -127,54 +131,72 @@ class SwitchVendorDetails(val platformNavigator: PlatformNavigator) : Parcelable
                 showSwitchReasonBottomSheet = false
             }, onConfirmation = {
                 mainViewModel!!.setSwitchVendorReason(it)
-                profilePresenter.switchVendor(userId = userInfo.userId!!,
-                    vendorId = switchVendorId, action = CustomerMovementEnum.Exit.toPath(),
-                    exitReason = switchVendorReason, vendor = mainViewModel!!.connectedVendor.value, platformNavigator = platformNavigator, exitVendorId = connectedVendorId!!)
+                profilePresenter.switchVendor(
+                    userId = userInfo.userId!!,
+                    vendorId = switchVendorId,
+                    action = CustomerMovementEnum.Exit.toPath(),
+                    exitReason = switchVendorReason,
+                    vendor = mainViewModel!!.connectedVendor.value,
+                    platformNavigator = platformNavigator,
+                    exitVendorId = connectedVendorId!!
+                )
             })
         }
 
 
-        Scaffold(
-            topBar = {
-                VendorDetailsTitle(onBackPressed = {
-                    navigator.pop()
-                })
-            },
-            content = {
-                if (switchVendorUiState.value.isLoading) {
-                    LoadingDialog("Connecting New Vendor")
-                } else if (switchVendorUiState.value.isSuccess) {
-                    mainViewModel!!.setUnsavedOrderSize(0)
-                    mainViewModel!!.setCurrentUnsavedOrders(arrayListOf())
-                    bookingPresenter.deleteAllPendingAppointment(userId = userInfo.userId!!, bookingStatus = BookingStatus.BOOKING.toPath())
-                    performedActionUIStateViewModel!!.switchVendorActionUIState(AppUIStates(isDefault = true))
-                    mainViewModel!!.setIsSwitchVendor(true)
-                    val splashScreen = SplashScreen(platformNavigator = platformNavigator)
-                    splashScreen.setDatabaseBuilder(databaseBuilder)
-                    splashScreen.setMainViewModel(mainViewModel)
-                    navigator.replaceAll(splashScreen)
+        AppTheme {
+            Scaffold(
+                topBar = {
+                    VendorDetailsTitle(onBackPressed = {
+                        navigator.pop()
+                    })
+                },
+                content = {
+                    if (switchVendorUiState.value.isLoading) {
+                        LoadingDialog("Connecting New Vendor")
+                    } else if (switchVendorUiState.value.isSuccess) {
+                        mainViewModel!!.setUnsavedOrderSize(0)
+                        mainViewModel!!.setCurrentUnsavedOrders(arrayListOf())
+                        bookingPresenter.deleteAllPendingAppointment(
+                            userId = userInfo.userId!!,
+                            bookingStatus = BookingStatus.BOOKING.toPath()
+                        )
+                        performedActionUIStateViewModel!!.switchVendorActionUIState(
+                            AppUIStates(
+                                isDefault = true
+                            )
+                        )
+                        mainViewModel!!.setIsSwitchVendor(true)
+                        val splashScreen = SplashScreen(platformNavigator = platformNavigator)
+                        splashScreen.setDatabaseBuilder(databaseBuilder)
+                        splashScreen.setMainViewModel(mainViewModel)
+                        navigator.replaceAll(splashScreen)
 
-                } else if (switchVendorUiState.value.isFailed) {
-                    ErrorDialog(dialogTitle = "Error Occurred Please Try Again", actionTitle = "Close") {
+                    } else if (switchVendorUiState.value.isFailed) {
+                        ErrorDialog(
+                            dialogTitle = "Error Occurred Please Try Again",
+                            actionTitle = "Close"
+                        ) {
 
+                        }
                     }
-                }
-                BusinessInfoContent(switchVendorValue)
-            },
-            floatingActionButton = {
-                FloatingActionButton(
-                    modifier = Modifier.wrapContentSize(),
-                    contentColor = Colors.darkPrimary,
-                    containerColor = Colors.darkPrimary,
-                    shape = RoundedCornerShape(15.dp),
-                    onClick = {
-                        showSwitchReasonBottomSheet = true
-                    }) {
-                    floatingButton()
-                }
-            },
-            backgroundColor = Color.White
-        )
+                    BusinessInfoContent(switchVendorValue)
+                },
+                floatingActionButton = {
+                    FloatingActionButton(
+                        modifier = Modifier.wrapContentSize(),
+                        contentColor = Colors.darkPrimary,
+                        containerColor = Colors.darkPrimary,
+                        shape = RoundedCornerShape(15.dp),
+                        onClick = {
+                            showSwitchReasonBottomSheet = true
+                        }) {
+                        floatingButton()
+                    }
+                },
+                backgroundColor = Colors.dashboardBackground
+            )
+        }
     }
 
     @Composable

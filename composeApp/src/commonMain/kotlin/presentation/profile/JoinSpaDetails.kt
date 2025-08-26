@@ -132,6 +132,7 @@ class JoinSpaDetails(val platformNavigator: PlatformNavigator) : ParcelableScree
                     mainViewModel!!.setOnBackPressed(true)
                 })
             },
+            backgroundColor = Colors.dashboardBackground,
             content = {
                 val joinVendor = mainViewModel!!.joinSpaVendor.value
                 if (joinSpaUiState.value.isLoading) {
@@ -143,7 +144,7 @@ class JoinSpaDetails(val platformNavigator: PlatformNavigator) : ParcelableScree
                     navigator.replaceAll(splashScreen)
 
                 } else if (joinSpaUiState.value.isFailed) {
-                    ErrorDialog(dialogTitle = "Error Occurred Please Try Again ", actionTitle = "Retry"){}
+                    ErrorDialog(dialogTitle = joinSpaUiState.value.errorMessage, actionTitle = "Retry"){}
                 }
 
                 BusinessInfoContent(joinVendor)
@@ -160,8 +161,7 @@ class JoinSpaDetails(val platformNavigator: PlatformNavigator) : ParcelableScree
                     }) {
                     floatingButton()
                 }
-            },
-            backgroundColor = Color.Transparent
+            }
         )
     }
 

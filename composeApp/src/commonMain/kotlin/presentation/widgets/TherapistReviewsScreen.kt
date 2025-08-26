@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -55,7 +56,7 @@ fun TherapistReviewScreen(appointmentReviews: List<AppointmentReview>) {
         Box(contentAlignment = Alignment.BottomCenter, modifier = boxModifier) {
             HorizontalPager(
                 state = pagerState,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.wrapContentSize()
             ) { page ->
                 AppointmentReviewsWidget(appointmentReviews[page])
             }

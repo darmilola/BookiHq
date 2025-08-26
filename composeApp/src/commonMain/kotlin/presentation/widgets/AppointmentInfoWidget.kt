@@ -141,7 +141,7 @@ fun TherapistAppointmentInfoWidget(appointment: Appointment) {
     val appointmentTime = platformTime.time +" "+isAm
 
     val columnModifier = Modifier
-        .padding(start = 15.dp, end = 10.dp)
+        .padding(start = 10.dp, end = 10.dp)
         .fillMaxWidth()
     Column(
         verticalArrangement = Arrangement.Top,
@@ -151,8 +151,7 @@ fun TherapistAppointmentInfoWidget(appointment: Appointment) {
         TextComponent(
             text = appointment.serviceTypeItem?.title.toString(),
             fontSize = 16,
-            fontFamily = GGSansSemiBold,
-            textStyle = MaterialTheme.typography.h6,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Start,
             fontWeight = FontWeight.Bold,
@@ -184,9 +183,8 @@ fun TherapistAppointmentInfoWidget(appointment: Appointment) {
                             textModifier = Modifier.wrapContentSize()
                                 .padding(start = 5.dp),
                             fontSize = 15,
-                            fontFamily = GGSansRegular,
-                            textStyle = MaterialTheme.typography.h6,
-                            textColor = Colors.serviceLightGray,
+                            textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+                            textColor = theme.Colors.grayColor,
                             textAlign = TextAlign.Start,
                             fontWeight = FontWeight.Bold,
                         )
@@ -199,7 +197,7 @@ fun TherapistAppointmentInfoWidget(appointment: Appointment) {
                         ) {
                             Box(
                                 modifier = Modifier.size(6.dp).clip(CircleShape)
-                                    .background(color = Colors.serviceLightGray)
+                                    .background(color = theme.Colors.grayColor)
                             ) {}
                         }
                         Box(
@@ -210,9 +208,8 @@ fun TherapistAppointmentInfoWidget(appointment: Appointment) {
                                 text = "Home Service",
                                 textModifier = Modifier.wrapContentSize(),
                                 fontSize = 14,
-                                fontFamily = GGSansRegular,
                                 textStyle = MaterialTheme.typography.h6,
-                                textColor = Colors.serviceLightGray,
+                                textColor = theme.Colors.greenColor,
                                 textAlign = TextAlign.Start,
                                 fontWeight = FontWeight.Bold,
                             )

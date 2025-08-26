@@ -1,14 +1,17 @@
 package presentation.Orders
 
 import GGSansRegular
+import androidx.compose.foundation.BorderStroke
 import theme.styles.Colors
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -47,23 +50,39 @@ import utils.calculatePlacedOrderTotalPrice
 @Composable
 fun UserOrderComponent(mainViewModel: MainViewModel, customerOrder: CustomerOrder, reviewPerformedActionUIStateViewModel: PerformedActionUIStateViewModel) {
 
-      val itemList = Json.decodeFromString<ArrayList<PlacedOrderItemComponent>>(customerOrder.orderItems?.orderItemJson!!)
-      val totalCost = calculatePlacedOrderTotalPrice(itemList)
-      val navigator = LocalNavigator.currentOrThrow
-      val currencyUnit = mainViewModel.displayCurrencyUnit.value
-      val columnModifier = Modifier
-        .padding(start = 10.dp, top = 35.dp, bottom = 10.dp, end = 10.dp)
-        .background(color = Color.White, shape = RoundedCornerShape(10.dp))
-        .height(250.dp)
-        Column(modifier = columnModifier,
+    val itemList =
+        Json.decodeFromString<ArrayList<PlacedOrderItemComponent>>(customerOrder.orderItems?.orderItemJson!!)
+    val totalCost = calculatePlacedOrderTotalPrice(itemList)
+    val navigator = LocalNavigator.currentOrThrow
+    val currencyUnit = mainViewModel.displayCurrencyUnit.value
+
+    val boxBgModifier =
+        Modifier
+            .padding(bottom = 5.dp, top = 5.dp, start = 10.dp, end = 10.dp)
+            .fillMaxHeight()
+            .fillMaxWidth()
+            .background(color = Color.White)
+            .border(
+                border = BorderStroke(1.4.dp, Colors.lightGray),
+                shape = RoundedCornerShape(10.dp)
+            )
+
+    Box(modifier = boxBgModifier) {
+        val columnModifier = Modifier
+            .padding(start = 10.dp, top = 25.dp, bottom = 10.dp, end = 10.dp)
+            .background(color = Color.White, shape = RoundedCornerShape(10.dp))
+            .height(250.dp)
+        Column(
+            modifier = columnModifier,
             verticalArrangement = Arrangement.Top
         ) {
-            Column(modifier = Modifier.fillMaxWidth(),
+            Column(
+                modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
-                  StraightLine()
+                StraightLine()
 
                 Row(
                     horizontalArrangement = Arrangement.Start,
@@ -71,25 +90,31 @@ fun UserOrderComponent(mainViewModel: MainViewModel, customerOrder: CustomerOrde
                     modifier = Modifier.height(50.dp).fillMaxWidth()
                 ) {
 
-                   TextComponent(
+                    TextComponent(
                         text = getOrderStatusDisplay(customerOrder.orderStatus.toString()),
                         fontSize = 18,
-                        fontFamily = GGSansRegular,
-                        textStyle = TextStyle(),
+                        textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                         textColor = Colors.primaryColor,
                         textAlign = TextAlign.Left,
-                        fontWeight = FontWeight.Black,
-                        textModifier = Modifier.wrapContentHeight().fillMaxWidth(0.50f))
+                        fontWeight = FontWeight.SemiBold,
+                        textModifier = Modifier.wrapContentHeight().fillMaxWidth(0.50f)
+                    )
 
-                    Box(modifier = Modifier.fillMaxWidth().clickable {
-                          mainViewModel.setOrderItemComponents(itemList)
-                          val details = OrderDetails()
-                          details.setMainViewModel(mainViewModel)
-                          details.setActionUiStateViewModel(reviewPerformedActionUIStateViewModel)
-                          navigator.push(details)
-                    },
-                        contentAlignment = Alignment.CenterEnd) {
-                        ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+                    Box(
+                        modifier = Modifier.fillMaxWidth().clickable {
+                            mainViewModel.setOrderItemComponents(itemList)
+                            val details = OrderDetails()
+                            details.setMainViewModel(mainViewModel)
+                            details.setActionUiStateViewModel(reviewPerformedActionUIStateViewModel)
+                            navigator.push(details)
+                        },
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+                        ImageComponent(
+                            imageModifier = Modifier.size(24.dp),
+                            imageRes = "drawable/forward_arrow.png",
+                            colorFilter = ColorFilter.tint(color = Colors.primaryColor)
+                        )
                     }
                 }
                 StraightLine()
@@ -108,26 +133,25 @@ fun UserOrderComponent(mainViewModel: MainViewModel, customerOrder: CustomerOrde
             Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(top = 5.dp, start = 15.dp, end = 15.dp).height(50.dp).fillMaxWidth()
+                modifier = Modifier.padding(top = 5.dp, start = 15.dp, end = 15.dp).height(50.dp)
+                    .fillMaxWidth()
             ) {
                 TextComponent(
                     text = "Total",
                     fontSize = 20,
-                    fontFamily = GGSansRegular,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.DarkGray,
+                    textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+                    textColor = theme.Colors.darkPrimary,
                     textAlign = TextAlign.Left,
-                    fontWeight = FontWeight.Black,
+                    fontWeight = FontWeight.SemiBold,
                     textModifier = Modifier.padding(top = 5.dp).height(30.dp).fillMaxWidth(0.20f)
                 )
                 TextComponent(
                     text = "$currencyUnit${formatNumber(totalCost)}",
                     fontSize = 20,
-                    fontFamily = GGSansRegular,
-                    textStyle = TextStyle(),
-                    textColor = Colors.primaryColor,
+                    textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+                    textColor = theme.Colors.darkPrimary,
                     textAlign = TextAlign.Right,
-                    fontWeight = FontWeight.Black,
+                    fontWeight = FontWeight.SemiBold,
                     textModifier = Modifier.padding(top = 5.dp).height(30.dp).fillMaxWidth()
                 )
 
@@ -135,6 +159,7 @@ fun UserOrderComponent(mainViewModel: MainViewModel, customerOrder: CustomerOrde
             StraightLine()
         }
     }
+}
 
 fun getOrderStatusDisplay(orderStatus: String): String{
    val orderStatusDisplay =  when(orderStatus){
@@ -153,7 +178,7 @@ fun StraightLine() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(2.dp)
+            .height(1.dp)
             .background(color = Color(color = 0x40CCCCCC))
     ) {
     }

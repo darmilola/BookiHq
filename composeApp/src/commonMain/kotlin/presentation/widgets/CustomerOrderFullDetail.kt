@@ -2,7 +2,9 @@ package presentation.widgets
 
 import GGSansRegular
 import GGSansSemiBold
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -49,8 +51,8 @@ fun OrderDetailList(itemList: ArrayList<PlacedOrderItemComponent>,currencyUnit: 
     val columnModifier = Modifier
         .padding(start = 5.dp, top = 5.dp, bottom = 10.dp)
         .verticalScroll(rememberScrollState())
-        .background(color = Color.Transparent, shape = RoundedCornerShape(10.dp))
-        .height(((130 * 3)+500).dp)
+        .background(color = theme.Colors.dashboardBackground, shape = RoundedCornerShape(10.dp))
+        .fillMaxHeight()
 
         Column(modifier = columnModifier,
             verticalArrangement = Arrangement.Top
@@ -73,14 +75,14 @@ fun OrderDetailList(itemList: ArrayList<PlacedOrderItemComponent>,currencyUnit: 
 @Composable
 fun OrderItemDetail(itemList: ArrayList<PlacedOrderItemComponent>,currencyUnit: String, onAddReviewClicked: (Long) -> Unit) {
     val columnModifier = Modifier
-        .background(color = Color.White, shape = RoundedCornerShape(10.dp))
+        .background(color = theme.Colors.dashboardBackground, shape = RoundedCornerShape(10.dp))
         .fillMaxHeight()
     Column(modifier = columnModifier,
         verticalArrangement = Arrangement.Top
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(1),
-            modifier = Modifier.fillMaxWidth().height((150 * 3).dp),
+            modifier = Modifier.fillMaxWidth().height((120 * itemList.size).dp),
             contentPadding = PaddingValues(6.dp)
         ) {
             itemsIndexed(items = itemList) { it, item ->
@@ -97,21 +99,19 @@ fun OrderItemDetail(itemList: ArrayList<PlacedOrderItemComponent>,currencyUnit: 
             TextComponent(
                 text = "Total",
                 fontSize = 20,
-                fontFamily = GGSansRegular,
-                textStyle = TextStyle(),
-                textColor = Color.DarkGray,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+                textColor = theme.Colors.darkPrimary,
                 textAlign = TextAlign.Left,
-                fontWeight = FontWeight.Black,
+                fontWeight = FontWeight.SemiBold,
                 textModifier = Modifier.padding(top = 5.dp).height(30.dp).fillMaxWidth(0.20f)
             )
             TextComponent(
                 text = currencyUnit+formatNumber(calculatePlacedOrderTotalPrice(itemList)),
                 fontSize = 20,
-                fontFamily = GGSansRegular,
-                textStyle = TextStyle(),
-                textColor = Colors.primaryColor,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+                textColor = theme.Colors.darkPrimary,
                 textAlign = TextAlign.Right,
-                fontWeight = FontWeight.Black,
+                fontWeight = FontWeight.SemiBold,
                 textModifier = Modifier.padding(top = 5.dp).height(30.dp).fillMaxWidth()
             )
 
@@ -121,34 +121,58 @@ fun OrderItemDetail(itemList: ArrayList<PlacedOrderItemComponent>,currencyUnit: 
 
 @Composable
 fun OrderProductItemComponent(placedOrderItemComponent: PlacedOrderItemComponent,currencyUnit: String, onAddReviewClicked: (Long) -> Unit) {
-    val columnModifier = Modifier
-        .padding(start = 5.dp, top = 10.dp, bottom = 10.dp)
-        .height(90.dp)
-    Row(modifier = columnModifier,
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.Top
-    ) {
-        Box(modifier = Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.Center){
-            OrderProductItemImage(placedOrderItemComponent)
-        }
-        Box(modifier = Modifier.weight(3f).fillMaxHeight(), contentAlignment = Alignment.Center){
-            OrderProductItemName(placedOrderItemComponent, currencyUnit)
-        }
-        Box(modifier = Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.Center){
-            TextComponent(
-                text = "Add Review",
-                fontSize = 13,
-                fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
-                textColor = Colors.primaryColor,
-                textAlign = TextAlign.Left,
-                fontWeight = FontWeight.Medium,
-                lineHeight = 25,
-                textModifier = Modifier.fillMaxWidth().wrapContentHeight().clickable {
-                    onAddReviewClicked(placedOrderItemComponent.productId)
-                },
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis)
+    val boxBgModifier =
+        Modifier
+            .padding(bottom = 5.dp, top = 5.dp)
+            .fillMaxHeight()
+            .fillMaxWidth()
+            .background(color = Color.White)
+            .border(
+                border = BorderStroke(1.4.dp, Colors.lightGray),
+                shape = RoundedCornerShape(10.dp)
+            )
+
+    Box(modifier = boxBgModifier) {
+
+        val columnModifier = Modifier
+            .padding(start = 5.dp, top = 10.dp, bottom = 10.dp, end = 10.dp)
+            .height(90.dp)
+        Row(
+            modifier = columnModifier,
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.Top
+        ) {
+            Box(
+                modifier = Modifier.weight(1f).fillMaxHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                OrderProductItemImage(placedOrderItemComponent)
+            }
+            Box(
+                modifier = Modifier.weight(3f).fillMaxHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                OrderProductItemName(placedOrderItemComponent, currencyUnit)
+            }
+            Box(
+                modifier = Modifier.weight(1f).fillMaxHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                TextComponent(
+                    text = "Add Review",
+                    fontSize = 13,
+                    textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+                    textColor = theme.Colors.greenColor,
+                    textAlign = TextAlign.Left,
+                    fontWeight = FontWeight.Medium,
+                    lineHeight = 25,
+                    textModifier = Modifier.fillMaxWidth().wrapContentHeight().clickable {
+                        onAddReviewClicked(placedOrderItemComponent.productId)
+                    },
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
     }
 }
@@ -203,10 +227,9 @@ fun OrderProductItemName(placedOrderItemComponent: PlacedOrderItemComponent, cur
 
         TextComponent(
             text = placedOrderItemComponent.productName,
-            fontSize = 18,
-            fontFamily = GGSansSemiBold,
-            textStyle = TextStyle(),
-            textColor = Color.DarkGray,
+            fontSize = 16,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+            textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Medium,
             lineHeight = 25,
@@ -229,9 +252,8 @@ fun OrderProductItemQty(placedOrderItemComponent: PlacedOrderItemComponent, curr
 
         TextComponent(
             text = placedOrderItemComponent.itemCount.toString()+"x",
-            fontSize = 18,
-            fontFamily = GGSansSemiBold,
-            textStyle = TextStyle(),
+            fontSize = 16,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
             textColor = Color.LightGray,
             textAlign = TextAlign.Right,
             fontWeight = FontWeight.Medium,
@@ -242,10 +264,9 @@ fun OrderProductItemQty(placedOrderItemComponent: PlacedOrderItemComponent, curr
 
         TextComponent(
             text = currencyUnit+formatNumber(placedOrderItemComponent.productPrice.toLong()),
-            fontSize = 20,
-            fontFamily = GGSansRegular,
-            textStyle = TextStyle(),
-            textColor = Colors.primaryColor,
+            fontSize = 16,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+            textColor = Colors.darkPrimary,
             textAlign = TextAlign.Right,
             fontWeight = FontWeight.Black,
             lineHeight = 30,

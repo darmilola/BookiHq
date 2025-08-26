@@ -33,6 +33,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import cafe.adriel.voyager.transitions.ScreenTransition
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import dev.icerock.moko.parcelize.Parcelize
 import domain.Enums.Screens
 import domain.Models.OrderItem
@@ -41,6 +42,7 @@ import domain.Models.Product
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import presentation.dialogs.ErrorDialog
 import presentation.dialogs.LoadingDialog
 import presentation.dialogs.SuccessDialog
 import presentation.widgets.OrderDetailList
@@ -49,6 +51,7 @@ import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.widgets.AddProductReviewBottomSheet
 import presentation.widgets.PageBackNavWidget
 import presentation.widgets.ProductDetailBottomSheet
+import theme.Colors
 import utils.ParcelableScreen
 
 @Parcelize @OptIn(ExperimentalVoyagerApi::class)
@@ -77,12 +80,14 @@ class OrderDetails() : ParcelableScreen, ScreenTransition, KoinComponent {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
-        val showAddReviewBottomSheet = mainViewModel!!.showProductReviewsBottomSheet.collectAsState()
-        val addReviewsUIState = reviewPerformedActionUIStateViewModel!!.addProductReviewUiState.collectAsState()
+        val showAddReviewBottomSheet =
+            mainViewModel!!.showProductReviewsBottomSheet.collectAsState()
+        val addReviewsUIState =
+            reviewPerformedActionUIStateViewModel!!.addProductReviewUiState.collectAsState()
         val selectedProductId = remember { mutableStateOf(-1L) }
         val currencyUnit = mainViewModel!!.displayCurrencyUnit.value
 
-        if (onBackPressed.value){
+        if (onBackPressed.value) {
             mainViewModel!!.setOnBackPressed(false)
             navigator.pop()
         }
@@ -95,7 +100,11 @@ class OrderDetails() : ParcelableScreen, ScreenTransition, KoinComponent {
                     mainViewModel!!.showProductReviewsBottomSheet(false)
                 },
                 onReviewsAdded = {
-                    orderPresenter.addProductReviews(userId = mainViewModel!!.currentUserInfo.value.userId!!, productId = selectedProductId.value, reviewText = it)
+                    orderPresenter.addProductReviews(
+                        userId = mainViewModel!!.currentUserInfo.value.userId!!,
+                        productId = selectedProductId.value,
+                        reviewText = it
+                    )
                     mainViewModel!!.showProductReviewsBottomSheet(false)
                 })
         }
@@ -105,15 +114,28 @@ class OrderDetails() : ParcelableScreen, ScreenTransition, KoinComponent {
             Box(modifier = Modifier.fillMaxWidth()) {
                 LoadingDialog("Adding Review")
             }
-        }
-        else if (addReviewsUIState.value.isSuccess) {
+        } else if (addReviewsUIState.value.isSuccess) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 SuccessDialog("Review Added Successfully", "Close", onConfirmation = {
-                    reviewPerformedActionUIStateViewModel!!.switchActionDeleteUIState(AppUIStates(isDefault = true))
+                    reviewPerformedActionUIStateViewModel!!.switchActionDeleteUIState(
+                        AppUIStates(
+                            isDefault = true
+                        )
+                    )
                 })
             }
         }
-
+        else if (addReviewsUIState.value.isFailed) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                ErrorDialog("Error Adding Review", "Close", onConfirmation = {
+                    reviewPerformedActionUIStateViewModel!!.switchActionDeleteUIState(
+                        AppUIStates(
+                            isDefault = true
+                        )
+                    )
+                })
+            }
+        }
 
 
         val rowModifier = Modifier
@@ -121,38 +143,41 @@ class OrderDetails() : ParcelableScreen, ScreenTransition, KoinComponent {
             .height(70.dp)
 
         val colModifier = Modifier
-            .background(color = Color.White)
+            .background(color = Colors.dashboardBackground)
             .fillMaxWidth()
             .fillMaxHeight()
 
-        Column(
-            modifier = colModifier,
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                modifier = rowModifier,
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
+        AppTheme {
+
+            Column(
+                modifier = colModifier,
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Box(
-                    modifier = Modifier.weight(1.0f)
-                        .fillMaxWidth()
-                        .fillMaxHeight(),
-                    contentAlignment = Alignment.CenterStart
+                Row(
+                    modifier = rowModifier,
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    leftTopBarItem(onBackPressed = {
-                        navigator.pop()
-                    })
+                    Box(
+                        modifier = Modifier.weight(1.0f)
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        leftTopBarItem(onBackPressed = {
+                            navigator.pop()
+                        })
+                    }
+
                 }
+                val itemList = mainViewModel!!.orderItemComponents.value
 
+                OrderDetailList(itemList, currencyUnit, onAddReviewClicked = {
+                    selectedProductId.value = it
+                    mainViewModel!!.showProductReviewsBottomSheet(true)
+                })
             }
-            val itemList = mainViewModel!!.orderItemComponents.value
-
-            OrderDetailList(itemList,currencyUnit, onAddReviewClicked = {
-                selectedProductId.value = it
-                mainViewModel!!.showProductReviewsBottomSheet(true)
-            })
         }
     }
 

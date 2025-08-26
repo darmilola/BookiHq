@@ -335,7 +335,7 @@ class HomeTab(val platformNavigator: PlatformNavigator) : Tab, KoinComponent, Pa
                                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                                     fontSize = 20,
                                     textColor = Colors.darkPrimary,
-                                    style = TextStyle(),
+                                    style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                                     iconRes = "drawable/switch.png",
                                     isDestructiveAction = false, onClick = {
                                         mainViewModel!!.setScreenNav(

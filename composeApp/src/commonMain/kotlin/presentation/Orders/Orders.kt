@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,6 +42,7 @@ import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
@@ -65,6 +67,7 @@ import presentation.viewmodels.LoadingScreenUIStateViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.widgets.EmptyContentWidget
 import presentation.widgets.PageBackNavWidget
+import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
 import rememberStackedSnackbarHostState
 import theme.Colors
@@ -180,88 +183,101 @@ class Orders() : ParcelableScreen, KoinComponent, Parcelable, ScreenTransition {
 
 
 
-        Scaffold(
-            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
-            topBar = {
-                UserOrdersScreenTopBar(onBackPressed = {
-                    navigator.pop()
-                })
-            },
-            content = {
-                val handler = OrderHandler(
-                    ordersResourceListEnvelopeViewModel!!,
-                    loadingOrderScreenUiStateViewModel!!,
-                    reviewActionUIStateViewModel!!,
-                    orderPresenter
-                )
-                handler.init()
+        AppTheme {
 
-                if (loadOrderUiState.value.isLoading) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                            .padding(top = 40.dp, start = 50.dp, end = 50.dp)
-                            .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        IndeterminateCircularProgressBar()
-                    }
-                }
-                else if (loadOrderUiState.value.isFailed) {
-                    Box(modifier = Modifier .fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.Center) {
-                        ErrorOccurredWidget(loadOrderUiState.value.errorMessage, onRetryClicked = {
-                            val userId = mainViewModel!!.currentUserInfo.value.userId
-                            orderPresenter.getUserOrders(userId!!)
-                        })
-                    }
-                }
-                else if (loadOrderUiState.value.isEmpty) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        EmptyContentWidget(emptyText = loadOrderUiState.value.emptyMessage)
-                    }
-                }
-                else if (loadOrderUiState.value.isSuccess) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(bottom = 50.dp)
-                            .height(getOrderViewHeight(userOrderItemUIModel.userOrderList.size).dp),
-                        userScrollEnabled = true
-                    ) {
-                        itemsIndexed(items = userOrderItemUIModel.userOrderList) { it, item ->
-                            UserOrderComponent(mainViewModel!!, item.customerOrder!!, reviewActionUIStateViewModel!!)
-                            if (it == lastIndex && loadMoreState.value) {
-                                Box(
-                                    modifier = Modifier.fillMaxWidth().height(60.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    IndeterminateCircularProgressBar()
-                                }
-                            } else if (it == lastIndex && (displayedOrdersCount.value < totalOrdersCount?.value!!)) {
-                                val buttonStyle = Modifier
-                                    .height(60.dp)
-                                    .fillMaxWidth()
-                                    .padding(top = 10.dp, start = 10.dp, end = 10.dp)
+            Scaffold(
+                snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
+                topBar = {
+                    UserOrdersScreenTopBar(onBackPressed = {
+                        navigator.pop()
+                    })
+                },
+                backgroundColor = Colors.dashboardBackground,
+                content = {
+                    val handler = OrderHandler(
+                        ordersResourceListEnvelopeViewModel!!,
+                        loadingOrderScreenUiStateViewModel!!,
+                        reviewActionUIStateViewModel!!,
+                        orderPresenter
+                    )
+                    handler.init()
 
-                                ButtonComponent(
-                                    modifier = buttonStyle,
-                                    buttonText = "Show More",
-                                    borderStroke = BorderStroke(1.dp, Colors.primaryColor),
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-                                    fontSize = 16,
-                                    shape = CircleShape,
-                                    textColor = Colors.primaryColor,
-                                    style = TextStyle()
-                                ) {
-                                    if (ordersResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
-                                        if (userId != -1L) {
-                                            orderPresenter.getMoreUserOrders(userId!!, nextPage = ordersResourceListEnvelopeViewModel!!.currentPage.value + 1)
+                    if (loadOrderUiState.value.isLoading) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            IndeterminateCircularProgressBar()
+                        }
+                    } else if (loadOrderUiState.value.isFailed) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            ErrorOccurredWidget(
+                                loadOrderUiState.value.errorMessage,
+                                onRetryClicked = {
+                                    orderPresenter.getUserOrders(mainViewModel!!.currentUserInfo.value.userId!!)
+                                })
+                        }
+                    } else if (loadOrderUiState.value.isEmpty) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            EmptyContentWidget(emptyText = loadOrderUiState.value.emptyMessage)
+                        }
+                    } else if (loadOrderUiState.value.isSuccess) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(bottom = 10.dp)
+                                .height(getOrderViewHeight(userOrderItemUIModel.userOrderList.size).dp),
+                            userScrollEnabled = true
+                        ) {
+                            itemsIndexed(items = userOrderItemUIModel.userOrderList) { it, item ->
+                                UserOrderComponent(
+                                    mainViewModel!!,
+                                    item.customerOrder!!,
+                                    reviewActionUIStateViewModel!!
+                                )
+                                if (it == lastIndex && loadMoreState.value) {
+                                    Box(
+                                        modifier = Modifier.fillMaxWidth().height(60.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        IndeterminateCircularProgressBar()
+                                    }
+                                } else if (it == lastIndex && (displayedOrdersCount.value < totalOrdersCount?.value!!)) {
+                                    val buttonStyle = Modifier
+                                        .height(60.dp)
+                                        .fillMaxWidth()
+                                        .padding(top = 10.dp, start = 10.dp, end = 10.dp)
+
+                                    ButtonComponent(
+                                        modifier = buttonStyle,
+                                        buttonText = "Show More",
+                                        borderStroke = BorderStroke(1.dp, Colors.primaryColor),
+                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                                        fontSize = 16,
+                                        shape = CircleShape,
+                                        textColor = Colors.primaryColor,
+                                        style = androidx.compose.material3.MaterialTheme.typography.titleMedium
+                                    ) {
+                                        if (ordersResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
+                                            if (userId != -1L) {
+                                                orderPresenter.getMoreUserOrders(
+                                                    userId!!,
+                                                    nextPage = ordersResourceListEnvelopeViewModel!!.currentPage.value + 1
+                                                )
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                }
-            })
+                })
+        }
          }
 
 
@@ -303,7 +319,7 @@ class Orders() : ParcelableScreen, KoinComponent, Parcelable, ScreenTransition {
     }
     @Composable
     fun OrderTitle(){
-        TitleWidget(textColor = theme.styles.Colors.primaryColor, title = "Orders")
+        SubtitleTextWidget(textColor = theme.styles.Colors.primaryColor, text = "Orders")
     }
 
     @Composable

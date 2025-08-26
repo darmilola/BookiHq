@@ -42,7 +42,7 @@ import theme.styles.Colors
 fun CustomerInfoWidget(appointment: Appointment) {
     val customerInfo = appointment.customerInfo
     val columnModifier = Modifier
-        .padding(start = 15.dp, end = 10.dp)
+        .padding(start = 10.dp, end = 10.dp)
         .fillMaxWidth()
          Column(
                 modifier = columnModifier,
@@ -69,9 +69,8 @@ fun CustomerInfoWidget(appointment: Appointment) {
                  TextComponent(
                      text = customerInfo!!.firstname + " " + customerInfo.lastname,
                      fontSize = 15,
-                     fontFamily = GGSansRegular,
-                     textStyle = MaterialTheme.typography.h6,
-                     textColor = Color.Gray,
+                     textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+                     textColor = theme.Colors.grayColor,
                      textAlign = TextAlign.Left,
                      fontWeight = FontWeight.Bold,
                      maxLines = 2,
@@ -97,16 +96,15 @@ fun CustomerInfoWidget(appointment: Appointment) {
                              text = customerInfo.gender,
                              textModifier = Modifier.wrapContentSize(),
                              fontSize = 14,
-                             fontFamily = GGSansRegular,
-                             textStyle = MaterialTheme.typography.h6,
-                             textColor = Colors.serviceLightGray,
+                             textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+                             textColor = theme.Colors.grayColor,
                              textAlign = TextAlign.Start,
                              fontWeight = FontWeight.Bold,
                          )
                      }
              }
 
-             if (customerInfo!!.contactPhone != null) {
+             if (customerInfo!!.contactPhone.isNotEmpty()) {
 
                  Row(
                      horizontalArrangement = Arrangement.Start,
@@ -120,16 +118,15 @@ fun CustomerInfoWidget(appointment: Appointment) {
                          ImageComponent(
                              imageModifier = Modifier.size(25.dp),
                              imageRes = "drawable/phone_icon.png",
-                             ColorFilter.tint(color = Color.Gray)
+                             ColorFilter.tint(color = theme.Colors.grayColor)
                          )
                      }
 
                      TextComponent(
-                         text = customerInfo.contactPhone.toString(),
+                         text = customerInfo.contactPhone,
                          fontSize = 15,
-                         fontFamily = GGSansRegular,
-                         textStyle = MaterialTheme.typography.h6,
-                         textColor = Color.Gray,
+                         textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+                         textColor = theme.Colors.grayColor,
                          textAlign = TextAlign.Left,
                          fontWeight = FontWeight.Bold,
                          maxLines = 2,
@@ -161,9 +158,8 @@ fun CustomerInfoWidget(appointment: Appointment) {
                      TextComponent(
                          text = customerInfo.address.toString(),
                          fontSize = 15,
-                         fontFamily = GGSansRegular,
-                         textStyle = MaterialTheme.typography.h6,
-                         textColor = Color.Gray,
+                         textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+                         textColor = theme.Colors.grayColor,
                          textAlign = TextAlign.Left,
                          fontWeight = FontWeight.Bold,
                          maxLines = 2,

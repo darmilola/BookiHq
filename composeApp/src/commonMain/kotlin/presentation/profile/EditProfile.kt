@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -31,7 +32,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.room.RoomDatabase
@@ -43,6 +46,7 @@ import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
@@ -75,7 +79,9 @@ import presentation.widgets.DropDownWidget
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import presentation.widgets.StateDropDownWidget
+import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
+import presentations.components.TextComponent
 import presentations.widgets.InputWidget
 import rememberStackedSnackbarHostState
 import utils.InputValidator
@@ -185,17 +191,8 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
         val rootModifier =
             Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.95f)
                 .verticalScroll(rememberScrollState())
-                .background(color = Color.White)
-
-
-        val topLayoutModifier =
-            Modifier
-                .padding(top = 20.dp, start = 5.dp, end = 5.dp)
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .background(color = Color.White)
+                .background(color = theme.Colors.dashboardBackground)
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 1,
@@ -236,14 +233,14 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
         }
 
 
+        AppTheme {
 
         Scaffold(
             snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState)  }
         ) {
 
             Column(modifier = rootModifier) {
-                Column(modifier = topLayoutModifier) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
+                    Row(modifier = Modifier.fillMaxWidth().height(45.dp)) {
                         Box(modifier =  Modifier.weight(1.0f)
                             .fillMaxWidth()
                             .fillMaxHeight(),
@@ -267,7 +264,7 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
                             rightTopBarItem()
                         }
                     }
-                 }
+
                     AccountProfileImage(
                         profileImageUrl = profileImageUrl.value!!,
                         isAsync = true,
@@ -276,11 +273,7 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
                                 profileImageUrl.value = it
                             }
                         })
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        Box(
-                            modifier = Modifier.weight(1f),
-                            contentAlignment = Alignment.Center
-                        ) {
+
                             InputWidget(
                                 iconRes = "drawable/card_icon.png",
                                 placeholderText = "Firstname",
@@ -295,8 +288,7 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
                             ) {
                                 firstname.value = it
                             }
-                        }
-                        Box(modifier = Modifier.weight(1f).padding(start = 10.dp), contentAlignment = Alignment.Center) {
+
                             InputWidget(
                                 iconRes = "drawable/card_icon.png",
                                 placeholderText = "Lastname",
@@ -311,14 +303,34 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
                             ) {
                                 lastname.value = it
                             }
-                        }
-                    }
+                Column(
+                    modifier = Modifier
+                        .padding(top = 10.dp, bottom = 10.dp)
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start
+                ) {
 
-                AttachStateDropDownWidget(selectedState = state.value!!, statesViewModel = statesViewModel!!, onMenuItemClick = {
-                    state.value = it
-                }, onMenuExpanded = {
-                    profilePresenter.getCountryStates(countryId = getCountryId(userCountry.value))
-                })
+                    TextComponent(
+                        text = "Select State",
+                        fontSize = 17,
+                        textStyle = MaterialTheme.typography.titleMedium,
+                        textColor = Colors.darkPrimary,
+                        textAlign = TextAlign.Left,
+                        fontWeight = FontWeight.SemiBold,
+                        lineHeight = 30,
+                        textModifier = Modifier.padding(end = 10.dp, start = 10.dp)
+                    )
+
+                    AttachStateDropDownWidget(selectedState = state.value!!, statesViewModel = statesViewModel!!, onMenuItemClick = {
+                        state.value = it
+                    }, onMenuExpanded = {
+                        profilePresenter.getCountryStates(countryId = getCountryId(userCountry.value))
+                    })
+                }
+
+
 
                    Box(
                         modifier = Modifier.fillMaxWidth(),
@@ -360,30 +372,41 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
                         }
                     }
 
-                    Column(
-                        modifier = Modifier
-                            .padding(top = 10.dp)
-                            .fillMaxWidth()
-                            .wrapContentHeight(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.Start
-                    ) {
+                Column(
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start
+                ) {
 
-                        ToggleButton(
-                            shape = RoundedCornerShape(10.dp),
-                            isRightSelection = userGender == Gender.FEMALE.toPath(),
-                            onLeftClicked = {
-                                gender.value = Gender.MALE.toPath()
-                            },
-                            onRightClicked = {
-                                gender.value = Gender.FEMALE.toPath()
-                            },
-                            leftText = Gender.MALE.toPath(),
-                            rightText = Gender.FEMALE.toPath(),
-                        )
-                    }
+                    TextComponent(
+                        text = "Select Gender",
+                        fontSize = 17,
+                        textStyle = MaterialTheme.typography.titleMedium,
+                        textColor = Colors.darkPrimary,
+                        textAlign = TextAlign.Left,
+                        fontWeight = FontWeight.SemiBold,
+                        lineHeight = 30,
+                        textModifier = Modifier.padding(end = 10.dp, start = 10.dp)
+                    )
 
-                    Row(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
+                    ToggleButton(
+                        shape = RoundedCornerShape(10.dp),
+                        isRightSelection = userGender == Gender.FEMALE.toPath(),
+                        onLeftClicked = {
+                            gender.value = Gender.MALE.toPath()
+                        },
+                        onRightClicked = {
+                            gender.value = Gender.FEMALE.toPath()
+                        },
+                        leftText = Gender.MALE.toPath(),
+                        rightText = Gender.FEMALE.toPath())
+
+                }
+
+                    Row(modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(bottom = 20.dp)) {
                         val buttonStyle = Modifier
                             .padding(end = 10.dp, top = 30.dp)
                             .weight(1f)
@@ -401,7 +424,7 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
                             fontSize = 18,
                             shape = RoundedCornerShape(10.dp),
                             textColor = Colors.primaryColor,
-                            style = TextStyle(),
+                            style = MaterialTheme.typography.titleMedium,
                             borderStroke = BorderStroke(1.dp, Colors.primaryColor)
                         ) {
                             navigator.pop()
@@ -414,15 +437,20 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
                             fontSize = 18,
                             shape = RoundedCornerShape(10.dp),
                             textColor = Color(color = 0xFFFFFFFF),
-                            style = TextStyle(),
+                            style = MaterialTheme.typography.titleMedium,
                             borderStroke = null
                         ) {
                             isSavedClicked.value = true
                             if (!InputValidator(inputList).isValidInput()) {
-                                ShowSnackBar(title = "Input Required", description = "Please provide the required info", actionLabel = "", duration = StackedSnackbarDuration.Short, snackBarType = SnackBarType.ERROR,
-                                    onActionClick = {}, stackedSnackBarHostState = stackedSnackBarHostState)
-                            }
-                            else if (userCountry.value.isEmpty()){
+                                ShowSnackBar(title = "Input Required",
+                                    description = "Please provide the required info",
+                                    actionLabel = "",
+                                    duration = StackedSnackbarDuration.Short,
+                                    snackBarType = SnackBarType.ERROR,
+                                    onActionClick = {},
+                                    stackedSnackBarHostState = stackedSnackBarHostState
+                                )
+                            } else if (userCountry.value.isEmpty()) {
                                 ShowSnackBar(title = "Error",
                                     description = "Please Allow Your Location",
                                     actionLabel = "",
@@ -430,14 +458,22 @@ class EditProfile(val platformNavigator: PlatformNavigator? = null) : KoinCompon
                                     snackBarType = SnackBarType.ERROR,
                                     stackedSnackBarHostState = stackedSnackBarHostState,
                                     onActionClick = {})
-                            }
-                            else {
-                                authenticationPresenter.updateProfile(userId = userInfo.userId!!, firstname = firstname.value!!, lastname = lastname.value!!,
-                                    address = address.value, contactPhone = contactPhone.value,
-                                    country = userCountry.value, state = state.value!!.id,gender = gender.value, profileImageUrl = profileImageUrl.value!!)
+                            } else {
+                                authenticationPresenter.updateProfile(
+                                    userId = userInfo.userId!!,
+                                    firstname = firstname.value!!,
+                                    lastname = lastname.value!!,
+                                    address = address.value,
+                                    contactPhone = contactPhone.value,
+                                    country = userCountry.value,
+                                    state = state.value!!.id,
+                                    gender = gender.value,
+                                    profileImageUrl = profileImageUrl.value!!
+                                )
                             }
 
                         }
+                    }
 
 
                    }
@@ -504,7 +540,7 @@ fun PageTitle(){
         verticalAlignment = Alignment.CenterVertically,
         modifier = rowModifier
     ) {
-        TitleWidget(title = "Edit Profile", textColor = Colors.primaryColor)
+        SubtitleTextWidget(text = "Edit Profile", textColor = Colors.primaryColor)
     }
 }
 
