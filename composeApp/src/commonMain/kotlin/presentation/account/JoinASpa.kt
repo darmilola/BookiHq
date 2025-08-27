@@ -206,7 +206,7 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : ParcelableScr
                             ) {
 
                                 TextComponent(
-                                    text = "Join A Business",
+                                    text = "Join A Salon or Spa",
                                     fontSize = 30,
                                     textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                                     textColor = Colors.darkPrimary,
