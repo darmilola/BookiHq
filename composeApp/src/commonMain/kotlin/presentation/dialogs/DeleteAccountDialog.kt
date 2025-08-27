@@ -1,4 +1,4 @@
-package presentation.widgets
+package presentation.dialogs
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,7 +32,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import presentation.components.ButtonComponent
+import presentation.widgets.SubtitleTextWidget
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import theme.Colors
@@ -42,21 +45,24 @@ fun DeleteAccountDialog(onCancel: () -> Unit, onConfirmation: () -> Unit) {
         mutableStateOf(false)
     }
     if (shouldDismiss.value) return
-    Dialog( properties = DialogProperties(usePlatformDefaultWidth = false), onDismissRequest = {
-        shouldDismiss.value = true
-    }) {
-        Surface(
-            shape = RoundedCornerShape(10.dp),
-            color = Colors.lighterPrimaryColor,
-            modifier = Modifier.fillMaxWidth(0.80f).fillMaxHeight(0.40f)
-        ) {
-            DeleteAccountDialogContent(onCancel = {
-                onCancel()
-                shouldDismiss.value = true
-               }, onConfirmation = {
-                onConfirmation()
-                shouldDismiss.value = true
-            })
+
+    AppTheme {
+        Dialog(properties = DialogProperties(usePlatformDefaultWidth = false), onDismissRequest = {
+            shouldDismiss.value = true
+        }) {
+            Surface(
+                shape = RoundedCornerShape(10.dp),
+                color = Colors.lighterPrimaryColor,
+                modifier = Modifier.fillMaxWidth(0.85f).height(300.dp)
+            ) {
+                DeleteAccountDialogContent(onCancel = {
+                    onCancel()
+                    shouldDismiss.value = true
+                }, onConfirmation = {
+                    onConfirmation()
+                    shouldDismiss.value = true
+                })
+            }
         }
     }
 }
@@ -71,16 +77,22 @@ fun DeleteAccountDialogContent(onCancel: () -> Unit, onConfirmation: () -> Unit)
         Column(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
 
             Box(
-                modifier = Modifier.fillMaxWidth().weight(1.7f)
-                    .background(color = Color.Red), contentAlignment = Alignment.Center
+                modifier = Modifier.fillMaxWidth().weight(1.5f)
+                    .background(color = Color.White), contentAlignment = Alignment.BottomCenter
             ) {
                 val modifier = Modifier
                     .padding(top = 2.dp)
-                    .size(80.dp)
-                ImageComponent(imageModifier = modifier, imageRes = "drawable/error_icon.png", colorFilter = ColorFilter.tint(color = Color.White))
+                    .size(30.dp)
+                Box(modifier = Modifier.size(60.dp).background(color = Colors.lightRedColor, shape = RoundedCornerShape(20.dp)), contentAlignment = Alignment.Center) {
+                    ImageComponent(
+                        imageModifier = modifier,
+                        imageRes = "drawable/delete_icon.png",
+                        colorFilter = ColorFilter.tint(color = Colors.redColor)
+                    )
+                }
             }
 
-            Box(modifier = Modifier.fillMaxWidth().weight(1.8f)) {
+            Box(modifier = Modifier.fillMaxWidth().weight(2f)) {
                 Column(
                     modifier = Modifier
                         .padding(top = 5.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
@@ -90,19 +102,24 @@ fun DeleteAccountDialogContent(onCancel: () -> Unit, onConfirmation: () -> Unit)
                     horizontalAlignment  = Alignment.CenterHorizontally,
                 ) {
 
-                    TextComponent(
-                        textModifier = Modifier.wrapContentWidth().wrapContentHeight()
-                            .padding(start = 15.dp, end = 15.dp, top = 15.dp),
-                        text = "Are you sure you want to Delete your Account?",
-                        fontSize = 20,
-                        textStyle = TextStyle(),
-                        textColor = Colors.darkPrimary,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold,
-                        lineHeight = 23,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    val colModifier = Modifier
+                        .padding(start = 10.dp, bottom = 10.dp, top = 15.dp)
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                    Column(
+                        verticalArrangement  = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = colModifier
+                    ) {
+                        Box(modifier = Modifier.fillMaxWidth().height(30.dp), contentAlignment = Alignment.Center) {
+                            SubtitleTextWidget(text = "Delete Account!", textColor = Color.Black, textAlign = TextAlign.Center, fontSize = 25)
+                        }
+
+                        Box(modifier = Modifier.fillMaxWidth().height(80.dp), contentAlignment = Alignment.Center) {
+                            SubtitleTextWidget(text = "Are you sure you want to\n Delete your Account?", textColor = Colors.grayColor, textAlign = TextAlign.Center, fontSize = 16, lineHeight = 23)
+                        }
+
+                    }
                 }
             }
             Box(modifier = Modifier.fillMaxWidth().weight(1.5f), contentAlignment = Alignment.Center) {
@@ -121,10 +138,10 @@ fun DeleteAccountDialogContent(onCancel: () -> Unit, onConfirmation: () -> Unit)
 fun DeleteAccountDialogButtonContent(onCancel: () -> Unit, onConfirmation: () -> Unit){
     Row (horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 10.dp, start = 20.dp, end = 20.dp)) {
-        ButtonComponent(modifier = Modifier.fillMaxWidth(0.5f), buttonText = "Cancel", borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Colors.primaryColor, style = TextStyle()){
+        ButtonComponent(modifier = Modifier.fillMaxWidth(0.5f), buttonText = "Cancel", colors = ButtonDefaults.buttonColors(backgroundColor = Colors.inputGrayColor), fontSize = 18, shape = RoundedCornerShape(15.dp), textColor = Color.Black, style = MaterialTheme.typography.titleMedium){
             onCancel()
         }
-        ButtonComponent(modifier = Modifier.fillMaxWidth().padding(start = 10.dp), buttonText = "Delete", borderStroke = BorderStroke(1.dp, Colors.pinkColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Colors.pinkColor, style = TextStyle()){
+        ButtonComponent(modifier = Modifier.fillMaxWidth().padding(start = 10.dp), buttonText = "Delete", colors = ButtonDefaults.buttonColors(backgroundColor = Colors.redColor), fontSize = 18, shape = RoundedCornerShape(15.dp), textColor = Color.White, style = MaterialTheme.typography.titleMedium){
             onConfirmation()
         }
 

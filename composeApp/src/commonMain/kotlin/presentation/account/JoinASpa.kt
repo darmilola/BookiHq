@@ -196,8 +196,6 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : ParcelableScr
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
 
-                            AppLogo("drawable/spa_icon.png")
-
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -209,12 +207,11 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : ParcelableScr
 
                                 TextComponent(
                                     text = "Join A Business",
-                                    fontSize = 35,
-                                    fontFamily = GGSansSemiBold,
-                                    textStyle = TextStyle(),
+                                    fontSize = 30,
+                                    textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                                     textColor = Colors.darkPrimary,
                                     textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.Black,
+                                    fontWeight = FontWeight.Bold,
                                     lineHeight = 45,
                                     letterSpacing = 1,
                                     textModifier = Modifier
@@ -226,9 +223,8 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : ParcelableScr
                             TextComponent(
                                 text = "Scan Business QR To Continue",
                                 fontSize = 16,
-                                fontFamily = GGSansSemiBold,
-                                textStyle = MaterialTheme.typography.h6,
-                                textColor = Color.LightGray,
+                                textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                                textColor = theme.Colors.grayColor,
                                 textAlign = TextAlign.Center,
                                 fontWeight = FontWeight.Bold,
                                 lineHeight = 20,
@@ -245,7 +241,7 @@ class JoinASpa(private val platformNavigator: PlatformNavigator) : ParcelableScr
                                      .fillMaxWidth()
                                      .height(50.dp)
 
-                                 RightIconButtonComponent(modifier = buttonStyle, buttonText = "Scan QR", borderStroke = BorderStroke(0.8.dp, Colors.darkPrimary), colors = ButtonDefaults.buttonColors(backgroundColor = Colors.lightPrimaryColor), fontSize = 16, shape = CircleShape, textColor = Colors.darkPrimary, style = MaterialTheme.typography.h4, iconRes = "drawable/forward_arrow.png",  colorFilter = ColorFilter.tint(color = Colors.darkPrimary)){
+                                 RightIconButtonComponent(modifier = buttonStyle, buttonText = "Scan QR", borderStroke = BorderStroke(0.8.dp, Colors.darkPrimary), colors = ButtonDefaults.buttonColors(backgroundColor = Colors.lightPrimaryColor), fontSize = 16, shape = CircleShape, textColor = Colors.darkPrimary, style = androidx.compose.material3.MaterialTheme.typography.titleMedium, iconRes = "drawable/forward_arrow.png",  colorFilter = ColorFilter.tint(color = Colors.darkPrimary)){
                                       platformNavigator.startScanningBarCode {
                                           val vendorId =  it.toLongOrNull()
                                           if (vendorId != null) {

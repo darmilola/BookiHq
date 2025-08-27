@@ -8,10 +8,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ButtonDefaults
@@ -26,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,6 +40,7 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
@@ -52,7 +57,9 @@ import presentation.components.IconButtonComponent
 import presentation.connectVendor.ConnectVendor
 import presentation.dialogs.LoadingDialog
 import presentation.viewmodels.MainViewModel
+import presentation.widgets.AttachTextContent
 import presentation.widgets.welcomeScreenScrollWidget
+import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import utils.ParcelableScreen
 
@@ -79,11 +86,19 @@ class WelcomeScreen(val platformNavigator: PlatformNavigator, val googleAuthEmai
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
 
-        if (onBackPressed.value){
+        if (onBackPressed.value) {
             platformNavigator.exitApp()
         }
 
-        WelcomeScreenCompose(platformNavigator, googleAuthEmail, authenticationPresenter = authenticationPresenter, mainViewModel = mainViewModel!!, databaseBuilder = databaseBuilder!!)
+        AppTheme {
+            WelcomeScreenCompose(
+                platformNavigator,
+                googleAuthEmail,
+                authenticationPresenter = authenticationPresenter,
+                mainViewModel = mainViewModel!!,
+                databaseBuilder = databaseBuilder!!
+            )
+        }
     }
 }
 
@@ -119,14 +134,15 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendorId
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
-                preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.EMAIL.toPath()
-                    val userDao = databaseBuilder.build().getUserDao()
-                    val vendorDao = databaseBuilder.build().getVendorDao()
-                    val userCount = userDao.count()
-                    val vendorCount = vendorDao.count()
-                    if (userCount == 0 && vendorCount == 0) {
-                        userDao.insert(user)
-                    }
+                preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] =
+                    AuthType.EMAIL.toPath()
+                val userDao = databaseBuilder.build().getUserDao()
+                val vendorDao = databaseBuilder.build().getVendorDao()
+                val userCount = userDao.count()
+                val vendorCount = vendorDao.count()
+                if (userCount == 0 && vendorCount == 0) {
+                    userDao.insert(user)
+                }
 
                 verificationInProgress.value = false
                 navigateToPlatform.value = true
@@ -144,15 +160,16 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                 preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath()] = user.connectedVendorId
                 preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = user.email
                 preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = user.apiKey
-                preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] = AuthType.EMAIL.toPath()
+                preferenceSettings[SharedPreferenceEnum.AUTH_TYPE.toPath()] =
+                    AuthType.EMAIL.toPath()
                 mainViewModel.setUserInfo(user)
-                    val userDao = databaseBuilder.build().getUserDao()
-                    val vendorDao = databaseBuilder.build().getVendorDao()
-                    val userCount = userDao.count()
-                    val vendorCount = vendorDao.count()
-                    if (userCount == 0 && vendorCount == 0) {
-                        userDao.insert(user)
-                    }
+                val userDao = databaseBuilder.build().getUserDao()
+                val vendorDao = databaseBuilder.build().getVendorDao()
+                val userCount = userDao.count()
+                val vendorCount = vendorDao.count()
+                if (userCount == 0 && vendorCount == 0) {
+                    userDao.insert(user)
+                }
             }
             navigateToConnectVendor.value = true
         },
@@ -171,70 +188,141 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
     handler.init()
 
 
-    if (navigateToCompleteProfile.value){
-        val completeProfile = CompleteProfileScreen(platformNavigator, authPhone = "empty", authEmail = authEmail.value)
+    if (navigateToCompleteProfile.value) {
+        val completeProfile = CompleteProfileScreen(
+            platformNavigator,
+            authPhone = "empty",
+            authEmail = authEmail.value
+        )
         completeProfile.setMainViewModel(mainViewModel = mainViewModel)
         completeProfile.setDatabaseBuilder(databaseBuilder = databaseBuilder)
         navigator.replaceAll(completeProfile)
-    }
-    else if (navigateToConnectVendor.value){
+    } else if (navigateToConnectVendor.value) {
         val connectVendor = ConnectVendor(platformNavigator)
         connectVendor.setMainViewModel(mainViewModel)
         connectVendor.setDatabaseBuilder(databaseBuilder)
         navigator.replaceAll(connectVendor)
-    }
-    else if (navigateToPlatform.value) {
-            navigateToPlatform.value = false
-            val mainScreen = MainScreen(platformNavigator)
-            mainScreen.setDatabaseBuilder(databaseBuilder)
-            mainScreen.setMainViewModel(mainViewModel)
-            navigator.replaceAll(mainScreen)
+    } else if (navigateToPlatform.value) {
+        navigateToPlatform.value = false
+        val mainScreen = MainScreen(platformNavigator)
+        mainScreen.setDatabaseBuilder(databaseBuilder)
+        mainScreen.setMainViewModel(mainViewModel)
+        navigator.replaceAll(mainScreen)
     }
 
-    Box(contentAlignment = Alignment.TopCenter, modifier = Modifier
+    Box(
+        contentAlignment = Alignment.TopCenter, modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth()
 
-        ) {
-            if (verificationInProgress.value) {
-                Box(modifier = Modifier.fillMaxWidth(0.90f)) {
-                    LoadingDialog("Verifying Profile...")
-                }
+    ) {
+        if (verificationInProgress.value) {
+            Box(modifier = Modifier.fillMaxWidth(0.90f)) {
+                LoadingDialog("Verifying Profile...")
             }
+        }
 
-            Column(
-                modifier = Modifier.fillMaxHeight().fillMaxWidth().background(color = Color.Black),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier.fillMaxHeight().fillMaxWidth().background(color = Color.Black),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-                Box(
-                    modifier = Modifier.fillMaxHeight(0.65f).fillMaxWidth()
-                        .background(color = Color.Transparent), contentAlignment = Alignment.Center
-                ) {
-                    welcomeScreenScrollWidget()
-                }
-                Column(
-                    modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(top = 10.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Bottom
-                ) {
+            Box(modifier = Modifier.fillMaxHeight().fillMaxWidth()) {
+
+                ImageComponent(
+                    imageModifier = Modifier.fillMaxHeight().fillMaxWidth(),
+                    imageRes = "drawable/black_woman_hair.jpg", contentScale = ContentScale.Crop
+                )
+
+                Box(modifier = Modifier.fillMaxSize().background(color = Color(0x40000000)))
+
+                Column(modifier = Modifier.fillMaxSize()) {
+
+
                     Box(
-                        modifier = Modifier.fillMaxWidth().wrapContentHeight()
-                            .background(color = Color.Black), contentAlignment = Alignment.TopCenter
+                        modifier = Modifier.fillMaxHeight(0.65f).fillMaxWidth()
+                            .background(color = Color.Transparent),
+                        contentAlignment = Alignment.BottomCenter
                     ) {
-                        AttachActionButtons(platformNavigator, onAuthSuccessful = {
-                            authEmail.value = it
-                            authenticationPresenter.validateEmail(it)
-                        }, onAuthFailed = {
-                        }, mainViewModel = mainViewModel, databaseBuilder = databaseBuilder)
+
+
+                        Box(
+                            modifier = Modifier.fillMaxWidth(0.90f).wrapContentHeight()
+                                .padding(start = 20.dp, bottom = 20.dp),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            TextComponent(
+                                text = "Book your beauty treatments anytime, anywhere — glow without waiting.",
+                                fontSize = 23,
+                                textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+                                textColor = Color.White,
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Bold,
+                                lineHeight = 30
+                            )
+                        }
 
                     }
-                    Box(
-                        modifier = Modifier.fillMaxWidth().height(100.dp)
-                            .background(color = Color.Black).padding(start = 20.dp, end = 20.dp),
-                        contentAlignment = Alignment.TopCenter
+
+                    Column(
+                        modifier = Modifier.fillMaxWidth().fillMaxHeight().background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.Transparent,
+                                    Color(0x10ffffff),
+                                    Color(0x20ffffff),
+                                    Color(0x40ffffff),
+                                    Color(0x60ffffff),
+                                    Color(0x90ffffff),
+                                    Color(0xCCffffff),
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White,
+                                    Color.White)
+                            )
+                        ).padding(top = 10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Bottom
                     ) {
-                        /*TextComponent(
+
+
+                        // Box(modifier = bgStyle, contentAlignment = Alignment.TopStart) {}
+                        Box(
+                            modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(top = 20.dp),
+                        ) {
+                            AttachActionButtons(platformNavigator, onAuthSuccessful = {
+                                authEmail.value = it
+                                authenticationPresenter.validateEmail(it)
+                            }, onAuthFailed = {
+                            }, mainViewModel = mainViewModel, databaseBuilder = databaseBuilder)
+
+                        }
+                        Box(
+                            modifier = Modifier.fillMaxWidth().height(100.dp)
+                                .padding(start = 20.dp, end = 20.dp)
+                        ) {
+                            /*TextComponent(
                             text = "An “agree to terms and conditions” is a method of protecting your business by requiring that users acknowledge the rules",
                             fontSize = 14,
                             fontFamily = GGSansRegular,
@@ -244,6 +332,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
                             fontWeight = FontWeight.Normal,
                             lineHeight = 15
                         )*/
+                        }
                     }
                 }
 
@@ -256,6 +345,7 @@ fun WelcomeScreenCompose(platformNavigator: PlatformNavigator, googleAuthEmail: 
         }
 
     }
+}
 
 @Composable
 fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful: (String) -> Unit,
@@ -284,7 +374,7 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful:
     Column(modifier = Modifier.fillMaxWidth().height(200.dp), horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
 
-        IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Google", borderStroke = BorderStroke(0.8.dp, Color.White), iconSize = 20, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 16, shape = CircleShape, textColor = Color.Black, style = MaterialTheme.typography.h4, iconRes = "drawable/google_icon.png"){
+        IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with Google", borderStroke = BorderStroke(0.8.dp, Colors.darkPrimary), iconSize = 20, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor = Colors.darkPrimary, style = androidx.compose.material3.MaterialTheme.typography.titleLarge, iconRes = "drawable/google_icon.png"){
             platformNavigator.startGoogleSSO(onAuthSuccessful = {
                 onAuthSuccessful(it)
             }, onAuthFailed = {
@@ -305,14 +395,14 @@ fun AttachActionButtons(platformNavigator: PlatformNavigator,  onAuthSuccessful:
             )
         }*/
 
-        IconButtonComponent(modifier = phoneButtonStyle, buttonText = "Sign In with Phone Number", borderStroke = BorderStroke((0.01).dp, Colors.primaryColor), iconSize = 24, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor = Color.White, style = MaterialTheme.typography.h4, iconRes = "drawable/care_icon.png", colorFilter = ColorFilter.tint(color = Color.White)){
+        IconButtonComponent(modifier = phoneButtonStyle, buttonText = "Sign In with Phone Number", borderStroke = BorderStroke((0.01).dp, Colors.primaryColor), iconSize = 24, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor = Color.White, style = androidx.compose.material3.MaterialTheme.typography.titleLarge, iconRes = "drawable/care_icon.png", colorFilter = ColorFilter.tint(color = Color.White)){
            val continueWithPhone = PhoneInputScreen(platformNavigator)
             continueWithPhone.setMainViewModel(mainViewModel = mainViewModel)
             continueWithPhone.setDatabaseBuilder(databaseBuilder = databaseBuilder)
             navigator.push(continueWithPhone)
         }
 
-        IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with X", borderStroke = BorderStroke(0.8.dp, Color.White), iconSize = 20, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 16, shape = CircleShape, textColor = Color.Black, style = MaterialTheme.typography.h4, iconRes = "drawable/x_icon.png", colorFilter = ColorFilter.tint(color = Color.Black)){
+        IconButtonComponent(modifier = buttonStyle, buttonText = "Continue with X", borderStroke = BorderStroke(0.8.dp, Colors.darkPrimary), iconSize = 20, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 16, shape = CircleShape, textColor = Colors.darkPrimary, style = androidx.compose.material3.MaterialTheme.typography.titleLarge, iconRes = "drawable/x_icon.png", colorFilter = ColorFilter.tint(color = Color.Black)){
             platformNavigator.startXSSO(onAuthSuccessful = {
                 onAuthSuccessful(it)
             }, onAuthFailed = {

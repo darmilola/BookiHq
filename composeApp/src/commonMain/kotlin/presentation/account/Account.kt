@@ -30,7 +30,6 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,15 +42,15 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.room.RoomDatabase
 import applications.room.AppDatabase
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Enums.Screens
+import domain.Models.PlatformNavigator
 import domain.Models.User
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -64,13 +63,14 @@ import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.PerformedActionUIStateViewModel
 import presentation.widgets.ActionItemComponent
 import presentation.widgets.AccountProfileImage
-import presentation.widgets.DeleteAccountDialog
+import presentation.dialogs.DeleteAccountDialog
+import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
 import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 
 @Parcelize
-class AccountTab : Tab, Parcelable, KoinComponent {
+class AccountTab(val platformNavigator: PlatformNavigator) : Tab, Parcelable, KoinComponent {
 
     private var mainViewModel: MainViewModel? = null
     @Transient
@@ -118,16 +118,16 @@ class AccountTab : Tab, Parcelable, KoinComponent {
 
         val deleteAccountAction = remember { mutableStateOf(false) }
 
-        if (deleteAccountAction.value){
+        if (deleteAccountAction.value) {
             DeleteAccountDialog(onCancel = {
                 deleteAccountAction.value = false
             }, onConfirmation = {
-                  profilePresenter.deleteProfile(userInfo!!.userId!!)
+                profilePresenter.deleteProfile(userInfo!!.userId!!)
             })
         }
 
         if (performedActionUIStateViewModel == null) {
-            performedActionUIStateViewModel= kmpViewModel(
+            performedActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
@@ -136,75 +136,74 @@ class AccountTab : Tab, Parcelable, KoinComponent {
 
         val uiState = performedActionUIStateViewModel!!.uiStateInfo.collectAsState()
 
-        val profileHandler = ProfileHandler(profilePresenter,
+        val profileHandler = ProfileHandler(
+            profilePresenter,
             onUserLocationReady = {},
             onUserProfileDeleted = {},
             onVendorInfoReady = { it -> },
-            performedActionUIStateViewModel = performedActionUIStateViewModel!!)
+            performedActionUIStateViewModel = performedActionUIStateViewModel!!
+        )
         profileHandler.init()
 
 
-        Scaffold(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                .background(color = Color.White),
-            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
-            topBar = {
-                val screenTitle =  mainViewModel!!.screenTitle.collectAsState()
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
-                    TitleWidget(textColor = Colors.primaryColor, title = screenTitle.value)
-                }
-            },
-            content = {
-
-                if (uiState.value.isLoading) {
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        LoadingDialog("Deleting Your Account")
+        AppTheme {
+            Scaffold(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                    .background(color = theme.Colors.dashboardBackground),
+                snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
+                topBar = {
+                    val screenTitle = mainViewModel!!.screenTitle.collectAsState()
+                    Box(modifier = Modifier.fillMaxWidth().height(45.dp), contentAlignment = Alignment.Center) {
+                        SubtitleTextWidget(textColor = Colors.primaryColor, text = screenTitle.value)
                     }
-                }
-                else if (uiState.value.isSuccess) {
-                    mainViewModel!!.logOut(true)
-                }
-                else if (uiState.value.isFailed) {
-                    ErrorDialog("Error Occurred", "Close", onConfirmation = {})
-                }
+                },
+                backgroundColor = theme.Colors.dashboardBackground,
+                content = {
 
-                val columnModifier = Modifier
-                    .padding(top = 5.dp)
-                    .fillMaxHeight()
-                    .verticalScroll(rememberScrollState())
-                    .fillMaxWidth()
+                    if (uiState.value.isLoading) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            LoadingDialog("Deleting Your Account")
+                        }
+                    } else if (uiState.value.isSuccess) {
+                        platformNavigator.deleteAccount()
+                        mainViewModel!!.logOut(true)
+                    } else if (uiState.value.isFailed) {
+                        ErrorDialog("Error Occurred", "Close", onConfirmation = {})
+                    }
 
-                Column(
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = columnModifier
-                ) {
+                    val columnModifier = Modifier
+                        .padding(top = 5.dp)
+                        .fillMaxHeight()
+                        .verticalScroll(rememberScrollState())
+                        .fillMaxWidth()
 
-                    AccountProfileImage(
-                        profileImageUrl = userInfo!!.profileImageUrl!!,
-                        showEditIcon = false,
-                        isAsync = true
-                    ) {}
-                    UserAccountName(userInfo!!.firstname!!, userInfo!!.lastname!!)
-                    EditProfileButton(
-                        TextStyle(
-                            fontFamily = GGSansSemiBold,
-                            fontWeight = FontWeight.Black,
-                            fontSize = TextUnit(18f, TextUnitType.Sp)
+                    Column(
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = columnModifier
+                    ) {
+
+                        AccountProfileImage(
+                            profileImageUrl = userInfo!!.profileImageUrl!!,
+                            showEditIcon = false,
+                            isAsync = true
+                        ) {}
+                        UserAccountName(userInfo!!.firstname!!, userInfo!!.lastname!!)
+                        EditProfileButton(style = androidx.compose.material3.MaterialTheme.typography.titleMedium)
+                        Divider(
+                            color = Color(color = 0x90C8C8C8),
+                            thickness = 2.dp,
+                            modifier = Modifier.fillMaxWidth(0.90f).padding(top = 30.dp)
                         )
-                    )
-                    Divider(
-                        color = Color(color = 0x90C8C8C8),
-                        thickness = 2.dp,
-                        modifier = Modifier.fillMaxWidth(0.90f).padding(top = 30.dp)
-                    )
-                    AttachAccountAction(onDeleteAccountClicked = {
-                        deleteAccountAction.value = true
-                    })
-                }
+                        AttachAccountAction(onDeleteAccountClicked = {
+                            deleteAccountAction.value = true
+                        })
+                    }
 
-            })
+                })
         }
+
+    }
 
 
     @Composable
@@ -220,8 +219,7 @@ class AccountTab : Tab, Parcelable, KoinComponent {
                 TextComponent(
                     text = "$firstname $lastname",
                     fontSize = 18,
-                    fontFamily = GGSansSemiBold,
-                    textStyle = MaterialTheme.typography.h6,
+                    textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                     textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Left,
                     fontWeight = FontWeight.Bold,
@@ -274,7 +272,7 @@ class AccountTab : Tab, Parcelable, KoinComponent {
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
                     textColor = Colors.darkPrimary,
-                    style = TextStyle(),
+                    style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                     iconRes = "drawable/shopping_basket.png",
                     isDestructiveAction = false, onClick = {
                         mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.ORDERS.toPath()))
@@ -286,7 +284,7 @@ class AccountTab : Tab, Parcelable, KoinComponent {
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
                     textColor = Colors.darkPrimary,
-                    style = TextStyle(),
+                    style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                     iconRes = "drawable/fav_icon_filled.png",
                     isDestructiveAction = false, onClick = {
                         mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.FAVORITE_PRODUCTS.toPath()))
@@ -298,7 +296,7 @@ class AccountTab : Tab, Parcelable, KoinComponent {
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
                     textColor = Colors.darkPrimary,
-                    style = TextStyle(),
+                    style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                     iconRes = "drawable/cards_icon.png",
                     isDestructiveAction = false, onClick = {
                         mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.PAYMENT_METHODS.toPath()))
@@ -311,7 +309,7 @@ class AccountTab : Tab, Parcelable, KoinComponent {
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                         fontSize = 20,
                         textColor = Colors.darkPrimary,
-                        style = TextStyle(),
+                        style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                         iconRes = "drawable/dashboard_icon.png",
                         isDestructiveAction = false, onClick = {
                             mainViewModel!!.setScreenNav(
@@ -329,7 +327,7 @@ class AccountTab : Tab, Parcelable, KoinComponent {
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
                     textColor = Colors.darkPrimary,
-                    style = TextStyle(),
+                    style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                     iconRes = "drawable/switch.png",
                     isDestructiveAction = false, onClick = {
                         mainViewModel!!.setScreenNav(Pair(Screens.MAIN_SCREEN.toPath(), Screens.CONNECT_VENDOR.toPath()))
@@ -343,7 +341,7 @@ class AccountTab : Tab, Parcelable, KoinComponent {
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                         fontSize = 20,
                         textColor = Colors.darkPrimary,
-                        style = TextStyle(),
+                        style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                         iconRes = "drawable/join.png",
                         isDestructiveAction = false, onClick = {
                             mainViewModel!!.setScreenNav(
@@ -361,8 +359,8 @@ class AccountTab : Tab, Parcelable, KoinComponent {
                     buttonText = "Log Out",
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 20,
-                    textColor = Colors.pinkColor,
-                    style = TextStyle(),
+                    textColor = theme.Colors.redColor,
+                    style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                     iconRes = "drawable/logout_icon.png",
                     isDestructiveAction = false,
                     onClick = {
@@ -378,12 +376,11 @@ class AccountTab : Tab, Parcelable, KoinComponent {
                         .fillMaxWidth()
                         .padding(top = 40.dp, start = 10.dp, end = 10.dp),
                     buttonText = "Close Account",
-                    borderStroke = BorderStroke(1.dp, Color.White),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     fontSize = 16,
                     shape = RoundedCornerShape(10.dp),
-                    textColor = theme.Colors.pinkColor,
-                    style = TextStyle()) {
+                    textColor = theme.Colors.redColor,
+                    style = androidx.compose.material3.MaterialTheme.typography.titleMedium) {
                     onDeleteAccountClicked()
                 }
 

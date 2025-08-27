@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -35,12 +36,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import kotlinx.coroutines.launch
 import presentation.components.ButtonComponent
 import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import presentations.widgets.InputWidget
+import presentations.widgets.InputWidgetV2
 import theme.styles.Colors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,101 +70,103 @@ fun AddProductReviewBottomSheet(mainViewModel: MainViewModel, onReviewsAdded: (S
         }
     }
 
-    ModalBottomSheet(
-        modifier = Modifier.padding(top = 20.dp).height(300.dp),
-        onDismissRequest = {
-            onDismiss()
-        },
-        sheetState = scaffoldState.bottomSheetState,
-        shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
-        containerColor = Color(0xFFF3F3F3),
-        dragHandle = {},
-    ) {
-        Column(modifier = Modifier.fillMaxSize().background(color = Color.White)) {
-            Row(
-                modifier = Modifier
-                    .height(50.dp)
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp, top = 10.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
+    AppTheme {
+
+        ModalBottomSheet(
+            modifier = Modifier.padding(top = 20.dp).height(320.dp),
+            onDismissRequest = {
+                onDismiss()
+            },
+            sheetState = scaffoldState.bottomSheetState,
+            shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
+            containerColor = Color(0xFFF3F3F3),
+            dragHandle = {},
+        ) {
+            Column(modifier = Modifier.fillMaxSize().background(color = Color.White)) {
+                Row(
                     modifier = Modifier
-                        .fillMaxWidth(0.80f)
+                        .height(50.dp)
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp, top = 10.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    TextComponent(
-                        text = "Add Product Review",
-                        fontSize = 18,
-                        fontFamily = GGSansBold,
-                        textStyle = TextStyle(),
-                        textAlign = TextAlign.Left,
-                        fontWeight = FontWeight.ExtraBold,
-                        lineHeight = 20,
-                        textColor = Colors.primaryColor,
-                        maxLines = 1,
-                        textModifier = Modifier
-                            .padding(top = 10.dp)
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                    )
-                }
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterEnd) {
-                    val modifier = Modifier
-                        .padding(top = 2.dp)
-                        .clickable {
-                            scope.launch {
-                                scaffoldState.bottomSheetState.hide()
-                                onDismiss()
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth(0.80f)
+                    ) {
+                        TextComponent(
+                            text = "Add Product Review",
+                            fontSize = 18,
+                            textStyle = MaterialTheme.typography.titleLarge,
+                            textAlign = TextAlign.Left,
+                            fontWeight = FontWeight.ExtraBold,
+                            lineHeight = 20,
+                            textColor = theme.Colors.darkPrimary,
+                            maxLines = 1,
+                            textModifier = Modifier
+                                .padding(top = 10.dp)
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                        )
+                    }
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterEnd) {
+                        val modifier = Modifier
+                            .padding(top = 2.dp)
+                            .clickable {
+                                scope.launch {
+                                    scaffoldState.bottomSheetState.hide()
+                                    onDismiss()
+                                }
                             }
-                        }
-                        .size(18.dp)
-                    ImageComponent(
-                        imageModifier = modifier,
-                        imageRes = "drawable/cancel_icon.png",
-                        colorFilter = ColorFilter.tint(color = Colors.primaryColor)
-                    )
+                            .size(18.dp)
+                        ImageComponent(
+                            imageModifier = modifier,
+                            imageRes = "drawable/cancel_icon.png",
+                            colorFilter = ColorFilter.tint(color = Colors.primaryColor)
+                        )
 
-                }
-            }
-            Box(modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp)) {
-                InputWidget(
-                    viewHeight = 120,
-                    iconRes = "drawable/cancel_icon.png",
-                    placeholderText = "Write Here...",
-                    iconSize = 28,
-                    text = reviewsText.value,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    isPasswordField = false,
-                    isSingleLine = false,
-                    maxLines = 5,
-                    maxLength = 250
-                ) {
-                    reviewsText.value = it
-                }
-            }
-
-            ButtonComponent(
-                modifier = Modifier
-                    .padding(bottom = 10.dp, start = 10.dp, end = 10.dp, top = 4.dp)
-                    .fillMaxWidth()
-                    .height(50.dp),
-                buttonText = "Send",
-                colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
-                fontSize = 16,
-                shape = CircleShape,
-                textColor = Color(color = 0xFFFFFFFF),
-                style = TextStyle(),
-                borderStroke = null
-            ) {
-                if (reviewsText.value.isNotEmpty()){
-                    onReviewsAdded(reviewsText.value)
-                    scope.launch {
-                        scaffoldState.bottomSheetState.hide()
                     }
                 }
-            }
+                Box(modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp, bottom = 10.dp)) {
+                    InputWidgetV2(
+                        viewHeight = 120,
+                        iconRes = "drawable/cancel_icon.png",
+                        placeholderText = "Write Here...",
+                        iconSize = 28,
+                        text = reviewsText.value,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        isPasswordField = false,
+                        isSingleLine = false,
+                        maxLines = 5,
+                        maxLength = 250
+                    ) {
+                        reviewsText.value = it
+                    }
+                }
 
+                ButtonComponent(
+                    modifier = Modifier
+                        .padding(bottom = 5.dp, start = 10.dp, end = 10.dp, top = 5.dp)
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    buttonText = "Send",
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
+                    fontSize = 16,
+                    shape = CircleShape,
+                    textColor = Color(color = 0xFFFFFFFF),
+                    style = MaterialTheme.typography.titleMedium,
+                    borderStroke = null
+                ) {
+                    if (reviewsText.value.isNotEmpty()) {
+                        onReviewsAdded(reviewsText.value)
+                        scope.launch {
+                            scaffoldState.bottomSheetState.hide()
+                        }
+                    }
+                }
+
+            }
         }
     }
 

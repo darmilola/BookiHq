@@ -6,6 +6,7 @@ import UIStates.AppUIStates
 import theme.styles.Colors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,8 +16,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -34,11 +37,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import domain.Enums.RecommendationType
 import domain.Models.Appointment
 import domain.Models.ServiceTypeItem
 import domain.Models.Services
@@ -90,8 +96,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
     if (getServiceTypeActionUiStates.value.isLoading) {
         Box(
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                .padding(top = 40.dp, start = 50.dp, end = 50.dp)
-                .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
+                .padding(top = 40.dp, start = 50.dp, end = 50.dp),
             contentAlignment = Alignment.Center
         ) {
             IndeterminateCircularProgressBar()
@@ -136,6 +141,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
             Column(
                 Modifier
                     .fillMaxSize()
+                    .background(color = theme.Colors.dashboardBackground)
                     .verticalScroll(rememberScrollState())
             ) {
 
@@ -147,16 +153,7 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
                 AttachServiceTypeToggle(mainViewModel, bookingViewModel, onServiceSelected = {
                     if (it.mobileServiceAvailable) {
                         isServiceTypeMobileServiceAvailable.value = true
-                        if (isProfileCompleted) {
-                            ShowSnackBar(title = "Home Service Is Available",
-                                description = "You can use your address for this service",
-                                actionLabel = "",
-                                duration = StackedSnackbarDuration.Short,
-                                snackBarType = SnackBarType.INFO,
-                                stackedSnackBarHostState,
-                                onActionClick = {})
-                        }
-                        else{
+                        if (!isProfileCompleted) {
                             ShowSnackBar(title = "Home Service Is Available",
                                 description = "Please complete your profile",
                                 actionLabel = "Complete Profile",
@@ -167,7 +164,8 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
                                     onCompleteProfile()
                                 })
                         }
-                    } else {
+                    }
+                    else {
                         isServiceTypeMobileServiceAvailable.value = false
                     }
                     if (it.serviceTypeId != -1L) {
@@ -178,6 +176,14 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
                         bookingViewModel.setCurrentAppointmentBooking(currentBooking)
                     }
                 })
+
+
+                if (bookingViewModel.selectedServiceType.collectAsState().value.serviceTypeId != -1L) {
+                    selectedServiceLength(bookingViewModel.selectedServiceType.collectAsState().value)
+                }
+
+
+
                 if (mobileServicesAvailable) {
                     val isServiceLocationDisabled = !isServiceTypeMobileServiceAvailable.value || !isProfileCompleted
                     ServiceLocationToggle(
@@ -195,25 +201,49 @@ fun BookingSelectServices(mainViewModel: MainViewModel, bookingViewModel: Bookin
                             bookingViewModel.setCurrentAppointmentBooking(currentBooking)
                         })
                 }
-                BookingCalendar(vendorAvailableDays = mainViewModel.dayAvailability.value, onUnAvailableDateSelected = {
-                    ShowSnackBar(title = "Not Available",
-                        description = "Not Available for Service on this Day",
-                        actionLabel = "",
-                        duration = StackedSnackbarDuration.Short,
-                        snackBarType = SnackBarType.INFO,
-                        stackedSnackBarHostState,
-                        onActionClick = {})
-                }, onDateSelected = {
-                    bookingViewModel.undoTherapists()
-                    currentBooking.appointmentDay = it.dayOfMonth
-                    currentBooking.appointmentMonth = it.monthNumber
-                    currentBooking.appointmentYear = it.year
-                    bookingViewModel.setCurrentAppointmentBooking(currentBooking)
-                    bookingViewModel.setSelectedDay(it.dayOfMonth)
-                    bookingViewModel.setSelectedMonth(it.monthNumber)
-                    bookingViewModel.setSelectedYear(it.year)
-                    bookingViewModel.setSelectedMonthName(it.month.name)
-                })
+                Column(
+                    modifier = Modifier
+                        .padding(top = 30.dp)
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment  = Alignment.CenterHorizontally,
+                ) {
+
+                    TextComponent(
+                        text = "Choose Date",
+                        fontSize = 16,
+                        textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                        textColor = Colors.darkPrimary,
+                        textAlign = TextAlign.Left,
+                        fontWeight = FontWeight.SemiBold,
+                        lineHeight = 30,
+                        textModifier = Modifier
+                            .fillMaxWidth().padding(start = 10.dp)
+                    )
+                    BookingCalendar(
+                        vendorAvailableDays = mainViewModel.dayAvailability.value,
+                        onUnAvailableDateSelected = {
+                            ShowSnackBar(title = "Not Available",
+                                description = "Not Available for Service on this Day",
+                                actionLabel = "",
+                                duration = StackedSnackbarDuration.Short,
+                                snackBarType = SnackBarType.INFO,
+                                stackedSnackBarHostState,
+                                onActionClick = {})
+                        },
+                        onDateSelected = {
+                            bookingViewModel.undoTherapists()
+                            currentBooking.appointmentDay = it.dayOfMonth
+                            currentBooking.appointmentMonth = it.monthNumber
+                            currentBooking.appointmentYear = it.year
+                            bookingViewModel.setCurrentAppointmentBooking(currentBooking)
+                            bookingViewModel.setSelectedDay(it.dayOfMonth)
+                            bookingViewModel.setSelectedMonth(it.monthNumber)
+                            bookingViewModel.setSelectedYear(it.year)
+                            bookingViewModel.setSelectedMonthName(it.month.name)
+                        })
+                }
             }
         }
     }
@@ -233,11 +263,10 @@ fun AttachServiceTypeToggle(mainViewModel: MainViewModel,bookingViewModel: Booki
         TextComponent(
             text = "What type of Service do you want?",
             fontSize = 16,
-            fontFamily = GGSansSemiBold,
-            textStyle = TextStyle(),
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Black,
+            fontWeight = FontWeight.SemiBold,
             lineHeight = 30,
             textModifier = Modifier
                 .fillMaxWidth().padding(start = 10.dp))
@@ -264,9 +293,7 @@ fun AttachServiceDropDownWidget(mainViewModel: MainViewModel, bookingViewModel: 
     else{
         for (item in bookingViewModel.serviceTypeList.value){
             val title = item.title
-            val length = formatServiceLength(item.length)
-            val display = "$title  $length"
-            serviceTypeList.add(display)
+            serviceTypeList.add(title)
         }
     }
     var selectedService: ServiceTypeItem? = null
@@ -280,6 +307,58 @@ fun AttachServiceDropDownWidget(mainViewModel: MainViewModel, bookingViewModel: 
            onServiceSelected(recommendationServiceType)
       }
     }, onExpandMenuItemClick = {})
+}
+
+@Composable
+fun selectedServiceLength(serviceTypeItem: ServiceTypeItem){
+
+    val length = formatServiceLength(serviceTypeItem.length)
+
+    Column(
+        modifier = Modifier
+            .padding(start = 10.dp, end = 10.dp, top = 30.dp)
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment  = Alignment.CenterHorizontally,
+    ) {
+        TextComponent(
+            text = "Selected Service Length",
+            fontSize = 16,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+            textColor = Colors.darkPrimary,
+            textAlign = TextAlign.Left,
+            fontWeight = FontWeight.SemiBold,
+            lineHeight = 30,
+            textModifier = Modifier
+                .fillMaxWidth()
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxSize().padding(top = 10.dp)
+        ) {
+            ImageComponent(
+                imageModifier = Modifier.size(24.dp),
+                imageRes = "drawable/time_outline.png",
+                colorFilter = ColorFilter.tint(color = theme.Colors.greenColor)
+            )
+
+            TextComponent(
+                text = length,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                textColor = theme.Colors.greenColor,
+                textAlign = TextAlign.Right,
+                fontWeight = FontWeight.Bold,
+                lineHeight = 20,
+                maxLines = 2,
+                fontSize = 20,
+                overflow = TextOverflow.Ellipsis,
+                textModifier = Modifier.wrapContentSize().padding(start = 5.dp)
+            )
+        }
+    }
 }
 
 @Composable
@@ -297,11 +376,10 @@ fun ServiceTitle(mainViewModel: MainViewModel){
         TextComponent(
             text = serviceState.value.serviceInfo?.title!!,
             fontSize = 20,
-            fontFamily = GGSansSemiBold,
-            textStyle =  MaterialTheme.typography.h6,
-            textColor = Color.DarkGray,
+            textStyle =  androidx.compose.material3.MaterialTheme.typography.titleLarge,
+            textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Black,
+            fontWeight = FontWeight.Bold,
             lineHeight = 30,
             textModifier = Modifier
                 .fillMaxWidth()

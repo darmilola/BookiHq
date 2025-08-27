@@ -54,9 +54,8 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel,mainViewModel: MainViewMo
              TextComponent(
                  text = "Sub-total",
                  fontSize = 18,
-                 fontFamily = GGSansSemiBold,
-                 textStyle = MaterialTheme.typography.h6,
-                 textColor = Color.Gray,
+                 textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                 textColor = theme.Colors.grayColor,
                  textAlign = TextAlign.Right,
                  fontWeight = FontWeight.Bold,
                  lineHeight = 20,
@@ -67,9 +66,8 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel,mainViewModel: MainViewMo
              TextComponent(
                  text = currencyUnit+ formatNumber(subtotal.value),
                  fontSize = 18,
-                 fontFamily = GGSansSemiBold,
-                 textStyle = MaterialTheme.typography.h6,
-                 textColor = Color.Gray,
+                 textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+                 textColor = Colors.darkPrimary,
                  textAlign = TextAlign.Right,
                  fontWeight = FontWeight.Bold,
                  lineHeight = 20,
@@ -84,9 +82,8 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel,mainViewModel: MainViewMo
                 TextComponent(
                     text = "Delivery Fee",
                     fontSize = 18,
-                    fontFamily = GGSansSemiBold,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.Gray,
+                    textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                    textColor = theme.Colors.grayColor,
                     textAlign = TextAlign.Right,
                     fontWeight = FontWeight.Bold,
                     lineHeight = 20,
@@ -97,9 +94,8 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel,mainViewModel: MainViewMo
                 TextComponent(
                     text = "$currencyUnit$deliveryFee",
                     fontSize = 18,
-                    fontFamily = GGSansSemiBold,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.Gray,
+                    textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
+                    textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Right,
                     fontWeight = FontWeight.Bold,
                     lineHeight = 20,
@@ -114,9 +110,8 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel,mainViewModel: MainViewMo
             TextComponent(
                 text = "Total",
                 fontSize = 18,
-                fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
-                textColor = Colors.darkPrimary,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                textColor = theme.Colors.grayColor,
                 textAlign = TextAlign.Right,
                 fontWeight = FontWeight.Bold,
                 lineHeight = 20,
@@ -127,8 +122,7 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel,mainViewModel: MainViewMo
             TextComponent(
                 text = currencyUnit+ formatNumber(total.value),
                 fontSize = 18,
-                fontFamily = GGSansSemiBold,
-                textStyle = MaterialTheme.typography.h6,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Right,
                 fontWeight = FontWeight.Bold,
@@ -139,7 +133,7 @@ fun CheckOutSummaryWidget(cartViewModel: CartViewModel,mainViewModel: MainViewMo
             )
         }
 
-        ButtonComponent(modifier = buttonStyle, buttonText = "Proceed to Checkout", borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = Colors.primaryColor, style = TextStyle()){
+        ButtonComponent(modifier = buttonStyle, buttonText = "Proceed to Checkout", borderStroke = BorderStroke(1.dp, theme.Colors.darkPrimary), colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent), fontSize = 18, shape = RoundedCornerShape(25.dp), textColor = theme.Colors.darkPrimary, style = androidx.compose.material3.MaterialTheme.typography.titleMedium){
             onCardCheckOutStarted()
         }
 

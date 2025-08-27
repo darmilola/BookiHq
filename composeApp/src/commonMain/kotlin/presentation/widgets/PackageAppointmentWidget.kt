@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import domain.Enums.AppointmentType
 import domain.Enums.BookingStatus
 import domain.Models.Appointment
@@ -113,35 +114,38 @@ fun PackageAppointmentWidget(userAppointment: UserAppointment? = null, appointme
             .fillMaxWidth()
             .border(border = BorderStroke(1.4.dp, Colors.lightGray), shape = RoundedCornerShape(10.dp))
 
-    Box(modifier = boxBgModifier) {
-        val columnModifier = Modifier
-            .padding(start = 5.dp, bottom = 10.dp)
-            .fillMaxWidth()
-        Column(
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start,
-            modifier = columnModifier
-        ) {
-            AttachPackageAppointmentHeader(
-                serviceStatusText,
-                serviceIconRes,
-                serviceStatusColor,
-                userAppointment,
-                serviceMenuItems,
-                appointmentPresenter,
-                postponementViewModel,
-                availabilityPerformedActionUIStateViewModel,
-                mainViewModel = mainViewModel,
-                onDeleteAppointment = {
-                    onDeleteAppointment(it)
-                },
-                onCancelAppointment = {
-                    onCancelAppointment(it)
-                },
-                platformNavigator = platformNavigator, onAddReview = {
-                    onAddReview(it)
-                })
-            AttachPackageAppointmentContent(appointment!!)
+    AppTheme {
+
+        Box(modifier = boxBgModifier) {
+            val columnModifier = Modifier
+                .padding(start = 5.dp, bottom = 10.dp)
+                .fillMaxWidth()
+            Column(
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start,
+                modifier = columnModifier
+            ) {
+                AttachPackageAppointmentHeader(
+                    serviceStatusText,
+                    serviceIconRes,
+                    serviceStatusColor,
+                    userAppointment,
+                    serviceMenuItems,
+                    appointmentPresenter,
+                    postponementViewModel,
+                    availabilityPerformedActionUIStateViewModel,
+                    mainViewModel = mainViewModel,
+                    onDeleteAppointment = {
+                        onDeleteAppointment(it)
+                    },
+                    onCancelAppointment = {
+                        onCancelAppointment(it)
+                    },
+                    platformNavigator = platformNavigator, onAddReview = {
+                        onAddReview(it)
+                    })
+                AttachPackageAppointmentContent(appointment!!)
+            }
         }
     }
 }

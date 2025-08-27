@@ -179,7 +179,7 @@ class TherapistDashboard(val platformNavigator: PlatformNavigator? = null) : Par
                      navigator.replaceAll(splashScreen)
                  })
             },
-            backgroundColor = Color.White,
+            backgroundColor = theme.Colors.dashboardBackground,
             floatingActionButton = {}
         )
     }
@@ -213,8 +213,7 @@ class TherapistDashboard(val platformNavigator: PlatformNavigator? = null) : Par
                             TextComponent(
                                 text = tabItems[index],
                                 fontSize = 16,
-                                fontFamily = GGSansSemiBold,
-                                textStyle = MaterialTheme.typography.h6,
+                                textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                                 textColor = Colors.darkPrimary,
                                 textAlign = TextAlign.Center,
                                 fontWeight = FontWeight.Bold,

@@ -252,7 +252,7 @@ fun TimeItem(platformTime: PlatformTime, onWorkHourClickListener: (PlatformTime)
         "PM"
     }
     val color: Color = if(platformTime.isSelected){
-        Colors.primaryColor
+        theme.Colors.greenColor
     }
     else if (!platformTime.isEnabled){
         Color.LightGray
@@ -279,17 +279,16 @@ fun TimeItem(platformTime: PlatformTime, onWorkHourClickListener: (PlatformTime)
         verticalAlignment = Alignment.CenterVertically
     ) {
         if(showSelectIcon.value){
-            ImageComponent(imageModifier = Modifier.size(20.dp), imageRes = "drawable/check_mark_icon.png", colorFilter = ColorFilter.tint(color = Colors.primaryColor))
+            ImageComponent(imageModifier = Modifier.size(20.dp), imageRes = "drawable/check_mark_icon.png", colorFilter = ColorFilter.tint(color = theme.Colors.greenColor))
         }
         TextComponent(
             text = platformTime.time!!+" "+meridian,
             fontSize = 15,
-            textStyle = MaterialTheme.typography.h6,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
             textColor = color,
             textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold,
-            lineHeight = 30,
-            textModifier = Modifier.padding(start = 5.dp))
+            fontWeight = FontWeight.SemiBold,
+            lineHeight = 30)
 
     }
 }

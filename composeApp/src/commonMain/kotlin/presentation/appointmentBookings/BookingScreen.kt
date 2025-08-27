@@ -68,6 +68,7 @@ import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Enums.BookingStatus
 import domain.Enums.CustomerPaymentEnum
@@ -122,7 +123,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         this.databaseBuilder = databaseBuilder
     }
 
-    fun generateRandomEmail(domain: String = "booki.africa"): String {
+    private fun generateRandomEmail(domain: String = "booki.africa"): String {
         val chars = ('a'..'z') + ('0'..'9')
         val usernameLength = (8..12).random()
         val username = (1..usernameLength)
@@ -196,7 +197,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         }
 
 
-        if (paymentActionUIStateViewModel== null) {
+        if (paymentActionUIStateViewModel == null) {
             paymentActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
@@ -204,26 +205,28 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             )
         }
 
-      if(bookingViewModel == null) {
-        bookingViewModel = kmpViewModel(
-            factory = viewModelFactory {
-                BookingViewModel(savedStateHandle = createSavedStateHandle())
-            },
-        )
-     }
+        if (bookingViewModel == null) {
+            bookingViewModel = kmpViewModel(
+                factory = viewModelFactory {
+                    BookingViewModel(savedStateHandle = createSavedStateHandle())
+                },
+            )
+        }
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
-        if (onBackPressed.value){
+        if (onBackPressed.value) {
             when (currentPage.value) {
                 0 -> {
                     mainViewModel!!.setOnBackPressed(false)
                     navigator.pop()
                 }
+
                 1 -> {
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(0)
                     }
                 }
+
                 2 -> {
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(1)
@@ -249,36 +252,43 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         }
 
         val handler = BookingScreenHandler(
-            bookingViewModel!!, loadPendingActionUIStateViewModel = loadPendingActionUIStateViewModel!!,
+            bookingViewModel!!,
+            loadPendingActionUIStateViewModel = loadPendingActionUIStateViewModel!!,
             createAppointmentActionUIStateViewModel = createAppointmentActionUIStateViewModel!!,
-            getServiceTypesActionUIStateViewModel = getServiceTypesUIStateViewModel!! ,
-            getTherapistActionUIStateViewModel = getTherapistActionUIStateViewModel!!, getTimesActionUIStateViewModel = getTimeActionUIStateViewModel!!, bookingPresenter = bookingPresenter
-        ){}
+            getServiceTypesActionUIStateViewModel = getServiceTypesUIStateViewModel!!,
+            getTherapistActionUIStateViewModel = getTherapistActionUIStateViewModel!!,
+            getTimesActionUIStateViewModel = getTimeActionUIStateViewModel!!,
+            bookingPresenter = bookingPresenter
+        ) {}
         handler.init()
 
-        val cancelContractHandler = CancelContractHandler(deleteActionUIStateViewModel!!, bookingPresenter)
+        val cancelContractHandler =
+            CancelContractHandler(deleteActionUIStateViewModel!!, bookingPresenter)
         cancelContractHandler.init()
 
 
-        val createAppointmentActionUiStates = createAppointmentActionUIStateViewModel!!.createAppointmentUiState.collectAsState()
-        val paymentActionUiState = paymentActionUIStateViewModel!!.paymentUiStateInfo.collectAsState()
+        val createAppointmentActionUiStates =
+            createAppointmentActionUIStateViewModel!!.createAppointmentUiState.collectAsState()
+        val paymentActionUiState =
+            paymentActionUIStateViewModel!!.paymentUiStateInfo.collectAsState()
 
         if (createAppointmentActionUiStates.value.isLoading) {
             Box(modifier = Modifier.fillMaxWidth(0.90f)) {
                 LoadingDialog("Creating Appointment...")
             }
-        }
-        else if (createAppointmentActionUiStates.value.isSuccess){
+        } else if (createAppointmentActionUiStates.value.isSuccess) {
             Box(modifier = Modifier.fillMaxWidth()) {
-                SuccessDialog("Creating Appointment Successful", actionTitle = "Done", onConfirmation = {
-                    coroutineScope.launch {
-                        pagerState.scrollToPage(0)
-                        navigator.pop()
-                    }
-                })
+                SuccessDialog(
+                    "Creating Appointment Successful",
+                    actionTitle = "Done",
+                    onConfirmation = {
+                        coroutineScope.launch {
+                            pagerState.scrollToPage(0)
+                            navigator.pop()
+                        }
+                    })
             }
-        }
-        else if (createAppointmentActionUiStates.value.isFailed){
+        } else if (createAppointmentActionUiStates.value.isFailed) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 ErrorDialog("Creating Appointment Failed", actionTitle = "Retry", onConfirmation = {
                     createAppointment()
@@ -290,16 +300,21 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             Box(modifier = Modifier.fillMaxWidth(0.90f)) {
                 LoadingDialog("Processing Payment")
             }
-        }
-        else if (paymentActionUiState.value.isFailed) {
+        } else if (paymentActionUiState.value.isFailed) {
             Box(modifier = Modifier.fillMaxWidth()) {
-                ErrorDialog("Payment Authentication Failed", actionTitle = "Retry", onConfirmation = {})
+                ErrorDialog(
+                    "Payment Authentication Failed",
+                    actionTitle = "Retry",
+                    onConfirmation = {})
             }
         }
 
-        if (paystackPaymentFailed.value){
+        if (paystackPaymentFailed.value) {
             Box(modifier = Modifier.fillMaxWidth()) {
-                ErrorDialog(paystackPaymentFailedMessage.value, actionTitle = "Retry", onConfirmation = {})
+                ErrorDialog(
+                    paystackPaymentFailedMessage.value,
+                    actionTitle = "Retry",
+                    onConfirmation = {})
             }
         }
 
@@ -308,14 +323,14 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             animation = StackedSnackbarAnimation.Bounce
         )
 
-        if (addMoreService.value){
+        if (addMoreService.value) {
             addMoreService.value = false
             rememberCoroutineScope().launch {
                 pagerState.scrollToPage(0)
                 navigator.pop()
             }
         }
-        if (lastItemRemoved.value){
+        if (lastItemRemoved.value) {
             lastItemRemoved.value = false
             rememberCoroutineScope().launch {
                 pagerState.scrollToPage(0)
@@ -323,7 +338,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             }
         }
 
-        if (completeProfile.value){
+        if (completeProfile.value) {
             completeProfile.value = false
             val editProfile = EditProfile(platformNavigator)
             editProfile.setMainViewModel(mainViewModel!!)
@@ -338,7 +353,8 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
             onAuthorizationSuccessful = {
                 if (it.status) {
                     println(it.paymentAuthorizationData.accessCode)
-                    val paymentAmount = calculateAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
+                    val paymentAmount =
+                        calculateAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
                     platformNavigator.startPaymentProcess(paymentAmount = (paymentAmount * 100).toString(),
                         customerEmail = customerEmail!!,
                         accessCode = it.paymentAuthorizationData.accessCode,
@@ -363,9 +379,9 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         val showSelectPaymentCards = mainViewModel!!.showPaymentCardsBottomSheet.collectAsState()
 
         if (showSelectPaymentCards.value) {
-            val paymentAmount = calculateAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
+            val paymentAmount =
+                calculateAppointmentPaymentAmount(bookingViewModel!!.pendingAppointments.value)
             val paymentCurrency = mainViewModel!!.displayCurrencyPath.value
-            println("Amount $paymentAmount  Currency $paymentCurrency")
             PaymentCardBottomSheet(
                 mainViewModel!!,
                 cardList,
@@ -373,7 +389,11 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                 onCardSelected = {
                     mainViewModel!!.showPaymentCardsBottomSheet(false)
                     selectedCard = it
-                    paymentPresenter.initCheckOut(amount = (paymentAmount * 100).toString(), customerEmail = customerEmail!!, currency = paymentCurrency)
+                    paymentPresenter.initCheckOut(
+                        amount = (paymentAmount * 100).toString(),
+                        customerEmail = customerEmail!!,
+                        currency = paymentCurrency
+                    )
                 },
                 onDismiss = {
                     mainViewModel!!.showPaymentCardsBottomSheet(false)
@@ -383,83 +403,95 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                 })
         }
 
-        Scaffold(
-            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState)  },
-            topBar = {},
-            content = {
-                val layoutModifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .background(color = Color.White)
-                Column(modifier = layoutModifier) {
+        AppTheme {
 
-                    BookingScreenTopBar(pagerState, onBackPressed = { page ->
-                        currentPage.value = page
-                        when (currentPage.value) {
-                            0 -> {
-                                navigator.pop()
-                            }
-                            1 -> {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(0)
+            Scaffold(
+                snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
+                topBar = {},
+                content = {
+                    val layoutModifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .background(color = theme.Colors.dashboardBackground)
+                    Column(modifier = layoutModifier) {
+
+                        BookingScreenTopBar(pagerState, onBackPressed = { page ->
+                            currentPage.value = page
+                            when (currentPage.value) {
+                                0 -> {
+                                    navigator.pop()
                                 }
-                            }
-                            2 -> {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(1)
-                                    if (bookingViewModel!!.pendingAppointments.value.isNotEmpty()) {
-                                        val lastBooking =
-                                            bookingViewModel!!.pendingAppointments.value[0]
-                                        bookingPresenter.silentDeletePendingBookingAppointment(
-                                            lastBooking.appointmentId
-                                        )
+
+                                1 -> {
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(0)
                                     }
                                 }
 
+                                2 -> {
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(1)
+                                        if (bookingViewModel!!.pendingAppointments.value.isNotEmpty()) {
+                                            val lastBooking =
+                                                bookingViewModel!!.pendingAppointments.value[0]
+                                            bookingPresenter.silentDeletePendingBookingAppointment(
+                                                lastBooking.appointmentId
+                                            )
+                                        }
+                                    }
+
+                                }
+                            }
+                        })
+
+                        val bgStyle = Modifier
+                            .fillMaxWidth()
+                            .background(color = theme.Colors.dashboardBackground)
+                            .fillMaxHeight()
+
+                        Box(
+                            contentAlignment = Alignment.TopCenter, modifier = Modifier
+                                .fillMaxHeight()
+                                .fillMaxWidth()
+                                .background(color = theme.Colors.dashboardBackground)
+                        ) {
+
+                            Column(
+                                modifier = bgStyle
+                            ) {
+                                AttachBookingPages(
+                                    pagerState,
+                                    getTherapistActionUIStateViewModel!!,
+                                    loadPendingActionUIStateViewModel!!,
+                                    deleteActionUIStateViewModel!!,
+                                    mainViewModel!!,
+                                    bookingViewModel!!,
+                                    services = mainViewModel!!.selectedService.value,
+                                    onLastItemRemoved = {
+                                        lastItemRemoved.value = true
+                                    },
+                                    onCompleteProfile = {
+                                        completeProfile.value = true
+                                    }
+                                )
+                                AttachActionButtons(
+                                    pagerState,
+                                    mainViewModel!!,
+                                    bookingViewModel!!,
+                                    stackedSnackBarHostState,
+                                    bookingPresenter,
+                                    onAddMoreServicesClicked = {
+                                        addMoreService.value = true
+                                    })
                             }
                         }
-                    })
 
-                    val bgStyle = Modifier
-                        .fillMaxWidth()
-                        .background(color = Color.White)
-                        .fillMaxHeight()
-
-                    Box(
-                        contentAlignment = Alignment.TopCenter, modifier = Modifier
-                            .fillMaxHeight()
-                            .fillMaxWidth()
-                            .background(color = Color.White)
-                    ) {
-
-                        Column(
-                            modifier = bgStyle
-                        ) {
-                            AttachBookingPages(
-                                pagerState,
-                                getTherapistActionUIStateViewModel!!,
-                                loadPendingActionUIStateViewModel!!,
-                                deleteActionUIStateViewModel!!,
-                                mainViewModel!!,
-                                bookingViewModel!!,
-                                services = mainViewModel!!.selectedService.value,
-                                onLastItemRemoved = {
-                                    lastItemRemoved.value = true
-                                },
-                                onCompleteProfile = {
-                                    completeProfile.value = true
-                                }
-                            )
-                            AttachActionButtons(pagerState, mainViewModel!!,bookingViewModel!!, stackedSnackBarHostState, bookingPresenter, onAddMoreServicesClicked = {
-                                addMoreService.value = true
-                            })
-                        }
                     }
-
                 }
-            }
-        )}
+            )
+        }
+    }
 
     private fun createAppointment(){
         val userId = mainViewModel!!.currentUserInfo.value.userId
@@ -514,7 +546,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                     fontSize = 16,
                     shape = RoundedCornerShape(10.dp),
                     textColor = Colors.primaryColor,
-                    style = MaterialTheme.typography.h6,
+                    style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                     borderStroke = null
                 ) {
                     onAddMoreServicesClicked()
@@ -530,7 +562,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                 buttonText = bookingNavText,
                 colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
                 fontSize = 16, shape = RoundedCornerShape(10.dp),
-                textColor = Color(color = 0xFFFFFFFF), style = MaterialTheme.typography.h6, borderStroke = null) {
+                textColor = Color(color = 0xFFFFFFFF), style = androidx.compose.material3.MaterialTheme.typography.titleMedium, borderStroke = null) {
 
                 coroutineScope.launch {
                         if (currentPage == 0) {
@@ -583,7 +615,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
                 if (currentPage == 2){
                     runBlocking {
                         cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
-                        mainViewModel!!.showPaymentCardsBottomSheet(true)
+                        mainViewModel.showPaymentCardsBottomSheet(true)
                     }
                   }
                 }
@@ -599,7 +631,7 @@ class BookingScreen(val platformNavigator: PlatformNavigator) :  KoinComponent, 
         val boxModifier =
             Modifier
                 .padding(top = 5.dp)
-                .background(color = Color.White)
+                .background(color = theme.Colors.dashboardBackground)
                 .fillMaxHeight(pageHeight.value)
                 .fillMaxWidth()
 

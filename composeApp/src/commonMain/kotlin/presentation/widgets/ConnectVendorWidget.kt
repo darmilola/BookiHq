@@ -1,8 +1,10 @@
 package presentation.widgets
 
 import GGSansRegular
+import androidx.compose.foundation.BorderStroke
 import theme.styles.Colors
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -21,6 +24,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,7 +61,7 @@ fun ConnectBusinessTitle(title: String){
         .height(40.dp)
 
     val colModifier = Modifier
-        .padding(top = 20.dp, end = 0.dp)
+        .padding(top = 10.dp)
         .fillMaxWidth()
         .height(40.dp)
 
@@ -116,220 +121,90 @@ fun leftTopBarItem(onBackPressed: () -> Unit) {
 
 @Composable
 fun ConnectTitle(title: String){
-    TitleWidget(title = title, textColor = Colors.primaryColor)
+    SubtitleTextWidget(text = title, textColor = Colors.primaryColor, fontSize = 20)
 }
 
 
 @Composable
-fun BusinessInfoContent(vendor: Vendor, isViewOnly: Boolean = false, onConnectedListener: () -> Unit) {
-    val columnModifier = Modifier
-        .background(color = Color.White)
-        .padding(start = 10.dp, end = 10.dp)
-        .fillMaxHeight()
-        .verticalScroll(rememberScrollState())
-        .fillMaxWidth()
-    Box(modifier = Modifier.fillMaxSize()) {
+fun BusinessInfoContent(vendor: Vendor) {
+
+    val isMobileServiceAvailable = vendor?.isMobileServiceAvailable
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 10.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 0.5.dp
+        )
+    ) {
+
+        Box(
+            modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                .background(
+                    color = Color.White,
+                    shape = RoundedCornerShape(15.dp)
+                )
+                .border(
+                    border = BorderStroke(1.5.dp, color = theme.Colors.lightGrayColor),
+                    shape = RoundedCornerShape(10.dp)
+                )
+        ) {
+
             Column(
-                modifier = columnModifier,
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                    .verticalScroll(rememberScrollState())
+                    .padding(start = 15.dp, end = 10.dp, bottom = 10.dp),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Top
             ) {
-                BusinessLogo(logoUrl = vendor.businessLogo!!)
-                TextComponent(
-                    text = vendor.businessName!!,
-                    fontSize = 18,
-                    fontFamily = GGSansRegular,
-                    textStyle = TextStyle(),
-                    textColor = Colors.darkPrimary,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Normal,
-                    lineHeight = 25,
-                    textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 10.dp),
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
 
-                AttachLocationIcon()
-
-                TextComponent(
-                    textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 5.dp),
-                    text = vendor.businessAddress!!,
-                    fontSize = 18,
-                    fontFamily = GGSansRegular,
-                    textStyle = TextStyle(),
-                    textColor = Color.DarkGray,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Normal,
-                    lineHeight = 25,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                AttachLocationInfoIcon()
-
-                TextComponent(
-                    textModifier = Modifier.fillMaxWidth().padding(bottom = 15.dp, top = 5.dp),
-                    text = vendor.businessAbout!!,
-                    fontSize = 18,
-                    fontFamily = GGSansRegular,
-                    textStyle = TextStyle(),
-                    textColor = Color.DarkGray,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Normal,
-                    lineHeight = 25,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth().height(50.dp)
-                        .padding(start = 30.dp, end = 30.dp)
-                ) {
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth().height(50.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxHeight().wrapContentWidth(),
-                            contentAlignment = Alignment.BottomCenter
-                        ) {
-                            val modifier = Modifier
-                                .size(24.dp)
-                            ImageComponent(
-                                imageModifier = modifier,
-                                imageRes = "drawable/open_sign.png",
-                                colorFilter = ColorFilter.tint(color = Colors.primaryColor)
-                            )
-                        }
-
-                        Box(
-                            modifier = Modifier.fillMaxHeight().wrapContentWidth(),
-                            contentAlignment = Alignment.BottomCenter
-                        ) {
-                            TextComponent(
-                                textModifier = Modifier.wrapContentWidth()
-                                    .padding(start = 5.dp),
-                                text = vendor.openingTime.toString(),
-                                fontSize = 16,
-                                textStyle = TextStyle(),
-                                textColor = Color.DarkGray,
-                                textAlign = TextAlign.Left,
-                                fontWeight = FontWeight.Normal,
-                                lineHeight = 23,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
-
-                    }
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth().height(50.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                    Box(
-                        modifier = Modifier.fillMaxHeight().wrapContentWidth(),
-                        contentAlignment = Alignment.BottomCenter
-                    ) {
-                        val modifier = Modifier
-                            .size(24.dp)
-                        ImageComponent(
-                            imageModifier = modifier,
-                            imageRes = "drawable/mobile_service.png",
-                            colorFilter = ColorFilter.tint(color = Colors.primaryColor)
-                        )
-                    }
-
-                    Box(
-                        modifier = Modifier.fillMaxHeight().wrapContentWidth(),
-                        contentAlignment = Alignment.BottomCenter
-                    ) {
-                        TextComponent(
-                            textModifier = Modifier.wrapContentWidth()
-                                .padding(start = 5.dp),
-                            text = if (vendor.isMobileServiceAvailable) "Home Service Available" else "No Home Service",
-                            fontSize = 16,
-                            textStyle = TextStyle(),
-                            textColor = Color.DarkGray,
-                            textAlign = TextAlign.Left,
-                            fontWeight = FontWeight.Normal,
-                            lineHeight = 23,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth().height(50.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                    Box(
-                        modifier = Modifier.fillMaxHeight().wrapContentWidth(),
-                        contentAlignment = Alignment.BottomCenter
-                    ) {
-                        val modifier = Modifier
-                            .size(24.dp)
-                        ImageComponent(
-                            imageModifier = modifier,
-                            imageRes = "drawable/phone_icon.png",
-                            colorFilter = ColorFilter.tint(color = Colors.primaryColor)
-                        )
-                    }
-
-                    Box(
-                        modifier = Modifier.fillMaxHeight().wrapContentWidth(),
-                        contentAlignment = Alignment.BottomCenter
-                    ) {
-                        TextComponent(
-                            textModifier = Modifier.wrapContentWidth()
-                                .padding(start = 5.dp),
-                            text = vendor.contactPhone!!,
-                            fontSize = 16,
-                            textStyle = TextStyle(),
-                            textColor = Color.DarkGray,
-                            textAlign = TextAlign.Left,
-                            fontWeight = FontWeight.Normal,
-                            lineHeight = 23,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                }
-
-                if (!isViewOnly){
-
-                    val buttonStyle = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 25.dp)
-                        .height(45.dp)
-
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-
-                        ButtonComponent(
-                            modifier = buttonStyle,
-                            buttonText = "Connect",
-                            borderStroke = null,
-                            colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
-                            fontSize = 16,
-                            shape = CircleShape,
-                            textColor = Color.White,
-                            style = TextStyle()
-                        ) {
-                            onConnectedListener()
-                        }
-                    }
-                }
+                businessInfo(title = "Business Name", info = vendor?.businessName!!)
+                businessInfo(title = "Location", info = vendor.businessAddress!!)
+                businessInfo(title = "City", info = vendor.city!!)
+                businessInfo(title = "Handle", info = vendor.businessHandle!!)
+                businessInfo(title = "About Business", info = vendor.businessAbout!!)
+                businessInfo(title = "Opening Time", info = vendor.openingTime!!)
+                businessInfo(title = "Contact Phone", info = vendor.contactPhone!!)
+                businessInfo(title = "Home Services", info = if (isMobileServiceAvailable!!) "Available" else "No Home Service")
             }
+        }
+    }
+}
+
+@Composable
+fun businessInfo(title: String, info: String){
+    Column(
+        modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(top = 20.dp)){
+
+        TextComponent(
+            textModifier = Modifier.wrapContentWidth()
+                .padding(bottom = 5.dp),
+            text = title,
+            fontSize = 16,
+            textStyle = MaterialTheme.typography.titleMedium,
+            textColor = Color(0xFFb0afaf),
+            textAlign = TextAlign.Left,
+            fontWeight = FontWeight.SemiBold,
+            lineHeight = 23,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+
+        TextComponent(
+            textModifier = Modifier.wrapContentWidth(),
+            text = info,
+            fontSize = 16,
+            textStyle = MaterialTheme.typography.titleMedium,
+            textColor = theme.Colors.darkPrimary,
+            textAlign = TextAlign.Left,
+            fontWeight = FontWeight.SemiBold,
+            lineHeight = 23,
+            maxLines = 20,
+            overflow = TextOverflow.Ellipsis
+        )
+
     }
 }
 

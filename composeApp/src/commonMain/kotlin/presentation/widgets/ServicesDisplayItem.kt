@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.Services
 import domain.Models.getWidget
@@ -37,6 +38,7 @@ fun HomeServicesWidget(vendorService:Services, onServiceSelected: (Services) -> 
         .clickable {
             onServiceSelected(vendorService)
         }
+        .background(color = Color.White)
         .border(width = 1.dp, color = Colors.lightGray, shape = RoundedCornerShape(10.dp))
         .height(120.dp)
         Column(
@@ -51,11 +53,11 @@ fun HomeServicesWidget(vendorService:Services, onServiceSelected: (Services) -> 
             TextComponent(
                 text = vendorService.serviceInfo.title,
                 fontSize = 15,
-                fontFamily = GGSansBold,
-                textStyle = MaterialTheme.typography.h6,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.Normal,
+                overflow = TextOverflow.Ellipsis,
                 lineHeight = 30,
                 textModifier = modifier
             )
@@ -75,7 +77,7 @@ fun AttachServiceImage(iconRes: String, iconSize: Int = 50) {
     ) {
         val modifier = Modifier
             .size(iconSize.dp)
-        ImageComponent(imageModifier = modifier, imageRes = iconRes, colorFilter = ColorFilter.tint(color = Color.Black))
+        ImageComponent(imageModifier = modifier, imageRes = iconRes, colorFilter = ColorFilter.tint(color = Colors.darkPrimary))
     }
 
 }

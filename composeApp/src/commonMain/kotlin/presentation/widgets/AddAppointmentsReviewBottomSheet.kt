@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -42,6 +43,7 @@ import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
 import presentations.widgets.InputWidget
+import presentations.widgets.InputWidgetV2
 import theme.styles.Colors
 
 
@@ -82,7 +84,7 @@ fun AddAppointmentsReviewBottomSheet(mainViewModel: MainViewModel, onReviewsAdde
         Column(modifier = Modifier.fillMaxSize().background(color = Color.White)) {
             Row(
                 modifier = Modifier
-                    .height(50.dp)
+                    .height(45.dp)
                     .fillMaxWidth()
                     .padding(start = 20.dp, end = 20.dp, top = 10.dp),
                 horizontalArrangement = Arrangement.Center,
@@ -95,10 +97,9 @@ fun AddAppointmentsReviewBottomSheet(mainViewModel: MainViewModel, onReviewsAdde
                     TextComponent(
                         text = "Add Therapist Review",
                         fontSize = 18,
-                        fontFamily = GGSansBold,
-                        textStyle = TextStyle(),
+                        textStyle = MaterialTheme.typography.titleLarge,
                         textAlign = TextAlign.Left,
-                        fontWeight = FontWeight.ExtraBold,
+                        fontWeight = FontWeight.Bold,
                         lineHeight = 20,
                         textColor = Colors.primaryColor,
                         maxLines = 1,
@@ -126,8 +127,8 @@ fun AddAppointmentsReviewBottomSheet(mainViewModel: MainViewModel, onReviewsAdde
 
                 }
             }
-            Box(modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp)) {
-                InputWidget(
+            Box(modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp)) {
+                InputWidgetV2(
                     viewHeight = 120,
                     iconRes = "drawable/cancel_icon.png",
                     placeholderText = "Write Here...",
@@ -145,7 +146,7 @@ fun AddAppointmentsReviewBottomSheet(mainViewModel: MainViewModel, onReviewsAdde
 
             ButtonComponent(
                 modifier = Modifier
-                    .padding(bottom = 10.dp, start = 10.dp, end = 10.dp, top = 4.dp)
+                    .padding(bottom = 10.dp, start = 10.dp, end = 10.dp, top = 10.dp)
                     .fillMaxWidth()
                     .height(50.dp),
                 buttonText = "Send",
@@ -153,7 +154,7 @@ fun AddAppointmentsReviewBottomSheet(mainViewModel: MainViewModel, onReviewsAdde
                 fontSize = 16,
                 shape = CircleShape,
                 textColor = Color(color = 0xFFFFFFFF),
-                style = TextStyle(),
+                style = MaterialTheme.typography.titleMedium,
                 borderStroke = null
             ) {
                 if (reviewsText.value.trim().isNotEmpty()){

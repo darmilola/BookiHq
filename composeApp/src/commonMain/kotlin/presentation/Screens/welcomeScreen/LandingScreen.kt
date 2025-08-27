@@ -66,7 +66,6 @@ import presentation.Screens.SplashScreenCompose
 import presentation.Screens.WelcomeScreen
 import presentation.authentication.AuthenticationPresenter
 import presentation.components.ButtonComponent
-import presentation.components.SplashScreenBackground
 import presentation.connectVendor.ConnectVendor
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.AttachTextContent

@@ -46,14 +46,10 @@ fun AttachTherapistAppointmentHeader(statusText: String, statusDrawableRes: Stri
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth(0.70f).height(40.dp)
         ) {
-            Box(modifier = Modifier.fillMaxWidth(0.08f).fillMaxHeight(), contentAlignment = Alignment.Center) {
-                Box(modifier = Modifier.size(6.dp).clip(CircleShape).background(color = statusColor)){}
-            }
             TextComponent(
                 text = appointment.services?.serviceInfo?.title.toString(),
-                fontSize = 18,
-                fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
+                fontSize = 16,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
                 fontWeight = FontWeight.SemiBold,
@@ -97,17 +93,17 @@ fun TherapistDashboardAppointmentWidget(appointment: Appointment,
         BookingStatus.POSTPONED.toPath() -> {
             iconRes = "drawable/appointment_postponed.png"
             statusText = BookingStatus.POSTPONED.toName()
-            statusColor = Colors.pinkColor
+            statusColor = theme.Colors.redColor
         }
         BookingStatus.CANCELLED.toPath() -> {
             iconRes = "drawable/appointment_postponed.png"
             statusText = BookingStatus.CANCELLED.toName()
-            statusColor = Colors.pinkColor
+            statusColor = theme.Colors.redColor
         }
         BookingStatus.DONE.toPath() -> {
             iconRes = "drawable/appointment_done.png"
             statusText = BookingStatus.DONE.toName()
-            statusColor = Colors.greenColor
+            statusColor = theme.Colors.greenColor
         }
     }
 
@@ -117,6 +113,7 @@ fun TherapistDashboardAppointmentWidget(appointment: Appointment,
             .padding(bottom = 5.dp, top = 5.dp, start = 10.dp, end = 10.dp)
             .fillMaxHeight()
             .fillMaxWidth()
+            .background(color = Color.White)
             .border(border = BorderStroke(1.4.dp, Colors.lightGray), shape = RoundedCornerShape(10.dp))
 
     Box(modifier = boxBgModifier) {

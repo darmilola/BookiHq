@@ -18,7 +18,7 @@ import theme.styles.Colors
 @Composable
 fun FavoriteProductWidget(iconRes: String = "drawable/fav_icon.png", onFavClicked:(Boolean) -> Unit) {
     val imageBgColor = Color.White
-    val imageTintColor = Colors.primaryColor
+    val imageTintColor = theme.Colors.redColor
     Box(
         Modifier
             .clip(CircleShape)

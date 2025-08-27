@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import domain.Models.State
 import presentations.components.ImageComponent
@@ -61,7 +63,7 @@ fun DropDownWidgetView(menuItems: List<String>,
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().fillMaxHeight()
+            modifier = Modifier.fillMaxWidth().wrapContentHeight()
         ) {
 
             Box(modifier = Modifier.fillMaxHeight().width(50.dp), contentAlignment = Alignment.Center){
@@ -69,16 +71,18 @@ fun DropDownWidgetView(menuItems: List<String>,
                     .size(iconSize.dp), imageRes = iconRes, colorFilter = ColorFilter.tint(color = Colors.primaryColor))
             }
 
-            Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.8f), contentAlignment = Alignment.Center){
+            Box(modifier = Modifier.height(50.dp).fillMaxWidth(0.8f), contentAlignment = Alignment.CenterStart){
 
                 TextComponent(
                     text =  if(selectedIndex != -1) menuItems[selectedIndex] else placeHolderText,
                     fontSize = 16,
-                    textStyle = TextStyle(),
+                    textStyle = MaterialTheme.typography.titleMedium,
                     textColor = if(selectedIndex != -1) Colors.darkPrimary else  Color.Gray,
                     textAlign = TextAlign.Start,
-                    fontWeight = FontWeight.SemiBold,
-                    textModifier = Modifier.wrapContentHeight().fillMaxWidth().padding(end = 5.dp))
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textModifier = Modifier.fillMaxWidth().padding(end = 5.dp))
             }
 
             Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(), contentAlignment = Alignment.Center){
@@ -109,7 +113,16 @@ fun DropDownWidgetView(menuItems: List<String>,
                         onMenuItemClick(index)
                     }
                 }) {
-                MultiLineTextWidget(text = title, fontSize = 20)
+                TextComponent(
+                    text = title,
+                    fontSize = 17,
+                    textStyle = MaterialTheme.typography.titleMedium,
+                    textColor = theme.Colors.darkPrimary,
+                    textAlign = TextAlign.Left,
+                    fontWeight = FontWeight.SemiBold,
+                    lineHeight = 30,
+                    textModifier = Modifier
+                )
             }
         }
     }
@@ -123,11 +136,11 @@ fun StateDropDownWidget(menuItems: ArrayList<State>, iconRes: String = "drawable
     val selectedMenuIndex = remember { mutableStateOf(selectedIndex) }
 
     val modifier  = Modifier
-        .padding(end = 10.dp, start = 10.dp, top = 20.dp)
+        .padding(end = 10.dp, start = 10.dp, top = 10.dp)
         .fillMaxWidth()
         .height(60.dp)
         .border(border = BorderStroke(1.dp, color  = Colors.primaryColor), shape = RoundedCornerShape(15.dp))
-        .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(15.dp))
+        .background(color = Color.White, shape = RoundedCornerShape(15.dp))
 
     Column (
         modifier = modifier,
@@ -195,10 +208,10 @@ fun StatesDropDownWidgetView(menuItems: ArrayList<State>,
                 TextComponent(
                     text =  if(selectedIndex != -1) menuItems[selectedIndex].stateName else placeHolderText,
                     fontSize = if(selectedIndex != -1) 20 else 18,
-                    textStyle = TextStyle(),
+                    textStyle = MaterialTheme.typography.titleMedium,
                     textColor = if(selectedIndex != -1) Colors.darkPrimary else  Color.Gray,
                     textAlign = TextAlign.Start,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Normal,
                     textModifier = Modifier.wrapContentHeight().fillMaxWidth().padding(end = 5.dp))
             }
 
@@ -230,7 +243,16 @@ fun StatesDropDownWidgetView(menuItems: ArrayList<State>,
                         onMenuItemClick(index)
                     }
                 }) {
-                MultiLineTextWidget(text = title.stateName, fontSize = 20)
+                TextComponent(
+                    text = title.stateName,
+                    fontSize = 17,
+                    textStyle = MaterialTheme.typography.titleMedium,
+                    textColor = theme.Colors.darkPrimary,
+                    textAlign = TextAlign.Left,
+                    fontWeight = FontWeight.SemiBold,
+                    lineHeight = 30,
+                    textModifier = Modifier
+                )
             }
         }
     }
@@ -245,11 +267,11 @@ fun DropDownWidget(menuItems: List<String>, iconRes: String = "drawable/country_
     val selectedMenuIndex = remember { mutableStateOf(selectedIndex) }
 
     val modifier  = Modifier
-        .padding(end = 10.dp, start = 10.dp, top = 20.dp)
+        .padding(end = 10.dp, start = 10.dp, top = 10.dp)
         .fillMaxWidth()
         .height(55.dp)
         .border(border = BorderStroke(1.dp, color  = Colors.primaryColor), shape = shape)
-        .background(color = Colors.lightPrimaryColor, shape = shape)
+        .background(color = Color.Transparent, shape = shape)
 
     Column (
         modifier = modifier,
@@ -332,7 +354,7 @@ fun TextDropDownWidgetView(menuItems: List<PhoneExtensionModel>,
             ),
     ) {
 
-            Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(), contentAlignment = Alignment.Center){
+            Box(modifier = Modifier.fillMaxHeight().wrapContentWidth(), contentAlignment = Alignment.Center){
                 CountryCodeView(countryCode = menuItems[selectedIndex].countryCode, countryFlagRes = menuItems[selectedIndex].countryFlagRes)
             }
         }
@@ -340,7 +362,7 @@ fun TextDropDownWidgetView(menuItems: List<PhoneExtensionModel>,
         expanded = menuExpandedState,
         onDismissRequest = { onDismissMenuView() },
         modifier = Modifier
-            .fillMaxWidth(0.30f)
+            .wrapContentWidth()
             .background(Color.White)
     ) {
         menuItems.forEachIndexed { index, title ->

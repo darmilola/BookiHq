@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -37,6 +38,7 @@ import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import domain.Models.PlatformNavigator
 import kotlinx.serialization.Transient
@@ -47,7 +49,9 @@ import presentation.widgets.PhoneInputWidget
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.SnackBarType
 import presentation.widgets.MultiLineTextWidget
+import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
+import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
 import utils.ParcelableScreen
@@ -74,22 +78,20 @@ class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScr
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val  rootModifier =
+        val rootModifier =
             Modifier.fillMaxWidth()
-                .fillMaxHeight(0.95f)
-                .background(color = Color(color = 0xFFFBFBFB))
+                .fillMaxHeight()
+                .background(color = theme.Colors.dashboardBackground)
 
         val buttonStyle = Modifier
-            .padding(top = 30.dp, start = 20.dp, end = 20.dp)
+            .padding(top = 30.dp, start = 10.dp, end = 10.dp)
             .fillMaxWidth()
-            .height(50.dp)
+            .height(45.dp)
 
         val topLayoutModifier =
             Modifier
-                .padding(top = 40.dp, start = 10.dp)
                 .fillMaxWidth()
-                .fillMaxHeight(0.87f)
-                .background(color = Color(color = 0xFFFBFBFB))
+                .fillMaxHeight()
 
         val stackedSnackBarHostState = rememberStackedSnackbarHostState(
             maxStack = 5,
@@ -101,62 +103,67 @@ class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScr
         var countryCode = remember { mutableStateOf("+234") }
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
-        if (onBackPressed.value){
+        if (onBackPressed.value) {
             mainViewModel!!.setOnBackPressed(false)
             navigator.pop()
         }
 
 
 
-        Scaffold(
-            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState)  }
-        ) {
+        AppTheme {
+            Scaffold(
+                snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) }
+            ) {
 
-        Column(modifier = rootModifier) {
-            Column(modifier = topLayoutModifier) {
-                AuthenticationBackNav(mainViewModel = mainViewModel!!)
-                EnterPhoneNumberTitle()
-                AttachSendCodeDescription()
-                PhoneInputWidget(onValueChange = {
-                    phone.value = it
-                }, onCodeSelectionChange = {
-                    //countryCode.value = if (it == 0) "+234" else "+27"
-                })
-                ButtonComponent(
-                    modifier = buttonStyle,
-                    buttonText = "Continue",
-                    borderStroke = null,
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
-                    fontSize = 18,
-                    shape = RoundedCornerShape(25.dp),
-                    textColor = Color(color = 0xFFFFFFFF),
-                    style = MaterialTheme.typography.h4
-                ) {
-                    if (phone.value.isEmpty()) {
-                        ShowSnackBar(title = "Error",
-                            description = "Please Input your Phone number",
-                            actionLabel = "",
-                            duration = StackedSnackbarDuration.Long,
-                            snackBarType = SnackBarType.ERROR,
-                            stackedSnackBarHostState = stackedSnackBarHostState,
-                            onActionClick = {})
-                    } else {
-                        val validPhone = makeValidPhone(phone.value)
-                        var verificationPhone =  countryCode.value+""+validPhone
-                        if (phone.value == "555") verificationPhone = "555"
-                        platformNavigator.startPhoneSS0(verificationPhone)
-                        val verifyOTPScreen = VerifyOTPScreen(platformNavigator, verificationPhone)
-                        verifyOTPScreen.setMainViewModel(mainViewModel = mainViewModel!!)
-                        verifyOTPScreen.setDatabaseBuilder(databaseBuilder = databaseBuilder)
-                        navigator.push(verifyOTPScreen)
+                Column(modifier = rootModifier) {
+                    Column(modifier = topLayoutModifier) {
+                        AuthenticationBackNav(mainViewModel = mainViewModel!!)
+                        EnterPhoneNumberTitle()
+                        AttachSendCodeDescription()
+                        PhoneInputWidget(onValueChange = {
+                            phone.value = it
+                        }, onCodeSelectionChange = {
+                            //countryCode.value = if (it == 0) "+234" else "+27"
+                        })
+                        ButtonComponent(
+                            modifier = buttonStyle,
+                            buttonText = "Continue",
+                            borderStroke = null,
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
+                            fontSize = 18,
+                            shape = RoundedCornerShape(25.dp),
+                            textColor = Color(color = 0xFFFFFFFF),
+                            style = androidx.compose.material3.MaterialTheme.typography.titleMedium
+                        ) {
+                            if (phone.value.isEmpty()) {
+                                ShowSnackBar(title = "Error",
+                                    description = "Please Input your Phone number",
+                                    actionLabel = "",
+                                    duration = StackedSnackbarDuration.Long,
+                                    snackBarType = SnackBarType.ERROR,
+                                    stackedSnackBarHostState = stackedSnackBarHostState,
+                                    onActionClick = {})
+                            } else {
+                                val validPhone = makeValidPhone(phone.value)
+                                var verificationPhone = countryCode.value + "" + validPhone
+                                if (phone.value == "555") {
+                                    verificationPhone = "555"
+                                }
+                                platformNavigator.startPhoneSS0(verificationPhone)
+                                val verifyOTPScreen =
+                                    VerifyOTPScreen(platformNavigator, verificationPhone)
+                                verifyOTPScreen.setMainViewModel(mainViewModel = mainViewModel!!)
+                                verifyOTPScreen.setDatabaseBuilder(databaseBuilder = databaseBuilder)
+                                navigator.push(verifyOTPScreen)
+                            }
+                        }
+
+
                     }
                 }
 
 
             }
-        }
-
-
         }
     }
 
@@ -172,7 +179,9 @@ class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScr
             verticalAlignment = Alignment.Top,
             modifier = rowModifier
         ) {
-            TitleWidget(title = "Enter Your Phone number", textColor = Colors.primaryColor)
+            TextComponent(text = "Enter Your Phone number", textColor = Colors.darkPrimary,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Normal,
+                fontSize = 20, textAlign = TextAlign.Center)
         }
     }
 
@@ -187,13 +196,12 @@ class PhoneInputScreen(val platformNavigator: PlatformNavigator) : ParcelableScr
             verticalAlignment = Alignment.Top,
             modifier = rowModifier
         ) {
-            MultiLineTextWidget(text = "We'll send a verification code to your\n" +
-                    " phone via text message", textAlign = TextAlign.Center)
+            SubtitleTextWidget(text = "We'll send a verification code to your\n" +
+                    " phone via text message", textAlign = TextAlign.Center, fontSize = 16)
         }
     }
 
     override fun enter(lastEvent: StackEvent): EnterTransition {
-        println("Enter")
         return slideIn { size ->
             val x = if (lastEvent == StackEvent.Pop) -size.width else size.width
             IntOffset(x = x, y = 0)

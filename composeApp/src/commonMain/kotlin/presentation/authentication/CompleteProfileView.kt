@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -36,6 +37,7 @@ import androidx.room.RoomDatabase
 import applications.room.AppDatabase
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
 import countryList
@@ -62,6 +64,7 @@ import presentation.widgets.SnackBarType
 import presentation.widgets.TitleWidget
 import presentation.widgets.ShowSnackBar
 import presentation.widgets.StateDropDownWidget
+import presentation.widgets.SubtitleTextWidget
 import presentations.components.TextComponent
 import presentations.widgets.InputWidget
 import rememberStackedSnackbarHostState
@@ -82,11 +85,12 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
     val profileImageUrl = remember { mutableStateOf(placeHolderImage) }
     val preferenceSettings = Settings()
     val authType = if (authEmail.isNotEmpty()) AuthType.EMAIL.toPath() else AuthType.PHONE.toPath()
-    val inputList =  ArrayList<String>()
+    val inputList = ArrayList<String>()
     val isSavedClicked = remember {
         mutableStateOf(false)
     }
-    if (authPhone == "555") profileImageUrl.value = "https://cdn.pixabay.com/photo/2017/12/17/21/44/drink-3025022_1280.jpg"
+    if (authPhone == "555") profileImageUrl.value =
+        "https://cdn.pixabay.com/photo/2017/12/17/21/44/drink-3025022_1280.jpg"
     val navigator = LocalNavigator.currentOrThrow
     val stackedSnackBarHostState = rememberStackedSnackbarHostState(
         maxStack = 5,
@@ -112,21 +116,21 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
         onVerificationEnded = {}, onCompleteStarted = {
             completeProfileInProgress.value = true
         }, onCompleteEnded = { isSuccessful -> completeProfileInProgress.value = false },
-        connectVendorOnProfileCompleted = { userInfo  ->
-                val userCurrency = getDisplayCurrency(userInfo.country)
-                val displayCurrencyUnit = userCurrency.toDisplayUnit()
-                val displayCurrencyPath = userCurrency.toPath()
-                mainViewModel.setDisplayCurrencyUnit(displayCurrencyUnit)
-                mainViewModel.setDisplayCurrencyPath(displayCurrencyPath)
-                mainViewModel.setUserInfo(userInfo)
-                preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = userInfo.country
-                preferenceSettings[SharedPreferenceEnum.STATE.toPath()] = userInfo.state?.id
-                preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = userInfo.userId
-                preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = userInfo.apiKey
-                preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = authEmail
-                preferenceSettings[SharedPreferenceEnum.AUTH_PHONE.toPath()] = authPhone
-                mainViewModel.setUserInfo(userInfo)
-                scope.launch {
+        connectVendorOnProfileCompleted = { userInfo ->
+            val userCurrency = getDisplayCurrency(userInfo.country)
+            val displayCurrencyUnit = userCurrency.toDisplayUnit()
+            val displayCurrencyPath = userCurrency.toPath()
+            mainViewModel.setDisplayCurrencyUnit(displayCurrencyUnit)
+            mainViewModel.setDisplayCurrencyPath(displayCurrencyPath)
+            mainViewModel.setUserInfo(userInfo)
+            preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath()] = userInfo.country
+            preferenceSettings[SharedPreferenceEnum.STATE.toPath()] = userInfo.state?.id
+            preferenceSettings[SharedPreferenceEnum.USER_ID.toPath()] = userInfo.userId
+            preferenceSettings[SharedPreferenceEnum.API_KEY.toPath()] = userInfo.apiKey
+            preferenceSettings[SharedPreferenceEnum.AUTH_EMAIL.toPath()] = authEmail
+            preferenceSettings[SharedPreferenceEnum.AUTH_PHONE.toPath()] = authPhone
+            mainViewModel.setUserInfo(userInfo)
+            scope.launch {
                 val userDao = databaseBuilder!!.build().getUserDao()
                 val userCount = userDao.count()
                 val vendorCount = userDao.count()
@@ -134,7 +138,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
                     userDao.insert(userInfo)
                 }
             }
-                navigateToConnectVendor.value = true
+            navigateToConnectVendor.value = true
 
         }, onUpdateStarted = {}, onUpdateEnded = {}, onVerificationError = {})
     authHandler.init()
@@ -143,9 +147,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
         Box(modifier = Modifier.fillMaxWidth(0.90f)) {
             LoadingDialog("Saving Profile...")
         }
-    }
-
-    else if (navigateToConnectVendor.value){
+    } else if (navigateToConnectVendor.value) {
         navigateToConnectVendor.value = false
         val connectVendor = ConnectVendor(platformNavigator)
         connectVendor.setMainViewModel(mainViewModel)
@@ -166,137 +168,208 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
 
     val topLayoutModifier =
         Modifier
-            .padding(top = 40.dp, start = 5.dp, end = 5.dp)
+            .padding(top = 10.dp, start = 5.dp, end = 5.dp)
             .fillMaxWidth()
             .fillMaxHeight()
             .verticalScroll(rememberScrollState())
             .background(color = Color.White)
 
+    AppTheme {
+        Scaffold(
+            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) }
+        ) {
 
-    Scaffold(
-        snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState)  }
-    ) {
+            Column(modifier = rootModifier) {
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    PageTitle()
+                }
+                Column(modifier = topLayoutModifier) {
+                    AccountProfileImage(
+                        profileImageUrl = profileImageUrl.value,
+                        isAsync = profileImageUrl.value != placeHolderImage,
+                        onUploadImageClicked = {
+                            platformNavigator.startImageUpload {
+                                profileImageUrl.value = it
+                            }
+                        })
 
-        Column(modifier = rootModifier) {
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                PageTitle()
-            }
-            Column(modifier = topLayoutModifier) {
-                AccountProfileImage(
-                    profileImageUrl = profileImageUrl.value,
-                    isAsync = profileImageUrl.value != placeHolderImage,
-                    onUploadImageClicked = {
-                        platformNavigator.startImageUpload {
-                            profileImageUrl.value = it
-                        }
-                    })
-                Row(modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp)) {
-                    Box(
-                        modifier = Modifier.weight(1f),
-                        contentAlignment = Alignment.Center
+                    InputWidget(
+                        iconRes = "drawable/card_icon.png",
+                        placeholderText = "Firstname",
+                        iconSize = 28,
+                        text = firstname.value!!,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        isPasswordField = false,
+                        isSingleLine = true,
+                        onSaveClicked = isSavedClicked.value,
+                        maxLines = 1,
+                        maxLength = 50
                     ) {
-                        InputWidget(
-                            iconRes = "drawable/card_icon.png",
-                            placeholderText = "Firstname",
-                            iconSize = 28,
-                            text = firstname.value!!,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                            isPasswordField = false,
-                            isSingleLine = true,
-                            onSaveClicked = isSavedClicked.value,
-                            maxLines = 1,
-                            maxLength = 50
-                        ) {
-                            firstname.value = it
+                        firstname.value = it
+                    }
+
+
+                    InputWidget(
+                        iconRes = "drawable/card_icon.png",
+                        placeholderText = "Lastname",
+                        iconSize = 28,
+                        text = lastname.value,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        isPasswordField = false,
+                        isSingleLine = true,
+                        onSaveClicked = isSavedClicked.value,
+                        maxLines = 1,
+                        maxLength = 50
+                    ) {
+                        lastname.value = it
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .padding(top = 10.dp)
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+
+                        TextComponent(
+                            text = "Select Country",
+                            fontSize = 17,
+                            textStyle = MaterialTheme.typography.titleMedium,
+                            textColor = Colors.darkPrimary,
+                            textAlign = TextAlign.Left,
+                            fontWeight = FontWeight.SemiBold,
+                            lineHeight = 30,
+                            textModifier = Modifier.padding(end = 10.dp, start = 10.dp)
+                        )
+
+                        CountryDropDownWidget {
+                            userCountry.value = it
+                            profilePresenter.getCountryStates(countryId = getCountryId(it))
                         }
                     }
-                    Box(modifier = Modifier.weight(1f).padding(start = 10.dp), contentAlignment = Alignment.Center) {
-                        InputWidget(
-                            iconRes = "drawable/card_icon.png",
-                            placeholderText = "Lastname",
-                            iconSize = 28,
-                            text = lastname.value,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                            isPasswordField = false,
-                            isSingleLine = true,
-                            onSaveClicked = isSavedClicked.value,
-                            maxLines = 1,
-                            maxLength = 50
+
+                    Column(
+                        modifier = Modifier
+                            .padding(top = 20.dp)
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+
+                        TextComponent(
+                            text = "Select State",
+                            fontSize = 17,
+                            textStyle = MaterialTheme.typography.titleMedium,
+                            textColor = Colors.darkPrimary,
+                            textAlign = TextAlign.Left,
+                            fontWeight = FontWeight.SemiBold,
+                            lineHeight = 30,
+                            textModifier = Modifier.padding(end = 10.dp, start = 10.dp)
+                        )
+
+                        AttachStateDropDownWidget(
+                            statesViewModel = statesViewModel,
+                            onMenuItemClick = {
+                                state.value = it
+                            },
+                            onMenuExpanded = {})
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .padding(top = 20.dp)
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+
+                        Column(
+                            modifier = Modifier
+                                .padding(top = 20.dp)
+                                .fillMaxWidth()
+                                .wrapContentHeight(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.Start
                         ) {
-                            lastname.value = it
+
+                            TextComponent(
+                                text = "Select Gender",
+                                fontSize = 17,
+                                textStyle = MaterialTheme.typography.titleMedium,
+                                textColor = Colors.darkPrimary,
+                                textAlign = TextAlign.Left,
+                                fontWeight = FontWeight.SemiBold,
+                                lineHeight = 30,
+                                textModifier = Modifier.padding(end = 10.dp, start = 10.dp)
+                            )
+
+                            ToggleButton(
+                                shape = RoundedCornerShape(10.dp),
+                                onLeftClicked = {
+                                    gender.value = Gender.MALE.toPath()
+                                },
+                                onRightClicked = {
+                                    gender.value = Gender.FEMALE.toPath()
+                                },
+                                leftText = Gender.MALE.toPath(),
+                                rightText = Gender.FEMALE.toPath(),
+                            )
                         }
                     }
-                }
-                CountryDropDownWidget {
-                    userCountry.value = it
-                    profilePresenter.getCountryStates(countryId = getCountryId(it))
-                }
 
-                AttachStateDropDownWidget(statesViewModel = statesViewModel, onMenuItemClick = {
-                    state.value = it
-                }, onMenuExpanded = {})
-
-                Column(
-                    modifier = Modifier
-                        .padding(top = 20.dp)
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.Start
-                ) {
-
-                    TextComponent(
-                        text = "Gender",
-                        fontSize = 15,
-                        textStyle = TextStyle(),
-                        textColor = theme.Colors.darkPrimary,
-                        textAlign = TextAlign.Left,
-                        fontWeight = FontWeight.SemiBold,
-                        lineHeight = 30,
-                        textModifier = Modifier.padding(end = 10.dp, start = 10.dp)
-                    )
-
-                    ToggleButton(
-                        shape = RoundedCornerShape(10.dp),
-                        onLeftClicked = {
-                            gender.value = Gender.MALE.toPath()
-                        },
-                        onRightClicked = {
-                            gender.value = Gender.FEMALE.toPath()
-                        },
-                        leftText = Gender.MALE.toPath(),
-                        rightText = Gender.FEMALE.toPath(),
-                    )
-                }
-
-                ButtonComponent(
-                    modifier = buttonStyle,
-                    buttonText = "Save",
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
-                    fontSize = 18,
-                    shape = RoundedCornerShape(15.dp),
-                    textColor = Color(color = 0xFFFFFFFF),
-                    style = TextStyle(),
-                    borderStroke = null
-                ) {
-                    isSavedClicked.value = true
-                    if (!InputValidator(inputList).isValidInput()) {
-                        ShowSnackBar(title = "Input Required", description = "Please provide the required info", actionLabel = "", duration = StackedSnackbarDuration.Short, snackBarType = SnackBarType.ERROR,
-                                onActionClick = {}, stackedSnackBarHostState = stackedSnackBarHostState)
-                    }
-                    else if (profileImageUrl.value == placeHolderImage) {
-                        ShowSnackBar(title = "Profile Image Required", description = "Please Upload a required Profile Image", actionLabel = "", duration = StackedSnackbarDuration.Short, snackBarType = SnackBarType.ERROR,
-                            stackedSnackBarHostState,onActionClick = {})
-                    }
-                    else if (state.value.stateName.isEmpty()) {
-                        ShowSnackBar(title = "Input Required", description = "Please Select your State", actionLabel = "", duration = StackedSnackbarDuration.Short, snackBarType = SnackBarType.ERROR,
-                            stackedSnackBarHostState,onActionClick = {})
-                    }
-                    else {
-                        authenticationPresenter.completeProfile(
-                            firstname.value, lastname.value,
-                            userEmail = authEmail, authPhone = authPhone, signupType = authType, country = userCountry.value,
-                            state = state.value.id, gender = gender.value, profileImageUrl = profileImageUrl.value)
+                    ButtonComponent(
+                        modifier = buttonStyle,
+                        buttonText = "Save",
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
+                        fontSize = 18,
+                        shape = RoundedCornerShape(15.dp),
+                        textColor = Color(color = 0xFFFFFFFF),
+                        style = MaterialTheme.typography.titleMedium,
+                        borderStroke = null
+                    ) {
+                        isSavedClicked.value = true
+                        if (!InputValidator(inputList).isValidInput()) {
+                            ShowSnackBar(title = "Input Required",
+                                description = "Please provide the required info",
+                                actionLabel = "",
+                                duration = StackedSnackbarDuration.Short,
+                                snackBarType = SnackBarType.ERROR,
+                                onActionClick = {},
+                                stackedSnackBarHostState = stackedSnackBarHostState
+                            )
+                        } else if (profileImageUrl.value == placeHolderImage) {
+                            ShowSnackBar(title = "Profile Image Required",
+                                description = "Please Upload a required Profile Image",
+                                actionLabel = "",
+                                duration = StackedSnackbarDuration.Short,
+                                snackBarType = SnackBarType.ERROR,
+                                stackedSnackBarHostState,
+                                onActionClick = {})
+                        } else if (state.value.stateName.isEmpty()) {
+                            ShowSnackBar(title = "Input Required",
+                                description = "Please Select your State",
+                                actionLabel = "",
+                                duration = StackedSnackbarDuration.Short,
+                                snackBarType = SnackBarType.ERROR,
+                                stackedSnackBarHostState,
+                                onActionClick = {})
+                        } else {
+                            authenticationPresenter.completeProfile(
+                                firstname.value,
+                                lastname.value,
+                                userEmail = authEmail,
+                                authPhone = authPhone,
+                                signupType = authType,
+                                country = userCountry.value,
+                                state = state.value.id,
+                                gender = gender.value,
+                                profileImageUrl = profileImageUrl.value
+                            )
+                        }
                     }
                 }
             }
@@ -307,7 +380,7 @@ fun CompleteProfile(authenticationPresenter: AuthenticationPresenter, authEmail:
 @Composable
 fun CountryDropDownWidget(onMenuItemClick : (String) -> Unit) {
     val countryList = countryList()
-    DropDownWidget(menuItems = countryList, placeHolderText = "Country of Residence", onMenuItemClick = {
+    DropDownWidget(menuItems = countryList, placeHolderText = "Country", onMenuItemClick = {
         onMenuItemClick(countryList[it])
     }, onExpandMenuItemClick = {})
 }
@@ -318,7 +391,7 @@ fun CountryDropDownWidget(onMenuItemClick : (String) -> Unit) {
 fun AttachStateDropDownWidget(statesViewModel: StatesViewModel, onMenuItemClick : (State) -> Unit, onMenuExpanded:() -> Unit) {
     val cityListState = statesViewModel.platformStates.collectAsState()
     val cityList = cityListState.value
-    StateDropDownWidget(menuItems = cityList, iconRes = "drawable/urban_icon.png", placeHolderText = "Select City", onMenuItemClick = {
+    StateDropDownWidget(menuItems = cityList, iconRes = "drawable/urban_icon.png", placeHolderText = "State", onMenuItemClick = {
         onMenuItemClick(cityList[it])
     }, onExpandMenuItemClick = {
         onMenuExpanded()
@@ -340,6 +413,6 @@ fun PageTitle(){
             verticalAlignment = Alignment.Top,
             modifier = rowModifier
         ) {
-            TitleWidget(title = "Complete Your Profile", textColor = Colors.primaryColor)
+            SubtitleTextWidget(text = "Complete Your Profile", textColor = Colors.primaryColor, fontSize = 20)
      }
 }

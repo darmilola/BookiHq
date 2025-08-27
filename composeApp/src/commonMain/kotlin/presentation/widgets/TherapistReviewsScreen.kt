@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -40,10 +41,14 @@ fun TherapistReviewScreen(appointmentReviews: List<AppointmentReview>) {
 
     val boxBgModifier =
         Modifier
-            .padding(bottom = 10.dp, top = 10.dp, start = 15.dp, end = 15.dp)
+            .padding(bottom = 10.dp, top = 10.dp, start = 10.dp, end = 10.dp)
             .wrapContentHeight()
+            .background(color = Color.White)
             .fillMaxWidth()
-            .border(border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(7.dp))
+            .border(
+                border = BorderStroke(1.dp, theme.Colors.lightGrayColor),
+                shape = RoundedCornerShape(7.dp)
+            )
 
 
     Box(modifier = boxBgModifier) {
@@ -51,7 +56,7 @@ fun TherapistReviewScreen(appointmentReviews: List<AppointmentReview>) {
         Box(contentAlignment = Alignment.BottomCenter, modifier = boxModifier) {
             HorizontalPager(
                 state = pagerState,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.wrapContentSize()
             ) { page ->
                 AppointmentReviewsWidget(appointmentReviews[page])
             }

@@ -3,6 +3,7 @@ package presentation.widgets
 import GGSansRegular
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,27 +39,31 @@ fun NewVendorItem(vendor: Vendor, onItemClickListener: (Vendor) -> Unit) {
     val columnModifier = Modifier
         .fillMaxHeight()
         .fillMaxWidth()
-    Card(modifier = Modifier.height(360.dp).fillMaxWidth().clickable { onItemClickListener(vendor) },
-        shape = RoundedCornerShape(topStart = 5.dp, bottomStart = 5.dp),
-        border = BorderStroke(0.5.dp, color = Colors.lighterPrimaryColor),
-        colors = CardDefaults.cardColors(containerColor = Color.White)) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
+    Box(modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(start = 15.dp)
+        .background(
+            color = Color.White,
+            shape = RoundedCornerShape(15.dp))
+           .border(
+            border = BorderStroke(1.5.dp, color = theme.Colors.lightGrayColor),
+            shape = RoundedCornerShape(10.dp))
         ) {
-            Box(
+        Card(
+            modifier = Modifier.height(320.dp).fillMaxWidth()
+                .clickable { onItemClickListener(vendor) },
+            colors = CardDefaults.cardColors(containerColor = Color.White)
+        ) {
+            Row(
                 modifier = Modifier
-                    .background(color = Colors.primaryColor)
-                    .fillMaxWidth(0.01f)
+                    .fillMaxWidth()
                     .fillMaxHeight()
-            )
-            Column(
-                modifier = columnModifier
             ) {
-                NewSalonImageImage(vendor.businessLogo!!)
-                NewSalonName(vendor)
-                NewSalonAddress(vendor)
+                Column(
+                    modifier = columnModifier
+                ) {
+                    NewSalonImageImage(vendor.businessLogo!!)
+                    NewSalonName(vendor)
+                    NewSalonAddress(vendor)
+                }
             }
         }
     }
@@ -70,7 +75,7 @@ fun NewVendorItem(vendor: Vendor, onItemClickListener: (Vendor) -> Unit) {
 fun NewSalonAddress(vendor: Vendor) {
     Column(
         modifier = Modifier
-            .padding(top = 15.dp, start = 10.dp, end = 10.dp)
+            .padding(top = 5.dp, start = 10.dp, end = 10.dp)
             .fillMaxWidth()
             .wrapContentHeight(),
         verticalArrangement = Arrangement.Top,
@@ -78,31 +83,28 @@ fun NewSalonAddress(vendor: Vendor) {
     ) {
         TextComponent(
             text = vendor.businessAddress!!,
-            fontSize = 18,
-            fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Colors.darkPrimary,
+            fontSize = 16,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+            textColor = theme.Colors.grayColor,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.ExtraBold,
+            fontWeight = FontWeight.Normal,
             lineHeight = 20,
             textModifier = Modifier.fillMaxWidth().padding(bottom = 5.dp),
-            maxLines = 2,
+            maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
 
         TextComponent(
             textModifier = Modifier.fillMaxWidth().padding(top = 5.dp, bottom = 10.dp),
             text = "@"+vendor.businessHandle,
-            fontSize = 14, fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6,
+            fontSize = 14,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.ExtraBold,
             lineHeight = 20,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis)
-
-        StraightLine()
 
     }
 
@@ -122,18 +124,15 @@ fun NewSalonName(vendor: Vendor) {
         TextComponent(
             text = vendor.businessName!!,
             fontSize = 18,
-            fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.ExtraBold,
+            fontWeight = FontWeight.Bold,
             lineHeight = 20,
             textModifier = Modifier.fillMaxWidth().padding(bottom = 5.dp),
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
-
-        StraightLine()
 
     }
 

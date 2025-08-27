@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,7 +34,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import presentation.components.ButtonComponent
+import presentation.widgets.SubtitleTextWidget
 import presentations.components.ImageComponent
 
 @Composable
@@ -42,18 +45,20 @@ fun ErrorDialog(dialogTitle: String, actionTitle: String, onConfirmation: () -> 
         mutableStateOf(false)
     }
     if (shouldDismiss.value) return
-    Dialog( properties = DialogProperties(usePlatformDefaultWidth = false), onDismissRequest = {
-        shouldDismiss.value = true
-    }) {
-        Surface(
-            shape = RoundedCornerShape(10.dp),
-            color = Colors.lighterPrimaryColor,
-            modifier = Modifier.fillMaxWidth(0.70f).fillMaxHeight(0.30f)
-        ) {
-            ErrorDialogContent(dialogTitle,actionTitle, onConfirmation = {
-                onConfirmation()
-                shouldDismiss.value = true
-            })
+    AppTheme {
+        Dialog(properties = DialogProperties(usePlatformDefaultWidth = false), onDismissRequest = {
+            shouldDismiss.value = true
+        }) {
+            Surface(
+                shape = RoundedCornerShape(10.dp),
+                color = Colors.lighterPrimaryColor,
+                modifier = Modifier.fillMaxWidth(0.85f).height(300.dp)
+            ) {
+                ErrorDialogContent(dialogTitle, actionTitle, onConfirmation = {
+                    onConfirmation()
+                    shouldDismiss.value = true
+                })
+            }
         }
     }
 }
@@ -69,16 +74,22 @@ fun ErrorDialogContent(dialogTitle: String, actionTitle: String,
         Column(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
 
             Box(
-                modifier = Modifier.fillMaxWidth().weight(1.7f)
-                    .background(color = Color.Red), contentAlignment = Alignment.Center
+                modifier = Modifier.fillMaxWidth().weight(1.5f)
+                    .background(color = Color.White), contentAlignment = Alignment.BottomCenter
             ) {
                 val modifier = Modifier
                     .padding(top = 2.dp)
-                    .size(50.dp)
-                ImageComponent(imageModifier = modifier, imageRes = "drawable/error_icon.png", colorFilter = ColorFilter.tint(color = Color.White))
+                    .size(30.dp)
+                Box(modifier = Modifier.size(60.dp).background(color = Colors.lightRedColor, shape = RoundedCornerShape(20.dp)), contentAlignment = Alignment.Center) {
+                    ImageComponent(
+                        imageModifier = modifier,
+                        imageRes = "drawable/error_circle_icon.png",
+                        colorFilter = ColorFilter.tint(color = Colors.redColor)
+                    )
+                }
             }
 
-            Box(modifier = Modifier.fillMaxWidth().weight(1.8f)) {
+            Box(modifier = Modifier.fillMaxWidth().weight(2f)) {
                 Column(
                     modifier = Modifier
                         .padding(top = 5.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
@@ -88,19 +99,24 @@ fun ErrorDialogContent(dialogTitle: String, actionTitle: String,
                     horizontalAlignment  = Alignment.CenterHorizontally,
                 ) {
 
-                    TextComponent(
-                        textModifier = Modifier.wrapContentWidth().wrapContentHeight()
-                            .padding(start = 15.dp, end = 15.dp, top = 15.dp),
-                        text = dialogTitle,
-                        fontSize = 20,
-                        textStyle = TextStyle(),
-                        textColor = Colors.darkPrimary,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold,
-                        lineHeight = 23,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    val colModifier = Modifier
+                        .padding(start = 10.dp, bottom = 10.dp, top = 15.dp)
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                    Column(
+                        verticalArrangement  = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = colModifier
+                    ) {
+                        Box(modifier = Modifier.fillMaxWidth().height(50.dp), contentAlignment = Alignment.Center) {
+                            SubtitleTextWidget(text = "Error Occurred!", textColor = Color.Black, textAlign = TextAlign.Center, fontSize = 25)
+                        }
+
+                        Box(modifier = Modifier.fillMaxWidth().height(50.dp), contentAlignment = Alignment.Center) {
+                            SubtitleTextWidget(text = dialogTitle, textColor = Colors.grayColor, textAlign = TextAlign.Center, fontSize = 16)
+                        }
+
+                    }
                 }
             }
             Box(modifier = Modifier.fillMaxWidth().weight(1.5f), contentAlignment = Alignment.Center) {
@@ -119,15 +135,14 @@ fun ErrorDialogContent(dialogTitle: String, actionTitle: String,
 fun ErrorDialogButtonContent(actionTitle: String, onConfirmation: () -> Unit){
     val buttonStyle = Modifier
         .fillMaxWidth(1f)
-        .height(50.dp)
+        .height(40.dp)
 
     Row (horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 10.dp, start = 20.dp, end = 20.dp)) {
-        ButtonComponent(modifier = buttonStyle, buttonText = actionTitle, borderStroke = BorderStroke(1.dp, Colors.primaryColor), colors = ButtonDefaults.buttonColors(backgroundColor = Color.White), fontSize = 18, shape = RoundedCornerShape(10.dp), textColor = Colors.primaryColor, style = TextStyle()){
+        ButtonComponent(modifier = buttonStyle, buttonText = actionTitle, colors = ButtonDefaults.buttonColors(backgroundColor = Colors.redColor), fontSize = 18, shape = RoundedCornerShape(15.dp), textColor = Color.White, style = MaterialTheme.typography.titleMedium){
             onConfirmation()
         }
 
     }
 }
-
 

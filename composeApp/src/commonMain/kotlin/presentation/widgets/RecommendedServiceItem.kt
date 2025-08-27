@@ -4,6 +4,7 @@ import GGSansRegular
 import androidx.compose.foundation.BorderStroke
 import theme.styles.Colors
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,33 +43,21 @@ import presentations.components.TextComponent
 fun VendorRecommendationsItem(vendorRecommendation: VendorRecommendation, mainViewModel: MainViewModel, onItemClickListener: (VendorRecommendation) -> Unit) {
 
     val columnModifier = Modifier
-        .fillMaxHeight()
-        .fillMaxWidth()
-    Card(modifier = Modifier.height(360.dp).fillMaxWidth(),
-        shape = RoundedCornerShape(topStart = 5.dp, bottomStart = 5.dp),
-        border = BorderStroke(0.5.dp, color = Colors.lighterPrimaryColor),
-        colors = CardDefaults.cardColors(containerColor = Color.White)) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            ) {
-                Box(
-                    modifier = Modifier
-                        .background(color = Colors.primaryColor)
-                        .fillMaxWidth(0.01f)
-                        .fillMaxHeight()
-                )
-                Column(
-                    modifier = columnModifier
-                ) {
+         .height(310.dp).fillMaxWidth()
+        .padding(start = 10.dp, end = 10.dp)
+        .background(color = Color.White)
+        .border(width = 1.dp, color = Colors.lightGray, shape = RoundedCornerShape(10.dp))
+
+    Column(
+        modifier = columnModifier,
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment  = Alignment.CenterHorizontally,
+    ) {
                     RecommendedServicesImage(vendorRecommendation.imageUrl)
                     RecommendedServiceDescription(vendorRecommendation)
                     RecommendedServicePriceAndAction(vendorRecommendation,mainViewModel, onItemClickListener = {
                         onItemClickListener(it)
                     })
-                }
-            }
     }
 }
 
@@ -103,18 +92,17 @@ fun RecommendedServicePriceAndAction(vendorRecommendation: VendorRecommendation,
             ) {
                 TextComponent(
                     text = if(vendorRecommendation.recommendationType == RecommendationType.Services.toPath()) "Book Now" else "Buy Now",
-                    fontFamily = GGSansRegular,
-                    textStyle = MaterialTheme.typography.h6,
-                    textColor = Color.Black,
+                    textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                    textColor = Colors.darkPrimary,
                     textAlign = TextAlign.Right,
-                    fontWeight = FontWeight.ExtraBold,
+                    fontWeight = FontWeight.Normal,
                     lineHeight = 20,
                     maxLines = 2,
-                    fontSize = 16,
+                    fontSize = 17,
                     overflow = TextOverflow.Ellipsis,
                     textModifier = Modifier.wrapContentSize().padding(end = 7.dp))
 
-                    ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/forward_arrow.png", colorFilter = ColorFilter.tint(color = Color.Black))
+                    ImageComponent(imageModifier = Modifier.size(24.dp), imageRes = "drawable/chevron_right.png", colorFilter = ColorFilter.tint(color = Colors.darkPrimary))
             }
 
         }
@@ -125,12 +113,11 @@ fun RecommendedServicePriceAndAction(vendorRecommendation: VendorRecommendation,
 fun PopularServicePriceContent(price: String, currencyUnit: String) {
      TextComponent(
             text = "$currencyUnit$price",
-            fontSize = 16,
-            fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6,
-            textColor = Color.Black,
+            fontSize = 18,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+            textColor = theme.Colors.darkPrimary,
             textAlign = TextAlign.Right,
-            fontWeight = FontWeight.ExtraBold,
+            fontWeight = FontWeight.Normal,
             lineHeight = 20,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
@@ -155,30 +142,27 @@ fun RecommendedServiceDescription(vendorRecommendation: VendorRecommendation) {
             text = if (recommendationType == RecommendationType.Services.toPath())
                 vendorRecommendation.serviceTypeItem?.title!! else vendorRecommendation.product?.productName!!,
             fontSize = 18,
-            fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.ExtraBold,
+            fontWeight = FontWeight.SemiBold,
             lineHeight = 20,
             textModifier = Modifier.fillMaxWidth().padding(bottom = 5.dp),
-            maxLines = 2,
+            maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
 
         TextComponent(
-            textModifier = Modifier.fillMaxWidth().padding(top = 5.dp, bottom = 10.dp),
+            textModifier = Modifier.fillMaxWidth().padding(top = 5.dp, bottom = 5.dp),
             text = vendorRecommendation.description,
-            fontSize = 14, fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6,
+            fontSize = 14,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
             textColor = Color.Gray,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.ExtraBold,
-            lineHeight = 20,
+            fontWeight = FontWeight.Normal,
+            lineHeight = 23,
             maxLines = 2,
-            overflow = TextOverflow.Clip)
-
-         StraightLine()
+            overflow = TextOverflow.Ellipsis)
 
     }
 
@@ -188,7 +172,8 @@ fun RecommendedServiceDescription(vendorRecommendation: VendorRecommendation) {
 fun RecommendedServicesImage(imageUrl: String) {
     val imageModifier =
         Modifier
-            .height(200.dp)
+            .height(150.dp)
+            .background(color = Color.Transparent, shape = RoundedCornerShape(10.dp))
             .fillMaxWidth()
         Box(
             modifier = imageModifier,
@@ -202,14 +187,4 @@ fun RecommendedServicesImage(imageUrl: String) {
             )
         }
 }
-@Composable
-fun StraightLine() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(1.dp)
-            .background(color = Color(color = 0x80CCCCCC))
-    ) {}
-}
-
 

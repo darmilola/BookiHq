@@ -8,12 +8,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -30,6 +32,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.room.RoomDatabase
@@ -44,6 +49,7 @@ import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import cafe.adriel.voyager.transitions.ScreenTransition
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
@@ -80,6 +86,7 @@ import presentation.therapist.TherapistDashboard
 import presentation.viewmodels.HomePageViewModel
 import presentation.viewmodels.MainViewModel
 import presentations.components.ImageComponent
+import presentations.components.TextComponent
 import theme.styles.Colors
 import utils.ParcelableScreen
 @OptIn(ExperimentalVoyagerApi::class)
@@ -369,63 +376,67 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             }
         }
 
-        TabNavigator(showDefaultTab(mainViewModel!!, homePageViewModel)) {
-                it2 ->
-            Scaffold(
-                content = {
-                    Box(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
-                        CurrentTab()
-                    }
-                },
-                backgroundColor = Color.White,
-                bottomBar = {
+        AppTheme {
+
+            TabNavigator(showDefaultTab(mainViewModel!!, homePageViewModel)) { it2 ->
+                Scaffold(
+                    content = {
+                        Box(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
+                            CurrentTab()
+                        }
+                    },
+                    backgroundColor = Color.White,
+                    bottomBar = {
+                        Column(
+                            modifier = Modifier.fillMaxWidth().height(60.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Top
+                        ) {
                             Box(
-                                modifier = Modifier.fillMaxWidth().height(80.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                BottomNavigation(
-                                    modifier = Modifier.height(60.dp)
-                                        .padding(start = 10.dp, end = 10.dp)
-                                        .background(
-                                            shape = RoundedCornerShape(15.dp),
-                                            color = Colors.darkPrimary
-                                        ),
-                                    backgroundColor = Color.Transparent,
-                                    elevation = 0.dp
-                                )
-                                {
-                                    homeTab = HomeTab(platformNavigator)
-                                    homeTab!!.setMainViewModel(mainViewModel!!)
-                                    homeTab!!.setHomePageViewModel(homePageViewModel)
-                                    homeTab!!.setDatabaseBuilder(databaseBuilder)
-                                    TabNavigationItem(
-                                        homeTab!!,
-                                        selectedImage = "drawable/home_icon.png",
-                                        unselectedImage = "drawable/home_outline.png",
-                                        labelText = "Home",
-                                        imageSize = 22,
-                                        currentTabId = 0,
-                                        tabNavigator = it2,
-                                        mainViewModel = mainViewModel!!
-                                    ) {
-                                        isBottomNavSelected = true
-                                    }
-                                    shopProductTab = ShopProductTab()
-                                    shopProductTab!!.setMainViewModel(mainViewModel!!)
-                                    shopProductTab!!.setDatabaseBuilder(databaseBuilder)
-                                    TabNavigationItem(
-                                        shopProductTab!!,
-                                        selectedImage = "drawable/shopping_basket.png",
-                                        unselectedImage = "drawable/shopping_basket_outline.png",
-                                        labelText = "Shop",
-                                        imageSize = 22,
-                                        currentTabId = 1,
-                                        tabNavigator = it2,
-                                        mainViewModel = mainViewModel!!
-                                    ) {
-                                        isBottomNavSelected = true
-                                    }
-                                    /*packages = Packages()
+                                modifier = Modifier.fillMaxWidth().height(1.dp)
+                                    .background(color = Colors.lightGray)
+                            )
+                            BottomNavigation(
+                                modifier = Modifier.fillMaxHeight()
+                                    .background(
+                                        color = Color.White
+                                    ),
+                                backgroundColor = Color.Transparent,
+                                elevation = 0.dp
+                            )
+                            {
+                                homeTab = HomeTab(platformNavigator)
+                                homeTab!!.setMainViewModel(mainViewModel!!)
+                                homeTab!!.setHomePageViewModel(homePageViewModel)
+                                homeTab!!.setDatabaseBuilder(databaseBuilder)
+                                TabNavigationItem(
+                                    homeTab!!,
+                                    selectedImage = "drawable/icon_home.png",
+                                    unselectedImage = "drawable/icon_home.png",
+                                    labelText = "Home",
+                                    imageSize = 26,
+                                    currentTabId = 0,
+                                    tabNavigator = it2,
+                                    mainViewModel = mainViewModel!!
+                                ) {
+                                    isBottomNavSelected = true
+                                }
+                                shopProductTab = ShopProductTab()
+                                shopProductTab!!.setMainViewModel(mainViewModel!!)
+                                shopProductTab!!.setDatabaseBuilder(databaseBuilder)
+                                TabNavigationItem(
+                                    shopProductTab!!,
+                                    selectedImage = "drawable/icon_product.png",
+                                    unselectedImage = "drawable/icon_product.png",
+                                    labelText = "Product",
+                                    imageSize = 20,
+                                    currentTabId = 1,
+                                    tabNavigator = it2,
+                                    mainViewModel = mainViewModel!!
+                                ) {
+                                    isBottomNavSelected = true
+                                }
+                                /*packages = Packages()
                                     packages!!.setMainViewModel(mainViewModel!!)
                                     TabNavigationItem(
                                         packages!!,
@@ -439,39 +450,40 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                                     ) {
                                         isBottomNavSelected = true
                                     }*/
-                                    appointmentsTab = AppointmentsTab(platformNavigator)
-                                    appointmentsTab!!.setMainViewModel(mainViewModel!!)
-                                    TabNavigationItem(
-                                        appointmentsTab!!,
-                                        selectedImage = "drawable/appointment_icon.png",
-                                        unselectedImage = "drawable/appointment_outline.png",
-                                        labelText = "History",
-                                        imageSize = 25,
-                                        currentTabId = 3,
-                                        tabNavigator = it2,
-                                        mainViewModel = mainViewModel!!
-                                    ) {
-                                        isBottomNavSelected = true
-                                    }
-                                    accountTab = AccountTab()
-                                    accountTab!!.setMainViewModel(mainViewModel!!)
-                                    accountTab!!.setDatabaseBuilder(databaseBuilder)
-                                    TabNavigationItem(
-                                        accountTab!!,
-                                        selectedImage = "drawable/more_circle_filled_icon.png",
-                                        unselectedImage = "drawable/more_icon_outlined.png",
-                                        labelText = "Account",
-                                        imageSize = 25,
-                                        currentTabId = 4,
-                                        tabNavigator = it2,
-                                        mainViewModel = mainViewModel!!
-                                    ) {
-                                        isBottomNavSelected = true
-                                    }
+                                appointmentsTab = AppointmentsTab(platformNavigator)
+                                appointmentsTab!!.setMainViewModel(mainViewModel!!)
+                                TabNavigationItem(
+                                    appointmentsTab!!,
+                                    selectedImage = "drawable/icon_booking.png",
+                                    unselectedImage = "drawable/icon_booking.png",
+                                    labelText = "Bookings",
+                                    imageSize = 22,
+                                    currentTabId = 3,
+                                    tabNavigator = it2,
+                                    mainViewModel = mainViewModel!!
+                                ) {
+                                    isBottomNavSelected = true
+                                }
+                                accountTab = AccountTab(platformNavigator)
+                                accountTab!!.setMainViewModel(mainViewModel!!)
+                                accountTab!!.setDatabaseBuilder(databaseBuilder)
+                                TabNavigationItem(
+                                    accountTab!!,
+                                    selectedImage = "drawable/icon_profile.png",
+                                    unselectedImage = "drawable/icon_profile.png",
+                                    labelText = "Profile",
+                                    imageSize = 24,
+                                    currentTabId = 4,
+                                    tabNavigator = it2,
+                                    mainViewModel = mainViewModel!!
+                                ) {
+                                    isBottomNavSelected = true
                                 }
                             }
-                }
-            )
+                        }
+                    }
+                )
+            }
         }
     }
 
@@ -486,13 +498,11 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
     @Composable
     private fun RowScope.TabNavigationItem(tab: Tab, selectedImage: String, unselectedImage: String, imageSize: Int = 30, labelText: String, currentTabId: Int = 0, tabNavigator: TabNavigator, mainViewModel: MainViewModel, onBottomNavSelected:() -> Unit) {
         var imageStr by remember { mutableStateOf(unselectedImage) }
-        var imageTint by remember { mutableStateOf(Color.White) }
-        var handleTint by remember { mutableStateOf(Colors.darkPrimary) }
+        var imageTint by remember { mutableStateOf(Colors.darkPrimary) }
 
         if (tabNavigator.current is HomeTab && currentTabId == MainTabEnum.HOME.toPageID()) {
             imageStr = selectedImage
-            imageTint = Color.White
-            handleTint = Color.White
+            imageTint = Colors.darkPrimary
             val screenTitle = "Home"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
@@ -500,8 +510,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
         }
         else  if (tabNavigator.current is ShopProductTab && currentTabId == MainTabEnum.PRODUCTS.toPageID()) {
             imageStr = selectedImage
-            imageTint = Color.White
-            handleTint = Color.White
+            imageTint = Colors.darkPrimary
             val screenTitle = "Products"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
@@ -510,8 +519,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
         }
         else if (tabNavigator.current is Packages && currentTabId == MainTabEnum.PACKAGES.toPageID()) {
             imageStr = selectedImage
-            imageTint = Color.White
-            handleTint = Color.White
+            imageTint = Colors.darkPrimary
             val screenTitle = "Packages"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
@@ -520,28 +528,23 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
         }
         else if (tabNavigator.current is AppointmentsTab && currentTabId == MainTabEnum.APPOINTMENT.toPageID()) {
             imageStr = selectedImage
-            imageTint = Color.White
-            handleTint = Color.White
-            val screenTitle = "Appointments"
+            imageTint = Colors.darkPrimary
+            val screenTitle = "Bookings"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
             mainViewModel.setDisplayedTab(MainTabEnum.APPOINTMENT.toPath())
 
         } else if (tabNavigator.current is AccountTab && currentTabId == MainTabEnum.MORE.toPageID()) {
             imageStr = selectedImage
-            imageTint = Color.White
-            handleTint = Color.White
-            val screenTitle = "Account"
+            imageTint = Colors.darkPrimary
+            val screenTitle = "Profile"
             onBottomNavSelected()
             mainViewModel.setTitle(screenTitle)
             mainViewModel.setDisplayedTab(MainTabEnum.MORE.toPath())
         } else {
-            imageTint = Color.White
-            handleTint = Colors.darkPrimary
+            imageTint = Color(color = 0xFFACAEAF)
             imageStr = unselectedImage
         }
-
-
 
         BottomNavigationItem(
             selected = tabNavigator.current == tab,
@@ -549,25 +552,38 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
             onClick = {
                 tabNavigator.current = tab
             },
-            selectedContentColor = Colors.primaryColor,
-            unselectedContentColor = Colors.darkPrimary,
 
             icon = {
-                Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally) {
+                Box(modifier = Modifier.size(30.dp), contentAlignment = Alignment.Center) {
+                    ImageComponent(
+                        imageModifier = Modifier.size(imageSize.dp),
+                        imageRes = imageStr,
+                        colorFilter = ColorFilter.tint(imageTint)
+                    )
+                }
+            },
 
-                    Box(modifier = Modifier.fillMaxWidth(0.50f).fillMaxHeight(0.05f)
-                        .background(color = handleTint, shape = RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp)), contentAlignment = Alignment.Center){}
-
-                    Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.Center) {
-                        ImageComponent(
-                            imageModifier = Modifier.size(imageSize.dp),
-                            imageRes = imageStr,
-                            colorFilter = ColorFilter.tint(imageTint)
-                        )
-                    }
+            label = {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    TextComponent(
+                        text = labelText,
+                        fontSize = 13,
+                        textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                        textColor = imageTint,
+                        textAlign = TextAlign.Left,
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = 20,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        textModifier = Modifier.wrapContentSize()
+                    )
                 }
             }
+
 
         )
     }

@@ -183,8 +183,7 @@ fun productItemIncrementDecrementWidget(orderItem: OrderItem, isFromCart: Boolea
             TextComponent(
                 text = counter.toString(),
                 fontSize = 20,
-                fontFamily = GGSansRegular,
-                textStyle = MaterialTheme.typography.h4,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Black,

@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.viewModelFactory
@@ -70,6 +72,7 @@ import presentation.widgets.AddPackageAppointmentsReviewBottomSheet
 import presentation.widgets.AppointmentWidget
 import presentation.widgets.EmptyContentWidget
 import presentation.widgets.PackageAppointmentWidget
+import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
 import utils.getAppointmentViewHeight
 import rememberStackedSnackbarHostState
@@ -296,8 +299,8 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
         else if (deleteActionUIStates.value.isSuccess) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 SuccessDialog("Delete Successful", "Close", onConfirmation = {
-                    deletePerformedActionUIStateViewModel!!.switchActionDeleteUIState(AppUIStates(isDefault = true))
                     appointmentPresenter.refreshUserAppointments(userId)
+                    deletePerformedActionUIStateViewModel!!.switchActionDeleteUIState(AppUIStates(isDefault = true))
                 })
             }
         }
@@ -358,181 +361,209 @@ class AppointmentsTab(private val platformNavigator: PlatformNavigator) : Tab, K
         cancelContractHandler.init()
 
 
-        Scaffold(
-            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
-            topBar = {
-                val screenTitle =  mainViewModel!!.screenTitle.collectAsState()
-                Box(modifier = Modifier.fillMaxWidth().height(50.dp), contentAlignment = Alignment.Center){
-                    TitleWidget(textColor = theme.styles.Colors.primaryColor, title = screenTitle.value)
-                }
-            },
-            content = {
-                val handler = AppointmentsHandler(
-                    appointmentResourceListEnvelopeViewModel!!,
-                    refreshActionUIStateViewModel!!,
-                    loadingScreenUiStateViewModel!!,
-                    deletePerformedActionUIStateViewModel!!,
-                    joinMeetingPerformedActionUIStateViewModel!!,
-                    addAppointmentReviewsUIStateViewModel!!,
-                    getTherapistAvailabilityUIStateViewModel!!,
-                    postponeAppointmentUIStateViewModel!!,
-                    postponementViewModel!!,
-                    appointmentPresenter,
-                    onMeetingTokenReady = {}
-                )
-                handler.init()
+        AppTheme {
 
-                val showAddReviewBottomSheet = mainViewModel!!.showAppointmentReviewsBottomSheet.collectAsState()
-                val showAddPackageReviewBottomSheet = mainViewModel!!.showPackageReviewsBottomSheet.collectAsState()
-
-                if (showAddReviewBottomSheet.value) {
-                    AddAppointmentsReviewBottomSheet(
-                        mainViewModel!!,
-                        onDismiss = {
-                            mainViewModel!!.showAppointmentReviewsBottomSheet(false)
-                        },
-                        onReviewsAdded = {
-                            appointmentPresenter.addAppointmentReviews(userId = userId, appointmentId = appointmentForReview.value.appointmentId!!,
-                                vendorId = appointmentForReview.value.vendorId, serviceTypeId = appointmentForReview.value.serviceTypeId!!, therapistId = appointmentForReview.value.therapistId,reviewText = it)
-                            mainViewModel!!.showAppointmentReviewsBottomSheet(false)
-                        })
-                   }
-
-                if (showAddPackageReviewBottomSheet.value) {
-                    AddPackageAppointmentsReviewBottomSheet(
-                        mainViewModel!!,
-                        onDismiss = {
-                            mainViewModel!!.showPackageReviewsBottomSheet(false)
-                        },
-                        onReviewsAdded = {
-                            appointmentPresenter.addPackageAppointmentReviews(userId = userId, appointmentId = appointmentForReview.value.appointmentId!!,
-                                vendorId = appointmentForReview.value.vendorId, packageId = appointmentForReview.value.packageId, reviewText = it)
-                            mainViewModel!!.showPackageReviewsBottomSheet(false)
-                        })
-                }
-
-                if (uiState.value.isLoading) {
+            Scaffold(
+                snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
+                backgroundColor = Colors.dashboardBackground,
+                topBar = {
+                    val screenTitle = mainViewModel!!.screenTitle.collectAsState()
                     Box(
-                        modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                            .padding(top = 40.dp, start = 50.dp, end = 50.dp)
-                            .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
+                        modifier = Modifier.fillMaxWidth().height(50.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        IndeterminateCircularProgressBar()
+                        SubtitleTextWidget(
+                            textColor = theme.styles.Colors.primaryColor,
+                            text = screenTitle.value
+                        )
                     }
-                } else if (uiState.value.isFailed) {
-                   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                       ErrorOccurredWidget(uiState.value.errorMessage, onRetryClicked = {
-                           appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                           appointmentPresenter.getUserAppointments(userId)
-                       })
-                   }
-                }
-                else if (uiState.value.isEmpty) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        EmptyContentWidget(emptyText = uiState.value.emptyMessage)
+                },
+                content = {
+                    val handler = AppointmentsHandler(
+                        appointmentResourceListEnvelopeViewModel!!,
+                        refreshActionUIStateViewModel!!,
+                        loadingScreenUiStateViewModel!!,
+                        deletePerformedActionUIStateViewModel!!,
+                        joinMeetingPerformedActionUIStateViewModel!!,
+                        addAppointmentReviewsUIStateViewModel!!,
+                        getTherapistAvailabilityUIStateViewModel!!,
+                        postponeAppointmentUIStateViewModel!!,
+                        postponementViewModel!!,
+                        appointmentPresenter,
+                        onMeetingTokenReady = {}
+                    )
+                    handler.init()
+
+                    val showAddReviewBottomSheet =
+                        mainViewModel!!.showAppointmentReviewsBottomSheet.collectAsState()
+                    val showAddPackageReviewBottomSheet =
+                        mainViewModel!!.showPackageReviewsBottomSheet.collectAsState()
+
+                    if (showAddReviewBottomSheet.value) {
+                        AddAppointmentsReviewBottomSheet(
+                            mainViewModel!!,
+                            onDismiss = {
+                                mainViewModel!!.showAppointmentReviewsBottomSheet(false)
+                            },
+                            onReviewsAdded = {
+                                appointmentPresenter.addAppointmentReviews(
+                                    userId = userId,
+                                    appointmentId = appointmentForReview.value.appointmentId!!,
+                                    vendorId = appointmentForReview.value.vendorId,
+                                    serviceTypeId = appointmentForReview.value.serviceTypeId!!,
+                                    therapistId = appointmentForReview.value.therapistId,
+                                    reviewText = it
+                                )
+                                mainViewModel!!.showAppointmentReviewsBottomSheet(false)
+                            })
                     }
-                }
-                else if (uiState.value.isSuccess) {
-                val pullRefreshState = rememberPullRefreshState(refreshing = isRefreshing.value, onRefresh = {
-                    appointmentPresenter.refreshUserAppointments(userId)
-                })
-                PullRefreshLayout(
-                        modifier = Modifier.fillMaxSize(),
-                        state = pullRefreshState,
-                        flipped = false,
-                        indicator = {
-                            PullRefreshIndicator(
-                                state = pullRefreshState,
-                                flipped = false,
-                                backgroundColor = Colors.primaryColor,
-                                contentColor = Colors.darkPrimary
-                            )
+
+                    if (showAddPackageReviewBottomSheet.value) {
+                        AddPackageAppointmentsReviewBottomSheet(
+                            mainViewModel!!,
+                            onDismiss = {
+                                mainViewModel!!.showPackageReviewsBottomSheet(false)
+                            },
+                            onReviewsAdded = {
+                                appointmentPresenter.addPackageAppointmentReviews(
+                                    userId = userId,
+                                    appointmentId = appointmentForReview.value.appointmentId!!,
+                                    vendorId = appointmentForReview.value.vendorId,
+                                    packageId = appointmentForReview.value.packageId,
+                                    reviewText = it
+                                )
+                                mainViewModel!!.showPackageReviewsBottomSheet(false)
+                            })
+                    }
+
+                    if (uiState.value.isLoading) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                                .padding(top = 40.dp, start = 50.dp, end = 50.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            IndeterminateCircularProgressBar()
                         }
-                    ) {
-                       LazyColumn(
+                    } else if (uiState.value.isFailed) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            ErrorOccurredWidget(uiState.value.errorMessage, onRetryClicked = {
+                                appointmentResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                                appointmentPresenter.getUserAppointments(userId)
+                            })
+                        }
+                    } else if (uiState.value.isEmpty) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            EmptyContentWidget(emptyText = uiState.value.emptyMessage)
+                        }
+                    } else if (uiState.value.isSuccess) {
+                        val pullRefreshState =
+                            rememberPullRefreshState(refreshing = isRefreshing.value, onRefresh = {
+                                appointmentPresenter.refreshUserAppointments(userId)
+                            })
+                        PullRefreshLayout(
+                            modifier = Modifier.fillMaxSize(),
+                            state = pullRefreshState,
+                            flipped = false,
+                            indicator = {
+                                PullRefreshIndicator(
+                                    state = pullRefreshState,
+                                    flipped = false,
+                                    backgroundColor = Colors.primaryColor,
+                                    contentColor = Color.White
+                                )
+                            }
+                        ) {
+                            LazyColumn(
                                 modifier = Modifier.fillMaxWidth()
                                     .height(getAppointmentViewHeight(appointmentUIModel.appointmentList.size).dp)
                                     .padding(bottom = 70.dp),
                                 userScrollEnabled = true
                             ) {
-                           itemsIndexed(items = appointmentUIModel.appointmentList) { it, item ->
-                               if (item.resources!!.appointmentType == AppointmentType.SINGLE.toPath()) {
-                                   AppointmentWidget(
-                                       item,
-                                       appointmentPresenter = appointmentPresenter,
-                                       postponementViewModel = postponementViewModel,
-                                       mainViewModel = mainViewModel!!,
-                                       getTherapistAvailabilityUIStateViewModel!!,
-                                       onDeleteAppointment = {
-                                           appointmentPresenter.deleteAppointment(it.id)
-                                       },
-                                       onCancelAppointment = {
-                                           bookingPresenter.deletePendingBookingAppointment(it.resources!!.appointmentId!!)
-                                       },
-                                       platformNavigator = platformNavigator,
-                                       onAddReview = {
-                                           appointmentForReview.value = it
-                                           mainViewModel!!.showAppointmentReviewsBottomSheet(true)
-                                       })
-                               }
-                               else if (item.resources.appointmentType == AppointmentType.PACKAGE.toPath()) {
-                                   PackageAppointmentWidget(
-                                       item,
-                                       appointmentPresenter = appointmentPresenter,
-                                       postponementViewModel = postponementViewModel,
-                                       mainViewModel = mainViewModel!!,
-                                       getTherapistAvailabilityUIStateViewModel!!,
-                                       onDeleteAppointment = {
-                                           appointmentPresenter.deleteAppointment(it.id)
-                                       },
-                                       onCancelAppointment = {
-                                          bookingPresenter.deletePendingBookingAppointment(it.resources!!.appointmentId!!)
-                                       },
-                                       platformNavigator = platformNavigator,
-                                       onAddReview = {
-                                           appointmentForReview.value = it
-                                           mainViewModel!!.showPackageReviewsBottomSheet(true)
-                                       })
-                               }
-                               if (it == lastIndex && loadMoreState.value) {
-                                   Box(
-                                       modifier = Modifier.fillMaxWidth().height(60.dp),
-                                       contentAlignment = Alignment.Center
-                                   ) {
-                                       IndeterminateCircularProgressBar()
-                                   }
-                               } else if (it == lastIndex && (displayedAppointmentsCount?.value!! < totalAppointmentsCount?.value!!)) {
-                                   val buttonStyle = Modifier
-                                       .height(60.dp)
-                                       .fillMaxWidth()
-                                       .padding(top = 10.dp, start = 10.dp, end = 10.dp)
+                                itemsIndexed(items = appointmentUIModel.appointmentList) { it, item ->
+                                    if (item.resources!!.appointmentType == AppointmentType.SINGLE.toPath()) {
+                                        AppointmentWidget(
+                                            item,
+                                            appointmentPresenter = appointmentPresenter,
+                                            postponementViewModel = postponementViewModel,
+                                            mainViewModel = mainViewModel!!,
+                                            getTherapistAvailabilityUIStateViewModel!!,
+                                            onDeleteAppointment = {
+                                                appointmentPresenter.deleteAppointment(it.id)
+                                            },
+                                            onCancelAppointment = {
+                                                bookingPresenter.deletePendingBookingAppointment(it.resources!!.appointmentId!!)
+                                            },
+                                            platformNavigator = platformNavigator,
+                                            onAddReview = {
+                                                appointmentForReview.value = it
+                                                mainViewModel!!.showAppointmentReviewsBottomSheet(
+                                                    true
+                                                )
+                                            })
+                                    } else if (item.resources.appointmentType == AppointmentType.PACKAGE.toPath()) {
+                                        PackageAppointmentWidget(
+                                            item,
+                                            appointmentPresenter = appointmentPresenter,
+                                            postponementViewModel = postponementViewModel,
+                                            mainViewModel = mainViewModel!!,
+                                            getTherapistAvailabilityUIStateViewModel!!,
+                                            onDeleteAppointment = {
+                                                appointmentPresenter.deleteAppointment(it.id)
+                                            },
+                                            onCancelAppointment = {
+                                                bookingPresenter.deletePendingBookingAppointment(it.resources!!.appointmentId!!)
+                                            },
+                                            platformNavigator = platformNavigator,
+                                            onAddReview = {
+                                                appointmentForReview.value = it
+                                                mainViewModel!!.showPackageReviewsBottomSheet(true)
+                                            })
+                                    }
+                                    if (it == lastIndex && loadMoreState.value) {
+                                        Box(
+                                            modifier = Modifier.fillMaxWidth().height(60.dp),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            IndeterminateCircularProgressBar()
+                                        }
+                                    } else if (it == lastIndex && (displayedAppointmentsCount?.value!! < totalAppointmentsCount?.value!!)) {
+                                        val buttonStyle = Modifier
+                                            .height(60.dp)
+                                            .fillMaxWidth()
+                                            .padding(top = 10.dp, start = 10.dp, end = 10.dp)
 
-                                   ButtonComponent(
-                                       modifier = buttonStyle,
-                                       buttonText = "Show More",
-                                       borderStroke = BorderStroke(1.dp, Colors.primaryColor),
-                                       colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-                                       fontSize = 16,
-                                       shape = CircleShape,
-                                       textColor = Colors.primaryColor,
-                                       style = TextStyle()
-                                   ) {
-                                       if (appointmentResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
-                                           if (userId != -1L) {
-                                               appointmentPresenter.getMoreAppointments(
-                                                   userId,
-                                                   nextPage = appointmentResourceListEnvelopeViewModel!!.currentPage.value + 1
-                                               )
-                                           }
-                                       }
-                                   }
-                               }
-                           }
-                       }
+                                        ButtonComponent(
+                                            modifier = buttonStyle,
+                                            buttonText = "Show More",
+                                            borderStroke = BorderStroke(1.dp, Colors.primaryColor),
+                                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                                            fontSize = 16,
+                                            shape = CircleShape,
+                                            textColor = Colors.primaryColor,
+                                            style = MaterialTheme.typography.titleMedium
+                                        ) {
+                                            if (appointmentResourceListEnvelopeViewModel!!.nextPageUrl.value.isNotEmpty()) {
+                                                if (userId != -1L) {
+                                                    appointmentPresenter.getMoreAppointments(
+                                                        userId,
+                                                        nextPage = appointmentResourceListEnvelopeViewModel!!.currentPage.value + 1
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                     }
-
-                }
-            })
+                })
+        }
     }
 }

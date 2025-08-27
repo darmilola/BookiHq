@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.room.RoomDatabase
 import applications.room.AppDatabase
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import domain.Models.PaymentCard
 import domain.Models.PaymentCardUIModel
 import kotlinx.coroutines.launch
@@ -76,152 +78,168 @@ fun PaymentCardBottomSheet(mainViewModel: MainViewModel, savedCards: List<Paymen
     val cardsHeight = getPaymentCardsViewHeight(savedCards)
     val bottomSheetHeight = cardsHeight + 200
 
-    ModalBottomSheet(
-        modifier = Modifier.padding(top = 20.dp).height(bottomSheetHeight.dp),
-        onDismissRequest = {
-            onDismiss()
-        },
-        sheetState = scaffoldState.bottomSheetState,
-        shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
-        containerColor = Color(0xFFF3F3F3),
-        dragHandle = {},
-    ) {
-        Column(modifier = Modifier.fillMaxSize().background(color = Color.White)) {
+    AppTheme {
 
-            Row(
-                modifier = Modifier
-                    .height(50.dp)
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp, top = 10.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(0.80f)
-                ) {
-                    TextComponent(
-                        text = "Choose Payment Method",
-                        fontSize = 18,
-                        fontFamily = GGSansBold,
-                        textStyle = TextStyle(),
-                        textAlign = TextAlign.Left,
-                        fontWeight = FontWeight.ExtraBold,
-                        lineHeight = 20,
-                        textColor = Colors.primaryColor,
-                        maxLines = 1,
-                        textModifier = Modifier
-                            .padding(top = 10.dp)
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                    )
-                }
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterEnd) {
-                    val modifier = Modifier
-                        .padding(top = 2.dp)
-                        .clickable {
-                            scope.launch {
-                                scaffoldState.bottomSheetState.hide()
-                                onDismiss()
-                            }
-                        }
-                        .size(18.dp)
-                    ImageComponent(
-                        imageModifier = modifier,
-                        imageRes = "drawable/cancel_icon.png",
-                        colorFilter = ColorFilter.tint(color = Colors.primaryColor)
-                    )
+        ModalBottomSheet(
+            modifier = Modifier.padding(top = 20.dp).height(bottomSheetHeight.dp),
+            onDismissRequest = {
+                onDismiss()
+            },
+            sheetState = scaffoldState.bottomSheetState,
+            shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
+            containerColor = Color(0xFFF3F3F3),
+            dragHandle = {},
+        ) {
+            Column(modifier = Modifier.fillMaxSize().background(color = Color.White)) {
 
-                }
-            }
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth().height(cardsHeight.dp).padding(top = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(5.dp),
-                userScrollEnabled = true
-            ) {
-                items(selectedCardUIModel.value.visibleCards.size) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth().height(100.dp)
-                            .padding(start = 20.dp, end = 20.dp)
-                            .background(color = Color.White, shape = RoundedCornerShape(15.dp)),
-                        contentAlignment = Alignment.CenterStart
-                    ) {
-                        PaymentCardItem(selectedCardUIModel.value.visibleCards[it], onPaymentCardSelected = {
-                            it -> selectedCardUIModel.value = selectedCardUIModel.value.copy(
-                                selectedCard = it,
-                                visibleCards = selectedCardUIModel.value.visibleCards.map {
-                                    it2 -> it2.copy(
-                                        isSelected = it2.id == it.id
-                                    )
-                                }
-                            )
-                        }, onPaymentCardRemoved = {
-                            runBlocking {
-                                databaseBuilder!!.build().getPaymentCardDao().deletePaymentCardByById(it.id)
-                                val cardList = databaseBuilder.build().getPaymentCardDao().getAllPaymentCards()
-                                selectedCardUIModel.value = PaymentCardUIModel(selectedCard = selectedCardUIModel.value.selectedCard, visibleCards = cardList)
-                            }
-                        })
-                    }
-                }
-            }
-            Row(
-                modifier = Modifier
-                    .height(50.dp)
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
                 Row(
                     modifier = Modifier
+                        .height(50.dp)
                         .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp, top = 10.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Box(modifier = Modifier.size(20.dp), contentAlignment = Alignment.CenterEnd) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth(0.80f)
+                    ) {
+                        TextComponent(
+                            text = "Choose Payment Method",
+                            fontSize = 18,
+                            textStyle = MaterialTheme.typography.titleLarge,
+                            textAlign = TextAlign.Left,
+                            fontWeight = FontWeight.Bold,
+                            lineHeight = 20,
+                            textColor = Colors.primaryColor,
+                            maxLines = 1,
+                            textModifier = Modifier
+                                .padding(top = 10.dp)
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                        )
+                    }
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterEnd) {
                         val modifier = Modifier
                             .padding(top = 2.dp)
+                            .clickable {
+                                scope.launch {
+                                    scaffoldState.bottomSheetState.hide()
+                                    onDismiss()
+                                }
+                            }
                             .size(18.dp)
                         ImageComponent(
                             imageModifier = modifier,
-                            imageRes = "drawable/add_icon.png",
+                            imageRes = "drawable/cancel_icon.png",
                             colorFilter = ColorFilter.tint(color = Colors.primaryColor)
                         )
-                    }
-                    Box(modifier = Modifier.wrapContentSize().clickable {
-                        onAddNewSelected()
-                    }) {
-                        TextComponent(
-                            text = "Add New Card",
-                            fontSize = 16,
-                            fontFamily = GGSansBold,
-                            textStyle = TextStyle(),
-                            textAlign = TextAlign.Left,
-                            fontWeight = FontWeight.ExtraBold,
-                            lineHeight = 20,
-                            textColor = Colors.primaryColor,
-                            maxLines = 1
-                        )
+
                     }
                 }
-            }
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth().height(cardsHeight.dp).padding(top = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(5.dp),
+                    userScrollEnabled = true
+                ) {
+                    items(selectedCardUIModel.value.visibleCards.size) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().height(100.dp)
+                                .padding(start = 20.dp, end = 20.dp)
+                                .background(color = Color.White, shape = RoundedCornerShape(15.dp)),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            PaymentCardItem(
+                                selectedCardUIModel.value.visibleCards[it],
+                                onPaymentCardSelected = { it ->
+                                    selectedCardUIModel.value = selectedCardUIModel.value.copy(
+                                        selectedCard = it,
+                                        visibleCards = selectedCardUIModel.value.visibleCards.map { it2 ->
+                                            it2.copy(
+                                                isSelected = it2.id == it.id
+                                            )
+                                        }
+                                    )
+                                },
+                                onPaymentCardRemoved = {
+                                    runBlocking {
+                                        databaseBuilder!!.build().getPaymentCardDao()
+                                            .deletePaymentCardByById(it.id)
+                                        val cardList = databaseBuilder.build().getPaymentCardDao()
+                                            .getAllPaymentCards()
+                                        selectedCardUIModel.value = PaymentCardUIModel(
+                                            selectedCard = selectedCardUIModel.value.selectedCard,
+                                            visibleCards = cardList
+                                        )
+                                    }
+                                })
+                        }
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .height(50.dp)
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Box(
+                            modifier = Modifier.size(20.dp),
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
+                            val modifier = Modifier
+                                .padding(top = 2.dp)
+                                .size(18.dp)
+                            ImageComponent(
+                                imageModifier = modifier,
+                                imageRes = "drawable/add_icon.png",
+                                colorFilter = ColorFilter.tint(color = Colors.primaryColor)
+                            )
+                        }
+                        Box(modifier = Modifier.wrapContentSize().clickable {
+                            onAddNewSelected()
+                        }) {
+                            TextComponent(
+                                text = "Add New Card",
+                                fontSize = 16,
+                                textStyle = MaterialTheme.typography.titleMedium,
+                                textAlign = TextAlign.Left,
+                                fontWeight = FontWeight.ExtraBold,
+                                lineHeight = 20,
+                                textColor = Colors.primaryColor,
+                                maxLines = 1
+                            )
+                        }
+                    }
+                }
 
-            ButtonComponent(
-                modifier = Modifier
-                    .padding(bottom = 10.dp, start = 10.dp, end = 10.dp, top = 4.dp)
-                    .fillMaxWidth()
-                    .height(50.dp),
-                buttonText = "Continue",
-                colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
-                fontSize = 16,
-                shape = CircleShape,
-                textColor = Color(color = 0xFFFFFFFF),
-                style = TextStyle(),
-                borderStroke = null
-            ) {
-                if (selectedCardUIModel.value.selectedCard!!.cardNumber.isNotEmpty()){
-                    scope.launch {
-                        scaffoldState.bottomSheetState.hide()
-                        onCardSelected(selectedCardUIModel.value.selectedCard!!)
+                Box(modifier = Modifier.wrapContentSize()
+                    .padding(bottom = 10.dp, start = 10.dp, end = 10.dp, top = 4.dp),
+                    contentAlignment = Alignment.Center) {
+
+                    ButtonComponent(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(45.dp),
+                        buttonText = "Continue",
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
+                        fontSize = 16,
+                        shape = CircleShape,
+                        textColor = Color(color = 0xFFFFFFFF),
+                        style = MaterialTheme.typography.titleMedium,
+                        borderStroke = null
+                    ) {
+                        if (selectedCardUIModel.value.selectedCard!!.cardNumber.isNotEmpty()) {
+                            scope.launch {
+                                scaffoldState.bottomSheetState.hide()
+                                onCardSelected(selectedCardUIModel.value.selectedCard!!)
+                            }
+                        }
                     }
                 }
             }

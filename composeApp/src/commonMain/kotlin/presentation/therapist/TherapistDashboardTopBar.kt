@@ -16,6 +16,7 @@ import domain.Enums.Screens
 import presentation.viewmodels.MainViewModel
 import presentation.viewmodels.TherapistAppointmentResourceListEnvelopeViewModel
 import presentation.widgets.PageBackNavWidget
+import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
 import theme.styles.Colors
 
@@ -24,8 +25,7 @@ fun TherapistDashboardTopBar(onBackPressed: () -> Unit) {
 
     val rowModifier = Modifier
         .fillMaxWidth()
-        .padding(top = 10.dp)
-        .height(60.dp)
+        .height(50.dp)
         Row(modifier = rowModifier,
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically) {
@@ -66,5 +66,5 @@ fun leftTopBarItem(onBackPressed: () -> Unit) {
 
 @Composable
 fun DashboardTitle(){
-    TitleWidget(textColor = Colors.primaryColor, title = "Therapist Dashboard")
+    SubtitleTextWidget(textColor = Colors.primaryColor, text = "Therapist Dashboard")
 }

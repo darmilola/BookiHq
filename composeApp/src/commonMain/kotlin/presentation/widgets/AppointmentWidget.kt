@@ -104,17 +104,17 @@ fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPrese
         BookingStatus.CANCELLED.toPath() -> {
             serviceIconRes = "drawable/schedule.png"
             serviceStatusText = "Cancelled"
-            serviceStatusColor = Colors.primaryColor
+            serviceStatusColor = theme.Colors.redColor
         }
         BookingStatus.POSTPONED.toPath() -> {
             serviceIconRes = "drawable/appointment_postponed.png"
             serviceStatusText = "Postponed"
-            serviceStatusColor = Colors.pinkColor
+            serviceStatusColor = theme.Colors.redColor
         }
         BookingStatus.DONE.toPath() -> {
             serviceIconRes = "drawable/appointment_done.png"
             serviceStatusText = "Done"
-            serviceStatusColor = Colors.greenColor
+            serviceStatusColor = theme.Colors.greenColor
         }
     }
 
@@ -124,6 +124,7 @@ fun AppointmentWidget(userAppointment: UserAppointment? = null, appointmentPrese
             .padding(bottom = 5.dp, top = 5.dp, start = 10.dp, end = 10.dp)
             .fillMaxHeight()
             .fillMaxWidth()
+            .background(color = Color.White)
             .border(border = BorderStroke(1.4.dp, Colors.lightGray), shape = RoundedCornerShape(10.dp))
 
     Box(modifier = boxBgModifier) {
@@ -209,12 +210,12 @@ fun RecentAppointmentWidget(userAppointment: UserAppointment? = null) {
         BookingStatus.POSTPONED.toPath() -> {
             serviceIconRes = "drawable/appointment_postponed.png"
             serviceStatusText = BookingStatus.POSTPONED.toName()
-            serviceStatusColor = Colors.pinkColor
+            serviceStatusColor = theme.Colors.redColor
         }
         BookingStatus.DONE.toPath() -> {
             serviceIconRes = "drawable/appointment_done.png"
             serviceStatusText = BookingStatus.DONE.toName()
-            serviceStatusColor = Colors.greenColor
+            serviceStatusColor = theme.Colors.greenColor
         }
     }
 
@@ -224,7 +225,8 @@ fun RecentAppointmentWidget(userAppointment: UserAppointment? = null) {
             .padding(bottom = 5.dp, top = 5.dp, start = 10.dp, end = 10.dp)
             .fillMaxHeight()
             .fillMaxWidth()
-            .border(border = BorderStroke(1.4.dp, Colors.lightGray), shape = RoundedCornerShape(5.dp))
+            .background(color = Color.White)
+            .border(border = BorderStroke(1.4.dp, Colors.lightGray), shape = RoundedCornerShape(10.dp))
 
     Box(modifier = boxBgModifier) {
 
@@ -253,21 +255,17 @@ fun AttachRecentServiceAppointmentHeader(statusText: String, statusDrawableRes: 
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 5.dp, top = 15.dp)
+        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 5.dp, top = 5.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth(0.70f).height(60.dp)
+            modifier = Modifier.fillMaxWidth(0.70f).height(45.dp)
         ) {
-            Box(modifier = Modifier.fillMaxWidth(0.08f).fillMaxHeight(), contentAlignment = Alignment.Center) {
-                Box(modifier = Modifier.size(6.dp).clip(CircleShape).background(color = statusColor)){}
-            }
             TextComponent(
                 text = appointment.services?.serviceInfo?.title.toString(),
-                fontSize = 18,
-                fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
+                fontSize = 16,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
                 fontWeight = FontWeight.SemiBold,
@@ -313,21 +311,18 @@ fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 5.dp, top = 15.dp)
+        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 5.dp, top = 5.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth(0.70f).height(60.dp)
+            modifier = Modifier.fillMaxWidth(0.70f).height(45.dp)
         ) {
-            Box(modifier = Modifier.fillMaxWidth(0.08f).fillMaxHeight(), contentAlignment = Alignment.Center) {
-                Box(modifier = Modifier.size(6.dp).clip(CircleShape).background(color = statusColor)){}
-            }
+
             TextComponent(
                 text = userAppointment.resources?.services?.serviceInfo?.title.toString(),
-                fontSize = 18,
-                fontFamily = GGSansSemiBold,
-                textStyle = TextStyle(),
+                fontSize = 16,
+                textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                 textColor = Colors.darkPrimary,
                 textAlign = TextAlign.Left,
                 fontWeight = FontWeight.SemiBold,
@@ -353,7 +348,7 @@ fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String
                    AttachIcon(
                        iconRes = "drawable/overflow_menu.png",
                        iconSize = 20,
-                       iconTint = statusColor
+                       iconTint = theme.Colors.darkPrimary
                    ) {
                        expandedMenuItem.value = true
                    }
@@ -381,7 +376,7 @@ fun AttachServiceAppointmentHeader(statusText: String, statusDrawableRes: String
                                    onAddReview(userAppointment.resources!!)
                                }
                            }) {
-                           MultiLineTextWidget(text = title, fontSize = 16)
+                           SubtitleTextWidget(text = title, fontSize = 16)
                        }
                    }
                }
@@ -402,11 +397,10 @@ fun AttachAppointmentStatus(status: String, statusColor: Color){
         TextComponent(
             text = status,
             fontSize = 13,
-            fontFamily = GGSansRegular,
-            textStyle = MaterialTheme.typography.h6,
+            textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
             textColor = statusColor,
             textAlign = TextAlign.Start,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Normal
         )
     }
 }
@@ -459,11 +453,10 @@ fun TherapistDisplayItem(therapistInfo: TherapistInfo?) {
                     TextComponent(
                         text = profileName,
                         fontSize = 15,
-                        fontFamily = GGSansRegular,
-                        textStyle = MaterialTheme.typography.h6,
-                        textColor = Colors.serviceLightGray,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold,
+                        textStyle = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                        textColor = theme.Colors.grayColor,
+                        textAlign = TextAlign.Start,
+                        fontWeight = FontWeight.Normal,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         textModifier = Modifier.wrapContentSize().padding(start = 10.dp, end = 10.dp))

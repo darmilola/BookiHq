@@ -31,8 +31,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import presentations.components.ImageComponent
-import presentations.components.MultilineTextFieldComponent
 import presentations.components.TextFieldComponent
 import theme.Colors
 
@@ -52,7 +50,7 @@ fun MultilineInputWidget(defaultValue: String = "", keyboardOptions: KeyboardOpt
         .border(border = borderStroke, shape = RoundedCornerShape(10.dp))
         .background(color = Colors.lightPrimaryColor, shape = RoundedCornerShape(10.dp))
 
-    Row(modifier = modifier,
+    /*Row(modifier = modifier,
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.Top) {
         MultilineTextFieldComponent(
@@ -85,6 +83,6 @@ fun MultilineInputWidget(defaultValue: String = "", keyboardOptions: KeyboardOpt
             placeholderTextSize = 16f,
             maxLines = maxLines
         )
-    }
+    }*/
 }
 

@@ -36,159 +36,173 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.room.RoomDatabase
 import applications.room.AppDatabase
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import domain.Models.PaymentCard
 import domain.Models.PlatformNavigator
 import kotlinx.coroutines.launch
 import presentation.components.ButtonComponent
 import presentation.widgets.ButtonContent
+import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
 import presentations.widgets.InputWidget
+import presentations.widgets.InputWidgetV2
 import rememberStackedSnackbarHostState
 import theme.styles.Colors
 
 @Composable
 fun AddDebitCardDialog(databaseBuilder: RoomDatabase.Builder<AppDatabase>?, onDismissRequest: () -> Unit, onConfirmation: () -> Unit) {
-    Dialog( properties = DialogProperties(usePlatformDefaultWidth = false), onDismissRequest = { onDismissRequest() }) {
+
+    AppTheme {
+        Dialog(
+            properties = DialogProperties(usePlatformDefaultWidth = false),
+            onDismissRequest = { onDismissRequest() }) {
 
 
-        val pattern = remember { Regex("^\\d*\$") }
-        val scope = rememberCoroutineScope()
+            val pattern = remember { Regex("^\\d*\$") }
+            val scope = rememberCoroutineScope()
 
-        val cardNumber = remember { mutableStateOf("") }
-        val cvv = remember { mutableStateOf("") }
-        val expiryMonth = remember { mutableStateOf("") }
-        val expiryYear = remember { mutableStateOf("") }
-        val isSavedClicked = remember { mutableStateOf(false) }
+            val cardNumber = remember { mutableStateOf("") }
+            val cvv = remember { mutableStateOf("") }
+            val expiryMonth = remember { mutableStateOf("") }
+            val expiryYear = remember { mutableStateOf("") }
+            val isSavedClicked = remember { mutableStateOf(false) }
 
-        Surface(
-            shape = RoundedCornerShape(10.dp),
-            color = Colors.lighterPrimaryColor,
-            modifier = Modifier.fillMaxWidth(0.90f)
-        ) {
-            Card(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+            Surface(
                 shape = RoundedCornerShape(10.dp),
-                elevation = 15.dp, border = BorderStroke((0.5).dp, color = Colors.primaryColor)
+                color = Colors.lighterPrimaryColor,
+                modifier = Modifier.fillMaxWidth(0.90f)
             ) {
-                Column(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth().height(70.dp)
-                            .background(color = Colors.primaryColor),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        TitleWidget(title = "Add Debit Card", textColor = Color.White)
-                    }
-                    Box(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(start = 10.dp, end = 10.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        InputWidget(
-                            iconRes = "drawable/address.png",
-                            placeholderText = "Card Number",
-                            iconSize = 28,
-                            text = cardNumber.value,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-                            isPasswordField = false,
-                            onSaveClicked = isSavedClicked.value,
-                            isSingleLine = true,
-                            maxLines = 1,
-                            maxLength = 25
+                Card(
+                    modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = 15.dp, border = BorderStroke((0.5).dp, color = Colors.primaryColor)
+                ) {
+                    Column(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().height(70.dp)
+                                .background(color = Colors.primaryColor),
+                            contentAlignment = Alignment.Center
                         ) {
-                            if (it.matches(pattern)) {
-                                cardNumber.value = it
-                            }
+                            SubtitleTextWidget(text = "Add New Card", textColor = Color.White)
                         }
-                    }
-                    Box(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(start = 10.dp, end = 10.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        InputWidget(
-                            iconRes = "drawable/card_icon.png",
-                            placeholderText = "Expiry Month(MM)",
-                            iconSize = 28,
-                            onSaveClicked = isSavedClicked.value,
-                            text = expiryMonth.value,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-                            isPasswordField = false,
-                            isSingleLine = true,
-                            maxLines = 1,
-                            maxLength = 3
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(start = 10.dp, end = 10.dp),
+                            contentAlignment = Alignment.Center
                         ) {
-                            if (it.matches(pattern) && it.length <= 2) {
-                                expiryMonth.value = it
-                            }
-                        }
-                    }
-                    Box(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(start = 10.dp, end = 10.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        InputWidget(
-                            iconRes = "drawable/card_icon.png",
-                            placeholderText = "Expiry Year(YY)",
-                            iconSize = 28,
-                            text = expiryYear.value,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-                            isPasswordField = false,
-                            onSaveClicked = isSavedClicked.value,
-                            isSingleLine = true,
-                            maxLines = 1,
-                            maxLength = 3
-                        ) {
-                            if (it.matches(pattern) && it.length <= 2) {
-                                expiryYear.value = it
-                            }
-                        }
-                    }
-                    Box(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(start = 10.dp, end = 10.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        InputWidget(
-                            iconRes = "drawable/address.png",
-                            placeholderText = "CVV",
-                            iconSize = 28,
-                            text = cvv.value,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-                            isPasswordField = false,
-                            onSaveClicked = isSavedClicked.value,
-                            isSingleLine = true,
-                            maxLines = 1,
-                            maxLength = 4
-                        ) {
-                            if (it.matches(pattern) && it.length <= 3) {
-                                cvv.value = it
-                            }
-                        }
-                    }
-
-                    Row(modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(top = 20.dp)) {
-                        ButtonContent(onDismissRequest = {
-                            onDismissRequest()
-                        }, onConfirmation = {
-                            scope.launch {
-                               if (cardNumber.value.isNotEmpty() && expiryMonth.value.isNotEmpty() &&
-                                   expiryYear.value.isNotEmpty() && cvv.value.isNotEmpty()) {
-                                   val paymentDao = databaseBuilder!!.build().getPaymentCardDao()
-                                   paymentDao.insert(
-                                       paymentCard = PaymentCard(
-                                           cardNumber = cardNumber.value,
-                                           expiryMonth = expiryMonth.value,
-                                           expiryYear = expiryYear.value,
-                                           cvv = cvv.value
-                                       )
-                                   )
-                               }
-                                isSavedClicked.value = true
-                                if (cardNumber.value.isNotEmpty() && cvv.value.isNotEmpty() && expiryMonth.value.isNotEmpty() && expiryYear.value.isNotEmpty()){
-                                     onConfirmation()
+                            InputWidgetV2(
+                                iconRes = "drawable/address.png",
+                                placeholderText = "Card Number",
+                                iconSize = 28,
+                                text = cardNumber.value,
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                                isPasswordField = false,
+                                onSaveClicked = isSavedClicked.value,
+                                isSingleLine = true,
+                                maxLines = 1,
+                                maxLength = 25
+                            ) {
+                                if (it.matches(pattern)) {
+                                    cardNumber.value = it
                                 }
                             }
-                        })
+                        }
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(start = 10.dp, end = 10.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            InputWidgetV2(
+                                iconRes = "drawable/card_icon.png",
+                                placeholderText = "Expiry Month(MM)",
+                                iconSize = 28,
+                                onSaveClicked = isSavedClicked.value,
+                                text = expiryMonth.value,
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                                isPasswordField = false,
+                                isSingleLine = true,
+                                maxLines = 1,
+                                maxLength = 3
+                            ) {
+                                if (it.matches(pattern) && it.length <= 2) {
+                                    expiryMonth.value = it
+                                }
+                            }
+                        }
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(start = 10.dp, end = 10.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            InputWidgetV2(
+                                iconRes = "drawable/card_icon.png",
+                                placeholderText = "Expiry Year(YY)",
+                                iconSize = 28,
+                                text = expiryYear.value,
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                                isPasswordField = false,
+                                onSaveClicked = isSavedClicked.value,
+                                isSingleLine = true,
+                                maxLines = 1,
+                                maxLength = 3
+                            ) {
+                                if (it.matches(pattern) && it.length <= 2) {
+                                    expiryYear.value = it
+                                }
+                            }
+                        }
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(start = 10.dp, end = 10.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            InputWidgetV2(
+                                iconRes = "drawable/address.png",
+                                placeholderText = "CVV",
+                                iconSize = 28,
+                                text = cvv.value,
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                                isPasswordField = false,
+                                onSaveClicked = isSavedClicked.value,
+                                isSingleLine = true,
+                                maxLines = 1,
+                                maxLength = 4
+                            ) {
+                                if (it.matches(pattern) && it.length <= 3) {
+                                    cvv.value = it
+                                }
+                            }
+                        }
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                                .padding(top = 20.dp)
+                        ) {
+                            ButtonContent(onDismissRequest = {
+                                onDismissRequest()
+                            }, onConfirmation = {
+                                scope.launch {
+                                    if (cardNumber.value.isNotEmpty() && expiryMonth.value.isNotEmpty() &&
+                                        expiryYear.value.isNotEmpty() && cvv.value.isNotEmpty()
+                                    ) {
+                                        val paymentDao =
+                                            databaseBuilder!!.build().getPaymentCardDao()
+                                        paymentDao.insert(
+                                            paymentCard = PaymentCard(
+                                                cardNumber = cardNumber.value,
+                                                expiryMonth = expiryMonth.value,
+                                                expiryYear = expiryYear.value,
+                                                cvv = cvv.value
+                                            )
+                                        )
+                                    }
+                                    isSavedClicked.value = true
+                                    if (cardNumber.value.isNotEmpty() && cvv.value.isNotEmpty() && expiryMonth.value.isNotEmpty() && expiryYear.value.isNotEmpty()) {
+                                        onConfirmation()
+                                    }
+                                }
+                            })
+                        }
                     }
                 }
             }

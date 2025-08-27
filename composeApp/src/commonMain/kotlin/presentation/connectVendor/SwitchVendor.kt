@@ -43,6 +43,7 @@ import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
@@ -117,11 +118,11 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
         val searchQuery = remember { mutableStateOf("") }
         val country = preferenceSettings[SharedPreferenceEnum.COUNTRY.toPath(), ""]
         val userState = preferenceSettings[SharedPreferenceEnum.STATE.toPath(), -1L]
-        val vendorId: Long = preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath(),-1L]
+        val vendorId: Long = preferenceSettings[SharedPreferenceEnum.VENDOR_ID.toPath(), -1L]
         val navigator = LocalNavigator.currentOrThrow
 
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
-        if (onBackPressed.value){
+        if (onBackPressed.value) {
             mainViewModel!!.setOnBackPressed(false)
             navigator.pop()
         }
@@ -134,7 +135,7 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
         }
 
         if (barCodePerformedActionUIStateViewModel == null) {
-            barCodePerformedActionUIStateViewModel= kmpViewModel(
+            barCodePerformedActionUIStateViewModel = kmpViewModel(
                 factory = viewModelFactory {
                     PerformedActionUIStateViewModel(savedStateHandle = createSavedStateHandle())
                 },
@@ -180,13 +181,15 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
         val vendorInfo = remember { mutableStateOf(Vendor()) }
         val barCodeUiState = barCodePerformedActionUIStateViewModel!!.uiStateInfo.collectAsState()
 
-        val profileHandler = ProfileHandler(profilePresenter,
+        val profileHandler = ProfileHandler(
+            profilePresenter,
             onUserLocationReady = {},
             onVendorInfoReady = { it ->
                 vendorInfo.value = it
             },
             onUserProfileDeleted = {},
-            barCodePerformedActionUIStateViewModel!!)
+            barCodePerformedActionUIStateViewModel!!
+        )
         profileHandler.init()
 
         // View Contract Handler Initialisation
@@ -194,7 +197,8 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
             vendorResourceListEnvelopeViewModel!!,
             loadingScreenUiStateViewModel!!,
             switchVendorActionUIStateViewModel!!,
-            connectVendorPresenter)
+            connectVendorPresenter
+        )
         handler.init()
 
         val loadVendorUiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
@@ -211,7 +215,7 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
         val lastIndex = vendorList!!.value.size.minus(1)
         val vendorUIModel = remember { mutableStateOf(VendorItemUIModel()) }
 
-        if (vendorList.value.isNotEmpty()){
+        if (vendorList.value.isNotEmpty()) {
             vendorUIModel.value = VendorItemUIModel(selectedVendor?.value!!, vendorList.value)
         }
 
@@ -224,123 +228,138 @@ class SwitchVendor(val platformNavigator: PlatformNavigator) : ParcelableScreen,
                 })
         }
 
+        AppTheme {
 
-        Scaffold(
-            topBar = {
-                Column(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally) {
-                    SwitchVendorHeader(onBackPressed = {
-                        navigator.pop()
-                    })
-                    SearchBar(placeholderText = "search @vendor", searchIcon = "drawable/search_icon.png" ,onValueChange = {
-                        vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
-                        searchQuery.value = it
-                        connectVendorPresenter.searchVendor(country,connectedVendor = vendorId,searchQuery = it)
-                    }, onBackPressed = {
-                        searchQuery.value = ""
-                        vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
-                        connectVendorPresenter.viewVendors(
-                            country = country,
-                            state = userState,
-                            connectedVendor = vendorId
-                        )
-                    })
-                }
-            },
-            content = {
-                if (barCodeUiState.value.isLoading) {
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        LoadingDialog("Getting Vendor")
-                    }
-                }
-                else if (barCodeUiState.value.isSuccess) {
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        barCodePerformedActionUIStateViewModel!!.switchActionUIState(AppUIStates(isDefault = true))
-                        mainViewModel!!.setSwitchVendorId(vendorInfo.value.vendorId!!)
-                        mainViewModel!!.setSwitchVendor(vendorInfo.value)
-                        val details = SwitchVendorDetails(platformNavigator)
-                        details.setMainViewModel(mainViewModel!!)
-                        details.setDatabaseBuilder(databaseBuilder)
-                        navigator.push(details)
-                    }
-                }
-                else if (barCodeUiState.value.isFailed) {
-                    ErrorDialog("Error Occurred", "Close", onConfirmation = {})
-                }
-                if (loadVendorUiState.value.isLoading) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                            .padding(start = 50.dp, end = 50.dp)
-                            .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
-                        contentAlignment = Alignment.Center
+            Scaffold(
+                topBar = {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        IndeterminateCircularProgressBar()
-                    }
-                }
-                else if (loadVendorUiState.value.isFailed) {
-                    Box(modifier = Modifier .fillMaxWidth().height(400.dp), contentAlignment = Alignment.Center) {
-                        ErrorOccurredWidget("Error Getting Salon and Spas", onRetryClicked = {
-                            vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
-                            connectVendorPresenter.viewVendors(
-                                country = country,
-                                state = userState,
-                                connectedVendor = vendorId
-                            )
-                            })
-                    }
-                }
-                else if (loadVendorUiState.value.isEmpty) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        EmptyContentWidget(emptyText = loadVendorUiState.value.emptyMessage)
-                    }
-                }
-                else if (loadVendorUiState.value.isSuccess) {
-                    if (searchQuery.value.isEmpty()) {
-                        VendorsView(
-                            nearbyVendor = nearbyVendor.value,
-                            newVendor = newVendor.value,
-                            mainViewModel = mainViewModel!!,
-                            onSeeAllNearbyVendor = {
-                                val seeAllVendor = SeeAllVendor(platformNavigator)
-                                seeAllVendor.isFromConnect(false)
-                                seeAllVendor.setMainViewModel(mainViewModel!!)
-                                seeAllVendor.setDatabaseBuilder(databaseBuilder)
-                                navigator.push(seeAllVendor)
+                        SwitchVendorHeader(onBackPressed = {
+                            navigator.pop()
+                        })
+                        SearchBar(
+                            placeholderText = "search @vendor",
+                            searchIcon = "drawable/search_icon.png",
+                            onValueChange = {
+                                vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
+                                searchQuery.value = it
+                                connectVendorPresenter.searchVendor(
+                                    country,
+                                    connectedVendor = vendorId,
+                                    searchQuery = it
+                                )
                             },
-                            onVendorClickListener = {
-                                mainViewModel!!.setSwitchVendorId(it.vendorId!!)
-                                mainViewModel!!.setSwitchVendor(it)
-                                val details = SwitchVendorDetails(platformNavigator)
-                                details.setMainViewModel(mainViewModel!!)
-                                details.setDatabaseBuilder(databaseBuilder)
-                                navigator.push(details)
+                            onBackPressed = {
+                                searchQuery.value = ""
+                                vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf<Vendor>())
+                                connectVendorPresenter.viewVendors(
+                                    country = country,
+                                    state = userState,
+                                    connectedVendor = vendorId
+                                )
                             })
                     }
-                    else {
-                         LazyColumn(
-                        modifier = Modifier.padding(top = 10.dp).fillMaxWidth()
-                            .height(getVendorListItemViewHeight(vendorUIModel.value.vendorsList).dp),
-                        contentPadding = PaddingValues(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(5.dp), userScrollEnabled = true
-                    ) {
-                         items(vendorUIModel.value.vendorsList.size) { i ->
-                             SwitchVendorBusinessItemComponent(vendor = vendorUIModel.value.vendorsList[i]) {
-                                 mainViewModel!!.setSwitchVendorId(it.vendorId!!)
-                                 mainViewModel!!.setSwitchVendor(it)
-                                 val details = SwitchVendorDetails(platformNavigator)
-                                 details.setMainViewModel(mainViewModel!!)
-                                 details.setDatabaseBuilder(databaseBuilder)
-                                 navigator.push(details)
-                             }
-                         }
+                },
+                content = {
+                    if (barCodeUiState.value.isLoading) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            LoadingDialog("Getting Vendor")
+                        }
+                    } else if (barCodeUiState.value.isSuccess) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            barCodePerformedActionUIStateViewModel!!.switchActionUIState(
+                                AppUIStates(
+                                    isDefault = true
+                                )
+                            )
+                            mainViewModel!!.setSwitchVendorId(vendorInfo.value.vendorId!!)
+                            mainViewModel!!.setSwitchVendor(vendorInfo.value)
+                            val details = SwitchVendorDetails(platformNavigator)
+                            details.setMainViewModel(mainViewModel!!)
+                            details.setDatabaseBuilder(databaseBuilder)
+                            navigator.push(details)
+                        }
+                    } else if (barCodeUiState.value.isFailed) {
+                        ErrorDialog("Error Occurred", "Close", onConfirmation = {})
                     }
+                    if (loadVendorUiState.value.isLoading) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            IndeterminateCircularProgressBar()
+                        }
+                    } else if (loadVendorUiState.value.isFailed) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().height(400.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            ErrorOccurredWidget("Error Getting Salon and Spas", onRetryClicked = {
+                                vendorResourceListEnvelopeViewModel!!.clearData(mutableListOf())
+                                connectVendorPresenter.viewVendors(
+                                    country = country,
+                                    state = userState,
+                                    connectedVendor = vendorId
+                                )
+                            })
+                        }
+                    } else if (loadVendorUiState.value.isEmpty) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            EmptyContentWidget(emptyText = loadVendorUiState.value.emptyMessage)
+                        }
+                    } else if (loadVendorUiState.value.isSuccess) {
+                        if (searchQuery.value.isEmpty()) {
+                            VendorsView(
+                                nearbyVendor = nearbyVendor.value,
+                                newVendor = newVendor.value,
+                                mainViewModel = mainViewModel!!,
+                                onSeeAllNearbyVendor = {
+                                    val seeAllVendor = SeeAllVendor(platformNavigator)
+                                    seeAllVendor.isFromConnect(false)
+                                    seeAllVendor.setMainViewModel(mainViewModel!!)
+                                    seeAllVendor.setDatabaseBuilder(databaseBuilder)
+                                    navigator.push(seeAllVendor)
+                                },
+                                onVendorClickListener = {
+                                    mainViewModel!!.setSwitchVendorId(it.vendorId!!)
+                                    mainViewModel!!.setSwitchVendor(it)
+                                    val details = SwitchVendorDetails(platformNavigator)
+                                    details.setMainViewModel(mainViewModel!!)
+                                    details.setDatabaseBuilder(databaseBuilder)
+                                    navigator.push(details)
+                                })
+                        } else {
+                            LazyColumn(
+                                modifier = Modifier.padding(top = 10.dp).fillMaxWidth()
+                                    .height(getVendorListItemViewHeight(vendorUIModel.value.vendorsList).dp),
+                                contentPadding = PaddingValues(6.dp),
+                                verticalArrangement = Arrangement.spacedBy(5.dp),
+                                userScrollEnabled = true
+                            ) {
+                                items(vendorUIModel.value.vendorsList.size) { i ->
+                                    SwitchVendorBusinessItemComponent(vendor = vendorUIModel.value.vendorsList[i]) {
+                                        mainViewModel!!.setSwitchVendorId(it.vendorId!!)
+                                        mainViewModel!!.setSwitchVendor(it)
+                                        val details = SwitchVendorDetails(platformNavigator)
+                                        details.setMainViewModel(mainViewModel!!)
+                                        details.setDatabaseBuilder(databaseBuilder)
+                                        navigator.push(details)
+                                    }
+                                }
+                            }
+                        }
                     }
-                }
-            },
-            backgroundColor = Color.White,
-        )
+                },
+                backgroundColor = theme.Colors.dashboardBackground,
+            )
 
+        }
     }
 
     override fun enter(lastEvent: StackEvent): EnterTransition {

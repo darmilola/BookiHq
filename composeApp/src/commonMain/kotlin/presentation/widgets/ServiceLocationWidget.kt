@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -56,7 +57,7 @@ fun ServiceLocationToggle(bookingViewModel: BookingViewModel, isDisabled: Boolea
 
     Column(
         modifier = Modifier
-            .padding(top = 35.dp)
+            .padding(top = 30.dp)
             .fillMaxWidth()
             .wrapContentHeight(),
         verticalArrangement = Arrangement.Center,
@@ -66,11 +67,10 @@ fun ServiceLocationToggle(bookingViewModel: BookingViewModel, isDisabled: Boolea
         TextComponent(
             text = "Where do you want your Service?",
             fontSize = 16,
-            fontFamily = GGSansSemiBold,
-            textStyle = TextStyle(),
+            textStyle = MaterialTheme.typography.titleMedium,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Black,
+            fontWeight = FontWeight.SemiBold,
             lineHeight = 30,
             textModifier = Modifier
                 .fillMaxWidth().padding(start = 10.dp))
@@ -81,7 +81,7 @@ fun ServiceLocationToggle(bookingViewModel: BookingViewModel, isDisabled: Boolea
         }, onRightClicked = {
             onMobileSelectedListener()
             locationType = ServiceLocationEnum.MOBILE.toPath()
-        }, leftText = "Parlor", rightText = "My Address", isRightSelection = locationType != ServiceLocationEnum.SPA.toPath(), isDisabled = isServiceLocationDisabled)
+        }, leftText = "Parlor", rightText = "Home Service", isRightSelection = locationType != ServiceLocationEnum.SPA.toPath(), isDisabled = isServiceLocationDisabled)
 
     }
 

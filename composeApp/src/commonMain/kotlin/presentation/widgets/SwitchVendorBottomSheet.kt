@@ -60,11 +60,11 @@ fun SwitchVendorBottomSheetContent(onConfirmation: (String) -> Unit) {
         elevation = 15.dp) {
         Column(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
             SwitchVendorBottomSheetContentHeader()
-            Box(modifier = Modifier.fillMaxWidth().height(60.dp).background(color = Color.White), contentAlignment = Alignment.Center) {
-                TitleWidget(title = "Why decide to make this decision?", textColor = Colors.darkPrimary,fonSize = 18)
+            Box(modifier = Modifier.fillMaxWidth().height(40.dp).background(color = Color.White), contentAlignment = Alignment.Center) {
+                SubtitleTextWidget(text = "Why decide to make this decision?", textColor = Colors.darkPrimary)
 
             }
-            Column (modifier = Modifier.fillMaxWidth().height(350.dp).padding(start = 15.dp, end = 15.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+            Column (modifier = Modifier.fillMaxWidth().height(350.dp).padding(start = 15.dp, end = 15.dp, bottom = 15.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                 SwitchVendorReasons(onReasonSelected = {
                     onConfirmation(it)
                 })

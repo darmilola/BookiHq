@@ -40,6 +40,7 @@ import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.hoc081098.kmp.viewmodel.compose.kmpViewModel
 import com.hoc081098.kmp.viewmodel.createSavedStateHandle
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
@@ -158,74 +159,84 @@ class FavoriteProducts() : ParcelableScreen, KoinComponent, Parcelable, ScreenTr
 
 
 
-        Scaffold(
-            snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
-            topBar = {
-                FavoriteProductScreenTopBar(onBackPressed = {
-                    navigator.pop()
-                })
-            },
-            content = {
-                var showProductDetailBottomSheet by remember { mutableStateOf(false) }
-                val selectedProduct = remember { mutableStateOf(Product()) }
-                if (showProductDetailBottomSheet) {
-                    mainViewModel!!.showProductBottomSheet(true)
-                }
-                else{
-                    mainViewModel!!.showProductBottomSheet(false)
-                }
+        AppTheme {
 
-                if (selectedProduct.value.productId != -1L) {
-                    ProductDetailBottomSheet(
-                        mainViewModel!!,
-                        isViewOnly = false,
-                        OrderItem(itemProduct = selectedProduct.value),
-                        onDismiss = {
-                            selectedProduct.value = Product()
-                        },
-                        onAddToCart = { isAddToCart, item ->
-                            showProductDetailBottomSheet = false
-                        })
-                }
+            Scaffold(
+                snackbarHost = { StackedSnackbarHost(hostState = stackedSnackBarHostState) },
+                topBar = {
+                    FavoriteProductScreenTopBar(onBackPressed = {
+                        navigator.pop()
+                    })
+                },
+                content = {
+                    var showProductDetailBottomSheet by remember { mutableStateOf(false) }
+                    val selectedProduct = remember { mutableStateOf(Product()) }
+                    if (showProductDetailBottomSheet) {
+                        mainViewModel!!.showProductBottomSheet(true)
+                    } else {
+                        mainViewModel!!.showProductBottomSheet(false)
+                    }
 
-                val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
-                if (uiState.value.isLoading) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                            .padding(top = 40.dp, start = 50.dp, end = 50.dp)
-                            .background(color = Color.Transparent, shape = RoundedCornerShape(20.dp)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        IndeterminateCircularProgressBar()
+                    if (selectedProduct.value.productId != -1L) {
+                        ProductDetailBottomSheet(
+                            mainViewModel!!,
+                            isViewOnly = false,
+                            OrderItem(itemProduct = selectedProduct.value),
+                            onDismiss = {
+                                selectedProduct.value = Product()
+                            },
+                            onAddToCart = { isAddToCart, item ->
+                                showProductDetailBottomSheet = false
+                            })
                     }
-                }
-                else if (uiState.value.isFailed) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        ErrorOccurredWidget(uiState.value.errorMessage, onRetryClicked = {
-                            if (productResourceListEnvelopeViewModel!!.resources.value.isEmpty()){
-                                productResourceListEnvelopeViewModel!!.setResources(mutableListOf())
-                                productPresenter.getFavoriteProducts(userId)
-                            }
-                        })
-                    }
-                }
-                else if (uiState.value.isEmpty) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        EmptyContentWidget(emptyText = uiState.value.emptyMessage)
-                    }
-                }
-                else if (uiState.value.isSuccess) {
-                    FavoriteProductContent(
-                        productResourceListEnvelopeViewModel = productResourceListEnvelopeViewModel!!,
-                        vendorId = vendorId,
-                        userId = userId,
-                        onProductSelected = {
-                            selectedProduct.value = it
-                            showProductDetailBottomSheet = true
+
+                    val uiState = loadingScreenUiStateViewModel!!.uiStateInfo.collectAsState()
+                    if (uiState.value.isLoading) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                                .padding(top = 40.dp, start = 50.dp, end = 50.dp)
+                                .background(
+                                    color = Color.Transparent,
+                                    shape = RoundedCornerShape(20.dp)
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            IndeterminateCircularProgressBar()
                         }
-                    )
-                }
-            })
+                    } else if (uiState.value.isFailed) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            ErrorOccurredWidget(uiState.value.errorMessage, onRetryClicked = {
+                                if (productResourceListEnvelopeViewModel!!.resources.value.isEmpty()) {
+                                    productResourceListEnvelopeViewModel!!.setResources(
+                                        mutableListOf()
+                                    )
+                                    productPresenter.getFavoriteProducts(userId)
+                                }
+                            })
+                        }
+                    } else if (uiState.value.isEmpty) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            EmptyContentWidget(emptyText = uiState.value.emptyMessage)
+                        }
+                    } else if (uiState.value.isSuccess) {
+                        FavoriteProductContent(
+                            productResourceListEnvelopeViewModel = productResourceListEnvelopeViewModel!!,
+                            vendorId = vendorId,
+                            userId = userId,
+                            onProductSelected = {
+                                selectedProduct.value = it
+                                showProductDetailBottomSheet = true
+                            }
+                        )
+                    }
+                })
+        }
     }
 
 

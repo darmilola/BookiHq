@@ -12,10 +12,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import domain.Models.OrderItem
 import kotlinx.coroutines.launch
 import presentation.Products.ProductDetailContent
 import presentation.viewmodels.MainViewModel
+import theme.styles.Colors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,19 +41,22 @@ fun ProductDetailBottomSheet(mainViewModel: MainViewModel, isViewOnly: Boolean =
         }
     }
 
-    ModalBottomSheet(
-        modifier = Modifier.padding(top = 20.dp),
-        onDismissRequest = {
-            onDismiss()
-        },
-        sheetState = scaffoldState.bottomSheetState,
-        shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
-        containerColor = Color(0xFFF3F3F3),
-        dragHandle = {},
-    ) {
-        ProductDetailContent(mainViewModel,isViewOnly,selectedProduct, onAddToCart = {
-            onAddToCart(it,selectedProduct)
-        })
+    AppTheme {
+
+        ModalBottomSheet(
+            modifier = Modifier.padding(top = 20.dp),
+            onDismissRequest = {
+                onDismiss()
+            },
+            sheetState = scaffoldState.bottomSheetState,
+            shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
+            containerColor = theme.Colors.dashboardBackground,
+            dragHandle = {},
+        ) {
+            ProductDetailContent(mainViewModel, isViewOnly, selectedProduct, onAddToCart = {
+                onAddToCart(it, selectedProduct)
+            })
+        }
     }
 
 }

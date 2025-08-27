@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +48,7 @@ import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
+import com.assignment.moniepointtest.ui.theme.AppTheme
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.russhwolf.settings.Settings
 import domain.Models.PaymentCard
@@ -58,6 +60,7 @@ import presentation.components.ButtonComponent
 import presentation.dialogs.AddDebitCardDialog
 import presentation.viewmodels.MainViewModel
 import presentation.widgets.PaymentCardItem
+import presentation.widgets.SubtitleTextWidget
 import presentation.widgets.TitleWidget
 import presentations.components.ImageComponent
 import presentations.components.TextComponent
@@ -99,7 +102,7 @@ class PaymentMethods(val platformNavigator: PlatformNavigator) : ParcelableScree
         val paymentMethods = remember { mutableStateOf(cardList) }
         val cardsHeight = getPaymentCardsViewHeight(paymentMethods.value)
         val onBackPressed = mainViewModel!!.onBackPressed.collectAsState()
-        if (onBackPressed.value){
+        if (onBackPressed.value) {
             mainViewModel!!.setOnBackPressed(false)
             navigator.pop()
         }
@@ -112,7 +115,8 @@ class PaymentMethods(val platformNavigator: PlatformNavigator) : ParcelableScree
                     openAddDebitCardDialog.value = false
                 }, onConfirmation = {
                     runBlocking {
-                        cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
+                        cardList =
+                            databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
                     }
                     paymentMethods.value = cardList
                     openAddDebitCardDialog.value = false
@@ -120,148 +124,167 @@ class PaymentMethods(val platformNavigator: PlatformNavigator) : ParcelableScree
             }
         }
 
-        Scaffold(
-            topBar = {
-                Column(modifier = Modifier.fillMaxWidth().wrapContentHeight(),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally) {
-                    val rowModifier = Modifier
-                        .fillMaxWidth()
-                        .height(40.dp)
-
-                    val colModifier = Modifier
-                        .padding(top = 20.dp, end = 0.dp)
-                        .fillMaxWidth()
-                        .height(40.dp)
-
-                    Column(modifier = colModifier,
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally) {
-                        Row(modifier = rowModifier,
-                            horizontalArrangement = Arrangement.Start,
-                            verticalAlignment = Alignment.CenterVertically) {
-
-                            Box(modifier =  Modifier.weight(1.0f)
-                                .fillMaxWidth()
-                                .fillMaxHeight(),
-                                contentAlignment = Alignment.CenterStart) {
-                                leftTopBarItem(onBackPressed = {
-                                    navigator.pop()
-                                })
-                            }
-
-                            Box(modifier =  Modifier.weight(3.0f)
-                                .fillMaxWidth()
-                                .fillMaxHeight(),
-                                contentAlignment = Alignment.Center) {
-                                TitleWidget(title = "Payment Methods", textColor = Colors.primaryColor)
-                            }
-
-                            Box(modifier =  Modifier.weight(1.0f)
-                                .fillMaxWidth(0.20f)
-                                .fillMaxHeight(),
-                                contentAlignment = Alignment.Center) {
-                            }
-                        }
-                    }
-                    TextComponent(
-                        text = "Securely save your card details for hassle-free payments",
-                        fontSize = 16,
-                        fontFamily = GGSansRegular,
-                        textStyle = TextStyle(),
-                        textColor = Color.DarkGray,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Normal,
-                        lineHeight = 20,
-                        textModifier = Modifier.fillMaxWidth().wrapContentHeight().padding(start = 10.dp, end = 10.dp, top = 20.dp))
-                }
-
-            },
-            content = {
-                Column(modifier = Modifier.fillMaxSize().background(color = Color.White)) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxWidth().height(cardsHeight.dp).padding(top = 20.dp),
-                        verticalArrangement = Arrangement.spacedBy(5.dp),
-                        userScrollEnabled = true
+        AppTheme {
+            Scaffold(
+                topBar = {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        items(paymentMethods.value.size) {
-                            Box(
-                                modifier = Modifier.fillMaxWidth().height(100.dp)
-                                    .padding(start = 20.dp, end = 20.dp)
-                                    .background(color = Color.White, shape = RoundedCornerShape(15.dp)),
-                                contentAlignment = Alignment.CenterStart
-                            ) {
-                                PaymentCardItem(paymentMethods.value[it], onPaymentCardSelected = {},
-                                    onPaymentCardRemoved = {
-                                     runBlocking {
-                                       databaseBuilder!!.build().getPaymentCardDao().deletePaymentCardByById(it.id)
-                                       cardList = databaseBuilder!!.build().getPaymentCardDao().getAllPaymentCards()
-                                     }
-                                     paymentMethods.value = cardList
-                                    })
-                            }
-                        }
-                    }
-                    Row(modifier = Modifier
-                            .height(50.dp)
+                        val rowModifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 20.dp, end = 20.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                            .padding(top = 10.dp)
+                            .height(40.dp)
+
+                            Row(
+                                modifier = rowModifier,
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+
+                                Box(
+                                    modifier = Modifier.weight(1.0f)
+                                        .fillMaxWidth()
+                                        .fillMaxHeight(),
+                                    contentAlignment = Alignment.CenterStart
+                                ) {
+                                    leftTopBarItem(onBackPressed = {
+                                        navigator.pop()
+                                    })
+                                }
+
+                                Box(
+                                    modifier = Modifier.weight(3.0f)
+                                        .fillMaxWidth()
+                                        .fillMaxHeight(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    SubtitleTextWidget(
+                                        text = "Payment Methods",
+                                        textColor = Colors.primaryColor
+                                    )
+                                }
+
+                                Box(
+                                    modifier = Modifier.weight(1.0f)
+                                        .fillMaxWidth(0.20f)
+                                        .fillMaxHeight(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                }
+                            }
+                        TextComponent(
+                            text = "Securely save your card details for hassle-free payments",
+                            fontSize = 16,
+                            textStyle = MaterialTheme.typography.titleMedium,
+                            textColor = Color.DarkGray,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Normal,
+                            lineHeight = 20,
+                            textModifier = Modifier.fillMaxWidth().wrapContentHeight()
+                                .padding(start = 10.dp, end = 10.dp, top = 20.dp)
+                        )
+                    }
+
+                },
+                content = {
+                    Column(modifier = Modifier.fillMaxSize().background(color = Color.White)) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxWidth().height(cardsHeight.dp)
+                                .padding(top = 20.dp),
+                            verticalArrangement = Arrangement.spacedBy(5.dp),
+                            userScrollEnabled = true
+                        ) {
+                            items(paymentMethods.value.size) {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth().height(100.dp)
+                                        .padding(start = 20.dp, end = 20.dp)
+                                        .background(
+                                            color = Color.White,
+                                            shape = RoundedCornerShape(15.dp)
+                                        ),
+                                    contentAlignment = Alignment.CenterStart
+                                ) {
+                                    PaymentCardItem(paymentMethods.value[it],
+                                        onPaymentCardSelected = {},
+                                        onPaymentCardRemoved = {
+                                            runBlocking {
+                                                databaseBuilder!!.build().getPaymentCardDao()
+                                                    .deletePaymentCardByById(it.id)
+                                                cardList =
+                                                    databaseBuilder!!.build().getPaymentCardDao()
+                                                        .getAllPaymentCards()
+                                            }
+                                            paymentMethods.value = cardList
+                                        })
+                                }
+                            }
+                        }
                         Row(
                             modifier = Modifier
+                                .height(50.dp)
                                 .fillMaxWidth()
+                                .padding(start = 20.dp, end = 20.dp),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Box(modifier = Modifier.size(20.dp), contentAlignment = Alignment.CenterEnd) {
-                                val modifier = Modifier
-                                    .padding(top = 2.dp)
-                                    .size(18.dp)
-                                ImageComponent(
-                                    imageModifier = modifier,
-                                    imageRes = "drawable/add_icon.png",
-                                    colorFilter = ColorFilter.tint(color = Colors.primaryColor)
-                                )
-                            }
-                            Box(modifier = Modifier.wrapContentSize().clickable {
-                                   openAddDebitCardDialog.value = true
-                            }) {
-                                TextComponent(
-                                    text = "Add New Card",
-                                    fontSize = 16,
-                                    fontFamily = GGSansBold,
-                                    textStyle = TextStyle(),
-                                    textAlign = TextAlign.Left,
-                                    fontWeight = FontWeight.ExtraBold,
-                                    lineHeight = 20,
-                                    textColor = Colors.primaryColor,
-                                    maxLines = 1
-                                )
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                Box(
+                                    modifier = Modifier.size(20.dp),
+                                    contentAlignment = Alignment.CenterEnd
+                                ) {
+                                    val modifier = Modifier
+                                        .padding(top = 2.dp)
+                                        .size(18.dp)
+                                    ImageComponent(
+                                        imageModifier = modifier,
+                                        imageRes = "drawable/add_icon.png",
+                                        colorFilter = ColorFilter.tint(color = Colors.primaryColor)
+                                    )
+                                }
+                                Box(modifier = Modifier.wrapContentSize().clickable {
+                                    openAddDebitCardDialog.value = true
+                                }) {
+                                    TextComponent(
+                                        text = "Add New Card",
+                                        fontSize = 16,
+                                        textStyle = MaterialTheme.typography.titleLarge,
+                                        textAlign = TextAlign.Left,
+                                        fontWeight = FontWeight.Bold,
+                                        lineHeight = 20,
+                                        textColor = Colors.primaryColor,
+                                        maxLines = 1
+                                    )
+                                }
                             }
                         }
-                    }
 
-                    ButtonComponent(
-                        modifier = Modifier
-                            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp, top = 4.dp)
-                            .fillMaxWidth()
-                            .height(50.dp),
-                        buttonText = "Done",
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
-                        fontSize = 16,
-                        shape = CircleShape,
-                        textColor = Color(color = 0xFFFFFFFF),
-                        style = TextStyle(),
-                        borderStroke = null
-                    ) {
-                        mainViewModel!!.setOnBackPressed(false)
-                        navigator.pop()
+                        ButtonComponent(
+                            modifier = Modifier
+                                .padding(bottom = 10.dp, start = 10.dp, end = 10.dp, top = 4.dp)
+                                .fillMaxWidth()
+                                .height(50.dp),
+                            buttonText = "Done",
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Colors.primaryColor),
+                            fontSize = 16,
+                            shape = CircleShape,
+                            textColor = Color(color = 0xFFFFFFFF),
+                            style = MaterialTheme.typography.titleMedium,
+                            borderStroke = null
+                        ) {
+                            mainViewModel!!.setOnBackPressed(false)
+                            navigator.pop()
+                        }
                     }
-                }
-            },
-            backgroundColor = Color.White,
-        )
+                },
+                backgroundColor = Color.White,
+            )
 
+        }
     }
 
     override fun enter(lastEvent: StackEvent): EnterTransition {

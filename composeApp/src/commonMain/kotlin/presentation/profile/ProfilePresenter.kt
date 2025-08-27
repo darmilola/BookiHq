@@ -209,25 +209,21 @@ class ProfilePresenter(apiService: HttpClient): ProfileContract.Presenter() {
                             onSuccess = { result ->
                                 when (result.status) {
                                     ServerResponse.SUCCESS.toPath() -> {
-                                        println("Success ${result.vendorInfo}")
                                         contractView?.showVendorInfo(result.vendorInfo)
                                         contractView?.showActionLce(AppUIStates(isSuccess = true))
                                     }
                                     ServerResponse.FAILURE.toPath() -> {
-                                        println("Failure 0")
                                         contractView?.showActionLce(AppUIStates(isFailed = true))
                                     }
                                 }
                             },
                             onError = {
-                                println("Failure 1 ${it.message}")
                                 contractView?.showActionLce(AppUIStates(isFailed = true))
                             },
                         )
                 }
                 result.dispose()
             } catch(e: Exception) {
-                println("Failure 2 ${e.message}")
                 contractView?.showActionLce(AppUIStates(isFailed = true))
             }
         }
