@@ -464,7 +464,7 @@ class MainScreen(private val platformNavigator: PlatformNavigator): KoinComponen
                                 ) {
                                     isBottomNavSelected = true
                                 }
-                                accountTab = AccountTab()
+                                accountTab = AccountTab(platformNavigator)
                                 accountTab!!.setMainViewModel(mainViewModel!!)
                                 accountTab!!.setDatabaseBuilder(databaseBuilder)
                                 TabNavigationItem(

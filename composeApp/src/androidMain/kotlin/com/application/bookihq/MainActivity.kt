@@ -483,4 +483,9 @@ class MainActivity : ComponentActivity(), PlatformNavigator, Parcelable {
         FirebaseAuth.getInstance().signOut()
     }
 
+    override fun deleteAccount() {
+        FirebaseAuth.getInstance().currentUser?.delete()
+    }
+
+
 }

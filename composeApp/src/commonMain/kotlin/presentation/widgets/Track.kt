@@ -269,7 +269,7 @@ fun Step(modifier: Modifier = Modifier, isCompete: Boolean, isCurrentStep: Boole
         }
         TextComponent(
             text = itemTitle,
-            fontSize = 15,
+            fontSize = 14,
             textStyle = androidx.compose.material3.MaterialTheme.typography.titleLarge,
             textColor = Colors.darkPrimary,
             textAlign = TextAlign.Left,

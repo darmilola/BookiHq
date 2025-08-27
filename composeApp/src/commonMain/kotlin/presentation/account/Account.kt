@@ -49,6 +49,7 @@ import com.hoc081098.kmp.viewmodel.parcelable.Parcelable
 import com.hoc081098.kmp.viewmodel.parcelable.Parcelize
 import com.hoc081098.kmp.viewmodel.viewModelFactory
 import domain.Enums.Screens
+import domain.Models.PlatformNavigator
 import domain.Models.User
 import kotlinx.serialization.Transient
 import org.koin.core.component.KoinComponent
@@ -69,7 +70,7 @@ import presentations.components.TextComponent
 import rememberStackedSnackbarHostState
 
 @Parcelize
-class AccountTab : Tab, Parcelable, KoinComponent {
+class AccountTab(val platformNavigator: PlatformNavigator) : Tab, Parcelable, KoinComponent {
 
     private var mainViewModel: MainViewModel? = null
     @Transient
@@ -164,6 +165,7 @@ class AccountTab : Tab, Parcelable, KoinComponent {
                             LoadingDialog("Deleting Your Account")
                         }
                     } else if (uiState.value.isSuccess) {
+                        platformNavigator.deleteAccount()
                         mainViewModel!!.logOut(true)
                     } else if (uiState.value.isFailed) {
                         ErrorDialog("Error Occurred", "Close", onConfirmation = {})
