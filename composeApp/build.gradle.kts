@@ -208,8 +208,8 @@ android {
         applicationId = "com.application.bookihq"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 3
-        versionName = "1.2"
+        versionCode = 4
+        versionName = "1.3"
         manifestPlaceholders["auth0Domain"] = "@string/com_auth0_domain"
         manifestPlaceholders["auth0Scheme"] = "demo"
     }
